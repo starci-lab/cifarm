@@ -7,10 +7,14 @@ import React, { FC } from "react"
 import { Cog6ToothIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { SelectChainButton } from "./SelectChainButton"
 const Page: FC = () => {
+    //get all the data from the Redux store
     const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
     const currentId = useAppSelector((state) => state.sessionReducer.accounts.currentId)
     const account = accounts.find((account) => account.id === currentId) 
-    if (!account) throw new Error("Current account not found")
+    //if account is not found, return null
+    if (!account) {
+        return null
+    }
     const { imageUrl, address } = account
     return (
         <Container hasPadding>

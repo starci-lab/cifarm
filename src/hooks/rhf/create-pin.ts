@@ -1,16 +1,19 @@
 import { ChainKey, createAccount } from "@/modules/blockchain"
-import { sha256Hash, stringToMnemonic } from "@/modules/cryptography"
+import { SESSION_COOKIE_MAX_AGE, SESSION_COOKIE_NAME } from "@/modules/cookie"
+import { encrypt, stringToMnemonic } from "@/modules/cryptography"
 import { Account, CurrentAccount, SessionDbKey, sessionDb } from "@/modules/dexie"
+import { serialize } from "@/modules/serialization"
 import { setMnemonic, setPin, triggerLoadAccounts, useAppDispatch, useAppSelector } from "@/redux"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Cookie from "js-cookie"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z, ZodType } from "zod"
 
-export interface CreateFormInputs {
+export interface CreatePINFormInputs {
   pin: string;
 }
 
-const Schema: ZodType<CreateFormInputs> = z.object({
+const Schema: ZodType<CreatePINFormInputs> = z.object({
     pin: z
         .string()
         .regex(/^\d{6}$/, {
@@ -19,11 +22,11 @@ const Schema: ZodType<CreateFormInputs> = z.object({
         .nonempty("PIN is required"),
 })
 
-export const useCreateForm = () => {
+export const useCreatePinForm = () => {
     const network = useAppSelector(
         (state) => state.sessionReducer.network
     )
-    const form = useForm<CreateFormInputs>({
+    const form = useForm<CreatePINFormInputs>({
         resolver: zodResolver(Schema),
     })
     const username = useAppSelector(
@@ -31,13 +34,16 @@ export const useCreateForm = () => {
     )
     const dispatch = useAppDispatch()
 
-    const onSubmit: SubmitHandler<CreateFormInputs> = async (data) => {
+    const onSubmit: SubmitHandler<CreatePINFormInputs> = async (data) => {
     // create mnemonic based on pin
         const mnemonic = stringToMnemonic(username + data.pin)
         // put mnemonic to key-value store in IndexedDB
         await sessionDb.keyValueStore.put({
             key: SessionDbKey.Mnemonic,
-            value: mnemonic,
+            value: serialize(encrypt({
+                data: mnemonic,
+                key: data.pin,
+            })),
         })
         //start with index 0 for each chain
         const promises: Array<Promise<void>> = []
@@ -65,7 +71,10 @@ export const useCreateForm = () => {
                         // we will update the account
                         found.address = created.address
                         found.publicKey = created.publicKey
-                        found.privateKey = sha256Hash(created.privateKey)
+                        found.privateKey = serialize(encrypt({
+                            data: created.privateKey,
+                            key: data.pin,
+                        }))
                         await sessionDb.accounts.put(found)
                         return
                     }
@@ -77,7 +86,10 @@ export const useCreateForm = () => {
                         accountNumber: 0,
                         address: created.address,
                         publicKey: created.publicKey,
-                        privateKey: created.privateKey,
+                        privateKey: serialize(encrypt({
+                            data: created.privateKey,
+                            key: data.pin,
+                        })),
                         username,
                         imageUrl: "/logo.png",
                     }
@@ -94,7 +106,12 @@ export const useCreateForm = () => {
                 })()
             )
             await Promise.all(promises)
-
+            //add session timeout to key-value store in IndexedDB
+            Cookie.set(SESSION_COOKIE_NAME, serialize({
+                pin: data.pin,
+            }), {
+                expires: SESSION_COOKIE_MAX_AGE,
+            })
             //dispatch to set pin
             dispatch(setPin(data.pin))
             //dispatch to set mnemonic

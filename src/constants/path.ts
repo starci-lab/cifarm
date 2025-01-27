@@ -1,6 +1,8 @@
 export const pathConstants = {
     default: "/",
-    create: "/create",
+    createPin: "/create-pin",
+    enterPin: "/enter-pin",
     home: "/home",
     selectChain: "/select-chain",
+    manageTokens: "/manage-tokens",
 }

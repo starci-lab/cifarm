@@ -26,7 +26,7 @@ const Page: FC = () => {
                     <Button
                         color="primary"
                         size="lg"
-                        onPress={() => router.push(pathConstants.create)}
+                        onPress={() => router.push(pathConstants.createPin)}
                     >
             Create new account
                     </Button>
@@ -34,7 +34,7 @@ const Page: FC = () => {
                         color="primary"
                         variant="flat"
                         size="lg"
-                        onPress={() => router.push(pathConstants.create)}
+                        onPress={() => router.push(pathConstants.createPin)}
                     >
             Import existing account
                     </Button>

@@ -6,17 +6,23 @@ import { Provider as ReduxProvider } from "react-redux"
 import { store } from "@/redux"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { SingletonHookProvider } from "@/modules/singleton-hook"
-import { useCreateForm, UseEffects } from "@/hooks"
+import { useCreatePinForm, UseEffects, useEnterPinForm } from "@/hooks"
+import { useAppSelector } from "@/redux"
+import { LoadingScreen } from "@/components"
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
+    const loaded = useAppSelector((state) => state.sessionReducer.loaded)
     return (
         <Suspense>
             <NextThemesProvider attribute="class" enableSystem>
                 <SingletonHookProvider hooks={{
-                    CREATE_FORM: useCreateForm(),
+                    CREATE_PIN_FORM: useCreatePinForm(),
+                    ENTER_PIN_FORM: useEnterPinForm(),
                 }}
                 >
-                    {children}
+                    {
+                        loaded ? children : <LoadingScreen/>
+                    }
                     <UseEffects/>
                 </SingletonHookProvider>
             </NextThemesProvider>

@@ -1,1 +1,2 @@
-export const CREATE_FORM = "CREATE_FORM"
+export const CREATE_PIN_FORM = "CREATE_PIN_FORM"
+export const ENTER_PIN_FORM = "ENTER_PIN_FORM"

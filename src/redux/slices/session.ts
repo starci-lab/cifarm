@@ -26,6 +26,8 @@ export interface SessionState {
   accounts: Accounts;
   chainKey: ChainKey;
   tokens: Tokens;
+  retries: number;
+  loaded: boolean;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -50,6 +52,8 @@ const initialState: SessionState = {
         acc[id] = { ...token, enabled: true }
         return acc
     }, {} as Tokens),
+    retries: 0,
+    loaded: false,
 }
 
 export const sessionSlice = createSlice({
@@ -83,6 +87,12 @@ export const sessionSlice = createSlice({
             if (!token) throw new Error("Token not found")
             token.enabled = enabled
         },
+        setRetries: (state, action: PayloadAction<number>) => {
+            state.retries = action.payload
+        },
+        setLoaded: (state, action: PayloadAction<boolean>) => {
+            state.loaded = action.payload
+        }
     },
 })
 
@@ -96,6 +106,8 @@ export const {
     setChainKey,
     switchToken,
     importTokens,
+    setRetries,
+    setLoaded
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
