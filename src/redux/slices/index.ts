@@ -1,2 +1,2 @@
-export * from "./authentication"
+export * from "./session"
 export * from "./hook-dependency"

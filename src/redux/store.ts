@@ -1,13 +1,13 @@
 
 import { configureStore } from "@reduxjs/toolkit"
 import {
-    authenticationReducer, 
+    sessionReducer,
     hookDependencyReducer
 } from "./slices"
 
 export const store = configureStore({
     reducer: {
-        authenticationReducer,
+        sessionReducer,
         hookDependencyReducer,
     }
 })

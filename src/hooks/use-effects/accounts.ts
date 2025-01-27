@@ -9,7 +9,7 @@ export const useAccounts = () => {
         (state) => state.hookDependencyReducer.loadAccountsKey
     )
     const chainKey = useAppSelector(
-        (state) => state.authenticationReducer.chainKey
+        (state) => state.sessionReducer.chainKey
     )
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()

@@ -50,6 +50,7 @@ export interface Token {
     name: string
     decimals: number
     imageUrl: string
+    enabled: boolean
 }
 
 export interface CurrentAccount {
@@ -66,7 +67,7 @@ sessionDb.version(1).stores({
     //accounts
     accounts: "++id, chainKey, network, accountNumber, address, publicKey, privateKey, username, imageUrl",
     //tokens
-    tokens: "++id, chainKey, network, address, symbol, name, decimals, imageUrl",
+    tokens: "++id, chainKey, network, address, enabled, symbol, name, decimals, imageUrl",
     //current selected account
     currentAccount: "++id, chainKey, network, accountId",
 })

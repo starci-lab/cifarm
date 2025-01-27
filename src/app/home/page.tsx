@@ -7,8 +7,8 @@ import React, { FC } from "react"
 import { Cog6ToothIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { SelectChainButton } from "./SelectChainButton"
 const Page: FC = () => {
-    const accounts = useAppSelector((state) => state.authenticationReducer.accounts.accounts)
-    const currentId = useAppSelector((state) => state.authenticationReducer.accounts.currentId)
+    const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
+    const currentId = useAppSelector((state) => state.sessionReducer.accounts.currentId)
     const account = accounts.find((account) => account.id === currentId) 
     if (!account) throw new Error("Current account not found")
     const { imageUrl, address } = account

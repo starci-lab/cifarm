@@ -8,10 +8,10 @@ import React, { FC } from "react"
 export const SelectChainButton: FC = () => {
     const router = useRouterWithSearchParams()
     const chainKey = useAppSelector(
-        (state) => state.authenticationReducer.chainKey
+        (state) => state.sessionReducer.chainKey
     )
     const network = useAppSelector(
-        (state) => state.authenticationReducer.network
+        (state) => state.sessionReducer.network
     )
     const imageUrl = blockchainMap[chainKey].imageUrl
     const networkName = networkMap[network].name

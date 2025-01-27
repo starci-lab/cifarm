@@ -21,13 +21,13 @@ const Schema: ZodType<CreateFormInputs> = z.object({
 
 export const useCreateForm = () => {
     const network = useAppSelector(
-        (state) => state.authenticationReducer.network
+        (state) => state.sessionReducer.network
     )
     const form = useForm<CreateFormInputs>({
         resolver: zodResolver(Schema),
     })
     const username = useAppSelector(
-        (state) => state.authenticationReducer.telegram.username
+        (state) => state.sessionReducer.telegram.username
     )
     const dispatch = useAppDispatch()
 
