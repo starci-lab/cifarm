@@ -1,0 +1,1 @@
+export type Atomic = string | number | boolean | null | undefined | object;

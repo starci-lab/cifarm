@@ -1,0 +1,52 @@
+{
+  "name": "cifarm-wallet",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@heroui/react": "^2.6.14",
+    "@hookform/resolvers": "^3.10.0",
+    "@mysten/sui": "^1.21.0",
+    "@reduxjs/toolkit": "^2.5.0",
+    "@solana/web3.js": "^1.98.0",
+    "@wormhole-foundation/sdk": "^1.4.5",
+    "bip39": "^3.1.0",
+    "bs58": "^6.0.0",
+    "dayjs": "^1.11.13",
+    "dexie": "^4.0.11",
+    "framer-motion": "^12.0.5",
+    "lucide-react": "^0.474.0",
+    "next": "14.2.23",
+    "next-themes": "^0.4.4",
+    "numeral": "^2.0.6",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.54.2",
+    "react-redux": "^9.2.0",
+    "react-singleton-hook": "^4.0.1",
+    "tailwind-merge": "^2.6.0",
+    "uuidv4": "^6.2.13",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/node": "^20",
+    "@types/numeral": "^2.0.5",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.23",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^15.14.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5",
+    "typescript-eslint": "^8.21.0"
+  }
+}
