@@ -1,5 +1,5 @@
 import { ChainKey, createAccount } from "@/modules/blockchain"
-import { SESSION_COOKIE_MAX_AGE, SESSION_COOKIE_NAME } from "@/modules/cookie"
+import { getSessionCookieMaxAge, SESSION_COOKIE_NAME } from "@/modules/cookie"
 import { encrypt, stringToMnemonic } from "@/modules/cryptography"
 import { Account, CurrentAccount, SessionDbKey, sessionDb } from "@/modules/dexie"
 import { serialize } from "@/modules/serialization"
@@ -110,7 +110,7 @@ export const useCreatePinForm = () => {
             Cookie.set(SESSION_COOKIE_NAME, serialize({
                 pin: data.pin,
             }), {
-                expires: SESSION_COOKIE_MAX_AGE,
+                expires: getSessionCookieMaxAge(),
             })
             //dispatch to set pin
             dispatch(setPin(data.pin))

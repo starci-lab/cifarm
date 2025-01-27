@@ -8,7 +8,7 @@ import { z, ZodType } from "zod"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { pathConstants } from "@/constants"
 import Cookie from "js-cookie"
-import { SESSION_COOKIE_MAX_AGE, SESSION_COOKIE_NAME } from "@/modules/cookie"
+import { getSessionCookieMaxAge, SESSION_COOKIE_NAME } from "@/modules/cookie"
 import { serialize } from "@/modules/serialization"
 
 export interface EnterPINFormInputs {
@@ -53,7 +53,7 @@ export const useEnterPinForm = () => {
             Cookie.set(SESSION_COOKIE_NAME, serialize({
                 pin: data.pin,
             }), {
-                expires: SESSION_COOKIE_MAX_AGE,
+                expires: getSessionCookieMaxAge(),
             })
             //dispatch to set mnemonic
             dispatch(setMnemonic(mnemonic))
