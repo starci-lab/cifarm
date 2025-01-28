@@ -4,7 +4,7 @@ import React, { FC } from "react"
 import { Navbar } from "./Navbar"
 import { Avatar, Chip, Image, Spacer } from "@heroui/react"
 import { BottomNavbar } from "./BottomNavbar"
-import { Markets } from "./Markets"
+import { Market } from "./Market"
 import { UpcomingEvents } from "./UpcomingEvents"
 
 const Page: FC = () => {
@@ -38,7 +38,7 @@ const Page: FC = () => {
               233 playings
                         </Chip>
                         <Spacer y={6} />
-                        <Markets />
+                        <Market />
                         <Spacer y={6} />
                         <UpcomingEvents />
                     </div>

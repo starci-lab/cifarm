@@ -21,7 +21,7 @@ const Page: FC = () => {
             The leading play-to-earn farming game on Telegram
                     </div>
                 </div>
-                <Spacer y={12} />
+                <Spacer y={9} />
                 <div className="grid gap-4 w-full">
                     <Button
                         color="primary"

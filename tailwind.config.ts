@@ -15,6 +15,11 @@ const config: Config = {
                 "gradient-conic":
         "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
             },
+            colors: {
+                // Add your custom text-light color, either from Heroui theme or your custom value
+                lightText: "var(--color-primary-light)",  // If Heroui provides light primary colors
+                darkText: "var(--color-primary-dark)",  // Or set your own custom color here
+            },
         },
     },
     darkMode: "class",
@@ -27,7 +32,7 @@ const config: Config = {
             },
             dark: {
                 colors: {
-                    primary: "#1C3324"
+                    primary: "#6ECC90"
                 }
             }
         }

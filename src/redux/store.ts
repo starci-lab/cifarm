@@ -2,13 +2,19 @@
 import { configureStore } from "@reduxjs/toolkit"
 import {
     sessionReducer,
-    hookDependencyReducer
+    hookDependencyReducer,
+    tabReducer,
+    settingsReducer,
+    modalReducer
 } from "./slices"
 
 export const store = configureStore({
     reducer: {
         sessionReducer,
         hookDependencyReducer,
+        tabReducer,
+        settingsReducer,
+        modalReducer
     }
 })
 

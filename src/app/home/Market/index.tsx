@@ -7,14 +7,13 @@ import { useAppSelector } from "@/redux"
 import { Card, CardBody, Chip, Divider, Image, Spacer } from "@heroui/react"
 import React, { FC, useEffect } from "react"
 
-export const Markets: FC = () => {
+export const Market: FC = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
 
     //get the singleton hook for native coin gecko swr
     const {
-        setLoaded,
-        swr: { data },
+        swr: { data, mutate },
     } =
     useSingletonHook<ReturnType<typeof useNativeCoinGeckoSWR>>(
         NATIVE_COINGEKCO_SWR
@@ -22,13 +21,16 @@ export const Markets: FC = () => {
 
     //when this component is mounted, set the loaded state to true
     useEffect(() => {
-        setLoaded(true)
+        const handleEffect = async () => {
+            await mutate()
+        }
+        handleEffect()
     }, [])
 
     return (
         <div>
             <div className="flex gap-2 items-center">
-                <div className="text-lg font-bold">Markets</div>
+                <div className="text-lg font-bold">Market</div>
                 <QuestionTooltip message="The current market prices and trends are based on the last 24 hours." />
             </div>
             <Spacer y={4} />
@@ -78,7 +80,7 @@ export const Markets: FC = () => {
                                             content: "text-light",
                                         }}
                                         color={(data?.priceChange ?? 0) >= 0 ? "success" : "danger"}
-                                    >{`${(data?.priceChange ?? 0) >= 0 ? "+" : "-"}${
+                                    >{`${(data?.priceChange ?? 0) >= 0 ? "+" : ""}${
                                             data?.priceChange
                                         }%`}</Chip>
                                 </div>

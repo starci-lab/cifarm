@@ -11,7 +11,7 @@ import {
     Switch,
 } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
-import { Container, QuestionTooltip } from "@/components"
+import { Container } from "@/components"
 import React, { FC } from "react"
 import { switchToken, useAppDispatch, useAppSelector } from "@/redux"
 import { valuesWithKey } from "@/modules/common"
@@ -30,17 +30,12 @@ const Page: FC = () => {
                         <Link as="button" onPress={() => router.back()} color="foreground">
                             <ArrowLeftIcon className="w-6 h-6" />
                         </Link>
-                        <div className="text-2xl font-bold">Manage Tokens</div>
+                        <div className="text-2xl font-bold">Adjust Tokens</div>
                     </div>
                     <Spacer y={4} />
-                    <div className="text-xs text-foreground-400">Manage your tokens.</div>
+                    <div className="text-xs text-foreground-400">Adjust the tokens you want to display.</div>
                 </div>
-                <Spacer y={12} />
-                <div className="flex gap-2 items-center">
-                    <div className="text-lg font-bold">Display Tokens</div>
-                    <QuestionTooltip message="Select the tokens you want to display. Only tokens that are visible will be shown." />
-                </div>
-                <Spacer y={4} />
+                <Spacer y={9} />
                 <Card>
                     {tokensArray.map((token, index) => {
                         const last = index === tokensArray.length - 1
@@ -79,20 +74,13 @@ const Page: FC = () => {
                         )
                     })}
                 </Card>
-                <Spacer y={12} />
-                <div>
-                    <div className="flex gap-2 items-center">
-                        <div className="text-lg font-bold">Import Token</div>
-                        <QuestionTooltip message="Import a token manually." />
-                    </div>
-                    <Spacer y={4} />
-                    <Button
-                        startContent={<PlusIcon className="w-4 h-4" />}
-                        variant="flat"
-                    >
+                <Spacer y={4} />
+                <Button
+                    startContent={<PlusIcon className="w-4 h-4" />}
+                    variant="flat"
+                >
             Import
-                    </Button>
-                </div>
+                </Button>
             </div>
         </Container>
     )

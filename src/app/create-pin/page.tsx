@@ -46,7 +46,7 @@ const Page: FC = () => {
               to protect your wallet.
                         </div>
                     </div>
-                    <Spacer y={12} />
+                    <Spacer y={9} />
                     <div>
                         <Controller
                             control={control}

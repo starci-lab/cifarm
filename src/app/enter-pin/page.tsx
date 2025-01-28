@@ -42,7 +42,7 @@ const Page: FC = () => {
               Please enter your 6-digit PIN. If you enter the wrong PIN five times, your account will be removed.
                         </div>
                     </div>
-                    <Spacer y={12} />
+                    <Spacer y={9} />
                     <div>
                         <Controller
                             control={control}

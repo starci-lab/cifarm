@@ -4,5 +4,7 @@ export const pathConstants = {
     enterPin: "/enter-pin",
     home: "/home",
     selectChain: "/select-chain",
-    manageTokens: "/manage-tokens",
+    adjustTokens: "/adjust-tokens",
+    assets: "/assets",
+    settings: "/settings",
 }
