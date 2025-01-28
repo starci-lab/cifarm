@@ -18,7 +18,7 @@ export const SelectChainButton: FC = () => {
     return (
         <Button
             size="sm"
-            variant="flat"
+            className="bg-background"
             onPress={() => router.push(pathConstants.selectChain)}
             startContent={<Image src={imageUrl} radius="none" className="w-4 h-4" />}
         >

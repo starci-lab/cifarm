@@ -6,7 +6,7 @@ import { Provider as ReduxProvider } from "react-redux"
 import { store } from "@/redux"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { SingletonHookProvider } from "@/modules/singleton-hook"
-import { useCreatePinForm, UseEffects, useEnterPinForm } from "@/hooks"
+import { useCreatePinForm, UseEffects, useEnterPinForm, useNativeCoinGeckoSWR } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
 
@@ -18,6 +18,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                 <SingletonHookProvider hooks={{
                     CREATE_PIN_FORM: useCreatePinForm(),
                     ENTER_PIN_FORM: useEnterPinForm(),
+                    NATIVE_COINGEKCO_SWR: useNativeCoinGeckoSWR(),
                 }}
                 >
                     {

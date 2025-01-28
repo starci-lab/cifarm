@@ -38,7 +38,6 @@ export interface DecryptParams {
 }
 
 export const decrypt = ({ key, encryptedData, iv }: DecryptParams) => {
-    console.log(key, encryptedData, iv)
     const hashKey = getHashKey(key)
     const decipher = createDecipheriv(
         "aes-256-cbc",

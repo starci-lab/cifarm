@@ -3,7 +3,7 @@ import { Container, QuestionTooltip } from "@/components"
 import { useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap, ChainKey, Network, networkMap } from "@/modules/blockchain"
 import { setChainKey, setNetwork, useAppDispatch, useAppSelector } from "@/redux"
-import { Alert, Button, Card, CardBody, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Spacer } from "@heroui/react"
+import { Alert, Button, Card, CardBody, CheckboxIcon, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Spacer } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
 
@@ -33,7 +33,7 @@ const Page: FC = () => {
             Please select the chain you want to use.
                     </div>
                 </div>
-                <Spacer y={12} />
+                <Spacer y={6} />
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Supported Chains</div>
@@ -59,13 +59,16 @@ const Page: FC = () => {
                                             className={isSelected ? "bg-default/40" : ""}
                                         >
                                             <CardBody className="flex gap-2">
-                                                <div className="flex gap-2 items-center">
-                                                    <Image
-                                                        src={blockchainMap[_chainKey].imageUrl}
-                                                        radius="none"
-                                                        className="w-6 h-6"
-                                                    />
-                                                    <div>{blockchainMap[_chainKey].name}</div>
+                                                <div className="w-full flex justify-between items-center">
+                                                    <div className="flex gap-2 items-center">
+                                                        <Image
+                                                            src={blockchainMap[_chainKey].imageUrl}
+                                                            radius="none"
+                                                            className="w-6 h-6"
+                                                        />
+                                                        <div>{blockchainMap[_chainKey].name}</div>
+                                                    </div>
+                                                    <CheckboxIcon className="w-4 h-4" isSelected={isSelected} />
                                                 </div>
                                             </CardBody>
                                         </Card>
@@ -76,7 +79,7 @@ const Page: FC = () => {
                         </div>
                     </Card>
                 </div>
-                <Spacer y={12} />
+                <Spacer y={6} />
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Network</div>
