@@ -34,7 +34,7 @@ export const BottomNavbar: FC = () => {
                 
             </NavbarContent>
             <NavbarContent justify="center">
-                <Button size="lg" color="primary" className="light text-background" onPress={() => {}}>
+                <Button size="lg" color="primary" className="light text-background" onPress={() => router.push(pathConstants.play) }>
           Play
                 </Button>
             </NavbarContent>

@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.text-light {
-  color: #ffffff; /* or any color you desire */
-}
-.text-dark {
-  color: #11181C; /* or any color you desire */
-}
-
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

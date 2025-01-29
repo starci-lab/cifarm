@@ -7,4 +7,5 @@ export const pathConstants = {
     adjustTokens: "/adjust-tokens",
     assets: "/assets",
     settings: "/settings",
+    play: "/play",
 }

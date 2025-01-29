@@ -60,7 +60,7 @@ export const useAccounts = () => {
                 })
             )
             //move to next page
-            router.push(pathConstants.home)
+            router.push(pathConstants.play)
         }
         handleEffect()
     }, [loadAccountsKey])
