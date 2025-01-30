@@ -1,24 +1,36 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import { AssetName } from "../assets/base"
-import { sleep } from "@/modules/common"
 import { LoadingProgressContainer } from "../containers"
+import { EventBus, EventName } from "../event-bus"
 
 export class LoadingScene extends Scene {
-    // We use this to keep track of the loading progress
-    private loadingProgress = 0
-    private loadingRequestMessage = 10
-    private loadingVerifyMessage = 10
+    // loading progress
+    private loadingAuthenticated = 10
     private loadingTotal: number = 0
-    private interval = 20
 
     // loading fill width and height
     private loadingProgressContainer: LoadingProgressContainer | undefined
 
     constructor() {
-        super(SceneName.LoadingScene)
+        super(SceneName.LoadingScene) 
         //define point for loading
-        this.loadingTotal = this.loadingRequestMessage + this.loadingVerifyMessage
+        this.loadingTotal = this.loadingAuthenticated
+    }
+
+    init() {
+        //emit the event
+        EventBus.emit(EventName.Authenticate, this)
+        //listen for authentication event
+        EventBus.on(EventName.Authenticated, () => {
+            this.authenticated()
+        })
+        // Listen to the shutdown event
+        this.events.on("shutdown", this.shutdown, this)
+    }
+
+    shutdown() {
+        EventBus.off(EventName.Authenticated)
     }
 
     async create() {
@@ -47,21 +59,11 @@ export class LoadingScene extends Scene {
             width / 2,
             height * 0.85,
             {
-                loadingProgress: this.loadingProgress,
                 loadingTotal: this.loadingTotal,
             }
         )
         // add the loading progress container to the scene
         this.add.existing(this.loadingProgressContainer)
-
-        // call the requestMessage function
-        await this.requestMessage()
-
-        // call the verifyMessage function
-        await this.verifyMessage()
-
-        //if both requestMessage and verifyMessage are successful, move to the next scene
-        this.scene.start(SceneName.Gameplay)
     }
 
     update(time: number, delta: number) {
@@ -70,19 +72,21 @@ export class LoadingScene extends Scene {
         }
     }
 
-    async requestMessage() {
-        await sleep(2000)
+    private tryFinishLoading() {
         if (!this.loadingProgressContainer) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressContainer.updateLoadingProgress(this.loadingRequestMessage)
+        const finished = this.loadingProgressContainer.finished()
+        if (finished) {
+            this.scene.start(SceneName.Gameplay)
+        }
     }
 
-    async verifyMessage() {
-        await sleep(2000)
+    async authenticated() {
         if (!this.loadingProgressContainer) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressContainer.updateLoadingProgress(this.loadingVerifyMessage)
+        await this.loadingProgressContainer.updateLoadingProgress(this.loadingAuthenticated)
+        this.tryFinishLoading()
     }
 }

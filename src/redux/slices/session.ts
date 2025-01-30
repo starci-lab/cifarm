@@ -92,7 +92,8 @@ export const sessionSlice = createSlice({
         },
         setLoaded: (state, action: PayloadAction<boolean>) => {
             state.loaded = action.payload
-        }
+        },
+        
     },
 })
 

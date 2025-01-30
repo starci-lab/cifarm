@@ -25,6 +25,12 @@ export class BootstrapScene extends Scene {
         this.load.image(AssetName.IconShop, assetMap[AssetName.IconShop])
         this.load.image(AssetName.IconRoadsideStand, assetMap[AssetName.IconRoadsideStand])
         this.load.image(AssetName.IconNeighbors, assetMap[AssetName.IconNeighbors])
+
+        // load tile
+        this.load.image(AssetName.TileStarter, assetMap[AssetName.TileStarter])
+
+        // load building
+        this.load.image(AssetName.BuildingHome, assetMap[AssetName.BuildingHome])
     }
 
     create() {

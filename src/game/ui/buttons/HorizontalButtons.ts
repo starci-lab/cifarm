@@ -20,27 +20,34 @@ export abstract class HorizontalButtons extends Buttons {
 
     // method to create a button
     public createButton({ iconKey, onClick, text }: CreateButtonParams) {
-        // compute width and height
-        const width =  2 * this.ICON_RADIUS
+    // compute width and height
+        const width = 2 * this.ICON_RADIUS
         const height = 2 * this.ICON_RADIUS
 
         // create a container to hold the button
         const container = this.scene.add.container(0, 0)
         // create image and text
-        const image = this.scene.add.image(0, 0, iconKey).setDisplaySize(width, height)
-        const textObj = this.scene.add.text(0, this.ICON_RADIUS + this.ICON_TEXT_SPACING, text, {
-            fontSize: this.TEXT_SIZE,
-            fontFamily: this.TEXT_FAMILY,
-        }).setOrigin(0.5, 0).setStyle({
-            stroke: STROKE_COLOR_1,
-            strokeThickness: 3,
-        }).setWordWrapWidth(width, false).setAlign("center")
+        const image = this.scene.add
+            .image(0, 0, iconKey)
+            .setDisplaySize(width, height)
+        const textObj = this.scene.add
+            .text(0, this.ICON_RADIUS + this.ICON_TEXT_SPACING, text, {
+                fontSize: this.TEXT_SIZE,
+                fontFamily: this.TEXT_FAMILY,
+            })
+            .setOrigin(0.5, 0)
+            .setStyle({
+                stroke: STROKE_COLOR_1,
+                strokeThickness: 3,
+            })
+            .setWordWrapWidth(width, false)
+            .setAlign("center")
         container.add([image, textObj])
         // create the button
         const label = this.scene.rexUI.add.label({
             width,
-            height, 
-            background: this.scene.add.existing(container)
+            height,
+            background: this.scene.add.existing(container),
         })
 
         if (onClick) {
@@ -69,7 +76,7 @@ export abstract class HorizontalButtons extends Buttons {
 }
 
 export interface CreateButtonParams {
-    iconKey: string
-    text: string
-    onClick?: () => void
+  iconKey: string;
+  text: string;
+  onClick?: () => void;
 }

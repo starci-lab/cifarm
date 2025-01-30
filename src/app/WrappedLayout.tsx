@@ -6,31 +6,47 @@ import { Provider as ReduxProvider } from "react-redux"
 import { store } from "@/redux"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { SingletonHookProvider } from "@/modules/singleton-hook"
-import { useCreatePinForm, UseEffects, useEnterPinForm, useNativeCoinGeckoSWR } from "@/hooks"
+import {
+    useApiAuthenticationSwrMutation,
+    useCreatePinForm,
+    UseEffects,
+    useEnterPinForm,
+    useGameplayIo,
+    useNativeCoinGeckoSWR,
+    useQueryUserSwr,
+} from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
 import { Modals } from "./Modals"
+import { SWRConfig } from "swr"
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
     const loaded = useAppSelector((state) => state.sessionReducer.loaded)
     return (
         <Suspense>
             <NextThemesProvider attribute="class" enableSystem>
-                <SingletonHookProvider hooks={{
-                    CREATE_PIN_FORM: useCreatePinForm(),
-                    ENTER_PIN_FORM: useEnterPinForm(),
-                    NATIVE_COINGEKCO_SWR: useNativeCoinGeckoSWR(),
-                    PRIVATE_KEY_DISCLOSURE: useDisclosure(),
-                    MNEMONIC_DISCLOSURE: useDisclosure(),
-                    WARNING_DISCLOSURE: useDisclosure()
-                }}
-                >
-                    {
-                        loaded ? children : <LoadingScreen/>
-                    }
-                    <UseEffects/>
-                    <Modals/>              
-                </SingletonHookProvider>
+                <SWRConfig value={{ provider: () => new Map() }}>
+                    <SingletonHookProvider
+                        hooks={{
+                            CREATE_PIN_FORM: useCreatePinForm(),
+                            ENTER_PIN_FORM: useEnterPinForm(),
+                            NATIVE_COINGEKCO_SWR: useNativeCoinGeckoSWR(),
+                            PRIVATE_KEY_DISCLOSURE: useDisclosure(),
+                            MNEMONIC_DISCLOSURE: useDisclosure(),
+                            WARNING_DISCLOSURE: useDisclosure(),
+                            //swr mutations
+                            API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
+                            QUERY_USER_SWR: useQueryUserSwr(),
+
+                            //io
+                            GAMEPLAY_IO: useGameplayIo()
+                        }}
+                    >
+                        {loaded ? children : <LoadingScreen />}
+                        <UseEffects />
+                        <Modals />
+                    </SingletonHookProvider>
+                </SWRConfig>
             </NextThemesProvider>
         </Suspense>
     )

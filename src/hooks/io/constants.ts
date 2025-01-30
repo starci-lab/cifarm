@@ -1,0 +1,1 @@
+export const PLACED_ITEMS_SYNCED_EVENT = "placed_items_synced"

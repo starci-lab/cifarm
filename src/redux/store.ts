@@ -5,7 +5,8 @@ import {
     hookDependencyReducer,
     tabReducer,
     settingsReducer,
-    modalReducer
+    modalReducer,
+    gameReducer
 } from "./slices"
 
 export const store = configureStore({
@@ -14,7 +15,8 @@ export const store = configureStore({
         hookDependencyReducer,
         tabReducer,
         settingsReducer,
-        modalReducer
+        modalReducer,
+        gameReducer
     }
 })
 

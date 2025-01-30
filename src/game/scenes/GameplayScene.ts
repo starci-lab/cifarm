@@ -14,7 +14,16 @@ export class GameplayScene extends Scene
     }
 
     init () {
+        // launch the UI scene parallel to the gameplay scene
         this.scene.launch(SceneName.UI)
+
+        // Listen to the shutdown event
+        this.events.on("shutdown", this.shutdown, this)
+    }
+
+    shutdown() {
+        // call all shutdown methods of game objects
+        this.fieldTileMap?.shutdown()
     }
 
     create ()

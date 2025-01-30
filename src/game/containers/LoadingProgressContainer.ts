@@ -4,7 +4,6 @@ import { v4 } from "uuid"
 import { FONT_DINOSAUR, TEXT_COLOR_1 } from "../constants"
 
 export interface LoadingProgressParams {
-  loadingProgress: number;
   loadingTotal: number;
   steps?: number;
 }
@@ -14,19 +13,19 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
     private text: Phaser.GameObjects.Text
 
     private loadingProgress = 0
-    private loadingTotal: number = 0
-    private steps: number = 20
+    private loadingTotal = 0
+    private steps = 20
+    private totalLoadingDuration = 500 // 0.5 seconds
 
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
-        { loadingProgress, loadingTotal, steps }: LoadingProgressParams
+        { loadingTotal, steps }: LoadingProgressParams
     ) {
         super(scene, x, y)
         this.steps = steps ?? this.steps
         // set the loading progress and total
-        this.loadingProgress = loadingProgress
         this.loadingTotal = loadingTotal
         //add loading bar
         this.loadingBar = scene.add
@@ -59,12 +58,18 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
         )
     }
 
+    // check if the loading is finished
+    public finished() {
+        return this.loadingProgress >= this.loadingTotal
+    }
+
+    // update the loading progress
     public async updateLoadingProgress(incrementAmount: number) {
     //interate through the steps
         for (let i = 0; i < this.steps; i++) {
             this.loadingProgress += incrementAmount / this.steps
             await this.refreshLoadingBar()
-            await sleep(200 / this.steps)
+            await sleep(this.totalLoadingDuration / this.steps)
         }
     }
 

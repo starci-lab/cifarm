@@ -22,6 +22,8 @@ const sessionDb = new Dexie("SessionDB") as Dexie & {
 
 export enum SessionDbKey {
   Mnemonic = "mnemonic",
+  AccessToken = "accessToken",
+  RefreshToken = "refreshToken",
 }
 
 export interface KeyValueStore {
