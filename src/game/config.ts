@@ -1,10 +1,13 @@
 import { AUTO, Game } from "phaser"
-import { Bootstrap, LoadingScene } from "./scenes"
+import { BootstrapScene, LoadingScene, GameplayScene, UIScene } from "./scenes"
 import { CONTAINER_ID } from "./constants"
+import {} from "./scenes/GameplayScene"
+import GesturesPlugin from "phaser3-rex-plugins/plugins/gestures-plugin.js"
+import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscroller-plugin.js"
+import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
-
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     parent: CONTAINER_ID,
@@ -13,17 +16,35 @@ const config: Phaser.Types.Core.GameConfig = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 1080,
-        height: 1920
+        height: 1920,
     },
-    scene: [
-        Bootstrap,
-        LoadingScene,
-    ]
+    plugins: {
+        scene: [
+            //add rexGestures plugin
+            {
+                key: "rexGestures",
+                plugin: GesturesPlugin,
+                mapping: "rexGestures",
+            },
+            //add MouseWheelScroller plugin
+            {
+                key: "rexMouseWheelScroller",
+                plugin: MouseWheelScrollerPlugin,
+                mapping: "rexMouseWheelScroller",
+            },
+            //add UI plugin
+            {
+                key: "rexUI",
+                plugin: UIPlugin,
+                mapping: "rexUI",
+            },
+        ],
+    },
+    scene: [BootstrapScene, LoadingScene, GameplayScene, UIScene],
 }
 
 export const startGame = (parent?: string) => {
-    if (parent)
-    {
+    if (parent) {
         config.parent = parent
     }
     return new Game(config)

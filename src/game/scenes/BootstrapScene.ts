@@ -3,15 +3,12 @@ import { AssetName, assetMap } from "../assets/base"
 import { SceneName } from "../scene"
 import { FONT_DINOSAUR } from "../constants"
 
-export class Gameplay extends Scene
-{
-    constructor ()
-    {
-        super(SceneName.Gameplay)
+export class BootstrapScene extends Scene {
+    constructor() {
+        super(SceneName.Bootstrap)
     }
 
-    preload ()
-    {
+    preload() {
         this.load.font(FONT_DINOSAUR, "fonts/dinosaur.ttf", "truetype")
 
         //  The Boot Scene is typically used to load in any assets you require for your Preloader, such as a game logo or background.
@@ -21,11 +18,17 @@ export class Gameplay extends Scene
         this.load.image(AssetName.Logo, assetMap[AssetName.Logo])
         this.load.image(AssetName.LoadingBar, assetMap[AssetName.LoadingBar])
         this.load.image(AssetName.LoadingFill, assetMap[AssetName.LoadingFill])
+        this.load.image(AssetName.Grass, assetMap[AssetName.Grass])
+
+        // load icon
+        this.load.image(AssetName.IconNFTMarketplace, assetMap[AssetName.IconNFTMarketplace])
+        this.load.image(AssetName.IconShop, assetMap[AssetName.IconShop])
+        this.load.image(AssetName.IconRoadsideStand, assetMap[AssetName.IconRoadsideStand])
+        this.load.image(AssetName.IconNeighbors, assetMap[AssetName.IconNeighbors])
     }
 
-    create ()
-    {   
-        //  Move to the next Scene
+    create() {
+    //  Move to the next Scene
         this.scene.start(SceneName.LoadingScene)
     }
 }

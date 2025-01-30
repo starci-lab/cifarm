@@ -61,6 +61,7 @@ export class LoadingScene extends Scene {
         await this.verifyMessage()
 
         //if both requestMessage and verifyMessage are successful, move to the next scene
+        this.scene.start(SceneName.Gameplay)
     }
 
     update(time: number, delta: number) {
