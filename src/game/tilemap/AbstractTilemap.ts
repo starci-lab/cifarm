@@ -2,6 +2,7 @@ import { Scene } from "phaser"
 import { v4 } from "uuid"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, WIDTH } from "./constants"
 
+//abstract class for create a tilemap
 export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
     // constructor
     constructor(scene: Scene) {
@@ -22,7 +23,7 @@ export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
     }
 
     //  create a tileset
-    public createTileset({
+    protected createTileset({
         tilesetName,
         key,
         scaleTextureWidth = 1,
@@ -39,7 +40,8 @@ export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
 
         // update the image dimensions
         image.width = textureWidth ?? Math.floor(image.width * scaleTextureWidth)
-        image.height = textureHeight ?? Math.floor(image.height * scaleTextureHeight)
+        image.height =
+      textureHeight ?? Math.floor(image.height * scaleTextureHeight)
 
         // create a new texture with the scaled image dimensions
         const imageKey = v4()
@@ -66,6 +68,23 @@ export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
 
         return tileset
     }
+
+    protected placeTileCenteredAt({
+        gid,
+        x,
+        y,
+        layer,
+    }: PlaceTileCenteredAtParams) {
+        return this.putTileAt(gid, x + WIDTH / 2, y + HEIGHT / 2, true, layer)
+    }
+
+    protected getTileCenteredAt({ x, y, layer }: GetTileCenteredAtParams) {
+        return this.getTileAt(x + WIDTH / 2, y + HEIGHT / 2, false, layer)
+    }
+
+    protected removeTileCenteredAt({ x, y, layer }: RemoveTileCenteredAtParams) {
+        return this.removeTileAt(x + WIDTH / 2, y + HEIGHT / 2, false, true, layer)
+    }
 }
 
 export interface CreateTilesetOptions {
@@ -90,4 +109,23 @@ export interface CreateTilesetOptions {
 export interface ExtraOffsets {
   x?: number;
   y?: number;
+}
+
+export interface PlaceTileCenteredAtParams {
+  gid: number;
+  x: number;
+  y: number;
+  layer?: Phaser.Tilemaps.TilemapLayer;
+}
+
+export interface RemoveTileCenteredAtParams {
+  x: number;
+  y: number;
+  layer?: Phaser.Tilemaps.TilemapLayer;
+}
+
+export interface GetTileCenteredAtParams {
+  x: number;
+  y: number;
+  layer?: Phaser.Tilemaps.TilemapLayer;
 }

@@ -2,6 +2,7 @@ import { Scene } from "phaser"
 import { AssetKey, assetMap } from "../assets/base"
 import { SceneName } from "../scene"
 import { FONT_DINOSAUR } from "../constants"
+import { loadCropAssets } from "../assets"
 
 export class BootstrapScene extends Scene {
     constructor() {
@@ -33,6 +34,7 @@ export class BootstrapScene extends Scene {
         this.load.image(AssetKey.BuildingHome, assetMap[AssetKey.BuildingHome])
 
         // load crops
+        loadCropAssets(this)
     }
 
     create() {

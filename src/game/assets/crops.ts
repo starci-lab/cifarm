@@ -1,3 +1,4 @@
+import { CropId } from "@/modules/entities"
 import { Scene } from "phaser"
 
 // Number of growth stages for each crop
@@ -5,19 +6,19 @@ export const NUM_GROWTH_STAGES = 5
 
 // Enum for crop names
 export enum CropName {
-    Carrot = "carrot",
-    Cabbage = "cabbage",
-    BellPepper = "bell-pepper",
-    Cucumber = "cucumber",
-    Pineapple = "pineapple",
-    Potato = "potato",
-    Pumpkin = "pumpkin",
-    Strawberry = "strawberry",
-    Watermelon = "watermelon",
+  Carrot = "carrot",
+  Cabbage = "cabbage",
+  BellPepper = "bell-pepper",
+  Cucumber = "cucumber",
+  Pineapple = "pineapple",
+  Potato = "potato",
+  Pumpkin = "pumpkin",
+  Strawberry = "strawberry",
+  Watermelon = "watermelon",
 }
 
 // Crop map with the GID for each crop
-export const cropMap: Record<CropName, CropAssetData> = {
+export const cropAssetDataMap: Record<CropName, CropAssetData> = {
     [CropName.Carrot]: { gid: 100 },
     [CropName.Cabbage]: { gid: 110 },
     [CropName.BellPepper]: { gid: 120 },
@@ -29,23 +30,42 @@ export const cropMap: Record<CropName, CropAssetData> = {
     [CropName.Watermelon]: { gid: 180 },
 }
 
+export const cropNameMap: Record<CropId, CropName> = {
+    [CropId.Carrot]: CropName.Carrot,
+    //[CropId.Cabbage]: CropName.Cabbage,
+    [CropId.BellPepper]: CropName.BellPepper,
+    [CropId.Cucumber]: CropName.Cucumber,
+    [CropId.Pineapple]: CropName.Pineapple,
+    [CropId.Potato]: CropName.Potato,
+    //[CropId.Pumpkin]: CropName.Pumpkin,
+    //[CropId.Strawberry]: CropName.Strawberry,
+    [CropId.Watermelon]: CropName.Watermelon,
+}
+
+export const getCropName = (cropId: CropId): CropName => {
+    return cropNameMap[cropId]
+}
+
 // Interface for crop asset data
 export interface CropAssetData {
-    gid: number;
+  gid: number;
 }
 
 // Interface for the parameters to get the crop asset key
 export interface CropAsset {
-    cropName: CropName;
-    growthStage: number;
+  cropName: CropName;
+  growthStage: number;
 }
 
 // Function to load crop assets (images) for each crop and growth stage
 export const loadCropAssets = (scene: Scene) => {
-    for (const cropName in CropName) {
-        const crop = CropName[cropName as keyof typeof CropName]
+    const cropNames = Object.values(CropName)
+    for (const cropName of cropNames) {
         for (let i = 0; i < NUM_GROWTH_STAGES; i++) {
-            scene.load.image(getCropAssetKey({ cropName: crop, growthStage: i }), `crops/${crop}/${i + 1}.png`)
+            scene.load.image(
+                getCropAssetKey({ cropName, growthStage: i }),
+                `crops/${cropName}/${i + 1}.png`
+            )
         }
     }
 }
@@ -65,11 +85,11 @@ export const getCropTilesetGid = ({
     growthStage,
 }: CropAsset): number => {
     // Fetch the crop data from the crop map
-    const cropData = cropMap[cropName]
+    const cropData = cropAssetDataMap[cropName]
     if (!cropData) {
         throw new Error(`Crop not found: ${cropName}`)
     }
     // Optionally, you can modify the GID based on the growth stage if necessary
     // For example, you can return the same GID for all stages, or modify it based on the stage
-    return cropData.gid + growthStage  // You can adjust this logic as needed
+    return cropData.gid + growthStage // You can adjust this logic as needed
 }

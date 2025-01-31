@@ -22,35 +22,24 @@ export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
     const dispatch = useAppDispatch()
 
-    useLayoutEffect(() => {
-        if (game.current === null) {
-            game.current = startGame()
-        }
-
-        return () => {
-            if (game.current) {
-                game.current.destroy(true)
-                if (game.current !== null) {
-                    game.current = null
-                }
-            }
-        }
-    }, [])
-
     //static data useEffect
     const { swr: staticSwr } =
     useSingletonHook<ReturnType<typeof useQueryStaticSwr>>(QUERY_STATIC_SWR)
 
     useEffect(() => {
-        if (!staticSwr.isLoading) return
         EventBus.on(EventName.LoadStaticData, async () => {
-            EventBus.emit(EventName.StaticDataLoaded, staticSwr.data)
+            const data = await staticSwr.mutate(
+                (data) => {
+                    return data
+                },
+                { revalidate: false })
+            EventBus.emit(EventName.StaticDataLoaded, data)
         })
 
         return () => {
             EventBus.removeListener(EventName.LoadStaticData)
         }
-    }, [staticSwr.isLoading])
+    }, [])
 
     //authentication useEffect
     const { swrMutation: authenticationSwrMutation } = useSingletonHook<
@@ -81,6 +70,23 @@ export const Game: FC = () => {
             EventBus.emit(EventName.PlacedItemsSynced, data)
         })
     }, [connected])
+
+    //ensure all swr queries are done
+    useLayoutEffect(() => {
+        if (game.current === null) {
+            game.current = startGame()
+        }
+
+        return () => {
+            if (game.current) {
+                game.current.destroy(true)
+                if (game.current !== null) {
+                    game.current = null
+                }
+            }
+        }
+    }, [])
+
 
     return <div id={CONTAINER_ID} className="w-screen h-screen"></div>
 }
