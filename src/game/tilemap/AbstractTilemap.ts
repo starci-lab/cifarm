@@ -1,7 +1,6 @@
 import { Scene } from "phaser"
 import { v4 } from "uuid"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, WIDTH } from "./constants"
-import { AssetKey } from "../assets"
 
 export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
     // constructor
@@ -42,8 +41,6 @@ export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
         image.width = textureWidth ?? Math.floor(image.width * scaleTextureWidth)
         image.height = textureHeight ?? Math.floor(image.height * scaleTextureHeight)
 
-        console.log(image.width, image.height)
-
         // create a new texture with the scaled image dimensions
         const imageKey = v4()
         this.scene.textures.addImage(imageKey, image)
@@ -75,7 +72,7 @@ export interface CreateTilesetOptions {
   // name of the tileset
   tilesetName: string;
   // asset key
-  key: AssetKey;
+  key: string;
   // scale width of texture
   scaleTextureWidth?: number;
   // if provide, ignore the scaleTextureWidth

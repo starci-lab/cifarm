@@ -1,5 +1,5 @@
 import { Scene } from "phaser"
-import { AssetKey } from "../assets"
+import { AssetKey, CropName, getCropAssetKey, getCropTilesetGid } from "../assets"
 import { EventBus, EventName } from "../event-bus"
 import { PlacedItemsSyncedMessage } from "@/hooks"
 import { LayerName, TilesetName } from "./types"
@@ -14,6 +14,7 @@ import {
 } from "./constants"
 import { AbstractTilemap } from "./AbstractTilemap"
 import { PlacedItemEntity } from "@/modules/entities"
+import { NUM_GROWTH_STAGES } from "../assets"
 
 export class Tilemap extends AbstractTilemap {
     // constructor
@@ -26,7 +27,9 @@ export class Tilemap extends AbstractTilemap {
 
     //store previous placed items
     private previousPlacedItems: PlacedItemsSyncedMessage | undefined
-
+    private groundLayer: Phaser.Tilemaps.TilemapLayer | undefined
+    private itemsLayer: Phaser.Tilemaps.TilemapLayer | undefined
+    private cropLayer: Phaser.Tilemaps.TilemapLayer | undefined
     // init
     init() {
     //listen for placed items synced
@@ -43,8 +46,9 @@ export class Tilemap extends AbstractTilemap {
         )
 
         // create layers
-        this.createGroundLayer()
-        this.createItemsLayer()
+        this.groundLayer = this.createGroundLayer()
+        this.itemsLayer = this.createItemsLayer()
+        this.cropLayer = this.createCropLayer()
     }
 
     // methods to handle changes in the placed items
@@ -86,7 +90,11 @@ export class Tilemap extends AbstractTilemap {
                 // if (!data) {
                 //     throw new Error("Asset data not found for placed item: " + placedItem.id)
                 // }
-                this.removeTileCenteredAt(placedItem.x, placedItem.y)
+                this.removeTileCenteredAt({
+                    x: placedItem.x,
+                    y: placedItem.y,
+                    layer: this.itemsLayer
+                })
             }
         } 
     }
@@ -108,15 +116,24 @@ export class Tilemap extends AbstractTilemap {
         const { gid } = data
 
         // Fill the area of the item, above the tile
-        this.placeTileCenteredAt(gid, placedItem.x, placedItem.y)
+        this.placeTileCenteredAt({
+            gid,
+            x: placedItem.x,
+            y: placedItem.y,
+            layer: this.itemsLayer,
+        })
     }
     
-    private placeTileCenteredAt(gid: number, x: number, y: number) {
-        this.putTileAt(gid, x + WIDTH / 2, y + HEIGHT / 2) 
+    private placeTileCenteredAt({ gid, x, y, layer }: PlaceTileCenteredAtParams) {
+        this.putTileAt(gid, x + WIDTH / 2, y + HEIGHT / 2, true, layer) 
     }
 
-    private removeTileCenteredAt(x: number, y: number) {
-        this.removeTileAt(x + WIDTH / 2, y + HEIGHT / 2)
+    private getTileCenteredAt(x: number, y: number) {
+        return this.getTileAt(x + WIDTH / 2, y + HEIGHT / 2)
+    }
+
+    private removeTileCenteredAt({ x, y, layer }: RemoveTileCenteredAtParams) {
+        this.removeTileAt(x + WIDTH / 2, y + HEIGHT / 2, false, true, layer)
     }
 
     public shutdown() {
@@ -184,4 +201,48 @@ export class Tilemap extends AbstractTilemap {
         // return the layer
         return itemsLayer
     }
+
+    // create a crop layer
+    private createCropLayer() {
+        // create tilesets
+        // interate over the asset keys
+        const tilesets: Array<Phaser.Tilemaps.Tileset> = []
+        for (const key of Object.values(CropName)) {
+            // create a tileset
+            for (let i = 0; i < NUM_GROWTH_STAGES; i++) {
+                const cropKey = getCropAssetKey({ cropName: key, growthStage: i })
+                const tileset = this.createTileset({
+                    tilesetName: cropKey,
+                    key: cropKey,
+                    gid: getCropTilesetGid({ cropName: key, growthStage: i }),
+                })
+                tilesets.push(tileset)
+            }
+        }
+
+        // create crop layer
+        const cropLayer = this.createBlankLayer(LayerName.Crop, [])
+        if (!cropLayer) {
+            throw new Error("Layer not found")
+        }
+
+        // scale the layer
+        cropLayer.setScale(SCALE)
+
+        // return the layer
+        return cropLayer
+    }
+}
+
+export interface PlaceTileCenteredAtParams {
+    gid: number;
+    x: number;
+    y: number;
+    layer?: Phaser.Tilemaps.TilemapLayer;
+}
+
+export interface RemoveTileCenteredAtParams {
+    x: number;
+    y: number;
+    layer?: Phaser.Tilemaps.TilemapLayer;
 }

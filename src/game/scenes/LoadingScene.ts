@@ -3,10 +3,12 @@ import { SceneName } from "../scene"
 import { AssetKey } from "../assets/base"
 import { LoadingProgressContainer } from "../containers"
 import { EventBus, EventName } from "../event-bus"
+import { QueryStaticResponse } from "@/modules/apollo"
 
 export class LoadingScene extends Scene {
     // loading progress
-    private loadingAuthenticated = 10
+    private loadingAuthenticate = 10
+    private loadingStaticData = 10
     private loadingTotal: number = 0
 
     // loading fill width and height
@@ -15,22 +17,31 @@ export class LoadingScene extends Scene {
     constructor() {
         super(SceneName.LoadingScene) 
         //define point for loading
-        this.loadingTotal = this.loadingAuthenticated
+        this.loadingTotal = this.loadingAuthenticate + this.loadingStaticData
     }
 
     init() {
-        //emit the event
+        //emit the event to authenticate
         EventBus.emit(EventName.Authenticate, this)
         //listen for authentication event
         EventBus.on(EventName.Authenticated, () => {
             this.authenticated()
         })
+
+        //emit the event to load static data
+        //EventBus.emit(EventName.LoadStaticData, this)
+        //listen for static data loaded event
+        // EventBus.on(EventName.StaticDataLoaded, (data: QueryStaticResponse) => {
+        //     console.log(data)
+        //     this.loadStaticData()
+        // })
         // Listen to the shutdown event
         this.events.on("shutdown", this.shutdown, this)
     }
 
     shutdown() {
         EventBus.off(EventName.Authenticated)
+        //EventBus.off(EventName.StaticDataLoaded)
     }
 
     async create() {
@@ -86,7 +97,15 @@ export class LoadingScene extends Scene {
         if (!this.loadingProgressContainer) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressContainer.updateLoadingProgress(this.loadingAuthenticated)
+        await this.loadingProgressContainer.updateLoadingProgress(this.loadingAuthenticate)
+        this.tryFinishLoading()
+    }
+
+    async loadStaticData() {
+        if (!this.loadingProgressContainer) {
+            throw new Error("Loading progress container not found")
+        }
+        await this.loadingProgressContainer.updateLoadingProgress(this.loadingStaticData)
         this.tryFinishLoading()
     }
 }

@@ -13,6 +13,7 @@ import {
     useEnterPinForm,
     useGameplayIo,
     useNativeCoinGeckoSWR,
+    useQueryStaticSwr,
     useQueryUserSwr,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
@@ -37,6 +38,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             //swr mutations
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             QUERY_USER_SWR: useQueryUserSwr(),
+                            QUERY_STATIC_SWR: useQueryStaticSwr(),
 
                             //io
                             GAMEPLAY_IO: useGameplayIo()

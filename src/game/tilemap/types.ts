@@ -7,4 +7,5 @@ export enum TilesetName {
 export enum LayerName {
     Ground = "ground-layer",
     Items = "items-layer",
+    Crop = "crop-layer",
 }

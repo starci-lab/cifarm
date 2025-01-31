@@ -31,6 +31,8 @@ export class BootstrapScene extends Scene {
 
         // load buildings
         this.load.image(AssetKey.BuildingHome, assetMap[AssetKey.BuildingHome])
+
+        // load crops
     }
 
     create() {
