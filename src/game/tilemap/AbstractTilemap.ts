@@ -26,8 +26,10 @@ export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
     public createTileset({
         tilesetName,
         key,
-        scaleWidth = 1,
-        scaleHeight = 1,
+        scaleTextureWidth = 1,
+        scaleTextureHeight = 1,
+        textureHeight,
+        textureWidth,
         gid = 0,
         extraOffsets = {},
     }: CreateTilesetOptions): Phaser.Tilemaps.Tileset {
@@ -36,9 +38,11 @@ export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
             .get(key)
             .getSourceImage() as HTMLImageElement
 
-        // scale the image dimensions
-        image.width = Math.floor(image.width * scaleWidth)
-        image.height = Math.floor(image.height * scaleHeight)
+        // update the image dimensions
+        image.width = textureWidth ?? Math.floor(image.width * scaleTextureWidth)
+        image.height = textureHeight ?? Math.floor(image.height * scaleTextureHeight)
+
+        console.log(image.width, image.height)
 
         // create a new texture with the scaled image dimensions
         const imageKey = v4()
@@ -56,7 +60,7 @@ export abstract class AbstractTilemap extends Phaser.Tilemaps.Tilemap {
             gid,
             {
                 x: -(TILE_WIDTH - image.width - x), // +x for extra offset
-                y: -2 * (TILE_HEIGHT - image.height - y) // +2y to for extra offset
+                y: -2 * (TILE_HEIGHT - image.height - y), // +2y to for extra offset
             }
         )
         if (!tileset) {
@@ -72,9 +76,14 @@ export interface CreateTilesetOptions {
   tilesetName: string;
   // asset key
   key: AssetKey;
-  // scale width and height
-  scaleWidth?: number;
-  scaleHeight?: number;
+  // scale width of texture
+  scaleTextureWidth?: number;
+  // if provide, ignore the scaleTextureWidth
+  textureWidth?: number;
+  // scale height of texture
+  scaleTextureHeight?: number;
+  // if provide, ignore the scaleTextureHeight
+  textureHeight?: number;
   // gid
   gid?: number;
   // extra offsets

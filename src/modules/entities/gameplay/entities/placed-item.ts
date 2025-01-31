@@ -5,11 +5,12 @@ import { TileInfoEntity } from "./tile-info"
 import { AnimalInfoEntity } from "./animal-info"
 import { BuildingInfoEntity } from "./building-info"
 import { PlacedItemTypeEntity } from "./placed-item-type"
+import { PlacedItemTypeId } from "../enums"
 
 export interface PlacedItemEntity extends UuidAbstractEntity {
     x: number
     y: number
-    userId?: string
+    userId: string
     user?: UserEntity
     inventoryId?: string
     seedGrowthInfoId?: string
@@ -24,6 +25,6 @@ export interface PlacedItemEntity extends UuidAbstractEntity {
     placedItems?: Array<PlacedItemEntity>
     parentId?: string
     parent?: PlacedItemEntity
-    placedItemTypeId?: string
-    placedItemType?: PlacedItemTypeEntity
+    placedItemTypeId: PlacedItemTypeId
+    placedItemType: PlacedItemTypeEntity
 }
