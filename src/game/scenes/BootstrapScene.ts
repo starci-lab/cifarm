@@ -1,5 +1,5 @@
 import { Scene } from "phaser"
-import { AssetName, assetMap } from "../assets/base"
+import { AssetKey, assetMap } from "../assets/base"
 import { SceneName } from "../scene"
 import { FONT_DINOSAUR } from "../constants"
 
@@ -14,23 +14,23 @@ export class BootstrapScene extends Scene {
         //  The Boot Scene is typically used to load in any assets you require for your Preloader, such as a game logo or background.
         this.load.setPath("assets")
         //  The smaller the file size of the assets, the better, as the Boot Scene itself has no preloader.
-        this.load.image(AssetName.Background, assetMap[AssetName.Background])
-        this.load.image(AssetName.Logo, assetMap[AssetName.Logo])
-        this.load.image(AssetName.LoadingBar, assetMap[AssetName.LoadingBar])
-        this.load.image(AssetName.LoadingFill, assetMap[AssetName.LoadingFill])
-        this.load.image(AssetName.Grass, assetMap[AssetName.Grass])
+        this.load.image(AssetKey.Background, assetMap[AssetKey.Background])
+        this.load.image(AssetKey.Logo, assetMap[AssetKey.Logo])
+        this.load.image(AssetKey.LoadingBar, assetMap[AssetKey.LoadingBar])
+        this.load.image(AssetKey.LoadingFill, assetMap[AssetKey.LoadingFill])
+        this.load.image(AssetKey.Grass, assetMap[AssetKey.Grass])
 
         // load icon
-        this.load.image(AssetName.IconNFTMarketplace, assetMap[AssetName.IconNFTMarketplace])
-        this.load.image(AssetName.IconShop, assetMap[AssetName.IconShop])
-        this.load.image(AssetName.IconRoadsideStand, assetMap[AssetName.IconRoadsideStand])
-        this.load.image(AssetName.IconNeighbors, assetMap[AssetName.IconNeighbors])
+        this.load.image(AssetKey.IconNFTMarketplace, assetMap[AssetKey.IconNFTMarketplace])
+        this.load.image(AssetKey.IconShop, assetMap[AssetKey.IconShop])
+        this.load.image(AssetKey.IconRoadsideStand, assetMap[AssetKey.IconRoadsideStand])
+        this.load.image(AssetKey.IconNeighbors, assetMap[AssetKey.IconNeighbors])
 
-        // load tile
-        this.load.image(AssetName.TileStarter, assetMap[AssetName.TileStarter])
+        // load tiles
+        this.load.image(AssetKey.TileStarter, assetMap[AssetKey.TileStarter])
 
-        // load building
-        this.load.image(AssetName.BuildingHome, assetMap[AssetName.BuildingHome])
+        // load buildings
+        this.load.image(AssetKey.BuildingHome, assetMap[AssetKey.BuildingHome])
     }
 
     create() {

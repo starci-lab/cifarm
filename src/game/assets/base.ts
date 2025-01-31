@@ -1,5 +1,5 @@
 //assets
-export enum AssetName {
+export enum AssetKey {
     Background = "background",
     Logo = "logo",
     LoadingBar = "loading-bar",
@@ -18,20 +18,20 @@ export enum AssetName {
     BuildingHome = "building-home",
 }
 
-export const assetMap: Record<AssetName, string> = {
-    [AssetName.Background]: "background.png",
-    [AssetName.Logo]: "logo.png",
-    [AssetName.LoadingBar]: "loading-bar.png",
-    [AssetName.LoadingFill]: "loading-fill.png",
-    [AssetName.Grass]: "grass.png",
+export const assetMap: Record<AssetKey, string> = {
+    [AssetKey.Background]: "background.png",
+    [AssetKey.Logo]: "logo.png",
+    [AssetKey.LoadingBar]: "loading-bar.png",
+    [AssetKey.LoadingFill]: "loading-fill.png",
+    [AssetKey.Grass]: "grass.png",
 
     // Icons
-    [AssetName.IconShop]: "icons/shop.png",
-    [AssetName.IconRoadsideStand]: "icons/roadside-stand.png",
-    [AssetName.IconNFTMarketplace]: "icons/nft-marketplace.png",
-    [AssetName.IconNeighbors]: "icons/neighbors.png",
+    [AssetKey.IconShop]: "icons/shop.png",
+    [AssetKey.IconRoadsideStand]: "icons/roadside-stand.png",
+    [AssetKey.IconNFTMarketplace]: "icons/nft-marketplace.png",
+    [AssetKey.IconNeighbors]: "icons/neighbors.png",
     // Tiles
-    [AssetName.TileStarter]: "tiles/starter-tile.png",
+    [AssetKey.TileStarter]: "tiles/starter-tile.png",
     // Buildings
-    [AssetName.BuildingHome]: "buildings/home.png",
+    [AssetKey.BuildingHome]: "buildings/home.png",
 }

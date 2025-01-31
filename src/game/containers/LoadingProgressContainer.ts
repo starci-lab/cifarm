@@ -1,5 +1,5 @@
 import { sleep } from "@/modules/common"
-import { AssetName } from "../assets"
+import { AssetKey } from "../assets"
 import { v4 } from "uuid"
 import { FONT_DINOSAUR, TEXT_COLOR_1 } from "../constants"
 
@@ -29,7 +29,7 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
         this.loadingTotal = loadingTotal
         //add loading bar
         this.loadingBar = scene.add
-            .image(0, 0, AssetName.LoadingBar)
+            .image(0, 0, AssetKey.LoadingBar)
             .setScale(4, 3)
         // We add the loading bar to the container
         this.add(this.loadingBar)
@@ -85,7 +85,7 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
         // declare a unique frame name
         const frameName = v4()
         // get the original texture
-        const originTexture = this.scene.textures.get(AssetName.LoadingFill)
+        const originTexture = this.scene.textures.get(AssetKey.LoadingFill)
         // add the new frame to the texture
         const sourceImage = originTexture.getSourceImage()
         // add the new frame to the texture

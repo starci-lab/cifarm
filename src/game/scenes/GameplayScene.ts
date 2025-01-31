@@ -1,11 +1,11 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { FieldTilemap } from "../tilemap/FieldTileMap"
+import { Tilemap } from "../tilemap/TileMap"
 import { PinchInput, MouseInput } from "../inputs"
 
 export class GameplayScene extends Scene
 {
-    private fieldTileMap: FieldTilemap | undefined
+    private tileMap: Tilemap | undefined
     private pinch: PinchInput | undefined
     private mouseInput: MouseInput | undefined
     constructor ()
@@ -23,12 +23,12 @@ export class GameplayScene extends Scene
 
     shutdown() {
         // call all shutdown methods of game objects
-        this.fieldTileMap?.shutdown()
+        this.tileMap?.shutdown()
     }
 
     create ()
     {   
-        this.fieldTileMap = new FieldTilemap(this)
+        this.tileMap = new Tilemap(this)
         // this.camera = new BaseCamera(this)
         this.pinch = new PinchInput(this)
         this.mouseInput = new MouseInput(this)
