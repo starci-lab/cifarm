@@ -25,43 +25,43 @@ export const placedItemAssetMap: Record<PlacedItemTypeId, PlacedItemAssetData> =
     },
     [PlacedItemTypeId.BasicTile1]: {
         gid: 202,
-        assetUrl: "tiles/basic-tile-1.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.BasicTile2]: {
         gid: 203,
-        assetUrl: "tiles/basic-tile-2.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.BasicTile3]: {
         gid: 204,
-        assetUrl: "tiles/basic-tile-3.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.FertileTile]: {
         gid: 205,
-        assetUrl: "tiles/fertile-tile.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.Chicken]: {
         gid: 206,
-        assetUrl: "animals/chicken.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.Cow]: {
         gid: 207,
-        assetUrl: "animals/cow.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.Coop]: {
         gid: 208,
-        assetUrl: "buildings/coop.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.Pig]: {
         gid: 209,
-        assetUrl: "animals/pig.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.Sheep]: {
         gid: 210,
-        assetUrl: "animals/sheep.png",
+        assetUrl: "tiles/starter-tile.png",
     },
     [PlacedItemTypeId.Barn]: {
         gid: 211,
-        assetUrl: "buildings/barn.png",
+        assetUrl: "tiles/starter-tile.png",
     },
 }
 

@@ -23,9 +23,10 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
 
     private getContainer() {
         if (!this.container) {
-            return (this.container = this.scene.add
+            this.container = this.scene.add
                 .container(this.x - this.displayWidth / 2, this.y)
-                .setScale(this.scale)).setDepth(this.depth + 1)
+                .setScale(this.scale).setDepth(this.depth + 1)
+            this.scene.add.existing(this.container)
         }
         return this.container
     }

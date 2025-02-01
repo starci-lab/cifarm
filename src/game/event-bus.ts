@@ -16,4 +16,6 @@ export enum EventName {
     LoadStaticData = "load_static_data",
     // static data loaded, from React to Phaser
     StaticDataLoaded = "static_data_loaded",
+    // open shop
+    OpenShop = "open_shop",
 }

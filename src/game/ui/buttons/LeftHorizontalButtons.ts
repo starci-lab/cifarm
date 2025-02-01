@@ -2,6 +2,7 @@ import { Scene } from "phaser"
 import { Buttons } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
 import { HorizontalButtons } from "./HorizontalButtons"
+import { EventBus, EventName } from "@/game/event-bus"
 
 export class LeftHorizontalButtons extends HorizontalButtons {
     constructor(scene: Scene, config?: Buttons.IConfig) {
@@ -21,7 +22,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconShop,
             text: "Shop",
             onClick: () => {
-                console.log("Shop")
+                EventBus.emit(EventName.OpenShop)
             },
         }))
         // add roadside stand button
