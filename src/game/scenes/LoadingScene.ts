@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { AssetKey } from "../assets/base"
+import { BaseAssetKey } from "../assets/base"
 import { LoadingProgressContainer } from "../containers"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
@@ -53,10 +53,10 @@ export class LoadingScene extends Scene {
         const { width, height } = this.game.scale
 
         //  We loaded this image in our Boottrap Scene, so we can display it here
-        this.add.image(width / 2, height / 2, AssetKey.Background)
+        this.add.image(width / 2, height / 2, BaseAssetKey.Background)
         // We add logo to the scene
         const logo = this.add
-            .image(width / 2, height / 4, AssetKey.Logo)
+            .image(width / 2, height / 4, BaseAssetKey.Logo)
             .setScale(0.75)
         //  Animate the logo
         this.tweens.add({

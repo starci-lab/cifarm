@@ -1,7 +1,7 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { Tilemap } from "../tilemap/TileMap"
 import { PinchInput, MouseInput } from "../inputs"
+import { Tilemap } from "../tilemap"
 
 export class GameplayScene extends Scene
 {

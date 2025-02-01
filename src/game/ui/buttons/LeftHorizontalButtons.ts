@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { Buttons } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { AssetKey } from "@/game/assets"
+import { BaseAssetKey } from "@/game/assets"
 import { HorizontalButtons } from "./HorizontalButtons"
 
 export class LeftHorizontalButtons extends HorizontalButtons {
@@ -9,7 +9,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.addButton(this.createButton({
-            iconKey: AssetKey.IconNFTMarketplace,
+            iconKey: BaseAssetKey.IconNFTMarketplace,
             text: "NFT Marketplace",
             onClick: () => {
                 console.log("NFT")
@@ -18,7 +18,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add shop button
         this.addButton(this.createButton({
-            iconKey: AssetKey.IconShop,
+            iconKey: BaseAssetKey.IconShop,
             text: "Shop",
             onClick: () => {
                 console.log("Shop")
@@ -26,7 +26,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         }))
         // add roadside stand button
         this.addButton(this.createButton({
-            iconKey: AssetKey.IconRoadsideStand,
+            iconKey: BaseAssetKey.IconRoadsideStand,
             text: "Roadside Stand",
             onClick: () => {
                 console.log("Roadside Stand")
@@ -35,7 +35,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add neighbors button
         this.addButton(this.createButton({
-            iconKey: AssetKey.IconNeighbors,
+            iconKey: BaseAssetKey.IconNeighbors,
             text: "Neighbors",
             onClick: () => {
                 console.log("Neighbors")

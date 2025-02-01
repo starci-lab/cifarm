@@ -145,7 +145,7 @@ export enum PlacedItemTypeId {
     Pig = "pig",
     Sheep = "sheep",
     Coop = "coop",
-    Pasture = "pasture",
+    Barn = "barn",
     Home = "home",
     StarterTile = "starterTile",
     BasicTile1 = "basicTile1",

@@ -1,2 +1,2 @@
-export * from "./TileMap"
 export * from "./types"
+export * from "./Tilemap"

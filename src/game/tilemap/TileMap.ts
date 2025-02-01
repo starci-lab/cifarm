@@ -1,48 +1,37 @@
-import { Scene } from "phaser"
-import {
-    AssetKey,
-    CropName,
-    getCropAssetKey,
-    getCropName,
-    getCropTilesetGid,
-} from "../assets"
-import { EventBus, EventName } from "../event-bus"
 import { PlacedItemsSyncedMessage } from "@/hooks"
-import { LayerName, TilesetName } from "./types"
-import {
-    BUILDING_HOME_GID,
-    GRASS_GID,
-    placedItemAssetMap,
-    SCALE,
-    TILE_STARTER_GID,
-} from "./constants"
-import { AbstractTilemap } from "./AbstractTilemap"
+import { GroundTilemap } from "./GroundTilemap"
+import { LayerName } from "./types"
+import { EventBus, EventName } from "../event-bus"
 import {
     PlacedItemEntity,
-    PlacedItemType,
     PlacedItemTypeEntity,
+    PlacedItemTypeId,
 } from "@/modules/entities"
-import { NUM_GROWTH_STAGES } from "../assets"
 import { CACHE_PLACED_ITEM_TYPES } from "../constants"
+import { placedItemAssetMap } from "../assets"
+import { PlacedItemObject } from "./PlacedItemObject"
 
-export class Tilemap extends AbstractTilemap {
-    // constructor
-    constructor(scene: Scene) {
+export class Tilemap extends GroundTilemap {
+    // tileset map
+    private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
+    // item layer
+    private itemLayer: Phaser.Tilemaps.ObjectLayer
+    // previous placed items
+    private previousPlacedItems: PlacedItemsSyncedMessage | undefined
+
+    // place item objects map
+    private readonly placedItemObjectMap: Record<string, PlacedItemObject> = {}
+
+    constructor(scene: Phaser.Scene) {
         super(scene)
 
-        // call the init method
-        this.init()
-    }
+        const itemLayer = this.getObjectLayer(LayerName.Item)
+        if (!itemLayer) {
+            throw new Error("Item layer not found")
+        }
+        this.itemLayer = itemLayer
+        this.createTilesets()
 
-    //store previous placed items
-    private previousPlacedItems: PlacedItemsSyncedMessage | undefined
-    private groundLayer: Phaser.Tilemaps.TilemapLayer | undefined
-    private itemsLayer: Phaser.Tilemaps.TilemapLayer | undefined
-    private cropLayer: Phaser.Tilemaps.TilemapLayer | undefined
-    
-    // init method
-    init() {
-    //listen for placed items synced
         EventBus.on(
             EventName.PlacedItemsSynced,
             (data: PlacedItemsSyncedMessage) => {
@@ -51,19 +40,31 @@ export class Tilemap extends AbstractTilemap {
                 this.previousPlacedItems = data
             }
         )
-
-        // create layers
-        this.groundLayer = this.createGroundLayer()
-        this.itemsLayer = this.createItemsLayer()
-        this.cropLayer = this.createCropLayer()
     }
+
+    // method called when the scene is shutdown
+    public shutdown() {
+        EventBus.off(EventName.PlacedItemsSynced)
+    }
+
+    private createTilesets() {
+        for (const [key, value] of Object.entries(placedItemAssetMap)) {
+            this.createSingleTileTileset({
+                key: key,
+                tilesetName: key,
+                ...value,
+            })
+        }
+    }
+
+    // logic to handle placed items update
 
     // methods to handle changes in the placed items
     private handlePlacedItemsUpdate(
         current: PlacedItemsSyncedMessage,
         previous?: PlacedItemsSyncedMessage
     ) {
-        // if current.userId doesn't match previous.userId, treat all placed items as new
+    // if current.userId doesn't match previous.userId, treat all placed items as new
         if (!previous || (previous && current.userId !== previous.userId)) {
             // if user ids are different, create all placed items (treat as new)
             this.createAllPlacedItems(current.placedItems)
@@ -80,15 +81,14 @@ export class Tilemap extends AbstractTilemap {
 
         for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
-            const found = previousPlacedItems.find((item) => item.id === placedItem.id)
+            const found = previousPlacedItems.find(
+                (item) => item.id === placedItem.id
+            )
             if (!found) {
                 // place the item using the shared tile placing logic
                 this.placeTileForItem(placedItem)
             } else {
-                // Update the placed item if it already exists in previous placed items
-                if (found.seedGrowthInfo && placedItem.seedGrowthInfo) {
-                    this.updateSeedGrowthInfo(found, placedItem)
-                }
+                // if the placed item is in the previous placed items, update the item
             }
             // push the placed item to the checked previous placed items
             checkedPreviousPlacedItems.push(placedItem)
@@ -99,16 +99,12 @@ export class Tilemap extends AbstractTilemap {
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
             ) {
-                // Remove the item if it no longer exists in the current placed items
-                // const data = placedItemAssetMap[placedItem.placedItemTypeId]
-                // if (!data) {
-                //     throw new Error("Asset data not found for placed item: " + placedItem.id)
-                // }
-                this.removeTileCenteredAt({
-                    x: placedItem.x,
-                    y: placedItem.y,
-                    layer: this.itemsLayer,
-                })
+                // remove the object from the item layer
+                this.itemLayer.objects = this.itemLayer.objects.filter(
+                    (object) => object.name !== placedItem.id
+                )
+                // remove the object from the tilemap
+                this.placedItemObjectMap[placedItem.id]?.destroy()
             }
         }
     }
@@ -121,198 +117,99 @@ export class Tilemap extends AbstractTilemap {
         }
     }
 
-    // method to update the seed growth info of a placed item
-    private updateSeedGrowthInfo(
-        previous: PlacedItemEntity,
-        current: PlacedItemEntity
-    ) {
-        // if no seed growth info in previous or current, return
-        if (!previous.seedGrowthInfo || !current.seedGrowthInfo) {
-            throw new Error("Seed growth info not found")
+    // method to get the GID for a placed item type
+    private getTilesetData(placedItemTypeId: PlacedItemTypeId) {
+        const data = placedItemAssetMap[placedItemTypeId]
+        if (!data) {
+            throw new Error("Asset data not found")
         }
+        return data
+    }
 
-        // get the seed growth info of the placed item
-        const previousSeedGrowthInfo = previous.seedGrowthInfo
-        const currentSeedGrowthInfo = current.seedGrowthInfo
+    //counter to keep track of the tile object id
+    private tiledObjectId = 0
 
-        // If the seed growth info is different, update the placed item
-        if (
-            previousSeedGrowthInfo &&
-      currentSeedGrowthInfo &&
-      previousSeedGrowthInfo.currentStage !== currentSeedGrowthInfo.currentStage
-        ) {
-            // Remove the previous crop tile
-            this.removeTileCenteredAt({
-                x: previous.x,
-                y: previous.y,
-                layer: this.cropLayer,
-            })
-
-            // Place the new crop tile
-            this.placeTileCenteredAt({
-                gid: getCropTilesetGid({
-                    cropName: getCropName(currentSeedGrowthInfo.cropId),
-                    growthStage: currentSeedGrowthInfo.currentStage,
-                }),
-                x: current.x,
-                y: current.y,
-                layer: this.cropLayer,
-            })
+    // get placed item type from cache
+    private getPlacedItemType(
+        placedItemTypeId: PlacedItemTypeId
+    ): PlacedItemTypeEntity {
+        const placedItemTypes = this.scene.cache.obj.get(
+            CACHE_PLACED_ITEM_TYPES
+        ) as Array<PlacedItemTypeEntity>
+        const found = placedItemTypes.find((type) => type.id === placedItemTypeId)
+        if (!found) {
+            throw new Error("Placed item type not found")
         }
+        return found
     }
 
     // reusable method to place a tile for a given placed item
     private placeTileForItem(placedItem: PlacedItemEntity) {
-        const data = placedItemAssetMap[placedItem.placedItemTypeId]
-        if (!data) {
-            throw new Error("Asset data not found for placed item: " + placedItem.id)
+    // get tileset data
+        const { gid, extraOffsets } = this.getTilesetData(placedItem.placedItemTypeId)
+        // get the tileset
+        const tileset = this.getTileset(placedItem.placedItemTypeId)
+        if (!tileset) {
+            throw new Error("Tileset not found")
         }
-        const { gid } = data
-
-        // Fill the area of the item, above the tile
-        this.placeTileCenteredAt({
-            gid,
-            x: placedItem.x,
-            y: placedItem.y,
-            layer: this.itemsLayer,
-        })
-        // get the type of the placed item
-        const placedItemTypes = this.scene.cache.obj.get(
-            CACHE_PLACED_ITEM_TYPES
-        ) as Array<PlacedItemTypeEntity>
-        const placedItemType = placedItemTypes.find(
-            (type) => type.id === placedItem.placedItemTypeId
+        // get the source image in the tileset
+        const sourceImage = tileset.image?.getSourceImage()
+        if (!sourceImage) {
+            throw new Error("Source image not found")
+        }
+        // destructuring the to get width and height of the source image
+        const { width, height } = sourceImage
+        // get the tile
+        const tile = this.getTileAt(
+            placedItem.x,
+            placedItem.y,
+            true,
+            this.groundLayer
         )
-        if (!placedItemType) {
-            throw new Error("Placed item type not found")
+        if (!tile) {
+            throw new Error("Tile not found")
         }
 
-        switch (placedItemType.type) {
-        case PlacedItemType.Tile: {
-        // handle case for tile
-        // get the seed growth info
-            const seedGrowthInfo = placedItem.seedGrowthInfo
-            if (!seedGrowthInfo) {
-                // if no seed growth info, mean no crop, return
-                return
-            }
-            const gid = getCropTilesetGid({
-                cropName: getCropName(seedGrowthInfo.cropId),
-                growthStage: seedGrowthInfo.currentStage,
-            })
+        // get the placed item type
+        const placedItemType = this.getPlacedItemType(placedItem.placedItemTypeId)
 
-            this.placeTileCenteredAt({
-                gid,
-                x: placedItem.x,
-                y: placedItem.y,
-                layer: this.cropLayer,
-            })
-            break
-        }
-        default:
-            break
-        }
-    }
-    
-    // method called when the scene is shutdown
-    public shutdown() {
-        EventBus.off(EventName.PlacedItemsSynced)
-    }
-
-    // create ground layer
-    private createGroundLayer() {
-    // Create a grass tileset
-        const grassTileset = this.createTileset({
-            tilesetName: TilesetName.Grass,
-            key: AssetKey.Grass,
-            gid: GRASS_GID,
+        // get the placed item type
+        // Fill the area of the item, above the tile
+        this.itemLayer.objects.push({
+            gid,
+            id: this.tiledObjectId,
+            name: placedItem.id,
+            width: width * this.scale,
+            height: height * this.scale,
+            x: (this.scale * ((tile.x + 1.5) * this.tileWidth)) / 2,
+            y: this.scale * ((tile.y + 0.5) * this.tileHeight),
+            type: placedItemType.type,
+            visible: true,
         })
 
-        // create ground layer
-        const groundLayer = this.createBlankLayer(LayerName.Ground, grassTileset)
-        if (!groundLayer) {
-            throw new Error("Layer not found")
+        // create the objects
+        const object = this.createFromObjects(LayerName.Item, {
+            id: this.tiledObjectId,
+            classType: PlacedItemObject,
+        }).at(0) as PlacedItemObject | undefined
+        if (!object) {
+            throw new Error("Object not found")
         }
 
-        // fill the layer with random tiles
-        groundLayer.randomize(0, 0, this.width, this.height, [0])
+        // set the origin of the object
+        object.setOrigin(1, 0.5)
+        object.setDepth(placedItem.x + placedItem.y + 1)
+        // destructuring the extra offsets
+        const { x = 0, y = 0 } = { ...extraOffsets }
+        object.setPosition(object.x + x, object.y + y)
 
-        // scale the layer
-        groundLayer.setScale(SCALE)
+        // store the object in the placed item objects map
+        this.placedItemObjectMap[placedItem.id] = object
 
-        // return the layer
-        return groundLayer
-    }
-    // create items layer
-    private createItemsLayer() {
-    // Create tilesets
-    // tile starter tileset
-        const tileStarterTileset = this.createTileset({
-            tilesetName: TilesetName.TileStarter,
-            key: AssetKey.TileStarter,
-            gid: TILE_STARTER_GID,
-        })
+        // update the object
+        object.update(placedItemType.type, placedItem)
 
-        // building home tileset
-        const buildingHomeTileset = this.createTileset({
-            tilesetName: TilesetName.BuildingHome,
-            key: AssetKey.BuildingHome,
-            gid: BUILDING_HOME_GID,
-            scaleTextureHeight: 0.8,
-            scaleTextureWidth: 0.8,
-            extraOffsets: {
-                y: 60,
-                x: 20,
-            },
-        })
-
-        // create items layer
-        const itemsLayer = this.createBlankLayer(LayerName.Items, [
-            tileStarterTileset,
-            buildingHomeTileset,
-        ])
-        if (!itemsLayer) {
-            throw new Error("Layer not found")
-        }
-
-        // scale the layer
-        itemsLayer.setScale(SCALE)
-
-        // return the layer
-        return itemsLayer
-    }
-    // create a crop layer
-    private createCropLayer() {
-    // create tilesets
-    // interate over the asset keys
-        const tilesets: Array<Phaser.Tilemaps.Tileset> = []
-        for (const key of Object.values(CropName)) {
-            // create a tileset
-            for (let i = 0; i < NUM_GROWTH_STAGES; i++) {
-                const cropKey = getCropAssetKey({ cropName: key, growthStage: i })
-                const tileset = this.createTileset({
-                    tilesetName: cropKey,
-                    key: cropKey,
-                    gid: getCropTilesetGid({ cropName: key, growthStage: i }),
-                    extraOffsets: {
-                        y: 30,
-                    },
-                })
-                tilesets.push(tileset)
-            }
-        }
-
-        // create crop layer
-        const cropLayer = this.createBlankLayer(LayerName.Crop, tilesets)
-        if (!cropLayer) {
-            throw new Error("Layer not found")
-        }
-
-        // scale the layer
-        cropLayer.setScale(SCALE)
-
-        // return the layer
-        return cropLayer
+        // increment the object id to ensure uniqueness
+        this.tiledObjectId++
     }
 }
-

@@ -1,5 +1,5 @@
-//assets
-export enum AssetKey {
+// Asset Enum for Base assets
+export enum BaseAssetKey {
     Background = "background",
     Logo = "logo",
     LoadingBar = "loading-bar",
@@ -11,27 +11,26 @@ export enum AssetKey {
     IconRoadsideStand = "icon-roadside-stand",
     IconNFTMarketplace = "icon-nft-marketplace",
     IconNeighbors = "icon-neighbors",
-
-    // Tiles
-    TileStarter = "tile-starter",
-    // Homes
-    BuildingHome = "building-home",
 }
 
-export const assetMap: Record<AssetKey, string> = {
-    [AssetKey.Background]: "background.png",
-    [AssetKey.Logo]: "logo.png",
-    [AssetKey.LoadingBar]: "loading-bar.png",
-    [AssetKey.LoadingFill]: "loading-fill.png",
-    [AssetKey.Grass]: "grass.png",
+// Updated baseAssetMap with BaseAssetKey enum values
+export const baseAssetMap: Record<BaseAssetKey, string> = {
+    [BaseAssetKey.Background]: "background.png",
+    [BaseAssetKey.Logo]: "logo.png",
+    [BaseAssetKey.LoadingBar]: "loading-bar.png",
+    [BaseAssetKey.LoadingFill]: "loading-fill.png",
+    [BaseAssetKey.Grass]: "grass.png",
 
-    // Icons
-    [AssetKey.IconShop]: "icons/shop.png",
-    [AssetKey.IconRoadsideStand]: "icons/roadside-stand.png",
-    [AssetKey.IconNFTMarketplace]: "icons/nft-marketplace.png",
-    [AssetKey.IconNeighbors]: "icons/neighbors.png",
-    // Tiles
-    [AssetKey.TileStarter]: "tiles/starter-tile.png",
-    // Buildings
-    [AssetKey.BuildingHome]: "buildings/home.png",
+    // icons
+    [BaseAssetKey.IconShop]: "icons/shop.png",
+    [BaseAssetKey.IconRoadsideStand]: "icons/roadside-stand.png",
+    [BaseAssetKey.IconNFTMarketplace]: "icons/nft-marketplace.png",
+    [BaseAssetKey.IconNeighbors]: "icons/neighbors.png",
+}
+
+// Asset Loading Function for `baseAssetMap`
+export const loadBaseAssets = (scene: Phaser.Scene) => {
+    for (const [key, value] of Object.entries(baseAssetMap)) {
+        scene.load.image(key, value)
+    }
 }
