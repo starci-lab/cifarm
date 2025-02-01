@@ -1,6 +1,6 @@
 import { BaseAssetKey } from "@/game/assets"
 import { BLACK_COLOR, FONT_DINOSAUR, STROKE_COLOR_1 } from "@/game/constants"
-import { ShopTabButtons } from "./ShopTabButtons"
+import { ShopTabs } from "./ShopTabs"
 
 export class ShopModal extends Phaser.GameObjects.Container {
     private wall: Phaser.GameObjects.Image | undefined
@@ -11,8 +11,7 @@ export class ShopModal extends Phaser.GameObjects.Container {
     private titleShopText: Phaser.GameObjects.Text | undefined
     private bottomBar: Phaser.GameObjects.Image | undefined
     private bottomDecorator: Phaser.GameObjects.Image | undefined
-    private shopTabButtons: ShopTabButtons
-    private iconTabOff: Phaser.GameObjects.Image | undefined
+    private shopTabs: ShopTabs
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
@@ -25,9 +24,12 @@ export class ShopModal extends Phaser.GameObjects.Container {
             .setScale(1.1)
         this.add(this.wall)
 
+        // draw the shop tabs
+        this.shopTabs = new ShopTabs(scene, 0, 0).setPosition(-width / 2 + 20, -580)
+        this.add(this.shopTabs)
+
         this.topDecorator = scene.add
-            .image(0, -600, BaseAssetKey.ModalShopTopDecorator)
-            .setScale(1.1)
+            .image(0, -580, BaseAssetKey.ModalShopTopDecorator)
             .setOrigin(0.5, 1)
         this.add(this.topDecorator)
 
@@ -36,20 +38,13 @@ export class ShopModal extends Phaser.GameObjects.Container {
             .setOrigin(0.5, 0)
         this.add(this.shadow)
 
-        // draw the shop tabs
-        this.shopTabButtons = new ShopTabButtons(scene).setOrigin(0, 0.5).layout()
-        this.shopTabButtons.initialize()
-        this.add(this.shopTabButtons)
         //this.add(shopTabs)
-
         this.topBar = scene.add
             .image(0, -500, BaseAssetKey.ModalShopTopBar)
-            .setScale(1.1)
         this.add(this.topBar)
 
         this.titleShop = scene.add
             .image(0, -500, BaseAssetKey.ModalShopTitleShop)
-            .setScale(1.1)
         this.add(this.titleShop)
 
         this.titleShopText = scene.add
@@ -67,13 +62,11 @@ export class ShopModal extends Phaser.GameObjects.Container {
 
         this.bottomBar = scene.add
             .image(0, height / 2, BaseAssetKey.ModalShopBottomBar)
-            .setScale(1.1)
             .setOrigin(0.5, 1)
         this.add(this.bottomBar)
 
         this.bottomDecorator = scene.add
             .image(0, height / 2, BaseAssetKey.ModalShopBottomDecorator)
-            .setScale(1.1)
             .setOrigin(0.5, 1)
         this.add(this.bottomDecorator)
     }
