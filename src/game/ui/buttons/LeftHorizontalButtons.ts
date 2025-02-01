@@ -22,7 +22,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconShop,
             text: "Shop",
             onClick: () => {
-                this.emit(EventName.OpenShop, this)
+                this.scene.events.emit(EventName.OpenShop, this)
             },
         }))
         // add roadside stand button
