@@ -6,6 +6,8 @@ export const EventBus = new Events.EventEmitter()
 
 // events
 export enum EventName {
+    // Between Phaser and React
+
     // send authenticate event, from Phaser to React
     Authenticate = "authenticate",
     // send authenticated event, from React to Phaser
@@ -16,6 +18,11 @@ export enum EventName {
     LoadStaticData = "load_static_data",
     // static data loaded, from React to Phaser
     StaticDataLoaded = "static_data_loaded",
+
+    // Between Phaser scenes
+
     // open shop
     OpenShop = "open_shop",
+    // change shop tab
+    ShopTabSelected = "shop_tab_selected",
 }

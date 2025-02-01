@@ -20,11 +20,14 @@ export enum BaseAssetKey {
     ModalShopAvatarShop = "shop-modal-avatar-shop",
     ModalShopBottomBar = "shop-modal-bottom-bar",
     ModalShopButtonPrice = "shop-modal-button-price",
+    ModalShopIconTabOn = "shop-modal-icon-tab-on",
     ModalShopIconTabOff = "shop-modal-icon-tab-off",
     ModalShopItemCard = "shop-modal-item-card",
     ModalShopTitleShop = "shop-modal-title-shop",
     ModalShopTopBar = "shop-modal-top-bar",
     ModalShopWall = "shop-modal-wall",
+    ModalShopTopDecorator = "shop-modal-top-decorator",
+    ModalShopBottomDecorator = "shop-modal-bottom-decorator",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -48,11 +51,14 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalShopAvatarShop]: "modals/shop/avatar-shop.png",
     [BaseAssetKey.ModalShopBottomBar]: "modals/shop/bottom-bar.png",
     [BaseAssetKey.ModalShopButtonPrice]: "modals/shop/button-price.png",
-    [BaseAssetKey.ModalShopIconTabOff]: "modals/shop/icon-tab-off.png",
     [BaseAssetKey.ModalShopItemCard]: "modals/shop/item-card.png",
     [BaseAssetKey.ModalShopTitleShop]: "modals/shop/title-shop.png",
     [BaseAssetKey.ModalShopTopBar]: "modals/shop/top-bar.png",
     [BaseAssetKey.ModalShopWall]: "modals/shop/wall.png",
+    [BaseAssetKey.ModalShopTopDecorator]: "modals/shop/top-decorator.png",
+    [BaseAssetKey.ModalShopBottomDecorator]: "modals/shop/bottom-decorator.png",
+    [BaseAssetKey.ModalShopIconTabOn]: "modals/shop/icon-tab-on.png",
+    [BaseAssetKey.ModalShopIconTabOff]: "modals/shop/icon-tab-off.png",
 }
 
 // preload, for loading screen

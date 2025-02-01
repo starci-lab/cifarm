@@ -45,8 +45,10 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
     }
 
     private numDots = 0
-    update(time: number, delta: number) {
-        if (Math.floor(time/delta) % 20 === 0) {
+    private updateCount = 0
+    update() {
+        //0.33 seconds
+        if (this.updateCount % 20 === 0) {
             this.numDots = (this.numDots + 1) % 4
         }
         const dots = ".".repeat(this.numDots)
@@ -56,6 +58,7 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
                 2
             )}%)`
         )
+        this.updateCount++
     }
 
     // check if the loading is finished
