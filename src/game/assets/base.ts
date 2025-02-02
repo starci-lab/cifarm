@@ -19,25 +19,26 @@ export enum BaseAssetKey {
     IconDaily = "icon-daily",
 
     //Shop Modals
-    ModalShopAvatarShop = "shop-modal-avatar-shop",
-    ModalShopBottomBar = "shop-modal-bottom-bar",
-    ModalShopButtonPrice = "shop-modal-button-price",
-    ModalShopIconTabOn = "shop-modal-icon-tab-on",
-    ModalShopIconTabOff = "shop-modal-icon-tab-off",
-    ModalShopItemCard = "shop-modal-item-card",
-    ModalShopTitleShop = "shop-modal-title-shop",
-    ModalShopTopBar = "shop-modal-top-bar",
-    ModalShopWall = "shop-modal-wall",
-    ModalShopTopDecorator = "shop-modal-top-decorator",
-    ModalShopBottomDecorator = "shop-modal-bottom-decorator",
-    ModalShopCardTitle = "shop-modal-card-title",
+    ModalShopAvatarShop = "modal-shop-avatar-shop",
+    ModalShopBottomBar = "modal-shop-bottom-bar",
+    ModalShopButtonPrice = "modal-shop-button-price",
+    ModalShopIconTabOn = "modal-shop-icon-tab-on",
+    ModalShopIconTabOff = "modal-shop-icon-tab-off",
+    ModalShopItemCard = "modal-shop-item-card",
+    ModalShopTitleShop = "modal-shop-title-shop",
+    ModalShopTopBar = "modal-shop-top-bar",
+    ModalShopWall = "modal-shop-wall",
+    ModalShopTopDecorator = "modal-shop-top-decorator",
+    ModalShopBottomDecorator = "modal-shop-bottom-decorator",
+    ModalShopCardTitle = "modal-shop-card-title",
+    ModalShopX = "modal-shop-x",
 
     // Inventory Modals
-    ModalInventoryTopRibbon = "inventory-modal-top-ribbon",
-    ModalInventoryBtnClose = "inventory-modal-btn-close",
-    ModalInventoryCell = "inventory-modal-cell",
-    ModalInventoryCellQuantity = "inventory-modal-cell-quantity",
-    ModalInventoryWall = "inventory-modal-wall",
+    ModalInventoryTopRibbon = "modal-inventory-top-ribbon",
+    ModalInventoryBtnClose = "modal-inventory-btn-close",
+    ModalInventoryCell = "modal-inventory-cell",
+    ModalInventoryCellQuantity = "modal-inventory-cell-quantity",
+    ModalInventoryWall = "modal-inventory-wall",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -72,6 +73,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalShopIconTabOn]: "modals/shop/icon-tab-on.png",
     [BaseAssetKey.ModalShopIconTabOff]: "modals/shop/icon-tab-off.png",
     [BaseAssetKey.ModalShopCardTitle]: "modals/shop/card-title.png",
+    [BaseAssetKey.ModalShopX]: "modals/shop/x.png",
 
     // Inventory Modals
     [BaseAssetKey.ModalInventoryTopRibbon]: "modals/inventory/top-ribbon.png",

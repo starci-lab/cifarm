@@ -19,3 +19,5 @@ export const CACHE_PLACED_ITEM_TYPES = "placed-item-types"
 
 // colors
 export const BLACK_COLOR = 0x000000
+
+export const SCALE_TIME = 500 // 0.5 seconds

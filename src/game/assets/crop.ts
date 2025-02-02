@@ -2,6 +2,10 @@ import { CropId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ExtraOffsets } from "./types"
 
+// base directory for crop assets
+const BASE_DIR = "crops"
+// name of the seed file
+const SEED_FILE = "seed.png"
 // Number of growth stages for each crop
 export const NUM_GROWTH_STAGES = 5
 
@@ -14,6 +18,7 @@ export interface CropAssetData {
   gid: number;
   dir: string;
   stages?: Record<number, CropStageAssetData>;
+  name: string;
 }
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
@@ -28,12 +33,13 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
             3: { offsets: { x: 0, y: 0 } },
             4: { offsets: { x: 0, y: -40 } },
         },
+        name: "Carrot",
     },
-    [CropId.BellPepper]: { gid: 210, dir: "bell-pepper" },
-    [CropId.Cucumber]: { gid: 220, dir: "cucumber" },
-    [CropId.Pineapple]: { gid: 230, dir: "pineapple" },
-    [CropId.Potato]: { gid: 240, dir: "potato" },
-    [CropId.Watermelon]: { gid: 250, dir: "watermelon" },
+    [CropId.BellPepper]: { gid: 210, dir: "bell-pepper", name: "Bell Pepper" },
+    [CropId.Cucumber]: { gid: 220, dir: "cucumber", name: "Cucumber" },
+    [CropId.Pineapple]: { gid: 230, dir: "pineapple", name: "Pineapple" },
+    [CropId.Potato]: { gid: 240, dir: "potato", name: "Potato" },
+    [CropId.Watermelon]: { gid: 250, dir: "watermelon", name: "Watermelon" },
 }
 
 // Function to load crop assets (images) for each crop and growth stage
@@ -50,10 +56,20 @@ export const loadCropAssets = (scene: Scene) => {
         for (let i = 0; i < NUM_GROWTH_STAGES; i++) {
             scene.load.image(
                 getCropAssetKey({ cropId, growthStage: i }),
-                `crops/${cropData.dir}/${i + 1}.png` // Assuming growth stages are numbered 1, 2, 3, ...
+                `${BASE_DIR}/${cropData.dir}/${i + 1}.png` // Assuming growth stages are numbered 1, 2, 3, ...
             )
         }
+        // Load the seed asset for the crop
+        scene.load.image(
+            getCropSeedAssetKey(cropId),
+            `${BASE_DIR}/${cropData.dir}/${SEED_FILE}`
+        )
     })
+}
+
+// Function to get the asset key for a crop seed
+export const getCropSeedAssetKey = (cropId: CropId): string => {
+    return `${cropId}-seed`
 }
 
 // Function to get the asset key for a crop and its growth stage

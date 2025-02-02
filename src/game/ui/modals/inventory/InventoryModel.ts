@@ -51,7 +51,7 @@ export class InventoryModal extends Phaser.GameObjects.Container {
             .setInteractive()
 
         this.btnClose.on("pointerdown", () => {
-            this.scene.events.emit(EventName.CloseInventory)
+            this.scene.events.emit(EventName.ModalClosed)
         })
 
         this.add(this.btnClose)

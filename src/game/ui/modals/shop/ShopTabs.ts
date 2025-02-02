@@ -25,7 +25,7 @@ export class ShopTabs extends Phaser.GameObjects.Container {
         // thus, we need layout the tabs
         this.layoutTabs()
 
-        this.on(EventName.ShopTabSelected, (shopTab: ShopTab) => {
+        this.scene.events.on(EventName.ShopTabSelected, (shopTab: ShopTab) => {
             // turn off the previous selected tab
             this.turnOff(this.selectedTab, true)
             // turn on the selected tab
@@ -121,7 +121,7 @@ export class ShopTabs extends Phaser.GameObjects.Container {
                     tab.input.enabled = true
                 }
             })
-            this.emit(EventName.ShopTabSelected, shopTab)
+            this.scene.events.emit(EventName.ShopTabSelected, shopTab)
         })
 
         // check active 

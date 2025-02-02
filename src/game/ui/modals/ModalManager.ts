@@ -46,7 +46,7 @@ export class ModalManager extends Phaser.GameObjects.Container {
         })
 
         // listen for the close inventory event
-        this.scene.events.on(EventName.CloseInventory, () => {
+        this.scene.events.on(EventName.ModalClosed, () => {
             this.scene.tweens.add({
                 targets: this.inventoryModal,
                 scaleX: 0.2,  // Final scale value (zoom in to normal size)
@@ -86,7 +86,6 @@ export class ModalManager extends Phaser.GameObjects.Container {
         //play animation on the shop modal
         this.shopModal?.setScale(0) // Start with no scale (hidden)
         // prevent all interactions
-        //this.shopModal?.disableInteractive()
         this.scene.tweens.add({
             targets: this.shopModal,
             scaleX: 1,  // Final scale value (zoom in to normal size)
@@ -95,7 +94,8 @@ export class ModalManager extends Phaser.GameObjects.Container {
             ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
             onComplete: () => {
                 // Enable interactions after the animation is complete
-                // this.shopModal?.setInteractive()
+                //this.shopModal?.setInteractive()
+                this.shopModal?.showContent()
             }
         })
     }
