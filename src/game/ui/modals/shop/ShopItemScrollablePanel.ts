@@ -25,7 +25,7 @@ export class ShopItemScrollablePanel extends Phaser.GameObjects.Container {
             panel: {
                 child: this.createItemCard({
                     assetKey: BaseAssetKey.IconNFTMarketplace,
-                    title: "Hentaizzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+                    title: "Hentaizzzzzzzz zzzzzzzzzzzzzzzzz",
                     onClick: () => {
                         console.log("Test")
                     },
@@ -70,8 +70,10 @@ export class ShopItemScrollablePanel extends Phaser.GameObjects.Container {
                             enableStroke: true,
                             textColor: TextColor.White,
                             strokeColor: StrokeColor.Black,
-                            fontSize: 28,
+                            fontSize: 24,
                             strokeThickness: 3,
+                            enableWordWrap: true,
+                            wordWrapWidth: 400,
                         },
                     })
                 ),
@@ -128,23 +130,7 @@ export class ShopItemScrollablePanel extends Phaser.GameObjects.Container {
                 align: "top",
             })
             .setInnerPadding(30)
-            .addBackground(this.scene.add.existing(
-                new NinePatch3x3({
-                    baseParams: {
-                        scene: this.scene,
-                        config: {
-                            x: 0,
-                            y: 0,
-                        }
-                    },
-                    options: {
-                        assetKey: BaseAssetKey.ModalShopItemCard,
-                        leftWidth: 30,
-                        rightWidth: 40,
-                        topHeight: 30,
-                        bottomHeight: 100,
-                    }
-                })))
+            .addBackground(this.scene.add.image(0, 0, BaseAssetKey.ModalShopItemCard))
             .layout()
 
         return item

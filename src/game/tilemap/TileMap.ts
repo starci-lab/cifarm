@@ -58,8 +58,6 @@ export class Tilemap extends GroundTilemap {
         }
     }
 
-    // logic to handle placed items update
-
     // methods to handle changes in the placed items
     private handlePlacedItemsUpdate(
         current: PlacedItemsSyncedMessage,

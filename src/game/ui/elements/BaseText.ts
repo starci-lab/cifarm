@@ -13,6 +13,10 @@ export interface TextOptions {
   strokeColor?: StrokeColor;
   // stroke thickness, ignored if enableStroke is false
   strokeThickness?: number;
+  // enable word wrap
+  enableWordWrap?: boolean;
+  // word wrap width, ignored if enableWordWrap is false
+  wordWrapWidth?: number;
 }
 
 export enum TextColor {
@@ -43,6 +47,11 @@ export class BaseText extends Phaser.GameObjects.Text {
                 options.strokeColor ?? StrokeColor.Black,
                 options.strokeThickness ?? 3
             )
+        }
+
+        // enable word wrap if needed
+        if (options.enableWordWrap) {
+            this.setWordWrapWidth(options.wordWrapWidth ?? 200, false)
         }
 
         // set origin for the text
