@@ -15,6 +15,7 @@ export enum BaseAssetKey {
     IconRoadsideStand = "icon-roadside-stand",
     IconNFTMarketplace = "icon-nft-marketplace",
     IconNeighbors = "icon-neighbors",
+    IconInventory = "icon-inventory",
 
     //Shop Modals
     ModalShopAvatarShop = "shop-modal-avatar-shop",
@@ -46,6 +47,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.IconRoadsideStand]: "icons/roadside-stand.png",
     [BaseAssetKey.IconNFTMarketplace]: "icons/nft-marketplace.png",
     [BaseAssetKey.IconNeighbors]: "icons/neighbors.png",
+    [BaseAssetKey.IconInventory]: "icons/inventory.png",
 
     // shop Modals
     [BaseAssetKey.ModalShopAvatarShop]: "modals/shop/avatar-shop.png",

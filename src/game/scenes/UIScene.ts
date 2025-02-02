@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { LeftHorizontalButtons, ModalManager } from "../ui"
+import { LeftHorizontalButtons, ModalManager, RightHorizontalButtons } from "../ui"
 
 export class UIScene extends Scene {
     private modalManager: ModalManager | undefined
@@ -14,8 +14,11 @@ export class UIScene extends Scene {
     }
 
     create() {
-        new LeftHorizontalButtons(this).setPosition(50).setOrigin(0, 0).layout()
         const { width, height } = this.game.scale
+        // Add the left horizontal buttons
+        new LeftHorizontalButtons(this).setPosition(50).setOrigin(0, 0).layout()
+        // Add the right horizontal buttons
+        new RightHorizontalButtons(this).setPosition(width - 50, 50).setOrigin(1, 0).layout()
         this.modalManager = new ModalManager(this, width / 2, height / 2)
         this.add.existing(this.modalManager)
     }
