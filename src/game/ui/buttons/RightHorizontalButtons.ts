@@ -1,12 +1,22 @@
-import { Scene } from "phaser"
-import { Buttons } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
-import { HorizontalButtons } from "./HorizontalButtons"
 import { EventName } from "@/game/event-bus"
+import { HorizontalButtonBaseConstructorParams } from "@/game/types"
+import { HorizontalButtons } from "./HorizontalButtons"
 
 export class RightHorizontalButtons extends HorizontalButtons {
-    constructor(scene: Scene, config?: Buttons.IConfig) {
-        super(scene, config)
+    constructor({
+        scene,
+        config,
+    }: HorizontalButtonBaseConstructorParams) {
+        super({
+            baseParams: { scene, config },
+            options: {
+                orientation: "y",
+                space: {
+                    item: 24,
+                },
+            }
+        })
 
         // add inventory button
         this.addButton(this.createButton({

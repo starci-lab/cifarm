@@ -1,5 +1,20 @@
+import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { FONT_DINOSAUR, STROKE_COLOR_1 } from "../../constants"
-import { Buttons } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { ConstructorParams, HorizontalButtonBaseConstructorParams } from "../../types"
+
+export interface CreateButtonParams {
+    iconKey: string;
+    text: string;
+    onClick?: () => void;
+}
+
+// options for horizontal buttons
+export interface HorizontalButtonsOptions {
+    orientation: Sizer.OrientationTypes;
+    space: {
+        item: number;
+    };
+}
 
 export abstract class HorizontalButtons extends Buttons {
     protected ICON_RADIUS = 64
@@ -8,11 +23,16 @@ export abstract class HorizontalButtons extends Buttons {
     protected TEXT_SIZE_IN_PIXELS = 24
     protected TEXT_FAMILY = FONT_DINOSAUR
 
-    constructor(scene: Phaser.Scene, config?: Buttons.IConfig) {
+    constructor({
+        baseParams: { scene, config },
+        options,
+    }: ConstructorParams<HorizontalButtonBaseConstructorParams, HorizontalButtonsOptions>) {
+        const { orientation, space } = options
+
         super(scene, {
-            orientation: "y",
+            orientation: orientation || "y",
             space: {
-                item: 48,
+                item: space.item || 10,
             },
             ...config,
         })
@@ -75,8 +95,4 @@ export abstract class HorizontalButtons extends Buttons {
     }
 }
 
-export interface CreateButtonParams {
-  iconKey: string;
-  text: string;
-  onClick?: () => void;
-}
+
