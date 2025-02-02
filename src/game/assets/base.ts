@@ -16,6 +16,7 @@ export enum BaseAssetKey {
     IconNFTMarketplace = "icon-nft-marketplace",
     IconNeighbors = "icon-neighbors",
     IconInventory = "icon-inventory",
+    IconDaily = "icon-daily",
 
     //Shop Modals
     ModalShopAvatarShop = "shop-modal-avatar-shop",
@@ -29,6 +30,13 @@ export enum BaseAssetKey {
     ModalShopWall = "shop-modal-wall",
     ModalShopTopDecorator = "shop-modal-top-decorator",
     ModalShopBottomDecorator = "shop-modal-bottom-decorator",
+
+    // Inventory Modals
+    ModalInventoryTopRibbon = "inventory-modal-top-ribbon",
+    ModalInventoryBtnClose = "inventory-modal-btn-close",
+    ModalInventoryCell = "inventory-modal-cell",
+    ModalInventoryCellQuantity = "inventory-modal-cell-quantity",
+    ModalInventoryWall = "inventory-modal-wall",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -48,6 +56,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.IconNFTMarketplace]: "icons/nft-marketplace.png",
     [BaseAssetKey.IconNeighbors]: "icons/neighbors.png",
     [BaseAssetKey.IconInventory]: "icons/inventory.png",
+    [BaseAssetKey.IconDaily]: "icons/daily.png",
 
     // shop Modals
     [BaseAssetKey.ModalShopAvatarShop]: "modals/shop/avatar-shop.png",
@@ -61,6 +70,13 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalShopBottomDecorator]: "modals/shop/bottom-decorator.png",
     [BaseAssetKey.ModalShopIconTabOn]: "modals/shop/icon-tab-on.png",
     [BaseAssetKey.ModalShopIconTabOff]: "modals/shop/icon-tab-off.png",
+
+    // Inventory Modals
+    [BaseAssetKey.ModalInventoryTopRibbon]: "modals/inventory/top-ribbon.png",
+    [BaseAssetKey.ModalInventoryBtnClose]: "modals/inventory/btn-close.png",
+    [BaseAssetKey.ModalInventoryCell]: "modals/inventory/cell.png",
+    [BaseAssetKey.ModalInventoryCellQuantity]: "modals/inventory/cell-quantity.png",
+    [BaseAssetKey.ModalInventoryWall]: "modals/inventory/wall.png",
 }
 
 // preload, for loading screen

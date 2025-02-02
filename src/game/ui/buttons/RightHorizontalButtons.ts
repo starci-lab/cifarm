@@ -8,38 +8,21 @@ export class RightHorizontalButtons extends HorizontalButtons {
     constructor(scene: Scene, config?: Buttons.IConfig) {
         super(scene, config)
 
-        // add nft button
+        // add inventory button
         this.addButton(this.createButton({
-            iconKey: BaseAssetKey.IconNFTMarketplace,
-            text: "NFT Marketplace",
+            iconKey: BaseAssetKey.IconInventory,
+            text: "Inventory",
             onClick: () => {
-                console.log("NFT")
+                this.scene.events.emit(EventName.OpenInventory, this)
             },
         }))
 
-        // add shop button
+        // add daily button
         this.addButton(this.createButton({
-            iconKey: BaseAssetKey.IconShop,
-            text: "Shop",
+            iconKey: BaseAssetKey.IconDaily,
+            text: "Daily",
             onClick: () => {
-                this.scene.events.emit(EventName.OpenShop, this)
-            },
-        }))
-        // add roadside stand button
-        this.addButton(this.createButton({
-            iconKey: BaseAssetKey.IconRoadsideStand,
-            text: "Roadside Stand",
-            onClick: () => {
-                console.log("Roadside Stand")
-            },
-        }))
-
-        // add neighbors button
-        this.addButton(this.createButton({
-            iconKey: BaseAssetKey.IconNeighbors,
-            text: "Neighbors",
-            onClick: () => {
-                console.log("Neighbors")
+                console.log("Daily")
             },
         }))
     }
