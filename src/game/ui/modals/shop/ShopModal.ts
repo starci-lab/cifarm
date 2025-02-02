@@ -4,7 +4,7 @@ import { ShopTabs } from "./ShopTabs"
 import { ContainerBaseConstructorParams } from "@/game/types"
 import { ShopContentSizer } from "./ShopContent"
 import { BaseText } from "../../elements"
-import { onGameObjectClick } from "../../utils/button"
+import { onAnimatedClick } from "../../utils"
 import { EventName } from "@/game/event-bus"
 import { IModal } from "../../../interfaces"
 
@@ -93,14 +93,15 @@ export class ShopModal extends Phaser.GameObjects.Container implements IModal {
         }
         this.closeButton.setInteractive()
         this.closeButton.on("pointerdown", () => {
-            onGameObjectClick({
+            onAnimatedClick({
                 gameObject: this.closeButton as Phaser.GameObjects.GameObject,
                 onClick: () => {
                     // hide the content
                     this.hideContent()
                     // emit the event
                     this.scene.events.emit(EventName.ModalClosed)
-                }
+                },
+                scene: this.scene,
             })
         })
         this.add(this.closeButton)

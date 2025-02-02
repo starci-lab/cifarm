@@ -9,7 +9,7 @@ import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { SizerBaseConstructorParams } from "../../../types"
 import { CropId } from "@/modules/entities"
 import { UISizer } from "../../UISizer"
-import { onLabelClick } from "../../utils/button"
+import { onAnimatedClick } from "../../utils"
 
 export class ShopContentSizer extends UISizer {
     // list of items
@@ -174,9 +174,8 @@ export class ShopContentSizer extends UISizer {
         // handle on click event
         if (onClick) {
             button.on("pointerdown", () => {
-                console.log("kici")
-                onLabelClick({
-                    label: button,
+                onAnimatedClick({
+                    gameObject: button,
                     onClick,
                     scene: this.scene,
                 })
