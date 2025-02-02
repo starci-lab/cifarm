@@ -2,7 +2,7 @@ import { BaseAssetKey } from "@/game/assets"
 import { BLACK_COLOR, } from "@/game/constants"
 import { ShopTabs } from "./ShopTabs"
 import { ContainerBaseConstructorParams } from "@/game/types"
-import { ShopContentSizer } from "./ShopContent"
+import { ShopContent } from "./ShopContent"
 import { BaseText } from "../../elements"
 import { onAnimatedClick } from "../../utils"
 import { EventName } from "@/game/event-bus"
@@ -18,7 +18,7 @@ export class ShopModal extends Phaser.GameObjects.Container implements IModal {
     private bottomBar: Phaser.GameObjects.Image | undefined
     private bottomDecorator: Phaser.GameObjects.Image | undefined
     private shopTabs: ShopTabs
-    private shopContentSizer: ShopContentSizer
+    private shopContent: ShopContent
     private closeButton: Phaser.GameObjects.Sprite | undefined
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
@@ -41,7 +41,7 @@ export class ShopModal extends Phaser.GameObjects.Container implements IModal {
         this.add(this.shopTabs)
 
         // draw the scrollable panel
-        this.shopContentSizer = new ShopContentSizer({
+        this.shopContent = new ShopContent({
             scene,
         }).hide()
 
@@ -108,10 +108,10 @@ export class ShopModal extends Phaser.GameObjects.Container implements IModal {
     }
 
     public showContent() {
-        this.shopContentSizer.setDepth(1).show()
+        this.shopContent.setDepth(1).show()
     }
 
     public hideContent() {
-        this.shopContentSizer.hide()
+        this.shopContent.hide()
     }
 }

@@ -11,7 +11,7 @@ import { CropId } from "@/modules/entities"
 import { UISizer } from "../../UISizer"
 import { onAnimatedClick } from "../../utils"
 
-export class ShopContentSizer extends UISizer {
+export class ShopContent extends UISizer {
     // list of items
     private scrollablePanelMap: Partial<Record<ShopTab, ScrollablePanel>> = {}
     // current shop tab
