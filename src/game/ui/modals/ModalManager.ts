@@ -4,6 +4,10 @@ import { ShopModal } from "./shop"
 import { ContainerBaseConstructorParams } from "../../types"
 import { InventoryModal } from "./inventory"
 
+// constants
+const OPENED_SCALE = 1
+const SCALE_TIME = 500
+
 export class ModalManager extends Phaser.GameObjects.Container {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
     private shopModal: ShopModal | undefined
@@ -88,9 +92,9 @@ export class ModalManager extends Phaser.GameObjects.Container {
         // prevent all interactions
         this.scene.tweens.add({
             targets: this.shopModal,
-            scaleX: 1,  // Final scale value (zoom in to normal size)
-            scaleY: 1,  // Final scale value (zoom in to normal size)
-            duration: 500, // Duration of the zoom effect (milliseconds)
+            scaleX: OPENED_SCALE,  // Final scale value (zoom in to normal size)
+            scaleY: OPENED_SCALE,  // Final scale value (zoom in to normal size)
+            duration: SCALE_TIME, // Duration of the zoom effect (milliseconds)
             ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
             onComplete: () => {
                 // Enable interactions after the animation is complete
@@ -112,14 +116,18 @@ export class ModalManager extends Phaser.GameObjects.Container {
         // this.inventoryModal?.disableInteractive()
         this.scene.tweens.add({
             targets: this.inventoryModal,
-            scaleX: 1,  // Final scale value (zoom in to normal size)
-            scaleY: 1,  // Final scale value (zoom in to normal size)
-            duration: 500, // Duration of the zoom effect (milliseconds)
+            scaleX: OPENED_SCALE,  // Final scale value (zoom in to normal size)
+            scaleY: OPENED_SCALE,  // Final scale value (zoom in to normal size)
+            duration: SCALE_TIME, // Duration of the zoom effect (milliseconds)
             ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
             onComplete: () => {
                 // Enable interactions after the animation is complete
                 //this.inventoryModal?.setInteractive()
             }
         })
+    }
+
+    private closeInventoryModal() {
+        this.inventoryModal?.setVisible(false).setActive(false)
     }
 }

@@ -1,4 +1,8 @@
-import { NinePatch2, Pinch, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+<<<<<<< HEAD
+import { Buttons, NinePatch2, Pinch, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+=======
+import { Buttons, NinePatch2 } from "phaser3-rex-plugins/templates/ui/ui-components"
+>>>>>>> f03f01bb9da820e963efa4400a5bf098e5fb3e19
 
 // base constructor params for Text
 export interface TextBaseConstructorParams {
@@ -23,16 +27,10 @@ export interface ContainerBaseConstructorParams {
     y: number
 }
 
-// base constructor params for Tilemap
-export interface TilemapBaseConstructorParams {
-    scene: Phaser.Scene, 
-    mapData?: Phaser.Tilemaps.MapData
-}
-
-// base constructor params for Pinch
-export interface PinchBaseConstructorParams {
-    scene: Phaser.Scene, 
-    config?: Pinch.IConfig
+// base constructor params for Button
+export interface HorizontalButtonBaseConstructorParams {
+    scene: Phaser.Scene
+    config?: Buttons.IConfig
 }
 
 // base constructor params for Sizer
