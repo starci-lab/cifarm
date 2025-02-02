@@ -25,4 +25,11 @@ export enum EventName {
     OpenShop = "open_shop",
     // change shop tab
     ShopTabSelected = "shop_tab_selected",
+
+    // open inventory
+    OpenInventory = "open_inventory",
+    // change inventory tab
+    InventoryTabSelected = "inventory_tab_selected",
+    // close inventory
+    CloseInventory = "close_inventory",
 }
