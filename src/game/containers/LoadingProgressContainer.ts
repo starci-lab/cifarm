@@ -2,8 +2,9 @@ import { sleep } from "@/modules/common"
 import { BootstrapAssetKey } from "../assets"
 import { v4 } from "uuid"
 import { FONT_DINOSAUR, TEXT_COLOR_1 } from "../constants"
+import { ConstructorParams, ContainerBaseConstructorParams } from "../types"
 
-export interface LoadingProgressParams {
+export interface LoadingProgressOptions {
   loadingTotal: number;
   steps?: number;
 }
@@ -17,13 +18,17 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
     private steps = 20
     private totalLoadingDuration = 500 // 0.5 seconds
 
-    constructor(
-        scene: Phaser.Scene,
-        x: number,
-        y: number,
-        { loadingTotal, steps }: LoadingProgressParams
-    ) {
+    constructor({
+        baseParams: { scene, x, y },
+        options,
+    }: ConstructorParams<
+    ContainerBaseConstructorParams,
+    LoadingProgressOptions
+  >) {
         super(scene, x, y)
+
+        const { loadingTotal, steps } = options
+
         this.steps = steps ?? this.steps
         // set the loading progress and total
         this.loadingTotal = loadingTotal
@@ -47,16 +52,17 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
     private numDots = 0
     private updateCount = 0
     update() {
-        //0.33 seconds
+    //0.33 seconds
         if (this.updateCount % 20 === 0) {
             this.numDots = (this.numDots + 1) % 4
         }
         const dots = ".".repeat(this.numDots)
         // update the loading bar
         this.text.setText(
-            `Loading${dots} (${((this.loadingProgress / this.loadingTotal) * 100).toFixed(
-                2
-            )}%)`
+            `Loading${dots} (${(
+                (this.loadingProgress / this.loadingTotal) *
+        100
+            ).toFixed(2)}%)`
         )
         this.updateCount++
     }
@@ -88,7 +94,9 @@ export class LoadingProgressContainer extends Phaser.GameObjects.Container {
         // declare a unique frame name
         const frameName = v4()
         // get the original texture
-        const originTexture = this.scene.textures.get(BootstrapAssetKey.LoadingFill)
+        const originTexture = this.scene.textures.get(
+            BootstrapAssetKey.LoadingFill
+        )
         // add the new frame to the texture
         const sourceImage = originTexture.getSourceImage()
         // add the new frame to the texture

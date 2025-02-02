@@ -1,9 +1,10 @@
 import { Scene } from "phaser"
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures.js"
+import { PinchBaseConstructorParams } from "../types"
 
 export class PinchInput extends Pinch {
     private scene: Scene
-    constructor(scene: Phaser.Scene) {
+    constructor({ scene }: PinchBaseConstructorParams) {
         super(scene, {
             enable: true
         })

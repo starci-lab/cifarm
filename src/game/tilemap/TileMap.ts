@@ -10,6 +10,7 @@ import {
 import { CACHE_PLACED_ITEM_TYPES } from "../constants"
 import { placedItemAssetMap } from "../assets"
 import { PlacedItemObject } from "./PlacedItemObject"
+import { TilemapBaseConstructorParams } from "../types"
 
 export class Tilemap extends GroundTilemap {
     // tileset map
@@ -22,8 +23,8 @@ export class Tilemap extends GroundTilemap {
     // place item objects map
     private readonly placedItemObjectMap: Record<string, PlacedItemObject> = {}
 
-    constructor(scene: Phaser.Scene) {
-        super(scene)
+    constructor(baseParams: TilemapBaseConstructorParams) {
+        super(baseParams)
 
         const itemLayer = this.getObjectLayer(LayerName.Item)
         if (!itemLayer) {

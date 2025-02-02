@@ -3,6 +3,7 @@ import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
 import { ContainerBaseConstructorParams } from "../../../types"
 
+// define the constants
 const SELECTED_SCALE = 1.1
 const UNSELECTED_SCALE = 0.9
 const SCALE_TIME = 500

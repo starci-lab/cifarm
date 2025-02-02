@@ -100,11 +100,15 @@ export class LoadingScene extends Scene {
 
         // create the loading progress container
         this.loadingProgressContainer = new LoadingProgressContainer(
-            this,
-            width / 2,
-            height * 0.85,
             {
-                loadingTotal: this.loadingTotal,
+                baseParams: {
+                    scene: this,
+                    x: width / 2,
+                    y: height * 0.85,
+                },
+                options: {
+                    loadingTotal: this.loadingTotal,
+                }
             }
         )
         // add the loading progress container to the scene

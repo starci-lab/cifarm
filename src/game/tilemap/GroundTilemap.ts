@@ -1,21 +1,25 @@
-import { Scene } from "phaser"
-import { WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT, GRASS_GID } from "./constants"
+import { WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT, GRASS_GID, SCALE } from "./constants"
 import { BaseTilemap } from "./BaseTilemap"
 import { LayerName, TilesetName } from "./types"
 import { BaseAssetKey } from "../assets"
+import { TilemapBaseConstructorParams } from "../types"
 
 export class GroundTilemap extends BaseTilemap {
     // create the ground layer
     protected groundLayer: Phaser.Tilemaps.TilemapLayer
 
     // constructor
-    constructor(scene: Scene) {
-        super(scene, {
-            width: WIDTH,
-            height: HEIGHT,
-            tileWidth: TILE_WIDTH,
-            tileHeight: TILE_HEIGHT,
-            objectLayerNames: [LayerName.Item],
+    constructor(baseParams: TilemapBaseConstructorParams) {
+        super({
+            baseParams,
+            options: {
+                width: WIDTH,
+                height: HEIGHT,
+                tileWidth: TILE_WIDTH,
+                tileHeight: TILE_HEIGHT,
+                objectLayerNames: [LayerName.Item],
+                scale: SCALE,
+            }
         })
 
         // set the ground layer

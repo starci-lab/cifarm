@@ -1,7 +1,7 @@
-import { Scene } from "phaser"
 import { v4 } from "uuid"
 import { HEIGHT, SCALE, TILE_HEIGHT, TILE_WIDTH, WIDTH } from "./constants"
 import { ExtraOffsets } from "../assets"
+import { ConstructorParams, TilemapBaseConstructorParams } from "../types"
 
 export type BaseTilemapOptions = Partial<{
   width: number;
@@ -17,22 +17,27 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
     // scale of the tilemap
     protected scale = SCALE
     // constructor
-    constructor(scene: Scene, options: BaseTilemapOptions = {}) {
-    // create a new map data
-        const mapData = new Phaser.Tilemaps.MapData({
-            width: options.width ?? WIDTH,
-            height: options.height ?? HEIGHT,
-            tileWidth: options.tileWidth ?? TILE_WIDTH,
-            tileHeight: options.tileHeight ?? TILE_HEIGHT,
-            orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
-            format: Phaser.Tilemaps.Formats.ARRAY_2D,
-            objects: options.objectLayerNames?.map(
-                (name) =>
-                    new Phaser.Tilemaps.ObjectLayer({
-                        name,
-                    })
-            ),
-        })
+    constructor({
+        baseParams: { scene, mapData },
+        options
+    }: ConstructorParams<TilemapBaseConstructorParams, BaseTilemapOptions>) {
+        // create a new map data
+        if (!mapData) {
+            mapData = new Phaser.Tilemaps.MapData({
+                width: options.width ?? WIDTH,
+                height: options.height ?? HEIGHT,
+                tileWidth: options.tileWidth ?? TILE_WIDTH,
+                tileHeight: options.tileHeight ?? TILE_HEIGHT,
+                orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
+                format: Phaser.Tilemaps.Formats.ARRAY_2D,
+                objects: options.objectLayerNames?.map(
+                    (name) =>
+                        new Phaser.Tilemaps.ObjectLayer({
+                            name,
+                        })
+                ),
+            })
+        }
         // call the super constructor
         super(scene, mapData)
 

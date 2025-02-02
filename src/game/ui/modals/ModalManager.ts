@@ -9,8 +9,6 @@ export class ModalManager extends Phaser.GameObjects.Container {
     private shopModal: ShopModal | undefined
     private inventoryModal: Phaser.GameObjects.Container | undefined
 
-    private isOn = false
-
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
 
@@ -26,76 +24,42 @@ export class ModalManager extends Phaser.GameObjects.Container {
             scene,
             x: 0,
             y: 0,
-        })
+        }).setVisible(false).setActive(false)
         this.add(this.shopModal)
-        // this.shopModal = new ShopModal(scene, 0, 0)
-        // this.add(this.shopModal)
         
         // listen for the open shop event
-        // this.scene.events.on(EventName.OpenShop, () => {
-        //     this.setOn()
-        //     //play animation on the shop modal
-        //     this.shopModal?.setScale(0) // Start with no scale (hidden)
-        //     // prevent all interactions
-        //     //this.shopModal?.disableInteractive()
-        //     this.scene.tweens.add({
-        //         targets: this.shopModal,
-        //         scaleX: 1,  // Final scale value (zoom in to normal size)
-        //         scaleY: 1,  // Final scale value (zoom in to normal size)
-        //         duration: 500, // Duration of the zoom effect (milliseconds)
-        //         ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
-        //         onComplete: () => {
-        //             // Enable interactions after the animation is complete
-        //             // this.shopModal?.setInteractive()
-        //         }
-        //     })
-            
-        // })
+        this.scene.events.on(EventName.OpenShop, () => {
+            this.openShopModal()
+        })
 
         // Inventory Modal
         this.inventoryModal = new InventoryModal({
             scene,
             x: 0,
             y: 0,
-        })
+        }).setVisible(false).setActive(false)
         this.add(this.inventoryModal)
 
         // listen for the open inventory event
         this.scene.events.on(EventName.OpenInventory, () => {
-            this.setOn()
-            //play animation on the inventory modal
-            this.inventoryModal?.setScale(0) // Start with no scale (hidden)
-            // prevent all interactions
-            // this.shopModal?.disableInteractive()
-            // this.inventoryModal?.disableInteractive()
-            this.scene.tweens.add({
-                targets: this.inventoryModal,
-                scaleX: 1,  // Final scale value (zoom in to normal size)
-                scaleY: 1,  // Final scale value (zoom in to normal size)
-                duration: 500, // Duration of the zoom effect (milliseconds)
-                ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
-                onComplete: () => {
-                    // Enable interactions after the animation is complete
-                    //this.inventoryModal?.setInteractive()
-                }
-            })
+            this.openInventoryModal()
         })
 
         // listen for the close inventory event
         this.scene.events.on(EventName.CloseInventory, () => {
             this.scene.tweens.add({
                 targets: this.inventoryModal,
-                scaleX: 0,  // Final scale value (zoom in to normal size)
-                scaleY: 0,  // Final scale value (zoom in to normal size)
+                scaleX: 0.2,  // Final scale value (zoom in to normal size)
+                scaleY: 0.2,  // Final scale value (zoom in to normal size)
                 duration: 500, // Duration of the zoom effect (milliseconds)
                 ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
                 onComplete: () => {
-                    this.isOn = false
-                    this.setActive(false).setVisible(false)
+                    this.setOff()
                 }
             })
         })
 
+        // close the modal manager by default
         this.setActive(false).setVisible(false)
     }
 
@@ -104,8 +68,58 @@ export class ModalManager extends Phaser.GameObjects.Container {
         //this.inventoryModal?.shutdown()
     }
 
-    public setOn() {
-        this.isOn = true
+    // set the modal manager to be active and visible
+    private setOn() {
         this.setActive(true).setVisible(true)
+    }
+
+    // set the modal manager to be inactive and invisible
+    private setOff() {
+        this.setActive(false).setVisible(false)
+    }
+
+    private openShopModal() {
+        // set the modal manager to be active and visible
+        this.setOn()
+        // set the shop modal to be active and visible
+        this.shopModal?.setActive(true).setVisible(true)
+        //play animation on the shop modal
+        this.shopModal?.setScale(0) // Start with no scale (hidden)
+        // prevent all interactions
+        //this.shopModal?.disableInteractive()
+        this.scene.tweens.add({
+            targets: this.shopModal,
+            scaleX: 1,  // Final scale value (zoom in to normal size)
+            scaleY: 1,  // Final scale value (zoom in to normal size)
+            duration: 500, // Duration of the zoom effect (milliseconds)
+            ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
+            onComplete: () => {
+                // Enable interactions after the animation is complete
+                // this.shopModal?.setInteractive()
+            }
+        })
+    }
+
+    private openInventoryModal() {
+        // set the modal manager to be active and visible
+        this.setOn()
+        // set the shop modal to be active and visible
+        this.inventoryModal?.setActive(true).setVisible(true)
+        //play animation on the inventory modal
+        this.inventoryModal?.setScale(0) // Start with no scale (hidden)
+        // prevent all interactions
+        // this.shopModal?.disableInteractive()
+        // this.inventoryModal?.disableInteractive()
+        this.scene.tweens.add({
+            targets: this.inventoryModal,
+            scaleX: 1,  // Final scale value (zoom in to normal size)
+            scaleY: 1,  // Final scale value (zoom in to normal size)
+            duration: 500, // Duration of the zoom effect (milliseconds)
+            ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
+            onComplete: () => {
+                // Enable interactions after the animation is complete
+                //this.inventoryModal?.setInteractive()
+            }
+        })
     }
 }

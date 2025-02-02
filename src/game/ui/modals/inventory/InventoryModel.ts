@@ -3,7 +3,7 @@ import { BaseAssetKey } from "@/game/assets"
 import { InventoryTabs } from "./InventoryTabs"
 import { FONT_DINOSAUR, STROKE_COLOR_1 } from "@/game/constants"
 import { EventName } from "@/game/event-bus"
-import { ContainerBaseConstructorParams } from "@/game/types"
+import { ContainerBaseConstructorParams } from "../../../types"
 
 export class InventoryModal extends Phaser.GameObjects.Container {
     private wall: Phaser.GameObjects.Image | undefined

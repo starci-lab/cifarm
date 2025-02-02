@@ -28,9 +28,13 @@ export class GameplayScene extends Scene
 
     create ()
     {   
-        this.tileMap = new Tilemap(this)
+        this.tileMap = new Tilemap({
+            scene: this
+        })
         // this.camera = new BaseCamera(this)
-        this.pinch = new PinchInput(this)
+        this.pinch = new PinchInput({
+            scene: this
+        })
         this.mouseInput = new MouseInput(this)
     }
 }
