@@ -1,7 +1,7 @@
-import { Scene } from "phaser"
 import { ShopTab } from "./types"
 import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
+import { ContainerBaseConstructorParams } from "../../../types"
 
 const SELECTED_SCALE = 1.1
 const UNSELECTED_SCALE = 0.9
@@ -13,7 +13,7 @@ export class ShopTabs extends Phaser.GameObjects.Container {
     // private property to store the tab map
     private tabMap: Partial<Record<ShopTab, Phaser.GameObjects.Container>> = {}
     
-    constructor(scene: Scene, x: number, y: number)
+    constructor({ scene, x, y }: ContainerBaseConstructorParams)
     {
         super(scene, x, y)
         // add the buttons
@@ -22,7 +22,7 @@ export class ShopTabs extends Phaser.GameObjects.Container {
         }
 
         // thus, we need layout the tabs
-        this.layout()
+        this.layoutTabs()
 
         this.on(EventName.ShopTabSelected, (shopTab: ShopTab) => {
             // turn off the previous selected tab
@@ -137,7 +137,7 @@ export class ShopTabs extends Phaser.GameObjects.Container {
     }
 
     // layout the tabs
-    private layout() {  
+    private layoutTabs() {  
         let count = 0
         for (const [, value] of Object.entries(this.tabMap)) {
             // get the width of the tab

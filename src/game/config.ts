@@ -37,7 +37,7 @@ const config: Phaser.Types.Core.GameConfig = {
                 key: "rexUI",
                 plugin: UIPlugin,
                 mapping: "rexUI",
-            },
+            }
         ],
     },
     scene: [BootstrapScene, LoadingScene, GameplayScene, UIScene],

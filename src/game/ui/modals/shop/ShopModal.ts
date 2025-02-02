@@ -1,6 +1,8 @@
 import { BaseAssetKey } from "@/game/assets"
 import { BLACK_COLOR, FONT_DINOSAUR, STROKE_COLOR_1 } from "@/game/constants"
 import { ShopTabs } from "./ShopTabs"
+import { ShopItemScrollablePanel } from "./ShopItemScrollablePanel"
+import { ContainerBaseConstructorParams } from "@/game/types"
 
 export class ShopModal extends Phaser.GameObjects.Container {
     private wall: Phaser.GameObjects.Image | undefined
@@ -12,8 +14,9 @@ export class ShopModal extends Phaser.GameObjects.Container {
     private bottomBar: Phaser.GameObjects.Image | undefined
     private bottomDecorator: Phaser.GameObjects.Image | undefined
     private shopTabs: ShopTabs
+    private shopItemScrollablePanel: ShopItemScrollablePanel
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
 
         // add the layouts
@@ -25,8 +28,21 @@ export class ShopModal extends Phaser.GameObjects.Container {
         this.add(this.wall)
 
         // draw the shop tabs
-        this.shopTabs = new ShopTabs(scene, 0, 0).setPosition(-width / 2 + 20, -580)
+        this.shopTabs = new ShopTabs({
+            scene,
+            x: 0,
+            y: -580,
+        }).setPosition(-width / 2 + 20, -580)
         this.add(this.shopTabs)
+
+        // draw the scrollable panel
+        this.shopItemScrollablePanel = new ShopItemScrollablePanel({
+            scene,
+            x: 0,
+            y: 0,
+        })
+        this.add(this.shopItemScrollablePanel)
+        this.shopItemScrollablePanel.layout()
 
         this.topDecorator = scene.add
             .image(0, -580, BaseAssetKey.ModalShopTopDecorator)

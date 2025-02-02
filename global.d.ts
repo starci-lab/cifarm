@@ -9,3 +9,4 @@ declare module "phaser" {
     rexUI: RexUIPlugin;
   }
 }
+

@@ -1,6 +1,7 @@
 import { EventName } from "@/game/event-bus"
 import { BLACK_COLOR } from "../../constants"
 import { ShopModal } from "./shop"
+import { ContainerBaseConstructorParams } from "../../types"
 
 export class ModalManager extends Phaser.GameObjects.Container {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
@@ -8,7 +9,7 @@ export class ModalManager extends Phaser.GameObjects.Container {
 
     private isOn = false
 
-    constructor(scene: Phaser.Scene, x: number, y: number) {
+    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
 
         // get the width and height of the game
@@ -19,7 +20,11 @@ export class ModalManager extends Phaser.GameObjects.Container {
             .setInteractive()
         this.add(this.backdrop)
 
-        this.shopModal = new ShopModal(scene, 0, 0)
+        this.shopModal = new ShopModal({
+            scene,
+            x: 0,
+            y: 0,
+        })
         this.add(this.shopModal)
         
         this.scene.events.on(EventName.OpenShop, () => {
@@ -27,7 +32,7 @@ export class ModalManager extends Phaser.GameObjects.Container {
             //play animation on the shop modal
             this.shopModal?.setScale(0) // Start with no scale (hidden)
             // prevent all interactions
-            //this.shopModal?.disableInteractive()
+            // this.shopModal?.disableInteractive()
             this.scene.tweens.add({
                 targets: this.shopModal,
                 scaleX: 1,  // Final scale value (zoom in to normal size)

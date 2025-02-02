@@ -1,9 +1,14 @@
 export const CONTAINER_ID = "container"
 
+// text colors
+
 // brown
 export const TEXT_COLOR_1 = "#553320"
 
-// black
+// white
+export const TEXT_COLOR_2 = "#ffffff"
+
+// stroke colors
 export const STROKE_COLOR_1 = "#000000"
 
 // dinosaur
