@@ -2,7 +2,7 @@ import { WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT, GRASS_GID, SCALE } from "./cons
 import { BaseTilemap } from "./BaseTilemap"
 import { LayerName, TilesetName } from "./types"
 import { BaseAssetKey } from "../assets"
-import { TilemapBaseConstructorParams } from "../types/constructor-params/rexui"
+import { TilemapBaseConstructorParams } from "../types"
 
 export class GroundTilemap extends BaseTilemap {
     // create the ground layer

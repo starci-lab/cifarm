@@ -15,3 +15,9 @@ export interface TextBaseConstructorParams {
     // optional style
     style?: Phaser.Types.GameObjects.Text.TextStyle
 }
+
+// base constructor for Tilemap
+export interface TilemapBaseConstructorParams {
+    scene: Phaser.Scene
+    mapData?: Phaser.Tilemaps.MapData
+}

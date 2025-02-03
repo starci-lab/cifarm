@@ -1,6 +1,6 @@
 import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { FONT_DINOSAUR, STROKE_COLOR_1 } from "../../constants"
-import { ConstructorParams, HorizontalButtonBaseConstructorParams } from "../../types/constructor-params/rexui"
+import { ConstructorParams, ButtonsBaseConstructorParams } from "../../types"
 
 export interface CreateButtonParams {
     iconKey: string;
@@ -26,7 +26,7 @@ export abstract class HorizontalButtons extends Buttons {
     constructor({
         baseParams: { scene, config },
         options,
-    }: ConstructorParams<HorizontalButtonBaseConstructorParams, HorizontalButtonsOptions>) {
+    }: ConstructorParams<ButtonsBaseConstructorParams, HorizontalButtonsOptions>) {
         const { orientation, space } = options
 
         super(scene, {

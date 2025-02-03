@@ -1,16 +1,13 @@
 import { BaseAssetKey } from "../../assets"
 import { EventName } from "../../event-bus"
-import { HorizontalButtonBaseConstructorParams } from "../../types/constructor-params/rexui"
+import { ButtonsBaseConstructorParams } from "../../types"
 import { ModalName } from "../modals"
 import { HorizontalButtons } from "./HorizontalButtons"
 
 export class LeftHorizontalButtons extends HorizontalButtons {
-    constructor({
-        scene,
-        config,
-    }: HorizontalButtonBaseConstructorParams) {
+    constructor(baseParams: ButtonsBaseConstructorParams) {
         super({
-            baseParams: { scene, config },
+            baseParams,
             options: {
                 orientation: "y",
                 space: {
