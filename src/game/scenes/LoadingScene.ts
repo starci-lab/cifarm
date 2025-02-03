@@ -2,14 +2,16 @@ import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import {
     BootstrapAssetKey,
+    loadAnimalAssets,
     loadBaseAssets,
+    loadBuildingAssets,
     loadCropAssets,
     loadPlacedItemAssets,
 } from "../assets"
 import { LoadingProgressContainer } from "../containers"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
-import { CACHE_PLACED_ITEM_TYPES } from "../constants"
+import { CacheKey } from "../types"
 
 export class LoadingScene extends Scene {
     // loading progress
@@ -44,9 +46,12 @@ export class LoadingScene extends Scene {
         //listen for static data loaded event
         EventBus.on(
             EventName.StaticDataLoaded,
-            ({ placedItemTypes }: QueryStaticResponse) => {
+            ({ placedItemTypes, crops, animals, buildings }: QueryStaticResponse) => {
                 //store the static data in the cache
-                this.cache.obj.add(CACHE_PLACED_ITEM_TYPES, placedItemTypes)
+                this.cache.obj.add(CacheKey.PlacedItems, placedItemTypes)
+                this.cache.obj.add(CacheKey.Animals, animals)
+                this.cache.obj.add(CacheKey.Crops, crops)
+                this.cache.obj.add(CacheKey.Buildings, buildings)
                 //load the static data
                 this.loadStaticData()
             }
@@ -70,6 +75,8 @@ export class LoadingScene extends Scene {
         loadBaseAssets(this)
         loadCropAssets(this)
         loadPlacedItemAssets(this)
+        loadAnimalAssets(this)
+        loadBuildingAssets(this)
     }
 
     create() {

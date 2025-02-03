@@ -16,6 +16,9 @@ export const FONT_DINOSAUR = "dinosaur"
 
 // cache key for static data
 export const CACHE_PLACED_ITEM_TYPES = "placed-item-types"
+export const CACHE_CROPS = "crops"
+export const CACHE_ANIMALS = "animals"
+export const CACHE_BUILDINGS = "buildings"
 
 // colors
 export const BLACK_COLOR = 0x000000

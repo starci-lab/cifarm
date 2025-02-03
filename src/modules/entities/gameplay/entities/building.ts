@@ -1,9 +1,9 @@
-import { AnimalType } from "../enums"
+import { AnimalType, BuildingId } from "../enums"
 import { UpgradeEntity } from "./upgrade"
 import { PlacedItemTypeEntity } from "./placed-item-type"
 
 export interface BuildingEntity {
-    id: string
+    id: BuildingId
     createdAt: Date
     updatedAt: Date
     deletedAt: Date

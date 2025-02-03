@@ -9,9 +9,11 @@ import { onGameObjectClick } from "../../utils"
 const SCALE_DOWN_VALUE = 0.8
 const SCALE_PEAK_VALUE = 1
 
+export const defaultShopTab = ShopTab.Seeds
+
 export class ShopTabs extends Phaser.GameObjects.Container {
     // private property to store the selected tab
-    private selectedTab: ShopTab = ShopTab.Seeds
+    private selectedTab: ShopTab = defaultShopTab
     // private property to store the tab map
     private tabMap: Partial<Record<ShopTab, Phaser.GameObjects.Container>> = {}
 
@@ -93,7 +95,7 @@ export class ShopTabs extends Phaser.GameObjects.Container {
     }
 
     // method to create a button
-    public createTab(shopTab: ShopTab = ShopTab.Seeds) {
+    public createTab(shopTab: ShopTab = defaultShopTab) {
         const tab = this.scene.add.container(0, 0)
         // create the icon tab on
         const iconTabOn = this.scene.add

@@ -7,10 +7,9 @@ import {
     PlacedItemTypeEntity,
     PlacedItemTypeId,
 } from "@/modules/entities"
-import { CACHE_PLACED_ITEM_TYPES } from "../constants"
 import { placedItemAssetMap } from "../assets"
 import { PlacedItemObject } from "./PlacedItemObject"
-import { TilemapBaseConstructorParams } from "../types"
+import { CacheKey, TilemapBaseConstructorParams } from "../types"
 
 export class Tilemap extends GroundTilemap {
     // tileset map
@@ -133,7 +132,7 @@ export class Tilemap extends GroundTilemap {
         placedItemTypeId: PlacedItemTypeId
     ): PlacedItemTypeEntity {
         const placedItemTypes = this.scene.cache.obj.get(
-            CACHE_PLACED_ITEM_TYPES
+            CacheKey.PlacedItems
         ) as Array<PlacedItemTypeEntity>
         const found = placedItemTypes.find((type) => type.id === placedItemTypeId)
         if (!found) {

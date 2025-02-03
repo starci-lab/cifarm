@@ -9,7 +9,7 @@ export enum AnimalId {
 // Building Enum
 export enum BuildingId {
     Coop = "coop",
-    Pasture = "pasture",
+    Barn = "barn",
     Home = "home"
 }
 

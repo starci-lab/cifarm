@@ -1,10 +1,10 @@
-import { AnimalType } from "../enums"
+import { AnimalId, AnimalType } from "../enums"
 import { ProductEntity } from "./product"
 import { InventoryTypeEntity } from "./inventory-type"
 import { PlacedItemTypeEntity } from "./placed-item-type"
 
 export interface AnimalEntity {
-    id: string
+    id: AnimalId
     createdAt: Date
     updatedAt: Date
     deletedAt: Date

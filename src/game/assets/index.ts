@@ -1,4 +1,6 @@
 export * from "./base"
-export * from "./crop"
+export * from "./crops"
 export * from "./placed-item"
 export * from "./types"
+export * from "./animals"
+export * from "./buildings"

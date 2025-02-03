@@ -3,42 +3,87 @@ import {
     ScrollablePanel,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { ShopTab } from "./types"
-import { BaseAssetKey, cropAssetMap, getCropSeedAssetKey } from "@/game/assets"
+import {
+    AnimalAge,
+    animalAssetMap,
+    BaseAssetKey,
+    buildingAssetMap,
+    cropAssetMap,
+    getAnimalAssetKey,
+    getBuildingAssetKey,
+    getCropSeedAssetKey,
+} from "../../../assets"
 import { adjustTextMinLength } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
-import { SizerBaseConstructorParams } from "../../../types"
-import { CropId } from "@/modules/entities"
+import { CacheKey, SizerBaseConstructorParams } from "../../../types"
+import { AnimalEntity, BuildingEntity, CropEntity } from "@/modules/entities"
 import { UISizer } from "../../UISizer"
 import { onGameObjectClick } from "../../utils"
+import { defaultShopTab } from "./ShopTabs"
+import { EventName } from "@/game/event-bus"
+import { v4 } from "uuid"
 
 export class ShopContent extends UISizer {
     // list of items
     private scrollablePanelMap: Partial<Record<ShopTab, ScrollablePanel>> = {}
-    // current shop tab
-    private currentShopTab: ShopTab | undefined
+
+    // data
+    private animals: Array<AnimalEntity> = []
+    private crops: Array<CropEntity> = []
+    private buildings: Array<BuildingEntity> = []
+
+    // previous selected tab
+    private selectedShopTab: ShopTab = defaultShopTab
 
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
 
-        this.createScrollablePanels()
+        // load animals
+        this.animals = this.scene.cache.obj.get(CacheKey.Animals)
+        this.animals = this.animals.filter((animal) => animal.availableInShop)
+
+        // load crops
+        this.crops = this.scene.cache.obj.get(CacheKey.Crops)
+        this.crops = this.crops.filter((crop) => crop.availableInShop)
+
+        // load buildings
+        this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
+        this.buildings = this.buildings.filter((building) => building.availableInShop)
+
+        // create the scrollable panel
+        for (const shopTab of Object.values(ShopTab)) {
+            this.createScrollablePanel(shopTab)
+        }
+
+        // listen for the select shop tab event
+        this.scene.events.on(EventName.SelectShopTab, (shopTab: ShopTab) => {
+            this.onShopTabSelected(shopTab)
+        })
     }
 
-    //create seed scrollable panel
-    private createScrollablePanels() {
-    //list of item cards
-        const itemCards: Array<OverlapSizer> = []
-        for (const cropId of Object.values(CropId)) {
-            // get the image
-            const itemCard = this.createItemCard({
-                assetKey: getCropSeedAssetKey(cropId),
-                title: cropAssetMap[cropId].name,
-                onClick: () => {
-                    console.log("Clicked on crop", cropId)
-                }
-            })
-            itemCards.push(itemCard)
-            // add the item card to the scrollable panel
+    // handle the selected shop tab
+    private onShopTabSelected(shopTab: ShopTab) {
+    // hide the previous scrollable panel
+        const previousScrollablePanel =
+      this.scrollablePanelMap[this.selectedShopTab]
+        if (!previousScrollablePanel) {
+            throw new Error("Previous selected tab is not found")
         }
+        previousScrollablePanel.hide()
+
+        // show the selected scrollable panel
+        const scrollablePanel = this.scrollablePanelMap[shopTab]
+        if (!scrollablePanel) {
+            throw new Error("Selected tab is not found")
+        }
+        scrollablePanel.show()
+        // set the selected tab
+        this.selectedShopTab = shopTab
+    }
+
+    private createScrollablePanel(shopTab: ShopTab) {
+    // get the item cards
+        const itemCards = this.createItemCards(shopTab)
         // create a sizer to hold all the item cards
         const itemCardsSizer = this.scene.rexUI.add
             .sizer({
@@ -68,10 +113,117 @@ export class ShopContent extends UISizer {
             })
             .layout()
 
-        // add the scrollable panel to the map
-        this.scrollablePanelMap[ShopTab.Seeds] = scrollablePanel
+        // add the scrollable panel to the map and the sizer
+        this.scrollablePanelMap[shopTab] = scrollablePanel
         this.add(scrollablePanel)
-        return scrollablePanel
+        // hide the scrollable panel if it is not the default shop tab
+        if (shopTab !== this.selectedShopTab) {
+            scrollablePanel.hide()
+        }
+    }
+
+    //create item cards based on the shop tab
+    private createItemCards(shopTab: ShopTab = defaultShopTab) {
+    //list of item cards
+        const itemCards: Array<OverlapSizer> = []
+        switch (shopTab) {
+        case ShopTab.Seeds: {
+            for (const { id, price } of this.crops) {
+                // get the image
+                const itemCard = this.createItemCard({
+                    assetKey: getCropSeedAssetKey(id),
+                    title: cropAssetMap[id].name,
+                    onClick: () => {
+                        console.log("Clicked on crop", id)
+                    },
+                    price,
+                })
+                itemCards.push(itemCard)
+                // add the item card to the scrollable panel
+            }
+            break
+        }
+        case ShopTab.Animals: {
+            for (const { id, price } of this.animals) {
+                // get the image
+                const itemCard = this.createItemCard({
+                    assetKey: getAnimalAssetKey({ age: AnimalAge.Baby, animalId: id }),
+                    title: animalAssetMap[id].name,
+                    onClick: () => {
+                        console.log("Clicked on animal", id)
+                    },
+                    price,
+                })
+                itemCards.push(itemCard)
+                // add the item card to the scrollable panel
+            }
+            break
+        }
+        case ShopTab.Buildings: {
+            for (const { id, price } of this.buildings) {
+                // get the image
+                const itemCard = this.createItemCard({
+                    assetKey: getBuildingAssetKey(id),
+                    title: id,
+                    onClick: () => {
+                        console.log("Clicked on building", id)
+                    },
+                    price,
+                    scaleX: 0.5,
+                    scaleY: 0.5,
+                })
+                itemCards.push(itemCard)
+                // add the item card to the scrollable panel
+            }
+            break
+        }
+        case ShopTab.Decorations:
+            for (const { id, price } of this.buildings) {
+                // get the image
+                const itemCard = this.createItemCard({
+                    assetKey: getBuildingAssetKey(id),
+                    title: buildingAssetMap[id].name,
+                    onClick: () => {
+                        console.log("Clicked on building", id)
+                    },
+                    price,
+                })
+                itemCards.push(itemCard)
+                // add the item card to the scrollable panel
+            }
+            break
+        case ShopTab.Others:
+            for (const { id, price } of this.buildings) {
+                // get the image
+                const itemCard = this.createItemCard({
+                    assetKey: getBuildingAssetKey(id),
+                    title: id,
+                    onClick: () => {
+                        console.log("Clicked on building", id)
+                    },
+                    price,
+                })
+                itemCards.push(itemCard)
+                // add the item card to the scrollable panel
+            }
+            break
+        case ShopTab.Trees:
+            for (const { id, price } of this.buildings) {
+                // get the image
+                const itemCard = this.createItemCard({
+                    assetKey: getBuildingAssetKey(id),
+                    title: id,
+                    onClick: () => {
+                        console.log("Clicked on building", id)
+                    },
+                    price,
+                })
+                itemCards.push(itemCard)
+                // add the item card to the scrollable panel
+            }
+            break
+        }
+        return itemCards
     }
 
     //create the item card
@@ -80,15 +232,25 @@ export class ShopContent extends UISizer {
         title,
         iconOffset,
         price,
-        onClick
+        onClick,
+        scaleX = 1,
+        scaleY = 1,
     }: CreateItemCardParams) {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
 
         // create the components
-        const shopItemCardImage = this.scene.add.image(0, 0, BaseAssetKey.ModalShopItemCard)
+        const shopItemCardImage = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.ModalShopItemCard
+        )
 
-        const cardTitleImage = this.scene.add.image(0, 0, BaseAssetKey.ModalShopCardTitle)
+        const cardTitleImage = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.ModalShopCardTitle
+        )
 
         const titleText = new BaseText({
             baseParams: {
@@ -117,7 +279,9 @@ export class ShopContent extends UISizer {
             BaseAssetKey.ModalShopAvatarShop
         )
         iconContainer.add(avatarShop)
-        const icon = this.scene.add.image(x, y, assetKey).setPosition(x, y)
+
+        // resize the icon, the icon is resized based on the scale
+        const icon = this.scene.add.image(x, y, assetKey).setScale(scaleX, scaleY)
         iconContainer.add(icon)
         // create the icon label
         const iconLabel = this.scene.rexUI.add
@@ -143,7 +307,11 @@ export class ShopContent extends UISizer {
             })
 
         // create button
-        const buttonPriceImage = this.scene.add.image(0, 0, BaseAssetKey.ModalShopButtonPrice)
+        const buttonPriceImage = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.ModalShopButtonPrice
+        )
         const priceText = new BaseText({
             baseParams: {
                 scene: this.scene,
@@ -160,8 +328,8 @@ export class ShopContent extends UISizer {
             },
         })
         this.scene.add.existing(priceText)
-        // button 
-        const button = this.scene.rexUI.add 
+        // button
+        const button = this.scene.rexUI.add
             .label({
                 width: buttonPriceImage.width,
                 height: buttonPriceImage.height,
@@ -170,7 +338,7 @@ export class ShopContent extends UISizer {
                 align: "center",
             })
             .setInteractive()
-            
+
         // handle on click event
         if (onClick) {
             button.on("pointerdown", () => {
@@ -190,11 +358,12 @@ export class ShopContent extends UISizer {
             })
             .addBackground(shopItemCardImage)
             .add(
-                this.scene.rexUI.add.sizer({
-                    space: {
-                        item: 20,
-                    }
-                })
+                this.scene.rexUI.add
+                    .sizer({
+                        space: {
+                            item: 20,
+                        },
+                    })
                     .add(iconLabel, {
                         align: "left-top",
                         expand: false,
@@ -225,9 +394,13 @@ export interface CreateItemCardParams {
   // offsets of the icon
   iconOffset?: IconOffsets;
   // price
-  price?: string;
+  price?: number;
   // on click event
   onClick?: () => void;
+  // scale X
+  scaleX?: number;
+  // scale Y
+  scaleY?: number;
 }
 
 export interface IconOffsets {

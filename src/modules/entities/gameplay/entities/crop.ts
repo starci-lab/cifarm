@@ -1,9 +1,10 @@
 import { ProductEntity } from "./product"
 import { InventoryTypeEntity } from "./inventory-type"
 import { SpinPrizeEntity } from "./spin-prize"
+import { CropId } from "../enums"
 
 export interface CropEntity {
-    id: string
+    id: CropId
     createdAt: Date
     updatedAt: Date
     deletedAt: Date
