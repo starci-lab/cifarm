@@ -1,6 +1,6 @@
 import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { FONT_DINOSAUR, STROKE_COLOR_1 } from "../../constants"
-import { ConstructorParams, HorizontalButtonBaseConstructorParams } from "../../types"
+import { ConstructorParams, HorizontalButtonBaseConstructorParams } from "../../types/constructor-params/rexui"
 
 export interface CreateButtonParams {
     iconKey: string;

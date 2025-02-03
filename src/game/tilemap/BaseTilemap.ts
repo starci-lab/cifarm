@@ -1,7 +1,7 @@
 import { v4 } from "uuid"
 import { HEIGHT, SCALE, TILE_HEIGHT, TILE_WIDTH, WIDTH } from "./constants"
 import { ExtraOffsets } from "../assets"
-import { ConstructorParams, TilemapBaseConstructorParams } from "../types"
+import { ConstructorParams, TilemapBaseConstructorParams } from "../types/constructor-params/rexui"
 
 export type BaseTilemapOptions = Partial<{
   width: number;

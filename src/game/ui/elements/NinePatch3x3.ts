@@ -2,7 +2,7 @@ import NinePatch2 from "phaser3-rex-plugins/plugins/ninepatch2.js"
 import {
     ConstructorParams,
     NinePatch2BaseConstructorParams,
-} from "../../types"
+} from "../../types/constructor-params/rexui"
 
 // NinePatch3x3Options
 export interface NinePatch3x3Options {

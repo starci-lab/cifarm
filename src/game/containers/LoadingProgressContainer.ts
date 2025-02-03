@@ -2,7 +2,7 @@ import { sleep } from "@/modules/common"
 import { BootstrapAssetKey } from "../assets"
 import { v4 } from "uuid"
 import { FONT_DINOSAUR, TEXT_COLOR_1 } from "../constants"
-import { ConstructorParams, ContainerBaseConstructorParams } from "../types"
+import { ConstructorParams, ContainerBaseConstructorParams } from "../types/constructor-params/rexui"
 
 export interface LoadingProgressOptions {
   loadingTotal: number;

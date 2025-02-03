@@ -10,7 +10,7 @@ import {
 import { CACHE_PLACED_ITEM_TYPES } from "../constants"
 import { placedItemAssetMap } from "../assets"
 import { PlacedItemObject } from "./PlacedItemObject"
-import { TilemapBaseConstructorParams } from "../types"
+import { TilemapBaseConstructorParams } from "../types/constructor-params/rexui"
 
 export class Tilemap extends GroundTilemap {
     // tileset map

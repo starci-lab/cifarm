@@ -6,10 +6,10 @@ import { ShopTab } from "./types"
 import { BaseAssetKey, cropAssetMap, getCropSeedAssetKey } from "@/game/assets"
 import { adjustTextMinLength } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
-import { SizerBaseConstructorParams } from "../../../types"
+import { SizerBaseConstructorParams } from "../../../types/constructor-params/rexui"
 import { CropId } from "@/modules/entities"
 import { UISizer } from "../../UISizer"
-import { onAnimatedClick } from "../../utils"
+import { onGameObjectClick } from "../../utils"
 
 export class ShopContent extends UISizer {
     // list of items
@@ -174,7 +174,7 @@ export class ShopContent extends UISizer {
         // handle on click event
         if (onClick) {
             button.on("pointerdown", () => {
-                onAnimatedClick({
+                onGameObjectClick({
                     gameObject: button,
                     onClick,
                     scene: this.scene,

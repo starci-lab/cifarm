@@ -1,6 +1,6 @@
 import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
-import { HorizontalButtonBaseConstructorParams } from "@/game/types"
+import { HorizontalButtonBaseConstructorParams } from "@/game/types/constructor-params/rexui"
 import { HorizontalButtons } from "./HorizontalButtons"
 
 export class RightHorizontalButtons extends HorizontalButtons {

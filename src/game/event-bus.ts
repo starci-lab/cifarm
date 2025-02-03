@@ -23,10 +23,12 @@ export enum EventName {
 
     // open shop
     OpenShop = "open_shop",
-    // create shop content
-    CreateShopContent = "create_shop_content",
-    // change shop tab
-    ShopTabSelected = "shop_tab_selected",
+    CloseShop = "close_shop",
+    SelectShopTab = "select_shop_tab",
+
+    //
+    OpenModal = "open_modal",
+    CloseModal = "close_modal",
 
     // open inventory
     OpenInventory = "open_inventory",

@@ -1,6 +1,7 @@
 import { BaseAssetKey } from "../../assets"
 import { EventName } from "../../event-bus"
-import { HorizontalButtonBaseConstructorParams } from "../../types"
+import { HorizontalButtonBaseConstructorParams } from "../../types/constructor-params/rexui"
+import { ModalName } from "../modals"
 import { HorizontalButtons } from "./HorizontalButtons"
 
 export class LeftHorizontalButtons extends HorizontalButtons {
@@ -32,7 +33,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconShop,
             text: "Shop",
             onClick: () => {
-                this.scene.events.emit(EventName.OpenShop, this)
+                this.scene.events.emit(EventName.OpenModal, ModalName.Shop)
             },
         }))
         // add roadside stand button

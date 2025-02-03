@@ -21,3 +21,4 @@ export const CACHE_PLACED_ITEM_TYPES = "placed-item-types"
 export const BLACK_COLOR = 0x000000
 
 export const SCALE_TIME = 500 // 0.5 seconds
+export const SCALE_PEAK_VALUE = 1.1 // 10% increase

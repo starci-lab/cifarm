@@ -1,21 +1,21 @@
-import { SCALE_TIME } from "@/game/constants"
+import { SCALE_PEAK_VALUE, SCALE_TIME } from "@/game/constants"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 
-const PEAK_VALUE = 1.1
-
-export interface OnAnimatedClickParams {
+export interface OnGameObjectClickParams {
   gameObject: Phaser.GameObjects.GameObject | Label;
   onClick: () => void;
   animate?: boolean;
   scene: Phaser.Scene;
+  peakValue?: number;
 }
 
-export const onAnimatedClick = ({
+export const onGameObjectClick = ({
     gameObject,
     onClick,
     animate = true,
     scene,
-}: OnAnimatedClickParams) => {
+    peakValue = SCALE_PEAK_VALUE,
+}: OnGameObjectClickParams) => {
     // Disable interaction
     if (gameObject.input) {
         gameObject.input.enabled = false
@@ -25,13 +25,13 @@ export const onAnimatedClick = ({
     if (animate) {
         if (gameObject instanceof Label) {
             // Special scaling for Label (scaleYoyo)
-            gameObject.scaleYoyo(SCALE_TIME, PEAK_VALUE)
+            gameObject.scaleYoyo(SCALE_TIME, peakValue)
         } else {
             // Tween animation for GameObjects
             scene.tweens.add({
                 targets: gameObject,
-                scaleX: PEAK_VALUE,
-                scaleY: PEAK_VALUE,
+                scaleX: peakValue,
+                scaleY: peakValue,
                 duration: SCALE_TIME,
                 ease: "Back",
             })

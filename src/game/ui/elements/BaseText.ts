@@ -1,5 +1,5 @@
 import { FONT_DINOSAUR } from "@/game/constants"
-import { ConstructorParams, TextBaseConstructorParams } from "../../types"
+import { ConstructorParams, TextBaseConstructorParams } from "../../types/constructor-params/rexui"
 
 // Text options
 export interface TextOptions {
