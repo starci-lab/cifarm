@@ -6,7 +6,7 @@ import {
     loadBaseAssets,
     loadBuildingAssets,
     loadCropAssets,
-    loadPlacedItemAssets,
+    loadTileAssets,
 } from "../assets"
 import { LoadingProgressContainer } from "../containers"
 import { EventBus, EventName } from "../event-bus"
@@ -74,9 +74,9 @@ export class LoadingScene extends Scene {
         // load all the assets
         loadBaseAssets(this)
         loadCropAssets(this)
-        loadPlacedItemAssets(this)
         loadAnimalAssets(this)
         loadBuildingAssets(this)
+        loadTileAssets(this)
     }
 
     create() {

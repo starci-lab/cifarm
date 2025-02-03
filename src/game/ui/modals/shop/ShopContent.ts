@@ -9,19 +9,16 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
-    getAnimalAssetKey,
-    getBuildingAssetKey,
-    getCropSeedAssetKey,
 } from "../../../assets"
 import { adjustTextMinLength } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
-import { AnimalEntity, BuildingEntity, CropEntity } from "@/modules/entities"
+import { AnimalEntity, BuildingEntity, CropEntity, PlacedItemType } from "@/modules/entities"
 import { UISizer } from "../../UISizer"
 import { onGameObjectClick } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
-import { EventName } from "@/game/event-bus"
-import { v4 } from "uuid"
+import { EventBus, EventName, PlacedInprogressMessage } from "../../../event-bus"
+import { ModalName } from "../ModalManager"
 
 export class ShopContent extends UISizer {
     // list of items
@@ -131,7 +128,7 @@ export class ShopContent extends UISizer {
             for (const { id, price } of this.crops) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: getCropSeedAssetKey(id),
+                    assetKey: cropAssetMap[id].seed.textureConfig.key,
                     title: cropAssetMap[id].name,
                     onClick: () => {
                         console.log("Clicked on crop", id)
@@ -147,7 +144,7 @@ export class ShopContent extends UISizer {
             for (const { id, price } of this.animals) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: getAnimalAssetKey({ age: AnimalAge.Baby, animalId: id }),
+                    assetKey: animalAssetMap[id].ages[AnimalAge.Baby].textureConfig.key,
                     title: animalAssetMap[id].name,
                     onClick: () => {
                         console.log("Clicked on animal", id)
@@ -163,10 +160,17 @@ export class ShopContent extends UISizer {
             for (const { id, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: getBuildingAssetKey(id),
+                    assetKey: buildingAssetMap[id].textureConfig.key,
                     title: id,
                     onClick: () => {
-                        console.log("Clicked on building", id)
+                        // close the modal
+                        this.scene.events.emit(EventName.CloseModal, ModalName.Shop)
+                        // then turn on the building mode
+                        const message : PlacedInprogressMessage = {
+                            id,
+                            type: PlacedItemType.Building,
+                        }
+                        EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
                     scaleX: 0.5,
@@ -181,7 +185,7 @@ export class ShopContent extends UISizer {
             for (const { id, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: getBuildingAssetKey(id),
+                    assetKey: buildingAssetMap[id].textureConfig.key,
                     title: buildingAssetMap[id].name,
                     onClick: () => {
                         console.log("Clicked on building", id)
@@ -196,7 +200,7 @@ export class ShopContent extends UISizer {
             for (const { id, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: getBuildingAssetKey(id),
+                    assetKey: buildingAssetMap[id].textureConfig.key,
                     title: id,
                     onClick: () => {
                         console.log("Clicked on building", id)
@@ -211,7 +215,7 @@ export class ShopContent extends UISizer {
             for (const { id, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: getBuildingAssetKey(id),
+                    assetKey: buildingAssetMap[id].textureConfig.key,
                     title: id,
                     onClick: () => {
                         console.log("Clicked on building", id)

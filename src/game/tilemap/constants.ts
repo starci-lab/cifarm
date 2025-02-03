@@ -10,4 +10,4 @@ export const WIDTH = 32
 export const HEIGHT = 32
 
 // scale
-export const SCALE = 3
+export const SCALE = 2

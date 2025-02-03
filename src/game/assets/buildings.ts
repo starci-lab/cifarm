@@ -1,38 +1,69 @@
+// we use range of GID from 12001 - 13000 to represent different types of buildings
 import { BuildingId } from "@/modules/entities"
 import { Scene } from "phaser"
-
-const BASE_DIR = "buildings"
+import { TextureConfig, TilesetConfig } from "./types"
 
 export interface BuildingAssetData {
-  gid: number;
   name: string;
-  extension: string;
-  filename: string;
+  // config for tileset
+  tilesetConfig: TilesetConfig;
+  // texture config
+  textureConfig: TextureConfig
 }
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
     [BuildingId.Home]: {
-        gid: 500,
         name: "Barn",
-        extension: "png",
-        filename: "home",
+        tilesetConfig: {
+            gid: 12001,
+            tilesetName: "buildings-home",
+            scaleTextureHeight: 0.8,
+            scaleTextureWidth: 0.8,
+            extraOffsets: { x: -70, y: -120 },
+            sizeX: 3,
+            sizeY: 3,
+        },
+        textureConfig: {
+            key: "buildings-home",
+            assetUrl: "buildings/home.png",
+        }
     },
     [BuildingId.Coop]: {
-        gid: 510,
         name: "Farm",
-        extension: "png",
-        filename: "coop",
+        tilesetConfig: {
+            gid: 12002,
+            tilesetName: "buildings-coop",
+            scaleTextureHeight: 0.8,
+            scaleTextureWidth: 0.8,
+            extraOffsets: { x: -70, y: -120 },
+            sizeX: 3,
+            sizeY: 3,
+        },
+        textureConfig: {
+            key: "buildings-coop",
+            assetUrl: "buildings/coop.png",
+        }
     },
     [BuildingId.Barn]: {
-        gid: 520,
         name: "Barn",
-        extension: "png",
-        filename: "barn",
+        tilesetConfig: {
+            gid: 12003,
+            tilesetName: "buildings-barn",
+            scaleTextureHeight: 0.8,
+            scaleTextureWidth: 0.8,
+            extraOffsets: { x: -70, y: -120 },
+            sizeX: 3,
+            sizeY: 3,
+        },
+        textureConfig: {
+            key: "buildings-barn",
+            assetUrl: "buildings/barn.png",
+        }
     },
 }
 
-// Function to load animals assets (images) for each animal
+// function to load animals assets (images) for each animal
 export const loadBuildingAssets = (scene: Scene) => {
     // Iterate over each animalId in the animalAssetDataMap
     Object.keys(buildingAssetMap).forEach((buildingIdKey) => {
@@ -44,13 +75,10 @@ export const loadBuildingAssets = (scene: Scene) => {
         }
 
         // Load the asset for the building
+        const { key, assetUrl} = buildingData.textureConfig
         scene.load.image(
-            getBuildingAssetKey(buildingId),
-            `${BASE_DIR}/${buildingData.filename}.${buildingData.extension}`
+            key,
+            assetUrl
         )
     })
-}
-
-export const getBuildingAssetKey = (buildingId: BuildingId) => {
-    return `buildings-${buildingId}`
 }

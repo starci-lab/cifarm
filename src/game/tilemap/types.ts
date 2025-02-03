@@ -6,6 +6,9 @@ export enum TilesetName {
 
 export enum LayerName {
     Ground = "ground-layer",
+}
+
+export enum ObjectLayerName {
     Item = "item-layer",
-    Crop = "crop-layer",
+    Temporary = "temporary-layer",
 }

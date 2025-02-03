@@ -9,10 +9,6 @@ export class UIScene extends Scene {
         super(SceneName.UI)
     }
 
-    init() {
-        this.events.on("shutdown", this.shutdown, this)
-    }
-
     create() {
         const { width, height } = this.game.scale
         // Add the left horizontal buttons
@@ -29,9 +25,5 @@ export class UIScene extends Scene {
             y: height / 2,
         })
         this.add.existing(this.modalManager)
-    }
-
-    shutdown() {
-        this.modalManager?.shutdown()
     }
 }

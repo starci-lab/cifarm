@@ -1,3 +1,4 @@
+import { PlacedItemType } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -36,4 +37,14 @@ export enum EventName {
     InventoryTabSelected = "inventory_tab_selected",
     // modal closed
     ModalClosed = "modal_closed",
+
+    // place item
+    PlaceInprogress = "place_inprogress",
+}
+
+export interface PlacedInprogressMessage {
+    // type of item being placed
+    type: PlacedItemType,
+    // id of the item being placed
+    id: string,
 }

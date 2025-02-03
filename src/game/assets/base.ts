@@ -59,7 +59,6 @@ export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
 // updated baseAssetMap with BaseAssetKey enum values
 export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.Grass]: "grass.png",
-
     // icons
     [BaseAssetKey.IconShop]: "icons/shop.png",
     [BaseAssetKey.IconRoadsideStand]: "icons/roadside-stand.png",

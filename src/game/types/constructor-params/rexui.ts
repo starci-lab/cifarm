@@ -1,4 +1,4 @@
-import { Buttons, NinePatch2, OverlapSizer, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Buttons, NinePatch2, OverlapSizer, Pinch, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 // base constructor params for NinePatch2
 export interface NinePatch2BaseConstructorParams {
@@ -33,7 +33,14 @@ export interface ConstructorParams<TBaseConstructorParams, TOptions> {
     options: TOptions
 }
 
+// base constructor params for Buttons
 export interface ButtonsBaseConstructorParams {
     scene: Phaser.Scene
     config?: Buttons.IConfig
+}
+
+// base constructor params for Pinch
+export interface PinchBaseConstructorParams {
+    scene: Phaser.Scene
+    config?: Pinch.IConfig
 }

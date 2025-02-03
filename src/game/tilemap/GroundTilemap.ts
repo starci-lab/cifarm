@@ -1,13 +1,15 @@
 import { WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT, GRASS_GID, SCALE } from "./constants"
 import { BaseTilemap } from "./BaseTilemap"
-import { LayerName, TilesetName } from "./types"
+import { LayerName, ObjectLayerName, TilesetName } from "./types"
 import { BaseAssetKey } from "../assets"
 import { TilemapBaseConstructorParams } from "../types"
+
+//show grid flag
+export const SHOW_GRID = false
 
 export class GroundTilemap extends BaseTilemap {
     // create the ground layer
     protected groundLayer: Phaser.Tilemaps.TilemapLayer
-
     // constructor
     constructor(baseParams: TilemapBaseConstructorParams) {
         super({
@@ -17,13 +19,16 @@ export class GroundTilemap extends BaseTilemap {
                 height: HEIGHT,
                 tileWidth: TILE_WIDTH,
                 tileHeight: TILE_HEIGHT,
-                objectLayerNames: [LayerName.Item],
+                objectLayerNames: [ObjectLayerName.Item, ObjectLayerName.Temporary],
                 scale: SCALE,
             }
         })
 
         // set the ground layer
         this.groundLayer = this.createGroundLayer()
+
+        // show grid
+        this.showGrid()
     }
 
     // create the ground layer
@@ -49,5 +54,15 @@ export class GroundTilemap extends BaseTilemap {
         
         // return the layer
         return groundLayer
+    }
+
+    private showGrid() {
+        if (SHOW_GRID) {
+            const graphic = this.scene.add.graphics()
+            graphic.lineStyle(1, 0x0000ff, 1) // Set the line style to blue with full opacity
+            this.groundLayer.renderDebug(graphic, {
+                collidingTileColor: 0x00ff00,
+            })
+        }
     }
 }
