@@ -138,10 +138,12 @@ export class InputTilemap extends ItemTilemap {
             if (!position) {
                 throw new Error("Position not found")
             }
+            const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
+            // we need to set the position of the temporary place item object and set the origin
             this.temporaryPlaceItemObject.setPosition(
-                position.x,
-                position.y
-            )
+                position.x + x,
+                position.y + this.tileHeight + y
+            ).setOrigin(0.5, 1)
             return
         }
         // push the temporary object to the temporary layer

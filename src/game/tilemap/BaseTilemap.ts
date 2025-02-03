@@ -115,9 +115,26 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         if (!result) {
             return null
         }
+        return new Phaser.Math.Vector2(result.x + 1, result.y + 1)
+    }
+
+    // we override to fix the wrong logic in the original method
+    public override tileToWorldXY(
+        tileX: number,
+        tileY: number,
+        vec2?: Phaser.Math.Vector2,
+        camera?: Phaser.Cameras.Scene2D.Camera,
+        layer?: string | number | Phaser.Tilemaps.TilemapLayer
+    ) {
+        const vector2 = super.tileToWorldXY(tileX + 1, tileY, vec2, camera, layer)
+        if (!vector2) {
+            return null
+        }
         return new Phaser.Math.Vector2(
-            result.x + 1,
-            result.y + 1
+            vector2.x,
+            // + this.tileWidth,
+            vector2.y
+            // + this.tileHeight
         )
     }
 
@@ -188,15 +205,16 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         )
     }
 
-    public computePositionForTiledObject(tile: Phaser.Tilemaps.Tile
-        //, object: Phaser.GameObjects.GameObject
+    public computePositionForTiledObject(
+        tile: Phaser.Tilemaps.Tile
+    //, object: Phaser.GameObjects.GameObject
     ) {
-        // base unit for x and y
-        const baseXUnit = this.scale * this.tileWidth / 2
+    // base unit for x and y
+        const baseXUnit = (this.scale * this.tileWidth) / 2
         const baseYUnit = this.scale * this.tileHeight
         return {
-            x: baseXUnit * (tile.x + 1/2),
-            y: baseYUnit * (tile.y + 1/2),
+            x: baseXUnit * (tile.x + 3 / 2),
+            y: baseYUnit * (tile.y + 1 / 2),
             // x: vector2.x,
             // y: vector2.y
         }

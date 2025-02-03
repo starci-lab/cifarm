@@ -14,7 +14,7 @@ export interface BuildingAssetData {
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
     [BuildingId.Home]: {
-        name: "Barn",
+        name: "Home",
         tilesetConfig: {
             gid: 12001,
             tilesetName: "buildings-home",
@@ -27,22 +27,24 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         textureConfig: {
             key: "buildings-home",
             assetUrl: "buildings/home.png",
+            //assetUrl: "buildings/home.png",
         }
     },
     [BuildingId.Coop]: {
-        name: "Farm",
+        name: "Coop",
         tilesetConfig: {
             gid: 12002,
             tilesetName: "buildings-coop",
-            scaleTextureHeight: 0.8,
-            scaleTextureWidth: 0.8,
-            extraOffsets: { x: -70, y: -120 },
+            scaleTextureHeight: 1.2,
+            scaleTextureWidth: 1.2,
+            extraOffsets: { x: 0, y: -80 },
             sizeX: 3,
             sizeY: 3,
         },
         textureConfig: {
             key: "buildings-coop",
             assetUrl: "buildings/coop.png",
+            //assetUrl: "tiles/xxxx.png",
         }
     },
     [BuildingId.Barn]: {

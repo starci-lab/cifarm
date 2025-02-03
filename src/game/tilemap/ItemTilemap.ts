@@ -216,6 +216,9 @@ export abstract class ItemTilemap extends GroundTilemap {
             throw new Error("Tile not found")
         }
 
+        // destroy tile for debugging
+        // this.removeTileAt(tile.x, tile.y)
+
         // get the placed item type
         const placedItemType = this.getPlacedItemType(placedItem.placedItemTypeId)
 
