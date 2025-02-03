@@ -17,27 +17,27 @@ export interface InventoryTabData {
 
 export const tabs: Record<InventoryTab, InventoryTabData> = {
     [InventoryTab.Tiles]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
     [InventoryTab.Products]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
     [InventoryTab.Seeds]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
     [InventoryTab.Animals]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
     [InventoryTab.Buildings]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
     [InventoryTab.Trees]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
     [InventoryTab.Decorations]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
     [InventoryTab.Others]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.IconDaily,
     },
 }
