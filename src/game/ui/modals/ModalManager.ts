@@ -63,8 +63,19 @@ export class ModalManager extends Phaser.GameObjects.Container {
     private onOpen(name: ModalName) {
         this.setActive(true).setVisible(true)
         const modal = this.getModal(name)
+        // disable modal input
+        if (modal.input) {
+            modal.input.enabled = false
+        }
         // show the modal
         modal.show().setDepth(1).popUp(SCALE_TIME)
+
+        // Wait for the animation to finish, then re-enable interaction
+        this.scene.time.delayedCall(SCALE_TIME, () => {
+            if (this.input) {
+                this.input.enabled = true
+            }
+        })
     }
 
     private onClose(name: ModalName) {
