@@ -39,6 +39,14 @@ export enum BaseAssetKey {
     ModalInventoryCell = "modal-inventory-cell",
     ModalInventoryCellQuantity = "modal-inventory-cell-quantity",
     ModalInventoryWall = "modal-inventory-wall",
+    ModalInventoryIconTabOn = "modal-inventory-icon-tab-on",
+    ModalInventoryIconTabOff = "modal-inventory-icon-tab-off",
+    ModalInventoryIconAnimal = "modal-inventory-icon-animal",
+    ModalInventoryIconCan = "modal-inventory-icon-can",
+    ModalInventoryIconCrop = "modal-inventory-icon-crop",
+    ModalInventoryIconMenu = "modal-inventory-icon-menu",
+    ModalInventoryIconProduct = "modal-inventory-icon-product",
+    ModalInventoryIconTile = "modal-inventory-icon-tile",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -81,6 +89,14 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalInventoryCell]: "modals/inventory/cell.png",
     [BaseAssetKey.ModalInventoryCellQuantity]: "modals/inventory/cell-quantity.png",
     [BaseAssetKey.ModalInventoryWall]: "modals/inventory/wall.png",
+    [BaseAssetKey.ModalInventoryIconTabOn]: "modals/inventory/icon-tab-on.png",
+    [BaseAssetKey.ModalInventoryIconTabOff]: "modals/inventory/icon-tab-off.png",
+    [BaseAssetKey.ModalInventoryIconAnimal]: "modals/inventory/icon-animal.png",
+    [BaseAssetKey.ModalInventoryIconCan]: "modals/inventory/icon-can.png",
+    [BaseAssetKey.ModalInventoryIconCrop]: "modals/inventory/icon-crop.png",
+    [BaseAssetKey.ModalInventoryIconMenu]: "modals/inventory/icon-menu.png",
+    [BaseAssetKey.ModalInventoryIconProduct]: "modals/inventory/icon-product.png",
+    [BaseAssetKey.ModalInventoryIconTile]: "modals/inventory/icon-tile.png",
 }
 
 // preload, for loading screen

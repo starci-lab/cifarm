@@ -69,7 +69,6 @@ export class ModalManager extends Phaser.GameObjects.Container {
 
     private onClose(name: ModalName) {
         const modal = this.getModal(name)
-        console.log(modal)
         // hide the modal
         modal.hide()
         this.setActive(false).setVisible(false)
