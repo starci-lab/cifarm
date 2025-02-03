@@ -1,9 +1,9 @@
 
 import { BaseAssetKey } from "@/game/assets"
-import { InventoryTabs } from "./InventoryTabs"
-import { FONT_DINOSAUR, STROKE_COLOR_1 } from "@/game/constants"
 import { EventName } from "@/game/event-bus"
 import { ContainerBaseConstructorParams } from "../../../types"
+import { BaseText } from "../../elements"
+import { InventoryTabs } from "./InventoryTabs"
 
 export class InventoryModal extends Phaser.GameObjects.Container {
     private wall: Phaser.GameObjects.Image | undefined
@@ -28,18 +28,20 @@ export class InventoryModal extends Phaser.GameObjects.Container {
         this.titleRibbon = scene.add
             .image(0, -480, BaseAssetKey.ModalInventoryTopRibbon)
         this.add(this.titleRibbon)
-
-        this.titleText = scene.add
-            .text(20, -500, "Inventory", {
-                fontSize: "40px",
-                fontFamily: FONT_DINOSAUR,
-                fontStyle: "bold",
-            })
-            .setStyle({
-                stroke: STROKE_COLOR_1,
-                strokeThickness: 12,
-            })
-            .setOrigin(0.5, 0.5)
+        
+        this.titleText = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                x: 0,
+                y: -500,
+                text: "Shop",
+            },
+            options: {
+                enableStroke: true,
+                fontSize: 64,
+            }
+        }).setOrigin(0.5, 0.5)
+        this.scene.add.existing(this.titleText)
         this.add(this.titleText)
 
         // draw btn close
@@ -57,7 +59,11 @@ export class InventoryModal extends Phaser.GameObjects.Container {
         this.add(this.btnClose)
 
         // add inventory tabs
-        this.inventoryTabs = new InventoryTabs(scene, 0, 0).setPosition(-width / 2 + 20, -580)
+        this.inventoryTabs = new InventoryTabs({
+            scene: this.scene,
+            x: 200,
+            y: 0,
+        }).setPosition(-width / 2 + 130, -260)
         this.add(this.inventoryTabs)
     }
 }

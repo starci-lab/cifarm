@@ -1,14 +1,12 @@
 import { BaseAssetKey } from "@/game/assets"
 
 export enum InventoryTab {
+    Menu = "Menu",
     Tiles = "Tiles",
     Products = "Products", 
     Seeds = "Seeds",
     Animals = "Animals",
-    Buildings = "Buildings",
-    Trees = "Trees",
-    Decorations = "Decorations",
-    Others = "Others",
+    Tools = "Tools",
 }
 
 export interface InventoryTabData {
@@ -16,28 +14,22 @@ export interface InventoryTabData {
 }
 
 export const tabs: Record<InventoryTab, InventoryTabData> = {
+    [InventoryTab.Menu]: {
+        iconKey: BaseAssetKey.ModalInventoryIconMenu,
+    },
     [InventoryTab.Tiles]: {
-        iconKey: BaseAssetKey.IconDaily,
+        iconKey: BaseAssetKey.ModalInventoryIconTile,
     },
     [InventoryTab.Products]: {
-        iconKey: BaseAssetKey.IconDaily,
+        iconKey: BaseAssetKey.ModalInventoryIconProduct,
     },
     [InventoryTab.Seeds]: {
-        iconKey: BaseAssetKey.IconDaily,
+        iconKey: BaseAssetKey.ModalInventoryIconCrop,
     },
     [InventoryTab.Animals]: {
-        iconKey: BaseAssetKey.IconDaily,
+        iconKey: BaseAssetKey.ModalInventoryIconAnimal,
     },
-    [InventoryTab.Buildings]: {
-        iconKey: BaseAssetKey.IconDaily,
-    },
-    [InventoryTab.Trees]: {
-        iconKey: BaseAssetKey.IconDaily,
-    },
-    [InventoryTab.Decorations]: {
-        iconKey: BaseAssetKey.IconDaily,
-    },
-    [InventoryTab.Others]: {
-        iconKey: BaseAssetKey.IconDaily,
+    [InventoryTab.Tools]: {
+        iconKey: BaseAssetKey.ModalInventoryIconCan,
     },
 }

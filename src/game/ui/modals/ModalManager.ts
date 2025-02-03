@@ -53,10 +53,6 @@ export class ModalManager extends Phaser.GameObjects.Container {
         this.scene.events.on(EventName.ModalClosed, () => {
             this.scene.tweens.add({
                 targets: this.inventoryModal,
-                scaleX: 0.2,  // Final scale value (zoom in to normal size)
-                scaleY: 0.2,  // Final scale value (zoom in to normal size)
-                duration: 500, // Duration of the zoom effect (milliseconds)
-                ease: "Back", // Optional easing type, can be 'easeIn', 'easeOut', etc.
                 onComplete: () => {
                     this.setOff()
                 }
@@ -80,6 +76,8 @@ export class ModalManager extends Phaser.GameObjects.Container {
     // set the modal manager to be inactive and invisible
     private setOff() {
         this.setActive(false).setVisible(false)
+        this.shopModal?.setActive(false).setVisible(false)
+        this.inventoryModal?.setActive(false).setVisible(false)
     }
 
     private openShopModal() {
@@ -125,9 +123,5 @@ export class ModalManager extends Phaser.GameObjects.Container {
                 //this.inventoryModal?.setInteractive()
             }
         })
-    }
-
-    private closeInventoryModal() {
-        this.inventoryModal?.setVisible(false).setActive(false)
     }
 }

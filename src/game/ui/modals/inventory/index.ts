@@ -1,1 +1,1 @@
-export * from "./InventoryModel"
+export * from "./InventoryModal"

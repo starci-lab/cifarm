@@ -2,20 +2,17 @@
 import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
 import { ContainerBaseConstructorParams } from "@/game/types"
-import { InventoryTab, tabs } from "./types"
+import { InventoryTab } from "./types"
 
-const SELECTED_SCALE = 1.1
-const UNSELECTED_SCALE = 0.9
+const SELECTED_SCALE = 0.8
+const UNSELECTED_SCALE = 0.8
 const SCALE_TIME = 500
 
 export class InventoryTabs extends Phaser.GameObjects.Container {
     // private property to store the selected tab
-    private selectedTab: InventoryTab = InventoryTab.Tiles
+    private selectedTab: InventoryTab = InventoryTab.Menu
     // private property to store the tab map
     private tabMap: Partial<Record<InventoryTab, Phaser.GameObjects.Container>> = {}
-
-    private inventoryCell: Phaser.GameObjects.Container | undefined
-    private inventoryCellQuantity: Phaser.GameObjects.Image | undefined
     
     constructor({ scene, x, y }: ContainerBaseConstructorParams)
     {
@@ -28,7 +25,7 @@ export class InventoryTabs extends Phaser.GameObjects.Container {
         // thus, we need layout the tabs
         this.layoutTabs()
 
-        this.on(EventName.InventoryTabSelected, (inventoryTab: InventoryTab) => {
+        this.scene.events.on(EventName.InventoryTabSelected, (inventoryTab: InventoryTab) => {
             // turn off the previous selected tab
             this.turnOff(this.selectedTab, true)
             // turn on the selected tab
@@ -99,12 +96,12 @@ export class InventoryTabs extends Phaser.GameObjects.Container {
     public addTab(inventoryTab: InventoryTab = InventoryTab.Tiles) {
         const tab = this.scene.add.container(0, 0)
         // create the icon tab on
-        const iconTabOn = this.scene.add.image(0, 0, BaseAssetKey.ModalShopIconTabOn).setOrigin(0, 1)
+        const iconTabOn = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryIconTabOn).setOrigin(0, 1)
         iconTabOn.setInteractive()
         //add the icon tab on to the container
         tab.add(iconTabOn)
         // create the icon tab off
-        const iconTabOff = this.scene.add.image(0, 0, BaseAssetKey.ModalShopIconTabOff).setOrigin(0, 1)
+        const iconTabOff = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryIconTabOff).setOrigin(0, 1)
         //add the icon tab off to the container
         tab.add(iconTabOff)
 
@@ -128,7 +125,7 @@ export class InventoryTabs extends Phaser.GameObjects.Container {
                     tab.input.enabled = true
                 }
             })
-            this.emit(EventName.InventoryTabSelected, InventoryTab)
+            this.scene.events.emit(EventName.InventoryTabSelected, inventoryTab)
         })
 
         // check active 
@@ -152,7 +149,7 @@ export class InventoryTabs extends Phaser.GameObjects.Container {
             const iconTabOn = value.getAt(0) as Phaser.GameObjects.Image
             const { width } = iconTabOn
             // set the position of the tab
-            value.setPosition(count * (width - 60), 0)
+            value.setPosition(count * (width - 20), 0)
             // add the tab to the container
             this.add(value)
             // increment the count
