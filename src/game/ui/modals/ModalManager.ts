@@ -4,11 +4,13 @@ import { ShopModal } from "./shop"
 import { ContainerBaseConstructorParams } from "../../types"
 import { InventoryModal } from "./inventory"
 import { DailyModal } from "./daily"
+import { QuestModal } from "./quest"
 
 export enum ModalName {
     Shop = "shop",
     Inventory = "inventory",
     Daily = "daily",
+    Quest = "quest",
 }
 
 export class ModalManager extends Phaser.GameObjects.Container {
@@ -20,6 +22,8 @@ export class ModalManager extends Phaser.GameObjects.Container {
     private inventoryModal: InventoryModal | undefined
     // daily modal
     private dailyModal: DailyModal | undefined
+    // quest modal
+    private questModal: QuestModal | undefined
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
@@ -45,6 +49,13 @@ export class ModalManager extends Phaser.GameObjects.Container {
         this.dailyModal = new DailyModal({
             scene: this.scene,
         }).hide()
+
+
+        // create the quest modal
+        this.questModal = new QuestModal({
+            scene: this.scene,
+        }).hide()
+        
         // listen for the open event
         this.scene.events.on(EventName.OpenModal, (name: ModalName) => {
             this.onOpen(name)
@@ -78,6 +89,12 @@ export class ModalManager extends Phaser.GameObjects.Container {
                 throw new Error("Daily modal not found")
             }
             return this.dailyModal
+        }
+        case ModalName.Quest: {
+            if (!this.questModal) {
+                throw new Error("Quest modal not found")
+            }
+            return this.questModal
         }
         }
     }

@@ -17,8 +17,9 @@ export enum BaseAssetKey {
     IconNeighbors = "icon-neighbors",
     IconInventory = "icon-inventory",
     IconDaily = "icon-daily",
+    IconQuest = "icon-quest",
 
-    //Shop Modals
+    //Shop modal
     ModalShopAvatarShop = "modal-shop-avatar-shop",
     ModalShopBottomBar = "modal-shop-bottom-bar",
     ModalShopButtonPrice = "modal-shop-button-price",
@@ -33,7 +34,7 @@ export enum BaseAssetKey {
     ModalShopCardTitle = "modal-shop-card-title",
     ModalShopX = "modal-shop-x",
 
-    // Inventory Modals
+    // Inventory modal
     ModalInventoryTopRibbon = "modal-inventory-top-ribbon",
     ModalInventoryBtnClose = "modal-inventory-btn-close",
     ModalInventoryCell = "modal-inventory-cell",
@@ -48,7 +49,7 @@ export enum BaseAssetKey {
     ModalInventoryIconProduct = "modal-inventory-icon-product",
     ModalInventoryIconTile = "modal-inventory-icon-tile",
 
-    // Daily Modals
+    // Daily modal
     ModalDailyWall = "modal-daily-wall",
     ModalDailyTitle = "modal-daily-title",
     ModalDailyIconCheck = "modal-daily-icon-check",
@@ -59,6 +60,13 @@ export enum BaseAssetKey {
     ModalDailyCoin2 = "modal-daily-coin2",
     ModalDailyCoin3 = "modal-daily-coin3",
     ModalDailyDay = "modal-daily-day",
+
+    // Quest modal
+    ModalQuestWall = "modal-quest-wall",
+    ModalQuestCardTitle = "modal-quest-card-title",
+    ModalQuestPin = "modal-quest-pin",
+    ModalQuestCardItem = "modal-quest-card-item",
+    ModalQuestIconClose = "modal-quest-icon-close",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -78,6 +86,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.IconNeighbors]: "icons/neighbors.png",
     [BaseAssetKey.IconInventory]: "icons/inventory.png",
     [BaseAssetKey.IconDaily]: "icons/daily.png",
+    [BaseAssetKey.IconQuest]: "icons/quest.png",
 
     // shop Modals
     [BaseAssetKey.ModalShopAvatarShop]: "modals/shop/avatar-shop.png",
@@ -120,6 +129,13 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalDailyCoin2]: "modals/daily/coin-2.png",
     [BaseAssetKey.ModalDailyCoin3]: "modals/daily/coin-3.png",
     [BaseAssetKey.ModalDailyDay]: "modals/daily/day.png",
+
+    // Quest
+    [BaseAssetKey.ModalQuestWall]: "modals/quest/wall.png",
+    [BaseAssetKey.ModalQuestCardTitle]: "modals/quest/card-title.png",
+    [BaseAssetKey.ModalQuestPin]: "modals/quest/pin.png",
+    [BaseAssetKey.ModalQuestCardItem]: "modals/quest/card-item.png",
+    [BaseAssetKey.ModalQuestIconClose]: "modals/quest/icon-close.png",
 }
 
 // preload, for loading screen

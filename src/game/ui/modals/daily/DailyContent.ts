@@ -66,13 +66,13 @@ export class DailyContent extends UISizer {
         })
         
         // set the position of the close button
-        closeButton.setPosition(this.x + 380, this.y - 300)
+        closeButton.setPosition(this.x + 380, this.y - 320)
         // add the close button to the sizer
         this.add(closeButton)
         return closeButton
     }
 
-    // create base day reward box
+    // create base day reward container
     private createBaseDayRewardContainer(id: DailyRewardId) {
         if (id === DailyRewardId.Day5) {
             throw new Error("Day 5 is not the base day")
@@ -129,7 +129,7 @@ export class DailyContent extends UISizer {
             -backgroundContainer.width / 2,
             -backgroundContainer.height / 2
         )
-        const wrappedBackgroundContainer = this.scene.add
+        const wrapperBackgroundContainer = this.scene.add
             .container(0, 0)
             .add(
                 backgroundContainer.setPosition(
@@ -167,13 +167,14 @@ export class DailyContent extends UISizer {
         const label = this.scene.rexUI.add.label({
             width: backgroundImage.width,
             height: backgroundImage.height,
-            background: wrappedBackgroundContainer,
+            background: wrapperBackgroundContainer,
             icon: iconContainer,
             align: "center",
         })
         return label
     }
 
+    // create the base day reward containers
     private createBaseDayRewardContainers() {
         const ids = Object.values(DailyRewardId).filter(
             (id) => id !== DailyRewardId.Day5
@@ -190,6 +191,7 @@ export class DailyContent extends UISizer {
         return sizer
     }
 
+    // create the last day reward container
     private createLastDayRewardContainer() {
         const id = DailyRewardId.Day5
         // create the background container
@@ -231,7 +233,7 @@ export class DailyContent extends UISizer {
         }).layout()
             .setPosition(backgroundImage.x, backgroundImage.y)
         backgroundContainer.add(day)
-        const wrappedBackgroundContainer = this.scene.add
+        const wrapperBackgroundContainer = this.scene.add
             .container(0, 0)
             .add(
                 backgroundContainer.setPosition(
@@ -250,7 +252,7 @@ export class DailyContent extends UISizer {
         const label = this.scene.rexUI.add.label({
             width: backgroundImage.width,
             height: backgroundImage.height,
-            background: wrappedBackgroundContainer,
+            background: wrapperBackgroundContainer,
             icon: iconContainer,
             align: "center",
         })
