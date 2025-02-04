@@ -1,4 +1,4 @@
-import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import { BaseText, StrokeColor, TextColor } from "../../elements"
 import { UISizer } from "../../UISizer"
@@ -19,9 +19,7 @@ const iconMap: Record<DailyRewardId, BaseAssetKey> = {
 }
 export class DailyContent extends UISizer {
     private rewardContainersSizer: Sizer
-    private closeButton: Label | undefined
-    private claimButton: Label | undefined
-    
+    private closeButton: Phaser.GameObjects.Sprite | undefined
     // daily rewards data
     private dailyRewards: Array<DailyRewardEntity> = []
     constructor(baseParams: SizerBaseConstructorParams) {
@@ -53,16 +51,9 @@ export class DailyContent extends UISizer {
     // create the close button
     public createCloseButton() {
         // create the close button
-        const closeIcon = this.scene.add.image(0, 0, BaseAssetKey.ModalDailyIconClose)
-        this.scene.add.existing(closeIcon)
-        // create the close button
-        const closeButton = this.scene.rexUI.add.label({
-            width: closeIcon.width,
-            height: closeIcon.height,
-            background: closeIcon,
-            align: "center",
-        }).layout()
-
+        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.ModalDailyIconClose)
+        this.scene.add.existing(closeButton)
+    
         // add the on click event
         closeButton.setInteractive().on("pointerdown", () => {
             onGameObjectClick({
@@ -75,7 +66,7 @@ export class DailyContent extends UISizer {
         })
         
         // set the position of the close button
-        closeButton.layout().setPosition(this.x + 380, this.y - 300)
+        closeButton.setPosition(this.x + 380, this.y - 300)
         // add the close button to the sizer
         this.add(closeButton)
         return closeButton

@@ -7,6 +7,7 @@ export class DailyModal extends UISizer {
     // daily background
     private dailyBackground: DailyBackground
     private dailyContent: DailyContent
+    
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
 

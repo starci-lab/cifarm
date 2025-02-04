@@ -20,6 +20,6 @@ export class UISizer extends Sizer {
             height ?? scale.height,
             config
         )
-        this.setDirty(true)
+        this.setDirty(false)
     }
 }
