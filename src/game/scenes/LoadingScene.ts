@@ -46,12 +46,13 @@ export class LoadingScene extends Scene {
         //listen for static data loaded event
         EventBus.on(
             EventName.StaticDataLoaded,
-            ({ placedItemTypes, crops, animals, buildings }: QueryStaticResponse) => {
+            ({ placedItemTypes, crops, animals, buildings, dailyRewards }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItems, placedItemTypes)
                 this.cache.obj.add(CacheKey.Animals, animals)
                 this.cache.obj.add(CacheKey.Crops, crops)
                 this.cache.obj.add(CacheKey.Buildings, buildings)
+                this.cache.obj.add(CacheKey.DailyRewards, dailyRewards)
                 //load the static data
                 this.loadStaticData()
             }

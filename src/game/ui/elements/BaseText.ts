@@ -1,5 +1,5 @@
 import { FONT_DINOSAUR } from "@/game/constants"
-import { ConstructorParams, TextBaseConstructorParams } from "../../types/constructor-params/rexui"
+import { ConstructorParams, TextBaseConstructorParams } from "../../types"
 
 // Text options
 export interface TextOptions {
@@ -26,6 +26,8 @@ export enum TextColor {
 
 export enum StrokeColor {
   Black = "#000000",
+  RoyalPurple = "#4B2AB4",
+  Chestnut = "#59312C"
 }
 
 export class BaseText extends Phaser.GameObjects.Text {

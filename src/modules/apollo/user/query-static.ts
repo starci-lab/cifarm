@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client"
 import { client } from "../client"
-import { Activities, AnimalEntity, AnimalRandomness, BuildingEntity, CropEntity, CropRandomness, EnergyRegen, PlacedItemTypeEntity, SpinInfo, Starter } from "@/modules/entities"
+import { Activities, AnimalEntity, AnimalRandomness, BuildingEntity, CropEntity, CropRandomness, DailyRewardEntity, EnergyRegen, PlacedItemTypeEntity, SpinInfo, Starter } from "@/modules/entities"
 
 //long query for querying all the static data
 export const query = gql`
@@ -169,6 +169,16 @@ export const query = gql`
             upgradeIds
             placedItemTypeId
         }
+        dailyRewards {
+            createdAt
+            updatedAt
+            deletedAt
+            id
+            golds
+            tokens
+            day
+            lastDay
+        }
     }
 `
 
@@ -184,7 +194,9 @@ export interface QueryStaticResponse {
     crops: Array<CropEntity>
     animals: Array<AnimalEntity>
     buildings: Array<BuildingEntity>
+    dailyRewards: Array<DailyRewardEntity>
 }
+
 export const queryStatic = async () => {
     return client.query<QueryStaticResponse>({
         query

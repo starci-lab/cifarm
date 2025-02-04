@@ -30,7 +30,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconDaily,
             text: "Daily",
             onClick: () => {
-                console.log("Daily")
+                this.scene.events.emit(EventName.OpenModal, ModalName.Daily)
             },
         }))
     }

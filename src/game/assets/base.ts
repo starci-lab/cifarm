@@ -47,6 +47,18 @@ export enum BaseAssetKey {
     ModalInventoryIconMenu = "modal-inventory-icon-menu",
     ModalInventoryIconProduct = "modal-inventory-icon-product",
     ModalInventoryIconTile = "modal-inventory-icon-tile",
+
+    // Daily Modals
+    ModalDailyWall = "modal-daily-wall",
+    ModalDailyTitle = "modal-daily-title",
+    ModalDailyIconCheck = "modal-daily-icon-check",
+    ModalDailyIconClose = "modal-daily-icon-close",
+    ModalDailyLastDayAvatar = "modal-daily-last-day-avatar",
+    ModalDailyBaseDayAvatar = "modal-daily-base-day-avatar",
+    ModalDailyCoin1 = "modal-daily-coin1",
+    ModalDailyCoin2 = "modal-daily-coin2",
+    ModalDailyCoin3 = "modal-daily-coin3",
+    ModalDailyDay = "modal-daily-day",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -96,6 +108,18 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalInventoryIconMenu]: "modals/inventory/icon-menu.png",
     [BaseAssetKey.ModalInventoryIconProduct]: "modals/inventory/icon-product.png",
     [BaseAssetKey.ModalInventoryIconTile]: "modals/inventory/icon-tile.png",
+
+    // Daily Modals
+    [BaseAssetKey.ModalDailyWall]: "modals/daily/wall.png",
+    [BaseAssetKey.ModalDailyTitle]: "modals/daily/title.png",
+    [BaseAssetKey.ModalDailyIconCheck]: "modals/daily/icon-check.png",
+    [BaseAssetKey.ModalDailyIconClose]: "modals/daily/icon-close.png",
+    [BaseAssetKey.ModalDailyLastDayAvatar]: "modals/daily/last-day-avatar.png",
+    [BaseAssetKey.ModalDailyBaseDayAvatar]: "modals/daily/base-day-avatar.png",
+    [BaseAssetKey.ModalDailyCoin1]: "modals/daily/coin-1.png",
+    [BaseAssetKey.ModalDailyCoin2]: "modals/daily/coin-2.png",
+    [BaseAssetKey.ModalDailyCoin3]: "modals/daily/coin-3.png",
+    [BaseAssetKey.ModalDailyDay]: "modals/daily/day.png",
 }
 
 // preload, for loading screen

@@ -43,6 +43,7 @@ export class ShopHeader extends Phaser.GameObjects.Container {
                 text: "Shop"
             },
             options: {
+                enableStroke: true,
                 fontSize: 64,
             },
         })

@@ -8,13 +8,15 @@ export class InventoryContent extends GridTable {
     // list of items
     constructor({ scene, x, y, height, width, config }: GridTableBaseConstructorParams) {
         super(scene, x, y, height, width, {
-            // scrollMode: "vertical",
-            // cellHeight: 200,
-            // cellWidth: 200,
-            // mask: {
-            //     padding: 2
-            // },
-            // reuseCellContainer: true,
+            scrollMode: "vertical",
+            cellHeight: 200,
+            cellWidth: 200,
+            mask: {
+                padding: 2
+            },
+            reuseCellContainer: true,
+            cellsCount: 5,
+            cellInvisibleCallback
             ...config
         })
 
