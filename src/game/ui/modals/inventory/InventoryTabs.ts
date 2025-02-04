@@ -2,7 +2,7 @@
 import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
 import { ContainerBaseConstructorParams } from "@/game/types"
-import { InventoryTab } from "./types"
+import { InventoryTab, tabs } from "./types"
 
 const SELECTED_SCALE = 0.8
 const UNSELECTED_SCALE = 0.8
@@ -96,18 +96,18 @@ export class InventoryTabs extends Phaser.GameObjects.Container {
     public addTab(inventoryTab: InventoryTab = InventoryTab.Tiles) {
         const tab = this.scene.add.container(0, 0)
         // create the icon tab on
-        const iconTabOn = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryIconTabOn).setOrigin(0, 1)
+        const iconTabOn = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryIconTabOn).setOrigin(0.5, 0.5)
         iconTabOn.setInteractive()
         //add the icon tab on to the container
         tab.add(iconTabOn)
         // create the icon tab off
-        const iconTabOff = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryIconTabOff).setOrigin(0, 1)
+        const iconTabOff = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryIconTabOff).setOrigin(0.5, 0.5)
         //add the icon tab off to the container
         tab.add(iconTabOff)
 
         //add icon
-        // const icon = this.scene.add.image(0, 0, tabs[inventoryTab].iconKey).setOrigin(0, 1)
-        // tab.add(icon)
+        const icon = this.scene.add.sprite(0, 0, tabs[inventoryTab].iconKey).setOrigin(0.5, 0.5)
+        tab.add(icon)
         
         // store the container to the container tab
         this.tabMap[inventoryTab] = tab

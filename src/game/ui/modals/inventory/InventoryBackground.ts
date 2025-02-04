@@ -4,6 +4,7 @@ import { ContainerBaseConstructorParams } from "../../../types"
 
 export class InventoryBackground extends Phaser.GameObjects.Container {
     private wall: Phaser.GameObjects.Image | undefined
+    
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
@@ -21,5 +22,7 @@ export class InventoryBackground extends Phaser.GameObjects.Container {
 
         // })
         this.add(this.wall)
+
+        
     }
 }
