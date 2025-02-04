@@ -2,6 +2,7 @@ import { BaseAssetKey } from "../../assets"
 import { EventName } from "@/game/event-bus"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { ButtonsBaseConstructorParams } from "@/game/types"
+import { ModalName } from "../modals"
 
 export class RightHorizontalButtons extends HorizontalButtons {
     constructor(baseParams: ButtonsBaseConstructorParams) {
@@ -20,7 +21,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconInventory,
             text: "Inventory",
             onClick: () => {
-                this.scene.events.emit(EventName.OpenInventory, this)
+                this.scene.events.emit(EventName.OpenModal, ModalName.Inventory)
             },
         }))
 

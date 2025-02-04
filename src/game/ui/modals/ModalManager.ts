@@ -2,6 +2,7 @@ import { EventName } from "@/game/event-bus"
 import { BLACK_COLOR, SCALE_TIME } from "../../constants"
 import { ShopModal } from "./shop"
 import { ContainerBaseConstructorParams } from "../../types"
+import { InventoryModal } from "./inventory"
 
 export enum ModalName {
     Shop = "shop",
@@ -13,6 +14,8 @@ export class ModalManager extends Phaser.GameObjects.Container {
 
     // the shop modal
     private shopModal: ShopModal | undefined
+    // inventory modal
+    private inventoryModal: InventoryModal | undefined
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
@@ -26,6 +29,11 @@ export class ModalManager extends Phaser.GameObjects.Container {
 
         // create the shop modal
         this.shopModal = new ShopModal({
+            scene: this.scene,
+        }).hide()
+
+        // create the inventory modal
+        this.inventoryModal = new InventoryModal({
             scene: this.scene,
         }).hide()
 
@@ -52,10 +60,10 @@ export class ModalManager extends Phaser.GameObjects.Container {
             return this.shopModal
         }
         case ModalName.Inventory: {
-            if (!this.shopModal) {
+            if (!this.inventoryModal) {
                 throw new Error("Shop modal not found")
             }
-            return this.shopModal
+            return this.inventoryModal
         }
         }
     }
