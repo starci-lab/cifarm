@@ -1,12 +1,9 @@
 "use client"
 
-import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
-import { startGame } from "./config"
-import { CONTAINER_ID } from "./constants"
-import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     API_AUTHENTICATION_SWR_MUTATION,
-    QUERY_STATIC_SWR,
+    QUERY_INVENTORY_SWR,
+    QUERY_STATIC_SWR
 } from "@/app/constants"
 import {
     PLACED_ITEMS_SYNCED_EVENT,
@@ -15,8 +12,13 @@ import {
     useGameplayIo,
     useQueryStaticSwr,
 } from "@/hooks"
-import { EventBus, EventName } from "./event-bus"
+import { useQueryInventorySwr } from "@/hooks/swr/graphql"
+import { useSingletonHook } from "@/modules/singleton-hook"
 import { setAuthenticated, useAppDispatch } from "@/redux"
+import { FC, useEffect, useLayoutEffect, useRef } from "react"
+import { startGame } from "./config"
+import { CONTAINER_ID } from "./constants"
+import { EventBus, EventName } from "./event-bus"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
@@ -25,6 +27,9 @@ export const Game: FC = () => {
     //static data useEffect
     const { swr: staticSwr } =
     useSingletonHook<ReturnType<typeof useQueryStaticSwr>>(QUERY_STATIC_SWR)
+
+    //inventoriesSwr useEffect
+    const { swr: inventoriesSwr } = useSingletonHook<ReturnType<typeof useQueryInventorySwr>>(QUERY_INVENTORY_SWR)
 
     useEffect(() => {
         EventBus.on(EventName.LoadStaticData, async () => {
@@ -36,8 +41,19 @@ export const Game: FC = () => {
             EventBus.emit(EventName.StaticDataLoaded, data)
         })
 
+        EventBus.on(EventName.LoadInventory, async () => {
+            const data = await inventoriesSwr.mutate(
+                (data) => {
+                    return data
+                },
+                { revalidate: false })
+            EventBus.emit(EventName.InventoryLoaded, data)
+        })
+
         return () => {
+            //remove listeners
             EventBus.removeListener(EventName.LoadStaticData)
+            EventBus.removeListener(EventName.LoadInventory)
         }
     }, [])
 

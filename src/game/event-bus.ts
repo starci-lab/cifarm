@@ -19,6 +19,15 @@ export enum EventName {
     LoadStaticData = "load_static_data",
     // static data loaded, from React to Phaser
     StaticDataLoaded = "static_data_loaded",
+    // request to load user data, from Phaser to React
+    LoadUserData = "load_user_data",
+    // user data loaded, from React to Phaser
+    UserDataLoaded = "user_data_loaded",
+    // inventory loaded, from React to Phaser
+    LoadInventory = "load_inventory",
+    // inventory loaded, from React to Phaser
+    InventoryLoaded = "inventory_loaded",
+    
 
     // Between Phaser scenes
 

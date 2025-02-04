@@ -86,6 +86,9 @@ export class LoadingScene extends Scene {
         //emit the event to load static data
         EventBus.emit(EventName.LoadStaticData, this)
 
+        //load user data
+        EventBus.emit(EventName.LoadUserData, this)
+
         // get the width and height of the game
         const { width, height } = this.game.scale
 

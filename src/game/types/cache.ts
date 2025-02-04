@@ -3,4 +3,5 @@ export enum CacheKey {
     Crops = "crops",
     Animals = "animals",
     Buildings = "buildings",
+    Inventories = "inventories",
 }

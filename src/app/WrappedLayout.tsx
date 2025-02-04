@@ -13,6 +13,7 @@ import {
     useEnterPinForm,
     useGameplayIo,
     useNativeCoinGeckoSWR,
+    useQueryInventorySwr,
     useQueryStaticSwr,
     useQueryUserSwr,
 } from "@/hooks"
@@ -39,6 +40,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             QUERY_USER_SWR: useQueryUserSwr(),
                             QUERY_STATIC_SWR: useQueryStaticSwr(),
+                            QUERY_INVENTORY_SWR: useQueryInventorySwr(),
 
                             //io
                             GAMEPLAY_IO: useGameplayIo()
