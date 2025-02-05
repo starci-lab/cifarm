@@ -1,6 +1,8 @@
 import { SceneAbstract } from "@/game/SceneAbstract"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Scene } from "phaser"
+import { InventoryEntity, ToolEntity } from "@/modules/entities"
+import { CacheKey } from "@/game/types"
 
 // number of items to show
 const NUM_ITEMS = 4
@@ -12,12 +14,15 @@ export class ToolbarContent extends SceneAbstract {
     // public to allow external access
     public itemSizer: Sizer
 
+    private inventories: Array<InventoryEntity> = []
+    private tools: Array<ToolEntity> = []
+    
     constructor(scene: Scene) {
         super(scene)
-
         // create the toolbar background
-
         this.itemSizer = this.createItemSizer()
+
+        const inventories = this.scene.cache.obj.get(CacheKey.Inventories) as Array<InventoryEntity>
     }
 
     // create a sizer holds all the items

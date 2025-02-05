@@ -157,7 +157,7 @@ export class LoadingScene extends Scene {
             if (this.waitForQueueEmpty && this.loadingProgressBar.queueEmpty()) {
                 // emit the event that the loading is done
                 this.scene.start(SceneName.Gameplay)
-                this.scene.start(SceneName.Data)
+                //this.scene.start(SceneName.Data)
             }
         }
     }

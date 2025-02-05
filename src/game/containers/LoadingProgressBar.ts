@@ -84,8 +84,8 @@ export class LoadingProgressBar extends Phaser.GameObjects.Container {
         let progress = queue.from
         for (let i = 0; i < queue.steps; i++) {
             progress += (queue.to - queue.from) / queue.steps
-            await this.refreshLoadingBar(progress)
-            await this.updateText(`${queue.text} (${Math.floor(progress * 100)}%)`)
+            this.refreshLoadingBar(progress)
+            this.updateText(`${queue.text} (${Math.floor(progress * 100)}%)`)
             await sleep(this.stepDuration)
         }
         this.isLoading = false
@@ -95,11 +95,11 @@ export class LoadingProgressBar extends Phaser.GameObjects.Container {
         return this.loadingQueues.length === 0
     }
 
-    private async updateText(text: string) {
+    private updateText(text: string) {
         this.text.setText(text)
     }
 
-    private async refreshLoadingBar(progress: number) {
+    private refreshLoadingBar(progress: number) {
         // calculate the progress
         // update the progress bar
         if (!this.progressBar) {
