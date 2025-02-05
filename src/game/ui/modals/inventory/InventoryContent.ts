@@ -1,135 +1,93 @@
 import { BaseAssetKey } from "@/game/assets"
 import { CacheKey, SizerBaseConstructorParams } from "@/game/types"
-import { BaseText, StrokeColor, TextColor } from "../../elements"
-import { UISizer } from "../../UISizer"
-import { adjustTextMinLength } from "../../utils"
-import { defaultInventoryTab, InventoryTab } from "./types"
-import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { InventoryEntity } from "@/modules/entities"
+import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { UISizer } from "../../UISizer"
+import { defaultInventoryTab, InventoryTab } from "./types"
 
 export class InventoryContent extends UISizer {
     private gridTable: GridTable | undefined
-    // list of items
     private selectedInventoryTab: InventoryTab = defaultInventoryTab
-
-    //data
     private inventories: Array<InventoryEntity> = []
 
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
         this.createInventoryTable()
 
-        // load inventories
+        // Load inventories from cache
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
-        // this.inventories = this.inventories.filter((inventory) => inventory.inventoryType === this.selectedInventoryTab)
     }
 
     private createInventoryTable() {
         const { width, height } = this.scene.game.scale
 
+        const gridWidth = 750
+        const gridHeight = 1000
+
         const itemList = [
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
+            { assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed") },
+            { assetKey: BaseAssetKey.IconNeighbors, title: "Corn Seed", onClick: () => console.log("Clicked on Corn Seed") },
+            { assetKey: BaseAssetKey.IconNeighbors, title: "Rice Seed", onClick: () => console.log("Clicked on Rice Seed") },
+            { assetKey: BaseAssetKey.IconNeighbors, title: "Apple", onClick: () => console.log("Clicked on Apple") },
+            { assetKey: BaseAssetKey.IconNeighbors, title: "Orange", onClick: () => console.log("Clicked on Orange") },
+            { assetKey: BaseAssetKey.IconNeighbors, title: "Banana", onClick: () => console.log("Clicked on Banana") },
+            { assetKey: BaseAssetKey.IconNeighbors, title: "Grapes", onClick: () => console.log("Clicked on Grapes") },
         ]
 
         this.gridTable = this.scene.rexUI.add.gridTable({
             x: width / 2,
-            y: height / 2,
-            width,
-            height,
-            background: this.scene.add.rectangle(0, 0, 1000, 800, 0x222222, 0.1),
+            y: height / 2 + 200,
+            width: gridWidth,
+            height: gridHeight,
+            background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0.1),
             table: {
-                columns: 3,
-                mask: { padding: 2 },
-                interactive: true,
-                cellHeight: 100,
-                cellWidth: 150,
+                columns: 3, // Fixed 3 columns
+                cellWidth: 250, // Adjusted to fit 3x width
+                cellHeight: 250, // Adjusted height per row
+                mask: { padding: 2 }, // Enable scrolling
+                interactive: true // Allow scrolling
             },
             slider: {
-                track: this.scene.add.rectangle(0, 0, 20, 200, 0x888888),
-                thumb: this.scene.add.rectangle(0, 0, 20, 50, 0xffffff),
+                track: this.scene.add.rectangle(0, 0, 10, gridHeight, 0x888888),
+                thumb: this.scene.add.rectangle(0, 0, 10, 40, 0xffffff),
             },
             mouseWheelScroller: { focus: false, speed: 2 },
-            space: { left: 40, right: 40, top: 20, bottom: 20, table: 40 },
+            space: { left: 10, right: 10, top: 10, bottom: 10, table: 10 },
             createCellContainerCallback: (cell) => {
                 return this.createItemCard(itemList[cell.index])
             },
             items: itemList,
-        }).layout().setOrigin(0.5, 0)
+        }).layout().setOrigin(0.5, 0.5)
 
         this.add(this.gridTable)
     }
 
     private createItemCard({ assetKey, title, onClick }: CreateItemCardParams) {
-        const cardBackground = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryCell).setScale(0.5)
 
-        const titleText = new BaseText({
-            baseParams: {
-                scene: this.scene,
-                text: adjustTextMinLength(title, 20),
-                x: 0,
-                y: 0,
-            },
-            options: {
-                enableStroke: true,
-                textColor: TextColor.White,
-                strokeColor: StrokeColor.Black,
-                fontSize: 24,
-                strokeThickness: 3,
-                enableWordWrap: true,
-                wordWrapWidth: 400,
-            },
+        const icon = this.scene.add.image(0, 0, assetKey)
+            .setOrigin(0.5, 0.5)
+            .setScale(1.5)
+
+
+        // Make the entire item interactive
+        const container = this.scene.rexUI.add.sizer({
+            width: 250, // Same as cellWidth
+            height: 250, // Same as cellHeight
+            orientation: "vertical",
+            space: { item: 5 }
         })
-        this.scene.add.existing(titleText)
+            .add(icon, { align: "center" }) // Icon in center
+            .setInteractive() // Make the whole container clickable
+            .on("pointerdown", () => {
+                onClick()
+            })
 
-        //Quantity
-        const icon = this.scene.add.image(this.x, this.y, assetKey).setOrigin(1, 1)
-        const button = this.scene.rexUI.add.label({
-            background: this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryCellQuantity).setScale(1),
-            text: titleText,
-        }).setInteractive()
-
-        button.on("pointerdown", () => {
-            console.log("Clicked on button")
-            onClick()
-        })
-
-        return this.scene.rexUI.add.overlapSizer({
-            width: cardBackground.width,
-            height: cardBackground.height,
-        })
-            .addBackground(cardBackground)
-            .add(icon, { align: "center" })
-            .add(titleText, { align: "top" })
-            .add(button, { align: "bottom" })
+        return container
     }
 }
 
 export interface CreateItemCardParams {
     assetKey: string;
     title: string;
-    iconOffset?: IconOffsets;
-    price?: string;
     onClick: () => void;
-}
-
-export interface IconOffsets {
-    x?: number;
-    y?: number;
 }

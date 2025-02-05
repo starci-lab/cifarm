@@ -74,6 +74,15 @@ export enum BaseAssetKey {
     ToolbarPrevIcon = "toolbar-button-prev-icon",
     ToolbarNextAvatar = "toolbar-next-avatar",
     ToolbarPrevAvatar = "toolbar-prev-avatar",
+    
+    //Stand
+    ModalStandWall = "modal-stand-wall",
+    ModalStandHeader = "modal-stand-header",
+    ModalStandTag = "modal-stand-tag",
+    ModalStand = "modal-stand-stand",
+    ModalStandWhiteStar = "modal-stand-white-star",
+    ModalStandPurpleStar = "modal-stand-purple-star",
+    ModalStandShadow = "modal-stand-shadow",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -150,6 +159,14 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ToolbarPrevIcon]: "toolbar/prev-icon.png",
     [BaseAssetKey.ToolbarNextAvatar]: "toolbar/next-avatar.png",
     [BaseAssetKey.ToolbarPrevAvatar]: "toolbar/prev-avatar.png",
+    //Stand
+    [BaseAssetKey.ModalStandWall]: "modals/stand/wall.png",
+    [BaseAssetKey.ModalStandHeader]: "modals/stand/header.png",
+    [BaseAssetKey.ModalStandTag]: "modals/stand/tag.png",
+    [BaseAssetKey.ModalStand]: "modals/stand/stand.png",
+    [BaseAssetKey.ModalStandWhiteStar]: "modals/stand/star-white.png",
+    [BaseAssetKey.ModalStandPurpleStar]: "modals/stand/star-purple.png",
+    [BaseAssetKey.ModalStandShadow]: "modals/stand/shadow.png",
 }
 
 // preload, for loading screen
