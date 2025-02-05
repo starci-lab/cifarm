@@ -1,38 +1,15 @@
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey } from "../../../assets"
 import { SizerBaseConstructorParams } from "../../../types"
 import { UISizer } from "../../UISizer"
 import { BaseText } from "../../elements"
 import { ProgressBar } from "../../../containers"
-import { onGameObjectClick } from "../../utils"
-import { ModalName } from "../ModalManager"
-import { EventName } from "../../../event-bus"
 
 export class QuestContent extends UISizer {
-    private closeButton: Phaser.GameObjects.Sprite | undefined
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
 
         // create the quest background
         this.createInviteUserItemCard()
-        // create the close button
-        this.closeButton = this.createCloseButton()
-    }
-
-    private createCloseButton() {
-        // create the close button
-        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.ModalQuestIconClose)
-        // add the on click event
-        closeButton.setInteractive().on("pointerdown", () => {
-            onGameObjectClick({
-                gameObject: closeButton,
-                onClick: () => {
-                    this.scene.events.emit(EventName.CloseModal, ModalName.Quest)
-                },
-                scene: this.scene,
-            })
-        }).setPosition(this.x + 425, this.y - 345)
-        this.add(closeButton)
-        return closeButton
     }
 
     // create the item card
