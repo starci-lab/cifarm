@@ -50,7 +50,7 @@ export class InventoryContent extends UISizer {
 
         this.gridTable = this.scene.rexUI.add.gridTable({
             x: width / 2,
-            y: this.y + 200,
+            y: height / 2,
             width,
             height,
             background: this.scene.add.rectangle(0, 0, 1000, 800, 0x222222, 0.1),
@@ -58,8 +58,8 @@ export class InventoryContent extends UISizer {
                 columns: 3,
                 mask: { padding: 2 },
                 interactive: true,
-                cellHeight: 200,
-                cellWidth: 450,
+                cellHeight: 100,
+                cellWidth: 150,
             },
             slider: {
                 track: this.scene.add.rectangle(0, 0, 20, 200, 0x888888),
@@ -77,7 +77,7 @@ export class InventoryContent extends UISizer {
     }
 
     private createItemCard({ assetKey, title, onClick }: CreateItemCardParams) {
-        const cardBackground = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryCell)
+        const cardBackground = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryCell).setScale(0.5)
 
         const titleText = new BaseText({
             baseParams: {
@@ -101,7 +101,7 @@ export class InventoryContent extends UISizer {
         //Quantity
         const icon = this.scene.add.image(this.x, this.y, assetKey).setOrigin(1, 1)
         const button = this.scene.rexUI.add.label({
-            background: this.scene.add.image(0, 0, BaseAssetKey.IconNeighbors),
+            background: this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryCellQuantity).setScale(1),
             text: titleText,
         }).setInteractive()
 
