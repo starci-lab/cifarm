@@ -67,6 +67,16 @@ export enum BaseAssetKey {
     ModalQuestPin = "modal-quest-pin",
     ModalQuestCardItem = "modal-quest-card-item",
     ModalQuestIconClose = "modal-quest-icon-close",
+
+    //Stand
+    ModalStandWall = "modal-stand-wall",
+    ModalStandHeader = "modal-stand-header",
+    ModalStandTag = "modal-stand-tag",
+    ModalStandStand = "modal-stand-stand",
+    ModalStandWhiteStar = "modal-stand-white-star",
+    ModalStandPurpleStar = "modal-stand-purple-star",
+    ModalStandShadow = "modal-stand-shadow",
+
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -136,6 +146,15 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalQuestPin]: "modals/quest/pin.png",
     [BaseAssetKey.ModalQuestCardItem]: "modals/quest/card-item.png",
     [BaseAssetKey.ModalQuestIconClose]: "modals/quest/icon-close.png",
+
+    //Stand
+    [BaseAssetKey.ModalStandWall]: "modals/stand/wall.png",
+    [BaseAssetKey.ModalStandHeader]: "modals/stand/header.png",
+    [BaseAssetKey.ModalStandTag]: "modals/stand/tag.png",
+    [BaseAssetKey.ModalStandStand]: "modals/stand/stand.png",
+    [BaseAssetKey.ModalStandWhiteStar]: "modals/stand/star-white.png",
+    [BaseAssetKey.ModalStandPurpleStar]: "modals/stand/star-purple.png",
+    [BaseAssetKey.ModalStandShadow]: "modals/stand/shadow.png",
 }
 
 // preload, for loading screen

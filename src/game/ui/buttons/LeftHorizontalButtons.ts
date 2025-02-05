@@ -38,7 +38,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconRoadsideStand,
             text: "Roadside Stand",
             onClick: () => {
-                console.log("Roadside Stand")
+                this.scene.events.emit(EventName.OpenModal, ModalName.Stand)
             },
         }))
 
