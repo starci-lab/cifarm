@@ -117,25 +117,23 @@ export class QuestContent extends UISizer {
             )
         )
         
-        // create the card item label
-        const cardItemLabel = this.scene.rexUI.add.label({
+        // create the card item
+        const cardItem = this.scene.rexUI.add.sizer({
             x: this.x,
             y: this.y,
             width: backgroundImage.width,
             height: backgroundImage.height,
-            background: wrapperBackgroundContainer,
-            align: "center",
-        }).layout()
+        }).addBackground(wrapperBackgroundContainer).layout()
         // add the content
         if (content) {
             const x = this.x + (contentPosition?.x ?? 0)
             const y = this.y + (contentPosition?.y ?? 0)
             content.setDepth(1).setPosition(x, y)
-            cardItemLabel.add(content)
+            cardItem.add(content)
         }
         // add the container to the scene
-        this.add(cardItemLabel)
-        return cardItemLabel
+        this.add(cardItem)
+        return cardItem
     }
 }
 

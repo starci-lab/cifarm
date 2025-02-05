@@ -53,8 +53,10 @@ export enum EventName {
     // place item
     PlaceInprogress = "place_inprogress",
 
+    // load completed
     LoadCompleted = "load_completed",
 
+    // tool selected
     SelectTool = "select_tool",
 }
 
