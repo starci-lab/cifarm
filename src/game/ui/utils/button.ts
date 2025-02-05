@@ -1,5 +1,5 @@
 import { SCALE_PEAK_VALUE, SCALE_TIME } from "@/game/constants"
-import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 export interface OnGameObjectClickParams {
   gameObject: Phaser.GameObjects.GameObject | Label;
@@ -23,7 +23,7 @@ export const onGameObjectClick = ({
 
     // Apply scaling animation if animate is true
     if (animate) {
-        if (gameObject instanceof Label) {
+        if (gameObject instanceof Sizer) {
             // Special scaling for Label (scaleYoyo)
             gameObject.scaleYoyo(SCALE_TIME, peakValue)
         } else {
