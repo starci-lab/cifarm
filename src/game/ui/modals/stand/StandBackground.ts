@@ -11,14 +11,6 @@ export class StandBackground extends Phaser.GameObjects.Container {
         // Get the width and height of the game
         const { width, height } = this.scene.game.scale
 
-        // Add and scale the background image
-        this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalStandWall)
-            .setY(-height / 2)
-            .setOrigin(0.5, 0.5)
-            .setDisplaySize(width, height)
-
-        this.add(this.wall)
-
         // add stand in middle
         this.stand = this.scene.add.image(0, 0, BaseAssetKey.ModalStand)
             .setY(-height / 2)

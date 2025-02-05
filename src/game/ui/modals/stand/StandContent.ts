@@ -28,8 +28,6 @@ export class StandContent extends UISizer {
             { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Orange", onClick: () => console.log("Clicked on Orange") },
             { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Banana", onClick: () => console.log("Clicked on Banana") },
             { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Grapes", onClick: () => console.log("Clicked on Grapes") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Strawberry", onClick: () => console.log("Clicked on Strawberry") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Blueberry", onClick: () => console.log("Clicked on Blueberry") },
         ]
 
         // Create Fixed Grid Table
@@ -38,7 +36,7 @@ export class StandContent extends UISizer {
             y: height / 2 - 160,
             width: gridWidth,
             height: gridHeight,
-            background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0.1),
+            background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0),
             table: {
                 columns: 3, // Fixed 3 columns
                 cellWidth: 300, // Fixed cell size
