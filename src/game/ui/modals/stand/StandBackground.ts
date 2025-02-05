@@ -3,15 +3,27 @@ import { ContainerBaseConstructorParams } from "../../../types"
 
 export class StandBackground extends Phaser.GameObjects.Container {
     private wall: Phaser.GameObjects.Image | undefined
-    
+    private stand: Phaser.GameObjects.Image | undefined
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
 
-        // get the width and height of the game
+        // Get the width and height of the game
         const { width, height } = this.scene.game.scale
 
-        this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalStandWall).setOrigin(0.5, 0.5)
+        // Add and scale the background image
+        this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalStandWall)
+            .setY(-height / 2)
+            .setOrigin(0.5, 0.5)
+            .setDisplaySize(width, height)
+
         this.add(this.wall)
+
+        // add stand in middle
+        this.stand = this.scene.add.image(0, 0, BaseAssetKey.ModalStand)
+            .setY(-height / 2)
+            .setOrigin(0.5, 0.5)
+
+        this.add(this.stand)
     }
 }

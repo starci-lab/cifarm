@@ -2,130 +2,104 @@ import { BaseAssetKey } from "@/game/assets"
 import { SizerBaseConstructorParams } from "@/game/types"
 import { DeliveringProductEntity } from "@/modules/entities"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseText, StrokeColor, TextColor } from "../../elements"
 import { UISizer } from "../../UISizer"
-import { adjustTextMinLength } from "../../utils"
 
 export class StandContent extends UISizer {
     private gridTable: GridTable | undefined
-    //data
     private deliveringProduct: Array<DeliveringProductEntity> = []
 
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
-        this.createStandTable()
-
-        // load delivering products
-        // this.deliveringProduct = this.scene.cache.obj.get(CacheKey.Inventories)
-        // this.deliveringProduct = this.deliveringProduct.filter((inventory) => inventory.inventoryType === this.selectedStandTab)
+        this.createStandGrid()
     }
 
-    private createStandTable() {
+    private createStandGrid() {
         const { width, height } = this.scene.game.scale
 
+        const gridWidth = 800 // Fixed width
+        const gridHeight = 800 // Fixed height
+
+        // Sample Item Data
         const itemList = [
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
-            { 
-                assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed"),
-            },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Corn Seed", onClick: () => console.log("Clicked on Corn Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Rice Seed", onClick: () => console.log("Clicked on Rice Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Apple", onClick: () => console.log("Clicked on Apple") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Orange", onClick: () => console.log("Clicked on Orange") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Banana", onClick: () => console.log("Clicked on Banana") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Grapes", onClick: () => console.log("Clicked on Grapes") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Strawberry", onClick: () => console.log("Clicked on Strawberry") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Blueberry", onClick: () => console.log("Clicked on Blueberry") },
         ]
 
+        // Create Fixed Grid Table
         this.gridTable = this.scene.rexUI.add.gridTable({
             x: width / 2,
-            y: height / 2,
-            width,
-            height,
-            background: this.scene.add.rectangle(0, 0, 1000, 800, 0x222222, 0.1),
+            y: height / 2 - 160,
+            width: gridWidth,
+            height: gridHeight,
+            background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0.1),
             table: {
-                columns: 3,
-                mask: { padding: 2 },
-                interactive: true,
-                cellHeight: 100,
-                cellWidth: 150,
+                columns: 3, // Fixed 3 columns
+                cellWidth: 300, // Fixed cell size
+                cellHeight: 300, // Fixed cell size
+                mask: false, // Disable scroll/masking
+                interactive: false // No user interaction with table scrolling
             },
-            slider: {
-                track: this.scene.add.rectangle(0, 0, 20, 200, 0x888888),
-                thumb: this.scene.add.rectangle(0, 0, 20, 50, 0xffffff),
+            space: {
+                left: 20, right: 20, top: 20, bottom: 20, table: 20
             },
-            mouseWheelScroller: { focus: false, speed: 2 },
-            space: { left: 40, right: 40, top: 20, bottom: 20, table: 40 },
             createCellContainerCallback: (cell) => {
                 return this.createItemCard(itemList[cell.index])
             },
             items: itemList,
-        }).layout().setOrigin(0.5, 0)
+        }).layout().setOrigin(0.5, 0.5)
 
         this.add(this.gridTable)
     }
 
     private createItemCard({ assetKey, title, onClick }: CreateItemCardParams) {
-        const cardBackground = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryCell).setScale(0.5)
-
-        const titleText = new BaseText({
-            baseParams: {
-                scene: this.scene,
-                text: adjustTextMinLength(title, 20),
-                x: 0,
-                y: 0,
-            },
-            options: {
-                enableStroke: true,
-                textColor: TextColor.White,
-                strokeColor: StrokeColor.Black,
-                fontSize: 24,
-                strokeThickness: 3,
-                enableWordWrap: true,
-                wordWrapWidth: 400,
-            },
+        // Shadow (Behind the icon)
+        const shadow = this.scene.add.image(0, 0, BaseAssetKey.ModalStandShadow)
+            .setPosition(0, 0)
+            .setOrigin(0.5, 0.5)
+            .setScale(1) 
+    
+        // Icon
+        const icon = this.scene.add.image(0, 0, assetKey)
+            .setOrigin(1, 1)
+            .setScale(2)
+    
+        // Tag (Below the icon)
+        const tag = this.scene.add.image(0, 0, BaseAssetKey.ModalStandTag)
+            .setOrigin(0.5, 0)
+            .setScale(1)
+    
+        // Create a container that wraps all elements
+        const container = this.scene.rexUI.add.sizer({
+            width: 150,
+            height: 180, // Adjust height to accommodate tag
+            orientation: "vertical",
+            space: { item: 10 }
         })
-        this.scene.add.existing(titleText)
-
-        //Quantity
-        const icon = this.scene.add.image(this.x, this.y, assetKey).setOrigin(1, 1)
-        const button = this.scene.rexUI.add.label({
-            background: this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryCellQuantity).setScale(1),
-            text: titleText,
-        }).setInteractive()
-
-        button.on("pointerdown", () => {
-            console.log("Clicked on button")
-            onClick()
-        })
-
-        return this.scene.rexUI.add.overlapSizer({
-            width: cardBackground.width,
-            height: cardBackground.height,
-        })
-            .addBackground(cardBackground)
-            .add(icon, { align: "center" })
-            .add(titleText, { align: "top" })
-            .add(button, { align: "bottom" })
+            .add(shadow, { align: "center", expand: false,
+                offsetY: 170,
+            }) // Shadow behind
+            .add(icon, { align: "center" }) // Icon in center
+            .add(tag, { align: "center", expand: false, padding: { top: 5 } }) // Tag below icon
+            .setInteractive() // Make the whole container interactive
+            .on("pointerdown", () => {
+                onClick()
+            })
+    
+        return container
     }
+    
+    
 }
 
 export interface CreateItemCardParams {
     assetKey: string;
     title: string;
-    iconOffset?: IconOffsets;
-    price?: string;
     onClick: () => void;
-}
-
-export interface IconOffsets {
-    x?: number;
-    y?: number;
 }

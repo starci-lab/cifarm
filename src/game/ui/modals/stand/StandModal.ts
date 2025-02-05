@@ -2,10 +2,12 @@ import { SizerBaseConstructorParams } from "../../../types"
 import { UISizer } from "../../UISizer"
 import { StandBackground } from "./StandBackground"
 import { StandContent } from "./StandContent"
+import { StandHeader } from "./StandHeader"
 
 export class StandModal extends UISizer {
     private standBackground: StandBackground
     private standContent: StandContent
+    private standHeader: StandHeader
 
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
@@ -19,6 +21,15 @@ export class StandModal extends UISizer {
         })
         this.scene.add.existing(this.standBackground)
         this.add(this.standBackground)
+
+        // create the header
+        this.standHeader = new StandHeader({
+            scene: this.scene,
+            x: this.x,
+            y: 0,
+        })
+        this.scene.add.existing(this.standHeader)
+        this.add(this.standHeader)
 
         // create the stand content
         this.standContent = new StandContent({
