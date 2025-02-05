@@ -13,6 +13,8 @@ export interface InventoryTabData {
     iconKey: BaseAssetKey
 }
 
+export const defaultInventoryTab = InventoryTab.Menu
+
 export const tabs: Record<InventoryTab, InventoryTabData> = {
     [InventoryTab.Menu]: {
         iconKey: BaseAssetKey.ModalInventoryIconMenu,
