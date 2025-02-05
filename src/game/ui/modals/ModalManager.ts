@@ -42,6 +42,8 @@ export class ModalManager extends Phaser.GameObjects.Container {
         // create the shop modal
         this.shopModal = new ShopModal({
             scene: this.scene,
+            x: this.x,
+            y: this.y,
         }).hide()
 
         // create the inventory modal

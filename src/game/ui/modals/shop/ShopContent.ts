@@ -14,11 +14,11 @@ import { adjustTextMinLength } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import { AnimalEntity, BuildingEntity, CropEntity, PlacedItemType } from "@/modules/entities"
-import { UISizer } from "../../UISizer"
 import { onGameObjectClick } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
 import { EventBus, EventName, PlacedInprogressMessage } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
+import { UISizer } from "../../UISizer"
 
 export class ShopContent extends UISizer {
     // list of items
@@ -108,11 +108,10 @@ export class ShopContent extends UISizer {
                     speed: 2,
                 },
             })
-            .layout()
-
+            .layout()  
         // add the scrollable panel to the map and the sizer
-        this.scrollablePanelMap[shopTab] = scrollablePanel
         this.add(scrollablePanel)
+        this.scrollablePanelMap[shopTab] = scrollablePanel
         // hide the scrollable panel if it is not the default shop tab
         if (shopTab !== this.selectedShopTab) {
             scrollablePanel.hide()

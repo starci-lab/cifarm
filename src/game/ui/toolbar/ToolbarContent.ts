@@ -22,8 +22,6 @@ export class ToolbarContent extends SceneAbstract {
 
     // create a sizer holds all the items
     private createItemSizer(): Sizer {
-        const { height } = this.scene.game.scale
-
         const itemSizer = this.scene.rexUI.add.sizer({
             orientation: "x",
             originY: 1,
@@ -31,7 +29,7 @@ export class ToolbarContent extends SceneAbstract {
                 item: 40,
             },
             x: this.centerX - 5,
-            y: this.centerY + height / 2 - 160,
+            y: this.bottomY - 160,
         })
 
         // add the items to the sizer
@@ -42,7 +40,7 @@ export class ToolbarContent extends SceneAbstract {
                 item: 15,
             },
             x: this.centerX,
-            y: this.centerY + height / 2 - 160,
+            y: this.bottomY / 2 - 160,
         })
 
         for (let i = 0; i < NUM_ITEMS - 1; i++) {
@@ -64,7 +62,7 @@ export class ToolbarContent extends SceneAbstract {
                 item: 15,
             },
             x: this.centerX,
-            y: this.centerY + height / 2 - 160,
+            y: this.bottomY / 2 - 160,
         })
         rightItemSizer.add(
             this.scene.rexUI.add.label({

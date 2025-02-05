@@ -1,14 +1,12 @@
-import {
-    SizerBaseConstructorParams,
-} from "../../../types/constructor-params/rexui"
 import { ShopContent } from "./ShopContent"
 import { ShopBackground } from "./ShopBackground"
-import { UISizer } from "../../UISizer"
 import { ShopHeader } from "./ShopHeader"
 import { ShopTabs } from "./ShopTabs"
+import { SizerBaseConstructorParams } from "@/game/types"
+import { ScreenUISizer } from "../../UISizer"
 
-// shop modal extends UISizer to achieve full screen sizer and the position is the center of the screen
-export class ShopModal extends UISizer {
+// shop modal extends BaseSizer
+export class ShopModal extends ScreenUISizer {
     private shopContent: ShopContent
     private shopHeader: ShopHeader
     private shopTabs: ShopTabs
@@ -31,7 +29,7 @@ export class ShopModal extends UISizer {
             scene: this.scene,
             x: this.x,
             y: this.y,
-        }).setDepth(1)
+        }).setDepth(1).layout()
         this.scene.add.existing(this.shopContent)
         this.add(this.shopContent)
 

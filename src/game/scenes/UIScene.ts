@@ -19,18 +19,14 @@ export class UIScene extends Scene {
         new RightHorizontalButtons({
             scene: this,
         }).setPosition(width - 50, 50).setOrigin(1, 0).layout()
+       
+        this.toolbar = new Toolbar(this) 
+
         this.modalManager = new ModalManager({
             scene: this,
             x: width / 2,
             y: height / 2,
         }) 
         this.add.existing(this.modalManager)
-
-        this.toolbar = new Toolbar({
-            scene: this,
-            x: width / 2,
-            y: height / 2,
-        }) 
-        this.add.existing(this.toolbar)
     }
 }
