@@ -26,12 +26,13 @@ export class ShopModal extends UISizer {
         this.scene.add.existing(this.shopBackground)
         this.add(this.shopBackground)
                 
-        // create the shop content
+        //create the shop content
         this.shopContent = new ShopContent({
             scene: this.scene,
             x: this.x,
             y: this.y,
         }).setDepth(1)
+        this.scene.add.existing(this.shopContent)
         this.add(this.shopContent)
 
         // create the shop tabs

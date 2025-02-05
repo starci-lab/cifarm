@@ -1,7 +1,7 @@
-import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { SizerBaseConstructorParams } from "../types/constructor-params/rexui"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
-export class UISizer extends Sizer {
+export class UISizer extends BaseSizer {
     constructor({
         scene,
         x,
@@ -20,6 +20,6 @@ export class UISizer extends Sizer {
             height ?? scale.height,
             config
         )
-        this.setDirty(true)
+        this.setDirty(false)
     }
 }

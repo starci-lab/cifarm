@@ -4,4 +4,5 @@ export enum CacheKey {
     Animals = "animals",
     Buildings = "buildings",
     Inventories = "inventories",
+    DailyRewards = "daily-rewards",
 }

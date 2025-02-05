@@ -63,5 +63,5 @@ export interface GridTableBaseConstructorParams {
   y: number;
   width: number;
   height: number;
-  config: GridTable.IConfig;
+  config?: GridTable.IConfig;
 }

@@ -8,7 +8,7 @@ import {
     loadCropAssets,
     loadTileAssets,
 } from "../assets"
-import { LoadingProgressContainer } from "../containers"
+import { LoadingProgressBar } from "../containers"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
@@ -21,7 +21,7 @@ export class LoadingScene extends Scene {
     private loadingTotal = 0
 
     // loading fill width and height
-    private loadingProgressContainer: LoadingProgressContainer | undefined
+    private loadingProgressBar: LoadingProgressBar | undefined
 
     constructor() {
         super(SceneName.LoadingScene)
@@ -46,12 +46,13 @@ export class LoadingScene extends Scene {
         //listen for static data loaded event
         EventBus.on(
             EventName.StaticDataLoaded,
-            ({ placedItemTypes, crops, animals, buildings }: QueryStaticResponse) => {
+            ({ placedItemTypes, crops, animals, buildings, dailyRewards }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItems, placedItemTypes)
                 this.cache.obj.add(CacheKey.Animals, animals)
                 this.cache.obj.add(CacheKey.Crops, crops)
                 this.cache.obj.add(CacheKey.Buildings, buildings)
+                this.cache.obj.add(CacheKey.DailyRewards, dailyRewards)
                 //load the static data
                 this.loadStaticData()
             }
@@ -109,7 +110,7 @@ export class LoadingScene extends Scene {
         })
 
         // create the loading progress container
-        this.loadingProgressContainer = new LoadingProgressContainer(
+        this.loadingProgressBar = new LoadingProgressBar(
             {
                 baseParams: {
                     scene: this,
@@ -122,7 +123,7 @@ export class LoadingScene extends Scene {
             }
         )
         // add the loading progress container to the scene
-        this.add.existing(this.loadingProgressContainer)
+        this.add.existing(this.loadingProgressBar)
     }
 
     update() {
@@ -130,53 +131,53 @@ export class LoadingScene extends Scene {
         if (
             !this.preventUpdateAssetLoaded &&
       this.assetLoaded &&
-      this.loadingProgressContainer?.scene.textures
+      this.loadingProgressBar?.scene.textures
         ) {
             this.loadAssets()
             this.preventUpdateAssetLoaded = true
         }
 
         // use the loading progress container to update the loading progress
-        if (this.loadingProgressContainer) {
-            this.loadingProgressContainer.update()
+        if (this.loadingProgressBar) {
+            this.loadingProgressBar.update()
         }
     }
 
     private tryFinishLoading() {
-        if (!this.loadingProgressContainer) {
+        if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
-        const finished = this.loadingProgressContainer.finished()
+        const finished = this.loadingProgressBar.finished()
         if (finished) {
             this.scene.start(SceneName.Gameplay)
         }
     }
 
     async authenticated() {
-        if (!this.loadingProgressContainer) {
+        if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressContainer.updateLoadingProgress(
+        await this.loadingProgressBar.updateLoadingProgress(
             this.loadingAuthenticate
         )
         this.tryFinishLoading()
     }
 
     async loadStaticData() {
-        if (!this.loadingProgressContainer) {
+        if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressContainer.updateLoadingProgress(
+        await this.loadingProgressBar.updateLoadingProgress(
             this.loadingStaticData
         )
         this.tryFinishLoading()
     }
 
     async loadAssets() {
-        if (!this.loadingProgressContainer) {
+        if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressContainer.updateLoadingProgress(
+        await this.loadingProgressBar.updateLoadingProgress(
             this.loadingAssets
         )
         this.tryFinishLoading()

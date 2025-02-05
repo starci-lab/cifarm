@@ -30,7 +30,16 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconDaily,
             text: "Daily",
             onClick: () => {
-                console.log("Daily")
+                this.scene.events.emit(EventName.OpenModal, ModalName.Daily)
+            },
+        }))
+
+        // add quest button
+        this.addButton(this.createButton({
+            iconKey: BaseAssetKey.IconQuest,
+            text: "Quest",
+            onClick: () => {
+                this.scene.events.emit(EventName.OpenModal, ModalName.Quest)
             },
         }))
     }
