@@ -8,7 +8,7 @@ export class ProgressBar extends Phaser.GameObjects.Container {
     private loadingFill: Phaser.GameObjects.Image | undefined
     // constructor
     constructor({ baseParams: { scene, x, y }, options }: ConstructorParams<ContainerBaseConstructorParams, ProgressBarOptions>) {
-        const { progress } = options
+        const { progress = 0 } = { ...options }
         // super to call the parent class constructor
         super(scene, x, y)
 
