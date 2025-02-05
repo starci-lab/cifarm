@@ -1,7 +1,6 @@
 import { UseSWR } from "../types"
 import { v4 } from "uuid"
-import { UserEntity } from "@/modules/entities"
-import { QueryUser, queryUser } from "@/modules/apollo"
+import { QueryUser, queryUser, QueryUserResponse } from "@/modules/apollo"
 import useSWR from "swr"
 import { useAppSelector } from "@/redux"
 
@@ -10,7 +9,7 @@ export type UseQueryUserSwrParams = Partial<{
 }>
 
 export const useQueryUserSwr = (params: UseQueryUserSwrParams = {}): UseSWR<
-  UserEntity,
+  QueryUserResponse,
   UseQueryUserSwrParams
 > => {
     const authenticated = useAppSelector(state => state.gameReducer.authenticated)

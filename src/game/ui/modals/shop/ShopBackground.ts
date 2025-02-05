@@ -7,7 +7,6 @@ export class ShopBackground extends Phaser.GameObjects.Container {
     private bottomDecorator: Phaser.GameObjects.Image | undefined
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        console.log(y)
         super(scene, x, y)
 
         this.wall = this.scene.add

@@ -3,7 +3,7 @@ import { client } from "../client"
 import { Activities, AnimalEntity, AnimalRandomness, BuildingEntity, CropEntity, CropRandomness, DailyRewardEntity, EnergyRegen, PlacedItemTypeEntity, SpinInfo, Starter } from "@/modules/entities"
 
 //long query for querying all the static data
-export const query = gql`
+const query = gql`
     {
         activities {
             water {

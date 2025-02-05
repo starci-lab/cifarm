@@ -12,11 +12,15 @@ import { LoadingProgressBar } from "../containers"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
+import { InventoryEntity, UserEntity } from "@/modules/entities"
+import { sleep } from "@/modules/common"
 
 export class LoadingScene extends Scene {
     // loading progress
     private loadingAuthenticate = 10
     private loadingStaticData = 10
+    private loadingUserData = 5
+    private loadingUserInventory = 5
     private loadingAssets = 20
     private loadingTotal = 0
 
@@ -27,26 +31,45 @@ export class LoadingScene extends Scene {
         super(SceneName.LoadingScene)
         //define point for loading
         this.loadingTotal =
-      this.loadingAuthenticate + this.loadingStaticData + this.loadingAssets
+      this.loadingAuthenticate +
+      this.loadingStaticData +
+      this.loadingAssets +
+      this.loadingUserData +
+      this.loadingUserInventory
     }
 
-    private assetLoaded = false
-    private preventUpdateAssetLoaded = false
+    // base on 100
+    private loaded = 0
+    private previousAssetLoaded = 0
 
     init() {
     // Listen to the shutdown event
         this.events.on("shutdown", this.shutdown, this)
 
         //listen for authentication event
-        EventBus.on(EventName.Authenticated, () => {
+        EventBus.on(EventName.Authenticated, async () => {
             //authenticate the user
             this.authenticated()
+            
+            // sleep for 0.1 seconds to ensure the hook is updated
+            await sleep(100)
+            //load user data
+            EventBus.emit(EventName.LoadUser, this)
+   
+            //load user inventory
+            EventBus.emit(EventName.LoadInventories, this)
         })
 
         //listen for static data loaded event
         EventBus.on(
             EventName.StaticDataLoaded,
-            ({ placedItemTypes, crops, animals, buildings, dailyRewards }: QueryStaticResponse) => {
+            ({
+                placedItemTypes,
+                crops,
+                animals,
+                buildings,
+                dailyRewards,
+            }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItems, placedItemTypes)
                 this.cache.obj.add(CacheKey.Animals, animals)
@@ -57,39 +80,39 @@ export class LoadingScene extends Scene {
                 this.loadStaticData()
             }
         )
+
+        //listen for load user data event
+        EventBus.on(
+            EventName.UserLoaded, (user: UserEntity) => {
+                console.log("user loaded", user)
+                //load the user data
+                this.cache.obj.add(CacheKey.User, user)
+                this.loadUserData()
+            })
+
+        //listen for load inventory event
+        EventBus.on(
+            EventName.InventoriesLoaded, (inventories: Array<InventoryEntity> 
+            ) => {
+                console.log("inventories loaded", inventories)
+                //load the user inventory
+                this.cache.obj.add(CacheKey.Inventories, inventories)
+                this.loadUserInventories()
+            })
+    }
+
+    preload() {   
+        this.load.setPath("assets")
     }
 
     shutdown() {
         EventBus.off(EventName.Authenticated)
         EventBus.off(EventName.StaticDataLoaded)
-    }
-
-    async preload() {
-    //listen for asset loaded event
-
-        this.load.on("complete", () => {
-            this.assetLoaded = true
-        })
-
-        this.load.setPath("assets")
-        // load all the assets
-        loadBaseAssets(this)
-        loadCropAssets(this)
-        loadAnimalAssets(this)
-        loadBuildingAssets(this)
-        loadTileAssets(this)
+        EventBus.off(EventName.UserLoaded)
+        EventBus.off(EventName.InventoriesLoaded)
     }
 
     create() {
-    //emit the event to authenticate
-        EventBus.emit(EventName.Authenticate, this)
-
-        //emit the event to load static data
-        EventBus.emit(EventName.LoadStaticData, this)
-
-        //load user data
-        EventBus.emit(EventName.LoadUserData, this)
-
         // get the width and height of the game
         const { width, height } = this.game.scale
 
@@ -110,33 +133,43 @@ export class LoadingScene extends Scene {
         })
 
         // create the loading progress container
-        this.loadingProgressBar = new LoadingProgressBar(
-            {
-                baseParams: {
-                    scene: this,
-                    x: width / 2,
-                    y: height * 0.85,
-                },
-                options: {
-                    loadingTotal: this.loadingTotal,
-                }
-            }
-        )
+        this.loadingProgressBar = new LoadingProgressBar({
+            baseParams: {
+                scene: this,
+                x: width / 2,
+                y: height * 0.85,
+            },
+            options: {
+                loadingTotal: this.loadingTotal,
+            },
+        })
         // add the loading progress container to the scene
         this.add.existing(this.loadingProgressBar)
+
+        //emit the event to authenticate
+        EventBus.emit(EventName.Authenticate, this)
+
+        //emit the event to load static data
+        EventBus.emit(EventName.LoadStaticData, this)
+
+        // load all the assets
+        loadBaseAssets(this)
+        loadCropAssets(this)
+        loadAnimalAssets(this)
+        loadBuildingAssets(this)
+        loadTileAssets(this)
+
+        // listen for the complete event
+        this.load.on("progress", async (progress: number) => {
+            const assetLoaded = progress - this.previousAssetLoaded
+            await this.loadAssets(assetLoaded)
+            this.previousAssetLoaded = progress
+        })
+
+        this.load.start()
     }
 
     update() {
-    // if the assets are loaded and the loading progress container is available, load the assets
-        if (
-            !this.preventUpdateAssetLoaded &&
-      this.assetLoaded &&
-      this.loadingProgressBar?.scene.textures
-        ) {
-            this.loadAssets()
-            this.preventUpdateAssetLoaded = true
-        }
-
         // use the loading progress container to update the loading progress
         if (this.loadingProgressBar) {
             this.loadingProgressBar.update()
@@ -150,6 +183,7 @@ export class LoadingScene extends Scene {
         const finished = this.loadingProgressBar.finished()
         if (finished) {
             this.scene.start(SceneName.Gameplay)
+            this.scene.start(SceneName.Data)
         }
     }
 
@@ -157,8 +191,9 @@ export class LoadingScene extends Scene {
         if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
+        this.loaded += this.loadingAuthenticate
         await this.loadingProgressBar.updateLoadingProgress(
-            this.loadingAuthenticate
+            this.loaded
         )
         this.tryFinishLoading()
     }
@@ -167,19 +202,36 @@ export class LoadingScene extends Scene {
         if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressBar.updateLoadingProgress(
-            this.loadingStaticData
-        )
+        this.loaded += this.loadingStaticData
+        await this.loadingProgressBar.updateLoadingProgress(this.loaded)
         this.tryFinishLoading()
     }
 
-    async loadAssets() {
+    async loadUserData() {
         if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
-        await this.loadingProgressBar.updateLoadingProgress(
-            this.loadingAssets
-        )
+        this.loaded += this.loadingUserData
+        await this.loadingProgressBar.updateLoadingProgress(this.loaded)
+        this.tryFinishLoading()
+    }
+
+    async loadUserInventories() {
+        if (!this.loadingProgressBar) {
+            throw new Error("Loading progress container not found")
+        }
+        this.loaded += this.loadingUserInventory
+        await this.loadingProgressBar.updateLoadingProgress(this.loaded)
+        this.tryFinishLoading()
+    }
+
+    async loadAssets(assetLoaded: number) {
+        if (!this.loadingProgressBar) {
+            throw new Error("Loading progress container not found")
+        }
+        console.log("kimochi" + assetLoaded * this.loadingAssets)
+        this.loaded += assetLoaded * this.loadingAssets
+        await this.loadingProgressBar.updateLoadingProgress(this.loaded)
         this.tryFinishLoading()
     }
 }

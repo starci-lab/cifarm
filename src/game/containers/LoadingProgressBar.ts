@@ -13,9 +13,12 @@ export class LoadingProgressBar extends Phaser.GameObjects.Container {
     private text: Phaser.GameObjects.Text
 
     private loadingProgress = 0
+    // variables for actual loading progress
+    private actualLoadingProgress = 0
     private loadingTotal = 0
     private steps = 20
     private totalLoadingDuration = 500 // 0.5 seconds
+    private finishedLoading = false
 
     constructor({
         baseParams: { scene, x, y },
@@ -67,12 +70,23 @@ export class LoadingProgressBar extends Phaser.GameObjects.Container {
 
     // check if the loading is finished
     public finished() {
-        return this.loadingProgress >= this.loadingTotal
+        return this.finishedLoading
     }
 
     // update the loading progress
-    public async updateLoadingProgress(incrementAmount: number) {
-    //interate through the steps
+    public async updateLoadingProgress(currentAmount: number) {
+        const incrementAmount = currentAmount - this.actualLoadingProgress
+        this.actualLoadingProgress = currentAmount
+        // check if the loading is finished
+        if (currentAmount >= this.loadingTotal) {
+            this.finishedLoading = true
+        }
+        console.log("Actual" + this.actualLoadingProgress)
+        
+        if (incrementAmount < 0) {
+            throw new Error("The current amount should be greater than the current loading progress")
+        }
+        //interate through the steps
         for (let i = 0; i < this.steps; i++) {
             this.loadingProgress += incrementAmount / this.steps
             await this.refreshLoadingBar()

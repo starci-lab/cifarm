@@ -1,17 +1,16 @@
 import { UseSWR } from "../types"
 import { v4 } from "uuid"
-import { InventoryEntity } from "@/modules/entities"
 import useSWR from "swr"
 import { useAppSelector } from "@/redux"
-import { QueryInventory, queryInventory } from "@/modules/apollo"
+import { QueryInventories, queryInventories, QueryInventoriesResponse } from "@/modules/apollo"
 
-export type UseQueryInventorySwrParams = Partial<{
-  query: QueryInventory;
+export type UseQueryInventoriesSwrParams = Partial<{
+  query: QueryInventories;
 }>
 
-export const useQueryInventorySwr = (params: UseQueryInventorySwrParams = {}): UseSWR<
-  Array<InventoryEntity>,
-  UseQueryInventorySwrParams
+export const useQueryInventoriesSwr = (params: UseQueryInventoriesSwrParams = {}): UseSWR<
+  QueryInventoriesResponse,
+  UseQueryInventoriesSwrParams
 > => {
     const authenticated = useAppSelector(state => state.gameReducer.authenticated)
 
@@ -19,7 +18,7 @@ export const useQueryInventorySwr = (params: UseQueryInventorySwrParams = {}): U
         authenticated ? v4() : null,
         async () => {
             const { query } = params
-            const requestMessageResponse = await queryInventory(query)
+            const requestMessageResponse = await queryInventories(query)
             return requestMessageResponse.data
         }
     )
