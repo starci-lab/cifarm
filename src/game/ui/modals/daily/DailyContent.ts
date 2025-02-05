@@ -4,9 +4,6 @@ import { BaseText, StrokeColor, TextColor } from "../../elements"
 import { UISizer } from "../../UISizer"
 import { BaseAssetKey } from "@/game/assets"
 import { DailyRewardEntity, DailyRewardId } from "@/modules/entities"
-import { onGameObjectClick } from "../../utils"
-import { EventName } from "@/game/event-bus"
-import { ModalName } from "../ModalManager"
 
 // daily coin icon map
 const iconMap: Record<DailyRewardId, BaseAssetKey> = {

@@ -37,7 +37,7 @@ export interface OverlapSizerBaseConstructorParams {
 // interface for constructor params
 export interface ConstructorParams<TBaseConstructorParams, TOptions> {
   baseParams: TBaseConstructorParams;
-  options: TOptions;
+  options?: TOptions;
 }
 
 // base constructor params for Buttons

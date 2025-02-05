@@ -67,6 +67,13 @@ export enum BaseAssetKey {
     ModalQuestPin = "modal-quest-pin",
     ModalQuestCardItem = "modal-quest-card-item",
     ModalQuestIconClose = "modal-quest-icon-close",
+
+    // Toolbar
+    ToolbarBackground = "toolbar-background",
+    ToolbarNextIcon = "toolbar-button-next-icon",
+    ToolbarPrevIcon = "toolbar-button-prev-icon",
+    ToolbarNextAvatar = "toolbar-next-avatar",
+    ToolbarPrevAvatar = "toolbar-prev-avatar",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -136,6 +143,13 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalQuestPin]: "modals/quest/pin.png",
     [BaseAssetKey.ModalQuestCardItem]: "modals/quest/card-item.png",
     [BaseAssetKey.ModalQuestIconClose]: "modals/quest/icon-close.png",
+
+    // Toolbar
+    [BaseAssetKey.ToolbarBackground]: "toolbar/background.png",
+    [BaseAssetKey.ToolbarNextIcon]: "toolbar/next-icon.png",
+    [BaseAssetKey.ToolbarPrevIcon]: "toolbar/prev-icon.png",
+    [BaseAssetKey.ToolbarNextAvatar]: "toolbar/next-avatar.png",
+    [BaseAssetKey.ToolbarPrevAvatar]: "toolbar/prev-avatar.png",
 }
 
 // preload, for loading screen

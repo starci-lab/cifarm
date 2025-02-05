@@ -7,6 +7,7 @@ export class QuestModal extends UISizer {
     private questBackground: QuestBackground
     private questContent: QuestContent
     private closeButton: Phaser.GameObjects.Sprite | undefined
+    
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
 

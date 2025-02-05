@@ -10,9 +10,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             baseParams,
             options: {
                 orientation: "y",
-                space: {
-                    item: 36,
-                },
+                space: 36,
             }
         })
 

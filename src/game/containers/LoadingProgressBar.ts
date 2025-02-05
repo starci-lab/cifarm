@@ -25,8 +25,8 @@ export class LoadingProgressBar extends Phaser.GameObjects.Container {
     LoadingProgressOptions
   >) {
         super(scene, x, y)
-
-        const { loadingTotal, steps } = options
+ 
+        const { loadingTotal = 0, steps } = { ...options}
         this.loadingTotal = loadingTotal
         this.steps = steps ?? this.steps
 

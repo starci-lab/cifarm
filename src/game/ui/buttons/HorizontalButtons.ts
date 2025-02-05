@@ -11,9 +11,7 @@ export interface CreateButtonParams {
 // options for horizontal buttons
 export interface HorizontalButtonsOptions {
     orientation: Sizer.OrientationTypes;
-    space: {
-        item: number;
-    };
+    space: number
 }
 
 export abstract class HorizontalButtons extends Buttons {
@@ -27,12 +25,12 @@ export abstract class HorizontalButtons extends Buttons {
         baseParams: { scene, config },
         options,
     }: ConstructorParams<ButtonsBaseConstructorParams, HorizontalButtonsOptions>) {
-        const { orientation, space } = options
+        const { orientation, space } = { ...options }
 
         super(scene, {
             orientation: orientation || "y",
             space: {
-                item: space.item || 10,
+                item: space || 10,
             },
             ...config,
         })

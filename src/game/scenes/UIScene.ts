@@ -1,10 +1,10 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { LeftHorizontalButtons, ModalManager, RightHorizontalButtons } from "../ui"
+import { LeftHorizontalButtons, ModalManager, RightHorizontalButtons, Toolbar } from "../ui"
 
 export class UIScene extends Scene {
     private modalManager: ModalManager | undefined
-
+    private toolbar: Toolbar | undefined
     constructor() {
         super(SceneName.UI)
     }
@@ -23,7 +23,14 @@ export class UIScene extends Scene {
             scene: this,
             x: width / 2,
             y: height / 2,
-        })
+        }) 
         this.add.existing(this.modalManager)
+
+        this.toolbar = new Toolbar({
+            scene: this,
+            x: width / 2,
+            y: height / 2,
+        }) 
+        this.add.existing(this.toolbar)
     }
 }
