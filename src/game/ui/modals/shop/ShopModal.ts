@@ -15,11 +15,10 @@ export class ShopModal extends ScreenUISizer {
     constructor(baseParams: SizerBaseConstructorParams) {
         super(baseParams)
 
-        // create the shop background
         this.shopBackground = new ShopBackground({
             scene: this.scene,
             x: this.x,
-            y: this.y,
+            y: this.screenBottomY,
         })
         this.scene.add.existing(this.shopBackground)
         this.add(this.shopBackground)
