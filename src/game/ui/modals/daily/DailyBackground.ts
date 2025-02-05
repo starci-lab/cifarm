@@ -1,11 +1,16 @@
-import { BaseAssetKey } from "@/game/assets"
-import { ContainerBaseConstructorParams } from "@/game/types"
+import { BaseAssetKey } from "../../../assets"
+import { ContainerBaseConstructorParams } from "../../../types"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText, StrokeColor } from "../../elements"
+import { onGameObjectClick } from "../../utils"
+import { EventName } from "../../../event-bus"
+import { ModalName } from "../ModalManager"
 
 export class DailyBackground extends Phaser.GameObjects.Container {
     private wall: Phaser.GameObjects.Image
     private dailyTitle: Label
+    private closeButton: Phaser.GameObjects.Image | undefined
+
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
         
@@ -40,5 +45,32 @@ export class DailyBackground extends Phaser.GameObjects.Container {
             bottom: 40,
         }).layout().setPosition(0, -360)
         this.add(this.dailyTitle)
+
+        // create the close button
+        this.closeButton = this.createCloseButton()
+    }
+
+    // create the close button
+    public createCloseButton() {
+        // create the close button
+        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.ModalDailyIconClose).setOrigin(1, 0)
+        this.scene.add.existing(closeButton)
+        
+        // add the on click event
+        closeButton.setInteractive().on("pointerdown", () => {
+            onGameObjectClick({
+                gameObject: closeButton,
+                onClick: () => {
+                    this.scene.events.emit(EventName.CloseModal, ModalName.Daily)
+                },
+                scene: this.scene,
+            })
+        })
+            
+        // set the position of the close button
+        closeButton.setPosition(this.wall.width / 2 - 100, - this.wall.height / 2 + 50)
+        // add the close button to the sizer
+        this.add(closeButton)
+        return closeButton
     }
 }

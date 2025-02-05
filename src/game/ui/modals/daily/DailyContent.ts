@@ -19,7 +19,7 @@ const iconMap: Record<DailyRewardId, BaseAssetKey> = {
 }
 export class DailyContent extends UISizer {
     private rewardContainersSizer: Sizer
-    private closeButton: Phaser.GameObjects.Sprite | undefined
+    
     // daily rewards data
     private dailyRewards: Array<DailyRewardEntity> = []
     constructor(baseParams: SizerBaseConstructorParams) {
@@ -33,7 +33,7 @@ export class DailyContent extends UISizer {
             .sizer({
                 orientation: "y",
                 x: this.x,
-                y: this.y,
+                y: this.y + 20,
                 space: {
                     item: 10,
                 },
@@ -43,33 +43,6 @@ export class DailyContent extends UISizer {
             .layout()
         // add the reward containers to the sizer
         this.add(this.rewardContainersSizer)
-
-        // create the close button
-        this.closeButton = this.createCloseButton()
-    }
-
-    // create the close button
-    public createCloseButton() {
-        // create the close button
-        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.ModalDailyIconClose)
-        this.scene.add.existing(closeButton)
-    
-        // add the on click event
-        closeButton.setInteractive().on("pointerdown", () => {
-            onGameObjectClick({
-                gameObject: closeButton,
-                onClick: () => {
-                    this.scene.events.emit(EventName.CloseModal, ModalName.Daily)
-                },
-                scene: this.scene,
-            })
-        })
-        
-        // set the position of the close button
-        closeButton.setPosition(this.x + 380, this.y - 320)
-        // add the close button to the sizer
-        this.add(closeButton)
-        return closeButton
     }
 
     // create base day reward container
