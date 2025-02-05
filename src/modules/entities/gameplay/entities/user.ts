@@ -4,8 +4,9 @@ import { PlacedItemEntity } from "./placed-item"
 import { DeliveringProductEntity } from "./delivering-product"
 import { UsersFollowingUsersEntity } from "./users-following-users"
 import { SessionEntity } from "./session"
+import { UuidAbstractEntity } from "./abstract"
 
-export interface UserEntity {
+export interface UserEntity extends UuidAbstractEntity {
     username: string;
     chainKey: ChainKey;
     network: Network;

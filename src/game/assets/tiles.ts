@@ -75,9 +75,9 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
 // Function to load animals assets (images) for each animal
 export const loadTileAssets = (scene: Scene) => {
     // Iterate over each animalId in the animalAssetDataMap
-    Object.keys(tileAssetMap).forEach((tileIdKey) => {
-        const tileId = tileIdKey as TileId
-        const tileData = tileAssetMap[tileId]
+    Object.keys(tileAssetMap).forEach((tileId) => {
+        const _tileId = tileId as TileId
+        const tileData = tileAssetMap[_tileId]
 
         if (!tileData) {
             throw new Error(`Tile data not found for tileId: ${tileId}`)

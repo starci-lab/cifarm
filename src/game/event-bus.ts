@@ -52,6 +52,10 @@ export enum EventName {
 
     // place item
     PlaceInprogress = "place_inprogress",
+
+    LoadCompleted = "load_completed",
+
+    SelectTool = "select_tool",
 }
 
 export interface PlacedInprogressMessage {

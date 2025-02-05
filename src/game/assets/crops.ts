@@ -294,9 +294,9 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
 
 // Function to load crop assets (images) for each crop and growth stage
 export const loadCropAssets = (scene: Scene) => {
-    Object.keys(cropAssetMap).forEach((cropIdKey) => {
-        const cropId = cropIdKey as CropId
-        const cropData = cropAssetMap[cropId]
+    Object.keys(cropAssetMap).forEach((cropId) => {
+        const _cropId = cropId as CropId
+        const cropData = cropAssetMap[_cropId]
 
         if (!cropData) {
             throw new Error(`Crop data not found for cropId: ${cropId}`)

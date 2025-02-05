@@ -7,6 +7,7 @@ import {
     loadBuildingAssets,
     loadCropAssets,
     loadTileAssets,
+    loadToolsAssets
 } from "../assets"
 import { LoadingProgressBar } from "../containers"
 import { EventBus, EventName } from "../event-bus"
@@ -26,7 +27,7 @@ export class LoadingScene extends Scene {
     private loadingProgressBar: LoadingProgressBar | undefined
 
     constructor() {
-        super(SceneName.LoadingScene)
+        super(SceneName.Loading)
         //define point for loading
     }
 
@@ -43,13 +44,13 @@ export class LoadingScene extends Scene {
         this.events.on("shutdown", this.shutdown, this)
 
         //listen for authentication event
-        EventBus.on(EventName.Authenticated, async () => {
+        EventBus.once(EventName.Authenticated, async () => {
             //authenticate the user
             this.authenticated()
         })
 
         //listen for static data loaded event
-        EventBus.on(
+        EventBus.once(
             EventName.StaticDataLoaded,
             ({
                 placedItemTypes,
@@ -57,6 +58,8 @@ export class LoadingScene extends Scene {
                 animals,
                 buildings,
                 dailyRewards,
+                tools,
+                inventoryTypes
             }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItems, placedItemTypes)
@@ -64,13 +67,15 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.Crops, crops)
                 this.cache.obj.add(CacheKey.Buildings, buildings)
                 this.cache.obj.add(CacheKey.DailyRewards, dailyRewards)
+                this.cache.obj.add(CacheKey.Tools, tools)
+                this.cache.obj.add(CacheKey.InventoryTypes, inventoryTypes)
                 //load the static data
                 this.handleFetchData("Loading static data...")
             }
         )
 
         //listen for load user data event
-        EventBus.on(
+        EventBus.once(
             EventName.UserLoaded, (user: UserEntity) => {
                 //load the user data
                 this.cache.obj.add(CacheKey.User, user)
@@ -78,14 +83,18 @@ export class LoadingScene extends Scene {
             })
 
         //listen for load inventory event
-        EventBus.on(
+        EventBus.once(
             EventName.InventoriesLoaded, (inventories: Array<InventoryEntity> 
             ) => {
-                console.log("inventories loaded", inventories)
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, inventories)
                 this.handleFetchData("Loading inventories...")
             })
+
+        this.events.once(EventName.LoadCompleted, () => {
+            //load the main game scene
+            this.scene.start(SceneName.Gameplay)
+        })
     }
 
     preload() {   
@@ -146,6 +155,7 @@ export class LoadingScene extends Scene {
         loadAnimalAssets(this)
         loadBuildingAssets(this)
         loadTileAssets(this)
+        loadToolsAssets(this)
     }
 
     async update() {
@@ -156,8 +166,7 @@ export class LoadingScene extends Scene {
             // check if the queue is empty
             if (this.waitForQueueEmpty && this.loadingProgressBar.queueEmpty()) {
                 // emit the event that the loading is done
-                this.scene.start(SceneName.Gameplay)
-                //this.scene.start(SceneName.Data)
+                this.events.emit(EventName.LoadCompleted)
             }
         }
     }
@@ -204,7 +213,7 @@ export class LoadingScene extends Scene {
             from: this.assetLoaded,
             to: this.assetLoaded + assetLoaded,
             text: "Loading assets...",
-            steps: 10,
+            steps: 5,
         })
         this.assetLoaded += assetLoaded
 

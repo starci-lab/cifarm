@@ -25,3 +25,5 @@ export const BLACK_COLOR = 0x000000
 
 export const SCALE_TIME = 500 // 0.5 seconds
 export const SCALE_PEAK_VALUE = 1.1 // 10% increase
+
+export const GRAY_TINT_COLOR = new Phaser.Display.Color(192, 192, 192).color

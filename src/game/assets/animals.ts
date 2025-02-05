@@ -126,9 +126,9 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
 // Function to load animals assets (images) for each animal
 export const loadAnimalAssets = (scene: Scene) => {
     // Iterate over each animalId in the animalAssetDataMap
-    Object.keys(animalAssetMap).forEach((animalIdKey) => {
-        const animalId = animalIdKey as AnimalId
-        const animalData = animalAssetMap[animalId]
+    Object.keys(animalAssetMap).forEach((animalId) => {
+        const _animalId = animalId as AnimalId
+        const animalData = animalAssetMap[_animalId]
 
         if (!animalData) {
             throw new Error(`Animal data not found for animalId: ${animalId}`)

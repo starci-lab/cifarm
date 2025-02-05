@@ -19,6 +19,6 @@ export class BootstrapScene extends Scene {
 
     create() {
     //  Move to the next Scene
-        this.scene.start(SceneName.LoadingScene)
+        this.scene.start(SceneName.Loading)
     }
 }

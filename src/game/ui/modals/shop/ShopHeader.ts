@@ -7,7 +7,7 @@ import { ModalName } from "../ModalManager"
 
 export class ShopHeader extends Phaser.GameObjects.Container {
     // close button
-    private closeButton: Phaser.GameObjects.Sprite
+    private closeButton: Phaser.GameObjects.Image
     private titleShop: Phaser.GameObjects.Container
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
@@ -56,7 +56,7 @@ export class ShopHeader extends Phaser.GameObjects.Container {
         this.add(this.titleShop)
 
         // add the close button
-        this.closeButton = this.scene.add.sprite(width/2 - 30, 0, BaseAssetKey.ModalShopX).setOrigin(1, 0.5)
+        this.closeButton = this.scene.add.image(width/2 - 30, 0, BaseAssetKey.ModalShopX).setOrigin(1, 0.5)
         // add the on click event
         this.closeButton.setInteractive().on("pointerdown", () => {
             onGameObjectClick({

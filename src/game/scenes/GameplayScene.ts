@@ -1,6 +1,7 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import { Tilemap } from "../tilemap"
+//import { EventName } from "../event-bus"
 
 export class GameplayScene extends Scene
 {
@@ -11,9 +12,6 @@ export class GameplayScene extends Scene
     }
 
     init () {
-        // launch the UI scene parallel to the gameplay scene
-        this.scene.launch(SceneName.UI)
-
         // Listen to the shutdown event
         this.events.on("shutdown", this.shutdown, this)
     }
@@ -26,6 +24,8 @@ export class GameplayScene extends Scene
 
     create ()
     {   
+        // launch the UI scene parallel to the gameplay scene
+        this.scene.launch(SceneName.UI)
         this.tileMap = new Tilemap({
             scene: this
         })

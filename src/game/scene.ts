@@ -1,6 +1,6 @@
 export enum SceneName {
     Bootstrap = "bootstrap",
-    LoadingScene = "loading-scene",
+    Loading = "loading",
     Gameplay = "gameplay",
     UI = "ui",
     Tutorial = "tutorial",

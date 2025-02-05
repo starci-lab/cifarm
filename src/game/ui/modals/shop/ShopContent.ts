@@ -286,9 +286,9 @@ export class ShopContent extends UISizer {
         // resize the icon, the icon is resized based on the scale
         const icon = this.scene.add.image(x, y, assetKey).setScale(scaleX, scaleY)
         iconContainer.add(icon)
-        // create the icon label
-        const iconLabel = this.scene.rexUI.add
-            .label({
+        // create the icon sizer
+        const iconSizer = this.scene.rexUI.add
+            .sizer({
                 width: avatarShop.width,
                 height: avatarShop.height,
             })
@@ -367,7 +367,7 @@ export class ShopContent extends UISizer {
                             item: 20,
                         },
                     })
-                    .add(iconLabel, {
+                    .add(iconSizer, {
                         align: "left-top",
                         expand: false,
                     })

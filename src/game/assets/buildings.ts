@@ -68,9 +68,9 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
 // function to load animals assets (images) for each animal
 export const loadBuildingAssets = (scene: Scene) => {
     // Iterate over each animalId in the animalAssetDataMap
-    Object.keys(buildingAssetMap).forEach((buildingIdKey) => {
-        const buildingId = buildingIdKey as BuildingId
-        const buildingData = buildingAssetMap[buildingId]
+    Object.keys(buildingAssetMap).forEach((buildingId) => {
+        const _buildingId = buildingId as BuildingId
+        const buildingData = buildingAssetMap[_buildingId]
 
         if (!buildingData) {
             throw new Error(`Building data not found for buildingId: ${buildingId}`)

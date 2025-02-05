@@ -1,12 +1,9 @@
 import { AUTO, Game } from "phaser"
 import { BootstrapScene, LoadingScene, GameplayScene, UIScene } from "./scenes"
 import { CONTAINER_ID } from "./constants"
-import {} from "./scenes/GameplayScene"
 import GesturesPlugin from "phaser3-rex-plugins/plugins/gestures-plugin.js"
 import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscroller-plugin.js"
 import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
-import { TutorialScene } from "./scenes/TutorialScene"
-import { DataScene } from "./scenes/DataScene"
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -42,7 +39,7 @@ const config: Phaser.Types.Core.GameConfig = {
             }
         ],
     },
-    scene: [BootstrapScene, LoadingScene, GameplayScene, UIScene, TutorialScene, DataScene],
+    scene: [BootstrapScene, LoadingScene, GameplayScene, UIScene],
 }
 
 export const startGame = (parent?: string) => {

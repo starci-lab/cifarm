@@ -31,7 +31,6 @@ export class ModalManager extends Phaser.GameObjects.Container {
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
-
         // get the width and height of the game
         const { width, height } = this.scene.game.scale
         this.backdrop = this.scene.add
@@ -66,13 +65,13 @@ export class ModalManager extends Phaser.GameObjects.Container {
             scene: this.scene,
         }).hide()
 
-        this.scene.events.on(EventName.OpenModal, () => {
-            this.onOpen(ModalName.Shop)
+        this.scene.events.on(EventName.OpenModal, (modalName:  ModalName) => {
+            this.onOpen(modalName)
         })
 
         // listen for the close event
-        this.scene.events.on(EventName.CloseModal, () => {
-            this.onClose(ModalName.Shop)
+        this.scene.events.on(EventName.CloseModal, (modalName:  ModalName) => {
+            this.onClose(modalName)
         })
 
         // close the modal manager by default

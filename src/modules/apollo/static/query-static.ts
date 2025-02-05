@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client"
 import { client } from "../client"
-import { Activities, AnimalEntity, AnimalRandomness, BuildingEntity, CropEntity, CropRandomness, DailyRewardEntity, EnergyRegen, PlacedItemTypeEntity, SpinInfo, Starter } from "@/modules/entities"
+import { Activities, AnimalEntity, AnimalRandomness, BuildingEntity, CropEntity, CropRandomness, DailyRewardEntity, EnergyRegen, InventoryTypeEntity, PlacedItemTypeEntity, SpinInfo, Starter, ToolEntity } from "@/modules/entities"
 
 //long query for querying all the static data
 const query = gql`
@@ -179,6 +179,31 @@ const query = gql`
             day
             lastDay
         }
+        tools {
+            createdAt
+            updatedAt
+            deletedAt
+            id
+            availableIn
+            index
+        }  
+        inventoryTypes {
+            createdAt
+            updatedAt
+            deletedAt
+            id
+            type
+            availableIn
+            placeable
+            deliverable
+            asTool
+            maxStack
+            cropId
+            animalId
+            supplyId
+            productId
+            tileId
+        }  
     }
 `
 
@@ -195,6 +220,8 @@ export interface QueryStaticResponse {
     animals: Array<AnimalEntity>
     buildings: Array<BuildingEntity>
     dailyRewards: Array<DailyRewardEntity>
+    tools: Array<ToolEntity>
+    inventoryTypes: Array<InventoryTypeEntity>
 }
 
 export const queryStatic = async () => {

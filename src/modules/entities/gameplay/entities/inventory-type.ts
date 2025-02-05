@@ -4,7 +4,7 @@ import { InventoryEntity } from "./inventory"
 import { ProductEntity } from "./product"
 import { SupplyEntity } from "./supply"
 import { TileEntity } from "./tile"
-import { InventoryType } from "../enums"
+import { AvailableInType, InventoryType } from "../enums"
 
 export interface InventoryTypeEntity {
     id: string
@@ -15,6 +15,7 @@ export interface InventoryTypeEntity {
     placeable: boolean
     deliverable: boolean
     asTool: boolean
+    availableIn: AvailableInType
     maxStack: number
     cropId?: string
     crop?: CropEntity
