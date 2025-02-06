@@ -7,13 +7,16 @@ export enum NeighborsTab {
 
 export interface NeighborsTabData {
     iconKey: BaseAssetKey,
+    text: string,
 }
 
 export const tabs: Record<NeighborsTab, NeighborsTabData> = {
     [NeighborsTab.Random]: {
         iconKey: BaseAssetKey.ModalNeighborsIconRandom,
+        text: "Random",
     },
     [NeighborsTab.Followed]: {
         iconKey: BaseAssetKey.ModalNeighborsIconAdd,
+        text: "Followed",
     },
 }

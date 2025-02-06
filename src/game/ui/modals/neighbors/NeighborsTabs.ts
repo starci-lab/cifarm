@@ -1,11 +1,13 @@
 import { BaseAssetKey } from "@/game/assets"
-import { SCALE_TIME } from "@/game/constants"
 import { EventName } from "@/game/event-bus"
 import { ContainerBaseConstructorParams } from "../../../types"
+import { BaseText } from "../../elements"
 import { onGameObjectClick } from "../../utils"
-import { NeighborsTab } from "./types"
+import { NeighborsTab, tabs } from "./types"
+import { SCALE_TIME } from "@/game/constants"
 
 // use own scale values
+const PADDING_X = 100
 const SCALE_DOWN_VALUE = 0.8
 const SCALE_PEAK_VALUE = 1
 
@@ -20,35 +22,35 @@ export class NeighborsTabs extends Phaser.GameObjects.Container {
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
         // add the buttons
-        for (const shopTab of Object.values(NeighborsTab)) {
-            this.createTab(shopTab)
+        for (const neighborsTab of Object.values(NeighborsTab)) {
+            this.createTab(neighborsTab)
         }
 
         // thus, we need layout the tabs
         this.arrangeTabs()
 
-        this.scene.events.on(EventName.SelectNeighborsTab, (shopTab: NeighborsTab) => {
+        this.scene.events.on(EventName.SelectNeighborsTab, (neighborsTab: NeighborsTab) => {
             // turn off the previous selected tab
-            this.deactivateTab(this.selectedTab, true)
+            this.deactivateTab(this.selectedTab)
             // turn on the selected tab
-            this.activateTab(shopTab, true)
+            this.activateTab(neighborsTab)
             // set the selected tab
-            this.selectedTab = shopTab
+            this.selectedTab = neighborsTab
             // call layout again to reposition the tabs
         })
     }
 
     // helper method to handle activating the selected tab
-    private activateTab(shopTab: NeighborsTab, animate: boolean = false) {
+    private activateTab(neighborsTab: NeighborsTab, animate: boolean = false) {
     // get the previous selected label
-        const tab = this.tabMap[shopTab]
+        const tab = this.tabMap[neighborsTab]
         if (!tab) {
             throw new Error("Previous selected tab is not found")
         }
 
-        // activate the selected tab
         if (animate) {
             this.scene.tweens.add({
+                //tabText
                 targets: tab,
                 scaleX: SCALE_PEAK_VALUE,
                 scaleY: SCALE_PEAK_VALUE,
@@ -68,9 +70,9 @@ export class NeighborsTabs extends Phaser.GameObjects.Container {
     }
 
     // helper method to handle deactivating the selected tab
-    private deactivateTab(shopTab: NeighborsTab, animate: boolean = false) {
+    private deactivateTab(neighborsTab: NeighborsTab, animate = false) {
     // get the container
-        const tab = this.tabMap[shopTab]
+        const tab = this.tabMap[neighborsTab]
         if (!tab) {
             throw new Error("tab is not found")
         }
@@ -95,65 +97,91 @@ export class NeighborsTabs extends Phaser.GameObjects.Container {
     }
 
     // method to create a button
-    public createTab(shopTab: NeighborsTab = defaultNeighborsTab) {
+    public createTab(neighborsTab: NeighborsTab = defaultNeighborsTab) {
         const tab = this.scene.add.container(0, 0)
-        // create the icon tab on
+    
+        // Get the total container width (assuming parent container has a set width)
+        const totalWidth = this.scene.scale.width - PADDING_X
+        const tabWidth = totalWidth / 2
+    
+        // Create the active tab icon (background)
         const iconTabOn = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalShopIconTabOn)
-            .setOrigin(0, 1)
+            .image(0, 0, BaseAssetKey.ModalShopItemCard)
+            .setOrigin(0.5, 0.5)
+            .setDisplaySize(tabWidth, 100)
+    
         iconTabOn.setInteractive()
-        // add the icon tab on to the container
-        tab.add(iconTabOn)
-        // create the icon tab off
+    
+        // Create the inactive tab icon (background)
         const iconTabOff = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalShopIconTabOff)
-            .setOrigin(0, 1)
-        // add the icon tab off to the container
+            .image(0, 0, BaseAssetKey.ModalInventoryIconTabOff)
+            .setOrigin(0.5, 0.5)
+            .setDisplaySize(tabWidth, 100)
+    
+        // Create the text
+        const tabText = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                x: 0, // Centered in the tab
+                y: 0,
+                text: tabs[neighborsTab].text
+            },
+            options: {
+                enableStroke: true,
+                fontSize: 32,
+            },
+        })
+    
+        // Center the text
+        tabText.setPosition(0, 0)
+    
+        // Add everything to the container
+        tab.add(iconTabOn)
         tab.add(iconTabOff)
-
-        // store the container to the container tab
-        this.tabMap[shopTab] = tab
-
-        // method to handle when the tab is clicked
+        tab.add(tabText)
+    
+        // Store the container in the tab map
+        this.tabMap[neighborsTab] = tab
+    
+        // Handle clicks
         iconTabOn.on("pointerdown", () => {
             onGameObjectClick({
                 gameObject: iconTabOn,
+                animate: false,
                 onClick: () => {
-                    this.scene.events.emit(EventName.SelectNeighborsTab, shopTab)
+                    this.scene.events.emit(EventName.SelectNeighborsTab, neighborsTab)
                 },
                 scene: this.scene,
-                peakValue: SCALE_PEAK_VALUE
             })
         })
-
-        // check active
-        const isActive = shopTab === this.selectedTab
-        if (isActive) {
-            // activate the selected tab
-            this.activateTab(shopTab)
+    
+        // Activate or deactivate the tab based on selection
+        if (neighborsTab === this.selectedTab) {
+            this.activateTab(neighborsTab)
         } else {
-            // deactivate the selected tab
-            this.deactivateTab(shopTab)
+            this.deactivateTab(neighborsTab)
         }
-        // return the tab
+    
         return tab
     }
+    
 
     // arrange the tabs
     private arrangeTabs() {
         let count = 0
+        const totalWidth = this.scene.scale.width - PADDING_X
+        const tabWidth = totalWidth / 2
+    
         for (const [, value] of Object.entries(this.tabMap)) {
-            // get the width of the tab
-            const iconTabOn = value.getAt(0) as Phaser.GameObjects.Image
-            const { width } = iconTabOn
-            // set the position of the tab
-            value.setPosition(count * (width - 60), 0)
-            // add the tab to the container
+            // Set position of each tab
+            value.setPosition(count * (tabWidth + 2), 0)
+    
+            // Add the tab to the container
             this.add(value)
-            // increment the count
+            this.x -= tabWidth * (1/3) + 10
+            this.x += PADDING_X / 2
             count++
         }
-        // reverse the tabs
-        this.reverse()
     }
+    
 }

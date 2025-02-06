@@ -22,7 +22,7 @@ export class NeighborsModal extends ScreenUISizer {
         this.neighborsTabs = new NeighborsTabs({
             scene: this.scene,
             x: this.screenCenterX,
-            y: this.screenCenterY,
+            y: this.screenTopY + 100,
         })
         this.scene.add.existing(this.neighborsTabs)
         this.add(this.neighborsTabs)
