@@ -84,6 +84,19 @@ export enum BaseAssetKey {
     ModalStandWhiteStar = "modal-stand-white-star",
     ModalStandPurpleStar = "modal-stand-purple-star",
     ModalStandShadow = "modal-stand-shadow",
+
+    //Neighbors
+    ModalNeighborsWall = "modal-neighbors-wall",
+    ModalNeighborsAvatarFriends = "modal-neighbors-avatar-friends",
+    ModalNeighborsAvatarRandom = "modal-neighbors-avatar-random",
+    ModalNeighborsIconClose = "modal-neighbors-icon-close",
+    ModalNeighborsIconQuestion = "modal-neighbors-icon-question",
+    ModalNeighborsIconSearch = "modal-neighbors-icon-search",
+    ModalNeighborsIconRandom = "modal-neighbors-icon-random",
+    ModalNeighborsFrameFriends = "modal-neighbors-frame-friends",
+    ModalNeighborsFrameSearch = "modal-neighbors-frame-search",
+    ModalNeighborsIconAdd = "modal-neighbors-icon-add",
+    ModalNeighborsIconHome = "modal-neighbors-icon-home",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -169,6 +182,18 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalStandWhiteStar]: "modals/stand/star-white.png",
     [BaseAssetKey.ModalStandPurpleStar]: "modals/stand/star-purple.png",
     [BaseAssetKey.ModalStandShadow]: "modals/stand/shadow.png",
+    //Neighbors
+    [BaseAssetKey.ModalNeighborsWall]: "modals/neighbors/wall.png",
+    [BaseAssetKey.ModalNeighborsAvatarFriends]: "modals/neighbors/ava-friends.png",
+    [BaseAssetKey.ModalNeighborsAvatarRandom]: "modals/neighbors/ava-random.png",
+    [BaseAssetKey.ModalNeighborsIconClose]: "modals/neighbors/btn-icon-close.png",
+    [BaseAssetKey.ModalNeighborsIconQuestion]: "modals/neighbors/btn-icon-question.png",
+    [BaseAssetKey.ModalNeighborsIconSearch]: "modals/neighbors/btn-icon-search.png",
+    [BaseAssetKey.ModalNeighborsIconRandom]: "modals/neighbors/icon-random.png",
+    [BaseAssetKey.ModalNeighborsFrameFriends]: "modals/neighbors/frame-listfriends.png",
+    [BaseAssetKey.ModalNeighborsFrameSearch]: "modals/neighbors/frame-search.png",
+    [BaseAssetKey.ModalNeighborsIconAdd]: "modals/neighbors/icon-add.png",
+    [BaseAssetKey.ModalNeighborsIconHome]: "modals/neighbors/icon-home.png",
 }
 
 // preload, for loading screen

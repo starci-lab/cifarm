@@ -1,5 +1,5 @@
 import { SizerBaseConstructorParams } from "@/game/types"
-import { ScreenUISizer, UISizer } from "../../UISizer"
+import { ScreenUISizer } from "../../UISizer"
 import { DailyBackground } from "./DailyBackground"
 import { DailyContent } from "./DailyContent"
 

@@ -6,6 +6,7 @@ import { InventoryModal } from "./inventory"
 import { DailyModal } from "./daily"
 import { QuestModal } from "./quest"
 import { StandModal } from "./stand"
+import { NeighborsModal } from "./neighbors"
 
 export enum ModalName {
     Shop = "shop",
@@ -13,6 +14,7 @@ export enum ModalName {
     Daily = "daily",
     Quest = "quest",
     Stand = "stand",
+    Neighbors = "neighbors",
 }
 
 export class ModalManager extends Phaser.GameObjects.Container {
@@ -28,6 +30,7 @@ export class ModalManager extends Phaser.GameObjects.Container {
     private questModal: QuestModal | undefined
     //stand modal
     private standModal: StandModal | undefined
+    private neighborsModal: NeighborsModal | undefined
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
@@ -68,6 +71,12 @@ export class ModalManager extends Phaser.GameObjects.Container {
 
         // create the stand modal
         this.standModal = new StandModal({
+            scene: this.scene,
+            x: this.x,
+            y: this.y,
+        }).hide()
+
+        this.neighborsModal = new NeighborsModal({
             scene: this.scene,
             x: this.x,
             y: this.y,
@@ -117,6 +126,12 @@ export class ModalManager extends Phaser.GameObjects.Container {
                 throw new Error("Stand modal not found")
             }
             return this.standModal
+        }
+        case ModalName.Neighbors: {
+            if (!this.neighborsModal) {
+                throw new Error("Neighbors modal not found")
+            }
+            return this.neighborsModal
         }
         }
     }

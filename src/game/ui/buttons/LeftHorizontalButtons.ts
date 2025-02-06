@@ -45,7 +45,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconNeighbors,
             text: "Neighbors",
             onClick: () => {
-                console.log("Neighbors")
+                this.scene.events.emit(EventName.OpenModal, ModalName.Neighbors)
             },
         }))
     }
