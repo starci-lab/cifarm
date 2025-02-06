@@ -63,6 +63,8 @@ export class ModalManager extends Phaser.GameObjects.Container {
         // create the stand modal
         this.standModal = new StandModal({
             scene: this.scene,
+            x: this.x,
+            y: this.y,
         }).hide()
 
         this.scene.events.on(EventName.OpenModal, (modalName:  ModalName) => {
