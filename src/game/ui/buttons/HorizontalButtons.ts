@@ -4,7 +4,7 @@ import { ConstructorParams, ButtonsBaseConstructorParams } from "../../types"
 
 export interface CreateButtonParams {
     iconKey: string;
-    text: string;
+    text?: string;
     onClick?: () => void;
 }
 
@@ -37,7 +37,7 @@ export abstract class HorizontalButtons extends Buttons {
     }
 
     // method to create a button
-    public createButton({ iconKey, onClick, text }: CreateButtonParams) {
+    public createButton({ iconKey, onClick, text = "" }: CreateButtonParams) {
     // compute width and height
         const width = 2 * this.ICON_RADIUS
         const height = 2 * this.ICON_RADIUS

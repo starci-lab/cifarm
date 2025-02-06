@@ -20,7 +20,7 @@ export class ShopHeader extends Phaser.GameObjects.Container {
 
         // create the background
         const backgroundContainer = this.scene.add.container(0, 0)
-        const background = this.scene.add.image(0, 0, BaseAssetKey.ModalShopTopBar)
+        const background = this.scene.add.image(0, 0, BaseAssetKey.ModalShopTopbar)
         backgroundContainer.add(background)
         const topDecorator = this.scene.add
             .image(0, - background.height / 2, BaseAssetKey.ModalShopTopDecorator)

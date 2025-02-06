@@ -18,6 +18,7 @@ export enum BaseAssetKey {
     IconInventory = "icon-inventory",
     IconDaily = "icon-daily",
     IconQuest = "icon-quest",
+    IconSetting = "icon-setting",
 
     //Shop modal
     ModalShopAvatarShop = "modal-shop-avatar-shop",
@@ -27,7 +28,7 @@ export enum BaseAssetKey {
     ModalShopIconTabOff = "modal-shop-icon-tab-off",
     ModalShopItemCard = "modal-shop-item-card",
     ModalShopTitleShop = "modal-shop-title-shop",
-    ModalShopTopBar = "modal-shop-top-bar",
+    ModalShopTopbar = "modal-shop-top-bar",
     ModalShopWall = "modal-shop-wall",
     ModalShopTopDecorator = "modal-shop-top-decorator",
     ModalShopBottomDecorator = "modal-shop-bottom-decorator",
@@ -97,6 +98,9 @@ export enum BaseAssetKey {
     ModalNeighborsFrameSearch = "modal-neighbors-frame-search",
     ModalNeighborsIconAdd = "modal-neighbors-icon-add",
     ModalNeighborsIconHome = "modal-neighbors-icon-home",
+
+    //Topbar
+    TopbarBackground = "topbar-background",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -117,6 +121,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.IconInventory]: "icons/inventory.png",
     [BaseAssetKey.IconDaily]: "icons/daily.png",
     [BaseAssetKey.IconQuest]: "icons/quest.png",
+    [BaseAssetKey.IconSetting]: "icons/setting.png",
 
     // shop Modals
     [BaseAssetKey.ModalShopAvatarShop]: "modals/shop/avatar-shop.png",
@@ -124,7 +129,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalShopButtonPrice]: "modals/shop/button-price.png",
     [BaseAssetKey.ModalShopItemCard]: "modals/shop/item-card.png",
     [BaseAssetKey.ModalShopTitleShop]: "modals/shop/title-shop.png",
-    [BaseAssetKey.ModalShopTopBar]: "modals/shop/top-bar.png",
+    [BaseAssetKey.ModalShopTopbar]: "modals/shop/top-bar.png",
     [BaseAssetKey.ModalShopWall]: "modals/shop/wall.png",
     [BaseAssetKey.ModalShopTopDecorator]: "modals/shop/top-decorator.png",
     [BaseAssetKey.ModalShopBottomDecorator]: "modals/shop/bottom-decorator.png",
@@ -194,6 +199,9 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalNeighborsFrameSearch]: "modals/neighbors/frame-search.png",
     [BaseAssetKey.ModalNeighborsIconAdd]: "modals/neighbors/icon-add.png",
     [BaseAssetKey.ModalNeighborsIconHome]: "modals/neighbors/icon-home.png",
+
+    //Topbar
+    [BaseAssetKey.TopbarBackground]: "topbar/background.png",
 }
 
 // preload, for loading screen

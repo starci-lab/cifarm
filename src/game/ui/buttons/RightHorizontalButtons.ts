@@ -16,6 +16,14 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add inventory button
         this.addButton(this.createButton({
+            iconKey: BaseAssetKey.IconSetting,
+            onClick: () => {
+                console.log("Setting")
+            },
+        }))
+
+        // add inventory button
+        this.addButton(this.createButton({
             iconKey: BaseAssetKey.IconInventory,
             text: "Inventory",
             onClick: () => {
