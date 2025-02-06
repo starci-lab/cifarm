@@ -58,6 +58,8 @@ export enum EventName {
 
     // tool selected
     SelectTool = "select_tool",
+
+    SelectNeighborsTab = "select_neighbors_tab",
 }
 
 export interface PlacedInprogressMessage {
