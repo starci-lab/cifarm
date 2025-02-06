@@ -36,8 +36,7 @@ export class ToolbarContent extends SceneAbstract {
     private startIndex = 0
     private endIndex = NUM_ITEMS - 1
     private slots: Record<number, Sizer> = {}
-    // public to allow external access
-    public itemSizer: Sizer
+    private itemSizer: Sizer
 
     private inventories: Array<InventoryEntity> = []
     private tools: Array<ToolEntity> = []

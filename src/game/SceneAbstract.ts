@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Scene } from "phaser"
 
 // This is the abstract class that all non-UI scenes will extend
@@ -13,7 +14,10 @@ export abstract class SceneAbstract {
     protected topY: number
     protected bottomY: number
 
-    constructor(scene: Scene) {
+    //any additional arguments that the class may need
+    protected args: any[]
+
+    constructor(scene: Scene, ...args: any[]) {
         this.scene = scene
         const { width, height } = this.scene.game.scale
         
@@ -25,5 +29,7 @@ export abstract class SceneAbstract {
 
         this.topY = 0
         this.bottomY = height
+
+        this.args = args
     }
 }
