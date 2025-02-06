@@ -36,7 +36,7 @@ export class InventoryModal extends ScreenUISizer {
         // // add inventory tabs
         this.inventoryTabs = new InventoryTabs({
             scene: this.scene,
-            x: this.screenLeftX + 200,
+            x: this.screenLeftX + 220,
             y: this.y - 210,
         })
         this.scene.add.existing(this.inventoryTabs)
@@ -45,8 +45,8 @@ export class InventoryModal extends ScreenUISizer {
         // create the inventory content
         this.inventoryContent = new InventoryContent({
             scene: this.scene,
-            x: this.x + 250,
-            y: this.y,
+            x: this.centerX - 20,
+            y: this.centerY + 350,
         }).setDepth(1)
         this.scene.add.existing(this.inventoryContent)
         this.add(this.inventoryContent)

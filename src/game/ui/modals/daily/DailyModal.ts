@@ -1,9 +1,9 @@
 import { SizerBaseConstructorParams } from "@/game/types"
-import { UISizer } from "../../UISizer"
+import { ScreenUISizer, UISizer } from "../../UISizer"
 import { DailyBackground } from "./DailyBackground"
 import { DailyContent } from "./DailyContent"
 
-export class DailyModal extends UISizer {
+export class DailyModal extends ScreenUISizer {
     // daily background
     private dailyBackground: DailyBackground
     private dailyContent: DailyContent
@@ -14,8 +14,8 @@ export class DailyModal extends UISizer {
         // create the daily background
         this.dailyBackground = new DailyBackground({
             scene: this.scene,
-            x: this.x,
-            y: this.y,
+            x: this.screenCenterX,
+            y: this.screenCenterY,
         })
         this.scene.add.existing(this.dailyBackground)
         this.add(this.dailyBackground)
@@ -23,8 +23,8 @@ export class DailyModal extends UISizer {
         // create the daily content
         this.dailyContent = new DailyContent({
             scene: this.scene,
-            x: this.x,
-            y: this.y,
+            x: this.screenCenterX,
+            y: this.screenCenterY,
         })
         this.scene.add.existing(this.dailyContent)
         this.add(this.dailyContent)

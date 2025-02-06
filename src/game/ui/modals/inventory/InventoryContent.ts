@@ -4,6 +4,7 @@ import { InventoryEntity } from "@/modules/entities"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { UISizer } from "../../UISizer"
 import { defaultInventoryTab, InventoryTab } from "./types"
+import { BaseText } from "../../elements"
 
 export class InventoryContent extends UISizer {
     private gridTable: GridTable | undefined
@@ -25,18 +26,18 @@ export class InventoryContent extends UISizer {
         const gridHeight = 1000
 
         const itemList = [
-            { assetKey: BaseAssetKey.IconNeighbors, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed") },
-            { assetKey: BaseAssetKey.IconNeighbors, title: "Corn Seed", onClick: () => console.log("Clicked on Corn Seed") },
-            { assetKey: BaseAssetKey.IconNeighbors, title: "Rice Seed", onClick: () => console.log("Clicked on Rice Seed") },
-            { assetKey: BaseAssetKey.IconNeighbors, title: "Apple", onClick: () => console.log("Clicked on Apple") },
-            { assetKey: BaseAssetKey.IconNeighbors, title: "Orange", onClick: () => console.log("Clicked on Orange") },
-            { assetKey: BaseAssetKey.IconNeighbors, title: "Banana", onClick: () => console.log("Clicked on Banana") },
-            { assetKey: BaseAssetKey.IconNeighbors, title: "Grapes", onClick: () => console.log("Clicked on Grapes") },
+            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Corn Seed", onClick: () => console.log("Clicked on Corn Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Rice Seed", onClick: () => console.log("Clicked on Rice Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Apple", onClick: () => console.log("Clicked on Apple") },
+            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Orange", onClick: () => console.log("Clicked on Orange") },
+            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Banana", onClick: () => console.log("Clicked on Banana") },
+            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Grapes", onClick: () => console.log("Clicked on Grapes") },
         ]
 
         this.gridTable = this.scene.rexUI.add.gridTable({
-            x: width / 2,
-            y: height / 2 + 200,
+            x: this.x,
+            y: this.y,
             width: gridWidth,
             height: gridHeight,
             background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0.1),
@@ -62,12 +63,37 @@ export class InventoryContent extends UISizer {
         this.add(this.gridTable)
     }
 
-    private createItemCard({ assetKey, title, onClick }: CreateItemCardParams) {
+    private createItemCard({ assetKey, quantity, onClick }: CreateItemCardParams) {
+
+        //add background
+        const background = this.scene.add.sprite(0, 0, BaseAssetKey.ModalInventoryCell)
+            .setOrigin(0.5, 0.5)
+            .setDepth(1)
 
         const icon = this.scene.add.image(0, 0, assetKey)
             .setOrigin(0.5, 0.5)
-            .setScale(1.5)
+            .setScale(1.2)
+            .setY(-10)
+            .setDepth(2)
 
+        // add quantity background in bottom right
+        const quantityBackground = this.scene.add.sprite(0, 0, BaseAssetKey.ModalInventoryCellQuantity)
+            .setOrigin(0.5, 0.5)
+            .setDepth(3)
+            .setX(50)
+            .setY(50)
+        // add quantity text
+        const quantityText = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                x: 0,
+                y: 0,
+                text: quantity ? quantity.toString() : "1",
+            },
+            options: {
+                fontSize: 32,
+            },
+        }).setOrigin(0.5, 0.5).setDepth(4).setX(50).setY(50)
 
         // Make the entire item interactive
         const container = this.scene.rexUI.add.sizer({
@@ -76,7 +102,19 @@ export class InventoryContent extends UISizer {
             orientation: "vertical",
             space: { item: 5 }
         })
-            .add(icon, { align: "center" }) // Icon in center
+            .add(background) // Background
+            .add(icon, { align: "center",
+                offsetY: -background.height + (background.height - icon.height) / 2
+            },
+            )
+            .add(quantityBackground, { align: "right",
+                offsetX: -quantityBackground.width + 10,
+                offsetY: -background.height + icon.height / 2
+            })
+            .add(quantityText, { align: "right",
+                offsetX: -quantityBackground.width,
+                offsetY: -background.height + icon.height
+            })
             .setInteractive() // Make the whole container clickable
             .on("pointerdown", () => {
                 onClick()
@@ -88,6 +126,6 @@ export class InventoryContent extends UISizer {
 
 export interface CreateItemCardParams {
     assetKey: string;
-    title: string;
+    quantity?: number;
     onClick: () => void;
 }
