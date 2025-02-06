@@ -1,11 +1,11 @@
 import { SizerBaseConstructorParams } from "../../../types"
-import { UISizer } from "../../UISizer"
+import { ScreenUISizer } from "../../UISizer"
 import { InventoryBackground } from "./InventoryBackground"
 import { InventoryContent } from "./InventoryContent"
 import { InventoryHeader } from "./InventoryHeader"
 import { InventoryTabs } from "./InventoryTabs"
 
-export class InventoryModal extends UISizer {
+export class InventoryModal extends ScreenUISizer {
     private inventoryBackground: InventoryBackground
     private inventoryHeader: InventoryHeader
     private inventoryTabs: InventoryTabs
@@ -19,7 +19,7 @@ export class InventoryModal extends UISizer {
         this.inventoryBackground = new InventoryBackground({
             scene: this.scene,
             x: this.x,
-            y: height,
+            y: this.screenBottomY,
         })
         this.scene.add.existing(this.inventoryBackground)
         this.add(this.inventoryBackground)
@@ -36,7 +36,7 @@ export class InventoryModal extends UISizer {
         // // add inventory tabs
         this.inventoryTabs = new InventoryTabs({
             scene: this.scene,
-            x: this.x - width / 2 + 220,
+            x: this.screenLeftX + 220,
             y: this.y - 210,
         })
         this.scene.add.existing(this.inventoryTabs)
@@ -45,8 +45,8 @@ export class InventoryModal extends UISizer {
         // create the inventory content
         this.inventoryContent = new InventoryContent({
             scene: this.scene,
-            x: this.x,
-            y: this.y,
+            x: this.centerX - 20,
+            y: this.centerY + 350,
         }).setDepth(1)
         this.scene.add.existing(this.inventoryContent)
         this.add(this.inventoryContent)

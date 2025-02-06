@@ -48,21 +48,29 @@ export class ModalManager extends Phaser.GameObjects.Container {
         // create the inventory modal
         this.inventoryModal = new InventoryModal({
             scene: this.scene,
+            x: this.x,
+            y: this.y,
         }).hide()
 
         // create the daily modal
         this.dailyModal = new DailyModal({
             scene: this.scene,
+            x: this.x,
+            y: this.y,
         }).hide()
 
         // create the quest modal
         this.questModal = new QuestModal({
             scene: this.scene,
+            x: this.x,
+            y: this.y,
         }).hide()
 
         // create the stand modal
         this.standModal = new StandModal({
             scene: this.scene,
+            x: this.x,
+            y: this.y,
         }).hide()
 
         this.scene.events.on(EventName.OpenModal, (modalName:  ModalName) => {
