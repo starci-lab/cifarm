@@ -12,6 +12,7 @@ export class TopbarContent extends SceneAbstract {
     constructor(scene: Scene) {
         super(scene)
         this.createInfoFrame()
+        this.addCurrencyList()
     }
 
     private createInfoFrame() {
@@ -107,7 +108,8 @@ export class TopbarContent extends SceneAbstract {
     }
 
     private addCurrencyItem() {
-        
+        const background = this.scene.add.image(0, 0, BaseAssetKey.TopbarBackgroundCurrency)
+
     }
 
     // dem zo util sau
