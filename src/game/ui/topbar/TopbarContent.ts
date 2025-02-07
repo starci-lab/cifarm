@@ -1,17 +1,21 @@
 import { UserEntity } from "@/modules/entities"
 import { Scene } from "phaser"
 import { DeepPartial } from "react-hook-form"
+import { ProgressBar } from "../../../game/containers"
 import { BaseAssetKey } from "../../assets"
 import { SceneAbstract } from "../../SceneAbstract"
 import { BaseText, TextColor } from "../elements"
-import { ProgressBar } from "../../../game/containers"
+import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 export class TopbarContent extends SceneAbstract {
     private userData: DeepPartial<UserEntity> | undefined
+    private currencyContainer !: Sizer
 
     constructor(scene: Scene) {
         super(scene)
         this.createInfoFrame()
+        this.createCurrencyContainer()
+        this.addCurrencyList()
     }
 
     private createInfoFrame() {
@@ -102,28 +106,67 @@ export class TopbarContent extends SceneAbstract {
         return mainContainer
     }
 
+    private createCurrencyContainer() {
+        this.currencyContainer = this.scene.rexUI.add.sizer({
+            x: this.rightX - 310,
+            y: this.topY + 75,
+            orientation: 0,
+        })
+        this.scene.add.existing(this.currencyContainer)
+    }
+
     private addCurrencyList() {
-
+        this.addCurrencyItem({
+            iconKey: BaseAssetKey.TopbarIconEnergy,
+            amount: "30/30",
+        })
+        this.addCurrencyItem({
+            iconKey: BaseAssetKey.TopbarIconCarrot,
+            amount: "100",
+        })
+        this.addCurrencyItem({
+            iconKey: BaseAssetKey.TopbarIconCoin,
+            amount: "100",
+        })
     }
 
-    private addCurrencyItem() {
+    private addCurrencyItem({ iconKey, amount }: IAddCurrencyItemParams) {
+        const icon = this.scene.add.image(0, 0, iconKey).setDisplaySize(60, 60).setDepth(1)
+        const background = this.scene.add.image(0, 0, BaseAssetKey.TopbarBackgroundCurrency)
+        const amountText = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                x: 0,
+                y: 0,
+                text: amount.toString(),
+            },
+            options: {
+                fontSize: 24,
+                textColor: TextColor.White,
+            },
+        })
+        this.scene.add.existing(amountText)
         
+        const currencyItem = this.scene.rexUI.add.sizer({ orientation: 0 })
+            .add(icon, { align: "left", padding: { right: -15 } })
+            .add(background, { align: "center" })
+            .add(amountText, { align: "center", 
+                offsetX: -background.width / 2 - 35,
+                offsetY: -background.height / 2 + 20
+            })
+        
+        this.currencyContainer.add(currencyItem, {
+            padding: { right: -30 },
+        })
+        this.currencyContainer.layout()
     }
 
-    // dem zo util sau
     private computeExperiencesQuota(level: number): number {
-        //the formula to calculate the experience quota
-        //compute first 10 levels
-        // 1: 50
-        // 2: 125
-        // 3: 225
-        // 4: 350
-        // 5: 500
-        // 6: 675
-        // 7: 875
-        // 8: 1100
-        // 9: 1350
-        // 10: 1625
         return 50 * level + 25 * Math.pow(level - 1, 2)
     }
+}
+
+interface IAddCurrencyItemParams {
+    iconKey: BaseAssetKey
+    amount: string
 }

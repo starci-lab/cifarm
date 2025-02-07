@@ -111,6 +111,8 @@ export enum BaseAssetKey {
 
     //Bubble
     Bubble = "bubble",
+    TopbarIconCarrot = "topbar-icon-carrot",
+    TopbarIconEnergy = "topbar-icon-energy",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -222,6 +224,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
 
     //Bubble
     [BaseAssetKey.Bubble]: "bubble.png",
+    [BaseAssetKey.TopbarIconCarrot]: "topbar/icon-carrot.png",
+    [BaseAssetKey.TopbarIconEnergy]: "topbar/icon-energy.png",
 }
 
 // preload, for loading screen
