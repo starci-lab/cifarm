@@ -8,7 +8,7 @@ export class TopbarBackground extends Phaser.GameObjects.Container {
         super(scene, x, y)
         // create the background
         this.background = this.scene.add
-            .image(0, 0, BaseAssetKey.TopbarBackground)
+            .image(0, 0, BaseAssetKey.TopbarHeader)
             .setOrigin(0.5, 1)
         this.add(this.background)
 
