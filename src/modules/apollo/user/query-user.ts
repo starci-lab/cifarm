@@ -12,6 +12,7 @@ const query1 = gql`
       dailyRewardStreak
       energy
       energyFull
+      tutorialStep
       energyRegenTime
       experiences
     }

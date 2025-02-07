@@ -92,8 +92,9 @@ export class ShopContent extends UISizer {
         // create the scrollable panel
         const scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                x: this.x,
-                y: this.y + 200,
+                x: this.screenCenterX,
+                y: this.screenBottomY - 250,
+                originY: 1,
                 width: 1000,
                 height: 1000,
                 scrollMode: "y",

@@ -29,8 +29,11 @@ export class NinePatch3x3 extends NinePatch2 {
             rightWidth = 10,
             topHeight = 10,
             bottomHeight = 10,
-        } = options
+        } = { ...options }
 
+        if (!assetKey) {
+            throw new Error("NinePatch3x3 requires an assetKey")
+        }
         // get the source image
         const sourceImage = scene.textures.get(assetKey).getSourceImage()
 

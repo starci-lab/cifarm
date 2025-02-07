@@ -1,4 +1,4 @@
-import { PlacedItemType } from "@/modules/entities"
+import { TutorialStep } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -39,16 +39,18 @@ export enum EventName {
     CloseShop = "close_shop",
     SelectShopTab = "select_shop_tab",
 
-    //
+    // modal events
     OpenModal = "open_modal",
     CloseModal = "close_modal",
+
+    // tutorial events
+    OpenTutorial = "open_tutorial",
+    CloseTutorial = "close_tutorial",
 
     // open inventory
     OpenInventory = "open_inventory",
     // change inventory tab
     InventoryTabSelected = "inventory_tab_selected",
-    // modal closed
-    ModalClosed = "modal_closed",
 
     // place item
     PlaceInprogress = "place_inprogress",
@@ -58,13 +60,15 @@ export enum EventName {
 
     // tool selected
     SelectTool = "select_tool",
-
     SelectNeighborsTab = "select_neighbors_tab",
 }
 
-export interface PlacedInprogressMessage {
-    // type of item being placed
-    type: PlacedItemType,
-    // id of the item being placed
-    id: string,
+export interface OpenTutorialMessage {
+    // name of the tutorial to open
+    tutorialStep: TutorialStep,
+}
+
+export interface CloseTutorialMessage {
+    // name of the tutorial to close
+    tutorialStep: TutorialStep,
 }

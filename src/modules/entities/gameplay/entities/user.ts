@@ -5,6 +5,7 @@ import { DeliveringProductEntity } from "./delivering-product"
 import { UsersFollowingUsersEntity } from "./users-following-users"
 import { SessionEntity } from "./session"
 import { UuidAbstractEntity } from "./abstract"
+import { TutorialStep } from "../enums"
 
 export interface UserEntity extends UuidAbstractEntity {
     username: string;
@@ -14,11 +15,11 @@ export interface UserEntity extends UuidAbstractEntity {
     golds: number;
     tokens: number;
     experiences: number;
+    tutorialStep: TutorialStep;
     energy: number;
     energyRegenTime: number;
     energyFull: boolean;
     level: number;
-    tutorialIndex: number;
     stepIndex: number;
     dailyRewardStreak: number;
     dailyRewardLastClaimTime?: Date;

@@ -35,25 +35,34 @@ export class BaseText extends Phaser.GameObjects.Text {
         baseParams: { scene, x, y, text, style },
         options,
     }: ConstructorParams<TextBaseConstructorParams, TextOptions>) {
+        const {
+            fontSize = 32, 
+            textColor = TextColor.White, 
+            enableStroke,
+            strokeColor = StrokeColor.Black,
+            strokeThickness = 3,
+            enableWordWrap,
+            wordWrapWidth = 200
+        } = { ...options }
         super(scene, x, y, text, {
-            fontSize: `${options.fontSize ?? 32}px`,
-            color: options.textColor ?? TextColor.White,
+            fontSize: `${fontSize ?? 32}px`,
+            color: textColor,
             align: "center",
             fontFamily: FONT_DINOSAUR,
             ...style,
         })
 
         // enable stroke if needed
-        if (options.enableStroke) {
+        if (enableStroke) {
             this.setStroke(
-                options.strokeColor ?? StrokeColor.Black,
-                options.strokeThickness ?? 3
+                strokeColor,
+                strokeThickness
             )
         }
 
         // enable word wrap if needed
-        if (options.enableWordWrap) {
-            this.setWordWrapWidth(options.wordWrapWidth ?? 200, false)
+        if (enableWordWrap) {
+            this.setWordWrapWidth(wordWrapWidth, false)
         }
 
         // set origin for the text
