@@ -100,7 +100,14 @@ export enum BaseAssetKey {
     ModalNeighborsIconHome = "modal-neighbors-icon-home",
 
     //Topbar
-    TopbarBackground = "topbar-background",
+    TopbarHeader = "topbar-header",
+    TopbarIconCoin = "topbar-icon-coin",
+    TopbarBackgroundCurrency = "topbar-background-currency",
+    TopbarAvatar = "topbar-avatar",
+    TopbarInfo = "topbar-info",
+    TopbarLevelBar = "topbar-level-bar",
+    TopbarLevelBarBackground = "topbar-level-bar-background",
+    TopbarLevelCell = "topbar-level-cell",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -201,7 +208,14 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalNeighborsIconHome]: "modals/neighbors/icon-home.png",
 
     //Topbar
-    [BaseAssetKey.TopbarBackground]: "topbar/background.png",
+    [BaseAssetKey.TopbarHeader]: "topbar/header.png",
+    [BaseAssetKey.TopbarIconCoin]: "topbar/coin.png",
+    [BaseAssetKey.TopbarBackgroundCurrency]: "topbar/background-currency.png",
+    [BaseAssetKey.TopbarAvatar]: "topbar/avatar.png",
+    [BaseAssetKey.TopbarInfo]: "topbar/info.png",
+    [BaseAssetKey.TopbarLevelBar]: "topbar/level-bar.png",
+    [BaseAssetKey.TopbarLevelBarBackground]: "topbar/level-bar-background.png",
+    [BaseAssetKey.TopbarLevelCell]: "topbar/lv.png",
 }
 
 // preload, for loading screen
