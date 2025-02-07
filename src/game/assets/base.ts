@@ -108,6 +108,8 @@ export enum BaseAssetKey {
     TopbarLevelBar = "topbar-level-bar",
     TopbarLevelBarBackground = "topbar-level-bar-background",
     TopbarLevelBox = "topbar-level-box",
+    TopbarIconCarrot = "topbar-icon-carrot",
+    TopbarIconEnergy = "topbar-icon-energy",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -216,6 +218,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.TopbarLevelBar]: "topbar/level-bar.png",
     [BaseAssetKey.TopbarLevelBarBackground]: "topbar/level-bar-background.png",
     [BaseAssetKey.TopbarLevelBox]: "topbar/lv.png",
+    [BaseAssetKey.TopbarIconCarrot]: "topbar/icon-carrot.png",
+    [BaseAssetKey.TopbarIconEnergy]: "topbar/icon-energy.png",
 }
 
 // preload, for loading screen
