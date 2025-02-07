@@ -14,7 +14,7 @@ export class StandHeader extends Phaser.GameObjects.Container {
         // Background header covering the full width
         const frame = this.scene.add.image(0, 0, BaseAssetKey.ModalStandHeader)
             .setOrigin(0.5, 0)
-            .setDisplaySize(width, 250)
+            .setDisplaySize(width, 250).setDepth(5)
 
         this.add(frame)
 
