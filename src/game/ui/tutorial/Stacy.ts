@@ -11,7 +11,6 @@ export class Stacy extends SceneAbstract {
     private stacyImage: Phaser.GameObjects.Image | undefined
     private stacyBubble: Label | undefined
     private pressToContinueText: Phaser.GameObjects.Text | undefined
-    private continue = false
 
     constructor(scene: Scene) {
         super(scene)
@@ -25,7 +24,7 @@ export class Stacy extends SceneAbstract {
                     y: this.bottomY - 50
                 },
             }    
-        ).setOrigin(0.5, 1).setDepth(1)
+        ).setOrigin(0.5, 1).setDepth(1).setActive(false).setVisible(false)
         this.scene.add.existing(this.pressToContinueText)
     }
 
@@ -35,16 +34,18 @@ export class Stacy extends SceneAbstract {
     }
 
     // disallow the player to press to continue
-    private disallowPressToContinue() {
+    private disallowPressToContinue(hidePressToContinueIfAllowed = false) {
+        if (hidePressToContinueIfAllowed) {
+            return
+        }
         this.pressToContinueText?.setVisible(false).setActive(false)
     }
 
     // render the stacy image
     public render(step: TutorialStep) {
         // if press to continue is true, turn it off
-        this.disallowPressToContinue()
+        this.disallowPressToContinue(true)
         // set continue to false
-        this.continue = false
         if (!this.stacyImage) {
             this.stacyImage = this.scene.add
                 .image(

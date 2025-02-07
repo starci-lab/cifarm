@@ -1,21 +1,27 @@
 import { UserEntity } from "@/modules/entities"
 import { Scene } from "phaser"
-import { DeepPartial } from "react-hook-form"
 import { ProgressBar } from "../../../game/containers"
 import { BaseAssetKey } from "../../assets"
 import { SceneAbstract } from "../../SceneAbstract"
 import { BaseText, TextColor } from "../elements"
-import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { CacheKey } from "@/game/types"
 
 export class TopbarContent extends SceneAbstract {
-    private userData: DeepPartial<UserEntity> | undefined
-    private currencyContainer !: Sizer
+    private user: UserEntity
+    
+    private rightContainer : Sizer | undefined
+    private energyLabel: Label | undefined
+    private tokenLabel: Label | undefined
+    private goldLabel: Label | undefined
 
     constructor(scene: Scene) {
         super(scene)
+
+        this.user = this.scene.cache.obj.get(CacheKey.User)
+
         this.createInfoFrame()
-        this.createCurrencyContainer()
-        this.addCurrencyList()
+        this.createRightContainer()
     }
 
     private createInfoFrame() {
@@ -106,33 +112,33 @@ export class TopbarContent extends SceneAbstract {
         return mainContainer
     }
 
-    private createCurrencyContainer() {
-        this.currencyContainer = this.scene.rexUI.add.sizer({
-            x: this.rightX - 310,
-            y: this.topY + 75,
-            orientation: 0,
-        })
-        this.scene.add.existing(this.currencyContainer)
-    }
-
-    private addCurrencyList() {
-        this.addCurrencyItem({
+    private createRightContainer() {
+        this.energyLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconEnergy,
-            amount: "30/30",
+            amount: `${this.user.energy}/50`,
         })
-        this.addCurrencyItem({
+        this.goldLabel = this.addLabel({
+            iconKey: BaseAssetKey.TopbarIconCoin,
+            amount: `${this.user.golds}`,
+        })
+        this.tokenLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconCarrot,
             amount: "100",
         })
-        this.addCurrencyItem({
-            iconKey: BaseAssetKey.TopbarIconCoin,
-            amount: "100",
+        this.rightContainer = this.scene.rexUI.add.sizer({
+            orientation: 1,
         })
+            .add(this.energyLabel)
+            .add(this.goldLabel)
+            .add(this.tokenLabel)
+            .setItemSpacing(30).layout()
     }
 
-    private addCurrencyItem({ iconKey, amount }: IAddCurrencyItemParams) {
-        const icon = this.scene.add.image(0, 0, iconKey).setDisplaySize(60, 60).setDepth(1)
+    private addLabel({ iconKey, amount }: AddLabelParams) {
         const background = this.scene.add.image(0, 0, BaseAssetKey.TopbarBackgroundCurrency)
+        const iconContainer = this.scene.add.container(0, 0)
+        const icon = this.scene.add.image(0, 0, iconKey)
+        iconContainer.add(icon)
         const amountText = new BaseText({
             baseParams: {
                 scene: this.scene,
@@ -145,20 +151,18 @@ export class TopbarContent extends SceneAbstract {
                 textColor: TextColor.White,
             },
         })
-        this.scene.add.existing(amountText)
-        
-        const currencyItem = this.scene.rexUI.add.sizer({ orientation: 0 })
-            .add(icon, { align: "left", padding: { right: -15 } })
-            .add(background, { align: "center" })
-            .add(amountText, { align: "center", 
-                offsetX: -background.width / 2 - 35,
-                offsetY: -background.height / 2 + 20
-            })
-        
-        this.currencyContainer.add(currencyItem, {
-            padding: { right: -30 },
+        this.scene.add.existing(amountText)    
+        const label = this.scene.rexUI.add.label({
+            background,
+            icon: iconContainer,
+            text: amountText,
+            space: {
+                icon: 10,
+                left: 10,
+                right: 10,
+            },
         })
-        this.currencyContainer.layout()
+        return label
     }
 
     private computeExperiencesQuota(level: number): number {
@@ -166,7 +170,7 @@ export class TopbarContent extends SceneAbstract {
     }
 }
 
-interface IAddCurrencyItemParams {
+interface AddLabelParams {
     iconKey: BaseAssetKey
     amount: string
 }
