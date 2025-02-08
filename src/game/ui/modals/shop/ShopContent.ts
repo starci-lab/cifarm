@@ -22,6 +22,7 @@ import {
     AnimalEntity,
     BuildingEntity,
     CropEntity,
+    CropId,
     PlacedItemType,
 } from "@/modules/entities"
 import { onGameObjectClick } from "../../utils"
@@ -38,6 +39,7 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 // own depth for the shop content
 export const HIGHLIGHT_DEPTH = 2
 export const BASE_DEPTH = 0
+export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
 
 export class ShopContent extends BaseSizer {
     // list of items
@@ -98,7 +100,7 @@ export class ShopContent extends BaseSizer {
                 throw new Error("Default item card is not found")
             }
             this.defaultItemCard.setDepth(HIGHLIGHT_DEPTH)
-            
+
             // disable the default scroller
             this.disableDefaultScroller()
 
@@ -114,7 +116,8 @@ export class ShopContent extends BaseSizer {
     }
 
     private disableDefaultScroller() {
-        const defaultScrollablePanel = this.scrollablePanelMap[this.selectedShopTab]
+        const defaultScrollablePanel =
+      this.scrollablePanelMap[this.selectedShopTab]
         if (!defaultScrollablePanel) {
             throw new Error("Default scrollable panel is not found")
         }
@@ -124,7 +127,8 @@ export class ShopContent extends BaseSizer {
     }
 
     private enableDefaultScroller() {
-        const defaultScrollablePanel = this.scrollablePanelMap[this.selectedShopTab]
+        const defaultScrollablePanel =
+      this.scrollablePanelMap[this.selectedShopTab]
         if (!defaultScrollablePanel) {
             throw new Error("Default scrollable panel is not found")
         }
@@ -218,6 +222,50 @@ export class ShopContent extends BaseSizer {
         }
     }
 
+    // method to play the buy animation
+    private playBuySeedAnimation(id: CropId, pointer: Phaser.Input.Pointer) {
+        const assetKey = cropAssetMap[id as CropId].seed.textureConfig.key
+        // create the sizer that will has the + 1 asset
+        const flyItem = this.scene.rexUI.add
+            .sizer({
+                orientation: "x",
+                space: {
+                    item: 20,
+                },
+            })
+            .add(
+                this.scene.add.existing(
+                    new BaseText({
+                        baseParams: {
+                            scene: this.scene,
+                            text: "+1",
+                            x: 0,
+                            y: 0,
+                        },
+                        options: {
+                            enableStroke: true,
+                            fontSize: 64,
+                        },
+                    })
+                )
+            )
+            .add(this.scene.add.image(0, 0, assetKey))
+            .layout()
+
+        // set the position of the fly item
+        flyItem.setDepth(HIGHLIGHT_DEPTH).setPosition(pointer.x, pointer.y)
+        // Play the animation with fading effect before destruction
+        this.scene.tweens.add({
+            targets: flyItem,
+            y: flyItem.y - 200,
+            alpha: 0, // Set alpha to 0 for fading effect
+            duration: PLAY_BUY_CROP_ANIMATION_DURATION,
+            onComplete: () => {
+                flyItem.destroy()
+            },
+        })
+    }
+
     //create item cards based on the shop tab
     private createItemCards(shopTab: ShopTab = defaultShopTab) {
     //list of item cards
@@ -229,7 +277,8 @@ export class ShopContent extends BaseSizer {
                 const itemCard = this.createItemCard({
                     assetKey: cropAssetMap[id].seed.textureConfig.key,
                     title: cropAssetMap[id].name,
-                    onClick: () => {
+                    onClick: (pointer: Phaser.Input.Pointer) => {
+                        this.playBuySeedAnimation(id, pointer)
                         console.log("Clicked on crop", id)
                     },
                     price,
@@ -444,11 +493,14 @@ export class ShopContent extends BaseSizer {
             .setInteractive()
         // handle on click event
         if (onClick) {
-            button.on("pointerdown", () => {
+            button.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 onGameObjectClick({
                     gameObject: button,
-                    onClick,
+                    onClick: () => {
+                        onClick(pointer)
+                    },
                     scene: this.scene,
+                    disableInteraction: false
                 })
             })
         }
@@ -500,7 +552,7 @@ export interface CreateItemCardParams {
   // price
   price?: number;
   // on click event
-  onClick?: () => void;
+  onClick?: (pointer: Phaser.Input.Pointer) => void;
   // scale X
   scaleX?: number;
   // scale Y

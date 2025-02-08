@@ -7,7 +7,6 @@ import { BLACK_COLOR } from "../../constants"
 import {
     CacheKey,
     GroupBaseConstructorParams,
-    LayerBaseConstructorParams,
 } from "../../types"
 import { UserEntity } from "@/modules/entities"
 import { tutorialStepMap } from "./config"

@@ -1,5 +1,6 @@
 import { SCALE_PEAK_VALUE, SCALE_TIME } from "@/game/constants"
-import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+
+const tweenMap = new Map<Phaser.GameObjects.GameObject, Phaser.Tweens.Tween>()
 
 export interface OnGameObjectClickParams {
   gameObject: Phaser.GameObjects.GameObject;
@@ -7,6 +8,7 @@ export interface OnGameObjectClickParams {
   animate?: boolean;
   scene: Phaser.Scene;
   peakValue?: number;
+  disableInteraction?: boolean;
 }
 
 export const onGameObjectClick = ({
@@ -15,35 +17,44 @@ export const onGameObjectClick = ({
     animate = true,
     scene,
     peakValue = SCALE_PEAK_VALUE,
+    disableInteraction = true,
 }: OnGameObjectClickParams) => {
     // Disable interaction
-    if (gameObject.input) {
+    if (disableInteraction && gameObject.input) {
         gameObject.input.enabled = false
     }
 
     // Apply scaling animation if animate is true
     if (animate) {
-        if (gameObject instanceof Sizer) {
-            // Special scaling for Sizer (scaleYoyo)
-            gameObject.scaleYoyo(SCALE_TIME, peakValue)
-        } else {
-            // Tween animation for GameObjects
-            scene.tweens.add({
+        const processTween = () => {
+            const foundTween = tweenMap.get(gameObject)
+            if (foundTween) {
+                if (!foundTween.isDestroyed()) {
+                    foundTween.seek(SCALE_TIME / 4)
+                    return
+                }
+            }
+            const tween = scene.tweens.add({
                 targets: gameObject,
                 scaleX: peakValue,
                 scaleY: peakValue,
                 duration: SCALE_TIME,
-                ease: "Back",
+                yoyo: true,
+                ease: "Sine.easeInOut",
             })
+            tweenMap.set(gameObject, tween)
         }
+        processTween()
     }
 
     // Wait for the animation to finish, then re-enable interaction
-    scene.time.delayedCall(SCALE_TIME, () => {
-        if (gameObject.input) {
-            gameObject.input.enabled = true
-        }
-    })
+    if (disableInteraction) {
+        scene.time.delayedCall(SCALE_TIME, () => {
+            if (gameObject.input) {
+                gameObject.input.enabled = true
+            }
+        })
+    }
 
     // Call the onClick function
     onClick()

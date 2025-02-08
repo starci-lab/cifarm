@@ -33,14 +33,13 @@ export class Stacy extends Phaser.GameObjects.Group {
             .setDepth(1)
         this.scene.add.existing(this.pressToContinueText)
         this.add(this.pressToContinueText)
-        
+
         // press here arrow
         this.pressHereArrow = this.scene.add.image(0, 0,
             BaseAssetKey.PressHereArrow
         )
             .setOrigin(0.5, 0)
             .setDepth(2).setVisible(false)
-        this.add(this.pressHereArrow)
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.hide()
@@ -57,7 +56,7 @@ export class Stacy extends Phaser.GameObjects.Group {
                     this.user = user
                     // emit the event
                     // we perform switch case here to know what to do next
-                    this.render(this.user.tutorialStep)
+                    this.render()
                 }    
                 )
                 EventBus.emit(EventName.RefreshUser)
@@ -74,7 +73,7 @@ export class Stacy extends Phaser.GameObjects.Group {
                 })
                 this.scene.events.once(EventName.TutorialShopButtonPressedResponsed, ({ position }: TutorialShopButtonPressedResponsedMessage) => {
                     this.displayPressHereArrow({
-                        requireShow: false,
+                        requireSetVisibility: false,
                         originPosition: { x: position.x + 60, y: position.y + 60 },
                         targetPosition: { x: position.x + 40, y: position.y + 40 },
                     })
@@ -107,9 +106,9 @@ export class Stacy extends Phaser.GameObjects.Group {
         this.setVisible(false).setActive(false)
     }
 
-    private displayPressHereArrow({ originPosition, targetPosition, rotation = -45, requireShow = true }: DisplayPressHereArrowParams) {
-        if (requireShow) {
-            this.show()
+    private displayPressHereArrow({ originPosition, targetPosition, rotation = -45, requireSetVisibility = true }: DisplayPressHereArrowParams) {
+        if (requireSetVisibility) {
+            this.pressHereArrow?.setVisible(true)
         }
         // remove the previous tween
         if (!this.pressHereArrow) {
@@ -137,11 +136,11 @@ export class Stacy extends Phaser.GameObjects.Group {
     }
 
     // render the stacy image
-    public render(step: TutorialStep) {
+    public render() {
     // if press to continue is true, turn it off
         this.disallowPressToContinue(true)
         // set continue to false
-        const textureAssetKey = tutorialStepMap[step].assetKey
+        const textureAssetKey = tutorialStepMap[this.user.tutorialStep].assetKey
         if (!this.stacyImage) {
             this.stacyImage = this.scene.add
                 .image(getScreenCenterX(this.scene), getScreenBottomY(this.scene) - 50, textureAssetKey)
@@ -206,7 +205,7 @@ export class Stacy extends Phaser.GameObjects.Group {
             
             this.add(this.stacyBubble)
         } 
-        this.playSetTextAnimation(tutorialStepMap[step].message)
+        this.playSetTextAnimation(tutorialStepMap[this.user.tutorialStep].message)
     }
 
     private async playSetTextAnimation(fullText: string) {
@@ -230,7 +229,7 @@ export class Stacy extends Phaser.GameObjects.Group {
 
 export interface DisplayPressHereArrowParams {
     // set visibility
-    requireShow?: boolean
+    requireSetVisibility?: boolean
     // the position of the arrow
     targetPosition: Position
     // the origin position of the arrow
