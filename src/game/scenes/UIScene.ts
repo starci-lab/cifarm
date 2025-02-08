@@ -48,5 +48,31 @@ export class UIScene extends Scene {
             scene: this
         })
         this.add.existing(tutorialManager)
+
+
+        const modalLayer = this.add.layer()
+        modalLayer.add(modalManager).setDepth()
     }
+}
+
+export enum UISceneLayer {
+    Modal = "modal",
+    Tutorial = "tutorial",
+    Overlay = "overlay",
+}
+
+export interface UISceneLayerData {
+    depth?: number
+}
+
+export const uiMap: Record<UISceneLayer, UISceneLayerData> = {
+    [UISceneLayer.Modal]: {
+        depth: 1000
+    },
+    [UISceneLayer.Tutorial]: {
+        depth: 2000
+    },
+    [UISceneLayer.Overlay]: {
+        depth: 3000
+    },
 }
