@@ -34,7 +34,7 @@ export class ShopModal extends BaseSizer {
         // create the shop tabs
         this.shopTabs = new ShopTabs({
             scene: this.scene,
-            x: getScreenLeftX(this.scene) - 30,
+            x: getScreenLeftX(this.scene),
             y: getScreenCenterY(this.scene) - 600,
         })
         this.scene.add.existing(this.shopTabs)
