@@ -6,16 +6,13 @@ import {
     requestMessage,
     saveTokens,
     verifySignature,
-    AxiosOptions
 } from "@/modules/axios"
 import { useAppSelector } from "@/redux"
 import { v4 } from "uuid"
+import { WithAxiosOptions } from "./types"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 
-export type UseApiAuthenticationSwrMutationArgs = Partial<{
-  //add arguments here
-  options: AxiosOptions;
-}>;
+export type UseApiAuthenticationSwrMutationArgs = WithAxiosOptions
 
 export const useApiAuthenticationSwrMutation = (): UseSWRMutation<
   void,
