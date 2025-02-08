@@ -46,7 +46,7 @@ export class ModalManager extends Phaser.GameObjects.Group {
                 height,
                 BLACK_COLOR,
                 0.5
-            )
+            ).setDepth(0)
             .setInteractive()
         this.add(this.backdrop)
 

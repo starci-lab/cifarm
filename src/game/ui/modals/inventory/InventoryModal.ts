@@ -12,8 +12,8 @@ export class InventoryModal extends BaseSizer {
     private inventoryTabs: InventoryTabs
     private inventoryContent: InventoryContent
 
-    constructor({ scene, width, height, x, y, config}: SizerBaseConstructorParams) {
-        super(scene, width, height, x, y, config)
+    constructor({ scene, x, y, width, height, config}: SizerBaseConstructorParams) {
+        super(scene, x, y, width, height, config)
 
         // create the inventory background
         this.inventoryBackground = new InventoryBackground({
@@ -50,5 +50,7 @@ export class InventoryModal extends BaseSizer {
         }).setDepth(1)
         this.scene.add.existing(this.inventoryContent)
         this.add(this.inventoryContent)
+
+        this.setDirty(false)
     }
 }
