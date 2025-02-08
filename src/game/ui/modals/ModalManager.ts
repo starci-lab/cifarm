@@ -18,7 +18,7 @@ export enum ModalName {
   Neighbors = "neighbors",
 }
 
-export class ModalManager extends Phaser.GameObjects.Layer {
+export class ModalManager extends Phaser.GameObjects.Group {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
 
     // the shop modal
