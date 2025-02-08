@@ -11,6 +11,7 @@ import { CacheKey } from "../../types"
 import { BaseAssetKey, toolAssetMap } from "../../assets"
 import { GRAY_TINT_COLOR, SCALE_TIME } from "../../constants"
 import { EventName } from "@/game/event-bus"
+import { getScreenBottomY, getScreenCenterX } from "../utils"
 
 // number of items to show
 const NUM_ITEMS = 4
@@ -265,8 +266,8 @@ export class ToolbarContent extends SceneAbstract {
             space: {
                 item: 40,
             },
-            x: this.centerX,
-            y: this.bottomY - 160,
+            x: getScreenCenterX(this.scene),
+            y: getScreenBottomY(this.scene) - 160,
         })
 
         // add the items to the sizer
@@ -276,8 +277,8 @@ export class ToolbarContent extends SceneAbstract {
             space: {
                 item: 15,
             },
-            x: this.centerX,
-            y: this.bottomY / 2 - 160,
+            x: getScreenCenterX(this.scene),
+            y: getScreenBottomY(this.scene) / 2 - 160,
         })
 
         for (let i = 0; i < NUM_ITEMS - 1; i++) {
@@ -293,8 +294,8 @@ export class ToolbarContent extends SceneAbstract {
             space: {
                 item: 15,
             },
-            x: this.centerX,
-            y: this.bottomY / 2 - 160,
+            x: getScreenCenterX(this.scene),
+            y: getScreenBottomY(this.scene) / 2 - 160,
         })
         // get the last item
         const last = NUM_ITEMS - 1

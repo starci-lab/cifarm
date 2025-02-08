@@ -1,21 +1,22 @@
 import { SizerBaseConstructorParams } from "@/game/types"
-import { ScreenUISizer } from "../../UISizer"
 import { DailyBackground } from "./DailyBackground"
 import { DailyContent } from "./DailyContent"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { getScreenCenterX, getScreenCenterY } from "../../utils"
 
-export class DailyModal extends ScreenUISizer {
+export class DailyModal extends BaseSizer {
     // daily background
     private dailyBackground: DailyBackground
     private dailyContent: DailyContent
     
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config)
 
         // create the daily background
         this.dailyBackground = new DailyBackground({
             scene: this.scene,
-            x: this.screenCenterX,
-            y: this.screenCenterY,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
         })
         this.scene.add.existing(this.dailyBackground)
         this.add(this.dailyBackground)
@@ -23,8 +24,8 @@ export class DailyModal extends ScreenUISizer {
         // create the daily content
         this.dailyContent = new DailyContent({
             scene: this.scene,
-            x: this.screenCenterX,
-            y: this.screenCenterY,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
         })
         this.scene.add.existing(this.dailyContent)
         this.add(this.dailyContent)

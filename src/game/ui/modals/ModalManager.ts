@@ -3,11 +3,11 @@ import { BLACK_COLOR, SCALE_TIME } from "../../constants"
 import { ShopModal } from "./shop"
 import { LayerBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
-// import { InventoryModal } from "./inventory"
-// import { DailyModal } from "./daily"
-// import { QuestModal } from "./quest"
-// import { StandModal } from "./stand"
-// import { NeighborsModal } from "./neighbors"
+import { DailyModal } from "./daily"
+import { InventoryModal } from "./inventory"
+import { NeighborsModal } from "./neighbors"
+import { QuestModal } from "./quest"
+import { StandModal } from "./stand"
 
 export enum ModalName {
   Shop = "shop",
@@ -24,14 +24,15 @@ export class ModalManager extends Phaser.GameObjects.Group {
     // the shop modal
     private shopModal: ShopModal | undefined
     // inventory modal
-    // private inventoryModal: InventoryModal | undefined
+    private inventoryModal: InventoryModal | undefined
     // // daily modal
-    // private dailyModal: DailyModal | undefined
+    private dailyModal: DailyModal | undefined
     // // quest modal
-    // private questModal: QuestModal | undefined
+    private questModal: QuestModal | undefined
     // //stand modal
-    // private standModal: StandModal | undefined
-    // private neighborsModal: NeighborsModal | undefined
+    private standModal: StandModal | undefined
+    // neighbors
+    private neighborsModal: NeighborsModal | undefined
 
     constructor({ scene, children }: LayerBaseConstructorParams) {
         super(scene, children)
@@ -58,38 +59,38 @@ export class ModalManager extends Phaser.GameObjects.Group {
         this.scene.add.existing(this.shopModal)
         this.add(this.shopModal)
         // create the inventory modal
-        // this.inventoryModal = new InventoryModal({
-        //     scene: this.scene,
-        //     x: this.x,
-        //     y: this.y,
-        // }).hide()
+        this.inventoryModal = new InventoryModal({
+            scene: this.scene,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
+        }).hide()
 
         // create the daily modal
-        // this.dailyModal = new DailyModal({
-        //     scene: this.scene,
-        //     x: this.x,
-        //     y: this.y,
-        // }).hide()
+        this.dailyModal = new DailyModal({
+            scene: this.scene,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
+        }).hide()
 
         // create the quest modal
-        // this.questModal = new QuestModal({
-        //     scene: this.scene,
-        //     x: this.x,
-        //     y: this.y,
-        // }).hide()
+        this.questModal = new QuestModal({
+            scene: this.scene,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
+        }).hide()
 
         // create the stand modal
-        // this.standModal = new StandModal({
-        //     scene: this.scene,
-        //     x: this.x,
-        //     y: this.y,
-        // }).hide()
+        this.standModal = new StandModal({
+            scene: this.scene,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
+        }).hide()
 
-        // this.neighborsModal = new NeighborsModal({
-        //     scene: this.scene,
-        //     x: this.x,
-        //     y: this.y,
-        // }).hide()
+        this.neighborsModal = new NeighborsModal({
+            scene: this.scene,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
+        }).hide()
 
         this.scene.events.on(EventName.OpenModal, (modalName: ModalName) => {
             this.onOpen(modalName)
@@ -112,36 +113,36 @@ export class ModalManager extends Phaser.GameObjects.Group {
             }
             return this.shopModal
         }
-        // case ModalName.Inventory: {
-        //     if (!this.inventoryModal) {
-        //         throw new Error("Shop modal not found")
-        //     }
-        //     return this.inventoryModal
-        // }
-        // case ModalName.Daily: {
-        //     if (!this.dailyModal) {
-        //         throw new Error("Daily modal not found")
-        //     }
-        //     return this.dailyModal
-        // }
-        // case ModalName.Quest: {
-        //     if (!this.questModal) {
-        //         throw new Error("Quest modal not found")
-        //     }
-        //     return this.questModal
-        // }
-        // case ModalName.Stand: {
-        //     if (!this.standModal) {
-        //         throw new Error("Stand modal not found")
-        //     }
-        //     return this.standModal
-        // }
-        // case ModalName.Neighbors: {
-        //     if (!this.neighborsModal) {
-        //         throw new Error("Neighbors modal not found")
-        //     }
-        //     return this.neighborsModal
-        // }
+        case ModalName.Inventory: {
+            if (!this.inventoryModal) {
+                throw new Error("Shop modal not found")
+            }
+            return this.inventoryModal
+        }
+        case ModalName.Daily: {
+            if (!this.dailyModal) {
+                throw new Error("Daily modal not found")
+            }
+            return this.dailyModal
+        }
+        case ModalName.Quest: {
+            if (!this.questModal) {
+                throw new Error("Quest modal not found")
+            }
+            return this.questModal
+        }
+        case ModalName.Stand: {
+            if (!this.standModal) {
+                throw new Error("Stand modal not found")
+            }
+            return this.standModal
+        }
+        case ModalName.Neighbors: {
+            if (!this.neighborsModal) {
+                throw new Error("Neighbors modal not found")
+            }
+            return this.neighborsModal
+        }
         default: {
             throw new Error("Modal not found")
         }
@@ -152,16 +153,16 @@ export class ModalManager extends Phaser.GameObjects.Group {
         this.setActive(true).setVisible(true)
         const modal = this.getModal(name)
         // disable modal input
-        if (this.input) {
-            this.input.enabled = false
-        }
+        // if (this.input) {
+        //     this.input.enabled = false
+        // }
         // show the modal
         modal.show().setDepth(1).popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
-            if (this.input) {
-                this.input.enabled = true
-            }
+            // if (this.input) {
+            //     this.input.enabled = true
+            // }
         })
     }
 

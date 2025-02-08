@@ -1,15 +1,15 @@
 import { BaseAssetKey } from "@/game/assets"
 import { SizerBaseConstructorParams } from "@/game/types"
 import { DeliveringProductEntity } from "@/modules/entities"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { UISizer } from "../../UISizer"
 
-export class StandContent extends UISizer {
+export class StandContent extends BaseSizer {
     private gridTable: GridTable | undefined
     private deliveringProduct: Array<DeliveringProductEntity> = []
 
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config)
         this.createStandGrid()
     }
 

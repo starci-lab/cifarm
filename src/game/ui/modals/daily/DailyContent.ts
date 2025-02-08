@@ -1,9 +1,9 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import { BaseText, StrokeColor, TextColor } from "../../elements"
-import { UISizer } from "../../UISizer"
 import { BaseAssetKey } from "@/game/assets"
 import { DailyRewardEntity, DailyRewardId } from "@/modules/entities"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 // daily coin icon map
 const iconMap: Record<DailyRewardId, BaseAssetKey> = {
@@ -14,13 +14,13 @@ const iconMap: Record<DailyRewardId, BaseAssetKey> = {
     // temporary use the same icon
     [DailyRewardId.Day5]: BaseAssetKey.IconDaily,
 }
-export class DailyContent extends UISizer {
+export class DailyContent extends BaseSizer {
     private rewardContainersSizer: Sizer
     
     // daily rewards data
     private dailyRewards: Array<DailyRewardEntity> = []
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config)
 
         // get the daily rewards data
         this.dailyRewards = this.scene.cache.obj.get(CacheKey.DailyRewards)

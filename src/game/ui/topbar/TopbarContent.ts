@@ -6,6 +6,7 @@ import { SceneAbstract } from "../../SceneAbstract"
 import { BaseText, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CacheKey } from "@/game/types"
+import { getScreenLeftX, getScreenTopY } from "../utils"
 
 export class TopbarContent extends SceneAbstract {
     private user: UserEntity
@@ -29,8 +30,8 @@ export class TopbarContent extends SceneAbstract {
         
         // Create main sizer for two-column layout
         const mainContainer = this.scene.rexUI.add.sizer({
-            x: this.leftX + 220,
-            y: this.topY + 90,
+            x: getScreenLeftX(this.scene) + 220,
+            y: getScreenTopY(this.scene) + 90,
             width: background.width,
             height: background.height,
             orientation: 0,
@@ -126,8 +127,8 @@ export class TopbarContent extends SceneAbstract {
             amount: `${this.user.tokens ?? 0}`,
         })
         this.rightContainer = this.scene.rexUI.add.sizer({
-            x: this.leftX + 750,
-            y: this.topY + 80,
+            x: getScreenLeftX(this.scene) + 750,
+            y: getScreenTopY(this.scene) + 80,
             orientation: "horizontal",
         })
             .add(this.energyLabel)
