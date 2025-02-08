@@ -30,7 +30,7 @@ export class Stacy extends Phaser.GameObjects.Group {
         })
             .setOrigin(0.5, 1)
             .setVisible(false)
-            .setDepth(1)
+            .setDepth(101)
         this.scene.add.existing(this.pressToContinueText)
         this.add(this.pressToContinueText)
 
@@ -38,8 +38,7 @@ export class Stacy extends Phaser.GameObjects.Group {
         this.pressHereArrow = this.scene.add.image(0, 0,
             BaseAssetKey.PressHereArrow
         )
-            .setOrigin(0.5, 0)
-            .setDepth(2).setVisible(false)
+            .setOrigin(0.5, 0).setVisible(false)
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.hide()
@@ -144,7 +143,6 @@ export class Stacy extends Phaser.GameObjects.Group {
         if (!this.stacyImage) {
             this.stacyImage = this.scene.add
                 .image(getScreenCenterX(this.scene), getScreenBottomY(this.scene) - 50, textureAssetKey)
-                .setDepth(1)
                 .setOrigin(0.5, 1)
             this.add(this.stacyImage)
         } else {
@@ -201,7 +199,6 @@ export class Stacy extends Phaser.GameObjects.Group {
                 .setMinHeight(500)
                 .setMinWidth(500)
                 .layout()
-                .setDepth(1) 
             
             this.add(this.stacyBubble)
         } 

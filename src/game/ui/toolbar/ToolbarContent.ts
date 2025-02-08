@@ -207,6 +207,7 @@ export class ToolbarContent extends SceneAbstract {
                     (inventoryType) => inventoryType.id === inventory.inventoryTypeId
                 )
                 if (!inventoryType) {
+                    return false
                     throw new Error(
                         `Inventory type not found for inventory: ${inventory.id}`
                     )

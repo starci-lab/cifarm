@@ -20,10 +20,11 @@ export class TutorialManager extends Phaser.GameObjects.Group {
 
     constructor({ scene, children, config }: GroupBaseConstructorParams) {
         super(scene, children, config)
+        this.setDepth(1000)
 
         // get the user from the cache
         this.user = this.scene.cache.obj.get(CacheKey.User)
-
+        
         // get the width and height of the game
         const { width, height } = this.scene.game.scale
         this.backdrop = this.scene.add
@@ -36,7 +37,6 @@ export class TutorialManager extends Phaser.GameObjects.Group {
                 0.5
             )
             .setInteractive()
-            .setDepth(1)
         this.add(this.backdrop)
 
         this.scene.events.on(
@@ -54,7 +54,7 @@ export class TutorialManager extends Phaser.GameObjects.Group {
         // create Stacy
         this.stacy = new Stacy({
             scene: this.scene,
-        })
+        }).setDepth(1001)
         this.scene.add.existing(this.stacy)
 
         this.start()
@@ -81,7 +81,7 @@ export class TutorialManager extends Phaser.GameObjects.Group {
         this.setActive(true).setVisible(true)
 
         this.stacy.show()
-        this.stacy.render(tutorialStep)
+        this.stacy.render()
     }
 
     // close the tutorial

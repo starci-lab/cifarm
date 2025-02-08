@@ -35,6 +35,7 @@ import {
 } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { BuySeedsRequest } from "@/modules/axios"
 
 // own depth for the shop content
 export const HIGHLIGHT_DEPTH = 2
@@ -55,6 +56,9 @@ export class ShopContent extends BaseSizer {
     private defautSeedButtonPosition: Phaser.Math.Vector2 | undefined
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
+
+    //a flag to check if the tutorial is for buying seed
+    private isTutorialBuySeed = false
 
     constructor({
         scene,
@@ -99,6 +103,8 @@ export class ShopContent extends BaseSizer {
             if (!this.defaultItemCard) {
                 throw new Error("Default item card is not found")
             }
+            this.isTutorialBuySeed = true
+
             this.defaultItemCard.setDepth(HIGHLIGHT_DEPTH)
 
             // disable the default scroller
@@ -279,7 +285,21 @@ export class ShopContent extends BaseSizer {
                     title: cropAssetMap[id].name,
                     onClick: (pointer: Phaser.Input.Pointer) => {
                         this.playBuySeedAnimation(id, pointer)
-                        console.log("Clicked on crop", id)
+                        const eventMessage: BuySeedsRequest = {
+                            cropId: id,
+                            quantity: 1,
+                        }
+                        EventBus.once(EventName.BuySeedsCompleted, () => {
+                            // refresh user & inventories
+                            EventBus.emit(EventName.RefreshUser)
+                            EventBus.emit(EventName.RefreshInventories)
+                        })
+                        // send request to buy seeds
+                        EventBus.emit(EventName.RequestBuySeeds, eventMessage)
+                        if (this.isTutorialBuySeed) {
+                            this.defaultItemCard?.setDepth(1)
+                            this.scene.events.emit(EventName.TutorialCloseShop)
+                        }
                     },
                     price,
                 })

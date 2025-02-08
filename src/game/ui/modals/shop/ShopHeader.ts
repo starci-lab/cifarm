@@ -5,6 +5,9 @@ import { onGameObjectClick } from "../../utils"
 import { EventName } from "@/game/event-bus"
 import { ModalName } from "../ModalManager"
 
+// own depth for the shop header
+export const HIGHLIGHT_DEPTH = 2
+
 export class ShopHeader extends Phaser.GameObjects.Container {
     // close button
     private closeButton: Phaser.GameObjects.Image
@@ -68,5 +71,9 @@ export class ShopHeader extends Phaser.GameObjects.Container {
             })
         })
         this.add(this.closeButton)
+
+        this.scene.events.once(EventName.TutorialCloseShop, () => {
+            this.closeButton.setDepth(HIGHLIGHT_DEPTH)  
+        })
     }
 }

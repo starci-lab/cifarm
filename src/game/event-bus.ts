@@ -69,6 +69,7 @@ export enum EventName {
     TutorialOpenShopResponsed = "tutorial_open_shop_responsed",
     TutorialShopButtonPressed = "tutorial_shop_button_pressed",
     TutorialShopButtonPressedResponsed = "tutorial_shop_button_pressed_responsed",
+    TutorialCloseShop = "tutorial_close_shop",
 
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
