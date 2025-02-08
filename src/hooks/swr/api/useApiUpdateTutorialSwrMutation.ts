@@ -4,12 +4,9 @@ import {
     updateTutorial,
 } from "@/modules/axios"
 import { v4 } from "uuid"
-import { AxiosOptions } from "@/modules/axios"
+import { WithAxiosOptions } from "./types"
 
-export type UseApiUpdateTutorialSwrMutationArgs = Partial<{
-  //add arguments here
-  options: AxiosOptions;
-}>;
+export type UseApiUpdateTutorialSwrMutationArgs = WithAxiosOptions
 
 export const useApiUpdateTutorialSwrMutation = (): UseSWRMutation<
   void,

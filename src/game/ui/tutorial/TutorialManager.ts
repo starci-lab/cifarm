@@ -4,21 +4,23 @@ import {
     OpenTutorialMessage,
 } from "../../event-bus"
 import { BLACK_COLOR } from "../../constants"
-import { CacheKey } from "../../types"
+import {
+    CacheKey,
+    GroupBaseConstructorParams,
+    LayerBaseConstructorParams,
+} from "../../types"
 import { UserEntity } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
-import { SceneAbstract } from "@/game/SceneAbstract"
-import { Scene } from "phaser"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 
-export class TutorialManager extends SceneAbstract {
+export class TutorialManager extends Phaser.GameObjects.Group {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
     private user: UserEntity
     private stacy: Stacy
 
-    constructor(scene: Scene) {
-        super(scene)
+    constructor({ scene, children, config }: GroupBaseConstructorParams) {
+        super(scene, children, config)
 
         // get the user from the cache
         this.user = this.scene.cache.obj.get(CacheKey.User)
@@ -26,8 +28,17 @@ export class TutorialManager extends SceneAbstract {
         // get the width and height of the game
         const { width, height } = this.scene.game.scale
         this.backdrop = this.scene.add
-            .rectangle(getScreenCenterX(this.scene), getScreenCenterY(this.scene), width, height, BLACK_COLOR, 0.5)
-            .setInteractive().setDepth(1)
+            .rectangle(
+                getScreenCenterX(this.scene),
+                getScreenCenterY(this.scene),
+                width,
+                height,
+                BLACK_COLOR,
+                0.5
+            )
+            .setInteractive()
+            .setDepth(1)
+        this.add(this.backdrop)
 
         this.scene.events.on(
             EventName.OpenTutorial,
@@ -44,9 +55,8 @@ export class TutorialManager extends SceneAbstract {
         // create Stacy
         this.stacy = new Stacy({
             scene: this.scene,
-            x: width / 2,
-            y: height / 2,
         })
+        this.scene.add.existing(this.stacy)
 
         this.start()
     }
@@ -69,7 +79,7 @@ export class TutorialManager extends SceneAbstract {
         if (!this.backdrop) {
             throw new Error("Backdrop not found")
         }
-        this.backdrop.setActive(true).setVisible(true)
+        this.setActive(true).setVisible(true)
 
         this.stacy.show()
         this.stacy.render(tutorialStep)
@@ -80,7 +90,7 @@ export class TutorialManager extends SceneAbstract {
         if (!this.backdrop) {
             throw new Error("Backdrop not found")
         }
-        this.backdrop.setActive(false).setVisible(false)
+        this.setActive(false).setVisible(false)
         this.stacy.hide()
     }
 }

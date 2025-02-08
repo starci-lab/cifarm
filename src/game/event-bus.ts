@@ -71,6 +71,9 @@ export enum EventName {
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
     UpdateTutorialCompleted = "update_tutorial_completed",
+
+    RequestBuySeeds = "request_buy_seeds",
+    BuySeedsCompleted = "buy_seeds_completed",
 }
 
 export interface OpenTutorialMessage {

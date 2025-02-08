@@ -1,7 +1,7 @@
 import { EventName } from "@/game/event-bus"
 import { BLACK_COLOR, SCALE_TIME } from "../../constants"
 import { ShopModal } from "./shop"
-import { LayerBaseConstructorParams } from "../../types"
+import { GroupBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
@@ -34,8 +34,8 @@ export class ModalManager extends Phaser.GameObjects.Group {
     // neighbors
     private neighborsModal: NeighborsModal | undefined
 
-    constructor({ scene, children }: LayerBaseConstructorParams) {
-        super(scene, children)
+    constructor({ scene, children, config }: GroupBaseConstructorParams) {
+        super(scene, children, config)
         // get the width and height of the game
         const { width, height } = this.scene.game.scale
         this.backdrop = this.scene.add

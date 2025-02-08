@@ -66,8 +66,6 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenShop, () => {
             this.shopButton.setDepth(HIGHLIGHT_DEPTH)
-            console.log(this.shopButton.getCenter())
-            
             const eventMessage: TutorialOpenShopResponsedMessage = {
                 position: this.shopButton.getCenter()
             }
