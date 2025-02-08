@@ -20,8 +20,6 @@ export class InventoryContent extends UISizer {
     }
 
     private createInventoryTable() {
-        const { width, height } = this.scene.game.scale
-
         const gridWidth = 750
         const gridHeight = 1000
 
@@ -36,7 +34,7 @@ export class InventoryContent extends UISizer {
         ]
 
         this.gridTable = this.scene.rexUI.add.gridTable({
-            x: this.x,
+            x: this.x + 30,
             y: this.y,
             width: gridWidth,
             height: gridHeight,
@@ -64,64 +62,52 @@ export class InventoryContent extends UISizer {
     }
 
     private createItemCard({ assetKey, quantity, onClick }: CreateItemCardParams) {
-
-        //add background
         const background = this.scene.add.sprite(0, 0, BaseAssetKey.ModalInventoryCell)
             .setOrigin(0.5, 0.5)
             .setDepth(1)
-
+    
         const icon = this.scene.add.image(0, 0, assetKey)
             .setOrigin(0.5, 0.5)
             .setScale(1.2)
-            .setY(-10)
             .setDepth(2)
 
-        // add quantity background in bottom right
-        const quantityBackground = this.scene.add.sprite(0, 0, BaseAssetKey.ModalInventoryCellQuantity)
-            .setOrigin(0.5, 0.5)
-            .setDepth(3)
-            .setX(50)
-            .setY(50)
-        // add quantity text
+        
+    
+        // add quantity
+        const quantityBackground = this.scene.add.sprite(0, 0, BaseAssetKey.ModalInventoryCellQuantity).setOrigin(1, 1)
         const quantityText = new BaseText({
             baseParams: {
                 scene: this.scene,
-                x: 0,
+                x: -10,
                 y: 0,
                 text: quantity ? quantity.toString() : "1",
             },
             options: {
                 fontSize: 32,
             },
-        }).setOrigin(0.5, 0.5).setDepth(4).setX(50).setY(50)
+        }).setOrigin(1, 1)
 
-        // Make the entire item interactive
-        const container = this.scene.rexUI.add.sizer({
-            width: 250, // Same as cellWidth
-            height: 250, // Same as cellHeight
-            orientation: "vertical",
-            space: { item: 5 }
+        //add into quantity container
+        const quantityContainer = this.scene.add.container(0, 0)
+        quantityContainer.add(quantityBackground)
+        quantityContainer.add(quantityText)
+    
+        const itemBadge = this.scene.rexUI.add.badgeLabel({
+            width: 200, height: 200,
+            background: background,
+            main: this.scene.rexUI.add.label({
+                icon: icon,
+            }),
+            rightBottom: quantityContainer,
+        }).layout()
+    
+        itemBadge.setInteractive().on("pointerdown", () => {
+            onClick()
         })
-            .add(background) // Background
-            .add(icon, { align: "center",
-                offsetY: -background.height + (background.height - icon.height) / 2
-            },
-            )
-            .add(quantityBackground, { align: "right",
-                offsetX: -quantityBackground.width + 10,
-                offsetY: -background.height + icon.height / 2
-            })
-            .add(quantityText, { align: "right",
-                offsetX: -quantityBackground.width,
-                offsetY: -background.height + icon.height
-            })
-            .setInteractive() // Make the whole container clickable
-            .on("pointerdown", () => {
-                onClick()
-            })
-
-        return container
+    
+        return itemBadge
     }
+    
 }
 
 export interface CreateItemCardParams {

@@ -15,6 +15,9 @@ const query1 = gql`
       tutorialStep
       energyRegenTime
       experiences
+      golds
+      tokens
+      level
     }
   }
 `
