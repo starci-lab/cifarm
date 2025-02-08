@@ -33,7 +33,7 @@ export class Stacy extends Phaser.GameObjects.Group {
             .setDepth(1)
         this.scene.add.existing(this.pressToContinueText)
         this.add(this.pressToContinueText)
-
+        
         // press here arrow
         this.pressHereArrow = this.scene.add.image(0, 0,
             BaseAssetKey.PressHereArrow
@@ -51,13 +51,16 @@ export class Stacy extends Phaser.GameObjects.Group {
         this.pressToContinueText?.setVisible(true)
         //click anywhere to continue
         this.scene.input.once("pointerdown", () => {
-            EventBus.once(EventName.UpdateTutorialCompleted, (user: UserEntity) => {
-                // update the cache
-                this.scene.cache.obj.add(CacheKey.User, user)
-                // set the user
-                this.user = user
-                // we perform switch case here to know what to do next
-                this.render(this.user.tutorialStep)
+            EventBus.once(EventName.UpdateTutorialCompleted, () => {
+                EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
+                    // set the user
+                    this.user = user
+                    // emit the event
+                    // we perform switch case here to know what to do next
+                    this.render(this.user.tutorialStep)
+                }    
+                )
+                EventBus.emit(EventName.RefreshUser)
             })
 
             switch (this.user.tutorialStep) {

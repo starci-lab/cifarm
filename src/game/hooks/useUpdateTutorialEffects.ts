@@ -4,7 +4,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EventBus, EventName } from "../event-bus"
 
-export const useUpdateTutorialEffect = () => {
+export const useUpdateTutorialEffects = () => {
     //authentication useEffect
     const { swrMutation } = useSingletonHook<
         ReturnType<typeof useApiUpdateTutorialSwrMutation>

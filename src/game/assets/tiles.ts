@@ -24,6 +24,9 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
         tilesetConfig:{
             gid: 13001,
             tilesetName: "tiles-starter-tile",
+            extraOffsets: {
+                y: 5,
+            }
         }
     },
     [TileId.BasicTile1]: {

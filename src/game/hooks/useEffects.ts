@@ -1,7 +1,9 @@
-import { useBuySeedsEffect } from "./useBuySeedsEffect"
-import { useUpdateTutorialEffect } from "./useUpdateTutorialEffect"
+import { useUserEffects } from "./graphql"
+import { useBuySeedsEffects } from "./useBuySeedsEffects"
+import { useUpdateTutorialEffects } from "./useUpdateTutorialEffects"
 
 export const useEffects = () => {
-    useUpdateTutorialEffect()
-    useBuySeedsEffect()
+    useUpdateTutorialEffects()
+    useBuySeedsEffects()
+    useUserEffects()
 }

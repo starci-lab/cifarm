@@ -46,17 +46,10 @@ export const Game: FC = () => {
             EventBus.emit(EventName.InventoriesLoaded, data?.inventories.data)
         })
 
-        EventBus.on(EventName.LoadUser, async () => {
-            //load user data
-            const data = await userSwr.mutate()
-            EventBus.emit(EventName.UserLoaded, data?.user)
-        })
-
         return () => {
             //remove listeners
             EventBus.removeListener(EventName.LoadStaticData)
             EventBus.removeListener(EventName.LoadInventories)
-            EventBus.removeListener(EventName.LoadUser)
         }
     }, [staticSwr, userSwr, inventoriesSwr])
 

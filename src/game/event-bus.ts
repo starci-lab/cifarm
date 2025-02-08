@@ -29,6 +29,8 @@ export enum EventName {
     InventoriesLoaded = "inventories_loaded",
     
     // refresh
+    RefreshUser = "refresh_user",
+    UserRefreshed = "user_refreshed",
     RefreshInventories = "refresh_inventories",
     InventoriesRefreshed = "inventories_refreshed",
 

@@ -26,6 +26,8 @@ export class GameplayScene extends Scene
     {   
         // launch the UI scene parallel to the gameplay scene
         this.scene.launch(SceneName.UI)
+        this.scene.launch(SceneName.Data)
+
         this.tileMap = new Tilemap({
             scene: this
         })
