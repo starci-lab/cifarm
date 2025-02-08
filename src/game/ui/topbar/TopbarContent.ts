@@ -117,6 +117,7 @@ export class TopbarContent extends SceneAbstract {
         this.energyLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconEnergy,
             amount: `${this.user.energy}/${this.computeExperiencesQuota(this.user.level)}`,
+            scale: 0.7
         })
         this.goldLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconCoin,
@@ -125,6 +126,7 @@ export class TopbarContent extends SceneAbstract {
         this.tokenLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconCarrot,
             amount: `${this.user.tokens ?? 0}`,
+            scale: 0.9
         })
         this.rightContainer = this.scene.rexUI.add.sizer({
             x: getScreenLeftX(this.scene) + 750,
@@ -137,20 +139,20 @@ export class TopbarContent extends SceneAbstract {
             .setItemSpacing(50).layout()
     }
 
-    private addLabel({ iconKey, amount }: AddLabelParams) {
+    private addLabel({ iconKey, amount, scale = 1 }: AddLabelParams) {
         const background = this.scene.add.image(0, 0, BaseAssetKey.TopbarBackgroundCurrency)
         const iconContainer = this.scene.add.container(0, 0)
-        const icon = this.scene.add.image(0, 0, iconKey)
+        const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)
         iconContainer.add(icon)
         const amountText = new BaseText({
             baseParams: {
                 scene: this.scene,
-                x: 20,
-                y: -10,
+                x: 0,
+                y: 0,
                 text: amount.toString(),
             },
             options: {
-                fontSize: 24,
+                fontSize: 12,
                 textColor: TextColor.White,
             },
         })
@@ -161,9 +163,12 @@ export class TopbarContent extends SceneAbstract {
             text: amountText,
             width: 150,
             height: 50,
+            expandTextWidth: true,
+            expandTextHeight: true,
             space: {
-                icon: 50,
-                bottom: 6,
+                icon: 30,
+                top: 2,
+                bottom: 2,
             },
             adjustTextFontSize: true
         })
@@ -176,6 +181,7 @@ export class TopbarContent extends SceneAbstract {
 }
 
 interface AddLabelParams {
-    iconKey: BaseAssetKey
+    iconKey: BaseAssetKey,
+    scale?: number
     amount: string
 }
