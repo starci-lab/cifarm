@@ -46,7 +46,7 @@ export class ModalManager extends Phaser.GameObjects.Group {
                 height,
                 BLACK_COLOR,
                 0.5
-            )
+            ).setDepth(0)
             .setInteractive()
         this.add(this.backdrop)
 
@@ -56,8 +56,7 @@ export class ModalManager extends Phaser.GameObjects.Group {
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
         }).hide()
-        this.scene.add.existing(this.shopModal)
-        this.add(this.shopModal)
+
         // create the inventory modal
         this.inventoryModal = new InventoryModal({
             scene: this.scene,
@@ -142,9 +141,6 @@ export class ModalManager extends Phaser.GameObjects.Group {
                 throw new Error("Neighbors modal not found")
             }
             return this.neighborsModal
-        }
-        default: {
-            throw new Error("Modal not found")
         }
         }
     }
