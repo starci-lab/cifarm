@@ -1,12 +1,20 @@
 import { Scene } from "phaser"
-import { SceneName } from "../scene"
+import { EventBus, EventName } from "../event-bus"
+import { InventoryEntity, UserEntity } from "@/modules/entities"
+import { CacheKey } from "../types"
+//import { EventName } from "../event-bus"
 
 export class DataScene extends Scene {
-    constructor() {
-        super(SceneName.Data)
-    }
+    create() {
+        EventBus.on(EventName.UserRefreshed, (user: UserEntity) => {
+            this.cache.obj.add(CacheKey.User, user)
+        })
 
-    init() {
-        console.log("DataScene: init")
+        EventBus.on(
+            EventName.InventoriesRefreshed,
+            (inventories: Array<InventoryEntity>) => {
+                this.cache.obj.add(CacheKey.Inventories, inventories)
+            }
+        )
     }
 }

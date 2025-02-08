@@ -11,13 +11,27 @@ import {
     buildingAssetMap,
     cropAssetMap,
 } from "../../../assets"
-import { adjustTextMinLength, getScreenBottomY, getScreenCenterX } from "../../utils"
+import {
+    adjustTextMinLength,
+    getScreenBottomY,
+    getScreenCenterX,
+} from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
-import { AnimalEntity, BuildingEntity, CropEntity, PlacedItemType } from "@/modules/entities"
+import {
+    AnimalEntity,
+    BuildingEntity,
+    CropEntity,
+    PlacedItemType,
+} from "@/modules/entities"
 import { onGameObjectClick } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
-import { EventBus, EventName, PlacedInprogressMessage, TutorialOpenShopResponsedMessage } from "../../../event-bus"
+import {
+    EventBus,
+    EventName,
+    PlacedInprogressMessage,
+    TutorialOpenShopResponsedMessage,
+} from "../../../event-bus"
 import { ModalName } from "../ModalManager"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
@@ -34,10 +48,20 @@ export class ShopContent extends BaseSizer {
     private crops: Array<CropEntity> = []
     private buildings: Array<BuildingEntity> = []
 
+    //default
+    private defaultItemCard: Sizer | undefined
+    private defautSeedButtonPosition: Phaser.Math.Vector2 | undefined
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
 
-    constructor({ scene, height, width, x, y, config }: SizerBaseConstructorParams) {
+    constructor({
+        scene,
+        height,
+        width,
+        x,
+        y,
+        config,
+    }: SizerBaseConstructorParams) {
         super(scene, height, width, x, y, config)
 
         // load animals
@@ -50,50 +74,87 @@ export class ShopContent extends BaseSizer {
 
         // load buildings
         this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
-        this.buildings = this.buildings.filter((building) => building.availableInShop)
+        this.buildings = this.buildings.filter(
+            (building) => building.availableInShop
+        )
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
             this.createScrollablePanel(shopTab)
         }
+        // set the default seed button position
+        this.setDefaultSeedButton()
 
         //this.layout()
-
         // listen for the select shop tab event
         this.scene.events.on(EventName.SelectShopTab, (shopTab: ShopTab) => {
             this.onShopTabSelected(shopTab)
         })
+        this.scene.events.once(EventName.TutorialShopButtonPressed, () => {
+            if (!this.defautSeedButtonPosition) {
+                throw new Error("Default seed button position is not found")
+            }
+            if (!this.defaultItemCard) {
+                throw new Error("Default item card is not found")
+            }
+            this.defaultItemCard.setDepth(HIGHLIGHT_DEPTH)
+            
+            // disable the default scroller
+            this.disableDefaultScroller()
 
-        this.scene.events.on(EventName.TutorialShopButtonPressed, () => {
-            //check if current tab is not the default tab
-            if (this.selectedShopTab !== defaultShopTab) {
-                throw new Error("Selected tab is not the default tab")
-            }
-            // get the first item card
-            const scrollablePanel = this.scrollablePanelMap[this.selectedShopTab]
-            if (!scrollablePanel) {
-                throw new Error("Panel map is not found")
-            }
-            const panel = scrollablePanel.getElement("panel") as Sizer
-            if (!panel) {
-                throw new Error("Panel is not found")
-            }
-            const itemCard = panel.getChildren()[0] as Sizer
-            if (!itemCard) {
-                throw new Error("Item card is not found")
-            }
-            //set depth to 3
-            itemCard.setDepth(HIGHLIGHT_DEPTH)
-
-            // get the click button
-            const button = itemCard.getChildren()[3] as Label
-           
             const eventMessage: TutorialOpenShopResponsedMessage = {
-                position: button.getCenter(),
+                position: this.defautSeedButtonPosition,
             }
-            this.scene.events.emit(EventName.TutorialShopButtonPressedResponsed, eventMessage)
-
+            this.scene.events.emit(
+                EventName.TutorialShopButtonPressedResponsed,
+                eventMessage
+            )
         })
+        this.setDirty(false)
+    }
+
+    private disableDefaultScroller() {
+        const defaultScrollablePanel = this.scrollablePanelMap[this.selectedShopTab]
+        if (!defaultScrollablePanel) {
+            throw new Error("Default scrollable panel is not found")
+        }
+        defaultScrollablePanel.setMouseWheelScrollerEnable(false)
+        defaultScrollablePanel.setScrollerEnable(false)
+        defaultScrollablePanel.setSliderEnable(false)
+    }
+
+    private enableDefaultScroller() {
+        const defaultScrollablePanel = this.scrollablePanelMap[this.selectedShopTab]
+        if (!defaultScrollablePanel) {
+            throw new Error("Default scrollable panel is not found")
+        }
+        defaultScrollablePanel.setMouseWheelScrollerEnable(true)
+        defaultScrollablePanel.setScrollerEnable(true)
+        defaultScrollablePanel.setSliderEnable(true)
+    }
+
+    private setDefaultSeedButton() {
+    //check if current tab is not the default tab
+        if (this.selectedShopTab !== defaultShopTab) {
+            throw new Error("Selected tab is not the default tab")
+        }
+        // get the first item card
+        const scrollablePanel = this.scrollablePanelMap[this.selectedShopTab]
+        if (!scrollablePanel) {
+            throw new Error("Panel map is not found")
+        }
+        const panel = scrollablePanel.getElement("panel") as Sizer
+        if (!panel) {
+            throw new Error("Panel is not found")
+        }
+        this.defaultItemCard = panel.getChildren()[0] as Sizer
+        if (!this.defaultItemCard) {
+            throw new Error("Default item card is not found")
+        }
+        // get the click button
+        this.defautSeedButtonPosition = (
+      this.defaultItemCard.getChildren()[3] as Label
+    ).getCenter() as Phaser.Math.Vector2
     }
 
     // handle the selected shop tab
@@ -204,7 +265,7 @@ export class ShopContent extends BaseSizer {
                         // close the modal
                         this.scene.events.emit(EventName.CloseModal, ModalName.Shop)
                         // then turn on the building mode
-                        const message : PlacedInprogressMessage = {
+                        const message: PlacedInprogressMessage = {
                             id,
                             type: PlacedItemType.Building,
                         }
@@ -378,7 +439,8 @@ export class ShopContent extends BaseSizer {
                 background: buttonPriceImage,
                 text: priceText,
                 align: "center",
-            }).layout()
+            })
+            .layout()
             .setInteractive()
         // handle on click event
         if (onClick) {

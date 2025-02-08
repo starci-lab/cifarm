@@ -26,3 +26,10 @@ export interface LayerBaseConstructorParams {
     scene: Phaser.Scene, 
     children?: Array<Phaser.GameObjects.GameObject>
 }
+
+// base constructor params for Group
+export interface GroupBaseConstructorParams {
+    scene: Phaser.Scene, 
+    children?: Phaser.GameObjects.GameObject[] | Phaser.Types.GameObjects.Group.GroupConfig | Phaser.Types.GameObjects.Group.GroupCreateConfig, 
+    config?: Phaser.Types.GameObjects.Group.GroupConfig | Phaser.Types.GameObjects.Group.GroupCreateConfig
+}

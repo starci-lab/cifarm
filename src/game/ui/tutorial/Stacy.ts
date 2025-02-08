@@ -4,12 +4,11 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
 import { BaseText, NinePatch3x3, TextColor } from "../elements"
 import { sleep } from "@/modules/common"
-import { CacheKey, SizerBaseConstructorParams } from "../../types"
+import { CacheKey, GroupBaseConstructorParams } from "../../types"
 import { EventBus, EventName, TutorialOpenShopResponsedMessage, TutorialShopButtonPressedResponsedMessage } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
-export class Stacy extends BaseSizer {
+export class Stacy extends Phaser.GameObjects.Group {
     private stacyImage: Phaser.GameObjects.Image | undefined
     private stacyBubble: Label | undefined
     private pressToContinueText: Phaser.GameObjects.Text | undefined
@@ -17,14 +16,9 @@ export class Stacy extends BaseSizer {
     private pressHereArrow: Phaser.GameObjects.Image | undefined
 
     constructor({
-        scene,
-        config,
-        height,
-        width,
-        x,
-        y
-    }: SizerBaseConstructorParams) {
-        super(scene, height, width, x, y, config)
+        scene, children, config
+    }: GroupBaseConstructorParams) {
+        super(scene, children, config)
 
         this.pressToContinueText = new BaseText({
             baseParams: {
@@ -39,7 +33,7 @@ export class Stacy extends BaseSizer {
             .setDepth(1)
         this.scene.add.existing(this.pressToContinueText)
         this.add(this.pressToContinueText)
-
+        
         // press here arrow
         this.pressHereArrow = this.scene.add.image(0, 0,
             BaseAssetKey.PressHereArrow
@@ -49,7 +43,6 @@ export class Stacy extends BaseSizer {
         this.add(this.pressHereArrow)
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
-
         this.hide()
     }
 
@@ -58,19 +51,21 @@ export class Stacy extends BaseSizer {
         this.pressToContinueText?.setVisible(true)
         //click anywhere to continue
         this.scene.input.once("pointerdown", () => {
-            EventBus.once(EventName.UpdateTutorialCompleted, (user: UserEntity) => {
-                // update the cache
-                this.scene.cache.obj.add(CacheKey.User, user)
-                // set the user
-                this.user = user
-                // we perform switch case here to know what to do next
-                this.render(this.user.tutorialStep)
+            EventBus.once(EventName.UpdateTutorialCompleted, () => {
+                EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
+                    // set the user
+                    this.user = user
+                    // emit the event
+                    // we perform switch case here to know what to do next
+                    this.render(this.user.tutorialStep)
+                }    
+                )
+                EventBus.emit(EventName.RefreshUser)
             })
 
             switch (this.user.tutorialStep) {
             case TutorialStep.StartBuySeeds: {
                 // turn off the stacy
-                this.hide()
                 this.scene.events.once(EventName.TutorialOpenShopResponsed, ({ position }: TutorialOpenShopResponsedMessage) => {
                     this.displayPressHereArrow({
                         originPosition: { x: position.x + 60, y: position.y + 60 },
@@ -79,7 +74,7 @@ export class Stacy extends BaseSizer {
                 })
                 this.scene.events.once(EventName.TutorialShopButtonPressedResponsed, ({ position }: TutorialShopButtonPressedResponsedMessage) => {
                     this.displayPressHereArrow({
-                        requireSetVisibility: false,
+                        requireShow: false,
                         originPosition: { x: position.x + 60, y: position.y + 60 },
                         targetPosition: { x: position.x + 40, y: position.y + 40 },
                     })
@@ -87,6 +82,7 @@ export class Stacy extends BaseSizer {
                 this.scene.events.emit(EventName.TutorialOpenShop)
                 // thus, show an animated arrow pointing to the shop button
                 // get position of the shop button
+                this.hide()
                 return
             }     
             default: {
@@ -103,9 +99,17 @@ export class Stacy extends BaseSizer {
         })
     }
 
-    private displayPressHereArrow({ originPosition, targetPosition, rotation = -45, requireSetVisibility = true }: DisplayPressHereArrowParams) {
-        if (requireSetVisibility) {
-            this.pressHereArrow?.setVisible(true)
+    public show() {
+        this.setVisible(true).setActive(true)
+    }
+
+    public hide() {
+        this.setVisible(false).setActive(false)
+    }
+
+    private displayPressHereArrow({ originPosition, targetPosition, rotation = -45, requireShow = true }: DisplayPressHereArrowParams) {
+        if (requireShow) {
+            this.show()
         }
         // remove the previous tween
         if (!this.pressHereArrow) {
@@ -226,7 +230,7 @@ export class Stacy extends BaseSizer {
 
 export interface DisplayPressHereArrowParams {
     // set visibility
-    requireSetVisibility?: boolean
+    requireShow?: boolean
     // the position of the arrow
     targetPosition: Position
     // the origin position of the arrow

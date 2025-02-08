@@ -8,6 +8,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { SingletonHookProvider } from "@/modules/singleton-hook"
 import {
     useApiAuthenticationSwrMutation,
+    useApiBuySeedsSwrMutation,
     useApiUpdateTutorialSwrMutation,
     useCreatePinForm,
     UseEffects,
@@ -40,9 +41,12 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             //swr mutations
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
+                            API_BUY_SEEDS_SWR_MUTATION: useApiBuySeedsSwrMutation(),
+
                             QUERY_USER_SWR: useQueryUserSwr(),
                             QUERY_STATIC_SWR: useQueryStaticSwr(),
                             QUERY_INVENTORIES_SWR: useQueryInventoriesSwr(),
+
 
                             //io
                             GAMEPLAY_IO: useGameplayIo()
