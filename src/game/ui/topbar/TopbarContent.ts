@@ -164,6 +164,7 @@ export class TopbarContent extends SceneAbstract {
                 icon: 50,
                 bottom: 6,
             },
+            adjustTextFontSize: true
         })
         return label
     }
