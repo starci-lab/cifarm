@@ -48,7 +48,7 @@ export class TopbarContent extends SceneAbstract {
                 scene: this.scene,
                 x: 0,
                 y: 0,
-                text: this.userData?.username ?? "NAME",
+                text: this.user?.username ?? "NAME",
             },
             options: {
                 fontSize: 32,
@@ -63,7 +63,7 @@ export class TopbarContent extends SceneAbstract {
                 scene: this.scene,
                 x: -15,
                 y: -10,
-                text: this.userData?.level?.toString() ?? "18",
+                text: this.user?.level?.toString() ?? "18",
             },
             options: {
                 fontSize: 24,
@@ -115,23 +115,25 @@ export class TopbarContent extends SceneAbstract {
     private createRightContainer() {
         this.energyLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconEnergy,
-            amount: `${this.user.energy}/50`,
+            amount: `${this.user.energy}/${this.computeExperiencesQuota(this.user.level)}`,
         })
         this.goldLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconCoin,
-            amount: `${this.user.golds}`,
+            amount: `${this.user.golds ?? 0}`,
         })
         this.tokenLabel = this.addLabel({
             iconKey: BaseAssetKey.TopbarIconCarrot,
-            amount: "100",
+            amount: `${this.user.tokens ?? 0}`,
         })
         this.rightContainer = this.scene.rexUI.add.sizer({
-            orientation: 1,
+            x: this.leftX + 750,
+            y: this.topY + 80,
+            orientation: "horizontal",
         })
             .add(this.energyLabel)
             .add(this.goldLabel)
             .add(this.tokenLabel)
-            .setItemSpacing(30).layout()
+            .setItemSpacing(50).layout()
     }
 
     private addLabel({ iconKey, amount }: AddLabelParams) {
@@ -142,8 +144,8 @@ export class TopbarContent extends SceneAbstract {
         const amountText = new BaseText({
             baseParams: {
                 scene: this.scene,
-                x: 0,
-                y: 0,
+                x: 20,
+                y: -10,
                 text: amount.toString(),
             },
             options: {
@@ -156,16 +158,17 @@ export class TopbarContent extends SceneAbstract {
             background,
             icon: iconContainer,
             text: amountText,
+            width: 150,
+            height: 50,
             space: {
-                icon: 10,
-                left: 10,
-                right: 10,
+                icon: 50,
+                bottom: 6,
             },
         })
         return label
     }
 
-    private computeExperiencesQuota(level: number): number {
+    private computeExperiencesQuota(level: number = 1): number {
         return 50 * level + 25 * Math.pow(level - 1, 2)
     }
 }
