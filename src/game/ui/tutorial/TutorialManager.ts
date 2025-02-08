@@ -12,6 +12,7 @@ import { UserEntity } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
+import { calculateDepth, layerMap, SceneLayer } from "@/game/layers"
 
 export class TutorialManager extends Phaser.GameObjects.Group {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
@@ -20,7 +21,6 @@ export class TutorialManager extends Phaser.GameObjects.Group {
 
     constructor({ scene, children, config }: GroupBaseConstructorParams) {
         super(scene, children, config)
-        this.setDepth(1000)
 
         // get the user from the cache
         this.user = this.scene.cache.obj.get(CacheKey.User)
@@ -51,12 +51,15 @@ export class TutorialManager extends Phaser.GameObjects.Group {
                 this.onClose(message)
             }
         )
-        // create Stacy
+        // create Stacy, we use depth+1 to make sure it is above the tutorial
         this.stacy = new Stacy({
             scene: this.scene,
-        }).setDepth(1001)
+        })
         this.scene.add.existing(this.stacy)
-
+        this.stacy.setDepth(calculateDepth({
+            layer: SceneLayer.Tutorial,
+            additionalDepth: 1,
+        }))
         this.start()
     }
 

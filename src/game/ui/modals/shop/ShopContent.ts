@@ -36,6 +36,7 @@ import {
 import { ModalName } from "../ModalManager"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { BuySeedsRequest } from "@/modules/axios"
+import { calculateDepth, SceneLayer } from "@/game/layers"
 
 // own depth for the shop content
 export const HIGHLIGHT_DEPTH = 2
@@ -105,7 +106,10 @@ export class ShopContent extends BaseSizer {
             }
             this.isTutorialBuySeed = true
 
-            this.defaultItemCard.setDepth(HIGHLIGHT_DEPTH)
+            this.defaultItemCard.setDepth(calculateDepth({
+                layer: SceneLayer.Tutorial,
+                layerDepth: 1,
+            }))
 
             // disable the default scroller
             this.disableDefaultScroller()
@@ -297,7 +301,9 @@ export class ShopContent extends BaseSizer {
                         // send request to buy seeds
                         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
                         if (this.isTutorialBuySeed) {
-                            this.defaultItemCard?.setDepth(1)
+                            this.defaultItemCard?.setDepth(calculateDepth({
+                                layer: SceneLayer.Modal,
+                            }))
                             this.scene.events.emit(EventName.TutorialCloseShop)
                         }
                     },

@@ -1,5 +1,5 @@
 import { API_BUY_SEEDS_SWR_MUTATION } from "@/app/constants"
-import { useApiBuySeedsSwrMutation, useApiUpdateTutorialSwrMutation } from "@/hooks"
+import { useApiBuySeedsSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EventBus, EventName } from "../event-bus"

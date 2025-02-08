@@ -19,8 +19,8 @@ export enum ModalName {
 }
 
 export class ModalManager extends Phaser.GameObjects.Group {
+    // the backdrop
     private backdrop: Phaser.GameObjects.Rectangle | undefined
-
     // the shop modal
     private shopModal: ShopModal | undefined
     // inventory modal
@@ -46,7 +46,7 @@ export class ModalManager extends Phaser.GameObjects.Group {
                 height,
                 BLACK_COLOR,
                 0.5
-            ).setDepth(0)
+            )
             .setInteractive()
         this.add(this.backdrop)
 

@@ -4,21 +4,25 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
 import { BaseText, NinePatch3x3, TextColor } from "../elements"
 import { sleep } from "@/modules/common"
-import { CacheKey, GroupBaseConstructorParams } from "../../types"
-import { EventBus, EventName, TutorialOpenShopResponsedMessage, TutorialShopButtonPressedResponsedMessage } from "../../event-bus"
+import { CacheKey, ContainerBaseConstructorParams } from "../../types"
+import {
+    EventBus,
+    EventName,
+    TutorialOpenShopResponsedMessage,
+    TutorialShopButtonPressedResponsedMessage,
+} from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
+import { calculateDepth, SceneLayer } from "@/game/layers"
 
 export class Stacy extends Phaser.GameObjects.Group {
-    private stacyImage: Phaser.GameObjects.Image | undefined
-    private stacyBubble: Label | undefined
-    private pressToContinueText: Phaser.GameObjects.Text | undefined
+    private stacyImage: Phaser.GameObjects.Image
+    private stacyBubble: Label
+    private pressToContinueText: Phaser.GameObjects.Text
     private user: UserEntity
-    private pressHereArrow: Phaser.GameObjects.Image | undefined
+    private pressHereArrow: Phaser.GameObjects.Image
 
-    constructor({
-        scene, children, config
-    }: GroupBaseConstructorParams) {
-        super(scene, children, config)
+    constructor({ scene }: ContainerBaseConstructorParams) {
+        super(scene)
 
         this.pressToContinueText = new BaseText({
             baseParams: {
@@ -30,15 +34,93 @@ export class Stacy extends Phaser.GameObjects.Group {
         })
             .setOrigin(0.5, 1)
             .setVisible(false)
-            .setDepth(101)
+            .setDepth(
+                calculateDepth({
+                    layer: SceneLayer.Tutorial,
+                    additionalDepth: 1,
+                })
+            )
         this.scene.add.existing(this.pressToContinueText)
-        this.add(this.pressToContinueText)
 
         // press here arrow
-        this.pressHereArrow = this.scene.add.image(0, 0,
-            BaseAssetKey.PressHereArrow
-        )
-            .setOrigin(0.5, 0).setVisible(false)
+        this.pressHereArrow = this.scene.add
+            .image(0, 0, BaseAssetKey.PressHereArrow)
+            .setOrigin(0.5, 0)
+            .setVisible(false)
+            .setDepth(
+                calculateDepth({
+                    layer: SceneLayer.Tutorial,
+                    layerDepth: 1,
+                })
+            )
+
+        // stacy image
+        this.stacyImage = this.scene.add
+            .image(
+                getScreenCenterX(this.scene),
+                getScreenBottomY(this.scene) - 50,
+                ""
+            )
+            .setOrigin(0.5, 1)
+        this.add(this.stacyImage)
+
+        // add nine patch
+        const bubbleNinePatch = new NinePatch3x3({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                assetKey: BaseAssetKey.Bubble,
+                bottomHeight: 80,
+                leftWidth: 80,
+                rightWidth: 80,
+                topHeight: 80,
+            },
+        })
+        this.scene.add.existing(bubbleNinePatch)
+        const text = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                text: "",
+                x: 0,
+                y: 0,
+                style: {
+                    wordWrap: { width: 800 },
+                },
+            },
+            options: {
+                textColor: TextColor.Brown,
+                fontSize: 48,
+            },
+        })
+        // add the text
+        this.scene.add.existing(text)
+        this.stacyBubble = this.scene.rexUI.add
+            .label({
+                background: bubbleNinePatch,
+                text,
+                x: getScreenCenterX(this.scene),
+                y: getScreenTopY(this.scene) + 200,
+                originX: 0.5,
+                originY: 0,
+            })
+            .setInnerPadding({
+                bottom: 80,
+                left: 80,
+                right: 80,
+                top: 80,
+            })
+            .setMinHeight(500)
+            .setMinWidth(500)
+            .layout()
+        //require set depth since sizer cannot set depth during the group set depth
+            .setDepth(
+                calculateDepth({
+                    layer: SceneLayer.Tutorial,
+                    additionalDepth: 1,
+                })
+            )
+        this.add(this.stacyBubble)
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.hide()
@@ -49,6 +131,8 @@ export class Stacy extends Phaser.GameObjects.Group {
         this.pressToContinueText?.setVisible(true)
         //click anywhere to continue
         this.scene.input.once("pointerdown", () => {
+            // hide the press to continue text
+            this.pressToContinueText?.setVisible(false)
             EventBus.once(EventName.UpdateTutorialCompleted, () => {
                 EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
                     // set the user
@@ -56,36 +140,41 @@ export class Stacy extends Phaser.GameObjects.Group {
                     // emit the event
                     // we perform switch case here to know what to do next
                     this.render()
-                }    
-                )
+                })
                 EventBus.emit(EventName.RefreshUser)
             })
 
             switch (this.user.tutorialStep) {
             case TutorialStep.StartBuySeeds: {
                 // turn off the stacy
-                this.scene.events.once(EventName.TutorialOpenShopResponsed, ({ position }: TutorialOpenShopResponsedMessage) => {
-                    this.displayPressHereArrow({
-                        originPosition: { x: position.x + 60, y: position.y + 60 },
-                        targetPosition: { x: position.x + 40, y: position.y + 40 },
-                    })
-                })
-                this.scene.events.once(EventName.TutorialShopButtonPressedResponsed, ({ position }: TutorialShopButtonPressedResponsedMessage) => {
-                    this.displayPressHereArrow({
-                        requireSetVisibility: false,
-                        originPosition: { x: position.x + 60, y: position.y + 60 },
-                        targetPosition: { x: position.x + 40, y: position.y + 40 },
-                    })
-                })
+                this.scene.events.once(
+                    EventName.TutorialOpenShopResponsed,
+                    ({ position }: TutorialOpenShopResponsedMessage) => {
+                        this.displayPressHereArrow({
+                            originPosition: { x: position.x + 60, y: position.y + 60 },
+                            targetPosition: { x: position.x + 40, y: position.y + 40 },
+                        })
+                    }
+                )
+                this.scene.events.once(
+                    EventName.TutorialShopButtonPressedResponsed,
+                    ({ position }: TutorialShopButtonPressedResponsedMessage) => {
+                        this.displayPressHereArrow({
+                            requireSetVisibility: false,
+                            originPosition: { x: position.x + 60, y: position.y + 60 },
+                            targetPosition: { x: position.x + 40, y: position.y + 40 },
+                        })
+                    }
+                )
                 this.scene.events.emit(EventName.TutorialOpenShop)
                 // thus, show an animated arrow pointing to the shop button
                 // get position of the shop button
                 this.hide()
                 return
-            }     
+            }
             default: {
                 break
-            }    
+            }
             }
             // check if whether this step is the last of the phase, we turn off the tutorial
             if (tutorialStepMap[this.user.tutorialStep].lastOfThisPhase) {
@@ -105,7 +194,12 @@ export class Stacy extends Phaser.GameObjects.Group {
         this.setVisible(false).setActive(false)
     }
 
-    private displayPressHereArrow({ originPosition, targetPosition, rotation = -45, requireSetVisibility = true }: DisplayPressHereArrowParams) {
+    private displayPressHereArrow({
+        originPosition,
+        targetPosition,
+        rotation = -45,
+        requireSetVisibility = true,
+    }: DisplayPressHereArrowParams) {
         if (requireSetVisibility) {
             this.pressHereArrow?.setVisible(true)
         }
@@ -113,7 +207,9 @@ export class Stacy extends Phaser.GameObjects.Group {
         if (!this.pressHereArrow) {
             throw new Error("Press here arrow not found")
         }
-        this.pressHereArrow.setPosition(originPosition.x, originPosition.y).setRotation(rotation)
+        this.pressHereArrow
+            .setPosition(originPosition.x, originPosition.y)
+            .setRotation(rotation)
         this.scene.tweens.killTweensOf(this.pressHereArrow)
         this.scene.tweens.add({
             targets: this.pressHereArrow,
@@ -126,9 +222,7 @@ export class Stacy extends Phaser.GameObjects.Group {
     }
 
     // disallow the player to press to continue
-    private disallowPressToContinue(
-        hidePressToContinueIfAllowed = false
-    ) {
+    private disallowPressToContinue(hidePressToContinueIfAllowed = false) {
         if (hidePressToContinueIfAllowed) {
             return
         }
@@ -140,68 +234,7 @@ export class Stacy extends Phaser.GameObjects.Group {
         this.disallowPressToContinue(true)
         // set continue to false
         const textureAssetKey = tutorialStepMap[this.user.tutorialStep].assetKey
-        if (!this.stacyImage) {
-            this.stacyImage = this.scene.add
-                .image(getScreenCenterX(this.scene), getScreenBottomY(this.scene) - 50, textureAssetKey)
-                .setOrigin(0.5, 1)
-            this.add(this.stacyImage)
-        } else {
-            this.stacyImage.setTexture(textureAssetKey)
-        }
-
-        if (!this.stacyBubble) {
-            // add nine patch
-            const bubbleNinePatch = new NinePatch3x3({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    assetKey: BaseAssetKey.Bubble,
-                    bottomHeight: 80,
-                    leftWidth: 80,
-                    rightWidth: 80,
-                    topHeight: 80,
-                },
-            })
-            this.scene.add.existing(bubbleNinePatch)
-            const text = new BaseText({
-                baseParams: {
-                    scene: this.scene,
-                    text: "",
-                    x: 0,
-                    y: 0,
-                    style: {
-                        wordWrap: { width: 800 },
-                    },
-                },
-                options: {
-                    textColor: TextColor.Brown,
-                    fontSize: 48,
-                },
-            })
-            // add the text
-            this.scene.add.existing(text)
-            this.stacyBubble = this.scene.rexUI.add
-                .label({
-                    background: bubbleNinePatch,
-                    text,
-                    x: getScreenCenterX(this.scene),
-                    y: getScreenTopY(this.scene) + 200,
-                    originX: 0.5,
-                    originY: 0,
-                })
-                .setInnerPadding({
-                    bottom: 80,
-                    left: 80,
-                    right: 80,
-                    top: 80,
-                })
-                .setMinHeight(500)
-                .setMinWidth(500)
-                .layout()
-            
-            this.add(this.stacyBubble)
-        } 
+        this.stacyImage.setTexture(textureAssetKey)
         this.playSetTextAnimation(tutorialStepMap[this.user.tutorialStep].message)
     }
 
@@ -225,12 +258,12 @@ export class Stacy extends Phaser.GameObjects.Group {
 }
 
 export interface DisplayPressHereArrowParams {
-    // set visibility
-    requireSetVisibility?: boolean
-    // the position of the arrow
-    targetPosition: Position
-    // the origin position of the arrow
-    originPosition: Position
-    // rotation of the arrow
-    rotation?: number
+  // set visibility
+  requireSetVisibility?: boolean;
+  // the position of the arrow
+  targetPosition: Position;
+  // the origin position of the arrow
+  originPosition: Position;
+  // rotation of the arrow
+  rotation?: number;
 }

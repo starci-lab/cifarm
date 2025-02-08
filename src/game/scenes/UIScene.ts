@@ -8,6 +8,7 @@ import {
     Topbar,
 } from "../ui"
 import { TutorialManager } from "../ui/tutorial"
+import { calculateDepth, SceneLayer } from "../layers"
 
 export class UIScene extends Scene {
     constructor() {
@@ -42,37 +43,18 @@ export class UIScene extends Scene {
             scene: this
         })
         this.add.existing(modalManager)
-
-        //add the tutorial manager
+        modalManager.setDepth(calculateDepth({
+            layer: SceneLayer.Modal,
+            layerDepth: 0,
+        }))
+        
+        // add the tutorial manager
         const tutorialManager = new TutorialManager({
             scene: this
         })
         this.add.existing(tutorialManager)
-
-
-        const modalLayer = this.add.layer()
-        modalLayer.add(modalManager).setDepth()
+        tutorialManager.setDepth(calculateDepth({
+            layer: SceneLayer.Tutorial,
+        }))
     }
-}
-
-export enum UISceneLayer {
-    Modal = "modal",
-    Tutorial = "tutorial",
-    Overlay = "overlay",
-}
-
-export interface UISceneLayerData {
-    depth?: number
-}
-
-export const uiMap: Record<UISceneLayer, UISceneLayerData> = {
-    [UISceneLayer.Modal]: {
-        depth: 1000
-    },
-    [UISceneLayer.Tutorial]: {
-        depth: 2000
-    },
-    [UISceneLayer.Overlay]: {
-        depth: 3000
-    },
 }
