@@ -11,7 +11,7 @@ import {
     buildingAssetMap,
     cropAssetMap,
 } from "../../../assets"
-import { adjustTextMinLength } from "../../utils"
+import { adjustTextMinLength, getScreenBottomY, getScreenCenterX } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import { AnimalEntity, BuildingEntity, CropEntity, PlacedItemType } from "@/modules/entities"
@@ -19,13 +19,13 @@ import { onGameObjectClick } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
 import { EventBus, EventName, PlacedInprogressMessage, TutorialOpenShopResponsedMessage } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
-import { UISizer } from "../../UISizer"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 // own depth for the shop content
 export const HIGHLIGHT_DEPTH = 2
 export const BASE_DEPTH = 0
 
-export class ShopContent extends UISizer {
+export class ShopContent extends BaseSizer {
     // list of items
     private scrollablePanelMap: Partial<Record<ShopTab, ScrollablePanel>> = {}
 
@@ -37,8 +37,8 @@ export class ShopContent extends UISizer {
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
 
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({ scene, height, width, x, y, config }: SizerBaseConstructorParams) {
+        super(scene, height, width, x, y, config)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -130,8 +130,8 @@ export class ShopContent extends UISizer {
         // create the scrollable panel
         const scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                x: this.centerX,
-                y: this.screenBottomY - 250,
+                x: getScreenCenterX(this.scene),
+                y: getScreenBottomY(this.scene) - 250,
                 originY: 1,
                 width: 1000,
                 height: 1000,
@@ -150,7 +150,6 @@ export class ShopContent extends UISizer {
             .layout()
         // add the scrollable panel to the map and the sizer
         this.add(scrollablePanel)
-        console.log(scrollablePanel.getCenter())
         this.scrollablePanelMap[shopTab] = scrollablePanel
         // hide the scrollable panel if it is not the default shop tab
         if (shopTab !== this.selectedShopTab) {

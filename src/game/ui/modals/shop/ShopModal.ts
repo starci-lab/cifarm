@@ -3,22 +3,23 @@ import { ShopBackground } from "./ShopBackground"
 import { ShopHeader } from "./ShopHeader"
 import { ShopTabs } from "./ShopTabs"
 import { SizerBaseConstructorParams } from "@/game/types"
-import { ScreenUISizer } from "../../UISizer"
+import { getScreenBottomY, getScreenCenterX, getScreenCenterY } from "../../utils"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 // shop modal extends BaseSizer
-export class ShopModal extends ScreenUISizer {
+export class ShopModal extends BaseSizer {
     private shopContent: ShopContent
     private shopHeader: ShopHeader
     private shopTabs: ShopTabs
     private shopBackground: Phaser.GameObjects.Container | undefined
 
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config)
 
         this.shopBackground = new ShopBackground({
             scene: this.scene,
-            x: this.x,
-            y: this.screenBottomY,
+            x: getScreenCenterX(this.scene),
+            y: getScreenBottomY(this.scene),
         })
         this.scene.add.existing(this.shopBackground)
         this.add(this.shopBackground)
@@ -26,25 +27,27 @@ export class ShopModal extends ScreenUISizer {
         //create the shop content
         this.shopContent = new ShopContent({
             scene: this.scene,
-            x: this.x,
-            y: this.y - 300,
         })
+        this.scene.add.existing(this.shopContent)
+        this.add(this.shopContent)
 
         // create the shop tabs
         this.shopTabs = new ShopTabs({
             scene: this.scene,
-            x: 30,
-            y: this.y - 600,
+            x: getScreenCenterX(this.scene) - 30,
+            y: getScreenCenterX(this.scene) - 600,
         })
         this.scene.add.existing(this.shopTabs)
         this.add(this.shopTabs)
         // create the shop header
         this.shopHeader = new ShopHeader({
             scene: this.scene,
-            x: this.x,
-            y: this.y - 500,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene) - 500,
         })
         this.scene.add.existing(this.shopHeader)
         this.add(this.shopHeader)
+
+        this.setDirty(false)
     }
 }
