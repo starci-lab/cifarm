@@ -2,6 +2,7 @@ import { SceneAbstract } from "@/game/SceneAbstract"
 import { Scene } from "phaser"
 import { TopbarBackground } from "./TopbarBackground"
 import { TopbarContent } from "./TopbarContent"
+import { getScreenCenterX, getScreenTopY } from "../utils"
 
 export class Topbar extends SceneAbstract {
     private topbarBackground: TopbarBackground
@@ -13,8 +14,8 @@ export class Topbar extends SceneAbstract {
         // create the toolbar background
         this.topbarBackground = new TopbarBackground({
             scene: this.scene,
-            x: this.centerX,
-            y: this.topY + 180,
+            x: getScreenCenterX(this.scene),
+            y: getScreenTopY(this.scene) + 180,
         })
         this.scene.add.existing(this.topbarBackground)
 

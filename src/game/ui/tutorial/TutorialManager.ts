@@ -10,6 +10,7 @@ import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
 import { SceneAbstract } from "@/game/SceneAbstract"
 import { Scene } from "phaser"
+import { getScreenCenterX, getScreenCenterY } from "../utils"
 
 export class TutorialManager extends SceneAbstract {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
@@ -25,7 +26,7 @@ export class TutorialManager extends SceneAbstract {
         // get the width and height of the game
         const { width, height } = this.scene.game.scale
         this.backdrop = this.scene.add
-            .rectangle(this.centerX, this.centerY, width, height, BLACK_COLOR, 0.5)
+            .rectangle(getScreenCenterX(this.scene), getScreenCenterY(this.scene), width, height, BLACK_COLOR, 0.5)
             .setInteractive().setDepth(1)
 
         this.scene.events.on(
@@ -70,7 +71,7 @@ export class TutorialManager extends SceneAbstract {
         }
         this.backdrop.setActive(true).setVisible(true)
 
-        this.stacy.show()
+        // this.stacy.show()
         this.stacy.render(tutorialStep)
     }
 
@@ -80,7 +81,7 @@ export class TutorialManager extends SceneAbstract {
             throw new Error("Backdrop not found")
         }
         this.backdrop.setActive(false).setVisible(false)
-        this.stacy.hide()
+        // this.stacy.hide()
     }
 }
 

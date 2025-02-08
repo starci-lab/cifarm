@@ -1,23 +1,23 @@
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { SizerBaseConstructorParams } from "../../../types"
-import { ScreenUISizer } from "../../UISizer"
 import { StandBackground } from "./StandBackground"
 import { StandContent } from "./StandContent"
 import { StandHeader } from "./StandHeader"
+import { getScreenBottomY, getScreenTopY } from "../../utils"
 
-export class StandModal extends ScreenUISizer {
+export class StandModal extends BaseSizer {
     private standBackground: StandBackground
     private standContent: StandContent
     private standHeader: StandHeader
 
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config)
 
-        const { width, height } = this.scene.game.scale
         // create the stand background
         this.standBackground = new StandBackground({
             scene: this.scene,
             x: this.x,
-            y: this.screenBottomY
+            y: getScreenBottomY(this.scene),
         })
         this.scene.add.existing(this.standBackground)
         this.add(this.standBackground)
@@ -26,7 +26,7 @@ export class StandModal extends ScreenUISizer {
         this.standHeader = new StandHeader({
             scene: this.scene,
             x: this.x,
-            y: this.screenTopY
+            y: getScreenTopY(this.scene),
         })
         this.scene.add.existing(this.standHeader)
         this.add(this.standHeader)

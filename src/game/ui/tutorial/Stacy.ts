@@ -6,24 +6,32 @@ import { BaseText, NinePatch3x3, TextColor } from "../elements"
 import { sleep } from "@/modules/common"
 import { CacheKey, SizerBaseConstructorParams } from "../../types"
 import { EventBus, EventName, TutorialOpenShopResponsedMessage, TutorialShopButtonPressedResponsedMessage } from "../../event-bus"
-import { ScreenUISizer } from "../UISizer"
+import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
-export class Stacy extends ScreenUISizer {
+export class Stacy extends BaseSizer {
     private stacyImage: Phaser.GameObjects.Image | undefined
     private stacyBubble: Label | undefined
     private pressToContinueText: Phaser.GameObjects.Text | undefined
     private user: UserEntity
     private pressHereArrow: Phaser.GameObjects.Image | undefined
 
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({
+        scene,
+        config,
+        height,
+        width,
+        x,
+        y
+    }: SizerBaseConstructorParams) {
+        super(scene, height, width, x, y, config)
 
         this.pressToContinueText = new BaseText({
             baseParams: {
                 scene: this.scene,
                 text: "Press to continue",
-                x: this.screenCenterX,
-                y: this.screenBottomY - 50,
+                x: getScreenCenterX(this.scene),
+                y: getScreenBottomY(this.scene) - 50,
             },
         })
             .setOrigin(0.5, 1)
@@ -132,7 +140,7 @@ export class Stacy extends ScreenUISizer {
         const textureAssetKey = tutorialStepMap[step].assetKey
         if (!this.stacyImage) {
             this.stacyImage = this.scene.add
-                .image(this.screenCenterX, this.screenBottomY - 50, textureAssetKey)
+                .image(getScreenCenterX(this.scene), getScreenBottomY(this.scene) - 50, textureAssetKey)
                 .setDepth(1)
                 .setOrigin(0.5, 1)
             this.add(this.stacyImage)
@@ -176,8 +184,8 @@ export class Stacy extends ScreenUISizer {
                 .label({
                     background: bubbleNinePatch,
                     text,
-                    x: this.screenCenterX,
-                    y: this.screenTopY + 200,
+                    x: getScreenCenterX(this.scene),
+                    y: getScreenTopY(this.scene) + 200,
                     originX: 0.5,
                     originY: 0,
                 })

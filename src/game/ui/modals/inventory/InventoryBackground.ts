@@ -9,9 +9,6 @@ export class InventoryBackground extends Phaser.GameObjects.Container {
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
 
-        // get the width and height of the game
-        const { width, height } = this.scene.game.scale
-
         this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalInventoryWall).setOrigin(0.5, 1)
         // const content = new InventoryContent({
         //     scene: this.scene,

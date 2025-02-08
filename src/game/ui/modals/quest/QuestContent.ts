@@ -1,12 +1,12 @@
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { BaseAssetKey } from "../../../assets"
-import { SizerBaseConstructorParams } from "../../../types"
-import { UISizer } from "../../UISizer"
-import { BaseText } from "../../elements"
 import { ProgressBar } from "../../../containers"
+import { SizerBaseConstructorParams } from "../../../types"
+import { BaseText } from "../../elements"
 
-export class QuestContent extends UISizer {
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+export class QuestContent extends BaseSizer {
+    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config)
 
         // create the quest background
         this.createInviteUserItemCard()

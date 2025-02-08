@@ -1,15 +1,15 @@
 import { SizerBaseConstructorParams } from "@/game/types"
-import { UISizer } from "../../UISizer"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { QuestBackground } from "./QuestBackground"
 import { QuestContent } from "./QuestContent"
 
-export class QuestModal extends UISizer {
+export class QuestModal extends BaseSizer {
     private questBackground: QuestBackground
     private questContent: QuestContent
     private closeButton: Phaser.GameObjects.Sprite | undefined
     
-    constructor(baseParams: SizerBaseConstructorParams) {
-        super(baseParams)
+    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config)
 
         // create the quest background
         this.questBackground = new QuestBackground({
