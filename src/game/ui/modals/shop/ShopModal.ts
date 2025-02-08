@@ -3,7 +3,7 @@ import { ShopBackground } from "./ShopBackground"
 import { ShopHeader } from "./ShopHeader"
 import { ShopTabs } from "./ShopTabs"
 import { SizerBaseConstructorParams } from "@/game/types"
-import { getScreenBottomY, getScreenCenterX, getScreenCenterY } from "../../utils"
+import { getScreenBottomY, getScreenCenterX, getScreenCenterY, getScreenLeftX } from "../../utils"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 // shop modal extends BaseSizer
@@ -34,8 +34,8 @@ export class ShopModal extends BaseSizer {
         // create the shop tabs
         this.shopTabs = new ShopTabs({
             scene: this.scene,
-            x: getScreenCenterX(this.scene) - 30,
-            y: getScreenCenterX(this.scene) - 600,
+            x: getScreenLeftX(this.scene) - 30,
+            y: getScreenCenterY(this.scene) - 600,
         })
         this.scene.add.existing(this.shopTabs)
         this.add(this.shopTabs)

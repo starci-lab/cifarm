@@ -18,7 +18,7 @@ export class InventoryModal extends BaseSizer {
         // create the inventory background
         this.inventoryBackground = new InventoryBackground({
             scene: this.scene,
-            x: this.x,
+            x: getScreenCenterX(this.scene),
             y: getScreenBottomY(this.scene),
         })
         this.scene.add.existing(this.inventoryBackground)
@@ -27,8 +27,8 @@ export class InventoryModal extends BaseSizer {
         // // create the header
         this.inventoryHeader = new InventoryHeader({
             scene: this.scene,
-            x: this.x,
-            y: this.y - 400,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene) - 400,
         })
         this.scene.add.existing(this.inventoryHeader)
         this.add(this.inventoryHeader)
@@ -37,7 +37,7 @@ export class InventoryModal extends BaseSizer {
         this.inventoryTabs = new InventoryTabs({
             scene: this.scene,
             x: getScreenLeftX(this.scene) + 220,
-            y: this.y - 210,
+            y: getScreenCenterY(this.scene) - 210,
         })
         this.scene.add.existing(this.inventoryTabs)
         this.add(this.inventoryTabs)
