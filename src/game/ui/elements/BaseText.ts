@@ -42,7 +42,7 @@ export class BaseText extends Phaser.GameObjects.Text {
             strokeColor = StrokeColor.Black,
             strokeThickness = 3,
             enableWordWrap,
-            wordWrapWidth = 200
+            wordWrapWidth = 200,
         } = { ...options }
         super(scene, x, y, text, {
             fontSize: `${fontSize ?? 32}px`,

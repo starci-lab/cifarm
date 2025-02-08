@@ -1,6 +1,7 @@
 import {
-    OverlapSizer,
+    Label,
     ScrollablePanel,
+    Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { ShopTab } from "./types"
 import {
@@ -16,9 +17,13 @@ import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import { AnimalEntity, BuildingEntity, CropEntity, PlacedItemType } from "@/modules/entities"
 import { onGameObjectClick } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
-import { EventBus, EventName, PlacedInprogressMessage } from "../../../event-bus"
+import { EventBus, EventName, PlacedInprogressMessage, TutorialOpenShopResponsedMessage } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
 import { UISizer } from "../../UISizer"
+
+// own depth for the shop content
+export const HIGHLIGHT_DEPTH = 2
+export const BASE_DEPTH = 0
 
 export class ShopContent extends UISizer {
     // list of items
@@ -52,9 +57,42 @@ export class ShopContent extends UISizer {
             this.createScrollablePanel(shopTab)
         }
 
+        //this.layout()
+
         // listen for the select shop tab event
         this.scene.events.on(EventName.SelectShopTab, (shopTab: ShopTab) => {
             this.onShopTabSelected(shopTab)
+        })
+
+        this.scene.events.on(EventName.TutorialShopButtonPressed, () => {
+            //check if current tab is not the default tab
+            if (this.selectedShopTab !== defaultShopTab) {
+                throw new Error("Selected tab is not the default tab")
+            }
+            // get the first item card
+            const scrollablePanel = this.scrollablePanelMap[this.selectedShopTab]
+            if (!scrollablePanel) {
+                throw new Error("Panel map is not found")
+            }
+            const panel = scrollablePanel.getElement("panel") as Sizer
+            if (!panel) {
+                throw new Error("Panel is not found")
+            }
+            const itemCard = panel.getChildren()[0] as Sizer
+            if (!itemCard) {
+                throw new Error("Item card is not found")
+            }
+            //set depth to 3
+            itemCard.setDepth(HIGHLIGHT_DEPTH)
+
+            // get the click button
+            const button = itemCard.getChildren()[3] as Label
+
+            const eventMessage: TutorialOpenShopResponsedMessage = {
+                position: button.getCenter(),
+            }
+            this.scene.events.emit(EventName.TutorialShopButtonPressedResponsed, eventMessage)
+
         })
     }
 
@@ -92,7 +130,7 @@ export class ShopContent extends UISizer {
         // create the scrollable panel
         const scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                x: this.screenCenterX,
+                x: this.centerX,
                 y: this.screenBottomY - 250,
                 originY: 1,
                 width: 1000,
@@ -109,9 +147,10 @@ export class ShopContent extends UISizer {
                     speed: 2,
                 },
             })
-            .layout()  
+            .layout()
         // add the scrollable panel to the map and the sizer
         this.add(scrollablePanel)
+        console.log(scrollablePanel.getCenter())
         this.scrollablePanelMap[shopTab] = scrollablePanel
         // hide the scrollable panel if it is not the default shop tab
         if (shopTab !== this.selectedShopTab) {
@@ -122,7 +161,7 @@ export class ShopContent extends UISizer {
     //create item cards based on the shop tab
     private createItemCards(shopTab: ShopTab = defaultShopTab) {
     //list of item cards
-        const itemCards: Array<OverlapSizer> = []
+        const itemCards: Array<Sizer> = []
         switch (shopTab) {
         case ShopTab.Seeds: {
             for (const { id, price } of this.crops) {
@@ -340,9 +379,8 @@ export class ShopContent extends UISizer {
                 background: buttonPriceImage,
                 text: priceText,
                 align: "center",
-            })
+            }).layout()
             .setInteractive()
-
         // handle on click event
         if (onClick) {
             button.on("pointerdown", () => {
@@ -356,7 +394,7 @@ export class ShopContent extends UISizer {
 
         //create the item card sizer
         return this.scene.rexUI.add
-            .overlapSizer({
+            .sizer({
                 width: shopItemCardImage.width,
                 height: shopItemCardImage.height,
             })
@@ -377,6 +415,7 @@ export class ShopContent extends UISizer {
                         expand: false,
                     })
             )
+            .addSpace()
             .add(button, {
                 align: "right-bottom",
                 expand: false,

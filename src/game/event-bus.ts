@@ -1,4 +1,4 @@
-import { TutorialStep } from "@/modules/entities"
+import { BuildingId, PlacedItemType, TutorialStep } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -61,6 +61,16 @@ export enum EventName {
     // tool selected
     SelectTool = "select_tool",
     SelectNeighborsTab = "select_neighbors_tab",
+
+    // tutorial events
+    TutorialOpenShop = "tutorial_open_shop",
+    TutorialOpenShopResponsed = "tutorial_open_shop_responsed",
+    TutorialShopButtonPressed = "tutorial_shop_button_pressed",
+    TutorialShopButtonPressedResponsed = "tutorial_shop_button_pressed_responsed",
+
+    // api events
+    RequestUpdateTutorial = "request_update_tutorial",
+    UpdateTutorialCompleted = "update_tutorial_completed",
 }
 
 export interface OpenTutorialMessage {
@@ -71,4 +81,22 @@ export interface OpenTutorialMessage {
 export interface CloseTutorialMessage {
     // name of the tutorial to close
     tutorialStep: TutorialStep,
+} 
+
+export interface TutorialOpenShopResponsedMessage {
+    // position of the shop button
+    position: Position,
+}
+
+export type TutorialShopButtonPressedResponsedMessage = TutorialOpenShopResponsedMessage
+
+export interface Position {
+    x: number,
+    y: number,
+}
+
+export interface PlacedInprogressMessage {
+    // placed item
+    id: BuildingId,
+    type: PlacedItemType
 }
