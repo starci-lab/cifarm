@@ -1,4 +1,4 @@
-import { ShopTab } from "./types"
+import { ShopTab, tabs } from "./types"
 import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
 import { ContainerBaseConstructorParams } from "../../../types"
@@ -110,6 +110,14 @@ export class ShopTabs extends Phaser.GameObjects.Container {
             .setOrigin(0, 1)
         // add the icon tab off to the container
         tab.add(iconTabOff)
+
+        // Add icon
+        const icon = this.scene.add.image(0, 0, tabs[shopTab].iconKey)
+            .setOrigin(0, 1)
+            .setScale(tabs[shopTab].scale || 1)
+            .setX(tabs[shopTab].offSets?.x || 0)
+            .setY(tabs[shopTab].offSets?.y || 0)
+        tab.add(icon)
 
         // store the container to the container tab
         this.tabMap[shopTab] = tab

@@ -10,26 +10,56 @@ export enum ShopTab {
 }
 
 export interface ShopTabData {
-    iconKey: BaseAssetKey
+    iconKey: BaseAssetKey,
+    offSets?: {
+        x: number,
+        y: number,
+    },
+    scale?: number,
 }
 
 export const tabs: Record<ShopTab, ShopTabData> = {
     [ShopTab.Seeds]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.ModalShopIconSeed,
+        scale: 0.6,
+        offSets: {
+            x: 70,
+            y: -40,
+        }
     },
     [ShopTab.Animals]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.ModalShopIconAnimal,
+        offSets: {
+            x: 40,
+            y: -20,
+        }
     },
     [ShopTab.Buildings]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.ModalShopIconTree,
+        offSets: {
+            x: 80,
+            y: -40,
+        }
     },
     [ShopTab.Trees]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.ModalShopIconTree,
+        offSets: {
+            x: 80,
+            y: -40,
+        }
     },
     [ShopTab.Decorations]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.ModalShopIconTree,
+        offSets: {
+            x: 80,
+            y: -40,
+        }
     },
     [ShopTab.Others]: {
-        iconKey: BaseAssetKey.Grass,
+        iconKey: BaseAssetKey.ModalShopIconTree,
+        offSets: {
+            x: 80,
+            y: -40,
+        }
     },
 }

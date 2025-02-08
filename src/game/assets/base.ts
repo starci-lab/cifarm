@@ -34,6 +34,12 @@ export enum BaseAssetKey {
     ModalShopBottomDecorator = "modal-shop-bottom-decorator",
     ModalShopCardTitle = "modal-shop-card-title",
     ModalShopX = "modal-shop-x",
+    ModalShopIconSeed = "modal-shop-icon-seed",
+    ModalShopIconAnimal = "modal-shop-icon-animal",
+    ModalShopIconBuilding = "modal-shop-icon-building",
+    ModalShopIconTree = "modal-shop-icon-tree",
+    ModalShopIconDecoration = "modal-shop-icon-decoration",
+    ModalShopIconOther = "modal-shop-icon-other",
 
     // Inventory modal
     ModalInventoryTopRibbon = "modal-inventory-top-ribbon",
@@ -152,6 +158,12 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalShopIconTabOff]: "modals/shop/icon-tab-off.png",
     [BaseAssetKey.ModalShopCardTitle]: "modals/shop/card-title.png",
     [BaseAssetKey.ModalShopX]: "modals/shop/x.png",
+    [BaseAssetKey.ModalShopIconSeed]: "crops/carrot/seed.png",
+    [BaseAssetKey.ModalShopIconAnimal]: "animals/chicken/baby.png",
+    [BaseAssetKey.ModalShopIconBuilding]: "building/coop.png",
+    [BaseAssetKey.ModalShopIconTree]: "modals/shop/icon-tree.png",
+    [BaseAssetKey.ModalShopIconDecoration]: "modals/shop/icon-decoration.png",
+    [BaseAssetKey.ModalShopIconOther]: "modals/shop/icon-other.png",
 
     // Inventory Modals
     [BaseAssetKey.ModalInventoryTopRibbon]: "modals/inventory/top-ribbon.png",

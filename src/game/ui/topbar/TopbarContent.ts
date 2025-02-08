@@ -152,7 +152,7 @@ export class TopbarContent extends SceneAbstract {
                 text: amount.toString(),
             },
             options: {
-                fontSize: 12,
+                fontSize: 24,
                 textColor: TextColor.White,
             },
         })
@@ -168,9 +168,8 @@ export class TopbarContent extends SceneAbstract {
             space: {
                 icon: 30,
                 top: 2,
-                bottom: 2,
+                bottom: 10,
             },
-            adjustTextFontSize: true
         })
         return label
     }
