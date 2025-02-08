@@ -71,7 +71,7 @@ export class TutorialManager extends SceneAbstract {
         }
         this.backdrop.setActive(true).setVisible(true)
 
-        // this.stacy.show()
+        this.stacy.show()
         this.stacy.render(tutorialStep)
     }
 
@@ -81,7 +81,7 @@ export class TutorialManager extends SceneAbstract {
             throw new Error("Backdrop not found")
         }
         this.backdrop.setActive(false).setVisible(false)
-        // this.stacy.hide()
+        this.stacy.hide()
     }
 }
 
