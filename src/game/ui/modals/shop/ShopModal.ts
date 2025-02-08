@@ -27,10 +27,8 @@ export class ShopModal extends ScreenUISizer {
         this.shopContent = new ShopContent({
             scene: this.scene,
             x: this.x,
-            y: this.y,
-        }).setDepth(1).layout()
-        this.scene.add.existing(this.shopContent)
-        this.add(this.shopContent)
+            y: this.y - 300,
+        })
 
         // create the shop tabs
         this.shopTabs = new ShopTabs({

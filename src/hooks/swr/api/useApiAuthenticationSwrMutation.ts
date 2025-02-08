@@ -6,10 +6,10 @@ import {
     requestMessage,
     saveTokens,
     verifySignature,
+    AxiosOptions
 } from "@/modules/axios"
 import { useAppSelector } from "@/redux"
 import { v4 } from "uuid"
-import { AxiosOptions } from "@/modules/axios/types"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 
 export type UseApiAuthenticationSwrMutationArgs = Partial<{

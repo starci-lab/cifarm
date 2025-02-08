@@ -4,18 +4,20 @@ import {
     OpenTutorialMessage,
 } from "../../event-bus"
 import { BLACK_COLOR } from "../../constants"
-import { CacheKey, ContainerBaseConstructorParams } from "../../types"
+import { CacheKey } from "../../types"
 import { UserEntity } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
+import { SceneAbstract } from "@/game/SceneAbstract"
+import { Scene } from "phaser"
 
-export class TutorialManager extends Phaser.GameObjects.Container {
+export class TutorialManager extends SceneAbstract {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
     private user: UserEntity
     private stacy: Stacy
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        super(scene, x, y)
+    constructor(scene: Scene) {
+        super(scene)
 
         // get the user from the cache
         this.user = this.scene.cache.obj.get(CacheKey.User)
@@ -23,9 +25,8 @@ export class TutorialManager extends Phaser.GameObjects.Container {
         // get the width and height of the game
         const { width, height } = this.scene.game.scale
         this.backdrop = this.scene.add
-            .rectangle(0, 0, width, height, BLACK_COLOR, 0.5)
-            .setInteractive()
-        this.add(this.backdrop)
+            .rectangle(this.centerX, this.centerY, width, height, BLACK_COLOR, 0.5)
+            .setInteractive().setDepth(1)
 
         this.scene.events.on(
             EventName.OpenTutorial,
@@ -40,12 +41,13 @@ export class TutorialManager extends Phaser.GameObjects.Container {
             }
         )
         // create Stacy
-        this.stacy = new Stacy(this.scene)
+        this.stacy = new Stacy({
+            scene: this.scene,
+            x: width / 2,
+            y: height / 2,
+        })
 
-        // close the modal manager by default
-        this.setActive(false).setVisible(false)
-
-        //this.start()
+        this.start()
     }
 
     //run on start
@@ -63,14 +65,22 @@ export class TutorialManager extends Phaser.GameObjects.Container {
 
     // open the tutorial
     private onOpen({ tutorialStep }: OnOpenParams) {
+        if (!this.backdrop) {
+            throw new Error("Backdrop not found")
+        }
+        this.backdrop.setActive(true).setVisible(true)
+
+        this.stacy.show()
         this.stacy.render(tutorialStep)
-        this.setActive(true).setVisible(true)
     }
 
     // close the tutorial
     private onClose({ tutorialStep }: OnCloseParams) {
-        console.log(tutorialStep)
-        this.setActive(false).setVisible(false)
+        if (!this.backdrop) {
+            throw new Error("Backdrop not found")
+        }
+        this.backdrop.setActive(false).setVisible(false)
+        this.stacy.hide()
     }
 }
 

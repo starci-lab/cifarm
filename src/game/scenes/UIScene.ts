@@ -46,11 +46,6 @@ export class UIScene extends Scene {
         this.add.existing(modalManager)
 
         // add the tutorial manager
-        const tutorialManager = new TutorialManager({
-            scene: this,
-            x: width / 2,
-            y: height / 2,
-        })
-        this.add.existing(tutorialManager)
+        new TutorialManager(this)
     }
 }

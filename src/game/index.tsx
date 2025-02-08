@@ -20,6 +20,7 @@ import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
 import { startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
 import { EventBus, EventName } from "./event-bus"
+import { useEffects } from "./hooks"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
@@ -105,6 +106,8 @@ export const Game: FC = () => {
         }
     }, [])
 
+    //useEffects
+    useEffects()
 
     return <div id={CONTAINER_ID} className="w-screen h-screen"></div>
 }
