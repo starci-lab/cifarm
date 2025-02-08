@@ -87,7 +87,7 @@ export class ShopContent extends BaseSizer {
 
             // get the click button
             const button = itemCard.getChildren()[3] as Label
-
+           
             const eventMessage: TutorialOpenShopResponsedMessage = {
                 position: button.getCenter(),
             }
