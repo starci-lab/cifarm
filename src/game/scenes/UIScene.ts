@@ -31,6 +31,7 @@ export class UIScene extends Scene {
         })
             .setPosition(width - 50, 200)
             .setOrigin(1, 0)
+            .layout()
         this.add.existing(rightHorizontalButtons)
 
         new Topbar(this)
@@ -45,9 +46,9 @@ export class UIScene extends Scene {
         this.add.existing(modalManager)
         
         // add the tutorial manager
-        const tutorialManager = new TutorialManager({
-            scene: this
-        })
-        this.add.existing(tutorialManager)
+        // const tutorialManager = new TutorialManager({
+        //     scene: this
+        // })
+        // this.add.existing(tutorialManager)
     }
 }
