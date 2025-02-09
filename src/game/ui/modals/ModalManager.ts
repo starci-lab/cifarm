@@ -190,17 +190,7 @@ export class ModalManager extends ContainerLite {
             this.input.enabled = false
         }
         // show the modal
-        modal.show()
-        // scale the modal to 1
-        modal.setScale(0)
-        // animate the modal
-        this.scene.tweens.add({
-            targets: modal,
-            scaleX: 1,
-            scaleY: 1,
-            duration: SCALE_TIME,
-            ease: "Back",
-        })
+        modal.show().popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
             if (this.input) {

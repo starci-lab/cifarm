@@ -17,7 +17,7 @@ import {
     getScreenCenterX,
 } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
-import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
+import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import {
     AnimalEntity,
     BuildingEntity,
@@ -39,16 +39,16 @@ import { BuySeedsRequest } from "@/modules/axios"
 import { calculateDepth, SceneLayer } from "../../../layers"
 import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
 import { getInventorySeed } from "../queries"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 // own depth for the shop content
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
 
 export const defaultSeedCropId = CropId.Carrot
 
-export class ShopContent extends ContainerLite {
+export class ShopContent extends BaseSizer {
     // list of items
     private scrollablePanelMap: Partial<Record<ShopTab, ScrollablePanel>> = {}
 
@@ -73,9 +73,9 @@ export class ShopContent extends ContainerLite {
         width,
         x,
         y,
-        children,
-    }: ContainerLiteBaseConstructorParams) {
-        super(scene, height, width, x, y, children)
+        config,
+    }: SizerBaseConstructorParams) {
+        super(scene, height, width, x, y, config)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -141,6 +141,8 @@ export class ShopContent extends ContainerLite {
                 EventName.TutorialPrepareBuySeeds,
                 eventMessage
             )
+
+            this.setDirty(false)
         })
 
         EventBus.on(EventName.BuySeedsCompleted, () => {
@@ -244,10 +246,10 @@ export class ShopContent extends ContainerLite {
                     focus: false,
                     speed: 2,
                 },
-            })
-            .layout()
+            })      
         // add the scrollable panel to the map and the sizer
         this.add(scrollablePanel)
+        scrollablePanel.layout()
         this.scrollablePanelMap[shopTab] = scrollablePanel
         // hide the scrollable panel if it is not the default shop tab
         if (shopTab !== this.selectedShopTab) {
