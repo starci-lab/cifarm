@@ -23,6 +23,7 @@ import {
     BuildingEntity,
     CropEntity,
     CropId,
+    InventoryEntity,
     PlacedItemType,
 } from "@/modules/entities"
 import { onGameObjectClick } from "../../utils"
@@ -37,11 +38,15 @@ import { ModalName } from "../ModalManager"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateDepth, SceneLayer } from "@/game/layers"
+import { CONTENT_DEPTH } from "./ShopModal"
+import { getInventorySeed } from "../queries"
 
 // own depth for the shop content
 export const HIGHLIGHT_DEPTH = 2
 export const BASE_DEPTH = 0
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
+
+export const defaultSeedCropId = CropId.Carrot
 
 export class ShopContent extends BaseSizer {
     // list of items
@@ -57,6 +62,7 @@ export class ShopContent extends BaseSizer {
     private defautSeedButtonPosition: Phaser.Math.Vector2 | undefined
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
+    private inventories: Array<InventoryEntity> = []
 
     //a flag to check if the tutorial is for buying seed
     private isTutorialBuySeed = false
@@ -85,6 +91,8 @@ export class ShopContent extends BaseSizer {
             (building) => building.availableInShop
         )
 
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
             this.createScrollablePanel(shopTab)
@@ -97,6 +105,7 @@ export class ShopContent extends BaseSizer {
         this.scene.events.on(EventName.SelectShopTab, (shopTab: ShopTab) => {
             this.onShopTabSelected(shopTab)
         })
+
         this.scene.events.once(EventName.TutorialShopButtonPressed, () => {
             if (!this.defautSeedButtonPosition) {
                 throw new Error("Default seed button position is not found")
@@ -104,6 +113,16 @@ export class ShopContent extends BaseSizer {
             if (!this.defaultItemCard) {
                 throw new Error("Default item card is not found")
             }
+            
+            if (getInventorySeed({
+                cropId: defaultSeedCropId,
+                scene: this.scene,
+                inventories: this.inventories,
+            })) {
+                this.scene.events.emit(EventName.TutorialCloseShop)
+                return
+            }
+
             this.isTutorialBuySeed = true
 
             this.defaultItemCard.setDepth(calculateDepth({
@@ -263,7 +282,9 @@ export class ShopContent extends BaseSizer {
             .layout()
 
         // set the position of the fly item
-        flyItem.setDepth(HIGHLIGHT_DEPTH).setPosition(pointer.x, pointer.y)
+        flyItem.setDepth(calculateDepth({
+            layer: SceneLayer.Overlay
+        })).setPosition(pointer.x, pointer.y)
         // Play the animation with fading effect before destruction
         this.scene.tweens.add({
             targets: flyItem,
@@ -301,10 +322,9 @@ export class ShopContent extends BaseSizer {
                         // send request to buy seeds
                         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
                         if (this.isTutorialBuySeed) {
-                            this.defaultItemCard?.setDepth(calculateDepth({
-                                layer: SceneLayer.Modal,
-                            }))
+                            this.defaultItemCard?.setDepth(CONTENT_DEPTH)
                             this.scene.events.emit(EventName.TutorialCloseShop)
+                            this.isTutorialBuySeed = false
                         }
                     },
                     price,

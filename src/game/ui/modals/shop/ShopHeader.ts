@@ -62,7 +62,7 @@ export class ShopHeader extends ContainerLite {
         this.addLocal(this.titleShop)
 
         // add the close button
-        this.closeButton = this.scene.add.image(getScreenRightX(this.scene)/2 - 50, 0, BaseAssetKey.ModalShopX).setOrigin(1, 0.5)
+        this.closeButton = this.scene.add.image(getScreenRightX(this.scene) - 50, 0, BaseAssetKey.ModalShopX).setOrigin(1, 0.5)
         // add the on click event
         this.closeButton.setInteractive().on("pointerdown", () => {
             onGameObjectClick({

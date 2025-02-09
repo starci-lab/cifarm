@@ -13,6 +13,7 @@ import {
 } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { calculateDepth, SceneLayer } from "../../layers"
 
 export class Stacy extends ContainerLite {
     private stacyImage: Phaser.GameObjects.Image
@@ -48,6 +49,9 @@ export class Stacy extends ContainerLite {
             .image(0, 0, BaseAssetKey.PressHereArrow)
             .setOrigin(0.5, 0)
             .setVisible(false)
+            .setDepth(calculateDepth({
+                layer: SceneLayer.Overlay,
+            }))
 
         // stacy image
         this.stacyImage = this.scene.add

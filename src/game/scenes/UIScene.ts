@@ -7,8 +7,7 @@ import {
     Toolbar,
     Topbar,
 } from "../ui"
-import { TutorialManager } from "../ui/tutorial"
-import { calculateDepth, SceneLayer } from "../layers"
+import { TutorialManager } from "../ui"
 
 export class UIScene extends Scene {
     constructor() {
@@ -32,7 +31,6 @@ export class UIScene extends Scene {
         })
             .setPosition(width - 50, 200)
             .setOrigin(1, 0)
-            .layout()
         this.add.existing(rightHorizontalButtons)
 
         new Topbar(this)
@@ -45,18 +43,11 @@ export class UIScene extends Scene {
             height
         })
         this.add.existing(modalManager)
-        // modalManager.setDepth(calculateDepth({
-        //     layer: SceneLayer.Modal,
-        //     layerDepth: 0,
-        // }))
         
         // add the tutorial manager
-        // const tutorialManager = new TutorialManager({
-        //     scene: this
-        // })
-        // this.add.existing(tutorialManager)
-        // tutorialManager.setDepth(calculateDepth({
-        //     layer: SceneLayer.Tutorial,
-        // }))
+        const tutorialManager = new TutorialManager({
+            scene: this
+        })
+        this.add.existing(tutorialManager)
     }
 }

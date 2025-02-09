@@ -11,6 +11,13 @@ import {
 } from "../../utils"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { calculateDepth, SceneLayer } from "../../../layers"
+
+export const CONTENT_DEPTH = calculateDepth({
+    layer: SceneLayer.Modal,
+    additionalDepth: 10,
+    layerDepth: 1,
+})
 
 // shop modal extends BaseSizer
 export class ShopModal extends BaseSizer {
@@ -40,7 +47,7 @@ export class ShopModal extends BaseSizer {
         //create the shop content
         this.shopContent = new ShopContent({
             scene: this.scene,
-        })
+        }).setDepth(CONTENT_DEPTH)
 
         this.scene.add.existing(this.shopContent)
         this.add(this.shopContent)

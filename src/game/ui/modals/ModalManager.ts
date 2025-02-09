@@ -9,6 +9,7 @@ import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { StandModal } from "./stand"
+import { calculateDepth, SceneLayer } from "@/game/layers"
 
 export enum ModalName {
   Shop = "shop",
@@ -47,16 +48,23 @@ export class ModalManager extends ContainerLite {
                 BLACK_COLOR,
                 0.5
             )
-            .setInteractive()
-        this.addLocal(this.backdrop)
+            .setInteractive().setDepth(calculateDepth({
+                layer: SceneLayer.Modal,
+            }))
+        this.add(this.backdrop)
 
         // create the shop modal
         this.shopModal = new ShopModal({
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).hide()
+        }).setDepth(calculateDepth({
+            layer: SceneLayer.Modal,
+            layerDepth: 1
+        })).hide()
+        this.scene.add.existing(this.shopModal)
 
+        // this.add(this.shopModal)
         // create the inventory modal
         this.inventoryModal = new InventoryModal({
             scene: this.scene,
@@ -64,21 +72,33 @@ export class ModalManager extends ContainerLite {
             y: getScreenCenterY(this.scene),
             width,
             height
-        }).hide()
+        }).setDepth(calculateDepth({
+            layer: SceneLayer.Modal,
+            layerDepth: 1
+        })).hide()
+        this.scene.add.existing(this.inventoryModal)
 
         // create the daily modal
         this.dailyModal = new DailyModal({
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).hide()
+        }).setDepth(calculateDepth({
+            layer: SceneLayer.Modal,
+            layerDepth: 1
+        })).hide()
+        this.scene.add.existing(this.dailyModal)
 
         // create the quest modal
         this.questModal = new QuestModal({
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).hide()
+        }).setDepth(calculateDepth({
+            layer: SceneLayer.Modal,
+            layerDepth: 1
+        })).hide()
+        this.scene.add.existing(this.questModal)
 
         // create the stand modal
         this.standModal = new StandModal({
@@ -87,13 +107,21 @@ export class ModalManager extends ContainerLite {
             y: getScreenCenterY(this.scene),
             width,
             height,
-        }).hide()
+        }).setDepth(calculateDepth({
+            layer: SceneLayer.Modal,
+            layerDepth: 1
+        })).hide()
+        this.scene.add.existing(this.standModal)
 
         this.neighborsModal = new NeighborsModal({
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).hide()
+        }).setDepth(calculateDepth({
+            layer: SceneLayer.Modal,
+            layerDepth: 1
+        })).hide()
+        this.scene.add.existing(this.neighborsModal)
 
         this.scene.events.on(EventName.OpenModal, (modalName: ModalName) => {
             this.onOpen(modalName)
@@ -106,6 +134,11 @@ export class ModalManager extends ContainerLite {
 
         // close the modal manager by default
         this.setActive(false).setVisible(false)
+
+        // set the depth
+        this.setDepth(calculateDepth({
+            layer: SceneLayer.Modal
+        }))
     }
 
     private getModal(name: ModalName) {
@@ -157,7 +190,7 @@ export class ModalManager extends ContainerLite {
             this.input.enabled = false
         }
         // show the modal
-        modal.show().setDepth(1).popUp(SCALE_TIME)
+        modal.show().popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
             if (this.input) {

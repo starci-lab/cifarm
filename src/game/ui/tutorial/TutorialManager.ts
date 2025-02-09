@@ -61,14 +61,17 @@ export class TutorialManager extends ContainerLite {
             scene: this.scene,
         })
         this.scene.add.existing(this.stacy)
-        this.add(this.stacy)
+
 
         this.stacy.setDepth(calculateDepth({
             layer: SceneLayer.Tutorial,
-            additionalDepth: 1,
+            layerDepth: 1,
         }))
-        console.log(this.stacy)
         this.start()
+
+        this.setDepth(calculateDepth({
+            layer: SceneLayer.Tutorial,
+        }))
     }
 
     //run on start
