@@ -49,6 +49,9 @@ export enum EventName {
     OpenTutorial = "open_tutorial",
     CloseTutorial = "close_tutorial",
 
+    // hide press here arrow
+    HidePressHereArrow = "hide_press_here_arrow",
+    
     // open inventory
     OpenInventory = "open_inventory",
     // change inventory tab
@@ -66,11 +69,15 @@ export enum EventName {
 
     // tutorial events
     TutorialOpenShop = "tutorial_open_shop",
+    TutorialOpenShopResponsed = "tutorial_open_shop_responsed",
     TutorialOpenShopPressed = "tutorial_open_shop_pressed",
     TutorialShopButtonPressed = "tutorial_shop_button_pressed",
     TutorialShopButtonPressedResponsed = "tutorial_shop_button_pressed_responsed",
-    TutorialCloseShop = "tutorial_close_shop",
-    TutorialCloseShopPressed = "tutorial_close_shop_pressed",
+    TutorialPrepareBuySeeds = "tutorial_prepare_buy_seeds",
+    TutorialPrepareBuySeedsResponsed = "tutorial_prepare_buy_seeds_responsed",
+    TutorialPrepareCloseShop = "tutorial_prepare_close_shop",
+    TutorialPrepareCloseShopResponsed = "tutorial_prepare_close_shop_responsed",
+    TutorialCloseShopButtonPressed = "tutorial_close_shop_button_pressed",
 
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
@@ -90,19 +97,20 @@ export interface CloseTutorialMessage {
     tutorialStep: TutorialStep,
 } 
 
-export interface TutorialOpenShopPressedMessage {
+export interface TutorialOpenShopResponsedMessage {
     // position of the shop button
     position: Position,
 }
 
-
-export interface TutorialCloseShopPressedMessage {
+export interface TutorialPrepareBuySeedsMessage {
     // position of the shop button
     position: Position,
 }
 
-
-export type TutorialShopButtonPressedResponsedMessage = TutorialOpenShopPressedMessage
+export interface TutorialPrepareCloseShopResponsedMessage {
+    // position of the shop button
+    position: Position,
+}
 
 export interface Position {
     x: number,

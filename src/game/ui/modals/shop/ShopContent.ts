@@ -17,7 +17,7 @@ import {
     getScreenCenterX,
 } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
-import { CacheKey, SizerBaseConstructorParams } from "../../../types"
+import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import {
     AnimalEntity,
     BuildingEntity,
@@ -32,21 +32,23 @@ import {
     EventBus,
     EventName,
     PlacedInprogressMessage,
-    TutorialOpenShopPressedMessage,
+    TutorialPrepareBuySeedsMessage,
 } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { BuySeedsRequest } from "@/modules/axios"
-import { calculateDepth, SceneLayer } from "@/game/layers"
+import { calculateDepth, SceneLayer } from "../../../layers"
 import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
 import { getInventorySeed } from "../queries"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { sleep } from "@/modules/common"
+import { SCALE_TIME } from "../../../constants"
 
 // own depth for the shop content
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
 
 export const defaultSeedCropId = CropId.Carrot
 
-export class ShopContent extends BaseSizer {
+export class ShopContent extends ContainerLite {
     // list of items
     private scrollablePanelMap: Partial<Record<ShopTab, ScrollablePanel>> = {}
 
@@ -57,7 +59,7 @@ export class ShopContent extends BaseSizer {
 
     //default
     private defaultItemCard: Sizer | undefined
-    private defautSeedButtonPosition: Phaser.Math.Vector2 | undefined
+    private defaultSeedButton: Label | undefined
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
     private inventories: Array<InventoryEntity> = []
@@ -71,9 +73,9 @@ export class ShopContent extends BaseSizer {
         width,
         x,
         y,
-        config,
-    }: SizerBaseConstructorParams) {
-        super(scene, height, width, x, y, config)
+        children,
+    }: ContainerLiteBaseConstructorParams) {
+        super(scene, height, width, x, y, children)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -104,20 +106,26 @@ export class ShopContent extends BaseSizer {
             this.onShopTabSelected(shopTab)
         })
 
-        this.scene.events.once(EventName.TutorialShopButtonPressed, () => {
-            if (!this.defautSeedButtonPosition) {
-                throw new Error("Default seed button position is not found")
+        this.scene.events.once(EventName.TutorialShopButtonPressed, async () => {
+            // wait for the scale time
+            await sleep(SCALE_TIME)
+            // get the default seed button
+            if (!this.defaultSeedButton) {
+                throw new Error("Default seed button is not found")
             }
+
             if (!this.defaultItemCard) {
                 throw new Error("Default item card is not found")
             }
+            // disable the default scroller
+            this.disableDefaultScroller()
 
             if (getInventorySeed({
                 cropId: defaultSeedCropId,
                 scene: this.scene,
                 inventories: this.inventories,
             })) {
-                this.scene.events.emit(EventName.TutorialCloseShop)
+                this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }
 
@@ -125,18 +133,21 @@ export class ShopContent extends BaseSizer {
 
             this.defaultItemCard.setDepth(HIGHLIGH_DEPTH)
 
-            // disable the default scroller
-            this.disableDefaultScroller()
-
-            const eventMessage: TutorialOpenShopPressedMessage = {
-                position: this.defautSeedButtonPosition,
+            const eventMessage: TutorialPrepareBuySeedsMessage = {
+                position: this.defaultSeedButton.getCenter(),
             }
+            // emit the event
             this.scene.events.emit(
-                EventName.TutorialShopButtonPressedResponsed,
+                EventName.TutorialPrepareBuySeeds,
                 eventMessage
             )
         })
-        this.setDirty(false)
+
+        EventBus.on(EventName.BuySeedsCompleted, () => {
+            // refresh user & inventories
+            EventBus.emit(EventName.RefreshUser)
+            EventBus.emit(EventName.RefreshInventories)
+        })
     }
 
     private disableDefaultScroller() {
@@ -180,9 +191,7 @@ export class ShopContent extends BaseSizer {
             throw new Error("Default item card is not found")
         }
         // get the click button
-        this.defautSeedButtonPosition = (
-      this.defaultItemCard.getChildren()[3] as Label
-    ).getCenter() as Phaser.Math.Vector2
+        this.defaultSeedButton = this.defaultItemCard.getChildren()[3] as Label
     }
 
     // handle the selected shop tab
@@ -309,16 +318,11 @@ export class ShopContent extends BaseSizer {
                             cropId: id,
                             quantity: 1,
                         }
-                        EventBus.once(EventName.BuySeedsCompleted, () => {
-                            // refresh user & inventories
-                            EventBus.emit(EventName.RefreshUser)
-                            EventBus.emit(EventName.RefreshInventories)
-                        })
                         // send request to buy seeds
                         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
                         if (this.isTutorialBuySeed) {
                             this.defaultItemCard?.setDepth(CONTENT_DEPTH)
-                            this.scene.events.emit(EventName.TutorialCloseShop)
+                            this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                             this.isTutorialBuySeed = false
                         }
                     },

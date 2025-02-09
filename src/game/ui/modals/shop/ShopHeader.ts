@@ -1,5 +1,5 @@
-import { BaseAssetKey } from "@/game/assets"
-import { EventName, TutorialCloseShopPressedMessage } from "@/game/event-bus"
+import { BaseAssetKey } from "../../../assets"
+import { EventName, TutorialPrepareCloseShopResponsedMessage } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
@@ -7,12 +7,14 @@ import { onGameObjectClick } from "../../utils"
 import { ModalName } from "../ModalManager"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { HIGHLIGH_DEPTH } from "./ShopModal"
+import { sleep } from "@/modules/common"
+import { SCALE_TIME } from "../../../constants"
 
 export class ShopHeader extends ContainerLite {
     // close button
     private closeButton: Phaser.GameObjects.Image
     private titleShop: Label
-
+    private isTutorial = false
     constructor({
         scene,
         x,
@@ -38,7 +40,15 @@ export class ShopHeader extends ContainerLite {
                 gameObject: this.closeButton,
                 scene: this.scene,
                 onClick: () => {
+                    //close the modal
                     this.scene.events.emit(EventName.CloseModal, ModalName.Shop)
+                    // emit the events related to the tutorial
+                    if (this.isTutorial) {
+                        this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
+                        this.scene.events.emit(EventName.HidePressHereArrow)
+                        this.isTutorial = false
+                    }
+                    
                 },
             })
         })
@@ -77,14 +87,15 @@ export class ShopHeader extends ContainerLite {
         })
         this.addLocal(this.titleShop)
 
-        this.scene.events.once(EventName.TutorialCloseShop, () => {
-            this.closeButton.setDepth(HIGHLIGH_DEPTH)
-
-            const eventMessage: TutorialCloseShopPressedMessage = {
+        this.scene.events.once(EventName.TutorialPrepareCloseShop, async () => {
+            this.isTutorial = true
+            // await until the shop is opened
+            await sleep(SCALE_TIME)
+            this.closeButton = this.closeButton.setDepth(HIGHLIGH_DEPTH)
+            const eventMessage: TutorialPrepareCloseShopResponsedMessage = {
                 position: this.closeButton.getCenter(),
             }
-            console.log(eventMessage)
-            this.scene.events.emit(EventName.TutorialCloseShopPressed, eventMessage)
+            this.scene.events.emit(EventName.TutorialPrepareCloseShopResponsed, eventMessage)
         })
     }
 }

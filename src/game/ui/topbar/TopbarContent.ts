@@ -24,9 +24,9 @@ export class TopbarContent extends SceneAbstract {
 
         EventBus.on(EventName.UserRefreshed, (user: UserEntity) => {
             this.user = user
-            this.energyLabel?.setText(`${this.user.energy}/${this.computeExperiencesQuota(this.user.level)}`)
-            this.goldLabel?.setText(`${this.user.golds ?? 0}`)
-            this.tokenLabel?.setText(`${this.user.tokens ?? 0}`)
+            // this.energyLabel?.setText(`${this.user.energy}/${this.computeExperiencesQuota(this.user.level)}`)
+            // this.goldLabel?.setText(`${this.user.golds ?? 0}`)
+            // this.tokenLabel?.setText(`${this.user.tokens ?? 0}`)
         })
 
         this.createInfoFrame()

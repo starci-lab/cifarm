@@ -8,8 +8,9 @@ import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     EventBus,
     EventName,
-    TutorialCloseShopPressedMessage,
-    TutorialOpenShopPressedMessage,
+    TutorialOpenShopResponsedMessage,
+    TutorialPrepareBuySeedsMessage,
+    TutorialPrepareCloseShopResponsedMessage,
 } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -41,7 +42,10 @@ export class Stacy extends ContainerLite {
             },
         })
             .setOrigin(0.5, 1)
-            .setVisible(false)
+            .setVisible(false).setDepth(calculateDepth({
+                layer: SceneLayer.Tutorial,
+                layerDepth: 1
+            }))
         this.scene.add.existing(this.pressToContinueText)
 
         // press here arrow
@@ -115,6 +119,30 @@ export class Stacy extends ContainerLite {
         this.add(this.stacyBubble)
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
+    
+        this.scene.events.on(
+            EventName.HidePressHereArrow,
+            () => {
+                this.pressHereArrow?.setVisible(false)
+            }
+        )
+
+        // callback when the tutorial is completed
+        EventBus.once(EventName.UpdateTutorialCompleted, () => {
+            EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
+                // check  if the tutorial is not shown
+                if (!this.isShown()) {
+                    this.show()
+                }
+                // set the user
+                this.user = user
+                // emit the event
+                // we perform switch case here to know what to do next
+                this.render()
+            })
+            EventBus.emit(EventName.RefreshUser)
+        })
+        
         this.hide()
     }
 
@@ -125,40 +153,44 @@ export class Stacy extends ContainerLite {
         this.scene.input.once("pointerdown", () => {
             // hide the press to continue text
             this.pressToContinueText?.setVisible(false)
-            EventBus.once(EventName.UpdateTutorialCompleted, () => {
-                EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
-                    // set the user
-                    this.user = user
-                    // emit the event
-                    // we perform switch case here to know what to do next
-                    this.render()
-                })
-                EventBus.emit(EventName.RefreshUser)
-            })
 
             switch (this.user.tutorialStep) {
             case TutorialStep.StartBuySeeds: {
-                // when user open the shop
+                // when user press the shop button
                 this.scene.events.once(
-                    EventName.TutorialOpenShopPressed,
-                    ({ position }: TutorialOpenShopPressedMessage) => {
+                    EventName.TutorialOpenShopResponsed,
+                    ({ position }: TutorialOpenShopResponsedMessage) => {
                         this.displayPressHereArrow({
                             originPosition: { x: position.x + 60, y: position.y + 60 },
                             targetPosition: { x: position.x + 40, y: position.y + 40 },
                         })
                     }
                 )
-                // when use 
+                // when user press the shop button
                 this.scene.events.once(
-                    EventName.TutorialCloseShopPressed,
-                    ({ position }: TutorialCloseShopPressedMessage) => {
+                    EventName.TutorialPrepareBuySeeds,
+                    ({ position }: TutorialPrepareBuySeedsMessage) => {
                         this.displayPressHereArrow({
-                            requireSetVisibility: false,
                             originPosition: { x: position.x + 60, y: position.y + 60 },
                             targetPosition: { x: position.x + 40, y: position.y + 40 },
                         })
                     }
                 )
+                // when user prepare to close the shop
+                this.scene.events.once(
+                    EventName.TutorialPrepareCloseShopResponsed,
+                    ({ position }: TutorialPrepareCloseShopResponsedMessage) => {
+                        this.displayPressHereArrow({
+                            originPosition: { x: position.x + 60, y: position.y + 60 },
+                            targetPosition: { x: position.x + 40, y: position.y + 40 },
+                        })
+                    }
+                )
+                this.scene.events.once(EventName.TutorialCloseShopButtonPressed, () => {
+                    this.scene.events.emit(EventName.HidePressHereArrow)
+                    // call the api to update the tutorial step
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                })
                 this.scene.events.emit(EventName.TutorialOpenShop)
                 // thus, show an animated arrow pointing to the shop button
                 // get position of the shop button
@@ -185,6 +217,10 @@ export class Stacy extends ContainerLite {
 
     public hide() {
         this.setVisible(false).setActive(false)
+    }
+
+    public isShown() {
+        return this.visible && this.active
     }
 
     private displayPressHereArrow({

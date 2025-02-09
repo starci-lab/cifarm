@@ -2,16 +2,16 @@ import { ShopContent } from "./ShopContent"
 import { ShopBackground } from "./ShopBackground"
 import { ShopHeader } from "./ShopHeader"
 import { ShopTabs } from "./ShopTabs"
-import { SizerBaseConstructorParams } from "@/game/types"
+import { ContainerLiteBaseConstructorParams } from "@/game/types"
 import {
     getScreenBottomY,
     getScreenCenterX,
     getScreenCenterY,
     getScreenLeftX,
 } from "../../utils"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { calculateDepth, SceneLayer } from "../../../layers"
+import { IModal } from "@/game/interfaces"
 
 export const CONTENT_DEPTH = calculateDepth({
     layer: SceneLayer.Modal,
@@ -25,7 +25,7 @@ export const HIGHLIGH_DEPTH = calculateDepth({
 })
 
 // shop modal extends BaseSizer
-export class ShopModal extends BaseSizer {
+export class ShopModal extends ContainerLite implements IModal {
     private shopContent: ShopContent
     private shopHeader: ShopHeader
     private shopTabs: ShopTabs
@@ -37,9 +37,9 @@ export class ShopModal extends BaseSizer {
         y,
         height,
         width,
-        config,
-    }: SizerBaseConstructorParams) {
-        super(scene, x, y, height, width, config)
+        children,
+    }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, height, width, children)
 
         this.shopBackground = new ShopBackground({
             scene: this.scene,
@@ -75,7 +75,12 @@ export class ShopModal extends BaseSizer {
         
         this.scene.add.existing(this.shopHeader)
         this.add(this.shopHeader)
-
-        this.setDirty(false)
+    }
+    
+    public show(): this {
+        return this.setActive(true).setVisible(true)
+    }
+    public hide(): this {
+        return this.setActive(false).setVisible(false)
     }
 }
