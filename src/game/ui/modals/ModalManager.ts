@@ -10,6 +10,7 @@ import { StandModal } from "./stand"
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "@/game/types"
+import { tutorialContext } from "@/game/contexts"
 
 export enum ModalName {
   Shop = "shop",
@@ -118,6 +119,10 @@ export class ModalManager extends ContainerLite {
 
     // show method, to show the modal
     private showBackdrop() {
+        // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
+        if (tutorialContext.isTutorialActive) {
+            return
+        }
         EventBus.emit(EventName.ShowUIBackdrop, {
             depth: calculateUiDepth({
                 layer: UILayer.Modal,
@@ -126,6 +131,10 @@ export class ModalManager extends ContainerLite {
     }
 
     private hideBackdrop() {
+        // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
+        if (tutorialContext.isTutorialActive) {
+            return
+        }
         EventBus.emit(EventName.HideUIBackdrop)
     }
 
