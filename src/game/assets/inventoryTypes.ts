@@ -1,5 +1,9 @@
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
+import { cropAssetMap } from "./crops"
+import { tileAssetMap } from "./tiles"
+import { AnimalId, CropId, TileId } from "@/modules/entities"
+import { animalAssetMap } from "./animals"
 
 export enum InventoryTypeId {
     Egg = "egg",
@@ -35,208 +39,141 @@ export enum InventoryTypeId {
 export interface InventoryAssetData {
     name: string;
     textureConfig: TextureConfig;
+    isQuality?: boolean;
 }
 
 export const inventoryTypeAssetMap: Record<InventoryTypeId, InventoryAssetData> = {
     [InventoryTypeId.Egg]: {
         name: "Egg",
-        textureConfig: {
-            key: "egg",
-            assetUrl: "inventory/egg.png",
-        }
+        textureConfig: animalAssetMap[AnimalId.Chicken].product.textureConfig
     },
     [InventoryTypeId.EggQuality]: {
         name: "High-Quality Egg",
-        textureConfig: {
-            key: "egg-quality",
-            assetUrl: "inventory/egg-quality.png",
-        }
+        textureConfig: animalAssetMap[AnimalId.Chicken].product.textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.Chicken]: {
         name: "Chicken",
-        textureConfig: {
-            key: "chicken",
-            assetUrl: "inventory/chicken.png",
-        }
+        textureConfig: animalAssetMap[AnimalId.Chicken].ages.baby.textureConfig
     },
     [InventoryTypeId.Milk]: {
         name: "Milk",
-        textureConfig: {
-            key: "milk",
-            assetUrl: "inventory/milk.png",
-        }
+        textureConfig: animalAssetMap[AnimalId.Cow].product.textureConfig
     },
     [InventoryTypeId.MilkQuality]: {
         name: "High-Quality Milk",
-        textureConfig: {
-            key: "milk-quality",
-            assetUrl: "inventory/milk-quality.png",
-        }
+        textureConfig: animalAssetMap[AnimalId.Cow].product.textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.Cow]: {
         name: "Cow",
-        textureConfig: {
-            key: "cow",
-            assetUrl: "inventory/cow.png",
-        }
+        textureConfig: animalAssetMap[AnimalId.Cow].ages.baby.textureConfig
     },
     [InventoryTypeId.Carrot]: {
         name: "Carrot",
-        textureConfig: {
-            key: "carrot",
-            assetUrl: "inventory/carrot.png",
-        }
+        textureConfig: cropAssetMap[CropId.Carrot].textureConfig
     },
     [InventoryTypeId.CarrotQuality]: {
         name: "High-Quality Carrot",
-        textureConfig: {
-            key: "carrot-quality",
-            assetUrl: "inventory/carrot-quality.png",
-        }
+        textureConfig: cropAssetMap[CropId.Carrot].textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.CarrotSeed]: {
         name: "Carrot Seed",
-        textureConfig: {
-            key: "carrot-seed",
-            assetUrl: "inventory/carrot-seed.png",
-        }
+        textureConfig: cropAssetMap[CropId.Carrot].seed.textureConfig
     },
+
     [InventoryTypeId.Potato]: {
         name: "Potato",
-        textureConfig: {
-            key: "potato",
-            assetUrl: "inventory/potato.png",
-        }
+        textureConfig: cropAssetMap[CropId.Potato].textureConfig
     },
     [InventoryTypeId.PotatoQuality]: {
         name: "High-Quality Potato",
-        textureConfig: {
-            key: "potato-quality",
-            assetUrl: "inventory/potato-quality.png",
-        }
+        textureConfig: cropAssetMap[CropId.Potato].textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.PotatoSeed]: {
         name: "Potato Seed",
-        textureConfig: {
-            key: "potato-seed",
-            assetUrl: "inventory/potato-seed.png",
-        }
+        textureConfig: cropAssetMap[CropId.Potato].seed.textureConfig
     },
+
     [InventoryTypeId.Cucumber]: {
         name: "Cucumber",
-        textureConfig: {
-            key: "cucumber",
-            assetUrl: "inventory/cucumber.png",
-        }
+        textureConfig: cropAssetMap[CropId.Cucumber].textureConfig
     },
     [InventoryTypeId.CucumberQuality]: {
         name: "High-Quality Cucumber",
-        textureConfig: {
-            key: "cucumber-quality",
-            assetUrl: "inventory/cucumber-quality.png",
-        }
+        textureConfig: cropAssetMap[CropId.Cucumber].textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.CucumberSeed]: {
         name: "Cucumber Seed",
-        textureConfig: {
-            key: "cucumber-seed",
-            assetUrl: "inventory/cucumber-seed.png",
-        }
+        textureConfig: cropAssetMap[CropId.Cucumber].seed.textureConfig
     },
+
     [InventoryTypeId.Pineapple]: {
         name: "Pineapple",
-        textureConfig: {
-            key: "pineapple",
-            assetUrl: "inventory/pineapple.png",
-        }
+        textureConfig: cropAssetMap[CropId.Pineapple].textureConfig
     },
     [InventoryTypeId.PineappleQuality]: {
         name: "High-Quality Pineapple",
-        textureConfig: {
-            key: "pineapple-quality",
-            assetUrl: "inventory/pineapple-quality.png",
-        }
+        textureConfig: cropAssetMap[CropId.Pineapple].textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.PineappleSeed]: {
         name: "Pineapple Seed",
-        textureConfig: {
-            key: "pineapple-seed",
-            assetUrl: "inventory/pineapple-seed.png",
-        }
+        textureConfig: cropAssetMap[CropId.Pineapple].seed.textureConfig
     },
+
     [InventoryTypeId.Watermelon]: {
         name: "Watermelon",
-        textureConfig: {
-            key: "watermelon",
-            assetUrl: "inventory/watermelon.png",
-        }
+        textureConfig: cropAssetMap[CropId.Watermelon].textureConfig
     },
     [InventoryTypeId.WatermelonQuality]: {
         name: "High-Quality Watermelon",
-        textureConfig: {
-            key: "watermelon-quality",
-            assetUrl: "inventory/watermelon-quality.png",
-        }
+        textureConfig: cropAssetMap[CropId.Watermelon].textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.WatermelonSeed]: {
         name: "Watermelon Seed",
-        textureConfig: {
-            key: "watermelon-seed",
-            assetUrl: "inventory/watermelon-seed.png",
-        }
+        textureConfig: cropAssetMap[CropId.Watermelon].seed.textureConfig
     },
+
     [InventoryTypeId.BellPepper]: {
         name: "Bell Pepper",
-        textureConfig: {
-            key: "bell-pepper",
-            assetUrl: "inventory/bell-pepper.png",
-        }
+        textureConfig: cropAssetMap[CropId.BellPepper].textureConfig
     },
     [InventoryTypeId.BellPepperQuality]: {
         name: "High-Quality Bell Pepper",
-        textureConfig: {
-            key: "bell-pepper-quality",
-            assetUrl: "inventory/bell-pepper-quality.png",
-        }
+        textureConfig: cropAssetMap[CropId.BellPepper].textureConfig,
+        isQuality: true
     },
     [InventoryTypeId.BellPepperSeed]: {
         name: "Bell Pepper Seed",
-        textureConfig: {
-            key: "bell-pepper-seed",
-            assetUrl: "inventory/bell-pepper-seed.png",
-        }
+        textureConfig: cropAssetMap[CropId.BellPepper].seed.textureConfig
     },
+
+    // Tiles (tận dụng asset từ tileAssetMap)
     [InventoryTypeId.BasicTile2]: {
-        name: "Basic Tile",
-        textureConfig: {
-            key: "basic-tile2",
-            assetUrl: "inventory/basic-tile2.png",
-        }
+        name: "Basic Tile 2",
+        textureConfig: tileAssetMap[TileId.BasicTile2].textureConfig
     },
     [InventoryTypeId.FertileTile]: {
         name: "Fertile Tile",
-        textureConfig: {
-            key: "fertile-tile",
-            assetUrl: "inventory/fertile-tile.png",
-        }
+        textureConfig: tileAssetMap[TileId.FertileTile].textureConfig
     },
+
     [InventoryTypeId.BasicFertilizer]: {
         name: "Basic Fertilizer",
-        textureConfig: {
-            key: "basic-fertilizer",
-            assetUrl: "inventory/basic-fertilizer.png",
-        }
+        textureConfig: { key: "basic-fertilizer", assetUrl: "inventory/basic-fertilizer.png" }
     },
     [InventoryTypeId.AnimalFeed]: {
         name: "Animal Feed",
-        textureConfig: {
-            key: "animal-feed",
-            assetUrl: "inventory/animal-feed.png",
-        }
+        textureConfig: { key: "animal-feed", assetUrl: "inventory/animal-feed.png" }
     }
 }
 
-// Function to load the inventory assets in Phaser scene
+// Function to load inventory assets in Phaser scene
 export const loadInventoryAssets = (scene: Scene) => {
     Object.keys(inventoryTypeAssetMap).forEach((inventoryTypeId) => {
         const _inventoryTypeId = inventoryTypeId as InventoryTypeId
