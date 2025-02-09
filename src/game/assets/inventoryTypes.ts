@@ -174,7 +174,7 @@ export const inventoryTypeAssetMap: Record<InventoryTypeId, InventoryAssetData> 
 }
 
 // Function to load inventory assets in Phaser scene
-export const loadInventoryAssets = (scene: Scene) => {
+export const loadInventoryTypesAssets = (scene: Scene) => {
     Object.keys(inventoryTypeAssetMap).forEach((inventoryTypeId) => {
         const _inventoryTypeId = inventoryTypeId as InventoryTypeId
         const inventoryData = inventoryTypeAssetMap[_inventoryTypeId]

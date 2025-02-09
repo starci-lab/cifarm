@@ -6,6 +6,7 @@ import {
     loadBaseAssets,
     loadBuildingAssets,
     loadCropAssets,
+    loadInventoryTypesAssets,
     loadStacyAssets,
     loadTileAssets,
     loadToolsAssets
@@ -158,6 +159,7 @@ export class LoadingScene extends Scene {
         loadTileAssets(this)
         loadToolsAssets(this)
         loadStacyAssets(this)
+        loadInventoryTypesAssets(this)
     }
 
     async update() {

@@ -1,44 +1,47 @@
 import { BaseAssetKey } from "@/game/assets"
-import { CacheKey, ContainerLiteBaseConstructorParams } from "@/game/types"
+import { inventoryTypeAssetMap, InventoryTypeId } from "@/game/assets/inventoryTypes"
+import { CacheKey } from "@/game/types"
 import { InventoryEntity } from "@/modules/entities"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "../../elements"
 import { defaultInventoryTab, InventoryTab } from "./types"
 
-export class InventoryContent extends ContainerLite {
+export class InventoryContent extends BaseSizer {
     private gridTable: GridTable | undefined
     private selectedInventoryTab: InventoryTab = defaultInventoryTab
     private inventories: Array<InventoryEntity> = []
 
-    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
-        super(scene, x, y, width, height, children)
-        this.createInventoryTable()
-
+    constructor({ scene, x, y, width, height }: BaseSizer) {
+        super(scene, x, y, width, height)
         // Load inventories from cache
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+        
+        this.createInventoryTable()
     }
 
     private createInventoryTable() {
         const gridWidth = 750
         const gridHeight = 1000
 
-        const itemList = [
-            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Corn Seed", onClick: () => console.log("Clicked on Corn Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Rice Seed", onClick: () => console.log("Clicked on Rice Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Apple", onClick: () => console.log("Clicked on Apple") },
-            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Orange", onClick: () => console.log("Clicked on Orange") },
-            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Banana", onClick: () => console.log("Clicked on Banana") },
-            { assetKey: BaseAssetKey.ModalInventoryIconAnimal, title: "Grapes", onClick: () => console.log("Clicked on Grapes") },
-        ]
+        const itemList: Array<CreateItemCardParams> = this.inventories.map((inventory) => {
+            return {
+                assetKey: inventoryTypeAssetMap[inventory.inventoryTypeId as InventoryTypeId].textureConfig.key,
+                quantity: inventory.quantity,
+                onClick: () => {
+                    console.log("Clicked")
+                }
+            }
+        })
+
+        console.log(itemList)
 
         this.gridTable = this.scene.rexUI.add.gridTable({
             x: 30,
             y: 0,
             width: gridWidth,
             height: gridHeight,
-            background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0.1),
+            background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0),
             table: {
                 columns: 3, // Fixed 3 columns
                 cellWidth: 250, // Adjusted to fit 3x width
