@@ -1,4 +1,4 @@
-import { BuildingId, PlacedItemType, TutorialStep } from "@/modules/entities"
+import { PlacedItemType, TutorialStep } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -78,6 +78,11 @@ export enum EventName {
     TutorialPrepareCloseShop = "tutorial_prepare_close_shop",
     TutorialPrepareCloseShopResponsed = "tutorial_prepare_close_shop_responsed",
     TutorialCloseShopButtonPressed = "tutorial_close_shop_button_pressed",
+    TutorialOpenInventory = "tutorial_open_inventory",
+    TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
+    TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
+    TutorialPlantSeeds = "tutorial_plant_seeds",
+    TutorialPlantSeedsResponsed = "tutorial_plant_seed_responsed",
 
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
@@ -102,6 +107,11 @@ export interface TutorialOpenShopResponsedMessage {
     position: Position,
 }
 
+export interface TutorialOpenInventoryResponsedMessage {
+    // position of the shop button
+    position: Position,
+}
+
 export interface TutorialPrepareBuySeedsMessage {
     // position of the shop button
     position: Position,
@@ -119,6 +129,6 @@ export interface Position {
 
 export interface PlacedInprogressMessage {
     // placed item
-    id: BuildingId,
+    id: string,
     type: PlacedItemType
 }

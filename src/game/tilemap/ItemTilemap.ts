@@ -222,6 +222,14 @@ export abstract class ItemTilemap extends GroundTilemap {
         // get the placed item type
         const placedItemType = this.getPlacedItemType(placedItem.placedItemTypeId)
 
+        // check if tile is home, then we move the camera to it
+        if (placedItemType.id === PlacedItemTypeId.Home) {
+            const tileAt = this.getTileAt(tile.x, tile.y)
+            if (!tileAt) {
+                throw new Error("Tile at x,y not found")
+            }
+        }         
+
         // get the placed item type
         // Fill the area of the item, above the tile
         this.itemLayer.objects.push({

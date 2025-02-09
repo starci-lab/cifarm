@@ -8,6 +8,7 @@ import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     EventBus,
     EventName,
+    TutorialOpenInventoryResponsedMessage,
     TutorialOpenShopResponsedMessage,
     TutorialPrepareBuySeedsMessage,
     TutorialPrepareCloseShopResponsedMessage,
@@ -181,8 +182,9 @@ export class Stacy extends ContainerLite {
                     EventName.TutorialPrepareCloseShopResponsed,
                     ({ position }: TutorialPrepareCloseShopResponsedMessage) => {
                         this.displayPressHereArrow({
-                            originPosition: { x: position.x + 60, y: position.y + 60 },
-                            targetPosition: { x: position.x + 40, y: position.y + 40 },
+                            rotation: 45,
+                            originPosition: { x: position.x - 60, y: position.y + 60 },
+                            targetPosition: { x: position.x - 40, y: position.y + 40 },
                         })
                     }
                 )
@@ -194,6 +196,31 @@ export class Stacy extends ContainerLite {
                 this.scene.events.emit(EventName.TutorialOpenShop)
                 // thus, show an animated arrow pointing to the shop button
                 // get position of the shop button
+                this.hide()
+                return
+            }
+            case TutorialStep.StartOpenInventory: {
+                // when user press the shop button
+                this.scene.events.once(
+                    EventName.TutorialOpenInventoryResponsed,
+                    ({ position }: TutorialOpenInventoryResponsedMessage) => {
+                        this.displayPressHereArrow({
+                            rotation: 45,
+                            originPosition: { x: position.x - 60, y: position.y + 60 },
+                            targetPosition: { x: position.x - 40, y: position.y + 40 },
+                        })
+                    }
+                )
+                // emit the event to open the inventory
+                this.scene.events.emit(EventName.TutorialOpenInventory)
+                // hide the stacy
+                this.hide()
+                return
+            }
+            case TutorialStep.StartPlantSeeds: {
+                // emit the event to open the inventory
+                this.scene.events.emit(EventName.TutorialPlantSeeds)
+                // hide the stacy
                 this.hide()
                 return
             }

@@ -6,8 +6,8 @@ export const BUILDING_HOME_GID = 2
 // default tile width and height
 export const TILE_WIDTH = 200
 export const TILE_HEIGHT = 100
-export const WIDTH = 32
-export const HEIGHT = 32
+export const WIDTH = 37
+export const HEIGHT = 37
 
 // scale
 export const SCALE = 2

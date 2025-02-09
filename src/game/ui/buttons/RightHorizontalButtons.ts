@@ -1,9 +1,10 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
-import { EventName } from "@/game/event-bus"
+import { EventName, TutorialOpenShopResponsedMessage } from "../../event-bus"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { ButtonsBaseConstructorParams } from "@/game/types"
 import { ModalName } from "../modals"
+import { calculateDepth, SceneLayer } from "../../layers"
 
 export class RightHorizontalButtons extends HorizontalButtons {
     private settingButton: Sizer
@@ -59,5 +60,28 @@ export class RightHorizontalButtons extends HorizontalButtons {
             },
         })
         this.addButton(this.questButton)
+
+        // listen for the open event
+        this.scene.events.once(EventName.TutorialOpenInventory, () => {
+            this.inventoryButton.setDepth(calculateDepth({
+                layer: SceneLayer.Tutorial,
+                layerDepth: 2,
+            }))
+            const eventMessage: TutorialOpenShopResponsedMessage = {
+                position: this.inventoryButton.getCenter()
+            }
+            this.scene.events.emit(EventName.TutorialOpenInventoryResponsed, eventMessage)
+            // if shop button is press, we will console go
+            this.inventoryButton.once("pointerdown", () => {
+                // return to normal depth
+                this.inventoryButton.setDepth(calculateDepth({
+                    layer: SceneLayer.UI,
+                }))
+                // emit the event
+                this.scene.events.emit(EventName.TutorialInventoryButtonPressed)
+                // hide the press here arrow
+                this.scene.events.emit(EventName.HidePressHereArrow)
+            })
+        })
     }
 }

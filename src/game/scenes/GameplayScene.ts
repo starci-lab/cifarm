@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { Tilemap } from "../tilemap"
+import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
 //import { EventName } from "../event-bus"
 
 export class GameplayScene extends Scene
@@ -27,6 +27,11 @@ export class GameplayScene extends Scene
         // launch the UI scene parallel to the gameplay scene
         this.scene.launch(SceneName.UI)
         this.scene.launch(SceneName.Data)
+
+        // set the camera to the center of the tilemap
+        const x = TILE_WIDTH
+        const y = (HEIGHT % 2 === 0 ? HEIGHT + 1 : HEIGHT) * TILE_HEIGHT
+        this.cameras.main.centerOn(x, y)
 
         this.tileMap = new Tilemap({
             scene: this

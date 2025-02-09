@@ -36,7 +36,7 @@ export const tutorialStepMap: Record<TutorialStep, TutorialStepData> = {
         phase: TutorialPhase.Start,
         assetKey: StacyAssetKey.StacyOpenInventory
     },
-    [TutorialStep.StartPlantSeed]: {
+    [TutorialStep.StartPlantSeeds]: {
         message: "Time to plant that cute little seed! 🌱 Let’s make sure it’s nice and comfy in the soil.",
         lastOfThisPhase: false,
         phase: TutorialPhase.Start,

@@ -21,16 +21,17 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         baseParams: { scene, mapData },
         options,
     }: ConstructorParams<TilemapBaseConstructorParams, BaseTilemapOptions>) {
-    // create a new map data
+        const { width, height, tileWidth, tileHeight, scale, objectLayerNames } = { ...options }
+        // create a new map data
         if (!mapData) {
             mapData = new Phaser.Tilemaps.MapData({
-                width: options.width ?? WIDTH,
-                height: options.height ?? HEIGHT,
-                tileWidth: options.tileWidth ?? TILE_WIDTH,
-                tileHeight: options.tileHeight ?? TILE_HEIGHT,
+                width: width ?? WIDTH,
+                height: height ?? HEIGHT,
+                tileWidth: tileWidth ?? TILE_WIDTH,
+                tileHeight: tileHeight ?? TILE_HEIGHT,
                 orientation: Phaser.Tilemaps.Orientation.ISOMETRIC,
                 format: Phaser.Tilemaps.Formats.ARRAY_2D,
-                objects: options.objectLayerNames?.map(
+                objects: objectLayerNames?.map(
                     (name) =>
                         new Phaser.Tilemaps.ObjectLayer({
                             name,
@@ -42,7 +43,7 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         super(scene, mapData)
 
         // set the values
-        this.scale = options.scale ?? SCALE
+        this.scale = scale ?? SCALE
     }
 
     // create a tileset from a image that contain single tile

@@ -2,7 +2,7 @@ export enum TutorialStep {
     StartWelcome = 0,
     StartBuySeeds = 1,
     StartOpenInventory = 2,
-    StartPlantSeed = 3,
+    StartPlantSeeds = 3,
     StartWaterCropAtStage1 = 4,
     StartWaterCropAtStage2 = 5,
     StartToStage3 = 6,
