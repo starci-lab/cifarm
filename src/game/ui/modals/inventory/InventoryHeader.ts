@@ -3,7 +3,7 @@ import { EventName } from "@/game/event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
-import { getScreenLeftX, getScreenRightX, onGameObjectClick } from "../../utils"
+import { getScreenRightX, onGameObjectClick } from "../../utils"
 import { ModalName } from "../ModalManager"
 
 export class InventoryHeader extends ContainerLite {

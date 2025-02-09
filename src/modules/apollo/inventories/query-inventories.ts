@@ -8,6 +8,23 @@ const query1 = gql`
     inventories(args: $args) {
         data {
           id
+          inventoryType {
+            id
+            maxStack
+            deliverable
+            animalId
+            cropId
+            availableIn
+            asTool
+            placeable
+            productId
+            supplyId
+            tileId
+            type
+          }
+          quantity
+          isPlaced
+          tokenId
         }
     }
   }

@@ -7,6 +7,7 @@ import { BaseText, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CacheKey } from "@/game/types"
 import { getScreenLeftX, getScreenTopY } from "../utils"
+import { EventBus, EventName } from "@/game/event-bus"
 
 export class TopbarContent extends SceneAbstract {
     private user: UserEntity
@@ -20,6 +21,13 @@ export class TopbarContent extends SceneAbstract {
         super(scene)
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
+
+        EventBus.on(EventName.UserRefreshed, (user: UserEntity) => {
+            this.user = user
+            this.energyLabel?.setText(`${this.user.energy}/${this.computeExperiencesQuota(this.user.level)}`)
+            this.goldLabel?.setText(`${this.user.golds ?? 0}`)
+            this.tokenLabel?.setText(`${this.user.tokens ?? 0}`)
+        })
 
         this.createInfoFrame()
         this.createRightContainer()
