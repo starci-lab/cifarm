@@ -129,12 +129,9 @@ export class Stacy extends ContainerLite {
         )
 
         // callback when the tutorial is completed
-        EventBus.once(EventName.UpdateTutorialCompleted, () => {
+        EventBus.on(EventName.UpdateTutorialCompleted, () => {
             EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
                 // check  if the tutorial is not shown
-                if (!this.isShown()) {
-                    this.show()
-                }
                 // set the user
                 this.user = user
                 // emit the event
@@ -286,7 +283,11 @@ export class Stacy extends ContainerLite {
 
     // render the stacy image
     public render() {
-    // if press to continue is true, turn it off
+        // show the stacy
+        if (!this.isShown()) {
+            this.show()
+        }
+        // if press to continue is true, turn it off
         this.disallowPressToContinue(true)
         // set continue to false
         const textureAssetKey = tutorialStepMap[this.user.tutorialStep].assetKey
