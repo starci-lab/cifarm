@@ -19,6 +19,11 @@ export const CONTENT_DEPTH = calculateDepth({
     layerDepth: 1,
 })
 
+export const HIGHLIGH_DEPTH = calculateDepth({
+    layer: SceneLayer.Tutorial,
+    layerDepth: 1,
+})
+
 // shop modal extends BaseSizer
 export class ShopModal extends BaseSizer {
     private shopContent: ShopContent
@@ -67,6 +72,7 @@ export class ShopModal extends BaseSizer {
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene) - 500,
         })
+        
         this.scene.add.existing(this.shopHeader)
         this.add(this.shopHeader)
 
