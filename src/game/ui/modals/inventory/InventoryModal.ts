@@ -29,6 +29,8 @@ export class InventoryModal extends BaseSizer {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene) - 400,
+            width,
+            height
         })
         this.scene.add.existing(this.inventoryHeader)
         this.add(this.inventoryHeader)

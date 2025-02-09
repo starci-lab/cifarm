@@ -34,8 +34,8 @@ export class InventoryContent extends ContainerLite {
         ]
 
         this.gridTable = this.scene.rexUI.add.gridTable({
-            x: this.x + 30,
-            y: this.y,
+            x: 30,
+            y: 0,
             width: gridWidth,
             height: gridHeight,
             background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0.1),

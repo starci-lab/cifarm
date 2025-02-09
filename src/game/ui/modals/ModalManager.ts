@@ -62,6 +62,8 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
+            width,
+            height
         }).hide()
 
         // create the daily modal

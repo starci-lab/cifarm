@@ -3,7 +3,7 @@ import { EventName } from "@/game/event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
-import { onGameObjectClick } from "../../utils"
+import { getScreenLeftX, getScreenRightX, onGameObjectClick } from "../../utils"
 import { ModalName } from "../ModalManager"
 
 export class InventoryHeader extends ContainerLite {
@@ -40,10 +40,9 @@ export class InventoryHeader extends ContainerLite {
         this.titleInventory.add(text)
         this.addLocal(this.titleInventory)
 
-        // draw btn close
-        const margin = 150
+
         this.closeButton = scene.add
-            .sprite(this.width / 2 - margin, this.y - 480, BaseAssetKey.ModalInventoryBtnClose)
+            .sprite(getScreenRightX(this.scene)/2 - 160, this.y - 480, BaseAssetKey.ModalInventoryBtnClose)
             .setOrigin(1, 0)
             .setDepth(1)
             .setInteractive()
