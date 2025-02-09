@@ -162,5 +162,10 @@ export class ShopTabs extends ContainerLite {
             // increment the count
             count++
         }
+
+        // reverse the order of the tabs
+        for (const [, value] of Object.entries(this.tabMap)) {
+            this.sendChildToBack(value)
+        }
     }
 }
