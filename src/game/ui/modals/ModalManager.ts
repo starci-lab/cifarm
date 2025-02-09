@@ -1,12 +1,13 @@
 import { EventName } from "@/game/event-bus"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BLACK_COLOR, SCALE_TIME } from "../../constants"
-import { ShopModal } from "./shop"
-import { GroupBaseConstructorParams } from "../../types"
+import { ContainerLiteBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
 import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
+import { ShopModal } from "./shop"
 import { StandModal } from "./stand"
 
 export enum ModalName {
@@ -18,7 +19,7 @@ export enum ModalName {
   Neighbors = "neighbors",
 }
 
-export class ModalManager extends Phaser.GameObjects.Group {
+export class ModalManager extends ContainerLite {
     // the backdrop
     private backdrop: Phaser.GameObjects.Rectangle | undefined
     // the shop modal
@@ -34,10 +35,9 @@ export class ModalManager extends Phaser.GameObjects.Group {
     // neighbors
     private neighborsModal: NeighborsModal | undefined
 
-    constructor({ scene, children, config }: GroupBaseConstructorParams) {
-        super(scene, children, config)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         // get the width and height of the game
-        const { width, height } = this.scene.game.scale
         this.backdrop = this.scene.add
             .rectangle(
                 getScreenCenterX(this.scene),
@@ -48,7 +48,7 @@ export class ModalManager extends Phaser.GameObjects.Group {
                 0.5
             )
             .setInteractive()
-        this.add(this.backdrop)
+        this.addLocal(this.backdrop)
 
         // create the shop modal
         this.shopModal = new ShopModal({
@@ -83,6 +83,8 @@ export class ModalManager extends Phaser.GameObjects.Group {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
+            width,
+            height,
         }).hide()
 
         this.neighborsModal = new NeighborsModal({
@@ -149,16 +151,16 @@ export class ModalManager extends Phaser.GameObjects.Group {
         this.setActive(true).setVisible(true)
         const modal = this.getModal(name)
         // disable modal input
-        // if (this.input) {
-        //     this.input.enabled = false
-        // }
+        if (this.input) {
+            this.input.enabled = false
+        }
         // show the modal
         modal.show().setDepth(1).popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
-            // if (this.input) {
-            //     this.input.enabled = true
-            // }
+            if (this.input) {
+                this.input.enabled = true
+            }
         })
     }
 

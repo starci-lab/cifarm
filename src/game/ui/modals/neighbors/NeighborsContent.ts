@@ -1,21 +1,21 @@
 import { BaseAssetKey } from "@/game/assets"
-import { SizerBaseConstructorParams } from "@/game/types"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { ContainerLiteBaseConstructorParams } from "@/game/types"
+import { UserEntity } from "@/modules/entities"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ScrollablePanel, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "../../elements"
-import { NeighborsTab } from "./types"
-import { defaultNeighborsTab } from "./NeighborsTabs"
-import { UserEntity } from "@/modules/entities"
 import { onGameObjectClick } from "../../utils"
+import { defaultNeighborsTab } from "./NeighborsTabs"
+import { NeighborsTab } from "./types"
 
-export class NeighborsContent extends BaseSizer {
+export class NeighborsContent extends ContainerLite {
     private scrollablePanelMap: Partial<Record<NeighborsTab, ScrollablePanel>> = {}
     private neighbors: Array<UserEntity> = []
     private defaultItemCard: Sizer | undefined
     private selectedNeighborsTab: NeighborsTab = defaultNeighborsTab
 
-    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
-        super(scene, x, y, height, width, config)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         this.createScrollablePanel()
     }
 
@@ -49,7 +49,7 @@ export class NeighborsContent extends BaseSizer {
             })
             .layout()
 
-        this.add(scrollablePanel)
+        this.addLocal(scrollablePanel)
         this.scrollablePanelMap[this.selectedNeighborsTab] = scrollablePanel
     }
 

@@ -1,18 +1,18 @@
 import { BaseAssetKey } from "@/game/assets"
-import { CacheKey, SizerBaseConstructorParams } from "@/game/types"
+import { CacheKey, ContainerLiteBaseConstructorParams } from "@/game/types"
 import { InventoryEntity } from "@/modules/entities"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "../../elements"
 import { defaultInventoryTab, InventoryTab } from "./types"
 
-export class InventoryContent extends BaseSizer {
+export class InventoryContent extends ContainerLite {
     private gridTable: GridTable | undefined
     private selectedInventoryTab: InventoryTab = defaultInventoryTab
     private inventories: Array<InventoryEntity> = []
 
-    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
-        super(scene, x, y, height, width, config)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         this.createInventoryTable()
 
         // Load inventories from cache
@@ -58,7 +58,7 @@ export class InventoryContent extends BaseSizer {
             items: itemList,
         }).layout().setOrigin(0.5, 0.5)
 
-        this.add(this.gridTable)
+        this.addLocal(this.gridTable)
     }
 
     private createItemCard({ assetKey, quantity, onClick }: CreateItemCardParams) {

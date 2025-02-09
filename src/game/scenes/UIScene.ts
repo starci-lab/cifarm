@@ -16,7 +16,7 @@ export class UIScene extends Scene {
     }
 
     create() {
-        const { width } = this.game.scale
+        const { width, height } = this.game.scale
         // Add the left horizontal buttons
         const leftHorizontalButtons = new LeftHorizontalButtons({
             scene: this,
@@ -40,21 +40,23 @@ export class UIScene extends Scene {
 
         // add the modal manager
         const modalManager = new ModalManager({
-            scene: this
+            scene: this,
+            width,
+            height
         })
         this.add.existing(modalManager)
-        modalManager.setDepth(calculateDepth({
-            layer: SceneLayer.Modal,
-            layerDepth: 0,
-        }))
+        // modalManager.setDepth(calculateDepth({
+        //     layer: SceneLayer.Modal,
+        //     layerDepth: 0,
+        // }))
         
         // add the tutorial manager
-        const tutorialManager = new TutorialManager({
-            scene: this
-        })
-        this.add.existing(tutorialManager)
-        tutorialManager.setDepth(calculateDepth({
-            layer: SceneLayer.Tutorial,
-        }))
+        // const tutorialManager = new TutorialManager({
+        //     scene: this
+        // })
+        // this.add.existing(tutorialManager)
+        // tutorialManager.setDepth(calculateDepth({
+        //     layer: SceneLayer.Tutorial,
+        // }))
     }
 }

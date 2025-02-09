@@ -1,27 +1,28 @@
-import { BaseAssetKey } from "../../assets"
-import { ContainerBaseConstructorParams } from "../../types"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { BaseAssetKey } from "../../assets"
+import { ContainerLiteBaseConstructorParams } from "../../types"
 import { onGameObjectClick } from "../utils"
 
-export class ToolbarBackground extends Phaser.GameObjects.Container {
+export class ToolbarBackground extends ContainerLite {
     private background: Phaser.GameObjects.Image
     private prevButton: Sizer
     private nextButton: Sizer
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        super(scene, x, y)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         // create the background
         this.background = this.scene.add
             .image(0, 0, BaseAssetKey.ToolbarBackground)
             .setOrigin(0.5, 1)
-        this.add(this.background)
+        this.addLocal(this.background)
 
         // create the prev button
         this.prevButton = this.createPrevButton()
-        this.add(this.prevButton)
+        this.addLocal(this.prevButton)
         // create the next button
         this.nextButton = this.createNextButton()
-        this.add(this.nextButton)
+        this.addLocal(this.nextButton)
     }
 
     private createPrevButton() {

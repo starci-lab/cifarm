@@ -1,19 +1,20 @@
 import { BaseAssetKey } from "@/game/assets"
-import { ContainerBaseConstructorParams } from "../../../types"
 import { EventName } from "@/game/event-bus"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { onGameObjectClick } from "../../utils"
 import { ModalName } from "../ModalManager"
 
-export class QuestBackground extends Phaser.GameObjects.Container {
+export class QuestBackground extends ContainerLite {
     private wall: Phaser.GameObjects.Image
     private closeButton: Phaser.GameObjects.Image | undefined
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        super(scene, x, y)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
 
         // create the wall
         this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalQuestWall)
-        this.add(this.wall)
+        this.addLocal(this.wall)
 
         // create the close button
         this.closeButton = this.createCloseButton()
@@ -39,7 +40,7 @@ export class QuestBackground extends Phaser.GameObjects.Container {
         // set the close button position
         //closeButton.setPosition(this.wall.width/2, - this.wall.height/2)
 
-        this.add(closeButton)
+        this.addLocal(closeButton)
         return closeButton
     }
 }

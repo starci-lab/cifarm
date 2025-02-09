@@ -1,21 +1,19 @@
 import { BaseAssetKey } from "@/game/assets"
-import { SizerBaseConstructorParams } from "@/game/types"
+import { ContainerLiteBaseConstructorParams } from "@/game/types"
 import { DeliveringProductEntity } from "@/modules/entities"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 
-export class StandContent extends BaseSizer {
+export class StandContent extends ContainerLite {
     private gridTable: GridTable | undefined
     private deliveringProduct: Array<DeliveringProductEntity> = []
 
-    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
-        super(scene, x, y, height, width, config)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         this.createStandGrid()
     }
 
     private createStandGrid() {
-        const { width, height } = this.scene.game.scale
-
         const gridWidth = 800 // Fixed width
         const gridHeight = 800 // Fixed height
 
@@ -32,8 +30,8 @@ export class StandContent extends BaseSizer {
 
         // Create Fixed Grid Table
         this.gridTable = this.scene.rexUI.add.gridTable({
-            x: width / 2,
-            y: height / 2 - 160,
+            x: 0,
+            y: 0,
             width: gridWidth,
             height: gridHeight,
             background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0),
@@ -53,7 +51,7 @@ export class StandContent extends BaseSizer {
             items: itemList,
         }).layout().setOrigin(0.5, 0.5)
 
-        this.add(this.gridTable)
+        this.addLocal(this.gridTable)
     }
 
     private createItemCard({ assetKey, title, onClick }: CreateItemCardParams) {

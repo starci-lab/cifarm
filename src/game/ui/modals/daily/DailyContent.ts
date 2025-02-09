@@ -1,9 +1,9 @@
-import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { CacheKey, SizerBaseConstructorParams } from "../../../types"
-import { BaseText, StrokeColor, TextColor } from "../../elements"
 import { BaseAssetKey } from "@/game/assets"
 import { DailyRewardEntity, DailyRewardId } from "@/modules/entities"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
+import { BaseText, StrokeColor, TextColor } from "../../elements"
 
 // daily coin icon map
 const iconMap: Record<DailyRewardId, BaseAssetKey> = {
@@ -14,13 +14,13 @@ const iconMap: Record<DailyRewardId, BaseAssetKey> = {
     // temporary use the same icon
     [DailyRewardId.Day5]: BaseAssetKey.IconDaily,
 }
-export class DailyContent extends BaseSizer {
+export class DailyContent extends ContainerLite {
     private rewardContainersSizer: Sizer
     
     // daily rewards data
     private dailyRewards: Array<DailyRewardEntity> = []
-    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
-        super(scene, x, y, height, width, config)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
 
         // get the daily rewards data
         this.dailyRewards = this.scene.cache.obj.get(CacheKey.DailyRewards)
@@ -29,8 +29,8 @@ export class DailyContent extends BaseSizer {
         this.rewardContainersSizer = this.scene.rexUI.add
             .sizer({
                 orientation: "y",
-                x: this.x,
-                y: this.y + 20,
+                x: 0,
+                y: 0,
                 space: {
                     item: 10,
                 },
@@ -39,7 +39,7 @@ export class DailyContent extends BaseSizer {
             .add(this.createLastDayRewardContainer())
             .layout()
         // add the reward containers to the sizer
-        this.add(this.rewardContainersSizer)
+        this.addLocal(this.rewardContainersSizer)
     }
 
     // create base day reward container

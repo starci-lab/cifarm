@@ -5,6 +5,7 @@ import { BaseText } from "../../elements"
 import { onGameObjectClick } from "../../utils"
 import { NeighborsTab, tabs } from "./types"
 import { SCALE_TIME } from "@/game/constants"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 
 // use own scale values
 const PADDING_X = 100
@@ -13,7 +14,7 @@ const SCALE_PEAK_VALUE = 1
 
 export const defaultNeighborsTab = NeighborsTab.Random
 
-export class NeighborsTabs extends Phaser.GameObjects.Container {
+export class NeighborsTabs extends ContainerLite {
     // private property to store the selected tab
     private selectedTab: NeighborsTab = defaultNeighborsTab
     // private property to store the tab map
@@ -177,7 +178,7 @@ export class NeighborsTabs extends Phaser.GameObjects.Container {
             value.setPosition(count * (tabWidth + 2), 0)
     
             // Add the tab to the container
-            this.add(value)
+            this.addLocal(value)
             this.x -= tabWidth * (1/3) + 10
             this.x += PADDING_X / 2
             count++

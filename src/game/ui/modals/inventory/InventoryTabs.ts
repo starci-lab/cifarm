@@ -1,22 +1,22 @@
 
 import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
-import { ContainerBaseConstructorParams } from "@/game/types"
+import { ContainerLiteBaseConstructorParams } from "@/game/types"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { InventoryTab, tabs } from "./types"
 
 const SELECTED_SCALE = 0.8
 const UNSELECTED_SCALE = 0.8
 const SCALE_TIME = 500
 
-export class InventoryTabs extends Phaser.GameObjects.Container {
+export class InventoryTabs extends ContainerLite {
     // private property to store the selected tab
     private selectedTab: InventoryTab = InventoryTab.Menu
     // private property to store the tab map
     private tabMap: Partial<Record<InventoryTab, Phaser.GameObjects.Container>> = {}
     
-    constructor({ scene, x, y }: ContainerBaseConstructorParams)
-    {
-        super(scene, x, y)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         // add the buttons
         for (const inventoryTab of Object.values(InventoryTab)) {
             this.addTab(inventoryTab)
@@ -151,11 +151,9 @@ export class InventoryTabs extends Phaser.GameObjects.Container {
             // set the position of the tab
             value.setPosition(count * (width - 20), 0)
             // add the tab to the container
-            this.add(value)
+            this.addLocal(value)
             // increment the count
             count++
         }
-        // reverse the tabs
-        this.reverse()
     }
 }

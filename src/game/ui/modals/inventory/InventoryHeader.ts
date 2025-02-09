@@ -1,22 +1,18 @@
-import { ContainerBaseConstructorParams } from "../../../types"
-import { BaseText } from "../../elements"
 import { BaseAssetKey } from "@/game/assets"
-import { onGameObjectClick } from "../../utils"
 import { EventName } from "@/game/event-bus"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { ContainerLiteBaseConstructorParams } from "../../../types"
+import { BaseText } from "../../elements"
+import { onGameObjectClick } from "../../utils"
 import { ModalName } from "../ModalManager"
 
-export class InventoryHeader extends Phaser.GameObjects.Container {
+export class InventoryHeader extends ContainerLite {
     // close button
     private closeButton: Phaser.GameObjects.Sprite
     private titleInventory: Phaser.GameObjects.Container
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        const { width } = scene.game.scale
-        super(
-            scene,
-            x ?? 0,
-            y ?? 0,
-        )
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
 
         const frame = this.scene.add.image(
             0,
@@ -42,12 +38,12 @@ export class InventoryHeader extends Phaser.GameObjects.Container {
         this.titleInventory = this.scene.add.container(0, 0)
         this.titleInventory.add(frame)
         this.titleInventory.add(text)
-        this.add(this.titleInventory)
+        this.addLocal(this.titleInventory)
 
         // draw btn close
         const margin = 150
         this.closeButton = scene.add
-            .sprite(width / 2 - margin, this.y - 480, BaseAssetKey.ModalInventoryBtnClose)
+            .sprite(this.width / 2 - margin, this.y - 480, BaseAssetKey.ModalInventoryBtnClose)
             .setOrigin(1, 0)
             .setDepth(1)
             .setInteractive()
@@ -62,6 +58,6 @@ export class InventoryHeader extends Phaser.GameObjects.Container {
             })
         })
 
-        this.add(this.closeButton)
+        this.addLocal(this.closeButton)
     }
 }

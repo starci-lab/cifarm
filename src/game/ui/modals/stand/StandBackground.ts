@@ -1,21 +1,17 @@
 import { BaseAssetKey } from "@/game/assets"
-import { ContainerBaseConstructorParams } from "../../../types"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { ContainerLiteBaseConstructorParams } from "../../../types"
 
-export class StandBackground extends Phaser.GameObjects.Container {
-    private wall: Phaser.GameObjects.Image | undefined
+export class StandBackground extends ContainerLite {
     private stand: Phaser.GameObjects.Image | undefined
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        super(scene, x, y)
-
-        // Get the width and height of the game
-        const { width, height } = this.scene.game.scale
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
 
         // add stand in middle
         this.stand = this.scene.add.image(0, 0, BaseAssetKey.ModalStand)
-            .setY(-height / 2)
             .setOrigin(0.5, 0.5)
 
-        this.add(this.stand)
+        this.addLocal(this.stand)
     }
 }

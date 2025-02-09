@@ -1,9 +1,10 @@
-import { ShopTab, tabs } from "./types"
 import { BaseAssetKey } from "@/game/assets"
-import { EventName } from "@/game/event-bus"
-import { ContainerBaseConstructorParams } from "../../../types"
 import { SCALE_TIME } from "@/game/constants"
+import { EventName } from "@/game/event-bus"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { onGameObjectClick } from "../../utils"
+import { ShopTab, tabs } from "./types"
 
 // use own scale values
 const SCALE_DOWN_VALUE = 0.8
@@ -11,14 +12,14 @@ const SCALE_PEAK_VALUE = 1
 
 export const defaultShopTab = ShopTab.Seeds
 
-export class ShopTabs extends Phaser.GameObjects.Container {
+export class ShopTabs extends ContainerLite {
     // private property to store the selected tab
     private selectedTab: ShopTab = defaultShopTab
     // private property to store the tab map
     private tabMap: Partial<Record<ShopTab, Phaser.GameObjects.Container>> = {}
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        super(scene, x, y)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         // add the buttons
         for (const shopTab of Object.values(ShopTab)) {
             this.createTab(shopTab)
@@ -157,11 +158,9 @@ export class ShopTabs extends Phaser.GameObjects.Container {
             // set the position of the tab
             value.setPosition(count * (width - 60), 0)
             // add the tab to the container
-            this.add(value)
+            this.addLocal(value)
             // increment the count
             count++
         }
-        // reverse the tabs
-        this.reverse()
     }
 }

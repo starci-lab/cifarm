@@ -13,22 +13,16 @@ export class ShopBackground extends ContainerLite {
         this.wall = this.scene.add
             .image(0, -170, BaseAssetKey.ModalShopWall)
             .setOrigin(0.5, 1)
-        this.pinLocal(this.wall, {
-            syncPosition: true,
-        })
+        this.addLocal(this.wall)
 
         this.bottomBar = this.scene.add
             .image(0, 0, BaseAssetKey.ModalShopBottomBar)
             .setOrigin(0.5, 1)
-        this.pinLocal(this.bottomBar, {
-            syncPosition: true,
-        })
+        this.addLocal(this.bottomBar)
 
         this.bottomDecorator = this.scene.add
             .image(0, 0, BaseAssetKey.ModalShopBottomDecorator)
             .setOrigin(0.5, 1)
-        this.pinLocal(this.bottomDecorator, {
-            syncPosition: true,
-        })
+        this.addLocal(this.bottomDecorator)
     }
 }

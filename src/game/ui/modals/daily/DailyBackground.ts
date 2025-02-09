@@ -1,22 +1,23 @@
-import { BaseAssetKey } from "../../../assets"
-import { ContainerBaseConstructorParams } from "../../../types"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { BaseAssetKey } from "../../../assets"
+import { EventName } from "../../../event-bus"
+import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText, StrokeColor } from "../../elements"
 import { onGameObjectClick } from "../../utils"
-import { EventName } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
 
-export class DailyBackground extends Phaser.GameObjects.Container {
+export class DailyBackground extends ContainerLite {
     private wall: Phaser.GameObjects.Image
     private dailyTitle: Label
     private closeButton: Phaser.GameObjects.Image | undefined
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        super(scene, x, y)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
         
         // create the wall
         this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalDailyWall)
-        this.add(this.wall)
+        this.addLocal(this.wall)
 
         // create the daily title
         const dailyTitle = this.scene.add.image(0, 0, BaseAssetKey.ModalDailyTitle)
@@ -44,7 +45,7 @@ export class DailyBackground extends Phaser.GameObjects.Container {
         }).setInnerPadding({
             bottom: 40,
         }).layout().setPosition(0, -360)
-        this.add(this.dailyTitle)
+        this.addLocal(this.dailyTitle)
 
         // create the close button
         this.closeButton = this.createCloseButton()
@@ -70,7 +71,7 @@ export class DailyBackground extends Phaser.GameObjects.Container {
         // set the position of the close button
         closeButton.setPosition(this.wall.width / 2 - 100, - this.wall.height / 2 + 50)
         // add the close button to the sizer
-        this.add(closeButton)
+        this.addLocal(closeButton)
         return closeButton
     }
 }
