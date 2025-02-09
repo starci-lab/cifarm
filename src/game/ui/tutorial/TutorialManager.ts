@@ -62,7 +62,6 @@ export class TutorialManager extends ContainerLite {
         })
         this.scene.add.existing(this.stacy)
 
-
         this.stacy.setDepth(calculateDepth({
             layer: SceneLayer.Tutorial,
             layerDepth: 1,

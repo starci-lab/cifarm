@@ -6,7 +6,7 @@ export const getInventorySeed = ({
     cropId,
     scene,
     inventories,
-}: CheckSeedFromInventoriesParams) => {
+}: GetInventorySeedParams) => {
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
@@ -23,7 +23,7 @@ export const getInventorySeed = ({
     return inventories.find(({ inventoryTypeId }) => inventoryTypeId === inventoryType.id)
 }
 
-export interface CheckSeedFromInventoriesParams {
+export interface GetInventorySeedParams {
   // cropId to check
   cropId: CropId;
   // scene to display the modal

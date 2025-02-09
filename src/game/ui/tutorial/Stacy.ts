@@ -8,8 +8,8 @@ import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     EventBus,
     EventName,
-    TutorialOpenShopResponsedMessage,
-    TutorialShopButtonPressedResponsedMessage,
+    TutorialCloseShopPressedMessage,
+    TutorialOpenShopPressedMessage,
 } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -138,19 +138,20 @@ export class Stacy extends ContainerLite {
 
             switch (this.user.tutorialStep) {
             case TutorialStep.StartBuySeeds: {
-                // turn off the stacy
+                // when user open the shop
                 this.scene.events.once(
-                    EventName.TutorialOpenShopResponsed,
-                    ({ position }: TutorialOpenShopResponsedMessage) => {
+                    EventName.TutorialOpenShopPressed,
+                    ({ position }: TutorialOpenShopPressedMessage) => {
                         this.displayPressHereArrow({
                             originPosition: { x: position.x + 60, y: position.y + 60 },
                             targetPosition: { x: position.x + 40, y: position.y + 40 },
                         })
                     }
                 )
+                // when use 
                 this.scene.events.once(
-                    EventName.TutorialShopButtonPressedResponsed,
-                    ({ position }: TutorialShopButtonPressedResponsedMessage) => {
+                    EventName.TutorialCloseShopPressed,
+                    ({ position }: TutorialCloseShopPressedMessage) => {
                         this.displayPressHereArrow({
                             requireSetVisibility: false,
                             originPosition: { x: position.x + 60, y: position.y + 60 },

@@ -32,18 +32,16 @@ import {
     EventBus,
     EventName,
     PlacedInprogressMessage,
-    TutorialOpenShopResponsedMessage,
+    TutorialOpenShopPressedMessage,
 } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateDepth, SceneLayer } from "@/game/layers"
-import { CONTENT_DEPTH } from "./ShopModal"
+import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
 import { getInventorySeed } from "../queries"
 
 // own depth for the shop content
-export const HIGHLIGHT_DEPTH = 2
-export const BASE_DEPTH = 0
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
 
 export const defaultSeedCropId = CropId.Carrot
@@ -113,7 +111,7 @@ export class ShopContent extends BaseSizer {
             if (!this.defaultItemCard) {
                 throw new Error("Default item card is not found")
             }
-            
+
             if (getInventorySeed({
                 cropId: defaultSeedCropId,
                 scene: this.scene,
@@ -125,15 +123,12 @@ export class ShopContent extends BaseSizer {
 
             this.isTutorialBuySeed = true
 
-            this.defaultItemCard.setDepth(calculateDepth({
-                layer: SceneLayer.Tutorial,
-                layerDepth: 1,
-            }))
+            this.defaultItemCard.setDepth(HIGHLIGH_DEPTH)
 
             // disable the default scroller
             this.disableDefaultScroller()
 
-            const eventMessage: TutorialOpenShopResponsedMessage = {
+            const eventMessage: TutorialOpenShopPressedMessage = {
                 position: this.defautSeedButtonPosition,
             }
             this.scene.events.emit(

@@ -1,6 +1,6 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
-import { EventName, TutorialOpenShopResponsedMessage } from "../../event-bus"
+import { EventName, TutorialOpenShopPressedMessage } from "../../event-bus"
 import { ButtonsBaseConstructorParams } from "../../types"
 import { ModalName } from "../modals"
 import { HorizontalButtons } from "./HorizontalButtons"
@@ -67,10 +67,10 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                 layer: SceneLayer.Tutorial,
                 layerDepth: 2,
             }))
-            const eventMessage: TutorialOpenShopResponsedMessage = {
+            const eventMessage: TutorialOpenShopPressedMessage = {
                 position: this.shopButton.getCenter()
             }
-            this.scene.events.emit(EventName.TutorialOpenShopResponsed, eventMessage)
+            this.scene.events.emit(EventName.TutorialOpenShopPressed, eventMessage)
             // if shop button is press, we will console go
             this.shopButton.once("pointerdown", () => {
                 // return to normal depth
