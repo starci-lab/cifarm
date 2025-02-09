@@ -1,142 +1,110 @@
-// we use range of GID from 10001 - 12000 to represent different types of animals
 import { AnimalId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { TextureConfig, TilesetConfig } from "./types"
 
 export enum AnimalAge {
-  Baby = "baby",
-  Adult = "adult",
+    Baby = "baby",
+    Adult = "adult",
+}
+
+export interface ProductAssetData {
+    textureConfig: TextureConfig;
+}
+
+export interface AnimalAgeAssetData {
+    textureConfig: TextureConfig;
+    tilesetConfig: TilesetConfig;
 }
 
 export interface AnimalAssetData {
-  name: string;
-  ages: Record<AnimalAge, AnimalAgeAssetData>;
+    name: string;
+    ages: Record<AnimalAge, AnimalAgeAssetData>;
+    product: ProductAssetData;
 }
 
-// Crop Asset Data Interface
-export interface AnimalAgeAssetData {
-  textureConfig: TextureConfig;
-  tilesetConfig: TilesetConfig;
-}
-
-// Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
     [AnimalId.Cow]: {
         name: "Cow",
         ages: {
             [AnimalAge.Baby]: {
-                textureConfig: {
-                    key: "animals-cow-baby",
-                    assetUrl: "animals/cow/baby.png",
-                },
-                tilesetConfig: {
-                    gid: 10001,
-                    tilesetName: "animals-cow-baby",
-                },
+                textureConfig: { key: "animals-cow-baby", assetUrl: "animals/cow/baby.png" },
+                tilesetConfig: { gid: 10001, tilesetName: "animals-cow-baby" },
             },
             [AnimalAge.Adult]: {
-                textureConfig: {
-                    key: "animals-cow-adult",
-                    assetUrl: "animals/cow/adult.png",
-                },
-                tilesetConfig: {
-                    gid: 10002,
-                    tilesetName: "animals-cow-adult",
-                },
+                textureConfig: { key: "animals-cow-adult", assetUrl: "animals/cow/adult.png" },
+                tilesetConfig: { gid: 10002, tilesetName: "animals-cow-adult" },
             },
         },
+        product: {
+            textureConfig: { key: "milk", assetUrl: "animals/cow/milk.png" }
+        }
     },
     [AnimalId.Chicken]: {
         name: "Chicken",
         ages: {
             [AnimalAge.Baby]: {
-                textureConfig: {
-                    key: "animals-chicken-baby",
-                    assetUrl: "animals/chicken/baby.png",
-                },
-                tilesetConfig: {
-                    gid: 10011,
-                    tilesetName: "animals-chicken-baby",
-                },
+                textureConfig: { key: "animals-chicken-baby", assetUrl: "animals/chicken/baby.png" },
+                tilesetConfig: { gid: 10011, tilesetName: "animals-chicken-baby" },
             },
             [AnimalAge.Adult]: {
-                textureConfig: {
-                    key: "animals-chicken-adult",
-                    assetUrl: "animals/chicken/adult.png",
-                },
-                tilesetConfig: {
-                    gid: 10012,
-                    tilesetName: "animals-chicken-adult",
-                },
+                textureConfig: { key: "animals-chicken-adult", assetUrl: "animals/chicken/adult.png" },
+                tilesetConfig: { gid: 10012, tilesetName: "animals-chicken-adult" },
             },
         },
+        product: {
+            textureConfig: { key: "egg", assetUrl: "animals/chicken/egg.png" }
+        }
     },
     [AnimalId.Pig]: {
         name: "Pig",
         ages: {
             [AnimalAge.Baby]: {
-                textureConfig: {
-                    key: "animals-pig-baby",
-                    assetUrl: "animals/pig/baby.png",
-                },
-                tilesetConfig: {
-                    gid: 10022,
-                    tilesetName: "animals-pig-baby",
-                },
+                textureConfig: { key: "animals-pig-baby", assetUrl: "animals/pig/baby.png" },
+                tilesetConfig: { gid: 10022, tilesetName: "animals-pig-baby" },
             },
             [AnimalAge.Adult]: {
-                textureConfig: {
-                    key: "animals-pig-adult",
-                    assetUrl: "animals/pig/adult.png",
-                },
-                tilesetConfig: {
-                    gid: 10023,
-                    tilesetName: "animals-pig-adult",
-                },
+                textureConfig: { key: "animals-pig-adult", assetUrl: "animals/pig/adult.png" },
+                tilesetConfig: { gid: 10023, tilesetName: "animals-pig-adult" },
             },
         },
+        product: {
+            textureConfig: { key: "meat", assetUrl: "animals/pig/pork.png" }
+        }
     },
     [AnimalId.Sheep]: {
         name: "Sheep",
         ages: {
             [AnimalAge.Baby]: {
-                textureConfig: {
-                    assetUrl: "animals/sheep/baby.png",
-                    key: "animals-sheep-baby",
-                },
-                tilesetConfig: {
-                    gid: 10031,
-                    tilesetName: "animals-sheep-baby",
-                },
+                textureConfig: { key: "animals-sheep-baby", assetUrl: "animals/sheep/baby.png" },
+                tilesetConfig: { gid: 10031, tilesetName: "animals-sheep-baby" },
             },
             [AnimalAge.Adult]: {
-                textureConfig: {
-                    assetUrl: "animals/sheep/adult.png",
-                    key: "animals-sheep-adult",
-                },
-                tilesetConfig: {
-                    gid: 10032,
-                    tilesetName: "animals-sheep-adult",
-                },
+                textureConfig: { key: "animals-sheep-adult", assetUrl: "animals/sheep/adult.png" },
+                tilesetConfig: { gid: 10032, tilesetName: "animals-sheep-adult" },
             },
         },
-    },
+        product: {
+            textureConfig: { key: "wool", assetUrl: "animals/sheep/wool.png" }
+        }
+    }
 }
 
-// Function to load animals assets (images) for each animal
+// Function to load animal assets in Phaser scene
 export const loadAnimalAssets = (scene: Scene) => {
-    // Iterate over each animalId in the animalAssetDataMap
     Object.keys(animalAssetMap).forEach((animalId) => {
         const _animalId = animalId as AnimalId
         const animalData = animalAssetMap[_animalId]
 
         if (!animalData) {
-            throw new Error(`Animal data not found for animalId: ${animalId}`)
+            throw new Error(`Animal asset data not found for animalId: ${animalId}`)
         }
-        // Load animal assets (e.g., Cow baby and adult)
+
         for (const age of Object.values(AnimalAge)) {
             const { key, assetUrl } = animalData.ages[age].textureConfig
             scene.load.image(key, assetUrl)
         }
+
+        // Load animal product
+        scene.load.image(animalData.product.textureConfig.key, animalData.product.textureConfig.assetUrl)
     })
 }
