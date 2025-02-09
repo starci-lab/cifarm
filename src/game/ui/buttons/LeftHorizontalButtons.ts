@@ -4,7 +4,7 @@ import { EventName, TutorialOpenShopResponsedMessage } from "../../event-bus"
 import { ButtonsBaseConstructorParams } from "../../types"
 import { ModalName } from "../modals"
 import { HorizontalButtons } from "./HorizontalButtons"
-import { calculateDepth, SceneLayer } from "../../layers"
+import { calculateUiDepth, UILayer } from "../../layers"
 
 export class LeftHorizontalButtons extends HorizontalButtons {
     private nftMarketplaceButton : Sizer
@@ -63,8 +63,8 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenShop, () => {
-            this.shopButton.setDepth(calculateDepth({
-                layer: SceneLayer.Tutorial,
+            this.shopButton.setDepth(calculateUiDepth({
+                layer: UILayer.Tutorial,
                 layerDepth: 2,
             }))
             const eventMessage: TutorialOpenShopResponsedMessage = {
@@ -74,8 +74,8 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             // if shop button is press, we will console go
             this.shopButton.once("pointerdown", () => {
                 // return to normal depth
-                this.shopButton.setDepth(calculateDepth({
-                    layer: SceneLayer.UI,
+                this.shopButton.setDepth(calculateUiDepth({
+                    layer: UILayer.Base,
                 }))
                 // emit the event
                 this.scene.events.emit(EventName.TutorialShopButtonPressed)

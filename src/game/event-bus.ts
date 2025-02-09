@@ -49,6 +49,12 @@ export enum EventName {
     OpenTutorial = "open_tutorial",
     CloseTutorial = "close_tutorial",
 
+    // backdrops
+    ShowGameplayBackdrop = "show_gameplay_backdrop",
+    HideGameplayBackdrop = "hide_gameplay_backdrop",
+    ShowUIBackdrop = "show_ui_backdrop",
+    HideUIBackdrop = "hide_ui_backdrop",
+
     // hide press here arrow
     HidePressHereArrow = "hide_press_here_arrow",
     
@@ -131,4 +137,14 @@ export interface PlacedInprogressMessage {
     // placed item
     id: string,
     type: PlacedItemType
+}
+
+export interface ShowGameplayBackdropMessage {
+    // depth of the backdrop
+    depth?: number
+}
+
+export interface ShowUIBackdropMessage {
+    // depth of the backdrop
+    depth?: number
 }

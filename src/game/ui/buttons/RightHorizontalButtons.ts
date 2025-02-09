@@ -4,7 +4,7 @@ import { EventName, TutorialOpenShopResponsedMessage } from "../../event-bus"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { ButtonsBaseConstructorParams } from "@/game/types"
 import { ModalName } from "../modals"
-import { calculateDepth, SceneLayer } from "../../layers"
+import { calculateUiDepth, UILayer } from "../../layers"
 
 export class RightHorizontalButtons extends HorizontalButtons {
     private settingButton: Sizer
@@ -63,8 +63,8 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenInventory, () => {
-            this.inventoryButton.setDepth(calculateDepth({
-                layer: SceneLayer.Tutorial,
+            this.inventoryButton.setDepth(calculateUiDepth({
+                layer: UILayer.Tutorial,
                 layerDepth: 2,
             }))
             const eventMessage: TutorialOpenShopResponsedMessage = {
@@ -74,8 +74,8 @@ export class RightHorizontalButtons extends HorizontalButtons {
             // if shop button is press, we will console go
             this.inventoryButton.once("pointerdown", () => {
                 // return to normal depth
-                this.inventoryButton.setDepth(calculateDepth({
-                    layer: SceneLayer.UI,
+                this.inventoryButton.setDepth(calculateUiDepth({
+                    layer: UILayer.Base,
                 }))
                 // emit the event
                 this.scene.events.emit(EventName.TutorialInventoryButtonPressed)

@@ -10,18 +10,18 @@ import {
     getScreenLeftX,
 } from "../../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { calculateDepth, SceneLayer } from "../../../layers"
+import { calculateUiDepth, UILayer } from "../../../layers"
 import { IModal } from "@/game/interfaces"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
-export const CONTENT_DEPTH = calculateDepth({
-    layer: SceneLayer.Modal,
+export const CONTENT_DEPTH = calculateUiDepth({
+    layer: UILayer.Modal,
     additionalDepth: 10,
     layerDepth: 1,
 })
 
-export const HIGHLIGH_DEPTH = calculateDepth({
-    layer: SceneLayer.Tutorial,
+export const HIGHLIGH_DEPTH = calculateUiDepth({
+    layer: UILayer.Tutorial,
     layerDepth: 1,
 })
 

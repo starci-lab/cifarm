@@ -1,7 +1,5 @@
-import { EventName } from "@/game/event-bus"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { BLACK_COLOR, SCALE_TIME } from "../../constants"
-import { ContainerLiteBaseConstructorParams } from "../../types"
+import { EventBus, EventName } from "@/game/event-bus"
+import { SCALE_TIME } from "../../constants"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
@@ -9,7 +7,9 @@ import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { StandModal } from "./stand"
-import { calculateDepth, SceneLayer } from "@/game/layers"
+import { calculateUiDepth, UILayer } from "@/game/layers"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { ContainerLiteBaseConstructorParams } from "@/game/types"
 
 export enum ModalName {
   Shop = "shop",
@@ -21,8 +21,6 @@ export enum ModalName {
 }
 
 export class ModalManager extends ContainerLite {
-    // the backdrop
-    private backdrop: Phaser.GameObjects.Rectangle | undefined
     // the shop modal
     private shopModal: ShopModal | undefined
     // inventory modal
@@ -36,30 +34,16 @@ export class ModalManager extends ContainerLite {
     // neighbors
     private neighborsModal: NeighborsModal | undefined
 
-    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+    constructor({ scene, x, y, width, height, children } : ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
-        // get the width and height of the game
-        this.backdrop = this.scene.add
-            .rectangle(
-                getScreenCenterX(this.scene),
-                getScreenCenterY(this.scene),
-                width,
-                height,
-                BLACK_COLOR,
-                0.5
-            )
-            .setInteractive().setDepth(calculateDepth({
-                layer: SceneLayer.Modal,
-            }))
-        this.add(this.backdrop)
 
         // create the shop modal
         this.shopModal = new ShopModal({
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).setDepth(calculateDepth({
-            layer: SceneLayer.Modal,
+        }).setDepth(calculateUiDepth({
+            layer: UILayer.Modal,
             layerDepth: 1
         })).hide()
         this.scene.add.existing(this.shopModal)
@@ -70,10 +54,8 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-            width,
-            height
-        }).setDepth(calculateDepth({
-            layer: SceneLayer.Modal,
+        }).setDepth(calculateUiDepth({
+            layer: UILayer.Modal,
             layerDepth: 1
         })).hide()
         this.scene.add.existing(this.inventoryModal)
@@ -83,8 +65,8 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).setDepth(calculateDepth({
-            layer: SceneLayer.Modal,
+        }).setDepth(calculateUiDepth({
+            layer: UILayer.Modal,
             layerDepth: 1
         })).hide()
         this.scene.add.existing(this.dailyModal)
@@ -94,8 +76,8 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).setDepth(calculateDepth({
-            layer: SceneLayer.Modal,
+        }).setDepth(calculateUiDepth({
+            layer: UILayer.Modal,
             layerDepth: 1
         })).hide()
         this.scene.add.existing(this.questModal)
@@ -105,10 +87,8 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-            width,
-            height,
-        }).setDepth(calculateDepth({
-            layer: SceneLayer.Modal,
+        }).setDepth(calculateUiDepth({
+            layer: UILayer.Modal,
             layerDepth: 1
         })).hide()
         this.scene.add.existing(this.standModal)
@@ -117,8 +97,8 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenCenterY(this.scene),
-        }).setDepth(calculateDepth({
-            layer: SceneLayer.Modal,
+        }).setDepth(calculateUiDepth({
+            layer: UILayer.Modal,
             layerDepth: 1
         })).hide()
         this.scene.add.existing(this.neighborsModal)
@@ -133,12 +113,20 @@ export class ModalManager extends ContainerLite {
         })
 
         // close the modal manager by default
-        this.setActive(false).setVisible(false)
+        this.hideBackdrop()
+    }
 
-        // set the depth
-        this.setDepth(calculateDepth({
-            layer: SceneLayer.Modal
-        }))
+    // show method, to show the modal
+    private showBackdrop() {
+        EventBus.emit(EventName.ShowUIBackdrop, {
+            depth: calculateUiDepth({
+                layer: UILayer.Modal,
+            })
+        })
+    }
+
+    private hideBackdrop() {
+        EventBus.emit(EventName.HideUIBackdrop)
     }
 
     private getModal(name: ModalName) {
@@ -183,18 +171,18 @@ export class ModalManager extends ContainerLite {
     }
 
     private onOpen(name: ModalName) {
-        this.setActive(true).setVisible(true)
+        this.showBackdrop()
         const modal = this.getModal(name)
         // disable modal input
-        if (this.input) {
-            this.input.enabled = false
+        if (modal.input) {
+            modal.input.enabled = false
         }
         // show the modal
         modal.show().popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
-            if (this.input) {
-                this.input.enabled = true
+            if (modal.input) {
+                modal.input.enabled = true
             }
         })
     }
@@ -203,6 +191,6 @@ export class ModalManager extends ContainerLite {
         const modal = this.getModal(name)
         // hide the modal
         modal.hide()
-        this.setActive(false).setVisible(false)
+        this.hideBackdrop()
     }
 }

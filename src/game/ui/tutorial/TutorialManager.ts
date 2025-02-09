@@ -1,9 +1,9 @@
 import {
     CloseTutorialMessage,
+    EventBus,
     EventName,
     OpenTutorialMessage,
 } from "../../event-bus"
-import { BLACK_COLOR } from "../../constants"
 import {
     CacheKey,
     ContainerLiteBaseConstructorParams,
@@ -11,12 +11,10 @@ import {
 import { UserEntity } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
-import { getScreenCenterX, getScreenCenterY } from "../utils"
-import { calculateDepth, SceneLayer } from "@/game/layers"
+import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 
 export class TutorialManager extends ContainerLite {
-    private backdrop: Phaser.GameObjects.Rectangle | undefined
     private user: UserEntity
     private stacy: Stacy
 
@@ -29,21 +27,7 @@ export class TutorialManager extends ContainerLite {
 
         // get the user from the cache
         this.user = this.scene.cache.obj.get(CacheKey.User)
-        
-        // get the width and height of the game
-        const scale = this.scene.game.scale
-        this.backdrop = this.scene.add
-            .rectangle(
-                getScreenCenterX(this.scene),
-                getScreenCenterY(this.scene),
-                scale.width,
-                scale.height,
-                BLACK_COLOR,
-                0.5
-            )
-            .setInteractive()
-        this.add(this.backdrop)
-
+    
         this.scene.events.on(
             EventName.OpenTutorial,
             (message: OpenTutorialMessage) => {
@@ -62,15 +46,11 @@ export class TutorialManager extends ContainerLite {
         })
         this.scene.add.existing(this.stacy)
 
-        this.stacy.setDepth(calculateDepth({
-            layer: SceneLayer.Tutorial,
+        this.stacy.setDepth(calculateUiDepth({
+            layer: UILayer.Tutorial,
             layerDepth: 1,
         }))
         this.start()
-
-        this.setDepth(calculateDepth({
-            layer: SceneLayer.Tutorial,
-        }))
     }
 
     //run on start
@@ -86,23 +66,28 @@ export class TutorialManager extends ContainerLite {
         console.log(message, phase)
     }
 
+    private showBackdrop() {
+        EventBus.emit(EventName.ShowUIBackdrop, {
+            depth: calculateUiDepth({
+                layer: UILayer.Tutorial,
+            }),
+        })
+    }
+
+    private hideBackdrop() {
+        EventBus.emit(EventName.HideUIBackdrop)
+    }
+
     // open the tutorial
     private onOpen({ tutorialStep }: OnOpenParams) {
-        if (!this.backdrop) {
-            throw new Error("Backdrop not found")
-        }
-        this.setActive(true).setVisible(true)
-
+        this.showBackdrop()
         this.stacy.show()
         this.stacy.render()
     }
 
     // close the tutorial
     private onClose({ tutorialStep }: OnCloseParams) {
-        if (!this.backdrop) {
-            throw new Error("Backdrop not found")
-        }
-        this.setActive(false).setVisible(false)
+        this.hideBackdrop()
         this.stacy.hide()
     }
 }

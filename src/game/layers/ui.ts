@@ -1,44 +1,44 @@
-export enum SceneLayer {
-  UI = "ui",
+export enum UILayer {
+  Base = "base",
   Modal = "modal",
   Tutorial = "tutorial",
   Overlay = "overlay",
 }
 
-export interface UISceneLayerData {
+export interface UILayerData {
   depth: number;
 }
 
-export const layerMap: Record<SceneLayer, UISceneLayerData> = {
-    [SceneLayer.UI]: {
+export const layerMap: Record<UILayer, UILayerData> = {
+    [UILayer.Base]: {
+        depth: 0,
+    },
+    [UILayer.Modal]: {
         depth: 1000,
     },
-    [SceneLayer.Modal]: {
+    [UILayer.Tutorial]: {
         depth: 2000,
     },
-    [SceneLayer.Tutorial]: {
+    [UILayer.Overlay]: {
         depth: 3000,
-    },
-    [SceneLayer.Overlay]: {
-        depth: 4000,
     },
 }
 
 // Layer depth constants to define stacking order
-export const DEEP_LEVEL_INCREMENT = 100
+const DEEP_LEVEL_INCREMENT = 100
 
-export interface CalculateDepthParams {
-  layer: SceneLayer;
+export interface CalculateUIDepthParams {
+  layer: UILayer;
   layerDepth?: number;
   additionalDepth?: number;
 }
 
 // Using the function with the new parameter names
-export const calculateDepth = ({
+export const calculateUiDepth = ({
     layer,
     layerDepth = 0,
     additionalDepth = 0,
-}: CalculateDepthParams) => {
+}: CalculateUIDepthParams) => {
     if (0 > layerDepth || layerDepth > 9) {
         throw new Error("Invalid layer depth")
     }

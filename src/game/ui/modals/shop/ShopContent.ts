@@ -36,7 +36,7 @@ import {
 } from "../../../event-bus"
 import { ModalName } from "../ModalManager"
 import { BuySeedsRequest } from "@/modules/axios"
-import { calculateDepth, SceneLayer } from "../../../layers"
+import { calculateUiDepth, UILayer } from "../../../layers"
 import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
 import { getInventorySeed } from "../queries"
 import { sleep } from "@/modules/common"
@@ -288,8 +288,8 @@ export class ShopContent extends BaseSizer {
             .layout()
 
         // set the position of the fly item
-        flyItem.setDepth(calculateDepth({
-            layer: SceneLayer.Overlay
+        flyItem.setDepth(calculateUiDepth({
+            layer: UILayer.Overlay
         })).setPosition(pointer.x, pointer.y)
         // Play the animation with fading effect before destruction
         this.scene.tweens.add({

@@ -6,6 +6,7 @@ import {
     RightHorizontalButtons,
     Toolbar,
     Topbar,
+    UIBackdrop,
 } from "../ui"
 import { TutorialManager } from "../ui"
 
@@ -15,7 +16,13 @@ export class UIScene extends Scene {
     }
 
     create() {
-        const { width, height } = this.game.scale
+        const { width } = this.game.scale
+        // Add the backdrop
+        const backdrop = new UIBackdrop({
+            scene: this,
+        })
+        this.add.existing(backdrop)
+
         // Add the left horizontal buttons
         const leftHorizontalButtons = new LeftHorizontalButtons({
             scene: this,
@@ -39,12 +46,10 @@ export class UIScene extends Scene {
 
         // add the modal manager
         const modalManager = new ModalManager({
-            scene: this,
-            width,
-            height
+            scene: this
         })
         this.add.existing(modalManager)
-        
+
         // add the tutorial manager
         const tutorialManager = new TutorialManager({
             scene: this
