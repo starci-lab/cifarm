@@ -1,14 +1,14 @@
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseAssetKey } from "../../../assets"
-import { ContainerBaseConstructorParams } from "../../../types"
+import { ContainerLiteBaseConstructorParams } from "../../../types"
 
 export class ShopBackground extends ContainerLite {
     private wall: Phaser.GameObjects.Image | undefined
     private bottomBar: Phaser.GameObjects.Image | undefined
     private bottomDecorator: Phaser.GameObjects.Image | undefined
 
-    constructor({ scene, x, y }: ContainerBaseConstructorParams) {
-        super(scene, x, y)
+    constructor({ scene, x, y, height, width, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
 
         this.wall = this.scene.add
             .image(0, -170, BaseAssetKey.ModalShopWall)

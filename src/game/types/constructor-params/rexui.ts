@@ -65,3 +65,12 @@ export interface GridTableBaseConstructorParams {
   height: number;
   config?: GridTable.IConfig;
 }
+
+export interface ContainerLiteBaseConstructorParams {
+  scene: Phaser.Scene;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  children?: Array<Phaser.GameObjects.GameObject>;
+}
