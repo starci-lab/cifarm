@@ -4,7 +4,7 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
 import { BaseText, NinePatch3x3, TextColor } from "../elements"
 import { sleep } from "@/modules/common"
-import { CacheKey, ContainerBaseConstructorParams } from "../../types"
+import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     EventBus,
     EventName,
@@ -12,17 +12,24 @@ import {
     TutorialShopButtonPressedResponsedMessage,
 } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
-import { calculateDepth, SceneLayer } from "@/game/layers"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 
-export class Stacy extends Phaser.GameObjects.Group {
+export class Stacy extends ContainerLite {
     private stacyImage: Phaser.GameObjects.Image
     private stacyBubble: Label
     private pressToContinueText: Phaser.GameObjects.Text
     private user: UserEntity
     private pressHereArrow: Phaser.GameObjects.Image
 
-    constructor({ scene }: ContainerBaseConstructorParams) {
-        super(scene)
+    constructor({
+        scene,
+        x,
+        y,
+        width,
+        height,
+        children,
+    }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
 
         this.pressToContinueText = new BaseText({
             baseParams: {
@@ -34,12 +41,6 @@ export class Stacy extends Phaser.GameObjects.Group {
         })
             .setOrigin(0.5, 1)
             .setVisible(false)
-            .setDepth(
-                calculateDepth({
-                    layer: SceneLayer.Tutorial,
-                    additionalDepth: 1,
-                })
-            )
         this.scene.add.existing(this.pressToContinueText)
 
         // press here arrow
@@ -47,12 +48,6 @@ export class Stacy extends Phaser.GameObjects.Group {
             .image(0, 0, BaseAssetKey.PressHereArrow)
             .setOrigin(0.5, 0)
             .setVisible(false)
-            .setDepth(
-                calculateDepth({
-                    layer: SceneLayer.Tutorial,
-                    layerDepth: 1,
-                })
-            )
 
         // stacy image
         this.stacyImage = this.scene.add
@@ -62,7 +57,7 @@ export class Stacy extends Phaser.GameObjects.Group {
                 ""
             )
             .setOrigin(0.5, 1)
-        this.add(this.stacyImage)
+        this.pin(this.stacyImage, {})
 
         // add nine patch
         const bubbleNinePatch = new NinePatch3x3({
@@ -113,14 +108,7 @@ export class Stacy extends Phaser.GameObjects.Group {
             .setMinHeight(500)
             .setMinWidth(500)
             .layout()
-        //require set depth since sizer cannot set depth during the group set depth
-            .setDepth(
-                calculateDepth({
-                    layer: SceneLayer.Tutorial,
-                    additionalDepth: 1,
-                })
-            )
-        this.add(this.stacyBubble)
+        this.pin(this.stacyBubble, {})
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.hide()

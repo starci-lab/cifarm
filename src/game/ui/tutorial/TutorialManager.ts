@@ -6,33 +6,38 @@ import {
 import { BLACK_COLOR } from "../../constants"
 import {
     CacheKey,
-    GroupBaseConstructorParams,
+    ContainerLiteBaseConstructorParams,
 } from "../../types"
 import { UserEntity } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
-import { calculateDepth, layerMap, SceneLayer } from "@/game/layers"
+import { calculateDepth, SceneLayer } from "@/game/layers"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 
-export class TutorialManager extends Phaser.GameObjects.Group {
+export class TutorialManager extends ContainerLite {
     private backdrop: Phaser.GameObjects.Rectangle | undefined
     private user: UserEntity
     private stacy: Stacy
 
-    constructor({ scene, children, config }: GroupBaseConstructorParams) {
-        super(scene, children, config)
+    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
+        super(scene, x, y, width, height, children)
+
+        // set the size of the container to the size of the game
+        const { width: gameWidth, height: gameHeight } = scene.game.scale
+        this.setSize(gameWidth, gameHeight)
 
         // get the user from the cache
         this.user = this.scene.cache.obj.get(CacheKey.User)
         
         // get the width and height of the game
-        const { width, height } = this.scene.game.scale
+        const scale = this.scene.game.scale
         this.backdrop = this.scene.add
             .rectangle(
                 getScreenCenterX(this.scene),
                 getScreenCenterY(this.scene),
-                width,
-                height,
+                scale.width,
+                scale.height,
                 BLACK_COLOR,
                 0.5
             )
@@ -51,15 +56,18 @@ export class TutorialManager extends Phaser.GameObjects.Group {
                 this.onClose(message)
             }
         )
-        // create Stacy, we use depth+1 to make sure it is above the tutorial
+        // create Stacy
         this.stacy = new Stacy({
             scene: this.scene,
         })
         this.scene.add.existing(this.stacy)
+        this.pin(this.stacy, {})
+
         this.stacy.setDepth(calculateDepth({
             layer: SceneLayer.Tutorial,
             additionalDepth: 1,
         }))
+        console.log(this.stacy)
         this.start()
     }
 
