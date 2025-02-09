@@ -13,7 +13,7 @@ import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { tutorialContext } from "@/game/contexts"
+import { TutorialContext } from "@/game/contexts"
 
 export class TutorialManager extends ContainerLite {
     private user: UserEntity
@@ -57,8 +57,8 @@ export class TutorialManager extends ContainerLite {
     //run on start
     private start() {
         // set the tutorial to active
-        tutorialContext.isTutorialActive = true
-        
+        TutorialContext.isTutorialActive = true
+
         const { lastOfThisPhase, message, phase } =
       tutorialStepMap[this.user.tutorialStep]
         // do nothing if the tutorial step is last of this phase

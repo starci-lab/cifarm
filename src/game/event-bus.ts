@@ -52,6 +52,7 @@ export enum EventName {
     // backdrops
     ShowGameplayBackdrop = "show_gameplay_backdrop",
     HideGameplayBackdrop = "hide_gameplay_backdrop",
+    UpdateGameplayBackdrop = "update_gameplay_backdrop",
     ShowUIBackdrop = "show_ui_backdrop",
     HideUIBackdrop = "hide_ui_backdrop",
 
@@ -141,10 +142,15 @@ export interface PlacedInprogressMessage {
 
 export interface ShowGameplayBackdropMessage {
     // depth of the backdrop
-    depth?: number
+    depth: number
 }
 
 export interface ShowUIBackdropMessage {
     // depth of the backdrop
-    depth?: number
+    depth: number
+}
+
+export interface UpdateGameplayBackdropMessage {
+    // position of the backdrop
+    scrollXY: Position
 }

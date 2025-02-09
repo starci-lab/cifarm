@@ -46,6 +46,7 @@ export class InputTilemap extends ItemTilemap {
             const scaleFactor = dragScale.scaleFactor
             camera.zoom *= scaleFactor
         })
+
         // add event listener for mouse wheel event
         this.scene.input.on(
             "wheel",

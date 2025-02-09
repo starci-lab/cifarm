@@ -151,7 +151,6 @@ export class Stacy extends ContainerLite {
         this.scene.input.once("pointerdown", () => {
             // hide the press to continue text
             this.pressToContinueText?.setVisible(false)
-
             switch (this.user.tutorialStep) {
             case TutorialStep.StartBuySeeds: {
                 // when user press the shop button
@@ -235,14 +234,17 @@ export class Stacy extends ContainerLite {
         })
     }
 
+    //show the stacy
     public show() {
         this.setVisible(true).setActive(true)
     }
 
+    // hide the stacy
     public hide() {
         this.setVisible(false).setActive(false)
     }
 
+    // check if the stacy is shown
     public isShown() {
         return this.visible && this.active
     }

@@ -1,6 +1,7 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
+import { GameplayBackdrop } from "../ui"
 //import { EventName } from "../event-bus"
 
 export class GameplayScene extends Scene
@@ -33,6 +34,13 @@ export class GameplayScene extends Scene
         const y = (HEIGHT % 2 === 0 ? HEIGHT + 1 : HEIGHT) * TILE_HEIGHT
         this.cameras.main.centerOn(x, y)
 
+        // add the backdrop
+        const backdrop = new GameplayBackdrop({
+            scene: this
+        })
+        this.add.existing(backdrop)
+
+        // create the tilemap
         this.tileMap = new Tilemap({
             scene: this
         })

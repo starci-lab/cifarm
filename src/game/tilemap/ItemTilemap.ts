@@ -11,6 +11,7 @@ import { PlacedItemObject } from "./PlacedItemObject"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
+import { TutorialContext } from "../contexts"
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -50,7 +51,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // method to create tilesets for all tile assets
     private createTilesets() {
-        // create tilesets for all tile assets
+    // create tilesets for all tile assets
         for (const [, value] of Object.entries(tileAssetMap)) {
             this.createSingleTileTileset({
                 key: value.textureConfig.key,
@@ -63,7 +64,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         // create tilesets for all building assets
         for (const [, value] of Object.entries(buildingAssetMap)) {
-
             this.createSingleTileTileset({
                 key: value.textureConfig.key,
                 ...value.tilesetConfig,
@@ -92,7 +92,16 @@ export abstract class ItemTilemap extends GroundTilemap {
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemEntity> = []
 
-        for (const placedItem of placedItems) {
+        for (let i = 0; i < placedItems.length; i++) {
+            //  store the first and second tile starter ids
+            if (i === 0) {
+                this.firstTileStarterId = placedItems[i].id
+            } else if (i === 1) {
+                this.secondTileStarterId = placedItems[i].id
+            }
+
+            // get the placed item
+            const placedItem = placedItems[i]
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
             const found = previousPlacedItems.find(
                 (item) => item.id === placedItem.id
@@ -142,8 +151,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
 
         switch (found.type) {
-        case PlacedItemType.Tile:
-        {
+        case PlacedItemType.Tile: {
             if (!found.tileId) {
                 throw new Error("Tile ID not found")
             }
@@ -153,8 +161,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
             return tilesetConfig
         }
-        case PlacedItemType.Building:
-        {
+        case PlacedItemType.Building: {
             if (!found.buildingId) {
                 throw new Error("Building ID not found")
             }
@@ -164,8 +171,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
             return tilesetConfig
         }
-        case PlacedItemType.Animal:
-        {
+        case PlacedItemType.Animal: {
             throw new Error("Not implemented")
         }
         }
@@ -188,10 +194,16 @@ export abstract class ItemTilemap extends GroundTilemap {
         return found
     }
 
+    // tile starter ids, to keep track of the first and second tile
+    private firstTileStarterId: string | undefined
+    private secondTileStarterId: string | undefined
+
     // reusable method to place a tile for a given placed item
     private placeTileForItem(placedItem: PlacedItemEntity) {
     // get tileset data
-        const { gid, extraOffsets, tilesetName } = this.getTilesetData(placedItem.placedItemTypeId)
+        const { gid, extraOffsets, tilesetName } = this.getTilesetData(
+            placedItem.placedItemTypeId
+        )
         // get the tileset
         const tileset = this.getTileset(tilesetName)
         if (!tileset) {
@@ -205,19 +217,14 @@ export abstract class ItemTilemap extends GroundTilemap {
         // destructuring the to get width and height of the source image
         const { width, height } = sourceImage
         // get the tile
-        const tile = this.getTileCenteredAt(
-            {
-                tileX: placedItem.x,
-                tileY: placedItem.y,
-                layer: this.groundLayer,
-            }
-        )
+        const tile = this.getTileCenteredAt({
+            tileX: placedItem.x,
+            tileY: placedItem.y,
+            layer: this.groundLayer,
+        })
         if (!tile) {
             throw new Error("Tile not found")
         }
-
-        // destroy tile for debugging
-        // this.removeTileAt(tile.x, tile.y)
 
         // get the placed item type
         const placedItemType = this.getPlacedItemType(placedItem.placedItemTypeId)
@@ -228,7 +235,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (!tileAt) {
                 throw new Error("Tile at x,y not found")
             }
-        }         
+        }
 
         // get the placed item type
         // Fill the area of the item, above the tile
@@ -240,7 +247,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             height: height * this.scale,
             type: placedItemType.type,
             visible: true,
-            ...this.computePositionForTiledObject(tile)
+            ...this.computePositionForTiledObject(tile),
         })
 
         // create the objects
@@ -264,6 +271,13 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // update the object
         object.update(placedItemType.type, placedItem)
+
+        // check if the placed item is a tile starter
+        if (placedItem.id === this.firstTileStarterId) {
+            TutorialContext.firstTileStarter = object
+        } else if (placedItem.id === this.secondTileStarterId) {
+            TutorialContext.secondTileStarter = object
+        }
 
         // increment the object id to ensure uniqueness
         this.tiledObjectId++
