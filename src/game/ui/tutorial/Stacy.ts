@@ -57,7 +57,7 @@ export class Stacy extends ContainerLite {
                 ""
             )
             .setOrigin(0.5, 1)
-        this.pin(this.stacyImage, {})
+        this.add(this.stacyImage)
 
         // add nine patch
         const bubbleNinePatch = new NinePatch3x3({
@@ -108,7 +108,7 @@ export class Stacy extends ContainerLite {
             .setMinHeight(500)
             .setMinWidth(500)
             .layout()
-        this.pin(this.stacyBubble, {})
+        this.add(this.stacyBubble)
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.hide()
