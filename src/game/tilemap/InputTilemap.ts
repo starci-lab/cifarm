@@ -1,5 +1,5 @@
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
-import { TilemapBaseConstructorParams } from "../types"
+import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { ItemTilemap } from "./ItemTilemap"
 import { EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage } from "../event-bus"
 import { AnimalAge, animalAssetMap, buildingAssetMap, TextureConfig, TilesetConfig } from "../assets"
@@ -96,8 +96,17 @@ export class InputTilemap extends ItemTilemap {
                 modalName: ModalName.SelectSeed,
                 showTutorialBackdrop: true,
             }
+
+            // store the selected id in the cache
+            this.scene.cache.obj.add(CacheKey.SelectedTileId, data.id)
+            // emit the open modal event
             EventBus.emit(EventName.OpenModal, eventMessage)
-            EventBus.emit(EventName.TutorialTilePressed)
+
+            // if tutorial is active, emit the tile pressed event
+            if (this.scene.cache.obj.has(CacheKey.TutorialActive)) {
+                EventBus.emit(EventName.TutorialTilePressed)
+            }
+            
         })
 
         // get the temporary layer

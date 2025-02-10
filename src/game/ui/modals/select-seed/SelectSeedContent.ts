@@ -8,10 +8,16 @@ import {
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../assets"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { getScreenCenterX, getScreenCenterY, onGameObjectPress } from "../../utils"
 import {
+    getScreenCenterX,
+    getScreenCenterY,
+    onGameObjectPress,
+} from "../../utils"
+import {
+    CloseModalMessage,
     EventBus,
     EventName,
+    ModalName,
     TutorialTilePressedResponsedMessage,
 } from "@/game/event-bus"
 import { sleep } from "@/modules/common"
@@ -164,11 +170,25 @@ export class SelectSeedContent extends BaseSizer {
             onGameObjectPress({
                 gameObject: badgeLabel,
                 onPress: () => {
-                    if (this.firstCell) {
-                        if (this.scene.cache.obj.exists(CacheKey.TutorialActive)) {
+                    // if tutorial is active
+                    if (this.scene.cache.obj.exists(CacheKey.TutorialActive)) {
+                        if (this.firstCell) {
                             this.firstCell.setDepth(CONTENT_DEPTH)
-                        }         
+                            this.scene.events.emit(EventName.HidePressHereArrow)
+                            const eventMessage: CloseModalMessage = {
+                                modalName: ModalName.SelectSeed,
+                            }
+                            EventBus.emit(EventName.CloseModal, eventMessage)
+                            EventBus.emit(EventName.HideUIBackdrop)
+                        }
                     }
+                    // close the modal
+                    const eventMessage: CloseModalMessage = {
+                        modalName: ModalName.SelectSeed,
+                    }
+                    EventBus.emit(EventName.CloseModal, eventMessage)
+
+                    // call the onPress event
                     onPress()
                 },
                 scene: this.scene,

@@ -12,12 +12,6 @@ import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
 
-export interface PlacedItemObjectData {
-    object: PlacedItemObject
-    tileX: number
-    tileY: number
-}
-
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
     private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
@@ -273,10 +267,27 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // method to get the object at a given tile
-    protected getObjectAtTile(tileX: number, tileY: number) {
+    protected getObjectAtTile(tileX: number, tileY: number): PlacedItemObjectDataWithId {
         const items = Object.values(this.placedItemObjectMap)
-        return items.find(
+        const item = items.find(
             (item) => item.tileX === tileX && item.tileY === tileY
         )
+        if (!item) {
+            throw new Error("Item not found")
+        }
+        const id = Object.keys(this.placedItemObjectMap).find(
+            (key) => this.placedItemObjectMap[key] === item
+        )
+        if (!id) {
+            throw new Error("ID not found")
+        }
+        return { ...item, id }
     }
 }
+
+export interface PlacedItemObjectData {
+    object: PlacedItemObject
+    tileX: number
+    tileY: number
+}
+export type PlacedItemObjectDataWithId = PlacedItemObjectData & { id: string }

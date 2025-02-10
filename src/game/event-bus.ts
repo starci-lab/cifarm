@@ -185,4 +185,5 @@ export interface OpenModalMessage {
 export interface CloseModalMessage {
     // name of the modal to close
     modalName: ModalName
+    hideTutorialBackdrop?: boolean
 }

@@ -30,14 +30,14 @@ export class TutorialManager extends ContainerLite {
     
         this.scene.events.on(
             EventName.OpenTutorial,
-            (message: OpenTutorialMessage) => {
-                this.onOpen(message)
+            () => {
+                this.onOpen()
             }
         )
         this.scene.events.on(
             EventName.CloseTutorial,
-            (message: CloseTutorialMessage) => {
-                this.onClose(message)
+            () => {
+                this.onClose()
             }
         )
         // create Stacy
@@ -50,6 +50,7 @@ export class TutorialManager extends ContainerLite {
             layer: UILayer.Tutorial,
             layerDepth: 1,
         }))
+        
         this.start()
     }
 
@@ -82,14 +83,14 @@ export class TutorialManager extends ContainerLite {
     }
 
     // open the tutorial
-    private onOpen({ tutorialStep }: OnOpenParams) {
+    private onOpen() {
         this.showBackdrop()
         this.stacy.show()
         this.stacy.render()
     }
 
     // close the tutorial
-    private onClose({ tutorialStep }: OnCloseParams) {
+    private onClose() {
         this.hideBackdrop()
         this.stacy.hide()
     }

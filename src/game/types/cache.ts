@@ -9,4 +9,5 @@ export enum CacheKey {
     User = "user",
     Tools = "tools",
     TutorialActive = "tutorial-active",
+    SelectedTileId = "selected-tile-id",
 }

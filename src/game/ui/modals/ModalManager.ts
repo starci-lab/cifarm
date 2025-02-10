@@ -138,9 +138,12 @@ export class ModalManager extends ContainerLite {
         })
     }
 
-    private hideBackdrop() {
+    private hideBackdrop(hideTutorialBackdrop?: boolean) {
         // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (this.scene.cache.obj.has(CacheKey.TutorialActive)) {
+        if (this.checkTutorialActive()) {
+            if (hideTutorialBackdrop) {
+                EventBus.emit(EventName.HideUIBackdrop)
+            }
             return
         }
         EventBus.emit(EventName.HideUIBackdrop)
@@ -197,6 +200,7 @@ export class ModalManager extends ContainerLite {
         }
     }
  
+    // open the modal
     private onOpen({ modalName, showTutorialBackdrop }: OpenModalMessage) {
         this.showBackdrop(showTutorialBackdrop)
         const modal = this.getModal(modalName)
@@ -214,10 +218,11 @@ export class ModalManager extends ContainerLite {
         })
     }
 
-    private onClose({ modalName }: CloseModalMessage) {
+    // close the modal
+    private onClose({ modalName, hideTutorialBackdrop }: CloseModalMessage) {
         const modal = this.getModal(modalName)
         // hide the modal
         modal.hide()
-        this.hideBackdrop()
+        this.hideBackdrop(hideTutorialBackdrop)
     }
 }
