@@ -1,10 +1,11 @@
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { ItemTilemap } from "./ItemTilemap"
-import { EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage } from "../event-bus"
+import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
 import { AnimalAge, animalAssetMap, buildingAssetMap, TextureConfig, TilesetConfig } from "../assets"
-import { AnimalId, BuildingId, PlacedItemType } from "@/modules/entities"
+import { AnimalId, BuildingId, InventoryType, PlacedItemType } from "@/modules/entities"
 import { ObjectLayerName } from "./types"
+import { ToolLike } from "../ui"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
@@ -77,6 +78,11 @@ export class InputTilemap extends ItemTilemap {
 
         // click on empty tile to plant seed
         this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+            const selectedTool = this.scene.cache.obj.get(CacheKey.SelectedTool) as ToolLike
+            if (selectedTool.inventoryType !== InventoryType.Seed) {
+                return
+            }
+
             const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
             // do nothing if tile is not found
             if (!tile) {
@@ -86,27 +92,10 @@ export class InputTilemap extends ItemTilemap {
             // do nothing if you do not click on any object
             if (!data) {
                 return
+            }     
+            if (data.type !== PlacedItemType.Tile) {
+                return
             }
-            // check if the tile is tile
-            // if (placedItemType.type !== PlacedItemType.Tile) return 
-            // // check if the tile is empty
-            // if (placedItem.seedGrowthInfo) return
-            // // open the select seed modal
-            const eventMessage: OpenModalMessage = {
-                modalName: ModalName.SelectSeed,
-                showTutorialBackdrop: true,
-            }
-
-            // store the selected id in the cache
-            this.scene.cache.obj.add(CacheKey.SelectedTileId, data.id)
-            // emit the open modal event
-            EventBus.emit(EventName.OpenModal, eventMessage)
-
-            // if tutorial is active, emit the tile pressed event
-            if (this.scene.cache.obj.has(CacheKey.TutorialActive)) {
-                EventBus.emit(EventName.TutorialTilePressed)
-            }
-            
         })
 
         // get the temporary layer

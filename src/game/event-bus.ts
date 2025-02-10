@@ -92,7 +92,7 @@ export enum EventName {
     TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
     TutorialPlantSeeds = "tutorial_plant_seeds",
-    TutorialPlantSeedsResponsed = "tutorial_plant_seed_responsed",
+    TutorialSeedsSelected = "tutorial_seeds_selected",
     TutorialTilePressed = "tutorial_tile_pressed",
     TutorialTilePressedResponsed = "tutorial_tile_pressed_responsed",
 

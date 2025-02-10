@@ -148,7 +148,12 @@ export class Stacy extends ContainerLite {
                 bottom: 20,
             },
             text: helperText,
-        }).layout()
+        }).setDepth(
+            calculateUiDepth({
+                layer: UILayer.Tutorial,
+                layerDepth: 2,
+            })
+        ).layout()
         this.helpDialog.hide()
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
@@ -257,7 +262,7 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartPlantSeeds: {
-                const generateHelpText = (count: number) => {
+                const generatePlantSeedText = (count: number) => {
                     return `Now, tap on the tile to plant the seeds. ${count} left.`
                 }
                 EventBus.once(EventName.TutorialTilePressedResponsed, ({ position }: TutorialOpenInventoryResponsedMessage) => {
@@ -266,14 +271,21 @@ export class Stacy extends ContainerLite {
                         targetPosition: { x: position.x + 60, y: position.y + 60 },
                     })
                 })
-                // emit the event to open the inventory
-                EventBus.emit(EventName.TutorialPlantSeeds)
+                this.scene.events.once(EventName.TutorialSeedsSelected, () => {
+                    console.log("Tutorial seeds selected")
+                    EventBus.emit(EventName.HideUIBackdrop)
+                    EventBus.emit(EventName.HideButtons)
+                    this.showHelpDialog(generatePlantSeedText(2))
+                })
                 // hide the stacy
                 this.hide()
                 // close the backdrop
-                EventBus.emit(EventName.HideUIBackdrop)
-                EventBus.emit(EventName.HideButtons)
-                this.showHelpDialog(generateHelpText(2))
+                //EventBus.emit(EventName.HideUIBackdrop)
+                //EventBus.emit(EventName.HideButtons)
+                //this.showHelpDialog(generatePlantSeedText(2))
+                // emit the event to open the inventory
+                this.scene.events.emit(EventName.TutorialPlantSeeds)
+                this.showHelpDialog("Select seed from toolbar.")
                 return
             }
             default: {

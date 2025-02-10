@@ -6,6 +6,8 @@ import {
 import {
     AvailableInType,
     InventoryEntity,
+    InventoryType,
+    InventoryTypeEntity,
     InventoryTypeId,
     ToolEntity,
 } from "@/modules/entities"
@@ -18,15 +20,27 @@ import {
 import { SCALE_TIME } from "../../constants"
 import { EventName } from "@/game/event-bus"
 import { getScreenBottomY, getScreenCenterX, onGameObjectPress } from "../utils"
-import { getToolbarInventories } from "@/game/queries"
+import { getFirstSeedInventory, getToolbarInventories } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseText } from "../elements"
+import { calculateUiDepth, UILayer } from "../../layers"
+import { defaultSeedCropId } from "../modals/shop/ShopContent"
+
+export const CONTENT_DEPTH = calculateUiDepth({
+    layer: UILayer.Modal,
+    layerDepth: 3,
+})
+
+export const HIGHLIGH_DEPTH = calculateUiDepth({
+    layer: UILayer.Tutorial,
+    layerDepth: 1,
+})
 
 // number of items to show
 const NUM_ITEMS = 4
 const SLOT_SIZE = 120
 
-interface ToolLike {
+export interface ToolLike {
   // id of the tool, base on either inventory id or tool id
   id: string;
   // name of the tool
@@ -36,7 +50,7 @@ interface ToolLike {
   // quantity of the tool, if not provided, do not show the quantity
   quantity?: number;
   // inventory type id
-  inventoryTypeId?: InventoryTypeId;
+  inventoryType?: InventoryType;
 }
 
 const defaultSelectedIndex = 0
@@ -58,9 +72,11 @@ export class Toolbar extends ContainerLite {
     private currrentTools: Array<ToolLike> = []
     // selected tool index
     private selectedIndex = defaultSelectedIndex
+    private seedInventory: InventoryEntity | undefined
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
+
         // create the toolbar background
         this.background = this.scene.add.image(0, 0, BaseAssetKey.ToolbarBackground).setOrigin(0.5, 1)
         this.addLocal(this.background)
@@ -91,6 +107,12 @@ export class Toolbar extends ContainerLite {
             // update the selected index
             this.selectedIndex = index
             this.scene.cache.obj.add(CacheKey.SelectedTool, this.currrentTools[this.startIndex + index])
+
+            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                if (this.currrentTools[this.startIndex + index].id === this.seedInventory?.id) {
+                    this.scene.events.emit(EventName.TutorialSeedsSelected)
+                }
+            }
         })
 
         this.add(this.itemSizer)
@@ -115,6 +137,14 @@ export class Toolbar extends ContainerLite {
             } else {
                 this.enableNextButton()
             }
+        })
+
+        this.scene.events.on(EventName.TutorialPlantSeeds, () => {
+            this.seedInventory = getFirstSeedInventory({
+                cropId: defaultSeedCropId,
+                scene: this.scene,
+            })    
+            this.setDepth(HIGHLIGH_DEPTH)
         })
     }
 
@@ -326,6 +356,10 @@ export class Toolbar extends ContainerLite {
                     animate: false,
                 })
             }
+
+            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                this.setDepth(HIGHLIGH_DEPTH)
+            }
         }
     }
 
@@ -352,6 +386,12 @@ export class Toolbar extends ContainerLite {
 
         const additionalTools: Array<ToolLike> = toolbarInventories.map(
             (inventory) => {
+                const types = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeEntity>
+                const inventoryType = types.find(({ id }) => id === inventory.inventoryTypeId)
+                if (!inventoryType) {
+                    throw new Error(`Inventory type not found for id: ${inventory.inventoryTypeId}`)
+                }
+                
                 const _inventoryTypeId = inventory.inventoryTypeId as InventoryTypeId
                 const {
                     name,
@@ -362,7 +402,7 @@ export class Toolbar extends ContainerLite {
                     id: inventory.id,
                     quantity: inventory.quantity,
                     name,
-                    inventoryTypeId: _inventoryTypeId,
+                    inventoryType: inventoryType.type,
                 }
             }
         )
