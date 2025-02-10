@@ -84,7 +84,7 @@ export class InputTilemap extends ItemTilemap {
             }
             const data = this.getObjectAtTile(tile.x, tile.y)
             // do nothing if you do not click on any object
-            if (!data ) {
+            if (!data) {
                 return
             }
             // check if the tile is tile

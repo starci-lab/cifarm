@@ -13,4 +13,5 @@ export interface InventoryEntity {
     user?: UserEntity
     inventoryTypeId: string
     inventoryType: InventoryTypeEntity
+    inToolbar?: boolean
 }

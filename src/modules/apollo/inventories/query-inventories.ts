@@ -12,6 +12,7 @@ const query1 = gql`
           quantity
           isPlaced
           tokenId
+          inToolbar
         }
     }
   }

@@ -11,6 +11,13 @@ export interface ToolAssetData {
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const toolAssetMap: Record<ToolId, ToolAssetData> = {
+    [ToolId.Hand]: {
+        name: "Hand",
+        textureConfig: {
+            key: "hand",
+            assetUrl: "tools/hand.png",
+        }
+    },
     [ToolId.WaterCan]: {
         name: "Water Can",
         textureConfig: {

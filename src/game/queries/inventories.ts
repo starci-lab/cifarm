@@ -65,3 +65,23 @@ export interface GetSeedInventoriesParams {
     // the inventories to check, if not specified, will try to get from cache
     inventories?: Array<InventoryEntity>;
 }
+
+export const getToolbarInventories = ({
+    scene,
+    inventories,
+}: GetToolbarInventoriesParams) => {
+    // if inventories is not provided, get from cache
+    if (!inventories) {
+        // get the inventories from cache
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventoryEntity>
+    }
+
+    return inventories.filter((inventory) => inventory.inToolbar)
+}
+
+export interface GetToolbarInventoriesParams {
+    // scene to display the modal
+    scene: Scene;
+    // the inventories to check, if not specified, will try to get from cache
+    inventories?: Array<InventoryEntity>;
+}

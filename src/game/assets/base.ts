@@ -81,7 +81,7 @@ export enum BaseAssetKey {
     ToolbarPrevIcon = "toolbar-button-prev-icon",
     ToolbarNextAvatar = "toolbar-next-avatar",
     ToolbarPrevAvatar = "toolbar-prev-avatar",
-    ToolbarSelected = "toolbar-selected",
+    ToolbarSelectedArrow = "toolbar-selected",
 
     //Stand
     ModalStandWall = "modal-stand-wall",
@@ -210,7 +210,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ToolbarPrevIcon]: "toolbar/prev-icon.png",
     [BaseAssetKey.ToolbarNextAvatar]: "toolbar/next-avatar.png",
     [BaseAssetKey.ToolbarPrevAvatar]: "toolbar/prev-avatar.png",
-    [BaseAssetKey.ToolbarSelected]: "toolbar/selected.png",
+    [BaseAssetKey.ToolbarSelectedArrow]: "toolbar/selected.png",
     //Stand
     [BaseAssetKey.ModalStandWall]: "modals/stand/wall.png",
     [BaseAssetKey.ModalStandHeader]: "modals/stand/header.png",

@@ -10,7 +10,6 @@ import { StandModal } from "./stand"
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
-import { SelectSeedModal } from "./select-seed"
 
 export class ModalManager extends ContainerLite {
     // the shop modal
@@ -25,8 +24,6 @@ export class ModalManager extends ContainerLite {
     private standModal: StandModal | undefined
     // neighbors
     private neighborsModal: NeighborsModal | undefined
-    // select seed modal
-    private selectSeedModal: SelectSeedModal | undefined
 
     constructor({ scene, x, y, width, height, children } : ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -96,16 +93,6 @@ export class ModalManager extends ContainerLite {
             layerDepth: 1
         })).hide()
         this.scene.add.existing(this.neighborsModal)
-
-        this.selectSeedModal = new SelectSeedModal({
-            scene: this.scene,
-            x: getScreenCenterX(this.scene),
-            y: getScreenCenterY(this.scene),
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 1
-        })).hide()
-        this.scene.add.existing(this.selectSeedModal) 
          
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
             this.onOpen(message)
@@ -191,15 +178,9 @@ export class ModalManager extends ContainerLite {
             }
             return this.neighborsModal
         }
-        case ModalName.SelectSeed: {
-            if (!this.selectSeedModal) {
-                throw new Error("Select seed modal not found")
-            }
-            return this.selectSeedModal
-        }
         }
     }
- 
+    
     // open the modal
     private onOpen({ modalName, showTutorialBackdrop }: OpenModalMessage) {
         this.showBackdrop(showTutorialBackdrop)

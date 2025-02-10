@@ -10,4 +10,5 @@ export enum CacheKey {
     Tools = "tools",
     TutorialActive = "tutorial-active",
     SelectedTileId = "selected-tile-id",
+    SelectedTileType = "selected-tile-type",
 }

@@ -75,6 +75,7 @@ export enum EventName {
     // tool selected
     SelectTool = "select_tool",
     SelectNeighborsTab = "select_neighbors_tab",
+    PageMoved = "page_moved",
 
     // tutorial events
     TutorialOpenShop = "tutorial_open_shop",
@@ -172,7 +173,6 @@ export enum ModalName {
   Quest = "quest",
   Stand = "stand",
   Neighbors = "neighbors",
-  SelectSeed = "select-seed",
 }
 
 export interface OpenModalMessage {
