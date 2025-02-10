@@ -36,31 +36,31 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
             1: {
-                textureConfig: { key: "crop-carrot-1", assetUrl: "crops/carrot/2.png" },
+                textureConfig: { key: "crop-carrot-2", assetUrl: "crops/carrot/2.png" },
                 tilesetConfig: {
                     gid: 1002,
-                    tilesetName: "crop-carrot-1",
-                },
-            },
-            2: {
-                textureConfig: { key: "crop-carrot-2", assetUrl: "crops/carrot/3.png" },
-                tilesetConfig: {
-                    gid: 1003,
                     tilesetName: "crop-carrot-2",
                 },
             },
-            3: {
-                textureConfig: { key: "crop-carrot-3", assetUrl: "crops/carrot/4.png" },
+            2: {
+                textureConfig: { key: "crop-carrot-3", assetUrl: "crops/carrot/3.png" },
                 tilesetConfig: {
-                    gid: 1004,
+                    gid: 1003,
                     tilesetName: "crop-carrot-3",
                 },
             },
+            3: {
+                textureConfig: { key: "crop-carrot-4", assetUrl: "crops/carrot/4.png" },
+                tilesetConfig: {
+                    gid: 1004,
+                    tilesetName: "crop-carrot-4",
+                },
+            },
             4: {
-                textureConfig: { key: "crop-carrot-4", assetUrl: "crops/carrot/5.png" },
+                textureConfig: { key: "crop-carrot-5", assetUrl: "crops/carrot/5.png" },
                 tilesetConfig: {
                     gid: 1005,
-                    tilesetName: "crop-carrot-4",
+                    tilesetName: "crop-carrot-5",
                 },
             },
         },

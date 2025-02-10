@@ -6,6 +6,7 @@ import { AnimalAge, animalAssetMap, buildingAssetMap, TextureConfig, TilesetConf
 import { AnimalId, BuildingId, InventoryType, PlacedItemType } from "@/modules/entities"
 import { ObjectLayerName } from "./types"
 import { ToolLike } from "../ui"
+import { PlantSeedRequest } from "@/modules/axios"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
@@ -96,6 +97,18 @@ export class InputTilemap extends ItemTilemap {
             if (data.type !== PlacedItemType.Tile) {
                 return
             }
+            // emit the event to plant seed
+            const eventMessage: PlantSeedRequest = {
+                inventorySeedId: selectedTool.id,
+                placedItemTileId: data.id,
+            }
+            EventBus.once(EventName.PlantSeedCompleted, () => {
+                EventBus.emit(EventName.RefreshInventories)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    EventBus.emit(EventName.TutorialSeedPlanted)
+                }
+            })
+            EventBus.emit(EventName.RequestPlantSeed, eventMessage)
         })
 
         // get the temporary layer

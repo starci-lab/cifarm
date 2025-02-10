@@ -1,5 +1,6 @@
 export enum CacheKey {
     PlacedItems = "placed-items",
+    PlacedItemTypes = "placed-item-types",
     Crops = "crops",
     Animals = "animals",
     Buildings = "buildings",

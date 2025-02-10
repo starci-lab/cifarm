@@ -16,6 +16,7 @@ import {
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { calculateUiDepth, UILayer } from "../../layers"
+import { getPlacedItemsWithSeedGrowthInfo } from "@/game/queries"
 
 export class Stacy extends ContainerLite {
     private stacyImage: Phaser.GameObjects.Image
@@ -262,6 +263,17 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartPlantSeeds: {
+                //check how many seeds planteds
+                let count = 2
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                if (placedItems.length === 1) {
+                    count = 1
+                }
+                if (placedItems.length > 2) {
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                    return
+                }
+
                 const generatePlantSeedText = (count: number) => {
                     return `Now, tap on the tile to plant the seeds. ${count} left.`
                 }
@@ -272,10 +284,19 @@ export class Stacy extends ContainerLite {
                     })
                 })
                 this.scene.events.once(EventName.TutorialSeedsSelected, () => {
-                    console.log("Tutorial seeds selected")
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
-                    this.showHelpDialog(generatePlantSeedText(2))
+                    this.showHelpDialog(generatePlantSeedText(count))
+                })
+                
+                EventBus.on(EventName.TutorialSeedPlanted, () => {
+                    count--
+                    if (count === 0) {
+                        EventBus.off(EventName.TutorialSeedPlanted)
+                        EventBus.emit(EventName.RequestUpdateTutorial)
+                        return
+                    }
+                    this.showHelpDialog(generatePlantSeedText(count))
                 })
                 // hide the stacy
                 this.hide()

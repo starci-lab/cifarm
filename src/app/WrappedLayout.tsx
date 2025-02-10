@@ -9,6 +9,7 @@ import { SingletonHookProvider } from "@/modules/singleton-hook"
 import {
     useApiAuthenticationSwrMutation,
     useApiBuySeedsSwrMutation,
+    useApiPlantSeedSwrMutation,
     useApiUpdateTutorialSwrMutation,
     useCreatePinForm,
     UseEffects,
@@ -42,6 +43,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
                             API_BUY_SEEDS_SWR_MUTATION: useApiBuySeedsSwrMutation(),
+                            API_PLANT_SEED_SWR_MUTATION: useApiPlantSeedSwrMutation(),
 
                             QUERY_USER_SWR: useQueryUserSwr(),
                             QUERY_STATIC_SWR: useQueryStaticSwr(),

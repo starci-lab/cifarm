@@ -64,7 +64,7 @@ export class LoadingScene extends Scene {
                 inventoryTypes
             }: QueryStaticResponse) => {
                 //store the static data in the cache
-                this.cache.obj.add(CacheKey.PlacedItems, placedItemTypes)
+                this.cache.obj.add(CacheKey.PlacedItemTypes, placedItemTypes)
                 this.cache.obj.add(CacheKey.Animals, animals)
                 this.cache.obj.add(CacheKey.Crops, crops)
                 this.cache.obj.add(CacheKey.Buildings, buildings)

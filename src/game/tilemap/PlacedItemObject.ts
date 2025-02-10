@@ -46,6 +46,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
       cropAssetMap[placedItem.seedGrowthInfo.cropId].stages?.[
           placedItem.seedGrowthInfo.currentStage
       ].textureConfig.key
+        console.log(key)
         const data = cropAssetMap[placedItem.seedGrowthInfo.cropId]
         if (!data) {
             throw new Error("Crop data not found")

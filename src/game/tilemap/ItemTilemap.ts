@@ -36,6 +36,9 @@ export abstract class ItemTilemap extends GroundTilemap {
         EventBus.on(
             EventName.PlacedItemsSynced,
             (data: PlacedItemsSyncedMessage) => {
+                //store the placed items in the cache
+                this.scene.cache.obj.add(CacheKey.PlacedItems, data.placedItems)
+                // handle the placed items update
                 this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
                 // update the previous placed items
                 this.previousPlacedItems = data
@@ -101,6 +104,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.placeTileForItem(placedItem)
             } else {
                 // if the placed item is in the previous placed items, update the item
+                const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+                if (!gameObject) {
+                    throw new Error("Game object not found")
+                }
+                gameObject.update(
+                    this.getPlacedItemType(placedItem.placedItemTypeId).type,
+                    placedItem
+                )
             }
             // push the placed item to the checked previous placed items
             checkedPreviousPlacedItems.push(placedItem)
@@ -132,10 +143,15 @@ export abstract class ItemTilemap extends GroundTilemap {
     // method to get the GID for a placed item type
     private getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
         const placedItemTypes = this.scene.cache.obj.get(
-            CacheKey.PlacedItems
+            CacheKey.PlacedItemTypes
         ) as Array<PlacedItemTypeEntity>
+        console.log(placedItemTypes)
+        console.log(placedItemTypeId)
+        const found = placedItemTypes.find((type) => {
+            console.log(type.id)
+            return type.id === placedItemTypeId
+        })
 
-        const found = placedItemTypes.find((type) => type.id === placedItemTypeId)
         if (!found) {
             throw new Error("Placed item type not found")
         }
