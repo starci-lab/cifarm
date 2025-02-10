@@ -191,7 +191,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         placedItemTypeId: PlacedItemTypeId
     ): PlacedItemTypeEntity {
         const placedItemTypes = this.scene.cache.obj.get(
-            CacheKey.PlacedItems
+            CacheKey.PlacedItemTypes
         ) as Array<PlacedItemTypeEntity>
         const found = placedItemTypes.find((type) => type.id === placedItemTypeId)
         if (!found) {

@@ -269,7 +269,7 @@ export class Stacy extends ContainerLite {
                 if (placedItems.length === 1) {
                     count = 1
                 }
-                if (placedItems.length > 2) {
+                if (placedItems.length >= 2) {
                     EventBus.emit(EventName.RequestUpdateTutorial)
                     return
                 }

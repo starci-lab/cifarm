@@ -114,6 +114,8 @@ export class Toolbar extends ContainerLite {
                 }
             }
         })
+        // store the first selected tool
+        this.scene.cache.obj.add(CacheKey.SelectedTool, this.currrentTools[this.startIndex + this.selectedIndex])
 
         this.add(this.itemSizer)
 
@@ -391,7 +393,7 @@ export class Toolbar extends ContainerLite {
                 if (!inventoryType) {
                     throw new Error(`Inventory type not found for id: ${inventory.inventoryTypeId}`)
                 }
-                
+
                 const _inventoryTypeId = inventory.inventoryTypeId as InventoryTypeId
                 const {
                     name,
