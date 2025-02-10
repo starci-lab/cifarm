@@ -65,9 +65,6 @@ export class ShopContent extends BaseSizer {
     private selectedShopTab: ShopTab = defaultShopTab
     private inventories: Array<InventoryEntity> = []
 
-    //a flag to check if the tutorial is for buying seed
-    private isTutorialBuySeed = false
-
     constructor({
         scene,
         height,
@@ -129,8 +126,6 @@ export class ShopContent extends BaseSizer {
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }
-
-            this.isTutorialBuySeed = true
 
             this.defaultItemCard.setDepth(HIGHLIGH_DEPTH)
 
@@ -323,10 +318,9 @@ export class ShopContent extends BaseSizer {
                         }
                         // send request to buy seeds
                         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
-                        if (this.isTutorialBuySeed) {
+                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             this.defaultItemCard?.setDepth(CONTENT_DEPTH)
                             this.scene.events.emit(EventName.TutorialPrepareCloseShop)
-                            this.isTutorialBuySeed = false
                         }
                     },
                     price,

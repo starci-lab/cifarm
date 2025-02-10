@@ -1,7 +1,7 @@
 import { BaseAssetKey } from "../../../assets"
 import { CloseModalMessage, EventBus, EventName, TutorialPrepareCloseShopResponsedMessage, ModalName } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { ContainerLiteBaseConstructorParams } from "../../../types"
+import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
 import { onGameObjectPress } from "../../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -13,7 +13,6 @@ export class ShopHeader extends ContainerLite {
     // close button
     private closeButton: Phaser.GameObjects.Image
     private titleShop: Label
-    private isTutorial = false
     constructor({
         scene,
         x,
@@ -45,12 +44,10 @@ export class ShopHeader extends ContainerLite {
                     }
                     EventBus.emit(EventName.CloseModal, eventMessage)
                     // emit the events related to the tutorial
-                    if (this.isTutorial) {
+                    if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                         this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
                         this.scene.events.emit(EventName.HidePressHereArrow)
-                        this.isTutorial = false
                     }
-                    
                 },
             })
         })
@@ -90,7 +87,6 @@ export class ShopHeader extends ContainerLite {
         this.addLocal(this.titleShop)
 
         this.scene.events.once(EventName.TutorialPrepareCloseShop, async () => {
-            this.isTutorial = true
             // await until the shop is opened
             await sleep(SCALE_TIME)
             this.closeButton = this.closeButton.setDepth(HIGHLIGH_DEPTH)
