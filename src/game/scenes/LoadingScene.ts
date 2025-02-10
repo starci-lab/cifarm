@@ -92,7 +92,7 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.Inventories, inventories)
                 this.handleFetchData("Loading inventories...")
             })
-
+ 
         this.events.once(EventName.LoadCompleted, () => {
             //load the main game scene
             this.scene.start(SceneName.Gameplay)
@@ -217,7 +217,7 @@ export class LoadingScene extends Scene {
             from: this.assetLoaded,
             to: this.assetLoaded + assetLoaded,
             text: "Loading assets...",
-            steps: 5,
+            steps: 3,
         })
         this.assetLoaded += assetLoaded
 

@@ -2,7 +2,7 @@ import { BaseAssetKey } from "@/game/assets"
 import { EventName } from "@/game/event-bus"
 import { ContainerBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
-import { onGameObjectClick } from "../../utils"
+import { onGameObjectPress } from "../../utils"
 import { NeighborsTab, tabs } from "./types"
 import { SCALE_TIME } from "@/game/constants"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -146,10 +146,10 @@ export class NeighborsTabs extends ContainerLite {
     
         // Handle clicks
         iconTabOn.on("pointerdown", () => {
-            onGameObjectClick({
+            onGameObjectPress({
                 gameObject: iconTabOn,
                 animate: false,
-                onClick: () => {
+                onPress: () => {
                     this.scene.events.emit(EventName.SelectNeighborsTab, neighborsTab)
                 },
                 scene: this.scene,

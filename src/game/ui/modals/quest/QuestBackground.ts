@@ -1,9 +1,8 @@
 import { BaseAssetKey } from "@/game/assets"
-import { EventName } from "@/game/event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
-import { onGameObjectClick } from "../../utils"
-import { ModalName } from "../ModalManager"
+import { onGameObjectPress } from "../../utils"
 
 export class QuestBackground extends ContainerLite {
     private wall: Phaser.GameObjects.Image
@@ -28,10 +27,13 @@ export class QuestBackground extends ContainerLite {
             .setOrigin(1, 0)
         // add the on click event
         closeButton.setInteractive().on("pointerdown", () => {
-            onGameObjectClick({
+            onGameObjectPress({
                 gameObject: closeButton,
-                onClick: () => {
-                    this.scene.events.emit(EventName.CloseModal, ModalName.Quest)
+                onPress: () => {
+                    const eventMessage: CloseModalMessage = {
+                        modalName: ModalName.Quest,
+                    }
+                    EventBus.emit(EventName.CloseModal, eventMessage)
                 },
                 animate: false,
                 scene: this.scene,

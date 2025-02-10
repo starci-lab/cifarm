@@ -1,11 +1,10 @@
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../../assets"
-import { EventName } from "../../../event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName } from "../../../event-bus"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText, StrokeColor } from "../../elements"
-import { onGameObjectClick } from "../../utils"
-import { ModalName } from "../ModalManager"
+import { onGameObjectPress } from "../../utils"
 
 export class DailyBackground extends ContainerLite {
     private wall: Phaser.GameObjects.Image
@@ -59,10 +58,13 @@ export class DailyBackground extends ContainerLite {
         
         // add the on click event
         closeButton.setInteractive().on("pointerdown", () => {
-            onGameObjectClick({
+            onGameObjectPress({
                 gameObject: closeButton,
-                onClick: () => {
-                    this.scene.events.emit(EventName.CloseModal, ModalName.Daily)
+                onPress: () => {
+                    const eventMessage: CloseModalMessage = {
+                        modalName: ModalName.Daily,
+                    }
+                    EventBus.emit(EventName.CloseModal, eventMessage)
                 },
                 scene: this.scene,
             })

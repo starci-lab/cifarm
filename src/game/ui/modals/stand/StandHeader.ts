@@ -1,9 +1,8 @@
-import { BaseAssetKey } from "@/game/assets"
-import { EventName } from "@/game/event-bus"
+import { BaseAssetKey } from "../../../assets"
+import { CloseModalMessage, EventBus, EventName, ModalName } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
-import { onGameObjectClick } from "../../utils"
-import { ModalName } from "../ModalManager"
+import { onGameObjectPress } from "../../utils"
 
 export class StandHeader extends ContainerLite {
     private closeButton: Phaser.GameObjects.Sprite
@@ -25,11 +24,14 @@ export class StandHeader extends ContainerLite {
             .setInteractive()
 
         this.closeButton.on("pointerdown", () => {
-            onGameObjectClick({
+            onGameObjectPress({
                 gameObject: this.closeButton,
                 scene: this.scene,
-                onClick: () => {
-                    this.scene.events.emit(EventName.CloseModal, ModalName.Stand)
+                onPress: () => {
+                    const eventMessage: CloseModalMessage = {
+                        modalName: ModalName.Stand,
+                    }
+                    EventBus.emit(EventName.OpenModal, eventMessage)
                 },
             })
         })

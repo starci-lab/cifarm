@@ -23,6 +23,7 @@ export class Stacy extends ContainerLite {
     private pressToContinueText: Phaser.GameObjects.Text
     private user: UserEntity
     private pressHereArrow: Phaser.GameObjects.Image
+    private helpDialog: Label
 
     constructor({
         scene,
@@ -119,6 +120,37 @@ export class Stacy extends ContainerLite {
             .layout()
         this.add(this.stacyBubble)
 
+        const helperText = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                text: "",
+                x: 0,
+                y: 0,
+                style: {
+                    wordWrap: { width: 800 },
+                },
+            },
+            options: {
+                fontSize: 32,
+                enableStroke: true,
+            },
+        })
+        this.scene.add.existing(helperText)
+
+        this.helpDialog = this.scene.rexUI.add.label({
+            x: getScreenCenterX(this.scene),
+            y: 300,
+            originY: 0,
+            space: {
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: 20,
+            },
+            text: helperText,
+        }).layout()
+        this.helpDialog.hide()
+
         this.user = this.scene.cache.obj.get(CacheKey.User)
     
         this.scene.events.on(
@@ -142,6 +174,17 @@ export class Stacy extends ContainerLite {
         })
         
         this.hide()
+    }
+
+    // show the help dialog
+    private showHelpDialog(text: string) {
+        this.helpDialog.show()
+        this.helpDialog.setText(text).layout()
+    }
+
+    // hide the help dialog
+    private hideHelpDialog() {
+        this.helpDialog.hide()
     }
 
     // allow the player to press to continue
@@ -214,10 +257,23 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartPlantSeeds: {
+                const generateHelpText = (count: number) => {
+                    return `Now, tap on the tile to plant the seeds. ${count} left.`
+                }
+                EventBus.once(EventName.TutorialTilePressedResponsed, ({ position }: TutorialOpenInventoryResponsedMessage) => {
+                    this.displayPressHereArrow({
+                        originPosition: { x: position.x + 80, y: position.y + 80 },
+                        targetPosition: { x: position.x + 60, y: position.y + 60 },
+                    })
+                })
                 // emit the event to open the inventory
-                this.scene.events.emit(EventName.TutorialPlantSeeds)
+                EventBus.emit(EventName.TutorialPlantSeeds)
                 // hide the stacy
                 this.hide()
+                // close the backdrop
+                EventBus.emit(EventName.HideUIBackdrop)
+                EventBus.emit(EventName.HideButtons)
+                this.showHelpDialog(generateHelpText(2))
                 return
             }
             default: {

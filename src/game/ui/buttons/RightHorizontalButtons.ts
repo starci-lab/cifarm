@@ -1,9 +1,8 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
-import { EventName, TutorialOpenShopResponsedMessage } from "../../event-bus"
+import { EventBus, EventName, ModalName, OpenModalMessage, TutorialOpenShopResponsedMessage } from "../../event-bus"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { ButtonsBaseConstructorParams } from "@/game/types"
-import { ModalName } from "../modals"
 import { calculateUiDepth, UILayer } from "../../layers"
 
 export class RightHorizontalButtons extends HorizontalButtons {
@@ -25,7 +24,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
         this.settingButton = this.createButton({
             iconKey: BaseAssetKey.IconSetting,
             text: "Settings",
-            onClick: () => {
+            onPress: () => {
                 console.log("Setting")
             },
         })
@@ -35,8 +34,11 @@ export class RightHorizontalButtons extends HorizontalButtons {
         this.inventoryButton = this.createButton({
             iconKey: BaseAssetKey.IconInventory,
             text: "Inventory",
-            onClick: () => {
-                this.scene.events.emit(EventName.OpenModal, ModalName.Inventory)
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Inventory
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.inventoryButton)
@@ -45,8 +47,11 @@ export class RightHorizontalButtons extends HorizontalButtons {
         this.dailyButton = this.createButton({
             iconKey: BaseAssetKey.IconDaily,
             text: "Daily",
-            onClick: () => {
-                this.scene.events.emit(EventName.OpenModal, ModalName.Daily)
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Daily
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.dailyButton)
@@ -55,8 +60,11 @@ export class RightHorizontalButtons extends HorizontalButtons {
         this.questButton = this.createButton({
             iconKey: BaseAssetKey.IconQuest,
             text: "Quest",
-            onClick: () => {
-                this.scene.events.emit(EventName.OpenModal, ModalName.Quest)
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Quest
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.questButton)

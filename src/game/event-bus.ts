@@ -34,8 +34,6 @@ export enum EventName {
     RefreshInventories = "refresh_inventories",
     InventoriesRefreshed = "inventories_refreshed",
 
-    // Between Phaser scenes
-
     // open shop
     OpenShop = "open_shop",
     CloseShop = "close_shop",
@@ -58,6 +56,10 @@ export enum EventName {
 
     // hide press here arrow
     HidePressHereArrow = "hide_press_here_arrow",
+    
+    // hide the buttons
+    HideButtons = "hide_buttons",
+    ShowButtons = "show_buttons",
     
     // open inventory
     OpenInventory = "open_inventory",
@@ -90,6 +92,8 @@ export enum EventName {
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
     TutorialPlantSeeds = "tutorial_plant_seeds",
     TutorialPlantSeedsResponsed = "tutorial_plant_seed_responsed",
+    TutorialTilePressed = "tutorial_tile_pressed",
+    TutorialTilePressedResponsed = "tutorial_tile_pressed_responsed",
 
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
@@ -129,6 +133,11 @@ export interface TutorialPrepareCloseShopResponsedMessage {
     position: Position,
 }
 
+export interface TutorialTilePressedResponsedMessage {
+    // position of the shop button
+    position: Position,
+}
+
 export interface Position {
     x: number,
     y: number,
@@ -153,4 +162,27 @@ export interface ShowUIBackdropMessage {
 export interface UpdateGameplayBackdropMessage {
     // position of the backdrop
     scrollXY: Position
+}
+
+
+export enum ModalName {
+  Shop = "shop",
+  Inventory = "inventory",
+  Daily = "daily",
+  Quest = "quest",
+  Stand = "stand",
+  Neighbors = "neighbors",
+  SelectSeed = "select-seed",
+}
+
+export interface OpenModalMessage {
+    // name of the modal to open
+    modalName: ModalName
+    // show tutorial backdrop
+    showTutorialBackdrop?: boolean
+}
+
+export interface CloseModalMessage {
+    // name of the modal to close
+    modalName: ModalName
 }

@@ -4,16 +4,16 @@ const tweenMap = new Map<Phaser.GameObjects.GameObject, Phaser.Tweens.Tween>()
 
 export interface OnGameObjectClickParams {
   gameObject: Phaser.GameObjects.GameObject;
-  onClick: () => void;
+  onPress: () => void;
   animate?: boolean;
   scene: Phaser.Scene;
   peakValue?: number;
   disableInteraction?: boolean;
 }
 
-export const onGameObjectClick = ({
+export const onGameObjectPress = ({
     gameObject,
-    onClick,
+    onPress,
     animate = true,
     scene,
     peakValue = SCALE_PEAK_VALUE,
@@ -56,6 +56,6 @@ export const onGameObjectClick = ({
         })
     }
 
-    // Call the onClick function
-    onClick()
+    // Call the onPress function
+    onPress()
 }

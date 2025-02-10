@@ -1,10 +1,9 @@
 import { BaseAssetKey } from "../../../assets"
-import { EventName, TutorialPrepareCloseShopResponsedMessage } from "../../../event-bus"
+import { CloseModalMessage, EventBus, EventName, TutorialPrepareCloseShopResponsedMessage, ModalName } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
-import { onGameObjectClick } from "../../utils"
-import { ModalName } from "../ModalManager"
+import { onGameObjectPress } from "../../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { HIGHLIGH_DEPTH } from "./ShopModal"
 import { sleep } from "@/modules/common"
@@ -36,12 +35,15 @@ export class ShopHeader extends ContainerLite {
             .setOrigin(1, 0.5)
         // add the on click event
         this.closeButton.setInteractive().on("pointerdown", () => {
-            onGameObjectClick({
+            onGameObjectPress({
                 gameObject: this.closeButton,
                 scene: this.scene,
-                onClick: () => {
-                    //close the modal
-                    this.scene.events.emit(EventName.CloseModal, ModalName.Shop)
+                onPress: () => {
+                    // close the modal
+                    const eventMessage: CloseModalMessage = {
+                        modalName: ModalName.Shop,
+                    }
+                    EventBus.emit(EventName.CloseModal, eventMessage)
                     // emit the events related to the tutorial
                     if (this.isTutorial) {
                         this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)

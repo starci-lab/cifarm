@@ -1,12 +1,13 @@
 import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { ConstructorParams, ButtonsBaseConstructorParams } from "../../types"
 import { BaseText } from "../elements"
-import { onGameObjectClick } from "../utils"
+import { onGameObjectPress } from "../utils"
+import { EventBus, EventName } from "@/game/event-bus"
 
 export interface CreateButtonParams {
     iconKey: string;
     text?: string;
-    onClick?: () => void;
+    onPress?: () => void;
 }
 
 // options for horizontal buttons
@@ -33,10 +34,18 @@ export abstract class HorizontalButtons extends Buttons {
             },
             ...config,
         })
+
+        EventBus.on(EventName.HideButtons, () => {
+            this.setVisible(false).setActive(false)
+        })
+
+        EventBus.on(EventName.ShowButtons, () => {
+            this.setVisible(true).setActive(true)
+        })
     }
 
     // method to create a button
-    public createButton({ iconKey, onClick, text = "" }: CreateButtonParams) {
+    public createButton({ iconKey, onPress, text = "" }: CreateButtonParams) {
     // compute width and height
         const width = 2 * this.ICON_RADIUS
         const height = 2 * this.ICON_RADIUS
@@ -69,11 +78,11 @@ export abstract class HorizontalButtons extends Buttons {
             width,
             height,
         }).addBackground(container).layout()
-        if (onClick) {
+        if (onPress) {
             button.on("pointerdown", () => {
-                onGameObjectClick({
+                onGameObjectPress({
                     gameObject: button,
-                    onClick,
+                    onPress,
                     scene: this.scene,
                 })
             })

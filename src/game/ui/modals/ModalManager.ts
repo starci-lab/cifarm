@@ -1,4 +1,4 @@
-import { EventBus, EventName } from "@/game/event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
 import { SCALE_TIME } from "../../constants"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { DailyModal } from "./daily"
@@ -9,17 +9,8 @@ import { ShopModal } from "./shop"
 import { StandModal } from "./stand"
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { ContainerLiteBaseConstructorParams } from "@/game/types"
-import { TutorialContext } from "@/game/contexts"
-
-export enum ModalName {
-  Shop = "shop",
-  Inventory = "inventory",
-  Daily = "daily",
-  Quest = "quest",
-  Stand = "stand",
-  Neighbors = "neighbors",
-}
+import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
+import { SelectSeedModal } from "./select-seed"
 
 export class ModalManager extends ContainerLite {
     // the shop modal
@@ -34,6 +25,8 @@ export class ModalManager extends ContainerLite {
     private standModal: StandModal | undefined
     // neighbors
     private neighborsModal: NeighborsModal | undefined
+    // select seed modal
+    private selectSeedModal: SelectSeedModal | undefined
 
     constructor({ scene, x, y, width, height, children } : ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -104,23 +97,38 @@ export class ModalManager extends ContainerLite {
         })).hide()
         this.scene.add.existing(this.neighborsModal)
 
-        this.scene.events.on(EventName.OpenModal, (modalName: ModalName) => {
-            this.onOpen(modalName)
+        this.selectSeedModal = new SelectSeedModal({
+            scene: this.scene,
+            x: getScreenCenterX(this.scene),
+            y: getScreenCenterY(this.scene),
+        }).setDepth(calculateUiDepth({
+            layer: UILayer.Modal,
+            layerDepth: 1
+        })).hide()
+        this.scene.add.existing(this.selectSeedModal) 
+         
+        EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
+            this.onOpen(message)
         })
 
         // listen for the close event
-        this.scene.events.on(EventName.CloseModal, (modalName: ModalName) => {
-            this.onClose(modalName)
+        EventBus.on(EventName.CloseModal, (message: CloseModalMessage) => {
+            this.onClose(message)
         })
 
         // close the modal manager by default
         this.hideBackdrop()
     }
-
+ 
     // show method, to show the modal
-    private showBackdrop() {
+    private showBackdrop(showTutorialBackdrop?: boolean) {
         // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (TutorialContext.isTutorialActive) {
+        if (this.checkTutorialActive() && showTutorialBackdrop) {
+            EventBus.emit(EventName.ShowUIBackdrop, {
+                depth: calculateUiDepth({
+                    layer: UILayer.Tutorial,
+                })
+            })
             return
         }
         EventBus.emit(EventName.ShowUIBackdrop, {
@@ -132,10 +140,14 @@ export class ModalManager extends ContainerLite {
 
     private hideBackdrop() {
         // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (TutorialContext.isTutorialActive) {
+        if (this.scene.cache.obj.has(CacheKey.TutorialActive)) {
             return
         }
         EventBus.emit(EventName.HideUIBackdrop)
+    }
+
+    private checkTutorialActive() {
+        return this.scene.cache.obj.has(CacheKey.TutorialActive)
     }
 
     private getModal(name: ModalName) {
@@ -176,12 +188,18 @@ export class ModalManager extends ContainerLite {
             }
             return this.neighborsModal
         }
+        case ModalName.SelectSeed: {
+            if (!this.selectSeedModal) {
+                throw new Error("Select seed modal not found")
+            }
+            return this.selectSeedModal
+        }
         }
     }
-
-    private onOpen(name: ModalName) {
-        this.showBackdrop()
-        const modal = this.getModal(name)
+ 
+    private onOpen({ modalName, showTutorialBackdrop }: OpenModalMessage) {
+        this.showBackdrop(showTutorialBackdrop)
+        const modal = this.getModal(modalName)
         // disable modal input
         if (modal.input) {
             modal.input.enabled = false
@@ -196,8 +214,8 @@ export class ModalManager extends ContainerLite {
         })
     }
 
-    private onClose(name: ModalName) {
-        const modal = this.getModal(name)
+    private onClose({ modalName }: CloseModalMessage) {
+        const modal = this.getModal(modalName)
         // hide the modal
         modal.hide()
         this.hideBackdrop()

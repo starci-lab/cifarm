@@ -1,7 +1,7 @@
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import { TilemapBaseConstructorParams } from "../types"
 import { ItemTilemap } from "./ItemTilemap"
-import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
+import { EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage } from "../event-bus"
 import { AnimalAge, animalAssetMap, buildingAssetMap, TextureConfig, TilesetConfig } from "../assets"
 import { AnimalId, BuildingId, PlacedItemType } from "@/modules/entities"
 import { ObjectLayerName } from "./types"
@@ -74,6 +74,31 @@ export class InputTilemap extends ItemTilemap {
                 this.handlePlaceInProgress(data)
             }
         )
+
+        // click on empty tile to plant seed
+        this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+            const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
+            // do nothing if tile is not found
+            if (!tile) {
+                return
+            }
+            const data = this.getObjectAtTile(tile.x, tile.y)
+            // do nothing if you do not click on any object
+            if (!data ) {
+                return
+            }
+            // check if the tile is tile
+            // if (placedItemType.type !== PlacedItemType.Tile) return 
+            // // check if the tile is empty
+            // if (placedItem.seedGrowthInfo) return
+            // // open the select seed modal
+            const eventMessage: OpenModalMessage = {
+                modalName: ModalName.SelectSeed,
+                showTutorialBackdrop: true,
+            }
+            EventBus.emit(EventName.OpenModal, eventMessage)
+            EventBus.emit(EventName.TutorialTilePressed)
+        })
 
         // get the temporary layer
         const temporaryLayer = this.getObjectLayer(ObjectLayerName.Temporary)

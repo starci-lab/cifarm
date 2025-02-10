@@ -8,4 +8,5 @@ export enum CacheKey {
     DailyRewards = "daily-rewards",
     User = "user",
     Tools = "tools",
+    TutorialActive = "tutorial-active",
 }

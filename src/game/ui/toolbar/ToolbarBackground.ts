@@ -2,7 +2,7 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
 import { ContainerLiteBaseConstructorParams } from "../../types"
-import { onGameObjectClick } from "../utils"
+import { onGameObjectPress } from "../utils"
 
 export class ToolbarBackground extends ContainerLite {
     private background: Phaser.GameObjects.Image
@@ -51,9 +51,9 @@ export class ToolbarBackground extends ContainerLite {
         prevButton
             .setInteractive()
             .on("pointerdown", () => {
-                onGameObjectClick({
+                onGameObjectPress({
                     gameObject: prevButton,
-                    onClick: () => {
+                    onPress: () => {
                         console.log("prev button clicked")
                     },
                     scene: this.scene,
@@ -87,9 +87,9 @@ export class ToolbarBackground extends ContainerLite {
             .addSpace()
             .layout()
         nextButton.setInteractive().on("pointerdown", () => {
-            onGameObjectClick({
+            onGameObjectPress({
                 gameObject: nextButton,
-                onClick: () => {
+                onPress: () => {
                     console.log("next button clicked")
                 },
                 scene: this.scene,

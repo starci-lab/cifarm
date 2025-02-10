@@ -4,7 +4,7 @@ import { UserEntity } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ScrollablePanel, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "../../elements"
-import { onGameObjectClick } from "../../utils"
+import { onGameObjectPress } from "../../utils"
 import { defaultNeighborsTab } from "./NeighborsTabs"
 import { NeighborsTab } from "./types"
 
@@ -68,12 +68,12 @@ export class NeighborsContent extends ContainerLite {
             this.createItemCard({
                 assetKey,
                 title,
-                onClick: () => console.log(`Clicked on ${title}`),
+                onPress: () => console.log(`Clicked on ${title}`),
             })
         )
     }
 
-    private createItemCard({ assetKey, title, onClick }: CreateItemCardParams) {
+    private createItemCard({ assetKey, title, onPress }: CreateItemCardParams) {
         const titleText = new BaseText({
             baseParams: { scene: this.scene, text: title, x: 0, y: 0 },
             options: { fontSize: 24 },
@@ -86,11 +86,11 @@ export class NeighborsContent extends ContainerLite {
             })
             .setInteractive()
 
-        if (onClick) {
+        if (onPress) {
             button.on("pointerdown", () => {
-                onGameObjectClick({
+                onGameObjectPress({
                     gameObject: button,
-                    onClick,
+                    onPress,
                     scene: this.scene,
                 })
             })
@@ -106,5 +106,5 @@ export interface CreateItemCardParams {
   // title of the item
   title: string;
   // on click event
-  onClick?: () => void;
+  onPress?: () => void;
 }

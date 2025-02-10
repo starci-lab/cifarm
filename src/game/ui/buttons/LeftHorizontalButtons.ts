@@ -1,8 +1,7 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
-import { EventName, TutorialOpenShopResponsedMessage } from "../../event-bus"
+import { EventBus, EventName, ModalName, OpenModalMessage, TutorialOpenShopResponsedMessage } from "../../event-bus"
 import { ButtonsBaseConstructorParams } from "../../types"
-import { ModalName } from "../modals"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { calculateUiDepth, UILayer } from "../../layers"
 
@@ -25,7 +24,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         this.nftMarketplaceButton = this.createButton({
             iconKey: BaseAssetKey.IconNFTMarketplace,
             text: "NFT Marketplace",
-            onClick: () => {
+            onPress: () => {
                 console.log("NFT")
             },
         })
@@ -35,8 +34,11 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         this.shopButton = this.createButton({
             iconKey: BaseAssetKey.IconShop,
             text: "Shop",
-            onClick: () => {
-                this.scene.events.emit(EventName.OpenModal, ModalName.Shop)
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Shop
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.shopButton)
@@ -45,8 +47,11 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         this.roadsideStandButton = this.createButton({
             iconKey: BaseAssetKey.IconRoadsideStand,
             text: "Roadside Stand",
-            onClick: () => {
-                this.scene.events.emit(EventName.OpenModal, ModalName.Stand)
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Stand
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.roadsideStandButton)
@@ -55,8 +60,11 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         this.neighborsButton = this.createButton({
             iconKey: BaseAssetKey.IconNeighbors,
             text: "Neighbors",
-            onClick: () => {
-                this.scene.events.emit(EventName.OpenModal, ModalName.Neighbors)
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Neighbors
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.neighborsButton)

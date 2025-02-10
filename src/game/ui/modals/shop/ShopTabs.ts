@@ -3,7 +3,7 @@ import { SCALE_TIME } from "@/game/constants"
 import { EventName } from "@/game/event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
-import { onGameObjectClick } from "../../utils"
+import { onGameObjectPress } from "../../utils"
 import { ShopTab, tabs } from "./types"
 
 // use own scale values
@@ -125,9 +125,9 @@ export class ShopTabs extends ContainerLite {
 
         // method to handle when the tab is clicked
         iconTabOn.on("pointerdown", () => {
-            onGameObjectClick({
+            onGameObjectPress({
                 gameObject: iconTabOn,
-                onClick: () => {
+                onPress: () => {
                     this.scene.events.emit(EventName.SelectShopTab, shopTab)
                 },
                 scene: this.scene,

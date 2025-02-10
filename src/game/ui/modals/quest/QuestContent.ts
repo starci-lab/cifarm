@@ -48,7 +48,7 @@ export class QuestContent extends ContainerLite {
         // create the item card
         const itemCard = this.createItemCard({
             title: "Invite User",
-            onClick: () => {
+            onPress: () => {
                 console.log("Invite User")
             },
             content: content,
@@ -60,7 +60,7 @@ export class QuestContent extends ContainerLite {
     }
 
     // create the item card
-    private createItemCard({ title, onClick, content, contentPosition }: CreateItemCardParams) {
+    private createItemCard({ title, onPress, content, contentPosition }: CreateItemCardParams) {
     // create card container
         const backgroundContainer = this.scene.add.container(0, 0)
         // create card item image
@@ -139,7 +139,7 @@ export class QuestContent extends ContainerLite {
 
 interface CreateItemCardParams {
   // onclick callback
-  onClick: () => void;
+  onPress: () => void;
   // quest title
   title: string;
   // content

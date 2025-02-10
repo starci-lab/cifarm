@@ -11,7 +11,12 @@ import { PlacedItemObject } from "./PlacedItemObject"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
-import { TutorialContext } from "../contexts"
+
+export interface PlacedItemObjectData {
+    object: PlacedItemObject
+    tileX: number
+    tileY: number
+}
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -22,7 +27,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     private previousPlacedItems: PlacedItemsSyncedMessage | undefined
 
     // place item objects map
-    private readonly placedItemObjectMap: Record<string, PlacedItemObject> = {}
+    protected readonly placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -92,16 +97,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemEntity> = []
 
-        for (let i = 0; i < placedItems.length; i++) {
-            //  store the first and second tile starter ids
-            if (i === 0) {
-                this.firstTileStarterId = placedItems[i].id
-            } else if (i === 1) {
-                this.secondTileStarterId = placedItems[i].id
-            }
-
-            // get the placed item
-            const placedItem = placedItems[i]
+        for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
             const found = previousPlacedItems.find(
                 (item) => item.id === placedItem.id
@@ -126,7 +122,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     (object) => object.name !== placedItem.id
                 )
                 // remove the object from the tilemap
-                this.placedItemObjectMap[placedItem.id]?.destroy()
+                this.placedItemObjectMap[placedItem.id]?.object.destroy()
             }
         }
     }
@@ -193,10 +189,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         return found
     }
-
-    // tile starter ids, to keep track of the first and second tile
-    private firstTileStarterId: string | undefined
-    private secondTileStarterId: string | undefined
 
     // reusable method to place a tile for a given placed item
     private placeTileForItem(placedItem: PlacedItemEntity) {
@@ -267,19 +259,24 @@ export abstract class ItemTilemap extends GroundTilemap {
         object.setPosition(object.x + x, object.y + y)
 
         // store the object in the placed item objects map
-        this.placedItemObjectMap[placedItem.id] = object
+        this.placedItemObjectMap[placedItem.id] = {
+            object,
+            tileX: tile.x,
+            tileY: tile.y,
+        }
 
         // update the object
         object.update(placedItemType.type, placedItem)
 
-        // check if the placed item is a tile starter
-        if (placedItem.id === this.firstTileStarterId) {
-            TutorialContext.firstTileStarter = object
-        } else if (placedItem.id === this.secondTileStarterId) {
-            TutorialContext.secondTileStarter = object
-        }
-
         // increment the object id to ensure uniqueness
         this.tiledObjectId++
+    }
+
+    // method to get the object at a given tile
+    protected getObjectAtTile(tileX: number, tileY: number) {
+        const items = Object.values(this.placedItemObjectMap)
+        return items.find(
+            (item) => item.tileX === tileX && item.tileY === tileY
+        )
     }
 }

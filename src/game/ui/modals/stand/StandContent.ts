@@ -19,13 +19,13 @@ export class StandContent extends ContainerLite {
 
         // Sample Item Data
         const itemList = [
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Wheat Seed", onClick: () => console.log("Clicked on Wheat Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Corn Seed", onClick: () => console.log("Clicked on Corn Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Rice Seed", onClick: () => console.log("Clicked on Rice Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Apple", onClick: () => console.log("Clicked on Apple") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Orange", onClick: () => console.log("Clicked on Orange") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Banana", onClick: () => console.log("Clicked on Banana") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Grapes", onClick: () => console.log("Clicked on Grapes") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Wheat Seed", onPress: () => console.log("Clicked on Wheat Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Corn Seed", onPress: () => console.log("Clicked on Corn Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Rice Seed", onPress: () => console.log("Clicked on Rice Seed") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Apple", onPress: () => console.log("Clicked on Apple") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Orange", onPress: () => console.log("Clicked on Orange") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Banana", onPress: () => console.log("Clicked on Banana") },
+            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Grapes", onPress: () => console.log("Clicked on Grapes") },
         ]
 
         // Create Fixed Grid Table
@@ -54,7 +54,7 @@ export class StandContent extends ContainerLite {
         this.addLocal(this.gridTable)
     }
 
-    private createItemCard({ assetKey, title, onClick }: CreateItemCardParams) {
+    private createItemCard({ assetKey, title, onPress }: CreateItemCardParams) {
         // Shadow (Behind the icon)
         const shadow = this.scene.add.image(0, 0, BaseAssetKey.ModalStandShadow)
             .setPosition(0, 0)
@@ -85,7 +85,7 @@ export class StandContent extends ContainerLite {
             .add(tag, { align: "center", expand: false, padding: { top: 5 } }) // Tag below icon
             .setInteractive() // Make the whole container interactive
             .on("pointerdown", () => {
-                onClick()
+                onPress()
             })
     
         return container
@@ -97,5 +97,5 @@ export class StandContent extends ContainerLite {
 export interface CreateItemCardParams {
     assetKey: string;
     title: string;
-    onClick: () => void;
+    onPress: () => void;
 }

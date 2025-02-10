@@ -28,7 +28,7 @@ export class InventoryContent extends BaseSizer {
             return {
                 assetKey: inventoryTypeAssetMap[inventory.inventoryTypeId as InventoryTypeId].textureConfig.key,
                 quantity: inventory.quantity,
-                onClick: () => {
+                onPress: () => {
                     console.log("Clicked")
                 }
             }
@@ -64,7 +64,7 @@ export class InventoryContent extends BaseSizer {
         this.addLocal(this.gridTable)
     }
 
-    private createItemCard({ assetKey, quantity, onClick }: CreateItemCardParams) {
+    private createItemCard({ assetKey, quantity, onPress }: CreateItemCardParams) {
         const background = this.scene.add.sprite(0, 0, BaseAssetKey.ModalInventoryCell)
             .setOrigin(0.5, 0.5)
             .setDepth(1)
@@ -105,7 +105,7 @@ export class InventoryContent extends BaseSizer {
         }).layout()
     
         itemBadge.setInteractive().on("pointerdown", () => {
-            onClick()
+            onPress()
         })
     
         return itemBadge
@@ -116,5 +116,5 @@ export class InventoryContent extends BaseSizer {
 export interface CreateItemCardParams {
     assetKey: string;
     quantity?: number;
-    onClick: () => void;
+    onPress: () => void;
 }

@@ -9,6 +9,7 @@ export class DataScene extends Scene {
     constructor() {
         super(SceneName.Data)
     }
+    
     create() {
         EventBus.on(EventName.UserRefreshed, (user: UserEntity) => {
             this.cache.obj.add(CacheKey.User, user)

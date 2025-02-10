@@ -105,6 +105,11 @@ export enum BaseAssetKey {
     ModalNeighborsIconAdd = "modal-neighbors-icon-add",
     ModalNeighborsIconHome = "modal-neighbors-icon-home",
 
+    //Common
+    ModalCommonBackground = "modal-common-background",
+    ModalCommonFrame = "modal-common-frame",
+    ModalCommonQuantityFrame = "modal-common-quantity-frame",
+
     //Topbar
     TopbarHeader = "topbar-header",
     TopbarIconCoin = "topbar-icon-coin",
@@ -244,6 +249,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
 
     //Press here arrow
     [BaseAssetKey.PressHereArrow]: "press-here-arrow.png",
+
+    //Common
+    [BaseAssetKey.ModalCommonBackground]: "modals/common/background.png",
+    [BaseAssetKey.ModalCommonFrame]: "modals/common/frame.png",
+    [BaseAssetKey.ModalCommonQuantityFrame]: "modals/common/quantity-frame.png",
 }
 
 // preload, for loading screen

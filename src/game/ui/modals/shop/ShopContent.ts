@@ -26,19 +26,20 @@ import {
     InventoryEntity,
     PlacedItemType,
 } from "@/modules/entities"
-import { onGameObjectClick } from "../../utils"
+import { onGameObjectPress } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
 import {
+    CloseModalMessage,
     EventBus,
     EventName,
+    ModalName,
     PlacedInprogressMessage,
     TutorialPrepareBuySeedsMessage,
 } from "../../../event-bus"
-import { ModalName } from "../ModalManager"
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateUiDepth, UILayer } from "../../../layers"
 import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
-import { getInventorySeed } from "../queries"
+import { getFirstSeedInventory } from "../../../queries"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
@@ -120,7 +121,7 @@ export class ShopContent extends BaseSizer {
             // disable the default scroller
             this.disableDefaultScroller()
 
-            if (getInventorySeed({
+            if (getFirstSeedInventory({
                 cropId: defaultSeedCropId,
                 scene: this.scene,
                 inventories: this.inventories,
@@ -314,7 +315,7 @@ export class ShopContent extends BaseSizer {
                 const itemCard = this.createItemCard({
                     assetKey: cropAssetMap[id].seed.textureConfig.key,
                     title: cropAssetMap[id].name,
-                    onClick: (pointer: Phaser.Input.Pointer) => {
+                    onPress: (pointer: Phaser.Input.Pointer) => {
                         this.playBuySeedAnimation(id, pointer)
                         const eventMessage: BuySeedsRequest = {
                             cropId: id,
@@ -341,7 +342,7 @@ export class ShopContent extends BaseSizer {
                 const itemCard = this.createItemCard({
                     assetKey: animalAssetMap[id].ages[AnimalAge.Baby].textureConfig.key,
                     title: animalAssetMap[id].name,
-                    onClick: () => {
+                    onPress: () => {
                         console.log("Clicked on animal", id)
                     },
                     price,
@@ -357,9 +358,12 @@ export class ShopContent extends BaseSizer {
                 const itemCard = this.createItemCard({
                     assetKey: buildingAssetMap[id].textureConfig.key,
                     title: id,
-                    onClick: () => {
+                    onPress: () => {
                         // close the modal
-                        this.scene.events.emit(EventName.CloseModal, ModalName.Shop)
+                        const eventMessage: CloseModalMessage = {
+                            modalName: ModalName.Shop,
+                        }
+                        EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
                         const message: PlacedInprogressMessage = {
                             id,
@@ -382,7 +386,7 @@ export class ShopContent extends BaseSizer {
                 const itemCard = this.createItemCard({
                     assetKey: buildingAssetMap[id].textureConfig.key,
                     title: buildingAssetMap[id].name,
-                    onClick: () => {
+                    onPress: () => {
                         console.log("Clicked on building", id)
                     },
                     price,
@@ -397,7 +401,7 @@ export class ShopContent extends BaseSizer {
                 const itemCard = this.createItemCard({
                     assetKey: buildingAssetMap[id].textureConfig.key,
                     title: id,
-                    onClick: () => {
+                    onPress: () => {
                         console.log("Clicked on building", id)
                     },
                     price,
@@ -412,7 +416,7 @@ export class ShopContent extends BaseSizer {
                 const itemCard = this.createItemCard({
                     assetKey: buildingAssetMap[id].textureConfig.key,
                     title: id,
-                    onClick: () => {
+                    onPress: () => {
                         console.log("Clicked on building", id)
                     },
                     price,
@@ -431,7 +435,7 @@ export class ShopContent extends BaseSizer {
         title,
         iconOffset,
         price,
-        onClick,
+        onPress,
         scaleX = 1,
         scaleY = 1,
     }: CreateItemCardParams) {
@@ -539,12 +543,12 @@ export class ShopContent extends BaseSizer {
             .layout()
             .setInteractive()
         // handle on click event
-        if (onClick) {
+        if (onPress) {
             button.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-                onGameObjectClick({
+                onGameObjectPress({
                     gameObject: button,
-                    onClick: () => {
-                        onClick(pointer)
+                    onPress: () => {
+                        onPress(pointer)
                     },
                     scene: this.scene,
                     disableInteraction: false
@@ -599,7 +603,7 @@ export interface CreateItemCardParams {
   // price
   price?: number;
   // on click event
-  onClick?: (pointer: Phaser.Input.Pointer) => void;
+  onPress?: (pointer: Phaser.Input.Pointer) => void;
   // scale X
   scaleX?: number;
   // scale Y
