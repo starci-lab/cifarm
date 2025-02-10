@@ -55,6 +55,7 @@ export class Toolbar extends ContainerLite {
 
     private inventories: Array<InventoryEntity> = []
     private tools: Array<ToolEntity> = []
+    private currrentTools: Array<ToolLike> = []
     // selected tool index
     private selectedIndex = defaultSelectedIndex
 
@@ -74,6 +75,7 @@ export class Toolbar extends ContainerLite {
 
         // get the tools from the cache
         this.tools = this.scene.cache.obj.get(CacheKey.Tools) as Array<ToolEntity>
+        this.currrentTools = this.createToolList()
 
         // update the sizer with the tools
         this.updateItemSizer()
@@ -81,13 +83,14 @@ export class Toolbar extends ContainerLite {
         this.itemSizer.layout()
 
         // listen for the next button click
-        this.scene.events.on(EventName.SelectTool, (index: number) => {
+        this.scene.events.on(EventName.SelectTool, (index: number, animate?: boolean) => {
             // deselect the current selected item
-            this.onDeselect({ index: this.selectedIndex })
+            this.onDeselect({ index: this.selectedIndex, animate })
             // select the new item
-            this.onSelect({ index })
+            this.onSelect({ index, animate })
             // update the selected index
             this.selectedIndex = index
+            this.scene.cache.obj.add(CacheKey.SelectedTool, this.currrentTools[this.startIndex + index])
         })
 
         this.add(this.itemSizer)
@@ -146,6 +149,11 @@ export class Toolbar extends ContainerLite {
                         this.scene.events.emit(EventName.PageMoved)
                         // update the item sizer
                         this.updateItemSizer()
+                        if (this.selectedIndex < NUM_ITEMS - 1) {
+                            this.scene.events.emit(EventName.SelectTool, this.selectedIndex + 1, false)
+                        } else {
+                            this.scene.events.emit(EventName.SelectTool, NUM_ITEMS - 1, false)
+                        }
                     },
                     scene: this.scene,
                     disableInteraction: false,
@@ -197,6 +205,11 @@ export class Toolbar extends ContainerLite {
                     this.scene.events.emit(EventName.PageMoved)
                     // update the item sizer
                     this.updateItemSizer()
+                    if (this.selectedIndex > 0) {
+                        this.scene.events.emit(EventName.SelectTool, this.selectedIndex - 1, false)
+                    } else {
+                        this.scene.events.emit(EventName.SelectTool, 0, false)
+                    }
                 },
                 disableInteraction: false,
                 scene: this.scene,
@@ -230,7 +243,7 @@ export class Toolbar extends ContainerLite {
                 ease: "Back",
             })
         } else {
-            slot.setScale(SELECTED_SIZE, SELECTED_SIZE)
+            (icon as Phaser.GameObjects.Image).setScale(SELECTED_SIZE, SELECTED_SIZE)
         }
     }
 
@@ -256,21 +269,16 @@ export class Toolbar extends ContainerLite {
                 ease: "Back",
             })
         } else {
-            main.setScale(UNSELECTED_SIZE, UNSELECTED_SIZE)
+            (icon as Phaser.GameObjects.Image).setScale(UNSELECTED_SIZE, UNSELECTED_SIZE)
         }
     }
 
     // method to reset the toolbar content based on the tools current and the tool that is selected
     private updateItemSizer() {
-    // get the tools to show
-        const tools = this.createToolList()
         // show the tools
         for (let i = 0; i < NUM_ITEMS; i++) {
             const actualIndex = this.startIndex + i
-            const tool = tools[actualIndex]
-            // set the selected tool id in the cache
-            this.scene.cache.obj.add(CacheKey.SelectedTool, this.tools[this.startIndex + this.selectedIndex])
-
+            const tool = this.currrentTools[actualIndex]
             const slot = this.slots[i]
             if (!slot) {
                 throw new Error(`Slot not found for index: ${i}`)
