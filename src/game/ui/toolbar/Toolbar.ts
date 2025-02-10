@@ -35,6 +35,8 @@ interface ToolLike {
   assetKey: string;
   // quantity of the tool, if not provided, do not show the quantity
   quantity?: number;
+  // inventory type id
+  inventoryTypeId?: InventoryTypeId;
 }
 
 const defaultSelectedIndex = 0
@@ -141,9 +143,9 @@ export class Toolbar extends ContainerLite {
                         // update the start and end index
                         this.startIndex -= 1
                         this.endIndex -= 1
+                        this.scene.events.emit(EventName.PageMoved)
                         // update the item sizer
                         this.updateItemSizer()
-                        this.scene.events.emit(EventName.PageMoved)
                     },
                     scene: this.scene,
                     disableInteraction: false,
@@ -192,9 +194,9 @@ export class Toolbar extends ContainerLite {
                     // update the start and end index
                     this.startIndex += 1
                     this.endIndex += 1
+                    this.scene.events.emit(EventName.PageMoved)
                     // update the item sizer
                     this.updateItemSizer()
-                    this.scene.events.emit(EventName.PageMoved)
                 },
                 disableInteraction: false,
                 scene: this.scene,
@@ -266,6 +268,9 @@ export class Toolbar extends ContainerLite {
         for (let i = 0; i < NUM_ITEMS; i++) {
             const actualIndex = this.startIndex + i
             const tool = tools[actualIndex]
+            // set the selected tool id in the cache
+            this.scene.cache.obj.add(CacheKey.SelectedTool, this.tools[this.startIndex + this.selectedIndex])
+
             const slot = this.slots[i]
             if (!slot) {
                 throw new Error(`Slot not found for index: ${i}`)
@@ -339,15 +344,17 @@ export class Toolbar extends ContainerLite {
 
         const additionalTools: Array<ToolLike> = toolbarInventories.map(
             (inventory) => {
+                const _inventoryTypeId = inventory.inventoryTypeId as InventoryTypeId
                 const {
                     name,
                     textureConfig: { key: assetKey },
-                } = inventoryTypeAssetMap[inventory.inventoryTypeId as InventoryTypeId]
+                } = inventoryTypeAssetMap[_inventoryTypeId]
                 return {
                     assetKey,
                     id: inventory.id,
                     quantity: inventory.quantity,
                     name,
+                    inventoryTypeId: _inventoryTypeId,
                 }
             }
         )
