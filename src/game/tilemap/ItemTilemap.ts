@@ -273,7 +273,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             object,
             tileX: tile.x,
             tileY: tile.y,
-            type: placedItemType.type,
+            placedItem,
+            placedItemType
         }
 
         // update the object
@@ -306,6 +307,7 @@ export interface PlacedItemObjectData {
     object: PlacedItemObject
     tileX: number
     tileY: number
-    type: PlacedItemType
+    placedItem: PlacedItemEntity
+    placedItemType: PlacedItemTypeEntity
 }
 export type PlacedItemObjectDataWithId = PlacedItemObjectData & { id: string }

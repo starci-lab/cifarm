@@ -95,6 +95,7 @@ export enum EventName {
     TutorialSeedsSelected = "tutorial_seeds_selected",
     TutorialSeedPlanted = "tutorial_seed_planted",
     TutorialTilePressed = "tutorial_tile_pressed",
+    TutorialCropWatered = "tutorial_crop_watered",
     TutorialTilePressedResponsed = "tutorial_tile_pressed_responsed",
     TutorialWaterCanPressed = "tutorial_water_can_pressed",
     TutorialPesticidePressed = "tutorial_pesticide_pressed",
@@ -109,6 +110,9 @@ export enum EventName {
 
     RequestPlantSeed = "request_plant_seed",
     PlantSeedCompleted = "plant_seed_completed",
+
+    RequestWaterCrop = "request_water_crop",
+    WaterCropCompleted = "water_crop_completed",
 }
 
 export interface OpenTutorialMessage {

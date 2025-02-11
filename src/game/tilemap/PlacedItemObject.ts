@@ -147,14 +147,17 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                             text: "",
                         },
                         options: {
-                            fontSize: 20,
+                            fontSize: 32,
                             enableStroke: true,
                         },
                     })
                     this.scene.add.existing(text)
                     text.setOrigin(0.5, 1).setDepth(this.depth + 3)
                     this.timer = text
-                    container.addLocal(this.timer)
+                    container.pinLocal(this.timer, {
+                        syncScale: false,
+                        syncPosition: true
+                    })
                 }
     
                 const formattedTime = formatTime(placedItem.seedGrowthInfo.currentStageTimeElapsed)

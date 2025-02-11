@@ -1,17 +1,30 @@
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { ItemTilemap } from "./ItemTilemap"
+import { ItemTilemap, PlacedItemObjectDataWithId } from "./ItemTilemap"
 import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
-import { AnimalAge, animalAssetMap, buildingAssetMap, TextureConfig, TilesetConfig } from "../assets"
-import { AnimalId, BuildingId, InventoryType, PlacedItemType } from "@/modules/entities"
+import {
+    AnimalAge,
+    animalAssetMap,
+    buildingAssetMap,
+    TextureConfig,
+    TilesetConfig,
+} from "../assets"
+import {
+    AnimalId,
+    BuildingId,
+    CropCurrentState,
+    InventoryType,
+    PlacedItemType,
+    ToolId,
+} from "@/modules/entities"
 import { ObjectLayerName } from "./types"
 import { ToolLike } from "../ui"
 import { PlantSeedRequest } from "@/modules/axios"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
-    textureConfig: TextureConfig
-    tilesetConfig: TilesetConfig
+  textureConfig: TextureConfig;
+  tilesetConfig: TilesetConfig;
 }
 
 // tilemap for handling input events
@@ -21,7 +34,7 @@ export class InputTilemap extends ItemTilemap {
 
     // is in placing in progress
     private placingInProgress: boolean = false
-    
+
     // place item data
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
@@ -70,31 +83,49 @@ export class InputTilemap extends ItemTilemap {
         )
 
         // listen for place in progress event
-        EventBus.on(
-            EventName.PlaceInprogress,
-            (data: PlacedInprogressMessage) => {
-                this.handlePlaceInProgress(data)
-            }
-        )
+        EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
+            this.handlePlaceInProgress(data)
+        })
 
         // click on empty tile to plant seed
         this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-            const selectedTool = this.scene.cache.obj.get(CacheKey.SelectedTool) as ToolLike
-            if (selectedTool.inventoryType !== InventoryType.Seed) {
-                return
-            }
-
             const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
             // do nothing if tile is not found
             if (!tile) {
                 return
             }
             const data = this.getObjectAtTile(tile.x, tile.y)
-            // do nothing if you do not click on any object
             if (!data) {
                 return
-            }     
-            if (data.type !== PlacedItemType.Tile) {
+            }
+            switch (data.placedItemType.type) {
+            case PlacedItemType.Tile:
+                this.handlePressOnTile(data)
+                break
+            }
+        })
+
+        // get the temporary layer
+        const temporaryLayer = this.getObjectLayer(ObjectLayerName.Temporary)
+        if (!temporaryLayer) {
+            throw new Error("Temporary layer not found")
+        }
+        this.temporaryLayer = temporaryLayer
+    }
+
+    // method to handle press on tile
+    private handlePressOnTile(data: PlacedItemObjectDataWithId ) {
+        if (data.placedItemType.type !== PlacedItemType.Tile) {
+            throw new Error("Invalid placed item type")
+        }
+        const selectedTool = this.scene.cache.obj.get(
+            CacheKey.SelectedTool
+        ) as ToolLike
+
+        switch (selectedTool.inventoryType) {
+        case InventoryType.Seed: {
+            // return if seed growth info is found
+            if (data.placedItem.seedGrowthInfo) {
                 return
             }
             // emit the event to plant seed
@@ -109,24 +140,35 @@ export class InputTilemap extends ItemTilemap {
                 }
             })
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
-        })
-
-        // get the temporary layer
-        const temporaryLayer = this.getObjectLayer(ObjectLayerName.Temporary)
-        if (!temporaryLayer) {
-            throw new Error("Temporary layer not found")
         }
-        this.temporaryLayer = temporaryLayer
+        }
+        // check if tool id is water can
+        if (selectedTool.id === ToolId.WaterCan) {
+            // return if seed growth info is not need water
+            if (data.placedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
+                return
+            }
+                
+            // emit the event to water the plant
+            EventBus.once(EventName.WaterCropCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    EventBus.emit(EventName.TutorialCropWatered)
+                }
+            })
+            EventBus.emit(EventName.RequestWaterCrop, data.id)
+        }
     }
 
     // method called to handle place in progress event
     private handlePlaceInProgress({ id, type }: PlacedInprogressMessage) {
         this.placingInProgress = true
-        
+
         // switch case to set the place item data
         switch (type) {
         case PlacedItemType.Animal:
-            this.temporaryPlaceItemData = animalAssetMap[id as AnimalId].ages[AnimalAge.Baby]
+            this.temporaryPlaceItemData =
+          animalAssetMap[id as AnimalId].ages[AnimalAge.Baby]
             break
         case PlacedItemType.Building:
             this.temporaryPlaceItemData = buildingAssetMap[id as BuildingId]
@@ -138,13 +180,13 @@ export class InputTilemap extends ItemTilemap {
 
     // update method to handle input events
     public update() {
-        //check current mouse position is in which tile
+    //check current mouse position is in which tile
         if (this.placingInProgress) {
             const { worldX, worldY } = this.scene.input.activePointer
             const tile = this.getTileAtWorldXY(worldX, worldY)
             // do nothing if tile is not found
             if (!tile) {
-                return 
+                return
             }
 
             // place the item temporarily on the tile
@@ -154,7 +196,7 @@ export class InputTilemap extends ItemTilemap {
 
     // temporary place item on the tile, for preview the item before placing
     private temporaryPlaceItemOnTile(tile: Phaser.Tilemaps.Tile) {
-        // throw error if temporary place item data is not found
+    // throw error if temporary place item data is not found
         if (!this.temporaryPlaceItemData) {
             throw new Error("Temporary place item data not found")
         }
@@ -177,10 +219,9 @@ export class InputTilemap extends ItemTilemap {
             }
             const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
             // we need to set the position of the temporary place item object and set the origin
-            this.temporaryPlaceItemObject.setPosition(
-                position.x + x,
-                position.y + this.tileHeight + y
-            ).setOrigin(0.5, 1)
+            this.temporaryPlaceItemObject
+                .setPosition(position.x + x, position.y + this.tileHeight + y)
+                .setOrigin(0.5, 1)
             return
         }
         // push the temporary object to the temporary layer
@@ -192,7 +233,7 @@ export class InputTilemap extends ItemTilemap {
             height: height * this.scale,
             type: "",
             visible: true,
-            ...this.computePositionForTiledObject(tile)
+            ...this.computePositionForTiledObject(tile),
         })
 
         // create the temporary place item
