@@ -113,32 +113,18 @@ export class Toolbar extends ContainerLite {
             // update the selected index
             this.selectedIndex = index
             this.updateCacheSelectedTool()
-
             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                 if (this.currrentTools[this.startIndex + index].id === this.seedInventory?.id) {
-                    if (!this.seedsInventoryEmitted) {
-                        this.scene.events.emit(EventName.TutorialSeedsSelected)
-                        this.seedsInventoryEmitted = true
-                    }
+                    this.scene.events.emit(EventName.TutorialSeedsSelected)
                 }
-                console.log(this.currrentTools[this.startIndex + index].id)
                 if (this.currrentTools[this.startIndex + index].id === ToolId.WaterCan) {
-                    if (!this.waterCanEmitted) {
-                        this.scene.events.emit(EventName.TutorialWaterCanPressed)
-                        this.waterCanEmitted = true
-                    }
+                    this.scene.events.emit(EventName.TutorialWaterCanPressed)
                 }
                 if (this.currrentTools[this.startIndex + index].id === ToolId.Herbicide) {
-                    if (!this.herbicideEmitted) {
-                        this.scene.events.emit(EventName.TutorialHerbicidePressed)
-                        this.herbicideEmitted = true
-                    }
+                    this.scene.events.emit(EventName.TutorialHerbicidePressed)
                 }
                 if (this.currrentTools[this.startIndex + index].id === ToolId.Pesticide) {
-                    if (!this.pesticideEmitted) {
-                        this.scene.events.emit(EventName.TutorialPesticidePressed)
-                        this.pesticideEmitted = true
-                    }
+                    this.scene.events.emit(EventName.TutorialPesticidePressed)
                 }
             }
         })
@@ -175,6 +161,12 @@ export class Toolbar extends ContainerLite {
                 scene: this.scene,
             })    
             this.setDepth(HIGHLIGH_DEPTH)
+        })
+
+        this.scene.events.on(EventName.TutorialResetToolbarDepth, () => {
+            if (this.depth !== CONTENT_DEPTH) {
+                this.setDepth(CONTENT_DEPTH)
+            }
         })
     }
 

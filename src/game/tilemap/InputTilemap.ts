@@ -122,10 +122,19 @@ export class InputTilemap extends ItemTilemap {
             CacheKey.SelectedTool
         ) as ToolLike
 
+        const object = data.object
+        const currentPlacedItem = object.currentPlacedItem
+        console.log(currentPlacedItem)
+        const placedItemId = currentPlacedItem?.id
+        // do nothing if placed item id is not found
+        if (!placedItemId) {
+            return
+        }
+
         switch (selectedTool.inventoryType) {
         case InventoryType.Seed: {
             // return if seed growth info is found
-            if (data.placedItem.seedGrowthInfo) {
+            if (currentPlacedItem?.seedGrowthInfo) {
                 return
             }
             EventBus.once(EventName.PlantSeedCompleted, () => {
@@ -137,7 +146,7 @@ export class InputTilemap extends ItemTilemap {
             // emit the event to plant seed
             const eventMessage: PlantSeedRequest = {
                 inventorySeedId: selectedTool.id,
-                placedItemTileId: data.placedItem.id,
+                placedItemTileId: placedItemId,
             }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
         }
@@ -145,7 +154,7 @@ export class InputTilemap extends ItemTilemap {
         // check if tool id is water can
         if (selectedTool.id === ToolId.WaterCan) {
             // return if seed growth info is not need water
-            if (data.placedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
+            if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
                 return
             }
             // emit the event to water the plant
@@ -157,7 +166,7 @@ export class InputTilemap extends ItemTilemap {
             })
             // emit the event to plant seed
             const eventMessage: WaterRequest = {
-                placedItemTileId: data.placedItem.id,
+                placedItemTileId: placedItemId,
             }
             EventBus.emit(EventName.RequestWater, eventMessage)
         }

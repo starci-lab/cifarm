@@ -16,7 +16,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private container: ContainerLite | undefined
     private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
     private bubbleState: Label | undefined
-    private currentPlacedItem: PlacedItemEntity | undefined
+    public currentPlacedItem: PlacedItemEntity | undefined
     private timer: Phaser.GameObjects.Text | undefined
 
     public update(type: PlacedItemType, placedItem: PlacedItemEntity) {
@@ -28,6 +28,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         default:
             break
         }
+        // set the placed item
+        this.currentPlacedItem = placedItem
     }
 
     private getContainer() {
@@ -45,17 +47,16 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!placedItem.seedGrowthInfo) {
             // remove everything in the container
             container.clear(true)
-            return
+        } else {
+            // Update the texture
+            this.updateSeedGrowthInfoTexture(placedItem, container)
+
+            // Update the bubble state
+            this.updateSeedGrowthInfoBubble(placedItem, container)
+
+            // Update the timer
+            this.updateSeedGrowthInfoTimer(placedItem, container)
         }
-
-        // Update the texture
-        this.updateSeedGrowthInfoTexture(placedItem, container)
-
-        // Update the bubble state
-        this.updateSeedGrowthInfoBubble(placedItem, container)
-
-        // Update the timer
-        this.updateSeedGrowthInfoTimer(placedItem, container)
     }   
 
     private updateSeedGrowthInfoTexture(placedItem: PlacedItemEntity, container: ContainerLite) {

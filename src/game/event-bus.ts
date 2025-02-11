@@ -100,6 +100,7 @@ export enum EventName {
     TutorialWaterCanPressed = "tutorial_water_can_pressed",
     TutorialPesticidePressed = "tutorial_pesticide_pressed",
     TutorialHerbicidePressed = "tutorial_herbicide_pressed",
+    TutorialResetToolbarDepth = "tutorial_reset_toolbar_depth",
 
     // api events
     RequestUpdateTutorial = "request_update_tutorial",

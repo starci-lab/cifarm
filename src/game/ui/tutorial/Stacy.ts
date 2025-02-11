@@ -273,16 +273,9 @@ export class Stacy extends ContainerLite {
                     EventBus.emit(EventName.RequestUpdateTutorial)
                     return
                 }
-
                 const generatePlantSeedText = (count: number) => {
                     return `Now, tap on the tile to plant the seeds. ${count} left.`
                 }
-                EventBus.once(EventName.TutorialTilePressedResponsed, ({ position }: TutorialOpenInventoryResponsedMessage) => {
-                    this.displayPressHereArrow({
-                        originPosition: { x: position.x + 80, y: position.y + 80 },
-                        targetPosition: { x: position.x + 60, y: position.y + 60 },
-                    })
-                })
                 this.scene.events.once(EventName.TutorialSeedsSelected, () => {
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
@@ -293,6 +286,8 @@ export class Stacy extends ContainerLite {
                     count--
                     if (count === 0) {
                         EventBus.off(EventName.TutorialSeedPlanted)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbarDepth)
                         EventBus.emit(EventName.RequestUpdateTutorial)
                         return
                     }
@@ -328,13 +323,14 @@ export class Stacy extends ContainerLite {
                 EventBus.on(EventName.TutorialCropWatered, () => {
                     count--
                     if (count === 0) {
-                        EventBus.off(EventName.TutorialSeedPlanted)
+                        EventBus.off(EventName.TutorialCropWatered)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbarDepth)
                         EventBus.emit(EventName.RequestUpdateTutorial)
                         return
                     }
                     this.showHelpDialog(generateWaterText(count))
                 })
-
                 this.scene.events.once(EventName.TutorialWaterCanPressed, () => {
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
@@ -415,6 +411,11 @@ export class Stacy extends ContainerLite {
         if (!this.isShown()) {
             this.show()
         }
+        // show the backdrop
+        EventBus.emit(EventName.ShowUIBackdrop, { depth: calculateUiDepth({ layer: UILayer.Tutorial }) })
+        // hide the help dialog
+        this.hideHelpDialog()
+
         // if press to continue is true, turn it off
         this.disallowPressToContinue(true)
         // set continue to false
