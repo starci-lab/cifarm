@@ -92,16 +92,20 @@ export enum EventName {
     TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
     TutorialPlantSeeds = "tutorial_plant_seeds",
-    TutorialSeedsSelected = "tutorial_seeds_selected",
+    TutorialSeedsPressed = "tutorial_seeds_pressed",
+    TutorialScythePressed = "tutorial_scythe_pressed",
     TutorialSeedPlanted = "tutorial_seed_planted",
     TutorialTilePressed = "tutorial_tile_pressed",
     TutorialCropWatered = "tutorial_crop_watered",
+    TutorialCropPesticideUsed = "tutorial_crop_pesticide_used",
+    TutorialCropHerbicideUsed = "tutorial_crop_herbicide_used",
+    TutorialCropHarvested = "tutorial_crop_harvested",
+    TutorialPesiticidePressed = "tutorial_pesticide_pressed",
+    TutorialHerbicidePressed = "tutorial_herbicide_pressed",
     TutorialTilePressedResponsed = "tutorial_tile_pressed_responsed",
     TutorialWaterCanPressed = "tutorial_water_can_pressed",
-    TutorialPesticidePressed = "tutorial_pesticide_pressed",
-    TutorialHerbicidePressed = "tutorial_herbicide_pressed",
-    TutorialResetToolbarDepth = "tutorial_reset_toolbar_depth",
-
+    TutorialResetToolbar = "tutorial_reset_toolbar",
+    TutorialHighlightToolbar = "tutorial_highlight_toolbar",
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
     UpdateTutorialCompleted = "update_tutorial_completed",
@@ -109,11 +113,20 @@ export enum EventName {
     RequestBuySeeds = "request_buy_seeds",
     BuySeedsCompleted = "buy_seeds_completed",
 
+    RequestUsePesticide = "request_use_pesticide",
+    UsePesticideCompleted = "use_pesticide_completed",
+
+    RequestUseHerbicide = "request_use_herbicide",
+    UseHerbicideCompleted = "use_herbicide_completed",
+
     RequestPlantSeed = "request_plant_seed",
     PlantSeedCompleted = "plant_seed_completed",
 
     RequestWater = "request_water_crop",
     WaterCompleted = "water_crop_completed",
+
+    RequestHarvestCrop = "request_harvest_crop",
+    HarvestCropCompleted = "harvest_crop_completed",
 }
 
 export interface OpenTutorialMessage {

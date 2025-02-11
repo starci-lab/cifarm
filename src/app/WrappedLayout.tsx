@@ -9,6 +9,7 @@ import { SingletonHookProvider } from "@/modules/singleton-hook"
 import {
     useApiAuthenticationSwrMutation,
     useApiBuySeedsSwrMutation,
+    useApiHarvestCropSwrMutation,
     useApiPlantSeedSwrMutation,
     useApiUpdateTutorialSwrMutation,
     useApiUseHerbicideSwrMutation,
@@ -50,11 +51,10 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_WATER_SWR_MUTATION: useApiWaterSwrMutation(),
                             API_USE_HERBICIDE_SWR_MUTATION: useApiUseHerbicideSwrMutation(),
                             API_USE_PESTICIDE_SWR_MUTATION: useApiUsePesticideSwrMutation(),
+                            API_HARVEST_CROP_SWR_MUTATION: useApiHarvestCropSwrMutation(),
                             QUERY_USER_SWR: useQueryUserSwr(),
                             QUERY_STATIC_SWR: useQueryStaticSwr(),
                             QUERY_INVENTORIES_SWR: useQueryInventoriesSwr(),
-
-
                             //io
                             GAMEPLAY_IO: useGameplayIo()
                         }}

@@ -115,7 +115,7 @@ export class Toolbar extends ContainerLite {
             this.updateCacheSelectedTool()
             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                 if (this.currrentTools[this.startIndex + index].id === this.seedInventory?.id) {
-                    this.scene.events.emit(EventName.TutorialSeedsSelected)
+                    this.scene.events.emit(EventName.TutorialSeedsPressed)
                 }
                 if (this.currrentTools[this.startIndex + index].id === ToolId.WaterCan) {
                     this.scene.events.emit(EventName.TutorialWaterCanPressed)
@@ -124,7 +124,10 @@ export class Toolbar extends ContainerLite {
                     this.scene.events.emit(EventName.TutorialHerbicidePressed)
                 }
                 if (this.currrentTools[this.startIndex + index].id === ToolId.Pesticide) {
-                    this.scene.events.emit(EventName.TutorialPesticidePressed)
+                    this.scene.events.emit(EventName.TutorialPesiticidePressed)
+                }
+                if (this.currrentTools[this.startIndex + index].id === ToolId.Scythe) {
+                    this.scene.events.emit(EventName.TutorialScythePressed)
                 }
             }
         })
@@ -155,7 +158,7 @@ export class Toolbar extends ContainerLite {
             }
         })
 
-        this.scene.events.on(EventName.TutorialPlantSeeds, () => {
+        this.scene.events.on(EventName.TutorialHighlightToolbar, () => {
             this.seedInventory = getFirstSeedInventory({
                 cropId: defaultSeedCropId,
                 scene: this.scene,
@@ -163,7 +166,7 @@ export class Toolbar extends ContainerLite {
             this.setDepth(HIGHLIGH_DEPTH)
         })
 
-        this.scene.events.on(EventName.TutorialResetToolbarDepth, () => {
+        this.scene.events.on(EventName.TutorialResetToolbar, () => {
             if (this.depth !== CONTENT_DEPTH) {
                 this.setDepth(CONTENT_DEPTH)
             }

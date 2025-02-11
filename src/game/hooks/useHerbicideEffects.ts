@@ -12,14 +12,14 @@ export const useUseHerbicideEffects = () => {
       >(API_USE_HERBICIDE_SWR_MUTATION)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestBuySeeds, async (message: UseHerbicideRequest) => {
+        EventBus.on(EventName.RequestUseHerbicide, async (message: UseHerbicideRequest) => {
             await swrMutation.trigger({ request: message })
             // return the user to the phaser game
-            EventBus.emit(EventName.BuySeedsCompleted)
+            EventBus.emit(EventName.UseHerbicideCompleted)
         })
     
         return () => {
-            EventBus.removeListener(EventName.RequestBuySeeds)
+            EventBus.removeListener(EventName.RequestUseHerbicide)
         }
     }, [swrMutation])
 }
