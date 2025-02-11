@@ -1,6 +1,6 @@
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { ItemTilemap, PlacedItemObjectDataWithId } from "./ItemTilemap"
+import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
 import {
     AnimalAge,
@@ -19,7 +19,7 @@ import {
 } from "@/modules/entities"
 import { ObjectLayerName } from "./types"
 import { ToolLike } from "../ui"
-import { PlantSeedRequest } from "@/modules/axios"
+import { PlantSeedRequest, WaterRequest } from "@/modules/axios"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
@@ -114,7 +114,7 @@ export class InputTilemap extends ItemTilemap {
     }
 
     // method to handle press on tile
-    private handlePressOnTile(data: PlacedItemObjectDataWithId ) {
+    private handlePressOnTile(data: PlacedItemObjectData ) {
         if (data.placedItemType.type !== PlacedItemType.Tile) {
             throw new Error("Invalid placed item type")
         }
@@ -128,17 +128,17 @@ export class InputTilemap extends ItemTilemap {
             if (data.placedItem.seedGrowthInfo) {
                 return
             }
-            // emit the event to plant seed
-            const eventMessage: PlantSeedRequest = {
-                inventorySeedId: selectedTool.id,
-                placedItemTileId: data.id,
-            }
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialSeedPlanted)
                 }
             })
+            // emit the event to plant seed
+            const eventMessage: PlantSeedRequest = {
+                inventorySeedId: selectedTool.id,
+                placedItemTileId: data.placedItem.id,
+            }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
         }
         }
@@ -148,15 +148,18 @@ export class InputTilemap extends ItemTilemap {
             if (data.placedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
                 return
             }
-                
             // emit the event to water the plant
-            EventBus.once(EventName.WaterCropCompleted, () => {
+            EventBus.once(EventName.WaterCompleted, () => {
                 EventBus.emit(EventName.RefreshUser)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialCropWatered)
                 }
             })
-            EventBus.emit(EventName.RequestWaterCrop, data.id)
+            // emit the event to plant seed
+            const eventMessage: WaterRequest = {
+                placedItemTileId: data.placedItem.id,
+            }
+            EventBus.emit(EventName.RequestWater, eventMessage)
         }
     }
 

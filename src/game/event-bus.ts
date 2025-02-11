@@ -111,8 +111,8 @@ export enum EventName {
     RequestPlantSeed = "request_plant_seed",
     PlantSeedCompleted = "plant_seed_completed",
 
-    RequestWaterCrop = "request_water_crop",
-    WaterCropCompleted = "water_crop_completed",
+    RequestWater = "request_water_crop",
+    WaterCompleted = "water_crop_completed",
 }
 
 export interface OpenTutorialMessage {

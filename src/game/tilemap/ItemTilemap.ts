@@ -285,7 +285,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // method to get the object at a given tile
-    protected getObjectAtTile(tileX: number, tileY: number): PlacedItemObjectDataWithId | null {
+    protected getObjectAtTile(tileX: number, tileY: number): PlacedItemObjectData | null {
         const items = Object.values(this.placedItemObjectMap)
         const item = items.find(
             (item) => item.tileX === tileX && item.tileY === tileY
@@ -299,7 +299,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         if (!id) {
             throw new Error("ID not found")
         }
-        return { ...item, id }
+        return item
     }
 }
 
@@ -310,4 +310,3 @@ export interface PlacedItemObjectData {
     placedItem: PlacedItemEntity
     placedItemType: PlacedItemTypeEntity
 }
-export type PlacedItemObjectDataWithId = PlacedItemObjectData & { id: string }

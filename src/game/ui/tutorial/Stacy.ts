@@ -1,4 +1,4 @@
-import { Position, TutorialStep, UserEntity } from "@/modules/entities"
+import { CropCurrentState, Position, TutorialStep, UserEntity } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
@@ -12,7 +12,6 @@ import {
     TutorialOpenShopResponsedMessage,
     TutorialPrepareBuySeedsMessage,
     TutorialPrepareCloseShopResponsedMessage,
-    TutorialWaterCanPressedMessage,
 } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -311,11 +310,31 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartWaterCropAtStage1: {
-                let count = 2
-                
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItemsNeedWater = placedItems.filter((placedItem) => {
+                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.NeedWater
+                })
+                let count = placedItemsNeedWater.length
+                // emit update tutorial if there is no crop that need water
+                if (count === 0) {
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                    return
+                }
+
                 const generateWaterText = (count: number) => {
                     return `Now, tap on the tile to water the seeds. ${count} left.`
                 }
+
+                EventBus.on(EventName.TutorialCropWatered, () => {
+                    count--
+                    if (count === 0) {
+                        EventBus.off(EventName.TutorialSeedPlanted)
+                        EventBus.emit(EventName.RequestUpdateTutorial)
+                        return
+                    }
+                    this.showHelpDialog(generateWaterText(count))
+                })
+
                 this.scene.events.once(EventName.TutorialWaterCanPressed, () => {
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
