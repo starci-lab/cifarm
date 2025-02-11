@@ -82,6 +82,7 @@ export enum EventName {
     TutorialOpenShopResponsed = "tutorial_open_shop_responsed",
     TutorialOpenShopPressed = "tutorial_open_shop_pressed",
     TutorialShopButtonPressed = "tutorial_shop_button_pressed",
+    TutorialRoadsideStandButtonPressed = "tutorial_roadside_stand_button_pressed",
     TutorialShopButtonPressedResponsed = "tutorial_shop_button_pressed_responsed",
     TutorialPrepareBuySeeds = "tutorial_prepare_buy_seeds",
     TutorialPrepareBuySeedsResponsed = "tutorial_prepare_buy_seeds_responsed",
@@ -89,6 +90,8 @@ export enum EventName {
     TutorialPrepareCloseShopResponsed = "tutorial_prepare_close_shop_responsed",
     TutorialCloseShopButtonPressed = "tutorial_close_shop_button_pressed",
     TutorialOpenInventory = "tutorial_open_inventory",
+    TutorialOpenRoadsideStand = "tutorial_open_roadside_stand",
+    TutorialOpenRoadsideStandResponsed = "tutorial_open_roadside_stand_responsed",
     TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
     TutorialPlantSeeds = "tutorial_plant_seeds",
@@ -145,6 +148,11 @@ export interface TutorialOpenShopResponsedMessage {
 }
 
 export interface TutorialOpenInventoryResponsedMessage {
+    // position of the shop button
+    position: Position,
+}
+
+export interface TutorialOpenRoadsideStandResponsedMessage {
     // position of the shop button
     position: Position,
 }

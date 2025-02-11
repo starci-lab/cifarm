@@ -9,6 +9,7 @@ import {
     EventBus,
     EventName,
     TutorialOpenInventoryResponsedMessage,
+    TutorialOpenRoadsideStandResponsedMessage,
     TutorialOpenShopResponsedMessage,
     TutorialPrepareBuySeedsMessage,
     TutorialPrepareCloseShopResponsedMessage,
@@ -462,6 +463,7 @@ export class Stacy extends ContainerLite {
                 let count = placedItemsFullyMatured.length
                 // emit update tutorial if there is no crop that need water
                 if (count === 0) {
+                    EventBus.emit(EventName.ShowButtons)
                     EventBus.emit(EventName.RequestUpdateTutorial)
                     return
                 }
@@ -476,6 +478,7 @@ export class Stacy extends ContainerLite {
                         EventBus.off(EventName.TutorialCropHarvested)
                         // reset toolbar depth
                         this.scene.events.emit(EventName.TutorialResetToolbar)
+                        EventBus.emit(EventName.ShowButtons)
                         EventBus.emit(EventName.RequestUpdateTutorial)
                         return
                     }
@@ -490,6 +493,28 @@ export class Stacy extends ContainerLite {
                 this.hide()
                 this.scene.events.emit(EventName.TutorialHighlightToolbar)
                 this.showHelpDialog("Select scythe from toolbar.")
+                return
+            }
+            case TutorialStep.StartDeliverProduct: {
+                // when user press the shop button
+                this.scene.events.once(
+                    EventName.TutorialOpenRoadsideStandResponsed,
+                    ({ position }: TutorialOpenRoadsideStandResponsedMessage) => {
+                        this.displayPressHereArrow({
+                            rotation: -45,
+                            originPosition: { x: position.x + 60, y: position.y + 60 },
+                            targetPosition: { x: position.x + 40, y: position.y + 40 },
+                        })
+                    }
+                )
+
+                this.scene.events.once(EventName.TutorialRoadsideStandButtonPressed, () => {
+                })
+
+                // emit the event to open the inventory
+                this.scene.events.emit(EventName.TutorialOpenRoadsideStand)
+                // hide the stacy
+                this.hide()
                 return
             }
             default: {

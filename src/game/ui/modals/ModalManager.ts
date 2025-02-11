@@ -110,12 +110,14 @@ export class ModalManager extends ContainerLite {
     // show method, to show the modal
     private showBackdrop(showTutorialBackdrop?: boolean) {
         // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (this.checkTutorialActive() && showTutorialBackdrop) {
-            EventBus.emit(EventName.ShowUIBackdrop, {
-                depth: calculateUiDepth({
-                    layer: UILayer.Tutorial,
+        if (this.checkTutorialActive()) {
+            if (showTutorialBackdrop) {
+                EventBus.emit(EventName.ShowUIBackdrop, {
+                    depth: calculateUiDepth({
+                        layer: UILayer.Tutorial,
+                    })
                 })
-            })
+            }
             return
         }
         EventBus.emit(EventName.ShowUIBackdrop, {

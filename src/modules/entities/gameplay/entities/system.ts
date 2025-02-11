@@ -1,5 +1,5 @@
 import { Position } from "../base"
-import { AppearanceChance } from "../enums"
+import { AppearanceChance, CropId } from "../enums"
 
 export interface SystemEntity {
     value: object;
@@ -48,6 +48,8 @@ export interface Positions {
 export interface Starter {
     golds: number;
     positions: Positions;
+    defaultCropId: CropId;
+    defaultSeedQuantity: number;
 }
 
 export interface SlotInfo {

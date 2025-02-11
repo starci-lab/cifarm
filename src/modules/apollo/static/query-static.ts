@@ -76,6 +76,8 @@ const query = gql`
         }
         starter {
             golds
+            defaultCropId
+            defaultSeedQuantity
         }
         spinInfo {
             appearanceChanceSlots {
@@ -212,7 +214,7 @@ export interface QueryStaticResponse {
     activities: Activities
     cropRandomness: CropRandomness
     animalRandomness: AnimalRandomness
-    stater: Starter
+    starter: Starter
     spinInfo: SpinInfo
     energyRegen: EnergyRegen
     placedItemTypes: Array<PlacedItemTypeEntity>

@@ -9,6 +9,7 @@ import {
     InventoryType,
     InventoryTypeEntity,
     InventoryTypeId,
+    Starter,
     ToolEntity,
     ToolId,
 } from "@/modules/entities"
@@ -25,7 +26,6 @@ import { getFirstSeedInventory, getToolbarInventories } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseText } from "../elements"
 import { calculateUiDepth, UILayer } from "../../layers"
-import { defaultSeedCropId } from "../modals/shop/ShopContent"
 
 export const CONTENT_DEPTH = calculateUiDepth({
     layer: UILayer.Modal,
@@ -75,10 +75,7 @@ export class Toolbar extends ContainerLite {
     private selectedIndex = defaultSelectedIndex
     private seedInventory: InventoryEntity | undefined
     // flags to check if the events are emitted
-    private seedsInventoryEmitted = false
-    private waterCanEmitted = false
-    private herbicideEmitted = false
-    private pesticideEmitted = false
+    private starter: Starter
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -94,6 +91,7 @@ export class Toolbar extends ContainerLite {
         this.inventories = this.scene.cache.obj.get(
             CacheKey.Inventories
         ) as Array<InventoryEntity>
+        this.starter = this.scene.cache.obj.get(CacheKey.Starter) as Starter
 
         // get the tools from the cache
         this.tools = this.scene.cache.obj.get(CacheKey.Tools) as Array<ToolEntity>
@@ -160,7 +158,7 @@ export class Toolbar extends ContainerLite {
 
         this.scene.events.on(EventName.TutorialHighlightToolbar, () => {
             this.seedInventory = getFirstSeedInventory({
-                cropId: defaultSeedCropId,
+                cropId: this.starter.defaultCropId,
                 scene: this.scene,
             })    
             this.setDepth(HIGHLIGH_DEPTH)

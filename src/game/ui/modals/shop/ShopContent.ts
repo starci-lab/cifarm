@@ -25,6 +25,7 @@ import {
     CropId,
     InventoryEntity,
     PlacedItemType,
+    Starter,
 } from "@/modules/entities"
 import { onGameObjectPress } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
@@ -39,15 +40,13 @@ import {
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateUiDepth, UILayer } from "../../../layers"
 import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
-import { getFirstSeedInventory } from "../../../queries"
+import { getSpecificSeedInventories } from "../../../queries"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 // own depth for the shop content
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
-
-export const defaultSeedCropId = CropId.Carrot
 
 export class ShopContent extends BaseSizer {
     // list of items
@@ -64,6 +63,7 @@ export class ShopContent extends BaseSizer {
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
     private inventories: Array<InventoryEntity> = []
+    private starter: Starter
 
     constructor({
         scene,
@@ -90,6 +90,7 @@ export class ShopContent extends BaseSizer {
         )
 
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+        this.starter = this.scene.cache.obj.get(CacheKey.Starter)
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -118,11 +119,12 @@ export class ShopContent extends BaseSizer {
             // disable the default scroller
             this.disableDefaultScroller()
 
-            if (getFirstSeedInventory({
-                cropId: defaultSeedCropId,
+            const inventories = getSpecificSeedInventories({
+                cropId: this.starter.defaultCropId,
                 scene: this.scene,
                 inventories: this.inventories,
-            })) {
+            })
+            if (inventories.length > this.starter.defaultSeedQuantity) {
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }
