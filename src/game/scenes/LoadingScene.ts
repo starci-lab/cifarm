@@ -17,6 +17,7 @@ import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
 import { InventoryEntity, UserEntity } from "@/modules/entities"
 import { sleep } from "@/modules/common"
+import { loadCropStateAssets } from "../assets/states"
 
 export enum LoadingPhase {
     DataFetching = "dataFetching",
@@ -160,6 +161,7 @@ export class LoadingScene extends Scene {
         loadToolsAssets(this)
         loadStacyAssets(this)
         loadInventoryTypesAssets(this)
+        loadCropStateAssets(this)
     }
 
     async update() {

@@ -35,8 +35,7 @@ export class UIScene extends Scene {
         // Add the right horizontal buttons
         const rightHorizontalButtons = new RightHorizontalButtons({
             scene: this,
-        })
-            .layout()
+        }).layout()
             .setPosition(width - 50, 200)
         this.add.existing(rightHorizontalButtons)
 
@@ -55,10 +54,10 @@ export class UIScene extends Scene {
         })
         this.add.existing(modalManager)
 
-        // // add the tutorial manager
-        // const tutorialManager = new TutorialManager({
-        //     scene: this
-        // })
-        // this.add.existing(tutorialManager)
+        // add the tutorial manager
+        const tutorialManager = new TutorialManager({
+            scene: this
+        })
+        this.add.existing(tutorialManager)
     }
 }

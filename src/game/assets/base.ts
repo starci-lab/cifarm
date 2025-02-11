@@ -259,7 +259,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalCommonQuantityFrame]: "modals/common/quantity-frame.png",
 
     //State
-    [BaseAssetKey.BubbleState]: "states/bubble-state.png",
+    [BaseAssetKey.BubbleState]: "bubble-state.png",
 }
 
 // preload, for loading screen
