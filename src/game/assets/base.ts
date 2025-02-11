@@ -127,6 +127,9 @@ export enum BaseAssetKey {
 
     //Press here arrow
     PressHereArrow = "press-here-arrow",
+
+    //State
+    BubbleState = "bubble-state",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -254,6 +257,9 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalCommonBackground]: "modals/common/background.png",
     [BaseAssetKey.ModalCommonFrame]: "modals/common/frame.png",
     [BaseAssetKey.ModalCommonQuantityFrame]: "modals/common/quantity-frame.png",
+
+    //State
+    [BaseAssetKey.BubbleState]: "states/bubble-state.png",
 }
 
 // preload, for loading screen

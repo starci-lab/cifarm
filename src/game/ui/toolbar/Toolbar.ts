@@ -10,6 +10,7 @@ import {
     InventoryTypeEntity,
     InventoryTypeId,
     ToolEntity,
+    ToolId,
 } from "@/modules/entities"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
@@ -73,6 +74,11 @@ export class Toolbar extends ContainerLite {
     // selected tool index
     private selectedIndex = defaultSelectedIndex
     private seedInventory: InventoryEntity | undefined
+    // flags to check if the events are emitted
+    private seedsInventoryEmitted = false
+    private waterCanEmitted = false
+    private herbicideEmitted = false
+    private pesticideEmitted = false
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -106,16 +112,38 @@ export class Toolbar extends ContainerLite {
             this.onSelect({ index, animate })
             // update the selected index
             this.selectedIndex = index
-            this.scene.cache.obj.add(CacheKey.SelectedTool, this.currrentTools[this.startIndex + index])
+            this.updateCacheSelectedTool()
 
             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                 if (this.currrentTools[this.startIndex + index].id === this.seedInventory?.id) {
-                    this.scene.events.emit(EventName.TutorialSeedsSelected)
+                    if (!this.seedsInventoryEmitted) {
+                        this.scene.events.emit(EventName.TutorialSeedsSelected)
+                        this.seedsInventoryEmitted = true
+                    }
+                }
+                console.log(this.currrentTools[this.startIndex + index].id)
+                if (this.currrentTools[this.startIndex + index].id === ToolId.WaterCan) {
+                    if (!this.waterCanEmitted) {
+                        this.scene.events.emit(EventName.TutorialWaterCanPressed)
+                        this.waterCanEmitted = true
+                    }
+                }
+                if (this.currrentTools[this.startIndex + index].id === ToolId.Herbicide) {
+                    if (!this.herbicideEmitted) {
+                        this.scene.events.emit(EventName.TutorialHerbicidePressed)
+                        this.herbicideEmitted = true
+                    }
+                }
+                if (this.currrentTools[this.startIndex + index].id === ToolId.Pesticide) {
+                    if (!this.pesticideEmitted) {
+                        this.scene.events.emit(EventName.TutorialPesticidePressed)
+                        this.pesticideEmitted = true
+                    }
                 }
             }
         })
         // store the first selected tool
-        this.scene.cache.obj.add(CacheKey.SelectedTool, this.currrentTools[this.startIndex + this.selectedIndex])
+        this.updateCacheSelectedTool()
 
         this.add(this.itemSizer)
 
@@ -148,6 +176,11 @@ export class Toolbar extends ContainerLite {
             })    
             this.setDepth(HIGHLIGH_DEPTH)
         })
+    }
+
+    private updateCacheSelectedTool() {
+        // store the first selected tool
+        this.scene.cache.obj.add(CacheKey.SelectedTool, this.currrentTools[this.startIndex + this.selectedIndex])
     }
 
     private createPrevButton() {

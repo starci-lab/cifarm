@@ -28,18 +28,16 @@ export class UIScene extends Scene {
         const leftHorizontalButtons = new LeftHorizontalButtons({
             scene: this,
         })
-            .setPosition(50, 100)
-            .setOrigin(0, 1)
             .layout()
+            .setPosition(50, 200)
         this.add.existing(leftHorizontalButtons)
 
         // Add the right horizontal buttons
         const rightHorizontalButtons = new RightHorizontalButtons({
             scene: this,
         })
-            .setPosition(width - 50, 100)
-            .setOrigin(1, 1)
             .layout()
+            .setPosition(width - 50, 200)
         this.add.existing(rightHorizontalButtons)
 
         new Topbar(this)
@@ -57,10 +55,10 @@ export class UIScene extends Scene {
         })
         this.add.existing(modalManager)
 
-        // add the tutorial manager
-        const tutorialManager = new TutorialManager({
-            scene: this
-        })
-        this.add.existing(tutorialManager)
+        // // add the tutorial manager
+        // const tutorialManager = new TutorialManager({
+        //     scene: this
+        // })
+        // this.add.existing(tutorialManager)
     }
 }

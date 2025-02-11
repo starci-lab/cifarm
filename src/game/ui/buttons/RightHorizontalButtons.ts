@@ -13,7 +13,14 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
     constructor(baseParams: ButtonsBaseConstructorParams) {
         super({
-            baseParams,
+            baseParams: {
+                scene: baseParams.scene,
+                config: {
+                    ...baseParams.config,
+                    originX: 1,
+                    originY: 0,
+                }
+            },
             options: {
                 orientation: "y",
                 space: 36,

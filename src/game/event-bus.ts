@@ -96,6 +96,9 @@ export enum EventName {
     TutorialSeedPlanted = "tutorial_seed_planted",
     TutorialTilePressed = "tutorial_tile_pressed",
     TutorialTilePressedResponsed = "tutorial_tile_pressed_responsed",
+    TutorialWaterCanPressed = "tutorial_water_can_pressed",
+    TutorialPesticidePressed = "tutorial_pesticide_pressed",
+    TutorialHerbicidePressed = "tutorial_herbicide_pressed",
 
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
@@ -124,6 +127,11 @@ export interface TutorialOpenShopResponsedMessage {
 }
 
 export interface TutorialOpenInventoryResponsedMessage {
+    // position of the shop button
+    position: Position,
+}
+
+export interface TutorialWaterCanPressedMessage {
     // position of the shop button
     position: Position,
 }
