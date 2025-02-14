@@ -19,12 +19,13 @@ import {
 import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import {
-    AnimalEntity,
-    BuildingEntity,
-    CropEntity,
+    AnimalSchema,
+    BuildingSchema,
+    CropSchema,
     CropId,
-    InventoryEntity,
+    InventorySchema,
     PlacedItemType,
+    DefaultInfo,
 } from "@/modules/entities"
 import { onGameObjectPress } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
@@ -39,7 +40,7 @@ import {
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateUiDepth, UILayer } from "../../../layers"
 import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
-import { getFirstSeedInventory } from "../../../queries"
+import { getSpecificSeedInventories } from "../../../queries"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
@@ -47,23 +48,22 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 // own depth for the shop content
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
 
-export const defaultSeedCropId = CropId.Carrot
-
 export class ShopContent extends BaseSizer {
     // list of items
     private scrollablePanelMap: Partial<Record<ShopTab, ScrollablePanel>> = {}
 
     // data
-    private animals: Array<AnimalEntity> = []
-    private crops: Array<CropEntity> = []
-    private buildings: Array<BuildingEntity> = []
+    private animals: Array<AnimalSchema> = []
+    private crops: Array<CropSchema> = []
+    private buildings: Array<BuildingSchema> = []
 
     //default
     private defaultItemCard: Sizer | undefined
     private defaultSeedButton: Label | undefined
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
-    private inventories: Array<InventoryEntity> = []
+    private inventories: Array<InventorySchema> = []
+    private defaultInfo: DefaultInfo
 
     constructor({
         scene,
@@ -90,6 +90,7 @@ export class ShopContent extends BaseSizer {
         )
 
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+        this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -118,11 +119,12 @@ export class ShopContent extends BaseSizer {
             // disable the default scroller
             this.disableDefaultScroller()
 
-            if (getFirstSeedInventory({
-                cropId: defaultSeedCropId,
+            const inventories = getSpecificSeedInventories({
+                cropId: this.defaultInfo.defaultCropId,
                 scene: this.scene,
                 inventories: this.inventories,
-            })) {
+            })
+            if (inventories.length > this.defaultInfo.defaultSeedQuantity) {
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }
@@ -305,15 +307,15 @@ export class ShopContent extends BaseSizer {
         const itemCards: Array<Sizer> = []
         switch (shopTab) {
         case ShopTab.Seeds: {
-            for (const { id, price } of this.crops) {
+            for (const { displayId, price } of this.crops) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: cropAssetMap[id].seed.textureConfig.key,
-                    title: cropAssetMap[id].name,
+                    assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                    title: cropAssetMap[displayId].name,
                     onPress: (pointer: Phaser.Input.Pointer) => {
-                        this.playBuySeedAnimation(id, pointer)
+                        this.playBuySeedAnimation(displayId, pointer)
                         const eventMessage: BuySeedsRequest = {
-                            cropId: id,
+                            cropId: displayId,
                             quantity: 1,
                         }
                         // send request to buy seeds
@@ -331,13 +333,13 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Animals: {
-            for (const { id, price } of this.animals) {
+            for (const { displayId, price } of this.animals) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: animalAssetMap[id].ages[AnimalAge.Baby].textureConfig.key,
-                    title: animalAssetMap[id].name,
+                    assetKey: animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    title: animalAssetMap[displayId].name,
                     onPress: () => {
-                        console.log("Clicked on animal", id)
+                        console.log("Clicked on animal", displayId)
                     },
                     price,
                 })
@@ -347,11 +349,11 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Buildings: {
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: id,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: displayId,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -360,7 +362,7 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
                         const message: PlacedInprogressMessage = {
-                            id,
+                            id: displayId,
                             type: PlacedItemType.Building,
                         }
                         EventBus.emit(EventName.PlaceInprogress, message)
@@ -375,13 +377,13 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Decorations:
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: buildingAssetMap[id].name,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: buildingAssetMap[displayId].name,
                     onPress: () => {
-                        console.log("Clicked on building", id)
+                        console.log("Clicked on building", displayId)
                     },
                     price,
                 })
@@ -390,13 +392,13 @@ export class ShopContent extends BaseSizer {
             }
             break
         case ShopTab.Others:
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: id,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: displayId,
                     onPress: () => {
-                        console.log("Clicked on building", id)
+                        console.log("Clicked on building", displayId)
                     },
                     price,
                 })
@@ -405,13 +407,13 @@ export class ShopContent extends BaseSizer {
             }
             break
         case ShopTab.Trees:
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: id,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: displayId,
                     onPress: () => {
-                        console.log("Clicked on building", id)
+                        console.log("Clicked on building", displayId)
                     },
                     price,
                 })

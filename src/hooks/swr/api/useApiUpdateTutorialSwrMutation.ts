@@ -19,7 +19,6 @@ export const useApiUpdateTutorialSwrMutation = (): UseSWRMutation<
             extraArgs: { arg: UseApiUpdateTutorialSwrMutationArgs }
         ) => {
             const { options } = { ...extraArgs.arg }
-            console.log("called")
             //update the tutorial only
             await updateTutorial(options)
         }

@@ -1,4 +1,4 @@
-import { InventoryEntity } from "@/modules/entities"
+import { InventorySchema } from "@/modules/entities"
 import { DocumentNode, gql } from "@apollo/client"
 import { noCacheAuthClient } from "../auth-client"
 import { IPaginatedResponse } from "../types"
@@ -8,10 +8,9 @@ const query1 = gql`
     inventories(args: $args) {
         data {
           id
-          inventoryTypeId
+          inventoryType
+          inventoryIndex
           quantity
-          isPlaced
-          tokenId
           inToolbar
         }
     }
@@ -23,7 +22,7 @@ export enum QueryInventories {
 }
 
 export interface QueryInventoriesResponse {
-    inventories: IPaginatedResponse<InventoryEntity>
+    inventories: IPaginatedResponse<InventorySchema>
 }
 
 const queryMap: Record<QueryInventories, DocumentNode> = {

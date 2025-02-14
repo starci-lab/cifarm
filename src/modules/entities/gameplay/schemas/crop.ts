@@ -1,10 +1,10 @@
-import { ProductEntity } from "./product"
-import { InventoryTypeEntity } from "./inventory-type"
-import { SpinPrizeEntity } from "./spin-prize"
+import { ProductSchema } from "./product"
+import { InventoryTypeSchema } from "./inventory-type"
+import { SpinPrizeSchema } from "./spin-prize"
 import { CropId } from "../enums"
+import { StaticAbstractSchema } from "./abstract"
 
-export interface CropEntity {
-    id: CropId
+export interface CropSchema extends StaticAbstractSchema<CropId> {
     createdAt: Date
     updatedAt: Date
     deletedAt: Date
@@ -20,9 +20,9 @@ export interface CropEntity {
     premiumHarvestExperiences: number
     availableInShop: boolean
     productIds?: string
-    products?: Array<ProductEntity>
+    products?: Array<ProductSchema>
     inventoryTypeId?: string
-    inventoryType?: InventoryTypeEntity
+    inventoryType?: InventoryTypeSchema
     spinPrizeIds: Array<string>
-    spinPrizes?: Array<SpinPrizeEntity>
+    spinPrizes?: Array<SpinPrizeSchema>
 }

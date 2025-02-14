@@ -19,7 +19,7 @@ import {
 } from "@/modules/entities"
 import { ObjectLayerName } from "./types"
 import { PlacementConfirmation, ToolLike } from "../ui"
-import { PlantSeedRequest, WaterRequest } from "@/modules/axios"
+import { HarvestCropRequest, PlantSeedRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest } from "@/modules/axios"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { calculateUiDepth, UILayer } from "../layers"
 
@@ -125,10 +125,19 @@ export class InputTilemap extends ItemTilemap {
             CacheKey.SelectedTool
         ) as ToolLike
 
+        const object = data.object
+        const currentPlacedItem = object.currentPlacedItem
+        console.log(currentPlacedItem)
+        const placedItemId = currentPlacedItem?.id
+        // do nothing if placed item id is not found
+        if (!placedItemId) {
+            return
+        }
+
         switch (selectedTool.inventoryType) {
         case InventoryType.Seed: {
             // return if seed growth info is found
-            if (data.placedItem.seedGrowthInfo) {
+            if (currentPlacedItem?.seedGrowthInfo) {
                 return
             }
             EventBus.once(EventName.PlantSeedCompleted, () => {
@@ -140,15 +149,16 @@ export class InputTilemap extends ItemTilemap {
             // emit the event to plant seed
             const eventMessage: PlantSeedRequest = {
                 inventorySeedId: selectedTool.id,
-                placedItemTileId: data.placedItem.id,
+                placedItemTileId: placedItemId,
             }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
         }
         }
         // check if tool id is water can
-        if (selectedTool.id === ToolId.WaterCan) {
+        switch (selectedTool.id) {
+        case ToolId.WateringCan: {
             // return if seed growth info is not need water
-            if (data.placedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
+            if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
                 return
             }
             // emit the event to water the plant
@@ -160,9 +170,72 @@ export class InputTilemap extends ItemTilemap {
             })
             // emit the event to plant seed
             const eventMessage: WaterRequest = {
-                placedItemTileId: data.placedItem.id,
+                placedItemTileId: placedItemId,
             }
             EventBus.emit(EventName.RequestWater, eventMessage)
+
+            break
+        }
+        case ToolId.Pesticide: {
+            // return if seed growth info is not need water
+            if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsInfested) {
+                return
+            }
+            // emit the event to water the plant
+            EventBus.once(EventName.UsePesticideCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    EventBus.emit(EventName.TutorialCropPesticideUsed)
+                }
+            })
+            // emit the event to plant seed
+            const eventMessage: UsePesticideRequest = {
+                placedItemTileId: placedItemId,
+            }
+            EventBus.emit(EventName.RequestUsePesticide, eventMessage)
+
+            break
+        }
+        case ToolId.Herbicide: {
+            // return if seed growth info is not need water
+            if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsWeedy) {
+                return
+            }
+            // emit the event to water the plant
+            EventBus.once(EventName.UseHerbicideCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    EventBus.emit(EventName.TutorialCropHerbicideUsed)
+                }
+            })
+            // emit the event to plant seed
+            const eventMessage: UseHerbicideRequest = {
+                placedItemTileId: placedItemId,
+            }
+            EventBus.emit(EventName.RequestUseHerbicide, eventMessage)
+
+            break
+        }
+        case ToolId.Scythe: {
+            // return if seed growth info is not need water
+            if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.FullyMatured) {
+                return
+            }
+            // emit the event to water the plant
+            EventBus.once(EventName.HarvestCropCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    EventBus.emit(EventName.TutorialCropHarvested)
+                }
+            })
+            // emit the event to plant seed
+            const eventMessage: HarvestCropRequest = {
+                placedItemTileId: placedItemId,
+            }
+            EventBus.emit(EventName.RequestHarvestCrop, eventMessage)
+
+            break
+        }
         }
     }
 

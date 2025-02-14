@@ -1,4 +1,4 @@
-export interface CollectionEntity {
+export interface CollectionSchema {
     id: string
     createdAt: Date
     updatedAt: Date

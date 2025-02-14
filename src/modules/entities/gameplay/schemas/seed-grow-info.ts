@@ -1,10 +1,10 @@
-import { UuidAbstractEntity } from "./abstract"
-import { PlacedItemEntity } from "./placed-item"
-import { UserEntity } from "./user"
+import { AbstractSchema } from "./abstract"
+import { PlacedItemSchema } from "./placed-item"
+import { UserSchema } from "./user"
 import { CropCurrentState, CropId } from "../enums"
-import { CropEntity } from "./crop"
+import { CropSchema } from "./crop"
 
-export interface SeedGrowthInfoEntity extends UuidAbstractEntity {
+export interface SeedGrowthInfoSchema extends AbstractSchema {
     currentStage: number
     currentStageTimeElapsed: number
     currentPerennialCount: number
@@ -12,10 +12,10 @@ export interface SeedGrowthInfoEntity extends UuidAbstractEntity {
     harvestCount: number
     isQuality: boolean
     cropId: CropId
-    crop: CropEntity
+    crop: CropSchema
     currentState: CropCurrentState
-    thiefedBy: Array<UserEntity>
+    thiefedBy: Array<UserSchema>
     isFertilized: boolean
     placedItemId: string
-    placedItem?: PlacedItemEntity
+    placedItem?: PlacedItemSchema
 }

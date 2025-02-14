@@ -1,5 +1,8 @@
-import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import { calculateUiDepth, UILayer } from "@/game/layers"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "../../constants"
+import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import { ContainerLiteBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
@@ -7,9 +10,6 @@ import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { StandModal } from "./stand"
-import { calculateUiDepth, UILayer } from "@/game/layers"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 
 export class ModalManager extends ContainerLite {
     // the shop modal
@@ -110,12 +110,14 @@ export class ModalManager extends ContainerLite {
     // show method, to show the modal
     private showBackdrop(showTutorialBackdrop?: boolean) {
         // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        // if (this.checkTutorialActive() && showTutorialBackdrop) {
-        //     EventBus.emit(EventName.ShowUIBackdrop, {
-        //         depth: calculateUiDepth({
-        //             layer: UILayer.Tutorial,
+        // if (this.checkTutorialActive()) {
+        //     if (showTutorialBackdrop) {
+        //         EventBus.emit(EventName.ShowUIBackdrop, {
+        //             depth: calculateUiDepth({
+        //                 layer: UILayer.Tutorial,
+        //             })
         //         })
-        //     })
+        //     }
         //     return
         // }
         EventBus.emit(EventName.ShowUIBackdrop, {

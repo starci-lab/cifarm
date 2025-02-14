@@ -4,19 +4,18 @@ import {
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
-    AvailableInType,
-    InventoryEntity,
+    InventorySchema,
     InventoryType,
-    InventoryTypeEntity,
+    InventoryTypeSchema,
     InventoryTypeId,
-    ToolEntity,
+    DefaultInfo,
     ToolId,
+    getId,
 } from "@/modules/entities"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     BaseAssetKey,
     inventoryTypeAssetMap,
-    toolAssetMap,
 } from "../../assets"
 import { SCALE_TIME } from "../../constants"
 import { EventName } from "@/game/event-bus"
@@ -25,7 +24,7 @@ import { getFirstSeedInventory, getToolbarInventories } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseText } from "../elements"
 import { calculateUiDepth, UILayer } from "../../layers"
-import { defaultSeedCropId } from "../modals/shop/ShopContent"
+import { createObjectId } from "@/modules/common"
 
 export const CONTENT_DEPTH = calculateUiDepth({
     layer: UILayer.Modal,
@@ -68,17 +67,13 @@ export class Toolbar extends ContainerLite {
     private prevButton: Label
     private nextButton: Label
 
-    private inventories: Array<InventoryEntity> = []
-    private tools: Array<ToolEntity> = []
+    private inventories: Array<InventorySchema> = []
     private currrentTools: Array<ToolLike> = []
     // selected tool index
     private selectedIndex = defaultSelectedIndex
-    private seedInventory: InventoryEntity | undefined
+    private seedInventory: InventorySchema | undefined
     // flags to check if the events are emitted
-    private seedsInventoryEmitted = false
-    private waterCanEmitted = false
-    private herbicideEmitted = false
-    private pesticideEmitted = false
+    private defaultInfo: DefaultInfo
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -93,10 +88,12 @@ export class Toolbar extends ContainerLite {
 
         this.inventories = this.scene.cache.obj.get(
             CacheKey.Inventories
-        ) as Array<InventoryEntity>
+        ) as Array<InventorySchema>
+        console.log(this.inventories)
+
+        this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo) as DefaultInfo
 
         // get the tools from the cache
-        this.tools = this.scene.cache.obj.get(CacheKey.Tools) as Array<ToolEntity>
         this.currrentTools = this.createToolList()
 
         // update the sizer with the tools
@@ -113,32 +110,21 @@ export class Toolbar extends ContainerLite {
             // update the selected index
             this.selectedIndex = index
             this.updateCacheSelectedTool()
-
             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                 if (this.currrentTools[this.startIndex + index].id === this.seedInventory?.id) {
-                    if (!this.seedsInventoryEmitted) {
-                        this.scene.events.emit(EventName.TutorialSeedsSelected)
-                        this.seedsInventoryEmitted = true
-                    }
+                    this.scene.events.emit(EventName.TutorialSeedsPressed)
                 }
-                console.log(this.currrentTools[this.startIndex + index].id)
-                if (this.currrentTools[this.startIndex + index].id === ToolId.WaterCan) {
-                    if (!this.waterCanEmitted) {
-                        this.scene.events.emit(EventName.TutorialWaterCanPressed)
-                        this.waterCanEmitted = true
-                    }
+                if (this.currrentTools[this.startIndex + index].id === ToolId.WateringCan) {
+                    this.scene.events.emit(EventName.TutorialWateringCanPressed)
                 }
                 if (this.currrentTools[this.startIndex + index].id === ToolId.Herbicide) {
-                    if (!this.herbicideEmitted) {
-                        this.scene.events.emit(EventName.TutorialHerbicidePressed)
-                        this.herbicideEmitted = true
-                    }
+                    this.scene.events.emit(EventName.TutorialHerbicidePressed)
                 }
                 if (this.currrentTools[this.startIndex + index].id === ToolId.Pesticide) {
-                    if (!this.pesticideEmitted) {
-                        this.scene.events.emit(EventName.TutorialPesticidePressed)
-                        this.pesticideEmitted = true
-                    }
+                    this.scene.events.emit(EventName.TutorialPesiticidePressed)
+                }
+                if (this.currrentTools[this.startIndex + index].id === ToolId.Scythe) {
+                    this.scene.events.emit(EventName.TutorialScythePressed)
                 }
             }
         })
@@ -169,12 +155,18 @@ export class Toolbar extends ContainerLite {
             }
         })
 
-        this.scene.events.on(EventName.TutorialPlantSeeds, () => {
+        this.scene.events.on(EventName.TutorialHighlightToolbar, () => {
             this.seedInventory = getFirstSeedInventory({
-                cropId: defaultSeedCropId,
+                cropId: this.defaultInfo.defaultCropId,
                 scene: this.scene,
             })    
             this.setDepth(HIGHLIGH_DEPTH)
+        })
+
+        this.scene.events.on(EventName.TutorialResetToolbar, () => {
+            if (this.depth !== CONTENT_DEPTH) {
+                this.setDepth(CONTENT_DEPTH)
+            }
         })
     }
 
@@ -400,38 +392,23 @@ export class Toolbar extends ContainerLite {
 
     // create a list of tools to show
     private createToolList(inHome?: boolean): Array<ToolLike> {
-    // by default, show your home tools
-        const tools: Array<ToolLike> = this.tools
-            .filter(
-                (tool) =>
-                    tool.availableIn === AvailableInType.Home ||
-          tool.availableIn === AvailableInType.Both
-            )
-            .sort((prev, next) => prev.index - next.index)
-            .map((tool) => ({
-                id: tool.id,
-                name: toolAssetMap[tool.id].name,
-                assetKey: toolAssetMap[tool.id].textureConfig.key,
-            }))
-
         const toolbarInventories = getToolbarInventories({
             inventories: this.inventories,
             scene: this.scene,
         })
-
-        const additionalTools: Array<ToolLike> = toolbarInventories.map(
+        const tools: Array<ToolLike> = toolbarInventories.map(
             (inventory) => {
-                const types = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeEntity>
-                const inventoryType = types.find(({ id }) => id === inventory.inventoryTypeId)
+                const types = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
+                const inventoryType = types.find(({ id }) => id === inventory.inventoryType)
+                console.log(types)
+                console.log(inventory)
                 if (!inventoryType) {
-                    throw new Error(`Inventory type not found for id: ${inventory.inventoryTypeId}`)
+                    throw new Error(`Inventory type not found for id: ${inventory.inventoryType}`)
                 }
-
-                const _inventoryTypeId = inventory.inventoryTypeId as InventoryTypeId
                 const {
                     name,
                     textureConfig: { key: assetKey },
-                } = inventoryTypeAssetMap[_inventoryTypeId]
+                } = inventoryTypeAssetMap[getId<InventoryTypeId>(inventoryType.id)]
                 return {
                     assetKey,
                     id: inventory.id,
@@ -442,7 +419,7 @@ export class Toolbar extends ContainerLite {
             }
         )
 
-        return [...tools, ...additionalTools]
+        return tools
     }
 
     // create slots for the items

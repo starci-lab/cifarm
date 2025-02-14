@@ -1,6 +1,6 @@
 import {
     CropCurrentState,
-    PlacedItemEntity,
+    PlacedItemSchema,
     PlacedItemType,
 } from "@/modules/entities"
 import { BaseAssetKey, cropAssetMap } from "../assets"
@@ -16,10 +16,10 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private container: ContainerLite | undefined
     private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
     private bubbleState: Label | undefined
-    private currentPlacedItem: PlacedItemEntity | undefined
+    public currentPlacedItem: PlacedItemSchema | undefined
     private timer: Phaser.GameObjects.Text | undefined
 
-    public update(type: PlacedItemType, placedItem: PlacedItemEntity) {
+    public update(type: PlacedItemType, placedItem: PlacedItemSchema) {
         switch (type) {
         case PlacedItemType.Tile: {
             this.updateSeedGrowthInfo(placedItem)
@@ -28,6 +28,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         default:
             break
         }
+        // set the placed item
+        this.currentPlacedItem = placedItem
     }
 
     private getContainer() {
@@ -40,25 +42,24 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         return this.container
     }
 
-    private updateSeedGrowthInfo(placedItem: PlacedItemEntity) {
+    private updateSeedGrowthInfo(placedItem: PlacedItemSchema) {
         const container = this.getContainer()
         if (!placedItem.seedGrowthInfo) {
             // remove everything in the container
             container.clear(true)
-            return
+        } else {
+            // Update the texture
+            this.updateSeedGrowthInfoTexture(placedItem, container)
+
+            // Update the bubble state
+            this.updateSeedGrowthInfoBubble(placedItem, container)
+
+            // Update the timer
+            this.updateSeedGrowthInfoTimer(placedItem, container)
         }
-
-        // Update the texture
-        this.updateSeedGrowthInfoTexture(placedItem, container)
-
-        // Update the bubble state
-        this.updateSeedGrowthInfoBubble(placedItem, container)
-
-        // Update the timer
-        this.updateSeedGrowthInfoTimer(placedItem, container)
     }   
 
-    private updateSeedGrowthInfoTexture(placedItem: PlacedItemEntity, container: ContainerLite) {
+    private updateSeedGrowthInfoTexture(placedItem: PlacedItemSchema, container: ContainerLite) {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
@@ -87,7 +88,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
     }
 
-    private updateSeedGrowthInfoBubble(placedItem: PlacedItemEntity, container: ContainerLite) {
+    private updateSeedGrowthInfoBubble(placedItem: PlacedItemSchema, container: ContainerLite) {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
@@ -129,7 +130,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
     }
 
-    private updateSeedGrowthInfoTimer(placedItem: PlacedItemEntity, container: ContainerLite) {
+    private updateSeedGrowthInfoTimer(placedItem: PlacedItemSchema, container: ContainerLite) {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }

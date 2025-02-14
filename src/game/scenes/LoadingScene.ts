@@ -15,7 +15,7 @@ import { LoadingProgressBar } from "../containers"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
-import { InventoryEntity, UserEntity } from "@/modules/entities"
+import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { loadCropStateAssets } from "../assets/states"
 
@@ -62,7 +62,8 @@ export class LoadingScene extends Scene {
                 buildings,
                 dailyRewards,
                 tools,
-                inventoryTypes
+                inventoryTypes,
+                defaultInfo
             }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItemTypes, placedItemTypes)
@@ -72,6 +73,7 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.DailyRewards, dailyRewards)
                 this.cache.obj.add(CacheKey.Tools, tools)
                 this.cache.obj.add(CacheKey.InventoryTypes, inventoryTypes)
+                this.cache.obj.add(CacheKey.DefaultInfo, defaultInfo)
                 //load the static data
                 this.handleFetchData("Loading static data...")
             }
@@ -79,7 +81,7 @@ export class LoadingScene extends Scene {
 
         //listen for load user data event
         EventBus.once(
-            EventName.UserLoaded, (user: UserEntity) => {
+            EventName.UserLoaded, (user: UserSchema) => {
                 //load the user data
                 this.cache.obj.add(CacheKey.User, user)
                 this.handleFetchData("Loading user...")
@@ -87,7 +89,7 @@ export class LoadingScene extends Scene {
 
         //listen for load inventory event
         EventBus.once(
-            EventName.InventoriesLoaded, (inventories: Array<InventoryEntity> 
+            EventName.InventoriesLoaded, (inventories: Array<InventorySchema> 
             ) => {
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, inventories)

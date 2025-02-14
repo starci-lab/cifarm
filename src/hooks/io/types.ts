@@ -1,4 +1,4 @@
-import { PlacedItemEntity } from "@/modules/entities"
+import { PlacedItemSchema } from "@/modules/entities"
 import { Socket } from "socket.io-client"
 
 export interface UseIo {
@@ -10,7 +10,7 @@ export interface UseIo {
 
 export interface PlacedItemsSyncedMessage {
     //placed items
-    placedItems: Array<PlacedItemEntity>
+    placedItems: Array<PlacedItemSchema>
     //current user id, beneficial for debugging
     userId: string
 }

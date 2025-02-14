@@ -1,4 +1,4 @@
-import { UserEntity } from "@/modules/entities"
+import { UserSchema } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ProgressBar } from "../../../game/containers"
 import { BaseAssetKey } from "../../assets"
@@ -10,7 +10,7 @@ import { getScreenLeftX, getScreenTopY } from "../utils"
 import { EventBus, EventName } from "@/game/event-bus"
 
 export class TopbarContent extends SceneAbstract {
-    private user: UserEntity
+    private user: UserSchema
     
     private rightContainer : Sizer | undefined
     private energyLabel: Label | undefined
@@ -22,7 +22,7 @@ export class TopbarContent extends SceneAbstract {
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
 
-        EventBus.on(EventName.UserRefreshed, (user: UserEntity) => {
+        EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
             this.user = user
             // this.energyLabel?.setText(`${this.user.energy}/${this.computeExperiencesQuota(this.user.level)}`)
             // this.goldLabel?.setText(`${this.user.golds ?? 0}`)

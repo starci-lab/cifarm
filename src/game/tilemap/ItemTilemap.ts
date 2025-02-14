@@ -2,10 +2,13 @@ import { PlacedItemsSyncedMessage } from "@/hooks"
 import { ObjectLayerName } from "./types"
 import { EventBus, EventName } from "../event-bus"
 import {
-    PlacedItemEntity,
+    PlacedItemSchema,
     PlacedItemType,
-    PlacedItemTypeEntity,
+    PlacedItemTypeSchema,
     PlacedItemTypeId,
+    getId,
+    TileId,
+    BuildingId,
 } from "@/modules/entities"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
@@ -87,12 +90,12 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
 
         // initialize the previousPlacedItems array only if previous exists
-        const previousPlacedItems: Array<PlacedItemEntity> = previous.placedItems
+        const previousPlacedItems: Array<PlacedItemSchema> = previous.placedItems
 
         const { placedItems } = current
 
         // store the unchecked previous placed items
-        const checkedPreviousPlacedItems: Array<PlacedItemEntity> = []
+        const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
         for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
@@ -109,7 +112,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     throw new Error("Game object not found")
                 }
                 gameObject.update(
-                    this.getPlacedItemType(placedItem.placedItemTypeId).type,
+                    this.getPlacedItemType(placedItem.placedItemType).type,
                     placedItem
                 )
             }
@@ -133,7 +136,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // method to create all placed items when user IDs differ
-    private createAllPlacedItems(placedItems: Array<PlacedItemEntity>) {
+    private createAllPlacedItems(placedItems: Array<PlacedItemSchema>) {
         for (const placedItem of placedItems) {
             // Place the item using the shared tile placing logic
             this.placeTileForItem(placedItem)
@@ -142,36 +145,23 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // method to get the GID for a placed item type
     private getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
-        const placedItemTypes = this.scene.cache.obj.get(
-            CacheKey.PlacedItemTypes
-        ) as Array<PlacedItemTypeEntity>
-        console.log(placedItemTypes)
-        console.log(placedItemTypeId)
-        const found = placedItemTypes.find((type) => {
-            console.log(type.id)
-            return type.id === placedItemTypeId
-        })
-
-        if (!found) {
-            throw new Error("Placed item type not found")
-        }
-
+        const found = this.getPlacedItemType(placedItemTypeId)
         switch (found.type) {
         case PlacedItemType.Tile: {
-            if (!found.tileId) {
+            if (!found.tile) {
                 throw new Error("Tile ID not found")
             }
-            const tilesetConfig = tileAssetMap[found.tileId].tilesetConfig
+            const tilesetConfig = tileAssetMap[getId<TileId>(found.tile)].tilesetConfig
             if (!tilesetConfig) {
                 throw new Error("Tileset config not found")
             }
             return tilesetConfig
         }
         case PlacedItemType.Building: {
-            if (!found.buildingId) {
+            if (!found.building) {
                 throw new Error("Building ID not found")
             }
-            const tilesetConfig = buildingAssetMap[found.buildingId].tilesetConfig
+            const tilesetConfig = buildingAssetMap[getId<BuildingId>(found.building)].tilesetConfig
             if (!tilesetConfig) {
                 throw new Error("Tileset config not found")
             }
@@ -189,10 +179,10 @@ export abstract class ItemTilemap extends GroundTilemap {
     // get placed item type from cache
     private getPlacedItemType(
         placedItemTypeId: PlacedItemTypeId
-    ): PlacedItemTypeEntity {
+    ): PlacedItemTypeSchema {
         const placedItemTypes = this.scene.cache.obj.get(
             CacheKey.PlacedItemTypes
-        ) as Array<PlacedItemTypeEntity>
+        ) as Array<PlacedItemTypeSchema>
         const found = placedItemTypes.find((type) => type.id === placedItemTypeId)
         if (!found) {
             throw new Error("Placed item type not found")
@@ -201,10 +191,10 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // reusable method to place a tile for a given placed item
-    private placeTileForItem(placedItem: PlacedItemEntity) {
+    private placeTileForItem(placedItem: PlacedItemSchema) {
     // get tileset data
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
-            placedItem.placedItemTypeId
+            placedItem.placedItemType
         )
         // get the tileset
         const tileset = this.getTileset(tilesetName)
@@ -229,7 +219,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
 
         // get the placed item type
-        const placedItemType = this.getPlacedItemType(placedItem.placedItemTypeId)
+        const placedItemType = this.getPlacedItemType(placedItem.placedItemType)
 
         // check if tile is home, then we move the camera to it
         if (placedItemType.id === PlacedItemTypeId.Home) {
@@ -273,7 +263,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             object,
             tileX: tile.x,
             tileY: tile.y,
-            placedItem,
             placedItemType
         }
 
@@ -307,6 +296,5 @@ export interface PlacedItemObjectData {
     object: PlacedItemObject
     tileX: number
     tileY: number
-    placedItem: PlacedItemEntity
-    placedItemType: PlacedItemTypeEntity
+    placedItemType: PlacedItemTypeSchema
 }

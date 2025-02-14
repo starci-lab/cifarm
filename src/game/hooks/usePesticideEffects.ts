@@ -12,14 +12,14 @@ export const useUsePesticideEffects = () => {
       >(API_USE_PESTICIDE_SWR_MUTATION)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestBuySeeds, async (message: UsePesticideRequest) => {
+        EventBus.on(EventName.RequestUsePesticide, async (message: UsePesticideRequest) => {
             await swrMutation.trigger({ request: message })
             // return the user to the phaser game
-            EventBus.emit(EventName.BuySeedsCompleted)
+            EventBus.emit(EventName.UsePesticideCompleted)
         })
     
         return () => {
-            EventBus.removeListener(EventName.RequestBuySeeds)
+            EventBus.removeListener(EventName.RequestUsePesticide)
         }
     }, [swrMutation])
 }

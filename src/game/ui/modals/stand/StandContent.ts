@@ -1,12 +1,12 @@
 import { BaseAssetKey } from "@/game/assets"
 import { ContainerLiteBaseConstructorParams } from "@/game/types"
-import { DeliveringProductEntity } from "@/modules/entities"
+import { DeliveringProductSchema } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 export class StandContent extends ContainerLite {
     private gridTable: GridTable | undefined
-    private deliveringProduct: Array<DeliveringProductEntity> = []
+    private deliveringProduct: Array<DeliveringProductSchema> = []
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)

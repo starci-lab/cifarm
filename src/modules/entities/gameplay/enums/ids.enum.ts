@@ -1,3 +1,5 @@
+import { createObjectId } from "@/modules/common"
+
 // Animal Enum
 export enum AnimalId {
     Chicken = "chicken",
@@ -71,7 +73,7 @@ export enum ToolId {
     Hand = "hand",
     Scythe = "scythe",
     ThiefHand = "thiefHand",
-    WaterCan = "watercan",
+    WateringCan = "wateringCan",
     Herbicide = "herbicide",
     Pesticide = "pesticide"
 }
@@ -138,6 +140,12 @@ export enum InventoryTypeId {
     BellPepperQuality = "bellPepperQuality",
     Chicken = "chicken",
     Cow = "cow",
+    Hand = "hand",
+    Scythe = "scythe",
+    ThiefHand = "thiefHand",
+    WateringCan = "wateringCan",
+    Herbicide = "herbicide",
+    Pesticide = "pesticide"
 }
 
 export enum PlacedItemTypeId {
@@ -155,3 +163,77 @@ export enum PlacedItemTypeId {
     FertileTile = "fertileTile"
 }
 
+const objectIdMap: Record<string, string> = {
+    [createObjectId(AnimalId.Chicken)]: AnimalId.Chicken,
+    [createObjectId(AnimalId.Cow)]: AnimalId.Cow,
+    [createObjectId(AnimalId.Pig)]: AnimalId.Pig,
+    [createObjectId(AnimalId.Sheep)]: AnimalId.Sheep,
+
+    // building ids
+    [createObjectId(BuildingId.Coop)]: BuildingId.Coop,
+    [createObjectId(BuildingId.Barn)]: BuildingId.Barn,
+    [createObjectId(BuildingId.Home)]: BuildingId.Home,
+
+    // crop ids
+    [createObjectId(CropId.Carrot)]: CropId.Carrot,
+    [createObjectId(CropId.Potato)]: CropId.Potato,
+    [createObjectId(CropId.Pineapple)]: CropId.Pineapple,
+    [createObjectId(CropId.Watermelon)]: CropId.Watermelon,
+    [createObjectId(CropId.Cucumber)]: CropId.Cucumber,
+    [createObjectId(CropId.BellPepper)]: CropId.BellPepper,
+
+    // placed item types
+    [createObjectId(PlacedItemTypeId.Chicken)]: PlacedItemTypeId.Chicken,
+    [createObjectId(PlacedItemTypeId.Cow)]: PlacedItemTypeId.Cow,
+    [createObjectId(PlacedItemTypeId.Pig)]: PlacedItemTypeId.Pig,
+    [createObjectId(PlacedItemTypeId.Sheep)]: PlacedItemTypeId.Sheep,
+    [createObjectId(PlacedItemTypeId.Coop)]: PlacedItemTypeId.Coop,
+    [createObjectId(PlacedItemTypeId.Barn)]: PlacedItemTypeId.Barn,
+    [createObjectId(PlacedItemTypeId.Home)]: PlacedItemTypeId.Home,
+    [createObjectId(PlacedItemTypeId.StarterTile)]: PlacedItemTypeId.StarterTile,
+    [createObjectId(PlacedItemTypeId.BasicTile1)]: PlacedItemTypeId.BasicTile1,
+    [createObjectId(PlacedItemTypeId.BasicTile2)]: PlacedItemTypeId.BasicTile2,
+    [createObjectId(PlacedItemTypeId.BasicTile3)]: PlacedItemTypeId.BasicTile3,
+    [createObjectId(PlacedItemTypeId.FertileTile)]: PlacedItemTypeId.FertileTile,
+
+    // inventory types
+    [createObjectId(InventoryTypeId.CarrotSeed)]: InventoryTypeId.CarrotSeed,
+    [createObjectId(InventoryTypeId.PotatoSeed)]: InventoryTypeId.PotatoSeed,
+    [createObjectId(InventoryTypeId.PineappleSeed)]: InventoryTypeId.PineappleSeed,
+    [createObjectId(InventoryTypeId.WatermelonSeed)]: InventoryTypeId.WatermelonSeed,
+    [createObjectId(InventoryTypeId.CucumberSeed)]: InventoryTypeId.CucumberSeed,
+    [createObjectId(InventoryTypeId.BellPepperSeed)]: InventoryTypeId.BellPepperSeed,
+    [createObjectId(InventoryTypeId.BasicFertilizer)]: InventoryTypeId.BasicFertilizer,
+    [createObjectId(InventoryTypeId.AnimalFeed)]: InventoryTypeId.AnimalFeed,
+    [createObjectId(InventoryTypeId.Egg)]: InventoryTypeId.Egg,
+    [createObjectId(InventoryTypeId.EggQuality)]: InventoryTypeId.EggQuality,
+    [createObjectId(InventoryTypeId.Milk)]: InventoryTypeId.Milk,
+    [createObjectId(InventoryTypeId.MilkQuality)]: InventoryTypeId.MilkQuality,
+    [createObjectId(InventoryTypeId.Hand)]: InventoryTypeId.Hand,
+    [createObjectId(InventoryTypeId.Scythe)]: InventoryTypeId.Scythe,
+    [createObjectId(InventoryTypeId.ThiefHand)]: InventoryTypeId.ThiefHand,
+    [createObjectId(InventoryTypeId.WateringCan)]: InventoryTypeId.WateringCan,
+    [createObjectId(InventoryTypeId.Herbicide)]: InventoryTypeId.Herbicide,
+    [createObjectId(InventoryTypeId.Pesticide)]: InventoryTypeId.Pesticide,
+
+    // supply types
+    [createObjectId(SupplyId.BasicFertilizer)]: SupplyId.BasicFertilizer,
+    [createObjectId(SupplyId.AnimalFeed)]: SupplyId.AnimalFeed,
+
+    // tile types
+    [createObjectId(TileId.StarterTile)]: TileId.StarterTile,
+    [createObjectId(TileId.BasicTile1)]: TileId.BasicTile1,
+    [createObjectId(TileId.BasicTile2)]: TileId.BasicTile2,
+    [createObjectId(TileId.BasicTile3)]: TileId.BasicTile3,
+    [createObjectId(TileId.FertileTile)]: TileId.FertileTile,
+
+    // tool types
+    [createObjectId(ToolId.Hand)]: ToolId.Hand,
+    [createObjectId(ToolId.Scythe)]: ToolId.Scythe,
+    [createObjectId(ToolId.ThiefHand)]: ToolId.ThiefHand,
+    [createObjectId(ToolId.WateringCan)]: ToolId.WateringCan,
+    [createObjectId(ToolId.Herbicide)]: ToolId.Herbicide,
+    [createObjectId(ToolId.Pesticide)]: ToolId.Pesticide,
+}
+
+export const getId = <IdType extends string>(objectId: string): IdType => (objectIdMap[objectId]) as IdType

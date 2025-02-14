@@ -1,5 +1,5 @@
 import { CacheKey } from "@/game/types"
-import { CropId, InventoryEntity, InventoryType, InventoryTypeEntity } from "@/modules/entities"
+import { CropId, InventorySchema, InventoryType, InventoryTypeSchema } from "@/modules/entities"
 import { Scene } from "phaser"
 
 export const getFirstSeedInventory = ({
@@ -10,9 +10,9 @@ export const getFirstSeedInventory = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventoryEntity>
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
-    const inventoryTypes: Array<InventoryTypeEntity> = scene.cache.obj.get(CacheKey.InventoryTypes)
+    const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
     // get the corresponding inventory type
     const inventoryType = inventoryTypes.find((type) => type.cropId === cropId)
     // if inventory type is not found, throw an error
@@ -29,7 +29,7 @@ export interface GetFirstSeedInventoryParams {
   // scene to display the modal
   scene: Scene;
   // the inventories to check, if not specified, will try to get from cache
-  inventories?: Array<InventoryEntity>;
+  inventories?: Array<InventorySchema>;
 }
 
 export interface GetFirstSeedInventoryParams {
@@ -38,7 +38,7 @@ export interface GetFirstSeedInventoryParams {
     // scene to display the modal
     scene: Scene;
     // the inventories to check, if not specified, will try to get from cache
-    inventories?: Array<InventoryEntity>;
+    inventories?: Array<InventorySchema>;
 }
 
 // get all seed inventories
@@ -49,22 +49,67 @@ export const getSeedInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventoryEntity>
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
-    const inventoryTypes: Array<InventoryTypeEntity> = scene.cache.obj.get(CacheKey.InventoryTypes)
+    const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
     // get the inventory entities
-    return inventoryTypes
-        .filter((type) => type.type === InventoryType.Seed)
-        .map((type) => inventories.find(({ inventoryTypeId }) => inventoryTypeId === type.id))
-        .filter((inventory) => inventory) as Array<InventoryEntity>
+    const result: Array<InventorySchema> = []
+    for (const type of inventoryTypes) {
+        if (type.type === InventoryType.Seed) {
+            for (const inventory of inventories) {
+                if (inventory.inventoryTypeId === type.id) {
+                    result.push(inventory)
+                    break
+                }
+            }
+        }
+    }
+    return result
 }
 
 export interface GetSeedInventoriesParams {
     // scene to display the modal
     scene: Scene;
     // the inventories to check, if not specified, will try to get from cache
-    inventories?: Array<InventoryEntity>;
+    inventories?: Array<InventorySchema>;
 }
+
+// get all seed inventories
+export const getSpecificSeedInventories = ({
+    cropId,
+    scene,
+    inventories,
+}: GetSpecificSeedInventoriesParams) => {
+    // if inventories is not provided, get from cache
+    if (!inventories) {
+        // get the inventories from cache
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
+    }
+    const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
+    // get the inventory entities
+    const result: Array<InventorySchema> = []
+    for (const inventoryType of inventoryTypes) {
+        if (inventoryType.cropId === cropId) {
+            for (const inventory of inventories) {
+                if (inventory.inventoryTypeId === inventoryType.id) {
+                    result.push(inventory)
+                    break
+                }
+            }
+        }
+    }
+    return result
+}
+
+export interface GetSpecificSeedInventoriesParams {
+    // crop id
+    cropId: CropId
+    // scene to display the modal
+    scene: Scene;
+    // the inventories to check, if not specified, will try to get from cache
+    inventories?: Array<InventorySchema>;
+}
+
 
 export const getToolbarInventories = ({
     scene,
@@ -73,7 +118,7 @@ export const getToolbarInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventoryEntity>
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
 
     return inventories.filter((inventory) => inventory.inToolbar)
@@ -83,5 +128,5 @@ export interface GetToolbarInventoriesParams {
     // scene to display the modal
     scene: Scene;
     // the inventories to check, if not specified, will try to get from cache
-    inventories?: Array<InventoryEntity>;
+    inventories?: Array<InventorySchema>;
 }

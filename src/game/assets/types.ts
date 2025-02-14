@@ -21,4 +21,5 @@ export interface TilesetConfig {
 export interface TextureConfig {
     key: string;
     assetUrl: string;
+    useExisting?: boolean;
 }

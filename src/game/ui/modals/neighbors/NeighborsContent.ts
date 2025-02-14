@@ -1,6 +1,6 @@
 import { BaseAssetKey } from "@/game/assets"
 import { ContainerLiteBaseConstructorParams } from "@/game/types"
-import { UserEntity } from "@/modules/entities"
+import { UserSchema } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ScrollablePanel, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "../../elements"
@@ -10,7 +10,7 @@ import { NeighborsTab } from "./types"
 
 export class NeighborsContent extends ContainerLite {
     private scrollablePanelMap: Partial<Record<NeighborsTab, ScrollablePanel>> = {}
-    private neighbors: Array<UserEntity> = []
+    private neighbors: Array<UserSchema> = []
     private defaultItemCard: Sizer | undefined
     private selectedNeighborsTab: NeighborsTab = defaultNeighborsTab
 

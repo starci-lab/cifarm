@@ -1,4 +1,4 @@
-import { CropCurrentState, Position, TutorialStep, UserEntity } from "@/modules/entities"
+import { CropCurrentState, Position, TutorialStep, UserSchema } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
@@ -9,6 +9,7 @@ import {
     EventBus,
     EventName,
     TutorialOpenInventoryResponsedMessage,
+    TutorialOpenRoadsideStandResponsedMessage,
     TutorialOpenShopResponsedMessage,
     TutorialPrepareBuySeedsMessage,
     TutorialPrepareCloseShopResponsedMessage,
@@ -22,7 +23,7 @@ export class Stacy extends ContainerLite {
     private stacyImage: Phaser.GameObjects.Image
     private stacyBubble: Label
     private pressToContinueText: Phaser.GameObjects.Text
-    private user: UserEntity
+    private user: UserSchema
     private pressHereArrow: Phaser.GameObjects.Image
     private helpDialog: Label
 
@@ -168,7 +169,7 @@ export class Stacy extends ContainerLite {
 
         // callback when the tutorial is completed
         EventBus.on(EventName.UpdateTutorialCompleted, () => {
-            EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
+            EventBus.once(EventName.UserRefreshed, (user: UserSchema) => {
                 // check  if the tutorial is not shown
                 // set the user
                 this.user = user
@@ -273,17 +274,10 @@ export class Stacy extends ContainerLite {
                     EventBus.emit(EventName.RequestUpdateTutorial)
                     return
                 }
-
                 const generatePlantSeedText = (count: number) => {
                     return `Now, tap on the tile to plant the seeds. ${count} left.`
                 }
-                EventBus.once(EventName.TutorialTilePressedResponsed, ({ position }: TutorialOpenInventoryResponsedMessage) => {
-                    this.displayPressHereArrow({
-                        originPosition: { x: position.x + 80, y: position.y + 80 },
-                        targetPosition: { x: position.x + 60, y: position.y + 60 },
-                    })
-                })
-                this.scene.events.once(EventName.TutorialSeedsSelected, () => {
+                this.scene.events.once(EventName.TutorialSeedsPressed, () => {
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
                     this.showHelpDialog(generatePlantSeedText(count))
@@ -293,6 +287,8 @@ export class Stacy extends ContainerLite {
                     count--
                     if (count === 0) {
                         EventBus.off(EventName.TutorialSeedPlanted)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbar)
                         EventBus.emit(EventName.RequestUpdateTutorial)
                         return
                     }
@@ -305,11 +301,12 @@ export class Stacy extends ContainerLite {
                 //EventBus.emit(EventName.HideButtons)
                 //this.showHelpDialog(generatePlantSeedText(2))
                 // emit the event to open the inventory
-                this.scene.events.emit(EventName.TutorialPlantSeeds)
+                this.scene.events.emit(EventName.TutorialHighlightToolbar)
                 this.showHelpDialog("Select seed from toolbar.")
                 return
             }
-            case TutorialStep.StartWaterCropAtStage1: {
+            case TutorialStep.StartWaterCropAtStage1: 
+            {
                 const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
                 const placedItemsNeedWater = placedItems.filter((placedItem) => {
                     return placedItem.seedGrowthInfo?.currentState === CropCurrentState.NeedWater
@@ -328,22 +325,196 @@ export class Stacy extends ContainerLite {
                 EventBus.on(EventName.TutorialCropWatered, () => {
                     count--
                     if (count === 0) {
-                        EventBus.off(EventName.TutorialSeedPlanted)
+                        EventBus.off(EventName.TutorialCropWatered)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbar)
                         EventBus.emit(EventName.RequestUpdateTutorial)
                         return
                     }
                     this.showHelpDialog(generateWaterText(count))
                 })
-
-                this.scene.events.once(EventName.TutorialWaterCanPressed, () => {
+                this.scene.events.once(EventName.TutorialWateringCanPressed, () => {
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
                     this.showHelpDialog(generateWaterText(count))
                 })
                 // hide the stacy
                 this.hide()
-                this.scene.events.emit(EventName.TutorialPlantSeeds)
+                this.scene.events.emit(EventName.TutorialHighlightToolbar)
                 this.showHelpDialog("Select water can from toolbar.")
+                return
+            }
+            case TutorialStep.StartWaterCropAtStage2: {
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItemsNeedWater = placedItems.filter((placedItem) => {
+                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.NeedWater
+                })
+                let count = placedItemsNeedWater.length
+                // emit update tutorial if there is no crop that need water
+                if (count === 0) {
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                    return
+                }
+
+                const generateWaterText = (count: number) => {
+                    return `Now, tap on the tile to water the seeds. ${count} left.`
+                }
+
+                EventBus.on(EventName.TutorialCropWatered, () => {
+                    count--
+                    if (count === 0) {
+                        EventBus.off(EventName.TutorialCropWatered)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbar)
+                        EventBus.emit(EventName.RequestUpdateTutorial)
+                        return
+                    }
+                    this.showHelpDialog(generateWaterText(count))
+                })
+                this.hide()
+
+                EventBus.emit(EventName.HideUIBackdrop)
+                EventBus.emit(EventName.HideButtons)
+                this.scene.events.emit(EventName.TutorialHighlightToolbar)
+                this.showHelpDialog(generateWaterText(count))
+                return
+            }
+            case TutorialStep.StartUsePesticide: {
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItemsInfested = placedItems.filter((placedItem) => {
+                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.IsInfested
+                })
+                let count = placedItemsInfested.length
+                // emit update tutorial if there is no crop that need water
+                if (count === 0) {
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                    return
+                }
+
+                const generateUsePesticideText = (count: number) => {
+                    return `Now, tap on the tile to use pesticide. ${count} left.`
+                }
+
+                EventBus.on(EventName.TutorialCropPesticideUsed, () => {
+                    count--
+                    if (count === 0) {
+                        EventBus.off(EventName.TutorialCropPesticideUsed)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbar)
+                        EventBus.emit(EventName.RequestUpdateTutorial)
+                        return
+                    }
+                    this.showHelpDialog(generateUsePesticideText(count))
+                })
+                this.scene.events.once(EventName.TutorialPesiticidePressed, () => {
+                    EventBus.emit(EventName.HideUIBackdrop)
+                    EventBus.emit(EventName.HideButtons)
+                    this.showHelpDialog(generateUsePesticideText(count))
+                })
+                // hide the stacy
+                this.hide()
+                this.scene.events.emit(EventName.TutorialHighlightToolbar)
+                this.showHelpDialog("Select pesticide from toolbar.")
+                return
+            }
+            case TutorialStep.StartUseHerbicide: {
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItemsWeedy = placedItems.filter((placedItem) => {
+                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.IsWeedy
+                })
+                let count = placedItemsWeedy.length
+                // emit update tutorial if there is no crop that need water
+                if (count === 0) {
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                    return
+                }
+
+                const generateUseHerbicideText = (count: number) => {
+                    return `Now, tap on the tile to use herbicide. ${count} left.`
+                }
+
+                EventBus.on(EventName.TutorialCropHerbicideUsed, () => {
+                    count--
+                    if (count === 0) {
+                        EventBus.off(EventName.TutorialCropHerbicideUsed)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbar)
+                        EventBus.emit(EventName.RequestUpdateTutorial)
+                        return
+                    }
+                    this.showHelpDialog(generateUseHerbicideText(count))
+                })
+                this.scene.events.once(EventName.TutorialHerbicidePressed, () => {
+                    EventBus.emit(EventName.HideUIBackdrop)
+                    EventBus.emit(EventName.HideButtons)
+                    this.showHelpDialog(generateUseHerbicideText(count))
+                })
+                // hide the stacy
+                this.hide()
+                this.scene.events.emit(EventName.TutorialHighlightToolbar)
+                this.showHelpDialog("Select herbicide from toolbar.")
+                return
+            }
+            case TutorialStep.StartHarvestCrop: {
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItemsFullyMatured = placedItems.filter((placedItem) => {
+                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.FullyMatured
+                })
+                let count = placedItemsFullyMatured.length
+                // emit update tutorial if there is no crop that need water
+                if (count === 0) {
+                    EventBus.emit(EventName.ShowButtons)
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                    return
+                }
+
+                const generateHarvestText = (count: number) => {
+                    return `Now, tap on the tile to harvest the crop. ${count} left.`
+                }
+
+                EventBus.on(EventName.TutorialCropHarvested, () => {
+                    count--
+                    if (count === 0) {
+                        EventBus.off(EventName.TutorialCropHarvested)
+                        // reset toolbar depth
+                        this.scene.events.emit(EventName.TutorialResetToolbar)
+                        EventBus.emit(EventName.ShowButtons)
+                        EventBus.emit(EventName.RequestUpdateTutorial)
+                        return
+                    }
+                    this.showHelpDialog(generateHarvestText(count))
+                })
+                this.scene.events.once(EventName.TutorialScythePressed, () => {
+                    EventBus.emit(EventName.HideUIBackdrop)
+                    EventBus.emit(EventName.HideButtons)
+                    this.showHelpDialog(generateHarvestText(count))
+                })
+                // hide the stacy
+                this.hide()
+                this.scene.events.emit(EventName.TutorialHighlightToolbar)
+                this.showHelpDialog("Select scythe from toolbar.")
+                return
+            }
+            case TutorialStep.StartDeliverProduct: {
+                // when user press the shop button
+                this.scene.events.once(
+                    EventName.TutorialOpenRoadsideStandResponsed,
+                    ({ position }: TutorialOpenRoadsideStandResponsedMessage) => {
+                        this.displayPressHereArrow({
+                            rotation: -45,
+                            originPosition: { x: position.x + 60, y: position.y + 60 },
+                            targetPosition: { x: position.x + 40, y: position.y + 40 },
+                        })
+                    }
+                )
+
+                this.scene.events.once(EventName.TutorialRoadsideStandButtonPressed, () => {
+                })
+
+                // emit the event to open the inventory
+                this.scene.events.emit(EventName.TutorialOpenRoadsideStand)
+                // hide the stacy
+                this.hide()
                 return
             }
             default: {
@@ -415,6 +586,11 @@ export class Stacy extends ContainerLite {
         if (!this.isShown()) {
             this.show()
         }
+        // show the backdrop
+        EventBus.emit(EventName.ShowUIBackdrop, { depth: calculateUiDepth({ layer: UILayer.Tutorial }) })
+        // hide the help dialog
+        this.hideHelpDialog()
+
         // if press to continue is true, turn it off
         this.disallowPressToContinue(true)
         // set continue to false

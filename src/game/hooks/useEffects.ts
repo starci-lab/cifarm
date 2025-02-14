@@ -1,5 +1,6 @@
 import { useUserEffects } from "./graphql"
 import { useBuySeedsEffects } from "./useBuySeedsEffects"
+import { useHarvestCropEffects } from "./useHarvestCropEffects"
 import { useUseHerbicideEffects } from "./useHerbicideEffects"
 import { useUsePesticideEffects } from "./usePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
@@ -14,4 +15,5 @@ export const useEffects = () => {
     useWaterEffects()
     useUseHerbicideEffects()
     useUsePesticideEffects()
+    useHarvestCropEffects()
 }
