@@ -18,8 +18,10 @@ import {
     ToolId,
 } from "@/modules/entities"
 import { ObjectLayerName } from "./types"
-import { ToolLike } from "../ui"
+import { PlacementConfirmation, ToolLike } from "../ui"
 import { PlantSeedRequest, WaterRequest } from "@/modules/axios"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { calculateUiDepth, UILayer } from "../layers"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
@@ -39,6 +41,7 @@ export class InputTilemap extends ItemTilemap {
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
+    private confirmationUI: ContainerLite | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -225,8 +228,17 @@ export class InputTilemap extends ItemTilemap {
             this.temporaryPlaceItemObject
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
                 .setOrigin(0.5, 1)
+
+            if (this.confirmationUI) {
+                this.confirmationUI.setPosition(position.x + 20, position.y - 2)
+            } else {
+                this.showConfirmationUI(tile)
+            }
+
             return
         }
+
+    
         // push the temporary object to the temporary layer
         this.temporaryLayer.objects.push({
             gid: tilesetConfig.gid,
@@ -252,4 +264,69 @@ export class InputTilemap extends ItemTilemap {
         object.setDepth(tile.x + tile.y + 1)
         this.temporaryPlaceItemObject = object
     }
+
+    private showConfirmationUI(tile: Phaser.Tilemaps.Tile) {
+        const position = this.tileToWorldXY(tile.x, tile.y)
+
+        if (!position) {
+            throw new Error("Position not found")
+        }
+        
+        this.confirmationUI = new PlacementConfirmation({
+            scene: this.scene,
+            onCancel: () => {
+                this.cancelPlacement()
+            },
+            onConfirm: () => this.placeItemOnTile(tile),
+        }).setPosition(
+            position.x + 20,
+            position.y - 2
+        ).setDepth(
+            calculateUiDepth({
+                layer: UILayer.Overlay,
+                layerDepth: 2,
+            })
+        )
+        this.scene.add.existing(this.confirmationUI)
+
+        console.log("confirmationUI set", this.confirmationUI)
+    }
+    
+
+    private removeConfirmationUI() {
+        this.confirmationUI?.destroy()
+        this.confirmationUI = undefined
+    }
+
+    private placeItemOnTile(tile: Phaser.Tilemaps.Tile) {
+        console.log("Item placed on tile:", tile)
+
+        // emit the event to place the item
+        EventBus.emit(EventName.PlaceItem, {
+            id: this.temporaryPlaceItemData?.textureConfig.key,
+            x: tile.x,
+            y: tile.y,
+        })
+
+        // switch (this.temporaryPlaceItemData) {
+        // case PlacedItemType.Building: 
+        //     console.log("Building placed")
+        //     break
+        // case PlacedItemType.Animal:
+        //     console.log("Animal placed")
+        //     break
+        // default:
+        // }
+    }
+
+    private cancelPlacement() {
+        console.log("Placement canceled")
+        this.temporaryPlaceItemObject?.destroy()
+        this.temporaryPlaceItemObject = undefined
+        this.placingInProgress = false
+        this.removeConfirmationUI()
+    }
+
+    
+    
 }

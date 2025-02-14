@@ -110,14 +110,14 @@ export class ModalManager extends ContainerLite {
     // show method, to show the modal
     private showBackdrop(showTutorialBackdrop?: boolean) {
         // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (this.checkTutorialActive() && showTutorialBackdrop) {
-            EventBus.emit(EventName.ShowUIBackdrop, {
-                depth: calculateUiDepth({
-                    layer: UILayer.Tutorial,
-                })
-            })
-            return
-        }
+        // if (this.checkTutorialActive() && showTutorialBackdrop) {
+        //     EventBus.emit(EventName.ShowUIBackdrop, {
+        //         depth: calculateUiDepth({
+        //             layer: UILayer.Tutorial,
+        //         })
+        //     })
+        //     return
+        // }
         EventBus.emit(EventName.ShowUIBackdrop, {
             depth: calculateUiDepth({
                 layer: UILayer.Modal,
@@ -127,17 +127,17 @@ export class ModalManager extends ContainerLite {
 
     private hideBackdrop(hideTutorialBackdrop?: boolean) {
         // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (this.checkTutorialActive()) {
-            if (hideTutorialBackdrop) {
-                EventBus.emit(EventName.HideUIBackdrop)
-            }
-            return
-        }
+        // if (this.checkTutorialActive()) {
+        //     if (hideTutorialBackdrop) {
+        //         EventBus.emit(EventName.HideUIBackdrop)
+        //     }
+        //     return
+        // }
         EventBus.emit(EventName.HideUIBackdrop)
     }
 
     private checkTutorialActive() {
-        return this.scene.cache.obj.has(CacheKey.TutorialActive)
+        return false
     }
 
     private getModal(name: ModalName) {
@@ -190,7 +190,7 @@ export class ModalManager extends ContainerLite {
             modal.input.enabled = false
         }
         // show the modal
-        modal.show().popUp(SCALE_TIME)
+        modal?.show()?.popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
             if (modal.input) {
