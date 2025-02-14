@@ -1,8 +1,8 @@
 import { AnimalType, BuildingId } from "../enums"
-import { UpgradeEntity } from "./upgrade"
-import { PlacedItemTypeEntity } from "./placed-item-type"
+import { UpgradeSchema } from "./upgrade"
+import { PlacedItemTypeSchema } from "./placed-item-type"
 
-export interface BuildingEntity {
+export interface BuildingSchema {
     id: BuildingId
     createdAt: Date
     updatedAt: Date
@@ -11,8 +11,8 @@ export interface BuildingEntity {
     type?: AnimalType
     maxUpgrade: number
     price?: number
-    upgrades?: Array<UpgradeEntity>
+    upgrades?: Array<UpgradeSchema>
     upgradeIds: Array<string>
     placedItemTypeId?: string
-    placedItemType?: PlacedItemTypeEntity
+    placedItemType?: PlacedItemTypeSchema
 }

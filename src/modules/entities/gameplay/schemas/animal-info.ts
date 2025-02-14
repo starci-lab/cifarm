@@ -1,8 +1,8 @@
 import { AnimalCurrentState } from "../enums"
-import { UserEntity } from "./user"
-import { PlacedItemEntity } from "./placed-item"
+import { UserSchema } from "./user"
+import { PlacedItemSchema } from "./placed-item"
 
-export interface AnimalInfoEntity {
+export interface AnimalInfoSchema {
     id: string
     createdAt: Date
     updatedAt: Date
@@ -15,8 +15,8 @@ export interface AnimalInfoEntity {
     yieldCount: number
     currentState: AnimalCurrentState
     harvestQuantityRemaining?: number
-    thiefedBy: Array<UserEntity>
+    thiefedBy: Array<UserSchema>
     immunized: boolean
     placedItemId: string
-    placedItem?: PlacedItemEntity
+    placedItem?: PlacedItemSchema
 }

@@ -5,12 +5,12 @@ import {
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
     AvailableInType,
-    InventoryEntity,
+    InventorySchema,
     InventoryType,
-    InventoryTypeEntity,
+    InventoryTypeSchema,
     InventoryTypeId,
-    Starter,
-    ToolEntity,
+    DefaultInfo,
+    ToolSchema,
     ToolId,
 } from "@/modules/entities"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
@@ -68,14 +68,14 @@ export class Toolbar extends ContainerLite {
     private prevButton: Label
     private nextButton: Label
 
-    private inventories: Array<InventoryEntity> = []
-    private tools: Array<ToolEntity> = []
+    private inventories: Array<InventorySchema> = []
+    private tools: Array<ToolSchema> = []
     private currrentTools: Array<ToolLike> = []
     // selected tool index
     private selectedIndex = defaultSelectedIndex
-    private seedInventory: InventoryEntity | undefined
+    private seedInventory: InventorySchema | undefined
     // flags to check if the events are emitted
-    private starter: Starter
+    private defaultInfo: DefaultInfo
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -90,11 +90,11 @@ export class Toolbar extends ContainerLite {
 
         this.inventories = this.scene.cache.obj.get(
             CacheKey.Inventories
-        ) as Array<InventoryEntity>
-        this.starter = this.scene.cache.obj.get(CacheKey.Starter) as Starter
+        ) as Array<InventorySchema>
+        this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo) as DefaultInfo
 
         // get the tools from the cache
-        this.tools = this.scene.cache.obj.get(CacheKey.Tools) as Array<ToolEntity>
+        this.tools = this.scene.cache.obj.get(CacheKey.Tools) as Array<ToolSchema>
         this.currrentTools = this.createToolList()
 
         // update the sizer with the tools
@@ -158,7 +158,7 @@ export class Toolbar extends ContainerLite {
 
         this.scene.events.on(EventName.TutorialHighlightToolbar, () => {
             this.seedInventory = getFirstSeedInventory({
-                cropId: this.starter.defaultCropId,
+                cropId: this.defaultInfo.defaultCropId,
                 scene: this.scene,
             })    
             this.setDepth(HIGHLIGH_DEPTH)
@@ -414,7 +414,7 @@ export class Toolbar extends ContainerLite {
 
         const additionalTools: Array<ToolLike> = toolbarInventories.map(
             (inventory) => {
-                const types = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeEntity>
+                const types = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
                 const inventoryType = types.find(({ id }) => id === inventory.inventoryTypeId)
                 if (!inventoryType) {
                     throw new Error(`Inventory type not found for id: ${inventory.inventoryTypeId}`)

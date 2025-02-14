@@ -1,7 +1,7 @@
 import { BaseAssetKey } from "@/game/assets"
 import { inventoryTypeAssetMap, InventoryTypeId } from "@/game/assets/inventoryTypes"
 import { CacheKey } from "@/game/types"
-import { InventoryEntity } from "@/modules/entities"
+import { InventorySchema } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "../../elements"
@@ -10,7 +10,7 @@ import { defaultInventoryTab, InventoryTab } from "./types"
 export class InventoryContent extends BaseSizer {
     private gridTable: GridTable | undefined
     private selectedInventoryTab: InventoryTab = defaultInventoryTab
-    private inventories: Array<InventoryEntity> = []
+    private inventories: Array<InventorySchema> = []
 
     constructor({ scene, x, y, width, height }: BaseSizer) {
         super(scene, x, y, width, height)
@@ -25,8 +25,9 @@ export class InventoryContent extends BaseSizer {
         const gridHeight = 1000
 
         const itemList: Array<CreateItemCardParams> = this.inventories.map((inventory) => {
+            console.log(inventory)
             return {
-                assetKey: inventoryTypeAssetMap[inventory.inventoryTypeId as InventoryTypeId].textureConfig.key,
+                assetKey: inventoryTypeAssetMap[inventory.inventoryType as InventoryTypeId].textureConfig.key,
                 quantity: inventory.quantity,
                 onPress: () => {
                     console.log("Clicked")

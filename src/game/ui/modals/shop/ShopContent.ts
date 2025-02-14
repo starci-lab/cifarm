@@ -19,13 +19,13 @@ import {
 import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { CacheKey, SizerBaseConstructorParams } from "../../../types"
 import {
-    AnimalEntity,
-    BuildingEntity,
-    CropEntity,
+    AnimalSchema,
+    BuildingSchema,
+    CropSchema,
     CropId,
-    InventoryEntity,
+    InventorySchema,
     PlacedItemType,
-    Starter,
+    DefaultInfo,
 } from "@/modules/entities"
 import { onGameObjectPress } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
@@ -53,17 +53,17 @@ export class ShopContent extends BaseSizer {
     private scrollablePanelMap: Partial<Record<ShopTab, ScrollablePanel>> = {}
 
     // data
-    private animals: Array<AnimalEntity> = []
-    private crops: Array<CropEntity> = []
-    private buildings: Array<BuildingEntity> = []
+    private animals: Array<AnimalSchema> = []
+    private crops: Array<CropSchema> = []
+    private buildings: Array<BuildingSchema> = []
 
     //default
     private defaultItemCard: Sizer | undefined
     private defaultSeedButton: Label | undefined
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
-    private inventories: Array<InventoryEntity> = []
-    private starter: Starter
+    private inventories: Array<InventorySchema> = []
+    private defaultInfo: DefaultInfo
 
     constructor({
         scene,
@@ -90,7 +90,7 @@ export class ShopContent extends BaseSizer {
         )
 
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
-        this.starter = this.scene.cache.obj.get(CacheKey.Starter)
+        this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -120,11 +120,11 @@ export class ShopContent extends BaseSizer {
             this.disableDefaultScroller()
 
             const inventories = getSpecificSeedInventories({
-                cropId: this.starter.defaultCropId,
+                cropId: this.defaultInfo.defaultCropId,
                 scene: this.scene,
                 inventories: this.inventories,
             })
-            if (inventories.length > this.starter.defaultSeedQuantity) {
+            if (inventories.length > this.defaultInfo.defaultSeedQuantity) {
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }

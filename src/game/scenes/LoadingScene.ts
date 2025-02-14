@@ -15,7 +15,7 @@ import { LoadingProgressBar } from "../containers"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
-import { InventoryEntity, UserEntity } from "@/modules/entities"
+import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { loadCropStateAssets } from "../assets/states"
 
@@ -81,7 +81,7 @@ export class LoadingScene extends Scene {
 
         //listen for load user data event
         EventBus.once(
-            EventName.UserLoaded, (user: UserEntity) => {
+            EventName.UserLoaded, (user: UserSchema) => {
                 //load the user data
                 this.cache.obj.add(CacheKey.User, user)
                 this.handleFetchData("Loading user...")
@@ -89,7 +89,7 @@ export class LoadingScene extends Scene {
 
         //listen for load inventory event
         EventBus.once(
-            EventName.InventoriesLoaded, (inventories: Array<InventoryEntity> 
+            EventName.InventoriesLoaded, (inventories: Array<InventorySchema> 
             ) => {
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, inventories)

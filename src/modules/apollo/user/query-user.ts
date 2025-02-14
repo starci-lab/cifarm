@@ -1,6 +1,6 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { noCacheAuthClient } from "../auth-client"
-import { UserEntity } from "@/modules/entities"
+import { UserSchema } from "@/modules/entities"
 
 const query1 = gql`
   query {
@@ -23,7 +23,7 @@ const query1 = gql`
 `
 
 export interface QueryUserResponse {
-    user: UserEntity
+    user: UserSchema
 }
 
 

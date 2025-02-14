@@ -1,5 +1,5 @@
 import { BaseAssetKey } from "@/game/assets"
-import { DailyRewardEntity, DailyRewardId } from "@/modules/entities"
+import { DailyRewardSchema, DailyRewardId } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
@@ -18,7 +18,7 @@ export class DailyContent extends ContainerLite {
     private rewardContainersSizer: Sizer
     
     // daily rewards data
-    private dailyRewards: Array<DailyRewardEntity> = []
+    private dailyRewards: Array<DailyRewardSchema> = []
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
 
@@ -48,12 +48,12 @@ export class DailyContent extends ContainerLite {
             throw new Error("Day 5 is not the base day")
         }
         // get the daily reward
-        const dailyReward = this.dailyRewards.find(
-            (dailyReward) => dailyReward.id === id
-        )
-        if (!dailyReward) {
-            throw new Error("Daily not found")
-        }
+        // const dailyReward = this.dailyRewards.find(
+        //     (dailyReward) => dailyReward.id === id
+        // )
+        // if (!dailyReward) {
+        //     throw new Error("Daily not found")
+        // }
         // create the background container
         const backgroundContainer = this.scene.add.container(0, 0)
         // add the background image
@@ -75,7 +75,7 @@ export class DailyContent extends ContainerLite {
                 scene: this.scene,
                 x: 0,
                 y: 0,
-                text: dailyReward.day.toString(),
+                text: "3",
             },
             options: {
                 fontSize: 32,
@@ -121,7 +121,7 @@ export class DailyContent extends ContainerLite {
                 x: 0,
                 y: 20,
                 scene: this.scene,
-                text: `x${dailyReward.golds}`,
+                text: `x${100}`,
             },
             options: {
                 textColor: TextColor.White,

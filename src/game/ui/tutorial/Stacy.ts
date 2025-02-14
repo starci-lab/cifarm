@@ -1,4 +1,4 @@
-import { CropCurrentState, Position, TutorialStep, UserEntity } from "@/modules/entities"
+import { CropCurrentState, Position, TutorialStep, UserSchema } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
@@ -23,7 +23,7 @@ export class Stacy extends ContainerLite {
     private stacyImage: Phaser.GameObjects.Image
     private stacyBubble: Label
     private pressToContinueText: Phaser.GameObjects.Text
-    private user: UserEntity
+    private user: UserSchema
     private pressHereArrow: Phaser.GameObjects.Image
     private helpDialog: Label
 
@@ -169,7 +169,7 @@ export class Stacy extends ContainerLite {
 
         // callback when the tutorial is completed
         EventBus.on(EventName.UpdateTutorialCompleted, () => {
-            EventBus.once(EventName.UserRefreshed, (user: UserEntity) => {
+            EventBus.once(EventName.UserRefreshed, (user: UserSchema) => {
                 // check  if the tutorial is not shown
                 // set the user
                 this.user = user

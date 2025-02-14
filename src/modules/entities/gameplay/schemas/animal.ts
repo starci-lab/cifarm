@@ -1,9 +1,9 @@
 import { AnimalId, AnimalType } from "../enums"
-import { ProductEntity } from "./product"
-import { InventoryTypeEntity } from "./inventory-type"
-import { PlacedItemTypeEntity } from "./placed-item-type"
+import { ProductSchema } from "./product"
+import { InventoryTypeSchema } from "./inventory-type"
+import { PlacedItemTypeSchema } from "./placed-item-type"
 
-export interface AnimalEntity {
+export interface AnimalSchema {
     id: AnimalId
     createdAt: Date
     updatedAt: Date
@@ -23,9 +23,9 @@ export interface AnimalEntity {
     premiumHarvestExperiences: number
     type: AnimalType
     productIds: Array<string>
-    products: Array<ProductEntity>
+    products: Array<ProductSchema>
     inventoryTypeId: string
-    inventoryType: InventoryTypeEntity
+    inventoryType: InventoryTypeSchema
     placedItemTypeId?: string
-    placedItemType?: PlacedItemTypeEntity
+    placedItemType?: PlacedItemTypeSchema
 }

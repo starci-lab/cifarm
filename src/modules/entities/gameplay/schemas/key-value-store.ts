@@ -1,6 +1,6 @@
-import { StringAbstractEntity } from "./abstract"
+import { AbstractSchema } from "./abstract"
 
-export interface KeyValueStoreEntity extends StringAbstractEntity {
+export interface KeyValueStoreSchema extends AbstractSchema {
     value: object
 }
 

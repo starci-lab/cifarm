@@ -1,4 +1,4 @@
-export interface DailyRewardEntity {
+export interface DailyRewardSchema {
     id: string
     createdAt: Date
     updatedAt: Date

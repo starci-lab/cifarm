@@ -1,7 +1,7 @@
 import { AvailableInType, ToolId } from "../enums"
-import { StringAbstractEntity } from "./abstract"
+import { AbstractSchema } from "./abstract"
 
-export interface ToolEntity extends StringAbstractEntity {
+export interface ToolSchema extends AbstractSchema {
     // override id to acheive the correct type
     id: ToolId;
     availableIn: AvailableInType;

@@ -8,14 +8,14 @@ import {
     CacheKey,
     ContainerLiteBaseConstructorParams,
 } from "../../types"
-import { UserEntity } from "@/modules/entities"
+import { UserSchema } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Stacy } from "./Stacy"
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 
 export class TutorialManager extends ContainerLite {
-    private user: UserEntity
+    private user: UserSchema
     private stacy: Stacy
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
