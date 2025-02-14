@@ -187,6 +187,7 @@ const query = gql`
       crop
       supply
       product
+      stackable
     }
   }
 `

@@ -20,7 +20,7 @@ export const getFirstSeedInventory = ({
         throw new Error(`Inventory type not found for cropId: ${cropId}`)
     }
     // get the inventory entity
-    return inventories.find(({ inventoryTypeId }) => inventoryTypeId === inventoryType.id)
+    return inventories.find((inventory) => inventory.inventoryType === inventoryType.id)
 }
 
 export interface GetFirstSeedInventoryParams {
@@ -57,7 +57,7 @@ export const getSeedInventories = ({
     for (const type of inventoryTypes) {
         if (type.type === InventoryType.Seed) {
             for (const inventory of inventories) {
-                if (inventory.inventoryTypeId === type.id) {
+                if (inventory.inventoryType === type.id) {
                     result.push(inventory)
                     break
                 }
@@ -91,7 +91,7 @@ export const getSpecificSeedInventories = ({
     for (const inventoryType of inventoryTypes) {
         if (inventoryType.cropId === cropId) {
             for (const inventory of inventories) {
-                if (inventory.inventoryTypeId === inventoryType.id) {
+                if (inventory.inventoryType === inventoryType.id) {
                     result.push(inventory)
                     break
                 }
@@ -125,6 +125,26 @@ export const getToolbarInventories = ({
 }
 
 export interface GetToolbarInventoriesParams {
+    // scene to display the modal
+    scene: Scene;
+    // the inventories to check, if not specified, will try to get from cache
+    inventories?: Array<InventorySchema>;
+}
+
+export const getStorageInventories = ({
+    scene,
+    inventories,
+}: GetStorageInventoriesParams) => {
+    // if inventories is not provided, get from cache
+    if (!inventories) {
+        // get the inventories from cache
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
+    }
+
+    return inventories.filter((inventory) => !inventory.inToolbar)
+}
+
+export interface GetStorageInventoriesParams {
     // scene to display the modal
     scene: Scene;
     // the inventories to check, if not specified, will try to get from cache

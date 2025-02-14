@@ -27,5 +27,6 @@ export interface InventoryTypeSchema extends StaticAbstractSchema<InventoryTypeI
     product?: ProductSchema
     tileId?: string
     tile?: TileSchema
+    stackable: boolean
     inventories?: Array<InventorySchema>
 }

@@ -41,12 +41,12 @@ export class UIScene extends Scene {
 
         new Topbar(this)
 
-        const toolbar = new Toolbar({
-            scene: this,
-            x: getScreenCenterX(this),
-            y: getScreenBottomY(this) - 100
-        })
-        this.add.existing(toolbar)
+        // const toolbar = new Toolbar({
+        //     scene: this,
+        //     x: getScreenCenterX(this),
+        //     y: getScreenBottomY(this) - 100
+        // })
+        // this.add.existing(toolbar)
 
         // add the modal manager
         const modalManager = new ModalManager({

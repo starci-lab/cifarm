@@ -9,7 +9,7 @@ const query1 = gql`
         data {
           id
           inventoryType
-          inventoryIndex
+          index
           quantity
           inToolbar
         }
