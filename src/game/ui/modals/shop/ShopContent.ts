@@ -307,15 +307,15 @@ export class ShopContent extends BaseSizer {
         const itemCards: Array<Sizer> = []
         switch (shopTab) {
         case ShopTab.Seeds: {
-            for (const { id, price } of this.crops) {
+            for (const { displayId, price } of this.crops) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: cropAssetMap[id].seed.textureConfig.key,
-                    title: cropAssetMap[id].name,
+                    assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                    title: cropAssetMap[displayId].name,
                     onPress: (pointer: Phaser.Input.Pointer) => {
-                        this.playBuySeedAnimation(id, pointer)
+                        this.playBuySeedAnimation(displayId, pointer)
                         const eventMessage: BuySeedsRequest = {
-                            cropId: id,
+                            cropId: displayId,
                             quantity: 1,
                         }
                         // send request to buy seeds
@@ -333,13 +333,13 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Animals: {
-            for (const { id, price } of this.animals) {
+            for (const { displayId, price } of this.animals) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: animalAssetMap[id].ages[AnimalAge.Baby].textureConfig.key,
-                    title: animalAssetMap[id].name,
+                    assetKey: animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    title: animalAssetMap[displayId].name,
                     onPress: () => {
-                        console.log("Clicked on animal", id)
+                        console.log("Clicked on animal", displayId)
                     },
                     price,
                 })
@@ -349,11 +349,11 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Buildings: {
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: id,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: displayId,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -362,7 +362,7 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
                         const message: PlacedInprogressMessage = {
-                            id,
+                            id: displayId,
                             type: PlacedItemType.Building,
                         }
                         EventBus.emit(EventName.PlaceInprogress, message)
@@ -377,13 +377,13 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Decorations:
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: buildingAssetMap[id].name,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: buildingAssetMap[displayId].name,
                     onPress: () => {
-                        console.log("Clicked on building", id)
+                        console.log("Clicked on building", displayId)
                     },
                     price,
                 })
@@ -392,13 +392,13 @@ export class ShopContent extends BaseSizer {
             }
             break
         case ShopTab.Others:
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: id,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: displayId,
                     onPress: () => {
-                        console.log("Clicked on building", id)
+                        console.log("Clicked on building", displayId)
                     },
                     price,
                 })
@@ -407,13 +407,13 @@ export class ShopContent extends BaseSizer {
             }
             break
         case ShopTab.Trees:
-            for (const { id, price } of this.buildings) {
+            for (const { displayId, price } of this.buildings) {
                 // get the image
                 const itemCard = this.createItemCard({
-                    assetKey: buildingAssetMap[id].textureConfig.key,
-                    title: id,
+                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    title: displayId,
                     onPress: () => {
-                        console.log("Clicked on building", id)
+                        console.log("Clicked on building", displayId)
                     },
                     price,
                 })

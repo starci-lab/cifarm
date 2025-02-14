@@ -7,8 +7,7 @@ import { TileSchema } from "./tile"
 import { AvailableInType, InventoryType, InventoryTypeId } from "../enums"
 import { StaticAbstractSchema } from "./abstract"
 
-export interface InventoryTypeSchema extends StaticAbstractSchema {
-    id: InventoryTypeId
+export interface InventoryTypeSchema extends StaticAbstractSchema<InventoryTypeId> {
     createdAt: Date
     updatedAt: Date
     deletedAt: Date

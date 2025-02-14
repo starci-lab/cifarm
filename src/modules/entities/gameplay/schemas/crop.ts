@@ -2,9 +2,9 @@ import { ProductSchema } from "./product"
 import { InventoryTypeSchema } from "./inventory-type"
 import { SpinPrizeSchema } from "./spin-prize"
 import { CropId } from "../enums"
+import { StaticAbstractSchema } from "./abstract"
 
-export interface CropSchema {
-    id: CropId
+export interface CropSchema extends StaticAbstractSchema<CropId> {
     createdAt: Date
     updatedAt: Date
     deletedAt: Date

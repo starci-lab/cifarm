@@ -1,9 +1,9 @@
-export interface AbstractSchema {
+export interface AbstractSchema<TId extends string> {
     createdAt: Date
     updatedAt: Date
-    id: string
+    id: TId
 }
 
-export interface StaticAbstractSchema extends AbstractSchema {
-   displayId: string
+export interface StaticAbstractSchema<TId extends string> extends AbstractSchema<TId> {
+   displayId: TId
 }

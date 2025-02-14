@@ -1,7 +1,7 @@
 import { BaseAssetKey } from "@/game/assets"
-import { inventoryTypeAssetMap, InventoryTypeId } from "@/game/assets/inventoryTypes"
+import { inventoryTypeAssetMap } from "@/game/assets/inventoryTypes"
 import { CacheKey } from "@/game/types"
-import { InventorySchema } from "@/modules/entities"
+import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "../../elements"
@@ -25,17 +25,19 @@ export class InventoryContent extends BaseSizer {
         const gridHeight = 1000
 
         const itemList: Array<CreateItemCardParams> = this.inventories.map((inventory) => {
-            console.log(inventory)
+            const inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
+            const inventoryType = inventoryTypes.find((inventoryType) => inventoryType.id === inventory.inventoryType)
+            if (!inventoryType) {
+                throw new Error(`Inventory type not found for inventory id: ${inventory.inventoryType}`)
+            }
             return {
-                assetKey: inventoryTypeAssetMap[inventory.inventoryType as InventoryTypeId].textureConfig.key,
+                assetKey: inventoryTypeAssetMap[inventoryType.displayId].textureConfig.key,
                 quantity: inventory.quantity,
                 onPress: () => {
                     console.log("Clicked")
                 }
             }
         })
-
-        console.log(itemList)
 
         this.gridTable = this.scene.rexUI.add.gridTable({
             x: 30,
