@@ -6,6 +6,9 @@ import {
     PlacedItemType,
     PlacedItemTypeSchema,
     PlacedItemTypeId,
+    getId,
+    TileId,
+    BuildingId,
 } from "@/modules/entities"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
@@ -109,7 +112,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     throw new Error("Game object not found")
                 }
                 gameObject.update(
-                    this.getPlacedItemType(placedItem.placedItemTypeId).type,
+                    this.getPlacedItemType(placedItem.placedItemType).type,
                     placedItem
                 )
             }
@@ -142,25 +145,13 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // method to get the GID for a placed item type
     private getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
-        console.log(placedItemTypeId)
-        const placedItemTypes = this.scene.cache.obj.get(
-            CacheKey.PlacedItemTypes
-        ) as Array<PlacedItemTypeSchema>
-        console.log(placedItemTypes)
-        const found = placedItemTypes.find((type) => {
-            return type.id === placedItemTypeId
-        })
-
-        if (!found) {
-            throw new Error("Placed item type not found")
-        }
-
+        const found = this.getPlacedItemType(placedItemTypeId)
         switch (found.type) {
         case PlacedItemType.Tile: {
             if (!found.tile) {
                 throw new Error("Tile ID not found")
             }
-            const tilesetConfig = tileAssetMap[found.tile].tilesetConfig
+            const tilesetConfig = tileAssetMap[getId<TileId>(found.tile)].tilesetConfig
             if (!tilesetConfig) {
                 throw new Error("Tileset config not found")
             }
@@ -170,7 +161,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (!found.building) {
                 throw new Error("Building ID not found")
             }
-            const tilesetConfig = buildingAssetMap[found.building].tilesetConfig
+            const tilesetConfig = buildingAssetMap[getId<BuildingId>(found.building)].tilesetConfig
             if (!tilesetConfig) {
                 throw new Error("Tileset config not found")
             }
@@ -228,7 +219,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
 
         // get the placed item type
-        const placedItemType = this.getPlacedItemType(placedItem.placedItemTypeId)
+        const placedItemType = this.getPlacedItemType(placedItem.placedItemType)
 
         // check if tile is home, then we move the camera to it
         if (placedItemType.id === PlacedItemTypeId.Home) {

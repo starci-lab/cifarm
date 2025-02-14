@@ -12,16 +12,9 @@ export interface PlacedItemSchema extends AbstractSchema {
     userId: string
     user?: UserSchema
     inventoryId?: string
-    seedGrowthInfoId?: string
     seedGrowthInfo?: SeedGrowthInfoSchema
-    tileInfoId?: string
     tileInfo?: TileInfoSchema
-    animalInfoId?: string
     animalInfo?: AnimalInfoSchema
-    buildingInfoId?: string
     buildingInfo?: BuildingInfoSchema
-    placedItemIds?: Array<string>
     placedItemType: PlacedItemTypeId
-    parentId?: string
-    parent?: PlacedItemSchema
 }

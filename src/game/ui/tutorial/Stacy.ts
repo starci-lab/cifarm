@@ -333,7 +333,7 @@ export class Stacy extends ContainerLite {
                     }
                     this.showHelpDialog(generateWaterText(count))
                 })
-                this.scene.events.once(EventName.TutorialWaterCanPressed, () => {
+                this.scene.events.once(EventName.TutorialWateringCanPressed, () => {
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
                     this.showHelpDialog(generateWaterText(count))

@@ -106,7 +106,7 @@ export enum EventName {
     TutorialPesiticidePressed = "tutorial_pesticide_pressed",
     TutorialHerbicidePressed = "tutorial_herbicide_pressed",
     TutorialTilePressedResponsed = "tutorial_tile_pressed_responsed",
-    TutorialWaterCanPressed = "tutorial_water_can_pressed",
+    TutorialWateringCanPressed = "tutorial_water_can_pressed",
     TutorialResetToolbar = "tutorial_reset_toolbar",
     TutorialHighlightToolbar = "tutorial_highlight_toolbar",
     // api events
@@ -157,7 +157,7 @@ export interface TutorialOpenRoadsideStandResponsedMessage {
     position: Position,
 }
 
-export interface TutorialWaterCanPressedMessage {
+export interface TutorialWateringCanPressedMessage {
     // position of the shop button
     position: Position,
 }

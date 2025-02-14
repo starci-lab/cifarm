@@ -153,7 +153,7 @@ export class InputTilemap extends ItemTilemap {
         }
         // check if tool id is water can
         switch (selectedTool.id) {
-        case ToolId.WaterCan: {
+        case ToolId.WateringCan: {
             // return if seed growth info is not need water
             if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
                 return

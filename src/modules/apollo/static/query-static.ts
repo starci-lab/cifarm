@@ -123,6 +123,7 @@ const query = gql`
     }
     placedItemTypes {
       id
+      displayId
       type
       tile
       animal
@@ -130,6 +131,7 @@ const query = gql`
     }
     crops {
       id
+      displayId
       growthStageDuration
       growthStages
       price
@@ -144,6 +146,7 @@ const query = gql`
     }
     animals {
       id
+      displayId
       yieldTime
       offspringPrice
       price
@@ -160,6 +163,7 @@ const query = gql`
     }
     buildings {
       id
+      displayId
       availableInShop
       type
       maxUpgrade
@@ -167,11 +171,13 @@ const query = gql`
     }
     tools {
       id
+      displayId
       availableIn
       index
     }
     inventoryTypes {
       id
+      displayId
       type
       availableIn
       placeable

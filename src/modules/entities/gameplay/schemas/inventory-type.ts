@@ -4,10 +4,11 @@ import { InventorySchema } from "./inventory"
 import { ProductSchema } from "./product"
 import { SupplySchema } from "./supply"
 import { TileSchema } from "./tile"
-import { AvailableInType, InventoryType } from "../enums"
+import { AvailableInType, InventoryType, InventoryTypeId } from "../enums"
+import { StaticAbstractSchema } from "./abstract"
 
-export interface InventoryTypeSchema {
-    id: string
+export interface InventoryTypeSchema extends StaticAbstractSchema {
+    id: InventoryTypeId
     createdAt: Date
     updatedAt: Date
     deletedAt: Date

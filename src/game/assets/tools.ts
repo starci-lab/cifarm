@@ -18,11 +18,11 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
             assetUrl: "tools/hand.png",
         }
     },
-    [ToolId.WaterCan]: {
-        name: "Water Can",
+    [ToolId.WateringCan]: {
+        name: "Watering Can",
         textureConfig: {
-            key: "water-can",
-            assetUrl: "tools/water-can.png",
+            key: "watering-can",
+            assetUrl: "tools/watering-can.png",
         }
     },
     [ToolId.Herbicide]: {

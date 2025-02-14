@@ -4,20 +4,18 @@ import {
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
-    AvailableInType,
     InventorySchema,
     InventoryType,
     InventoryTypeSchema,
     InventoryTypeId,
     DefaultInfo,
-    ToolSchema,
     ToolId,
+    getId,
 } from "@/modules/entities"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     BaseAssetKey,
     inventoryTypeAssetMap,
-    toolAssetMap,
 } from "../../assets"
 import { SCALE_TIME } from "../../constants"
 import { EventName } from "@/game/event-bus"
@@ -26,6 +24,7 @@ import { getFirstSeedInventory, getToolbarInventories } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseText } from "../elements"
 import { calculateUiDepth, UILayer } from "../../layers"
+import { createObjectId } from "@/modules/common"
 
 export const CONTENT_DEPTH = calculateUiDepth({
     layer: UILayer.Modal,
@@ -69,7 +68,6 @@ export class Toolbar extends ContainerLite {
     private nextButton: Label
 
     private inventories: Array<InventorySchema> = []
-    private tools: Array<ToolSchema> = []
     private currrentTools: Array<ToolLike> = []
     // selected tool index
     private selectedIndex = defaultSelectedIndex
@@ -91,10 +89,11 @@ export class Toolbar extends ContainerLite {
         this.inventories = this.scene.cache.obj.get(
             CacheKey.Inventories
         ) as Array<InventorySchema>
+        console.log(this.inventories)
+
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo) as DefaultInfo
 
         // get the tools from the cache
-        this.tools = this.scene.cache.obj.get(CacheKey.Tools) as Array<ToolSchema>
         this.currrentTools = this.createToolList()
 
         // update the sizer with the tools
@@ -115,8 +114,8 @@ export class Toolbar extends ContainerLite {
                 if (this.currrentTools[this.startIndex + index].id === this.seedInventory?.id) {
                     this.scene.events.emit(EventName.TutorialSeedsPressed)
                 }
-                if (this.currrentTools[this.startIndex + index].id === ToolId.WaterCan) {
-                    this.scene.events.emit(EventName.TutorialWaterCanPressed)
+                if (this.currrentTools[this.startIndex + index].id === ToolId.WateringCan) {
+                    this.scene.events.emit(EventName.TutorialWateringCanPressed)
                 }
                 if (this.currrentTools[this.startIndex + index].id === ToolId.Herbicide) {
                     this.scene.events.emit(EventName.TutorialHerbicidePressed)
@@ -393,38 +392,23 @@ export class Toolbar extends ContainerLite {
 
     // create a list of tools to show
     private createToolList(inHome?: boolean): Array<ToolLike> {
-    // by default, show your home tools
-        const tools: Array<ToolLike> = this.tools
-            .filter(
-                (tool) =>
-                    tool.availableIn === AvailableInType.Home ||
-          tool.availableIn === AvailableInType.Both
-            )
-            .sort((prev, next) => prev.index - next.index)
-            .map((tool) => ({
-                id: tool.id,
-                name: toolAssetMap[tool.id].name,
-                assetKey: toolAssetMap[tool.id].textureConfig.key,
-            }))
-
         const toolbarInventories = getToolbarInventories({
             inventories: this.inventories,
             scene: this.scene,
         })
-
-        const additionalTools: Array<ToolLike> = toolbarInventories.map(
+        const tools: Array<ToolLike> = toolbarInventories.map(
             (inventory) => {
                 const types = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
-                const inventoryType = types.find(({ id }) => id === inventory.inventoryTypeId)
+                const inventoryType = types.find(({ id }) => id === inventory.inventoryType)
+                console.log(types)
+                console.log(inventory)
                 if (!inventoryType) {
-                    throw new Error(`Inventory type not found for id: ${inventory.inventoryTypeId}`)
+                    throw new Error(`Inventory type not found for id: ${inventory.inventoryType}`)
                 }
-
-                const _inventoryTypeId = inventory.inventoryTypeId as InventoryTypeId
                 const {
                     name,
                     textureConfig: { key: assetKey },
-                } = inventoryTypeAssetMap[_inventoryTypeId]
+                } = inventoryTypeAssetMap[getId<InventoryTypeId>(inventoryType.id)]
                 return {
                     assetKey,
                     id: inventory.id,
@@ -435,7 +419,7 @@ export class Toolbar extends ContainerLite {
             }
         )
 
-        return [...tools, ...additionalTools]
+        return tools
     }
 
     // create slots for the items
