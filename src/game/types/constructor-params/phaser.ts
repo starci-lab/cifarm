@@ -22,6 +22,14 @@ export interface TilemapBaseConstructorParams {
     mapData?: Phaser.Tilemaps.MapData
 }
 
+
+// base constructor for Image
+export interface ImagepBaseConstructorParams {
+    scene: Phaser.Scene
+    x: number
+    y: number
+}
+
 export interface LayerBaseConstructorParams {
     scene: Phaser.Scene, 
     children?: Array<Phaser.GameObjects.GameObject>

@@ -1,17 +1,9 @@
-import { UserSchema } from "./user"
-import { InventoryTypeSchema } from "./inventory-type"
-import { InventoryTypeId } from "../enums"
+import { AbstractSchema } from "./abstract"
 
-export interface InventorySchema {
-    id: string
-    createdAt: Date
-    updatedAt: Date
-    deletedAt: Date
+export interface InventorySchema extends AbstractSchema {
     quantity: number
-    tokenId?: string
-    isPlaced: boolean
-    userId: string
-    user?: UserSchema
-    inventoryType: InventoryTypeId
+    user?: string
+    inventoryType: string
     inToolbar?: boolean
+    index: number
 }

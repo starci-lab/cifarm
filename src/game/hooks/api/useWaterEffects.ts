@@ -2,7 +2,7 @@ import { API_WATER_SWR_MUTATION } from "@/app/constants"
 import { useApiWaterSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../event-bus"
+import { EventBus, EventName } from "../../event-bus"
 import { WaterRequest } from "@/modules/axios"
 
 export const useWaterEffects = () => {

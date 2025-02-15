@@ -46,7 +46,7 @@ export enum BaseAssetKey {
     ModalInventoryBtnClose = "modal-inventory-btn-close",
     ModalInventoryCell = "modal-inventory-cell",
     ModalInventoryCellQuantity = "modal-inventory-cell-quantity",
-    ModalInventoryWall = "modal-inventory-wall",
+    ModalInventoryBackground = "modal-inventory-background",
     ModalInventoryIconTabOn = "modal-inventory-icon-tab-on",
     ModalInventoryIconTabOff = "modal-inventory-icon-tab-off",
     ModalInventoryIconAnimal = "modal-inventory-icon-animal",
@@ -91,6 +91,7 @@ export enum BaseAssetKey {
     ModalStandWhiteStar = "modal-stand-white-star",
     ModalStandPurpleStar = "modal-stand-purple-star",
     ModalStandShadow = "modal-stand-shadow",
+    ModalStandAddButton = "modal-stand-add-button",
 
     //Neighbors
     ModalNeighborsWall = "modal-neighbors-wall",
@@ -106,9 +107,12 @@ export enum BaseAssetKey {
     ModalNeighborsIconHome = "modal-neighbors-icon-home",
 
     //Common
-    ModalCommonBackground = "modal-common-background",
+    ModalCommonBackground1 = "modal-common-background-1",
+    ModalCommonBackground2 = "modal-common-background-2",
     ModalCommonFrame = "modal-common-frame",
+    ModalCommonThumb = "modal-common-thumb",
     ModalCommonQuantityFrame = "modal-common-quantity-frame",
+    ModalCommonRibbon = "modal-common-ribbon",
 
     //Topbar
     TopbarHeader = "topbar-header",
@@ -178,7 +182,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalInventoryBtnClose]: "modals/inventory/btn-close.png",
     [BaseAssetKey.ModalInventoryCell]: "modals/inventory/cell.png",
     [BaseAssetKey.ModalInventoryCellQuantity]: "modals/inventory/cell-quantity.png",
-    [BaseAssetKey.ModalInventoryWall]: "modals/inventory/wall.png",
+    [BaseAssetKey.ModalInventoryBackground]: "modals/inventory/background.png",
     [BaseAssetKey.ModalInventoryIconTabOn]: "modals/inventory/icon-tab-on.png",
     [BaseAssetKey.ModalInventoryIconTabOff]: "modals/inventory/icon-tab-off.png",
     [BaseAssetKey.ModalInventoryIconAnimal]: "modals/inventory/icon-animal.png",
@@ -222,6 +226,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalStandWhiteStar]: "modals/stand/star-white.png",
     [BaseAssetKey.ModalStandPurpleStar]: "modals/stand/star-purple.png",
     [BaseAssetKey.ModalStandShadow]: "modals/stand/shadow.png",
+    [BaseAssetKey.ModalStandAddButton]: "modals/stand/add-button.png",
     //Neighbors
     [BaseAssetKey.ModalNeighborsWall]: "modals/neighbors/wall.png",
     [BaseAssetKey.ModalNeighborsAvatarFriends]: "modals/neighbors/ava-friends.png",
@@ -254,9 +259,12 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.PressHereArrow]: "press-here-arrow.png",
 
     //Common
-    [BaseAssetKey.ModalCommonBackground]: "modals/common/background.png",
+    [BaseAssetKey.ModalCommonBackground1]: "modals/common/background-1.png",
+    [BaseAssetKey.ModalCommonBackground2]: "modals/common/background-2.png",
     [BaseAssetKey.ModalCommonFrame]: "modals/common/frame.png",
     [BaseAssetKey.ModalCommonQuantityFrame]: "modals/common/quantity-frame.png",
+    [BaseAssetKey.ModalCommonThumb]: "modals/common/thumb.png",
+    [BaseAssetKey.ModalCommonRibbon]: "modals/common/ribbon.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",

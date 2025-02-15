@@ -1,4 +1,4 @@
-import { PlacedItemType, TutorialStep } from "@/modules/entities"
+import { InventorySchema, PlacedItemType, TutorialStep } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -27,12 +27,18 @@ export enum EventName {
     LoadInventories = "load_inventories",
     // inventory loaded, from React to Phaser
     InventoriesLoaded = "inventories_loaded",
-    
+    // delivering products loaded, from React to Phaser
+    LoadDeliveringProducts = "load_delivering_products",
+    // delivering products loaded, from React to Phaser
+    DeliveringProductsLoaded = "delivering_products_loaded",
+
     // refresh
     RefreshUser = "refresh_user",
     UserRefreshed = "user_refreshed",
     RefreshInventories = "refresh_inventories",
     InventoriesRefreshed = "inventories_refreshed",
+    RefreshDeliveringProducts = "refresh_delivering_products",
+    DeliveringProductsRefreshed = "delivering_products_refreshed",
 
     // open shop
     OpenShop = "open_shop",
@@ -46,6 +52,10 @@ export enum EventName {
     // tutorial events
     OpenTutorial = "open_tutorial",
     CloseTutorial = "close_tutorial",
+
+    // stand
+    UpdateSelectProductModal = "update_select_product_modal",
+    UpdateInputQuantityModal = "update_input_quantity_modal",
 
     // backdrops
     ShowGameplayBackdrop = "show_gameplay_backdrop",
@@ -130,6 +140,9 @@ export enum EventName {
 
     RequestHarvestCrop = "request_harvest_crop",
     HarvestCropCompleted = "harvest_crop_completed",
+
+    RequestUpdateInventoryIndex = "request_update_inventory_index",
+    UpdateInventoryIndexCompleted = "update_inventory_index_completed",
 }
 
 export interface OpenTutorialMessage {
@@ -211,6 +224,8 @@ export enum ModalName {
   Quest = "quest",
   Stand = "stand",
   Neighbors = "neighbors",
+  SelectProduct = "select-product",
+  InputQuantity = "input-quantity",
 }
 
 export interface OpenModalMessage {
@@ -224,4 +239,8 @@ export interface CloseModalMessage {
     // name of the modal to close
     modalName: ModalName
     hideTutorialBackdrop?: boolean
+}
+
+export interface UpdateInputQuantityModalMessage {
+    inventory: InventorySchema
 }

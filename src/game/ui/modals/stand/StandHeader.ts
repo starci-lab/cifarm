@@ -5,20 +5,19 @@ import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { onGameObjectPress } from "../../utils"
 
 export class StandHeader extends ContainerLite {
-    private closeButton: Phaser.GameObjects.Sprite
+    private header: Phaser.GameObjects.Image
+    private closeButton: Phaser.GameObjects.Image
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
 
         // Background header covering the full width
-        const frame = this.scene.add.image(0, 0, BaseAssetKey.ModalStandHeader)
+        this.header = this.scene.add.image(0, 0, BaseAssetKey.ModalStandHeader)
             .setOrigin(0.5, 0)
-            .setDisplaySize(this.width, 250).setDepth(1)
-
-        this.addLocal(frame)
+        this.addLocal(this.header)
 
         this.closeButton = scene.add
-            .sprite(this.width / 2 - 80, 80, BaseAssetKey.ModalInventoryBtnClose)
+            .image(this.header.width/2 - 50, 90, BaseAssetKey.ModalInventoryBtnClose)
             .setOrigin(0.5, 0)
             .setDepth(1)
             .setInteractive()
@@ -31,7 +30,7 @@ export class StandHeader extends ContainerLite {
                     const eventMessage: CloseModalMessage = {
                         modalName: ModalName.Stand,
                     }
-                    EventBus.emit(EventName.OpenModal, eventMessage)
+                    EventBus.emit(EventName.CloseModal, eventMessage)
                 },
             })
         })

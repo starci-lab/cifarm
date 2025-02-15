@@ -2,7 +2,7 @@ import { API_UPDATE_TUTORIAL_SWR_MUTATION, QUERY_USER_SWR } from "@/app/constant
 import { useApiUpdateTutorialSwrMutation, useQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../event-bus"
+import { EventBus, EventName } from "../../event-bus"
 
 export const useUpdateTutorialEffects = () => {
     //authentication useEffect

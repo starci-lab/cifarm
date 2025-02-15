@@ -2,7 +2,7 @@ import { API_BUY_SEEDS_SWR_MUTATION } from "@/app/constants"
 import { useApiBuySeedsSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../event-bus"
+import { EventBus, EventName } from "../../event-bus"
 import { BuySeedsRequest } from "@/modules/axios"
 
 export const useBuySeedsEffects = () => {

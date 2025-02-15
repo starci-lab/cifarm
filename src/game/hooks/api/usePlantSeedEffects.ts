@@ -2,7 +2,7 @@ import { API_PLANT_SEED_SWR_MUTATION } from "@/app/constants"
 import { useApiPlantSeedSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../event-bus"
+import { EventBus, EventName } from "../../event-bus"
 import { PlantSeedRequest } from "@/modules/axios"
 
 export const usePlantSeedEffects = () => {

@@ -1,11 +1,13 @@
-import GridTable from "phaser3-rex-plugins/plugins/gridtable"
 import {
     Buttons,
+    Label,
     NinePatch2,
     OverlapSizer,
     Pinch,
     ScrollablePanel,
     Sizer,
+    GridTable,
+    BadgeLabel
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 // base constructor params for NinePatch2
@@ -59,11 +61,7 @@ export interface ScrollablePanelBaseConstructorParams {
 
 export interface GridTableBaseConstructorParams {
   scene: Phaser.Scene;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  config?: GridTable.IConfig;
+  config?: Partial<GridTable.IConfig>;
 }
 
 export interface ContainerLiteBaseConstructorParams {
@@ -73,4 +71,14 @@ export interface ContainerLiteBaseConstructorParams {
   width?: number;
   height?: number;
   children?: Array<Phaser.GameObjects.GameObject>;
+}
+
+export interface LabelBaseConstructorParams {
+  scene: Phaser.Scene;
+  config?: Label.IConfig;
+}
+
+export interface BadgeLabelBaseConstructorParams {
+  scene: Phaser.Scene;
+  config?: BadgeLabel.IConfig;
 }

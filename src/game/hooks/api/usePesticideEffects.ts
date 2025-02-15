@@ -2,7 +2,7 @@ import { API_USE_PESTICIDE_SWR_MUTATION } from "@/app/constants"
 import { useApiUsePesticideSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../event-bus"
+import { EventBus, EventName } from "../../event-bus"
 import { UsePesticideRequest } from "@/modules/axios"
 
 export const useUsePesticideEffects = () => {

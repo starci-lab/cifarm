@@ -4,12 +4,9 @@ import {
     LeftHorizontalButtons,
     ModalManager,
     RightHorizontalButtons,
-    Toolbar,
     Topbar,
     UIBackdrop,
 } from "../ui"
-import { TutorialManager } from "../ui"
-import { getScreenBottomY, getScreenCenterX } from "../ui/utils"
 
 export class UIScene extends Scene {
     constructor() {
@@ -41,12 +38,12 @@ export class UIScene extends Scene {
 
         new Topbar(this)
 
-        const toolbar = new Toolbar({
-            scene: this,
-            x: getScreenCenterX(this),
-            y: getScreenBottomY(this) - 100
-        })
-        this.add.existing(toolbar)
+        // const toolbar = new Toolbar({
+        //     scene: this,
+        //     x: getScreenCenterX(this),
+        //     y: getScreenBottomY(this) - 100
+        // })
+        // this.add.existing(toolbar)
 
         // add the modal manager
         const modalManager = new ModalManager({
