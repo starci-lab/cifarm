@@ -130,6 +130,9 @@ export enum EventName {
 
     RequestHarvestCrop = "request_harvest_crop",
     HarvestCropCompleted = "harvest_crop_completed",
+
+    RequestUpdateInventoryIndex = "request_update_inventory_index",
+    UpdateInventoryIndexCompleted = "update_inventory_index_completed",
 }
 
 export interface OpenTutorialMessage {

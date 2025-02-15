@@ -1,6 +1,6 @@
 export * from "./auth"
 export * from "./tokens"
-export * from "./profile"
+export * from "./player"
 export * from "./types"
 export * from "./shop"
 export * from "./claim"

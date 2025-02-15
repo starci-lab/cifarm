@@ -2,9 +2,7 @@
 
 import {
     API_AUTHENTICATION_SWR_MUTATION,
-    QUERY_INVENTORIES_SWR,
     QUERY_STATIC_SWR,
-    QUERY_USER_SWR
 } from "@/app/constants"
 import {
     PLACED_ITEMS_SYNCED_EVENT,
@@ -13,7 +11,6 @@ import {
     useGameplayIo,
     useQueryStaticSwr,
 } from "@/hooks"
-import { useQueryInventoriesSwr, useQueryUserSwr } from "@/hooks/swr/graphql"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { setAuthenticated, useAppDispatch } from "@/redux"
 import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
@@ -30,28 +27,16 @@ export const Game: FC = () => {
     const { swr: staticSwr } =
     useSingletonHook<ReturnType<typeof useQueryStaticSwr>>(QUERY_STATIC_SWR)
 
-    // userUserData useEffect
-    const { swr: userSwr } = useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
-    //inventoriesSwr useEffect
-    const { swr: inventoriesSwr } = useSingletonHook<ReturnType<typeof useQueryInventoriesSwr>>(QUERY_INVENTORIES_SWR)
-
     useEffect(() => {
         EventBus.on(EventName.LoadStaticData, async () => {
             const data = await staticSwr.mutate()
             EventBus.emit(EventName.StaticDataLoaded, data)
         })
-
-        EventBus.on(EventName.LoadInventories, async () => {
-            const data = await inventoriesSwr.mutate()
-            EventBus.emit(EventName.InventoriesLoaded, data?.inventories.data)
-        })
-
         return () => {
             //remove listeners
             EventBus.removeListener(EventName.LoadStaticData)
-            EventBus.removeListener(EventName.LoadInventories)
         }
-    }, [staticSwr, userSwr, inventoriesSwr])
+    }, [staticSwr])
 
     //authentication useEffect
     const { swrMutation: authenticationSwrMutation } = useSingletonHook<

@@ -12,7 +12,7 @@ export class InventoryModal extends BaseSizer {
         // create the inventory storage
         this.inventoryContent = new InventoryContent({
             scene: this.scene,
-            y: getScreenBottomY(this.scene) - 100,
+            y: getScreenBottomY(this.scene),
             x: getScreenCenterX(this.scene),
         })
         this.scene.add.existing(this.inventoryContent)

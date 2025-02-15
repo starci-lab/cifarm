@@ -1,1 +1,1 @@
-export * from "./useUserEffects"
+export * from "./useGraphQLEffects"

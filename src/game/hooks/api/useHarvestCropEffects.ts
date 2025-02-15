@@ -2,7 +2,7 @@ import { API_HARVEST_CROP_SWR_MUTATION } from "@/app/constants"
 import { useApiHarvestCropSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../event-bus"
+import { EventBus, EventName } from "../../event-bus"
 import { HarvestCropRequest } from "@/modules/axios"
 
 export const useHarvestCropEffects = () => {

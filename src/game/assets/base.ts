@@ -108,6 +108,7 @@ export enum BaseAssetKey {
     //Common
     ModalCommonBackground = "modal-common-background",
     ModalCommonFrame = "modal-common-frame",
+    ModalCommonThumb = "modal-common-thumb",
     ModalCommonQuantityFrame = "modal-common-quantity-frame",
 
     //Topbar
@@ -257,6 +258,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalCommonBackground]: "modals/common/background.png",
     [BaseAssetKey.ModalCommonFrame]: "modals/common/frame.png",
     [BaseAssetKey.ModalCommonQuantityFrame]: "modals/common/quantity-frame.png",
+    [BaseAssetKey.ModalCommonThumb]: "modals/common/thumb.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",
