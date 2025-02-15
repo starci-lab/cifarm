@@ -91,6 +91,7 @@ export enum BaseAssetKey {
     ModalStandWhiteStar = "modal-stand-white-star",
     ModalStandPurpleStar = "modal-stand-purple-star",
     ModalStandShadow = "modal-stand-shadow",
+    ModalStandAddButton = "modal-stand-add-button",
 
     //Neighbors
     ModalNeighborsWall = "modal-neighbors-wall",
@@ -106,10 +107,12 @@ export enum BaseAssetKey {
     ModalNeighborsIconHome = "modal-neighbors-icon-home",
 
     //Common
-    ModalCommonBackground = "modal-common-background",
+    ModalCommonBackground1 = "modal-common-background-1",
+    ModalCommonBackground2 = "modal-common-background-2",
     ModalCommonFrame = "modal-common-frame",
     ModalCommonThumb = "modal-common-thumb",
     ModalCommonQuantityFrame = "modal-common-quantity-frame",
+    ModalCommonRibbon = "modal-common-ribbon",
 
     //Topbar
     TopbarHeader = "topbar-header",
@@ -223,6 +226,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalStandWhiteStar]: "modals/stand/star-white.png",
     [BaseAssetKey.ModalStandPurpleStar]: "modals/stand/star-purple.png",
     [BaseAssetKey.ModalStandShadow]: "modals/stand/shadow.png",
+    [BaseAssetKey.ModalStandAddButton]: "modals/stand/add-button.png",
     //Neighbors
     [BaseAssetKey.ModalNeighborsWall]: "modals/neighbors/wall.png",
     [BaseAssetKey.ModalNeighborsAvatarFriends]: "modals/neighbors/ava-friends.png",
@@ -255,10 +259,12 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.PressHereArrow]: "press-here-arrow.png",
 
     //Common
-    [BaseAssetKey.ModalCommonBackground]: "modals/common/background.png",
+    [BaseAssetKey.ModalCommonBackground1]: "modals/common/background-1.png",
+    [BaseAssetKey.ModalCommonBackground2]: "modals/common/background-2.png",
     [BaseAssetKey.ModalCommonFrame]: "modals/common/frame.png",
     [BaseAssetKey.ModalCommonQuantityFrame]: "modals/common/quantity-frame.png",
     [BaseAssetKey.ModalCommonThumb]: "modals/common/thumb.png",
+    [BaseAssetKey.ModalCommonRibbon]: "modals/common/ribbon.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",

@@ -4,12 +4,9 @@ import {
     LeftHorizontalButtons,
     ModalManager,
     RightHorizontalButtons,
-    Toolbar,
     Topbar,
     UIBackdrop,
 } from "../ui"
-import { TutorialManager } from "../ui"
-import { getScreenBottomY, getScreenCenterX } from "../ui/utils"
 
 export class UIScene extends Scene {
     constructor() {

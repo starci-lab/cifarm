@@ -21,6 +21,7 @@ import {
     useEnterPinForm,
     useGameplayIo,
     useNativeCoinGeckoSWR,
+    useQueryDeliveringProductsSwr,
     useQueryInventoriesSwr,
     useQueryStaticSwr,
     useQueryUserSwr,
@@ -57,6 +58,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             QUERY_USER_SWR: useQueryUserSwr(),
                             QUERY_STATIC_SWR: useQueryStaticSwr(),
                             QUERY_INVENTORIES_SWR: useQueryInventoriesSwr(),
+                            QUERY_DELIVERING_PRODUCTS_SWR: useQueryDeliveringProductsSwr(),
                             //io
                             GAMEPLAY_IO: useGameplayIo()
                         }}

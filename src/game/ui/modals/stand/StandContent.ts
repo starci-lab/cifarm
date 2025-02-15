@@ -1,101 +1,117 @@
-import { BaseAssetKey } from "@/game/assets"
-import { ContainerLiteBaseConstructorParams } from "@/game/types"
+import { BaseAssetKey } from "../../../assets"
+import { CacheKey, SizerBaseConstructorParams } from "../../../types"
+import { IPaginatedResponse } from "@/modules/apollo/types"
 import { DeliveringProductSchema } from "@/modules/entities"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { onGameObjectPress } from "../../utils"
+import { EventBus, EventName, ModalName, OpenModalMessage } from "../../../event-bus"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
-export class StandContent extends ContainerLite {
-    private gridTable: GridTable | undefined
-    private deliveringProduct: Array<DeliveringProductSchema> = []
+const ROW_COUNT = 3
+const COLUMN_COUNT = 3
+const CELL_COUNT = ROW_COUNT * COLUMN_COUNT
 
-    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
-        super(scene, x, y, width, height, children)
-        this.createStandGrid()
+export class StandContent extends BaseSizer {
+    private gridSizer: GridSizer | undefined
+    private deliveringProducts: Array<DeliveringProductSchema> = []
+
+    constructor({
+        scene,
+        x,
+        y,
+        config,
+        height,
+        width
+    }: SizerBaseConstructorParams) {
+        super(scene, x, y, height, width, config) 
+
+        const { data } = this.scene.cache.obj.get(
+            CacheKey.DeliveringProducts
+        ) as IPaginatedResponse<DeliveringProductSchema>
+        this.deliveringProducts = data
+        //this.createStandGrid()
+
+        this.updateStandGridSizer()
     }
 
-    private createStandGrid() {
-        const gridWidth = 800 // Fixed width
-        const gridHeight = 800 // Fixed height
+    // get the items
+    private getItems = (): Array<DeliveringProductSchema | null> => {
+        const result: Array<DeliveringProductSchema | null> = []
+        for (let i = 0; i < CELL_COUNT; i++) {
+            if (this.deliveringProducts[i]) {
+                result.push(this.deliveringProducts[i])
+            } else {
+                result.push(null)
+            }
+        }
+        return result
+    }
 
-        // Sample Item Data
-        const itemList = [
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Wheat Seed", onPress: () => console.log("Clicked on Wheat Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Corn Seed", onPress: () => console.log("Clicked on Corn Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Rice Seed", onPress: () => console.log("Clicked on Rice Seed") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Apple", onPress: () => console.log("Clicked on Apple") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Orange", onPress: () => console.log("Clicked on Orange") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Banana", onPress: () => console.log("Clicked on Banana") },
-            { assetKey: BaseAssetKey.ModalInventoryIconProduct, title: "Grapes", onPress: () => console.log("Clicked on Grapes") },
-        ]
-
+    private updateStandGridSizer() {
+        const items = this.getItems()
+        const background = this.scene.add.image(0, 0, BaseAssetKey.ModalStand)
         // Create Fixed Grid Table
-        this.gridTable = this.scene.rexUI.add.gridTable({
-            x: 0,
-            y: 0,
-            width: gridWidth,
-            height: gridHeight,
-            background: this.scene.add.rectangle(0, 0, gridWidth, gridHeight, 0x222222, 0),
-            table: {
-                columns: 3, // Fixed 3 columns
-                cellWidth: 300, // Fixed cell size
-                cellHeight: 300, // Fixed cell size
-                mask: false, // Disable scroll/masking
-                interactive: false // No user interaction with table scrolling
-            },
-            space: {
-                left: 20, right: 20, top: 20, bottom: 20, table: 20
-            },
-            createCellContainerCallback: (cell) => {
-                return this.createItemCard(itemList[cell.index])
-            },
-            items: itemList,
-        }).layout().setOrigin(0.5, 0.5)
-
-        this.addLocal(this.gridTable)
-    }
-
-    private createItemCard({ assetKey, title, onPress }: CreateItemCardParams) {
-        // Shadow (Behind the icon)
-        const shadow = this.scene.add.image(0, 0, BaseAssetKey.ModalStandShadow)
-            .setPosition(0, 0)
-            .setOrigin(0.5, 0.5)
-            .setScale(1) 
-    
-        // Icon
-        const icon = this.scene.add.image(0, 0, assetKey)
-            .setOrigin(1, 1)
-            .setScale(2)
-    
-        // Tag (Below the icon)
-        const tag = this.scene.add.image(0, 0, BaseAssetKey.ModalStandTag)
-            .setOrigin(0.5, 0)
-            .setScale(1)
-    
-        // Create a container that wraps all elements
-        const container = this.scene.rexUI.add.sizer({
-            width: 150,
-            height: 180, // Adjust height to accommodate tag
-            orientation: "vertical",
-            space: { item: 10 }
-        })
-            .add(shadow, { align: "center", expand: false,
-                offsetY: 170,
-            }) // Shadow behind
-            .add(icon, { align: "center" }) // Icon in center
-            .add(tag, { align: "center", expand: false, padding: { top: 5 } }) // Tag below icon
-            .setInteractive() // Make the whole container interactive
-            .on("pointerdown", () => {
-                onPress()
+        this.gridSizer = this.scene.rexUI.add
+            .gridSizer({
+                width: background.width,
+                height: background.height,
+                column: COLUMN_COUNT,
+                row: ROW_COUNT,
+                columnProportions: 1,
+                rowProportions: 1,
+                createCellContainerCallback: (scene, x, y) => {
+                    const item = items[y * COLUMN_COUNT + x]
+                    const container = scene.rexUI.add.container(0, 0)
+                    const tag = scene.add
+                        .image(0, 0, BaseAssetKey.ModalStandTag)
+                        .setOrigin(0.5, 0)
+                    container.addLocal(tag)
+                    // if item is existed
+                    if (item) {
+                        // create the item card
+                        return this.createProductBadgeLabel(item)
+                    } else {
+                        // no item, create the add button
+                        const addButton = this.createAddButton().setOrigin(0.5, 1)
+                        container.addLocal(addButton)
+                    }
+                    return container
+                },
             })
-    
-        return container
+            .addBackground(background)
+            .layout()
+            .setOrigin(0.5, 0.5)
+        this.addLocal(this.gridSizer)
     }
-    
-    
+
+    private createAddButton() {
+        const image = this.scene.add.image(0, 0, BaseAssetKey.ModalStandAddButton)
+        image.setInteractive()
+        image.on("pointerdown", () => {
+            onGameObjectPress({
+                gameObject: image,
+                scene: this.scene,
+                onPress: () => {
+                    // open the select product modal
+                    const eventMessage: OpenModalMessage = {
+                        modalName: ModalName.SelectProduct,
+                    }
+                    EventBus.emit(EventName.OpenModal, eventMessage)
+                    this.scene.events.emit(EventName.UpdateSelectProductModal)
+                },
+            })
+        })
+        return image
+    }
+
+    private createProductBadgeLabel(product: DeliveringProductSchema) {
+        const label = this.scene.add.text(0, 0, "123")
+        return label
+    }
 }
 
 export interface CreateItemCardParams {
-    assetKey: string;
-    title: string;
-    onPress: () => void;
+  assetKey: string;
+  title: string;
+  onPress: () => void;
 }

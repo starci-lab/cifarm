@@ -13,7 +13,7 @@ export const useInventoriesEffects = () => {
         EventBus.on(EventName.LoadInventories, async () => {
             //load user data
             const data = await swr.mutate()
-            EventBus.emit(EventName.InventoriesLoaded, data?.inventories.data)
+            EventBus.emit(EventName.InventoriesLoaded, data?.inventories)
         })
 
         return () => {
@@ -26,7 +26,7 @@ export const useInventoriesEffects = () => {
         EventBus.on(EventName.RefreshInventories, async () => {
             //load user data
             const data = await swr.mutate()
-            EventBus.emit(EventName.InventoriesRefreshed, data?.inventories.data)
+            EventBus.emit(EventName.InventoriesRefreshed, data?.inventories)
         })
 
         return () => {

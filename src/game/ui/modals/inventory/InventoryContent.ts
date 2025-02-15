@@ -7,14 +7,12 @@ import {
 } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
-    BadgeLabel,
     GridSizer,
-    GridTable,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import { getStorageInventories, getToolbarInventories } from "@/game/queries"
-import { BaseText } from "../../elements"
+import { BaseGridTable, BaseGridTableCell, BaseGridTableFrame, getCellInfo, CellInfo } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { UpdateInventoryIndexRequest } from "@/modules/axios"
 import {
@@ -24,31 +22,26 @@ import {
     ModalName,
 } from "@/game/event-bus"
 import { onGameObjectPress } from "../../utils"
+import { IPaginatedResponse } from "@/modules/apollo/types"
 
 export enum InventoryStorageTab {
   All = "all",
   Seeds = "seeds",
 }
 
-export const INVENTORY_GRID_TABLE_HEIGHT = 650
-export const CELL_SPACING = 20
-export const LEFT_MARGIN = 20
-export const TOOLBAR_COLUMN_COUNT = 4
-export const TOOLBAR_ROW_COUNT = 2
-export const TOOLBAR_CELL_COUNT = TOOLBAR_COLUMN_COUNT * TOOLBAR_ROW_COUNT
-export const CELL_BASE_SIZE = 180
-export const TOOLBAR_CELL_SIZE = 100
-export const STORAGE_CELL_SCALE = 0.8
-export const STORAGE_COLUMN_COUNT = 4
+const TOOLBAR_COLUMN_COUNT = 4
+const TOOLBAR_ROW_COUNT = 2
+const TOOLBAR_CELL_COUNT = TOOLBAR_COLUMN_COUNT * TOOLBAR_ROW_COUNT
+const TOOLBAR_CELL_SIZE = 100
 
 // part of the inventory that holds the inventory items
 export class InventoryContent extends BaseSizer {
     private background: Phaser.GameObjects.Image
     private closeButton: Phaser.GameObjects.Image
     // grid storage & toolbar
-    private storageGridTable: GridTable | undefined
+    private storageGridTable: BaseGridTable<InventorySchema | null> | undefined
     private toolbarGridSizer: GridSizer | undefined
-
+    private cellInfo: CellInfo
     // zones
     private toolbarZones: Array<Zone> = []
 
@@ -57,10 +50,6 @@ export class InventoryContent extends BaseSizer {
     private inventoryTypes: Array<InventoryTypeSchema> = []
 
     private defaultInfo: DefaultInfo
-
-    private gridWidth: number
-    private cellWidth: number
-    private cellHeight: number
 
     private selectedTab = InventoryStorageTab.All
 
@@ -73,19 +62,14 @@ export class InventoryContent extends BaseSizer {
             .setOrigin(0.5, 1)
         this.addLocal(this.background)
         // Load inventories from cache
-        this.inventories = this.scene.cache.obj.get(
+        const { data } = this.scene.cache.obj.get(
             CacheKey.Inventories
-        ) as Array<InventorySchema>
-        this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
+        ) as IPaginatedResponse<InventorySchema>
+        this.inventories = data
 
-        // get cell width and height
-        const frameSourceImage = this.scene.textures
-            .get(BaseAssetKey.ModalCommonFrame)
-            .getSourceImage()
-        this.cellWidth = frameSourceImage.width * STORAGE_CELL_SCALE + CELL_SPACING
-        this.cellHeight =
-      frameSourceImage.height * STORAGE_CELL_SCALE + CELL_SPACING
-        this.gridWidth = this.cellWidth * STORAGE_COLUMN_COUNT + LEFT_MARGIN
+        this.cellInfo = getCellInfo(this.scene)
+
+        this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
         this.closeButton = this.scene.add
             .image(
@@ -113,46 +97,44 @@ export class InventoryContent extends BaseSizer {
         this.updateStorageGridTable()
         this.updateToolbarGridSizer()
 
+        EventBus.on(
+            EventName.InventoriesRefreshed,
+            ({ data }: IPaginatedResponse<InventorySchema>) => {
+                this.inventories = data
+                this.updateStorageGridTable()
+                this.updateToolbarGridSizer()
+            }
+        )
+
     //this.updateToolbar()
     }
 
     private updateStorageGridTable() {
+        const items = this.getStorageItems()
         if (this.storageGridTable) {
-            this.storageGridTable.setItems(this.getStorageItems())
+            this.storageGridTable.setItems(items)
             this.storageGridTable.layout()
             return
         }
         // create number of
-        const storageGridTable = this.scene.rexUI.add
-            .gridTable({
-                y: -800,
-                originY: 1,
-                width: this.gridWidth,
-                height: INVENTORY_GRID_TABLE_HEIGHT,
-                table: {
-                    columns: STORAGE_COLUMN_COUNT, // Fixed 3 columns
-                    cellHeight: this.cellWidth, // Adjusted height per row
-                    cellWidth: this.cellHeight, // Adjusted width per column
-                    mask: { padding: 2 }, // Enable scrolling
-                    interactive: true, // Allow scrolling
-                },
-                slider: {
-                    thumb: this.scene.add.image(0, 0, BaseAssetKey.ModalCommonThumb),
-                },
-                mouseWheelScroller: { focus: false, speed: 2 },
-
+        this.storageGridTable = new BaseGridTable<InventorySchema | null>({
+            baseParams: {
+                scene: this.scene,
+                config: {
+                    x: 0,
+                    y: -800,
+                    originY: 1,
+                }
+            },
+            options: {
                 createCellContainerCallback: (cell, cellContainer) => {
-                    const background = this.scene.add.sprite(
-                        0,
-                        0,
-                        BaseAssetKey.ModalCommonFrame
-                    )
+                    const background = new BaseGridTableFrame({ scene: this.scene, x: 0, y: 0 })
+                    this.scene.add.existing(background)
                     if (cellContainer === null) {
-                        const badgeLabel = this.createBadgeLabel({
-                            inventory: cell.item as InventorySchema | null,
-                            width: background.width,
-                            height: background.height,
-                        })
+                        let gridTableCell: BaseGridTableCell | undefined
+                        if (cell.item) {
+                            gridTableCell = this.createCell(cell.item as InventorySchema)
+                        }
                         if (!cellContainer) {
                             cellContainer = this.scene.rexUI.add.sizer({ orientation: "y" })
                             const _cellContainer = cellContainer as Sizer
@@ -162,19 +144,16 @@ export class InventoryContent extends BaseSizer {
                                         width: background.width,
                                         height: background.height,
                                         background,
-                                        icon: badgeLabel,
+                                        icon: gridTableCell,
                                     })
-                                    .setScale(STORAGE_CELL_SCALE)
+                                    .setScale(this.cellInfo.scale)
                                     .setDepth(
                                         calculateUiDepth({
                                             layer: UILayer.Modal,
                                             layerDepth: 1,
                                             additionalDepth: 1,
                                         })
-                                    ),
-                                {
-                                    key: "main",
-                                }
+                                    )
                             )
                         }
                         //add separator
@@ -182,12 +161,13 @@ export class InventoryContent extends BaseSizer {
                     }
                     return cellContainer
                 },
-                items: this.getStorageItems(),
-            })
-            .layout()
-        this.storageGridTable = storageGridTable
-        this.addLocal(storageGridTable)
-        return storageGridTable
+                items,
+            }
+        }).layout()
+
+        this.scene.add.existing(this.storageGridTable)
+        this.addLocal(this.storageGridTable)
+        return this.storageGridTable
     }
 
     private updateToolbarGridSizer() {
@@ -210,16 +190,16 @@ export class InventoryContent extends BaseSizer {
                 rowProportions: 1,
                 createCellContainerCallback: (scene, x, y, config) => {
                     config.expand = true
-                    const badgeLabel = this.createBadgeLabel({
-                        inventory: items[y * TOOLBAR_COLUMN_COUNT + x],
-                        width: CELL_BASE_SIZE,
-                        height: CELL_BASE_SIZE,
-                    })
+                    let gridTableCell: BaseGridTableCell | undefined
+                    const inventory = items[y * TOOLBAR_COLUMN_COUNT + x]
+                    if (inventory) {
+                        gridTableCell = this.createCell(inventory)
+                    }
                     const label = scene.rexUI.add
                         .label({
-                            width: CELL_BASE_SIZE,
-                            height: CELL_BASE_SIZE,
-                            icon: badgeLabel,
+                            width: this.cellInfo.cellWidth,
+                            height: this.cellInfo.cellHeight,
+                            icon: gridTableCell,
                         })
                         .setDepth(
                             calculateUiDepth({
@@ -232,7 +212,7 @@ export class InventoryContent extends BaseSizer {
                         index: y * TOOLBAR_COLUMN_COUNT + x,
                         object: label,
                     })
-                    label.setScale(TOOLBAR_CELL_SIZE / CELL_BASE_SIZE)
+                    label.setScale(TOOLBAR_CELL_SIZE / this.cellInfo.cellWidth)
                     return label
                 },
             })
@@ -242,157 +222,120 @@ export class InventoryContent extends BaseSizer {
         return gridSizer
     }
 
-    private createBadgeLabel({
-        height,
-        inventory,
-        width,
-        scale = 1.2,
-    }: CreateBadgeLabelParams) {
-        let badgeLabel: BadgeLabel | undefined
-        if (inventory) {
-            const inventoryType = this.inventoryTypes.find(
-                (inventoryType) => inventoryType.id === inventory.inventoryType
+    private createCell(inventory: InventorySchema) {
+        const inventoryType = this.inventoryTypes.find(
+            (inventoryType) => inventoryType.id === inventory.inventoryType
+        )
+        if (!inventoryType) {
+            throw new Error(
+                `Inventory type not found for inventory id: ${inventory.inventoryType}`
             )
-            if (!inventoryType) {
-                throw new Error(
-                    `Inventory type not found for inventory id: ${inventory.inventoryType}`
-                )
+        }
+        const {
+            textureConfig: { key },
+        } = inventoryTypeAssetMap[inventoryType.displayId]
+            
+        const cell = new BaseGridTableCell({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                assetKey: key,
+                quantity: inventory.quantity,
+                showBadge: inventoryType.stackable,
+            },
+        })
+        this.scene.add.existing(cell)
+        cell.setInteractive()
+
+        // allow the drag
+        this.scene.rexUI.add.drag(cell)
+        let original: Phaser.Geom.Point
+
+        // set depth
+        cell.on("dragstart", () => {
+            if (!cell) {
+                throw new Error("Badge label not found")
             }
-            const {
-                textureConfig: { key },
-            } = inventoryTypeAssetMap[inventoryType.displayId]
-            // create the icon
-            const icon = this.scene.add.image(0, 0, key)
-            icon.setDisplaySize(icon.width * scale, icon.height * scale)
-            badgeLabel = this.scene.rexUI.add
-                .badgeLabel({
-                    center: icon,
-                    width,
-                    height,
-                    rightBottom: inventoryType.stackable
-                        ? this.createBadge(inventory.quantity)
-                        : undefined,
+            original = cell.getCenter()
+            cell.setDepth(
+                calculateUiDepth({
+                    layer: UILayer.Modal,
+                    layerDepth: 1,
+                    additionalDepth: 3,
                 })
+            )
+        })
+        cell.on("dragend", (pointer: Phaser.Input.Pointer) => {
+            if (!cell) {
+                throw new Error("Badge label not found")
+            }
+            cell.setDepth(
+                calculateUiDepth({
+                    layer: UILayer.Modal,
+                    layerDepth: 1,
+                    additionalDepth: 1,
+                })
+            )
 
-            // allow the drag
-            this.scene.rexUI.add.drag(badgeLabel)
-            let original: Phaser.Geom.Point
+            // index of the inventory
+            let index = -1
+            let inToolbar = true
 
-            // set depth
-            badgeLabel.on("dragstart", () => {
-                if (!badgeLabel) {
-                    throw new Error("Badge label not found")
+            // check if the badge label is inside the toolbar
+            const zone = this.toolbarZones.find((zone) =>
+                (zone.object as ContainerLite)
+                    .getBounds()
+                    .contains(pointer.x, pointer.y)
+            )
+            if (zone) {
+                //console.log(zone)
+                // return the badge label to the original position
+                index = zone.index
+            } else {
+                if (!this.storageGridTable) {
+                    throw new Error("Storage grid table not found")
                 }
-                original = badgeLabel.getCenter()
-                badgeLabel.setDepth(
-                    calculateUiDepth({
-                        layer: UILayer.Modal,
-                        layerDepth: 1,
-                        additionalDepth: 3,
-                    })
-                )
-            })
-            badgeLabel.on("dragend", (pointer: Phaser.Input.Pointer) => {
-                if (!badgeLabel) {
-                    throw new Error("Badge label not found")
-                }
-                badgeLabel.setDepth(
-                    calculateUiDepth({
-                        layer: UILayer.Modal,
-                        layerDepth: 1,
-                        additionalDepth: 1,
-                    })
-                )
-
-                // index of the inventory
-                let index = -1
-                let inToolbar = true
-
-                // check if the badge label is inside the toolbar
-                const zone = this.toolbarZones.find((zone) =>
-                    (zone.object as ContainerLite)
-                        .getBounds()
-                        .contains(pointer.x, pointer.y)
-                )
-                if (zone) {
-                    //console.log(zone)
-                    // return the badge label to the original position
-                    index = zone.index
-                } else {
-                    if (!this.storageGridTable) {
-                        throw new Error("Storage grid table not found")
-                    }
-                    for (let i = 0; i < this.storageGridTable.items.length; i++) {
-                        const cellContainer = this.storageGridTable.getCellContainer(i)
-                        if (
-                            cellContainer &&
+                for (let i = 0; i < this.storageGridTable.items.length; i++) {
+                    const cellContainer = this.storageGridTable.getCellContainer(i)
+                    if (
+                        cellContainer &&
               (cellContainer as ContainerLite)
                   .getBounds()
                   .contains(pointer.x, pointer.y)
-                        ) {
-                            index = i
-                            inToolbar = false
-                            break
-                        }
+                    ) {
+                        index = i
+                        inToolbar = false
+                        break
                     }
                 }
+            }
 
-                if (index === -1) {
-                    //console.log(zone)
-                    // return the badge label to the original position
-                    badgeLabel.setPosition(original.x, original.y)
-                    return
-                }
+            if (index === -1) {
+                //console.log(zone)
+                // return the badge label to the original position
+                cell.setPosition(original.x, original.y)
+                return
+            }
 
-                // call api to move the inventory
-                const eventMessage: UpdateInventoryIndexRequest = {
-                    index,
-                    inToolbar,
-                    inventoryId: inventory.id,
+            // call api to move the inventory
+            const eventMessage: UpdateInventoryIndexRequest = {
+                index,
+                inToolbar,
+                inventoryId: inventory.id,
+            }
+            EventBus.once(EventName.UpdateInventoryIndexCompleted, () => {
+                if (!cell) {
+                    throw new Error("Badge label not found")
                 }
-                EventBus.once(EventName.UpdateInventoryIndexCompleted, () => {
-                    EventBus.once(
-                        EventName.InventoriesRefreshed,
-                        (inventories: Array<InventorySchema>) => {
-                            console.log("called")
-                            this.inventories = inventories
-                            if (!badgeLabel) {
-                                throw new Error("Badge label not found")
-                            }
-                            // distroy the badge label
-                            const parent = badgeLabel.getParent()
-                            parent.remove(badgeLabel, true)
-                            this.updateStorageGridTable()
-                            this.updateToolbarGridSizer()
-                        }
-                    )
-                    EventBus.emit(EventName.RefreshInventories)
-                })
-                EventBus.emit(EventName.RequestUpdateInventoryIndex, eventMessage)
+                // distroy the badge label
+                const parent = cell.getParent()
+                parent.remove(cell, true)
+                EventBus.emit(EventName.RefreshInventories)
             })
-        }
-        return badgeLabel
-    }
-
-    private createBadge(quantity: number) {
-        const text = new BaseText({
-            baseParams: {
-                scene: this.scene,
-                text: quantity.toString(),
-                x: 0,
-                y: 0,
-                style: {
-                    padding: {
-                        right: 20,
-                        bottom: 20,
-                    },
-                },
-            },
-            options: {
-                enableStroke: true,
-            },
+            EventBus.emit(EventName.RequestUpdateInventoryIndex, eventMessage)
         })
-        return this.scene.add.existing(text)
+        return cell
     }
 
     private getStorageItems() {
@@ -428,13 +371,6 @@ export class InventoryContent extends BaseSizer {
         }
         return result
     }
-}
-
-export interface CreateBadgeLabelParams {
-  inventory: InventorySchema | null;
-  width: number;
-  height: number;
-  scale?: number;
 }
 
 interface Zone {
