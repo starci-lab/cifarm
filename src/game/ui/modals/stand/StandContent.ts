@@ -144,7 +144,7 @@ export class StandContent extends BaseSizer {
                 this.scene.cache.obj.add(CacheKey.DeliveryIndex, index)
             }
         })
-        addButton.setPosition(0, -addButton.height / 2)
+        addButton.setPosition(0, -addButton.height / 2 - 10)
         return addButton
     }
 
