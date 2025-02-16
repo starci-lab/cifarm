@@ -51,9 +51,9 @@ export class SelectProductContent extends BaseSizer {
     }
 
     private updateGridTable() {
-        console.log("called")
         const items = getProductInventories({ scene: this.scene })
         if (this.gridTable) {
+            console.log(items)
             this.gridTable.setItems(items)
             this.gridTable.layout()
             return

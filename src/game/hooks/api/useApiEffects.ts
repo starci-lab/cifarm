@@ -8,6 +8,7 @@ import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
 import { useUpdateTutorialEffects } from "./useUpdateTutorialEffects"
 import { useWaterEffects } from "./useWaterEffects"
 import { useDeliverProductEffects } from "./useDeliverProductEffects"
+import { useRetainProductEffects } from "./useRetainProductEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -20,4 +21,5 @@ export const useApiEffects = () => {
     useHarvestCropEffects()
     useMoveInventoryEffects()
     useDeliverProductEffects()
+    useRetainProductEffects()
 }

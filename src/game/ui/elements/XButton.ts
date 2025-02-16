@@ -29,7 +29,7 @@ export class XButton extends Label {
             height: height ?? icon.height,
             icon
         })
-        this.setInteractive().on("pointerdown", () => {
+        this.layout().setInteractive().on("pointerdown", () => {
             onGameObjectPress({
                 gameObject: this,
                 onPress,

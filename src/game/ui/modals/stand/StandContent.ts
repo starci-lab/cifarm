@@ -9,6 +9,8 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "@/game/queries"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { BaseText, XButton } from "../../elements"
+import { RetainProductRequest } from "@/modules/axios"
+import { SCALE_TIME } from "../../../constants"
 
 const ROW_COUNT = 3
 const COLUMN_COUNT = 3
@@ -135,13 +137,14 @@ export class StandContent extends BaseSizer {
     private createAddButton(index: number) {
         const addButton = this.createAddButtonLabel({
             onPress: () => {
+                this.scene.cache.obj.add(CacheKey.DeliveryIndex, index)
+                this.scene.events.emit(EventName.UpdateSelectProductModal)
                 // open the select product modal
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.SelectProduct,
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
-                this.scene.events.emit(EventName.UpdateSelectProductModal)
-                this.scene.cache.obj.add(CacheKey.DeliveryIndex, index)
+                // wait until the modal is scaled
             }
         })
         addButton.setPosition(0, -addButton.height / 2 - 10)
@@ -171,9 +174,17 @@ export class StandContent extends BaseSizer {
             options: {
                 onPress: () => {
                     // call retain method
+                    EventBus.once(EventName.RetainProductCompleted, () => {
+                        EventBus.emit(EventName.RefreshInventories)
+                    })
+                    const eventName: RetainProductRequest = {
+                        inventoryId: inventory.id
+                    }
+                    EventBus.emit(EventName.RequestRetainProduct, eventName)
                 }
             }
         })
+        this.scene.add.existing(xButton)
         const xButtonContainer = this.scene.rexUI.add.container(0, 0).addLocal(xButton.setPosition(20, -20))
 
         const addButton = this.createAddButtonLabel({
@@ -204,7 +215,6 @@ export class StandContent extends BaseSizer {
             width: background.width * percentWidth,
             height: background.height * percentHeight,
             background,
-            align: "center",
         }).layout()
         label.setInteractive().on("pointerdown", () => {
             onGameObjectPress({

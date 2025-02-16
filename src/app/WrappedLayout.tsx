@@ -25,6 +25,7 @@ import {
     useQueryUserSwr,
     useApiMoveInventorySwrMutation,
     useApiDeliverProductSwrMutation,
+    useApiRetainProductSwrMutation,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -56,6 +57,8 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_HARVEST_CROP_SWR_MUTATION: useApiHarvestCropSwrMutation(),
                             API_MOVE_INVENTORY_SWR_MUTATION: useApiMoveInventorySwrMutation(),
                             API_DELIVER_PRODUCT_SWR_MUTATION: useApiDeliverProductSwrMutation(),
+                            API_RETAIN_PRODUCT_SWR_MUTATION: useApiRetainProductSwrMutation(),
+
                             QUERY_USER_SWR: useQueryUserSwr(),
                             QUERY_STATIC_SWR: useQueryStaticSwr(),
                             QUERY_INVENTORIES_SWR: useQueryInventoriesSwr(),
