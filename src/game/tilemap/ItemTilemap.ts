@@ -73,7 +73,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                 key: value.textureConfig.key,
                 ...value.tilesetConfig,
             })
-            console.log(value)
+            console.log({
+                key: value.textureConfig.key,
+                ...value.tilesetConfig,
+            })
         }
     }
 
@@ -93,6 +96,10 @@ export abstract class ItemTilemap extends GroundTilemap {
         const previousPlacedItems: Array<PlacedItemSchema> = previous.placedItems
 
         const { placedItems } = current
+
+        console.log("uytest: ", previous)
+        console.log("uytest: ", current)
+
 
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
@@ -214,9 +221,10 @@ export abstract class ItemTilemap extends GroundTilemap {
             tileY: placedItem.y,
             layer: this.groundLayer,
         })
+        console.log("uytest: ", placedItem.x, placedItem.y, tile, placedItem)
         
-        // console.log("uytest: ", placedItem.x, placedItem.y, tile, placedItem)
         if (!tile) {
+            console.log("placedItem", placedItem)
             throw new Error("Tile not found")
         }
 

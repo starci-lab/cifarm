@@ -285,9 +285,7 @@ export class InputTilemap extends ItemTilemap {
         if (this.placingInProgress) {
             const { worldX, worldY } = this.scene.input.activePointer
 
-            console.log("active pointer", worldX, worldY)
             const tile = this.getTileAtWorldXY(worldX, worldY)
-            console.log("hehehe", tile)
             // do nothing if tile is not found
             if (!tile) {
                 return
@@ -317,7 +315,6 @@ export class InputTilemap extends ItemTilemap {
         // if temporary place item object is already created
         if (this.temporaryPlaceItemObject) {
             // update the temporary place item object position
-            console.log("Updating temporary place item object position", tile.x, tile.y)
             const position = this.tileToWorldXY(tile.x, tile.y)
             if (!position) {
                 throw new Error("Position not found")
@@ -393,7 +390,6 @@ export class InputTilemap extends ItemTilemap {
         )
         this.scene.add.existing(this.placementPopup)
 
-        console.log("placementPopup set", this.placementPopup)
     }
 
     private handlePlaced() {
@@ -405,7 +401,6 @@ export class InputTilemap extends ItemTilemap {
         const { worldX, worldY } = this.scene.input.activePointer
 
         const tileWorld = this.getTileAtWorldXY(worldX, worldY)
-        console.log("Tile world", tileWorld)
         if (!tileWorld) {
             console.error("No tile found for temporary place item object")
             return

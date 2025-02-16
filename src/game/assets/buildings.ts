@@ -27,14 +27,13 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         textureConfig: {
             key: "buildings-home",
             assetUrl: "buildings/home.png",
-            //assetUrl: "buildings/home.png",
         }
     },
     [BuildingId.Coop]: {
         name: "Coop",
         tilesetConfig: {
             gid: 12002,
-            tilesetName: "buildings-coop",
+            tilesetName: "coop",
             // scaleTextureHeight: 1.2,
             // scaleTextureWidth: 1.2,
             //extraOffsets: { x: 0, y: -80 },
@@ -44,14 +43,13 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         textureConfig: {
             key: "coop",
             assetUrl: "buildings/coop.png",
-            //assetUrl: "tiles/xxxx.png",
         }
     },
     [BuildingId.Barn]: {
         name: "Barn",
         tilesetConfig: {
             gid: 12003,
-            tilesetName: "buildings-barn",
+            tilesetName: "barn",
             //scaleTextureHeight: 0.8,
             //scaleTextureWidth: 0.8,
             //extraOffsets: { x: -70, y: -120 },

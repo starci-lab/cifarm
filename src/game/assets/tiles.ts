@@ -19,7 +19,6 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
         textureConfig: {
             key: TileId.StarterTile,
             assetUrl: "tiles/starter-tile.png",
-            //assetUrl: "tiles/xxxx.png",
         },
         tilesetConfig:{
             gid: 13001,
