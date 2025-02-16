@@ -111,8 +111,10 @@ export class InputQuantityContent extends BaseSizer {
 
         this.nameText.setText(name)
 
-        this.numberInput.setMin(1)
-        this.numberInput.setMax(inventory.quantity)
+        this.numberInput.setBounds({
+            min: 1,
+            max: inventory.quantity,
+        })
         this.iconContainer.clear(true)
         this.iconContainer.addLocal(image)  
     }

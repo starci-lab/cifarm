@@ -9,7 +9,7 @@ import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
 import { calculateUiDepth, UILayer } from "../../layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
-import { getScreenCenterX } from "../utils"
+import { getScreenCenterX, getScreenCenterY } from "../utils"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
@@ -53,13 +53,13 @@ export class ModalManager extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         const centerX = getScreenCenterX(this.scene)
-        const centerY = getScreenCenterX(this.scene)
+        const centerY = getScreenCenterY(this.scene)
         // create the shop modal
         this.shopModal = new ShopModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).layout().hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.shopModal)
 
         // this.add(this.shopModal)
@@ -68,7 +68,7 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).layout().hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.inventoryModal)
 
         // create the daily modal
@@ -76,7 +76,7 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).layout().hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.dailyModal)
 
         // create the quest modal
@@ -84,7 +84,7 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).layout().hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.questModal)
 
         // create the stand modal
@@ -92,14 +92,14 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).layout().hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.standModal)
 
         this.neighborsModal = new NeighborsModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).layout().hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.neighborsModal)
         
         //selected product is a chained modal, so that it stay in layer depth 2 + 9, default is for the modal
@@ -107,14 +107,14 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_2).layout().hide()
+        }).setDepth(MODAL_DEPTH_2).hide()
         this.scene.add.existing(this.selectProductModal)
         // create the input quantity modal
         this.inputQuantityModal = new InputQuantityModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_2).layout()//.hide()
+        }).setDepth(MODAL_DEPTH_2).hide()
         this.scene.add.existing(this.inputQuantityModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {

@@ -79,7 +79,7 @@ export class StandContent extends BaseSizer {
                 },
             })
             .addBackground(background)
-            .setOrigin(0.5, 0.5)
+            .setOrigin(0.5, 0.5).layout()
         this.addLocal(this.gridSizer)
     }
 

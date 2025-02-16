@@ -37,7 +37,7 @@ export class SelectProductContent extends BaseSizer {
             options: {
                 text: "Select Product",
             }
-        })
+        }).layout()
         this.scene.add.existing(this.ribbonTitle)
         this.addLocal(this.ribbonTitle)
 
@@ -96,7 +96,7 @@ export class SelectProductContent extends BaseSizer {
                 },
                 items,
             }
-        }).setDepth(MODAL_DEPTH_2 + 1)
+        }).setDepth(MODAL_DEPTH_2 + 1).layout()
         this.scene.add.existing(this.gridTable)
         this.addLocal(this.gridTable)
         return this.gridTable

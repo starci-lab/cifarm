@@ -154,20 +154,18 @@ export class NumberInput extends Sizer {
         }
 
         this.layout()
-        //this.controlArrowVisibility()
     }
 
-    private controlArrowVisibility() {
-        const value = this.text.text
+    private controlArrowVisibility(intValue: number = parseInt(this.text.text)) {
         if (this.leftArrow) {
-            if (parseInt(value) <= this.min) {
+            if (intValue <= this.min) {
                 this.leftArrow.hide()
             } else {
                 this.leftArrow.show()
             }
         }
         if (this.rightArrow) {
-            if (parseInt(value) >= this.max) {
+            if (intValue >= this.max) {
                 this.rightArrow.hide()
             } else {
                 this.rightArrow.show()
@@ -178,7 +176,7 @@ export class NumberInput extends Sizer {
     private updateValue({ intValue, onChange }: UpdateValueParams) {
         onChange(intValue)
         this.text.setText(intValue)
-        this.controlArrowVisibility()
+        this.controlArrowVisibility(intValue)
         this.inputText.layout()
     }
 
@@ -195,13 +193,16 @@ export class NumberInput extends Sizer {
         }
     }
 
-    public setMin(min: number) {
-        this.min = min
+    public setBounds({ min, max }: SetBoundsParams) {
+        if (typeof min !== "undefined") this.min = min 
+        if (typeof max !== "undefined") this.max = max
+        this.controlArrowVisibility()
     }
+}
 
-    public setMax(max: number) {
-        this.max = max
-    }
+export interface SetBoundsParams {
+    min?: number
+    max?: number
 }
 
 export interface UpdateValueParams {
