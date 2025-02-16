@@ -10,7 +10,6 @@ import { getDeliveryInventories } from "@/game/queries"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { BaseText, XButton } from "../../elements"
 import { RetainProductRequest } from "@/modules/axios"
-import { SCALE_TIME } from "../../../constants"
 
 const ROW_COUNT = 3
 const COLUMN_COUNT = 3
@@ -55,8 +54,9 @@ export class StandContent extends BaseSizer {
         const deliveryInventories = getDeliveryInventories({ scene: this.scene, inventories: this.inventories })
         const result: Array<InventorySchema | null> = []
         for (let i = 0; i < CELL_COUNT; i++) {
-            if (this.inventories[i]) {
-                result.push(deliveryInventories[i])
+            const found = deliveryInventories.find((inventory) => inventory.index === i)
+            if (found) {
+                result.push(found)
             } else {
                 result.push(null)
             }
@@ -114,7 +114,7 @@ export class StandContent extends BaseSizer {
                         height: tagBackground.height,
                         align: "center",
                         originY: 0,
-                        space: { bottom: -10 }
+                        space: { bottom: -30 }
                     }).layout()
                     container.addLocal(tag)
                     // if item is existed
@@ -123,7 +123,7 @@ export class StandContent extends BaseSizer {
                         container.addLocal(this.createProductBadgeLabel(item).setPosition(0, -25))
                     } else {
                         // no item, create the add button
-                        const addButton = this.createAddButton(index).setOrigin(0.5, 1)
+                        const addButton = this.createAddButton(index)
                         container.addLocal(addButton)
                     }
                     return this.scene.rexUI.add.container(0, 0).addLocal(container)
@@ -220,6 +220,7 @@ export class StandContent extends BaseSizer {
             onGameObjectPress({
                 gameObject: label,
                 scene: this.scene,
+                animate: false,
                 onPress
             })
         })
