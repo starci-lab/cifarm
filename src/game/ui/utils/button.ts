@@ -40,7 +40,7 @@ export const onGameObjectPress = ({
                 scaleY: peakValue,
                 duration: SCALE_TIME,
                 yoyo: true,
-                ease: "Sine.easeInOut",
+                ease: "Power1"
             })
             tweenMap.set(gameObject, tween)
         }

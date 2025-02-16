@@ -40,7 +40,7 @@ export class NumberInput extends Sizer {
         if (!options) {
             throw new Error("NumberInput requires options")
         }
-        const { showLeftArrow, showRightArrow, defaultValue, onChange, fontSize = 48, min = 0, max = Infinity, textColor = TextColor.White, width = 200 } = options
+        const { showLeftArrow, showRightArrow, defaultValue = 1, onChange, fontSize = 48, min = 0, max = Infinity, textColor = TextColor.White, width = 200 } = options
         this.min = min
         this.max = max
 
@@ -91,9 +91,7 @@ export class NumberInput extends Sizer {
                     onPress: () => {
                         const value = this.text.text
                         const afterValue = this.getValue(parseInt(value) - 1)
-                        onChange(afterValue)
-                        this.text.setText(afterValue)
-                        this.inputText.layout()
+                        this.updateValue({ intValue: afterValue, onChange })
                     },
                     scene: this.scene,
                     disableInteraction: false,
@@ -114,11 +112,9 @@ export class NumberInput extends Sizer {
         }).setInteractive().on("pointerdown",() =>{
             const config: TextEdit.IConfigOpen = {
                 type: "number",
-                onTextChanged: (textObject, text) => {
+                onTextChanged: (_, text) => {
                     const intValue = this.getValue(parseInt(text))
-                    onChange(intValue)
-                    this.text.setText(intValue)
-                    this.inputText.layout()
+                    this.updateValue({ intValue, onChange })
                 },
                 onClose: () => {
                     this.inputText.layout()
@@ -147,9 +143,7 @@ export class NumberInput extends Sizer {
                     onPress: () => {
                         const value = this.text.text
                         const afterValue = this.getValue(parseInt(value) + 1)
-                        onChange(afterValue)
-                        this.text.setText(afterValue)
-                        this.inputText.layout()
+                        this.updateValue({ intValue: afterValue, onChange })
                     },
                     scene: this.scene,
                     disableInteraction: false,
@@ -160,25 +154,41 @@ export class NumberInput extends Sizer {
         }
 
         this.layout()
+        //this.controlArrowVisibility()
+    }
+
+    private controlArrowVisibility() {
+        const value = this.text.text
+        if (this.leftArrow) {
+            if (parseInt(value) <= this.min) {
+                this.leftArrow.hide()
+            } else {
+                this.leftArrow.show()
+            }
+        }
+        if (this.rightArrow) {
+            if (parseInt(value) >= this.max) {
+                this.rightArrow.hide()
+            } else {
+                this.rightArrow.show()
+            }
+        }
+    }
+
+    private updateValue({ intValue, onChange }: UpdateValueParams) {
+        onChange(intValue)
+        this.text.setText(intValue)
+        this.controlArrowVisibility()
+        this.inputText.layout()
     }
 
     private getValue(intValue: number) {
-        // show the right arrow if it is hidden and the value is less than the max
-        if (this.rightArrow && !this.rightArrow?.visible && intValue < this.max) {
-            this.rightArrow.setVisible(true) 
+        if (isNaN(intValue)) {
+            intValue = this.min
         }
-        // show the left arrow if it is hidden and the value is greater than the min
-        if (this.leftArrow && !this.leftArrow?.visible && intValue > this.min) {
-            this.leftArrow.setVisible(true)
-        }
-        
-        if (intValue < this.min) {
-            // hide the left arrow
-            if (this.leftArrow) {
-                this.leftArrow.setVisible(false)
-            }
+        if (intValue <= this.min) {
             return this.min
-        } else if (intValue > this.max) {
+        } else if (intValue >= this.max) {
             return this.max
         } else {
             return intValue
@@ -192,4 +202,9 @@ export class NumberInput extends Sizer {
     public setMax(max: number) {
         this.max = max
     }
+}
+
+export interface UpdateValueParams {
+    intValue: number
+    onChange: (value: number) => void
 }

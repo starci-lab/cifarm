@@ -120,6 +120,8 @@ export enum BaseAssetKey {
     UICommonNextIcon = "ui-common-next-icon",
     UICommonPrevIcon = "ui-common-prev-icon",
     UICommonInput = "ui-common-input",
+    UICommonButtonRed = "ui-common-button-red",
+    UICommonButtonGreen = "ui-common-button-green",
 
     //Topbar
     TopbarHeader = "topbar-header",
@@ -279,6 +281,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonNextIcon]: "ui/common/next-icon.png",
     [BaseAssetKey.UICommonPrevIcon]: "ui/common/prev-icon.png",
     [BaseAssetKey.UICommonInput]: "ui/common/input.png",
+    [BaseAssetKey.UICommonButtonRed]: "ui/common/button-red.png",
+    [BaseAssetKey.UICommonButtonGreen]: "ui/common/button-green.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",
