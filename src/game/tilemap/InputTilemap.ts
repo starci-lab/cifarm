@@ -1,14 +1,4 @@
-import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
-import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
-import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
-import {
-    AnimalAge,
-    animalAssetMap,
-    buildingAssetMap,
-    TextureConfig,
-    TilesetConfig,
-} from "../assets"
+import { HarvestCropRequest, PlantSeedRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest } from "@/modules/axios"
 import {
     AnimalId,
     BuildingId,
@@ -17,11 +7,21 @@ import {
     PlacedItemType,
     ToolId,
 } from "@/modules/entities"
-import { ObjectLayerName } from "./types"
-import { PlacementConfirmation, ToolLike } from "../ui"
-import { HarvestCropRequest, PlantSeedRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest } from "@/modules/axios"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
+import {
+    AnimalAge,
+    animalAssetMap,
+    buildingAssetMap,
+    TextureConfig,
+    TilesetConfig,
+} from "../assets"
+import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
 import { calculateUiDepth, UILayer } from "../layers"
+import { CacheKey, TilemapBaseConstructorParams } from "../types"
+import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
+import { ObjectLayerName } from "./types"
+import { PlacementPopup, ToolLike } from "../ui"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
@@ -41,7 +41,8 @@ export class InputTilemap extends ItemTilemap {
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
-    private confirmationUI: ContainerLite | undefined
+
+    private placementPopup: ContainerLite | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -302,8 +303,8 @@ export class InputTilemap extends ItemTilemap {
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
                 .setOrigin(0.5, 1)
 
-            if (this.confirmationUI) {
-                this.confirmationUI.setPosition(position.x + 20, position.y - 2)
+            if (this.placementPopup) {
+                this.placementPopup.setPosition(position.x + 20, position.y - 2)
             } else {
                 this.showConfirmationUI(tile)
             }
@@ -345,7 +346,7 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Position not found")
         }
         
-        this.confirmationUI = new PlacementConfirmation({
+        this.placementPopup = new PlacementPopup({
             scene: this.scene,
             onCancel: () => {
                 this.cancelPlacement()
@@ -360,26 +361,26 @@ export class InputTilemap extends ItemTilemap {
                 layerDepth: 2,
             })
         )
-        this.scene.add.existing(this.confirmationUI)
+        this.scene.add.existing(this.placementPopup)
 
-        console.log("confirmationUI set", this.confirmationUI)
+        console.log("placementPopup set", this.placementPopup)
     }
     
 
     private removeConfirmationUI() {
-        this.confirmationUI?.destroy()
-        this.confirmationUI = undefined
+        this.placementPopup?.destroy()
+        this.placementPopup = undefined
     }
 
     private placeItemOnTile(tile: Phaser.Tilemaps.Tile) {
         console.log("Item placed on tile:", tile)
 
         // emit the event to place the item
-        EventBus.emit(EventName.PlaceItem, {
-            id: this.temporaryPlaceItemData?.textureConfig.key,
-            x: tile.x,
-            y: tile.y,
-        })
+        // EventBus.emit(EventName.PlaceItem, {
+        //     id: this.temporaryPlaceItemData?.textureConfig.key,
+        //     x: tile.x,
+        //     y: tile.y,
+        // })
 
         // switch (this.temporaryPlaceItemData) {
         // case PlacedItemType.Building: 

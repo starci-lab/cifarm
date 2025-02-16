@@ -134,6 +134,11 @@ export enum BaseAssetKey {
 
     //State
     BubbleState = "bubble-state",
+
+    //Popup
+    //PlacementPopup
+    PopupPlacementIconYes = "popup-placement-icon-yes",
+    PopupPlacementIconNo = "popup-placement-icon-no",
 }
 
 export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
@@ -268,6 +273,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",
+
+    //Popup
+    //PlacementPopup
+    [BaseAssetKey.PopupPlacementIconYes]: "popup/placement/yes.png",
+    [BaseAssetKey.PopupPlacementIconNo]: "popup/placement/no.png",
 }
 
 // preload, for loading screen
