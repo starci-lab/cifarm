@@ -1,5 +1,6 @@
 import { useUserEffects } from "../graphql/useUserEffects"
 import { useBuySeedsEffects } from "./useBuySeedsEffects"
+import { useConstructBuildingEffects } from "./useConstructBuilding"
 import { useHarvestCropEffects } from "./useHarvestCropEffects"
 import { useUseHerbicideEffects } from "./useHerbicideEffects"
 import { useUsePesticideEffects } from "./usePesticideEffects"
@@ -18,4 +19,5 @@ export const useApiEffects = () => {
     useUsePesticideEffects()
     useHarvestCropEffects()
     useUpdateInventoryIndexEffects()
+    useConstructBuildingEffects()
 }

@@ -258,18 +258,23 @@ export class InputTilemap extends ItemTilemap {
     // method called to handle place in progress event
     private handlePlaceInProgress({ id, type }: PlacedInprogressMessage) {
         this.placingInProgress = true
+        this.removePlacmentPopupUI()
 
+        console.log("Place in progress:", id, type)
         // switch case to set the place item data
         switch (type) {
         case PlacedItemType.Animal:
             this.temporaryPlaceItemData =
           animalAssetMap[id as AnimalId].ages[AnimalAge.Baby]
+            this.temporaryPlaceItemData.type = PlacedItemType.Animal
             break
         case PlacedItemType.Building:
             this.temporaryPlaceItemData = buildingAssetMap[id as BuildingId]
+            this.temporaryPlaceItemData.type = PlacedItemType.Building
             break
         case PlacedItemType.Tile:
             this.temporaryPlaceItemData = tileAssetMap[id as TileId]
+            this.temporaryPlaceItemData.type = PlacedItemType.Tile
             break
         }
     }
@@ -386,6 +391,7 @@ export class InputTilemap extends ItemTilemap {
     private removePlacmentPopupUI() {
         this.placementPopup?.destroy()
         this.placementPopup = undefined
+        this.temporaryPlaceItemData = undefined
     }
 
     private placeItemOnTile(tile: Phaser.Tilemaps.Tile) {
@@ -416,9 +422,9 @@ export class InputTilemap extends ItemTilemap {
 
             console.log("Requesting to buy building:", eventMessage)
         
-            EventBus.emit(EventName.RequestBuyBuilding, eventMessage)
+            EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
 
-            EventBus.once(EventName.BuyBuildingCompleted, () => {
+            EventBus.once(EventName.ConstructBuildingCompleted, () => {
                 this.cancelPlacement()
             })
             break

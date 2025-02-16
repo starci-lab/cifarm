@@ -144,8 +144,8 @@ export enum EventName {
     RequestUpdateInventoryIndex = "request_update_inventory_index",
     UpdateInventoryIndexCompleted = "update_inventory_index_completed",
 
-    RequestBuyBuilding = "request_buy_building",
-    BuyBuildingCompleted = "buy_building_completed",
+    RequestConstructBuilding = "request_construct_building",
+    ConstructBuildingCompleted = "construct_building_completed",
 
     RequestBuyTile = "request_buy_tile",
     BuyTileCompleted = "buy_tile_completed",
