@@ -15,4 +15,5 @@ export enum CacheKey {
     SelectedTool = "selected-tool",
     DefaultInfo = "default-info",
     DeliveringProducts = "delivering-products",
+    DeliveryIndex = "delivery-index",
 }

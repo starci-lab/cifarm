@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { BaseAssetKey } from "../../assets"
-import { BadgeLabelBaseConstructorParams, ConstructorParams, GridTableBaseConstructorParams, ImagepBaseConstructorParams } from "../../types"
+import { BadgeLabelBaseConstructorParams, ConstructorParams, GridTableBaseConstructorParams, ImageBaseConstructorParams } from "../../types"
 import { BadgeLabel, GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "./BaseText"
 
@@ -34,7 +34,7 @@ export const getCellInfo = (scene: Scene): CellInfo => {
 }
 
 export class BaseGridTableFrame extends Phaser.GameObjects.Image {
-    constructor({ scene, x, y }: ImagepBaseConstructorParams) {
+    constructor({ scene, x, y }: ImageBaseConstructorParams) {
         super(scene, x, y, BaseAssetKey.UIModalCommonFrame)
     }
 }

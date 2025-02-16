@@ -1,2 +1,2 @@
 export * from "./update-tutorial"
-export * from "./update-inventory-index"
+export * from "./move-inventory"

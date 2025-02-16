@@ -1,12 +1,13 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../../types"
-import { EventName, UpdateInputQuantityModalMessage } from "@/game/event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName, UpdateInputQuantityModalMessage } from "@/game/event-bus"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText, Button, ButtonBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
+import { DeliverProductRequest } from "@/modules/axios"
 
 const LABEL_SCALE = 1.5
 
@@ -18,6 +19,8 @@ export class InputQuantityContent extends BaseSizer {
     private quantity = 1
     private numberInput: NumberInput
     private iconContainer: ContainerLite
+    private inventory: InventorySchema | undefined
+
     constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
@@ -80,7 +83,27 @@ export class InputQuantityContent extends BaseSizer {
             options: {
                 text: "Confirm",
                 onPress: () => {
-                    console.log("Confirm")
+                    if (!this.inventory) {
+                        throw new Error("Inventory is not set")
+                    }
+                    EventBus.on(EventName.DeliverProductCompleted, () => {
+                        this.scene.events.emit(EventName.CloseModal)
+                    })
+                    const index = this.scene.cache.obj.get(CacheKey.DeliveryIndex)
+                    const eventName: DeliverProductRequest = {
+                        quantity: this.quantity,
+                        inventoryId: this.inventory.id,
+                        index
+                    }
+
+                    EventBus.once(EventName.DeliverProductCompleted, () => {
+                        EventBus.emit(EventName.RefreshInventories)
+                        const eventMessage: CloseModalMessage = { 
+                            modalName: ModalName.InputQuantity
+                        }
+                        EventBus.emit(EventName.CloseModal, eventMessage)
+                    })
+                    EventBus.emit(EventName.RequestDeliverProduct, eventName)
                 },
                 width: 300,
                 background: ButtonBackground.Primary,
@@ -99,6 +122,9 @@ export class InputQuantityContent extends BaseSizer {
     }
 
     public render(inventory: InventorySchema) {
+        // set the inventory
+        this.inventory = inventory
+
         const inventoryType = this.inventoryTypes.find((type) => type.id === inventory.inventoryType)
         if (!inventoryType) {
             throw new Error("Inventory type not found")

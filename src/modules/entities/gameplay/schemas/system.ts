@@ -50,7 +50,7 @@ export interface DefaultInfo {
     positions: Positions;
     defaultCropId: CropId;
     defaultSeedQuantity: number;
-    inventoryCapacity: number;
+    storageCapacity: number;
 }
 
 export interface SlotInfo {

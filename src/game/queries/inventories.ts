@@ -1,6 +1,6 @@
 import { CacheKey } from "@/game/types"
 import { IPaginatedResponse } from "@/modules/apollo/types"
-import { CropId, InventorySchema, InventoryType, InventoryTypeSchema } from "@/modules/entities"
+import { CropId, InventoryKind, InventorySchema, InventoryType, InventoryTypeSchema } from "@/modules/entities"
 import { Scene } from "phaser"
 
 export const getFirstSeedInventory = ({
@@ -115,10 +115,10 @@ export interface GetSpecificSeedInventoriesParams {
 }
 
 
-export const getToolbarInventories = ({
+export const getToolInventories = ({
     scene,
     inventories,
-}: GetToolbarInventoriesParams) => {
+}: GetToolInventoriesParams) => {
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
@@ -126,10 +126,10 @@ export const getToolbarInventories = ({
         inventories = data
     }
 
-    return inventories.filter((inventory) => inventory.inToolbar)
+    return inventories.filter((inventory) => inventory.kind === InventoryKind.Tool)
 }
 
-export interface GetToolbarInventoriesParams {
+export interface GetToolInventoriesParams {
     // scene to display the modal
     scene: Scene;
     // the inventories to check, if not specified, will try to get from cache
@@ -147,7 +147,7 @@ export const getStorageInventories = ({
         inventories = data
     }
 
-    return inventories.filter((inventory) => !inventory.inToolbar)
+    return inventories.filter((inventory) => inventory.kind === InventoryKind.Storage)
 }
 
 export interface GetStorageInventoriesParams {
@@ -183,6 +183,27 @@ export const getProductInventories = ({
 }
 
 export interface GetProductInventoriesParams {
+    // scene to display the modal
+    scene: Scene;
+    // the inventories to check, if not specified, will try to get from cache
+    inventories?: Array<InventorySchema>;
+}
+
+export const getDeliveryInventories = ({
+    scene,
+    inventories,
+}: GetDeliveryInventoriesParams) => {
+    // if inventories is not provided, get from cache
+    if (!inventories) {
+        // get the inventories from cache
+        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+        inventories = data
+    }
+
+    return inventories.filter((inventory) => inventory.kind === InventoryKind.Delivery)
+}
+
+export interface GetDeliveryInventoriesParams {
     // scene to display the modal
     scene: Scene;
     // the inventories to check, if not specified, will try to get from cache

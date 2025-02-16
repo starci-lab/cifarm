@@ -10,10 +10,10 @@ import {
     GridSizer,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { getStorageInventories, getToolbarInventories } from "@/game/queries"
+import { getStorageInventories, getToolInventories } from "@/game/queries"
 import { BaseGridTable, BaseGridTableCell, BaseGridTableFrame, getCellInfo, CellInfo } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { UpdateInventoryIndexRequest } from "@/modules/axios"
+import { MoveInventoryRequest } from "@/modules/axios"
 import {
     CloseModalMessage,
     EventBus,
@@ -23,11 +23,6 @@ import {
 import { onGameObjectPress } from "../../utils"
 import { IPaginatedResponse } from "@/modules/apollo/types"
 import { MODAL_BACKDROP_DEPTH_1, MODAL_DEPTH_1 } from "../ModalManager"
-
-export enum InventoryStorageTab {
-  All = "all",
-  Seeds = "seeds",
-}
 
 const TOOLBAR_COLUMN_COUNT = 4
 const TOOLBAR_ROW_COUNT = 2
@@ -50,8 +45,6 @@ export class InventoryContent extends BaseSizer {
     private inventoryTypes: Array<InventoryTypeSchema> = []
 
     private defaultInfo: DefaultInfo
-
-    private selectedTab = InventoryStorageTab.All
 
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
@@ -105,7 +98,6 @@ export class InventoryContent extends BaseSizer {
                 this.updateToolbarGridSizer()
             }
         )
-
     //this.updateToolbar()
     }
 
@@ -170,7 +162,7 @@ export class InventoryContent extends BaseSizer {
         if (this.toolbarGridSizer) {
             this.remove(this.toolbarGridSizer, true)
         }
-        const items = this.getToolbarItems()
+        const items = this.getToolItems()
         const gridSizer = this.scene.rexUI.add
             .gridSizer({
                 x: 20,
@@ -198,7 +190,7 @@ export class InventoryContent extends BaseSizer {
                             icon: gridTableCell,
                         })
                         .setDepth(
-                            MODAL_DEPTH_1 + 1
+                            MODAL_DEPTH_1 + 2
                         )
                     this.toolbarZones.push({
                         index: y * TOOLBAR_COLUMN_COUNT + x,
@@ -251,7 +243,7 @@ export class InventoryContent extends BaseSizer {
             }
             original = cell.getCenter()
             cell.setDepth(
-                MODAL_BACKDROP_DEPTH_1 + 2
+                MODAL_BACKDROP_DEPTH_1 + 4
             )
         })
         cell.on("dragend", (pointer: Phaser.Input.Pointer) => {
@@ -259,12 +251,12 @@ export class InventoryContent extends BaseSizer {
                 throw new Error("Badge label not found")
             }
             cell.setDepth(
-                MODAL_BACKDROP_DEPTH_1 + 1
+                MODAL_BACKDROP_DEPTH_1 + 2
             )
 
             // index of the inventory
             let index = -1
-            let inToolbar = true
+            let isTool = true
 
             // check if the badge label is inside the toolbar
             const zone = this.toolbarZones.find((zone) =>
@@ -289,7 +281,7 @@ export class InventoryContent extends BaseSizer {
                   .contains(pointer.x, pointer.y)
                     ) {
                         index = i
-                        inToolbar = false
+                        isTool = false
                         break
                     }
                 }
@@ -303,12 +295,12 @@ export class InventoryContent extends BaseSizer {
             }
 
             // call api to move the inventory
-            const eventMessage: UpdateInventoryIndexRequest = {
+            const eventMessage: MoveInventoryRequest = {
                 index,
-                inToolbar,
+                isTool,
                 inventoryId: inventory.id,
             }
-            EventBus.once(EventName.UpdateInventoryIndexCompleted, () => {
+            EventBus.once(EventName.MoveInventoryCompleted, () => {
                 if (!cell) {
                     throw new Error("Badge label not found")
                 }
@@ -317,7 +309,7 @@ export class InventoryContent extends BaseSizer {
                 parent.remove(cell, true)
                 EventBus.emit(EventName.RefreshInventories)
             })
-            EventBus.emit(EventName.RequestUpdateInventoryIndex, eventMessage)
+            EventBus.emit(EventName.RequestMoveInventory, eventMessage)
         })
         return cell
     }
@@ -330,7 +322,7 @@ export class InventoryContent extends BaseSizer {
             scene: this.scene,
         })
         // create the inventory cells
-        for (let i = 0; i < this.defaultInfo.inventoryCapacity; i++) {
+        for (let i = 0; i < this.defaultInfo.storageCapacity; i++) {
             const inventory = storageInventories.find(
                 (inventory) => inventory.index === i
             )
@@ -339,14 +331,15 @@ export class InventoryContent extends BaseSizer {
         return result
     }
 
-    private getToolbarItems() {
+    private getToolItems() {
         const result: Array<InventorySchema | null> = []
         // filter all inventories based on the selected tab
         // create the inventory cells
-        const toolbarInventories = getToolbarInventories({
+        const toolbarInventories = getToolInventories({
             inventories: this.inventories,
             scene: this.scene,
         })
+        console.log(toolbarInventories)
         for (let i = 0; i < TOOLBAR_CELL_COUNT; i++) {
             const inventory = toolbarInventories.find(
                 (inventory) => inventory.index === i

@@ -20,7 +20,7 @@ import {
 import { SCALE_TIME } from "../../constants"
 import { EventName } from "@/game/event-bus"
 import { getScreenBottomY, getScreenCenterX, onGameObjectPress } from "../utils"
-import { getFirstSeedInventory, getToolbarInventories } from "@/game/queries"
+import { getFirstSeedInventory, getToolInventories } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseText } from "../elements"
 import { calculateUiDepth, UILayer } from "../../layers"
@@ -392,7 +392,7 @@ export class Toolbar extends ContainerLite {
 
     // create a list of tools to show
     private createToolList(inHome?: boolean): Array<ToolLike> {
-        const toolbarInventories = getToolbarInventories({
+        const toolbarInventories = getToolInventories({
             inventories: this.inventories,
             scene: this.scene,
         })

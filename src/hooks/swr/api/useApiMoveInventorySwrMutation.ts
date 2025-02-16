@@ -1,24 +1,24 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
 import { v4 } from "uuid"
-import { UpdateInventoryIndexRequest, updateInventoryIndex } from "@/modules/axios"
+import { MoveInventoryRequest, moveInventory } from "@/modules/axios"
 import { WithAxiosOptionsAndRequest } from "./types"
 
-export type UseApiUpdateInventoryIndexSwrMutationArgs = WithAxiosOptionsAndRequest<UpdateInventoryIndexRequest>
+export type UseApiMoveInventorySwrMutationArgs = WithAxiosOptionsAndRequest<MoveInventoryRequest>
 
-export const useApiUpdateInventoryIndexSwrMutation = (): UseSWRMutation<
+export const useApiMoveInventorySwrMutation = (): UseSWRMutation<
   void,
-  UseApiUpdateInventoryIndexSwrMutationArgs
+  UseApiMoveInventorySwrMutationArgs
 > => {
     const swrMutation = useSWRMutation(
         v4(),
         async (
             _: string,
-            extraArgs: { arg: UseApiUpdateInventoryIndexSwrMutationArgs }
+            extraArgs: { arg: UseApiMoveInventorySwrMutationArgs }
         ) => {
             const { request, options } = { ...extraArgs.arg }
             //update the tutorial only
-            await updateInventoryIndex(request, options)
+            await moveInventory(request, options)
         }
     )
 

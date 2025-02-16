@@ -92,7 +92,9 @@ const query = gql`
       golds
       defaultCropId
       defaultSeedQuantity
-      inventoryCapacity
+      storageCapacity
+      toolCapacity
+      deliveryCapacity
     }
     spinInfo {
       appearanceChanceSlots {
@@ -172,8 +174,8 @@ const query = gql`
     tools {
       id
       displayId
-      availableIn
-      index
+      sort
+      default
     }
     inventoryTypes {
       id

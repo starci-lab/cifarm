@@ -60,9 +60,9 @@ export enum EventName {
     // backdrops
     ShowGameplayBackdrop = "show_gameplay_backdrop",
     HideGameplayBackdrop = "hide_gameplay_backdrop",
-    UpdateGameplayBackdrop = "update_gameplay_backdrop",
     ShowUIBackdrop = "show_ui_backdrop",
     HideUIBackdrop = "hide_ui_backdrop",
+    UpdateUIBackdrop = "update_ui_backdrop",
 
     // hide press here arrow
     HidePressHereArrow = "hide_press_here_arrow",
@@ -141,8 +141,11 @@ export enum EventName {
     RequestHarvestCrop = "request_harvest_crop",
     HarvestCropCompleted = "harvest_crop_completed",
 
-    RequestUpdateInventoryIndex = "request_update_inventory_index",
-    UpdateInventoryIndexCompleted = "update_inventory_index_completed",
+    RequestMoveInventory = "request_move_inventory",
+    MoveInventoryCompleted = "move_inventory_completed",
+
+    RequestDeliverProduct = "request_deliver_product",
+    DeliverProductCompleted = "deliver_product_completed",
 }
 
 export interface OpenTutorialMessage {
@@ -211,9 +214,9 @@ export interface ShowUIBackdropMessage {
     depth: number
 }
 
-export interface UpdateGameplayBackdropMessage {
+export interface UpdateUIBackdropMessage {
     // position of the backdrop
-    scrollXY: Position
+    depth: number
 }
 
 

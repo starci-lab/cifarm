@@ -15,7 +15,7 @@ import { LoadingProgressBar } from "../containers"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
-import { DeliveringProductSchema, InventorySchema, UserSchema } from "@/modules/entities"
+import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { loadCropStateAssets } from "../assets/states"
 import { IPaginatedResponse } from "@/modules/apollo/types"
@@ -41,7 +41,7 @@ export class LoadingScene extends Scene {
 
     // data fetching
     private dataFetchingLoaded = 0
-    private totalDataFetching = 4
+    private totalDataFetching = 3
 
     init() {
     // Listen to the shutdown event
@@ -97,16 +97,6 @@ export class LoadingScene extends Scene {
                 this.handleFetchData("Loading inventories...")
             })
 
-        //listen for load delivering products event
-        EventBus.once(
-            EventName.DeliveringProductsLoaded, (data: IPaginatedResponse<DeliveringProductSchema>
-            ) => {
-                console.log(data)
-                //load the delivering products
-                this.cache.obj.add(CacheKey.DeliveringProducts, data)
-                this.handleFetchData("Loading delivering products...")
-            })
- 
         this.events.once(EventName.LoadCompleted, () => {
             //load the main game scene
             this.scene.start(SceneName.Gameplay)

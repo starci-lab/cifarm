@@ -11,7 +11,6 @@ import {
     useApiBuySeedsSwrMutation,
     useApiHarvestCropSwrMutation,
     useApiPlantSeedSwrMutation,
-    useApiUpdateInventoryIndexSwrMutation,
     useApiUpdateTutorialSwrMutation,
     useApiUseHerbicideSwrMutation,
     useApiUsePesticideSwrMutation,
@@ -21,10 +20,11 @@ import {
     useEnterPinForm,
     useGameplayIo,
     useNativeCoinGeckoSWR,
-    useQueryDeliveringProductsSwr,
     useQueryInventoriesSwr,
     useQueryStaticSwr,
     useQueryUserSwr,
+    useApiMoveInventorySwrMutation,
+    useApiDeliverProductSwrMutation,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -54,11 +54,11 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_USE_HERBICIDE_SWR_MUTATION: useApiUseHerbicideSwrMutation(),
                             API_USE_PESTICIDE_SWR_MUTATION: useApiUsePesticideSwrMutation(),
                             API_HARVEST_CROP_SWR_MUTATION: useApiHarvestCropSwrMutation(),
-                            API_UPDATE_INVENTORY_INDEX_SWR_MUTATION: useApiUpdateInventoryIndexSwrMutation(),
+                            API_MOVE_INVENTORY_SWR_MUTATION: useApiMoveInventorySwrMutation(),
+                            API_DELIVER_PRODUCT_SWR_MUTATION: useApiDeliverProductSwrMutation(),
                             QUERY_USER_SWR: useQueryUserSwr(),
                             QUERY_STATIC_SWR: useQueryStaticSwr(),
                             QUERY_INVENTORIES_SWR: useQueryInventoriesSwr(),
-                            QUERY_DELIVERING_PRODUCTS_SWR: useQueryDeliveringProductsSwr(),
                             //io
                             GAMEPLAY_IO: useGameplayIo()
                         }}

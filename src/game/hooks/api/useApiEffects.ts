@@ -4,9 +4,10 @@ import { useHarvestCropEffects } from "./useHarvestCropEffects"
 import { useUseHerbicideEffects } from "./useHerbicideEffects"
 import { useUsePesticideEffects } from "./usePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
-import { useUpdateInventoryIndexEffects } from "./useUpdateInventoryIndexEffects"
+import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
 import { useUpdateTutorialEffects } from "./useUpdateTutorialEffects"
 import { useWaterEffects } from "./useWaterEffects"
+import { useDeliverProductEffects } from "./useDeliverProductEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -17,5 +18,6 @@ export const useApiEffects = () => {
     useUseHerbicideEffects()
     useUsePesticideEffects()
     useHarvestCropEffects()
-    useUpdateInventoryIndexEffects()
+    useMoveInventoryEffects()
+    useDeliverProductEffects()
 }

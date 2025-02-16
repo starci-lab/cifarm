@@ -11,7 +11,7 @@ const query1 = gql`
           inventoryType
           index
           quantity
-          inToolbar
+          kind
         }
     }
   }

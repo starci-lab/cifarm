@@ -125,9 +125,6 @@ export class ModalManager extends ContainerLite {
         EventBus.on(EventName.CloseModal, (message: CloseModalMessage) => {
             this.onClose(message)
         })
-
-        // close the modal manager by default
-        this.hideBackdrop()
     }
  
     // show method, to show the modal
@@ -154,12 +151,21 @@ export class ModalManager extends ContainerLite {
         })
     }
 
-    private hideBackdrop(hideTutorialBackdrop?: boolean) {
+    private hideBackdrop({ hideTutorialBackdrop = false, modalName }: HideBackdropParams) {
         // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
         if (this.checkTutorialActive()) {
             if (hideTutorialBackdrop) {
                 EventBus.emit(EventName.HideUIBackdrop)
             }
+            return
+        }
+        //check if modal is chained
+        switch (modalName) {
+        case ModalName.SelectProduct:
+        case ModalName.InputQuantity:
+            EventBus.emit(EventName.UpdateUIBackdrop, {
+                depth: MODAL_BACKDROP_DEPTH_1
+            })
             return
         }
         EventBus.emit(EventName.HideUIBackdrop)
@@ -245,11 +251,16 @@ export class ModalManager extends ContainerLite {
         const modal = this.getModal(modalName)
         // hide the modal
         modal.hide()
-        this.hideBackdrop(hideTutorialBackdrop)
+        this.hideBackdrop({ modalName, hideTutorialBackdrop })
     }
 }
 
 interface ShowBackdropParams {
     showTutorialBackdrop?: boolean
+    modalName?: ModalName
+}
+
+interface HideBackdropParams {
+    hideTutorialBackdrop?: boolean
     modalName?: ModalName
 }

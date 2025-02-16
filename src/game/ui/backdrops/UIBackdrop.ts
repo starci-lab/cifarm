@@ -1,4 +1,4 @@
-import { EventBus, EventName, ShowUIBackdropMessage } from "@/game/event-bus"
+import { EventBus, EventName, ShowUIBackdropMessage, UpdateUIBackdropMessage } from "@/game/event-bus"
 import { BLACK_COLOR } from "../../constants"
 import { ContainerLiteBaseConstructorParams } from "../../types"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -25,11 +25,27 @@ export class UIBackdrop extends ContainerLite {
         this.add(this.backdrop)
 
         EventBus.on(EventName.ShowUIBackdrop, ({ depth }: ShowUIBackdropMessage) => {
-            this.backdrop.setDepth(depth).setVisible(true).setActive(true)
+            this.show()
+            this.backdrop.setDepth(depth)
         })
         
         EventBus.on(EventName.HideUIBackdrop, () => {
-            this.backdrop.setVisible(false).setActive(false)
+            this.hide()
         })
+
+        EventBus.on(EventName.UpdateUIBackdrop, ({ depth }: UpdateUIBackdropMessage) => {
+            this.backdrop.setDepth(depth)
+        })
+
+        // hide by default
+        this.hide()
+    }
+
+    private hide() {
+        this.backdrop.setVisible(false).setActive(false)
+    }
+
+    private show() {
+        this.backdrop.setVisible(true).setActive(true)
     }
 }
