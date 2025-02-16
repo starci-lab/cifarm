@@ -17,21 +17,21 @@ export const defaultInventoryTab = InventoryTab.Menu
 
 export const tabs: Record<InventoryTab, InventoryTabData> = {
     [InventoryTab.Menu]: {
-        iconKey: BaseAssetKey.ModalInventoryIconMenu,
+        iconKey: BaseAssetKey.UIModalInventoryIconMenu,
     },
     [InventoryTab.Tiles]: {
-        iconKey: BaseAssetKey.ModalInventoryIconTile,
+        iconKey: BaseAssetKey.UIModalInventoryIconTile,
     },
     [InventoryTab.Products]: {
-        iconKey: BaseAssetKey.ModalInventoryIconProduct,
+        iconKey: BaseAssetKey.UIModalInventoryIconProduct,
     },
     [InventoryTab.Seeds]: {
-        iconKey: BaseAssetKey.ModalInventoryIconCrop,
+        iconKey: BaseAssetKey.UIModalInventoryIconCrop,
     },
     [InventoryTab.Animals]: {
-        iconKey: BaseAssetKey.ModalInventoryIconAnimal,
+        iconKey: BaseAssetKey.UIModalInventoryIconAnimal,
     },
     [InventoryTab.Tools]: {
-        iconKey: BaseAssetKey.ModalInventoryIconCan,
+        iconKey: BaseAssetKey.UIModalInventoryIconCan,
     },
 }

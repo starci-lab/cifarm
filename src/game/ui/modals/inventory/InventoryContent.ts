@@ -1,5 +1,5 @@
 import { BaseAssetKey, inventoryTypeAssetMap } from "@/game/assets"
-import { CacheKey, SizerBaseConstructorParams } from "@/game/types"
+import { CacheKey, BaseSizerBaseConstructorParams } from "@/game/types"
 import {
     DefaultInfo,
     InventorySchema,
@@ -10,7 +10,6 @@ import {
     GridSizer,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { calculateUiDepth, UILayer } from "@/game/layers"
 import { getStorageInventories, getToolbarInventories } from "@/game/queries"
 import { BaseGridTable, BaseGridTableCell, BaseGridTableFrame, getCellInfo, CellInfo } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -23,6 +22,7 @@ import {
 } from "@/game/event-bus"
 import { onGameObjectPress } from "../../utils"
 import { IPaginatedResponse } from "@/modules/apollo/types"
+import { MODAL_BACKDROP_DEPTH_1, MODAL_DEPTH_1 } from "../ModalManager"
 
 export enum InventoryStorageTab {
   All = "all",
@@ -53,12 +53,12 @@ export class InventoryContent extends BaseSizer {
 
     private selectedTab = InventoryStorageTab.All
 
-    constructor({ scene, x, y, width, height }: SizerBaseConstructorParams) {
+    constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
 
         this.background = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalInventoryBackground)
+            .image(0, 0, BaseAssetKey.UIModalInventoryBackground)
             .setOrigin(0.5, 1)
         this.addLocal(this.background)
         // Load inventories from cache
@@ -75,7 +75,7 @@ export class InventoryContent extends BaseSizer {
             .image(
                 this.background.width/2 - 50,
                 -this.background.height + 50,
-                BaseAssetKey.ModalInventoryBtnClose
+                BaseAssetKey.UIModalInventoryBtnClose
             )
             .setOrigin(1, 0)
             .setInteractive()
@@ -148,11 +148,7 @@ export class InventoryContent extends BaseSizer {
                                     })
                                     .setScale(this.cellInfo.scale)
                                     .setDepth(
-                                        calculateUiDepth({
-                                            layer: UILayer.Modal,
-                                            layerDepth: 1,
-                                            additionalDepth: 1,
-                                        })
+                                        MODAL_DEPTH_1 + 1
                                     )
                             )
                         }
@@ -202,11 +198,7 @@ export class InventoryContent extends BaseSizer {
                             icon: gridTableCell,
                         })
                         .setDepth(
-                            calculateUiDepth({
-                                layer: UILayer.Modal,
-                                layerDepth: 1,
-                                additionalDepth: 1,
-                            })
+                            MODAL_DEPTH_1 + 1
                         )
                     this.toolbarZones.push({
                         index: y * TOOLBAR_COLUMN_COUNT + x,
@@ -259,11 +251,7 @@ export class InventoryContent extends BaseSizer {
             }
             original = cell.getCenter()
             cell.setDepth(
-                calculateUiDepth({
-                    layer: UILayer.Modal,
-                    layerDepth: 1,
-                    additionalDepth: 3,
-                })
+                MODAL_BACKDROP_DEPTH_1 + 2
             )
         })
         cell.on("dragend", (pointer: Phaser.Input.Pointer) => {
@@ -271,11 +259,7 @@ export class InventoryContent extends BaseSizer {
                 throw new Error("Badge label not found")
             }
             cell.setDepth(
-                calculateUiDepth({
-                    layer: UILayer.Modal,
-                    layerDepth: 1,
-                    additionalDepth: 1,
-                })
+                MODAL_BACKDROP_DEPTH_1 + 1
             )
 
             // index of the inventory

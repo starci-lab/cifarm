@@ -67,7 +67,7 @@ export class QuestContent extends ContainerLite {
         const backgroundImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalQuestCardItem
+            BaseAssetKey.UIModalQuestCardItem
         )
         // update the position of the card item image
         backgroundImage
@@ -76,12 +76,12 @@ export class QuestContent extends ContainerLite {
         backgroundContainer.add(backgroundImage)
         // create the pin
         const pin = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalQuestPin)
+            .image(0, 0, BaseAssetKey.UIModalQuestPin)
             .setPosition(backgroundImage.x - 15, backgroundImage.y - 15)
             .setOrigin(0, 0)
         backgroundContainer.add(pin)
         // create title
-        const cardTitleImage = this.scene.add.image(0, 0, BaseAssetKey.ModalQuestCardTitle)
+        const cardTitleImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalQuestCardTitle)
         const titleText = new BaseText({
             baseParams: {
                 scene: this.scene,

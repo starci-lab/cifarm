@@ -107,7 +107,7 @@ export class NeighborsTabs extends ContainerLite {
     
         // Create the active tab icon (background)
         const iconTabOn = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalShopItemCard)
+            .image(0, 0, BaseAssetKey.UIModalShopItemCard)
             .setOrigin(0.5, 0.5)
             .setDisplaySize(tabWidth, 100)
     
@@ -115,7 +115,7 @@ export class NeighborsTabs extends ContainerLite {
     
         // Create the inactive tab icon (background)
         const iconTabOff = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalInventoryIconTabOff)
+            .image(0, 0, BaseAssetKey.UIModalInventoryIconTabOff)
             .setOrigin(0.5, 0.5)
             .setDisplaySize(tabWidth, 100)
     

@@ -55,13 +55,13 @@ export class NeighborsContent extends ContainerLite {
 
     private createItemCards() {
         const itemList = [
-            { assetKey: BaseAssetKey.ModalShopIconAnimal, title: "Wheat Seed" },
-            { assetKey: BaseAssetKey.ModalShopIconAnimal, title: "Corn Seed" },
-            { assetKey: BaseAssetKey.ModalShopIconAnimal, title: "Rice Seed" },
-            { assetKey: BaseAssetKey.ModalShopIconAnimal, title: "Apple" },
-            { assetKey: BaseAssetKey.ModalShopIconAnimal, title: "Orange" },
-            { assetKey: BaseAssetKey.ModalShopIconAnimal, title: "Banana" },
-            { assetKey: BaseAssetKey.ModalShopIconAnimal, title: "Grapes" },
+            { assetKey: BaseAssetKey.UIModalShopIconAnimal, title: "Wheat Seed" },
+            { assetKey: BaseAssetKey.UIModalShopIconAnimal, title: "Corn Seed" },
+            { assetKey: BaseAssetKey.UIModalShopIconAnimal, title: "Rice Seed" },
+            { assetKey: BaseAssetKey.UIModalShopIconAnimal, title: "Apple" },
+            { assetKey: BaseAssetKey.UIModalShopIconAnimal, title: "Orange" },
+            { assetKey: BaseAssetKey.UIModalShopIconAnimal, title: "Banana" },
+            { assetKey: BaseAssetKey.UIModalShopIconAnimal, title: "Grapes" },
         ]
 
         return itemList.map(({ assetKey, title }) =>

@@ -2,7 +2,7 @@ import { ShopContent } from "./ShopContent"
 import { ShopBackground } from "./ShopBackground"
 import { ShopHeader } from "./ShopHeader"
 import { ShopTabs } from "./ShopTabs"
-import { SizerBaseConstructorParams } from "@/game/types"
+import { BaseSizerBaseConstructorParams } from "@/game/types"
 import {
     getScreenBottomY,
     getScreenCenterX,
@@ -39,7 +39,7 @@ export class ShopModal extends BaseSizer implements IModal {
         height,
         width,
         config,
-    }: SizerBaseConstructorParams) {
+    }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
         this.shopBackground = new ShopBackground({

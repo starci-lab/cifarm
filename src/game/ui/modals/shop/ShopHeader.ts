@@ -25,12 +25,12 @@ export class ShopHeader extends ContainerLite {
 
         // create the background
         const backgroundContainer = this.scene.rexUI.add.container(0, 0)
-        const background = this.scene.add.image(0, 0, BaseAssetKey.ModalShopTopbar)
+        const background = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopTopbar)
         backgroundContainer.addLocal(background)
 
         // add the close button
         this.closeButton = this.scene.add
-            .image(background.width / 2 - 50, 0, BaseAssetKey.ModalShopX)
+            .image(background.width / 2 - 50, 0, BaseAssetKey.UIModalShopX)
             .setOrigin(1, 0.5)
         // add the on click event
         this.closeButton.setInteractive().on("pointerdown", () => {
@@ -54,12 +54,12 @@ export class ShopHeader extends ContainerLite {
         backgroundContainer.addLocal(this.closeButton)
 
         const topDecorator = this.scene.add
-            .image(0, -background.height / 2, BaseAssetKey.ModalShopTopDecorator)
+            .image(0, -background.height / 2, BaseAssetKey.UIModalShopTopDecorator)
             .setOrigin(0.5, 1)
         backgroundContainer.addLocal(topDecorator)
         this.addLocal(backgroundContainer)
 
-        const frame = this.scene.add.image(0, 0, BaseAssetKey.ModalShopTitleShop)
+        const frame = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopTitleShop)
 
         // create the text
         const text = new BaseText({

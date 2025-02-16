@@ -7,7 +7,8 @@ import {
     ScrollablePanel,
     Sizer,
     GridTable,
-    BadgeLabel
+    BadgeLabel,
+    BBCodeText
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 // base constructor params for NinePatch2
@@ -17,7 +18,7 @@ export interface NinePatch2BaseConstructorParams {
 }
 
 // base constructor params for Sizer
-export interface SizerBaseConstructorParams {
+export interface BaseSizerBaseConstructorParams {
   scene: Phaser.Scene;
   x?: number;
   y?: number;
@@ -26,8 +27,13 @@ export interface SizerBaseConstructorParams {
   config?: Sizer.IConfig;
 }
 
+export interface SizerBaseConstructorParams {
+  scene: Phaser.Scene;
+  config?: Sizer.IConfig;
+}
+
 // overlap sizer base constructor params
-export interface OverlapSizerBaseConstructorParams {
+export interface OverlapBaseSizerBaseConstructorParams {
   scene: Phaser.Scene;
   x?: number;
   y?: number;
@@ -40,6 +46,14 @@ export interface OverlapSizerBaseConstructorParams {
 export interface ConstructorParams<TBaseConstructorParams, TOptions> {
   baseParams: TBaseConstructorParams;
   options?: TOptions;
+}
+
+export interface BBCodeTextBaseConstructorParams {
+  scene: Phaser.Scene, 
+  x?: number, 
+  y?: number,
+  text?: string, 
+  style?: BBCodeText.TextStyle
 }
 
 // base constructor params for Buttons

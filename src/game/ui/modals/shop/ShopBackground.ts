@@ -11,17 +11,17 @@ export class ShopBackground extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         this.wall = this.scene.add
-            .image(0, -170, BaseAssetKey.ModalShopWall)
+            .image(0, -170, BaseAssetKey.UIModalShopWall)
             .setOrigin(0.5, 1)
         this.addLocal(this.wall)
 
         this.bottomBar = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalShopBottomBar)
+            .image(0, 0, BaseAssetKey.UIModalShopBottomBar)
             .setOrigin(0.5, 1)
         this.addLocal(this.bottomBar)
 
         this.bottomDecorator = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalShopBottomDecorator)
+            .image(0, 0, BaseAssetKey.UIModalShopBottomDecorator)
             .setOrigin(0.5, 1)
         this.addLocal(this.bottomDecorator)
     }

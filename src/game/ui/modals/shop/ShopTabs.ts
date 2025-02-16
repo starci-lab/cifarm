@@ -100,14 +100,14 @@ export class ShopTabs extends ContainerLite {
         const tab = this.scene.add.container(0, 0)
         // create the icon tab on
         const iconTabOn = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalShopIconTabOn)
+            .image(0, 0, BaseAssetKey.UIModalShopIconTabOn)
             .setOrigin(0, 1)
         iconTabOn.setInteractive()
         // add the icon tab on to the container
         tab.add(iconTabOn)
         // create the icon tab off
         const iconTabOff = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalShopIconTabOff)
+            .image(0, 0, BaseAssetKey.UIModalShopIconTabOff)
             .setOrigin(0, 1)
         // add the icon tab off to the container
         tab.add(iconTabOff)

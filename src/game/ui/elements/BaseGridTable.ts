@@ -24,7 +24,7 @@ export interface CellInfo {
 
 export const getCellInfo = (scene: Scene): CellInfo => {
     const frameSourceImage = scene.textures
-        .get(BaseAssetKey.ModalCommonFrame)
+        .get(BaseAssetKey.UIModalCommonFrame)
         .getSourceImage()
     return {
         cellWidth: frameSourceImage.width * STORAGE_CELL_SCALE + CELL_SPACING,
@@ -35,7 +35,7 @@ export const getCellInfo = (scene: Scene): CellInfo => {
 
 export class BaseGridTableFrame extends Phaser.GameObjects.Image {
     constructor({ scene, x, y }: ImagepBaseConstructorParams) {
-        super(scene, x, y, BaseAssetKey.ModalCommonFrame)
+        super(scene, x, y, BaseAssetKey.UIModalCommonFrame)
     }
 }
 
@@ -61,7 +61,7 @@ export class BaseGridTable<TItem> extends GridTable {
                 interactive: true, // Allow scrolling
             },
             slider: {
-                thumb: scene.add.image(0, 0, BaseAssetKey.ModalCommonThumb),
+                thumb: scene.add.image(0, 0, BaseAssetKey.UIModalCommonThumb),
             },
             mouseWheelScroller: { focus: false, speed: 2 },
             createCellContainerCallback,

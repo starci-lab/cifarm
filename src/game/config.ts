@@ -18,6 +18,9 @@ const config: Phaser.Types.Core.GameConfig = {
         width: 1080,
         height: 1920,
     },
+    dom: {
+        createContainer: true
+    },
     plugins: {
         scene: [
             //add rexGestures plugin

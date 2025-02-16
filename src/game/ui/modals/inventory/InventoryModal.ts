@@ -1,12 +1,12 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { SizerBaseConstructorParams } from "../../../types"
+import { BaseSizerBaseConstructorParams } from "../../../types"
 import { InventoryContent } from "./InventoryContent"
 import { getScreenBottomY, getScreenCenterX } from "../../utils"
 
 export class InventoryModal extends BaseSizer {
     private inventoryContent: InventoryContent
 
-    constructor({ scene, x, y, width, height, config}: SizerBaseConstructorParams) {
+    constructor({ scene, x, y, width, height, config}: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height, config)
 
         // create the inventory storage

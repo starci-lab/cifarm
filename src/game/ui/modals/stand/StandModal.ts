@@ -1,5 +1,5 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { SizerBaseConstructorParams } from "../../../types"
+import { BaseSizerBaseConstructorParams } from "../../../types"
 import { getScreenCenterX, getScreenCenterY, getScreenTopY } from "../../utils"
 import { StandContent } from "./StandContent"
 import { StandHeader } from "./StandHeader"
@@ -8,7 +8,7 @@ export class StandModal extends BaseSizer {
     private standContent: StandContent
     private standHeader: StandHeader
 
-    constructor({ scene, x, y, height, width, config }: SizerBaseConstructorParams) {
+    constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
         // create the header
@@ -30,7 +30,5 @@ export class StandModal extends BaseSizer {
         })
         this.scene.add.existing(this.standContent)
         this.add(this.standContent)
-
-        
     }
 }

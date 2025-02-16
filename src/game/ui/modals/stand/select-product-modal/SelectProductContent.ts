@@ -1,13 +1,13 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { CacheKey, SizerBaseConstructorParams } from "../../../../types"
+import { CacheKey, BaseSizerBaseConstructorParams } from "../../../../types"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseGridTable, BaseGridTableCell, BaseGridTableFrame, CellInfo, getCellInfo, RibbonTitle } from "../../../elements"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { getProductInventories } from "../../../../queries"
-import { calculateUiDepth, UILayer } from "../../../../layers"
 import { EventBus, EventName, ModalName } from "../../../../event-bus"
 import { onGameObjectPress } from "@/game/ui/utils"
+import { MODAL_DEPTH_2 } from "../../ModalManager"
 
 export class SelectProductContent extends BaseSizer {
     private background: Phaser.GameObjects.Image
@@ -16,10 +16,10 @@ export class SelectProductContent extends BaseSizer {
     private gridTable: BaseGridTable<InventorySchema>|undefined
     private cellInfo: CellInfo
 
-    constructor({ scene, x, y, width, height }: SizerBaseConstructorParams) {
+    constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
 
-        this.background = this.scene.add.image(0, 0, BaseAssetKey.ModalCommonBackground1)
+        this.background = this.scene.add.image(0, 0, BaseAssetKey.UIModalCommonBackground1)
         this.addLocal(this.background)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
@@ -37,7 +37,7 @@ export class SelectProductContent extends BaseSizer {
             options: {
                 text: "Select Product",
             }
-        }).layout()
+        })
         this.scene.add.existing(this.ribbonTitle)
         this.addLocal(this.ribbonTitle)
 
@@ -87,11 +87,7 @@ export class SelectProductContent extends BaseSizer {
                                     })
                                     .setScale(this.cellInfo.scale)
                                     .setDepth(
-                                        calculateUiDepth({
-                                            layer: UILayer.Modal,
-                                            layerDepth: 2,
-                                            additionalDepth: 3,
-                                        })
+                                        MODAL_DEPTH_2 + 2
                                     )
                             )
                         }
@@ -100,11 +96,7 @@ export class SelectProductContent extends BaseSizer {
                 },
                 items,
             }
-        }).layout().setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 2,
-            additionalDepth: 2,
-        }))
+        }).setDepth(MODAL_DEPTH_2 + 1)
         this.scene.add.existing(this.gridTable)
         this.addLocal(this.gridTable)
         return this.gridTable

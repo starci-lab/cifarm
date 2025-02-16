@@ -1,5 +1,5 @@
 import { BaseAssetKey } from "../../../assets"
-import { CacheKey, SizerBaseConstructorParams } from "../../../types"
+import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
 import { IPaginatedResponse } from "@/modules/apollo/types"
 import { DeliveringProductSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -22,7 +22,7 @@ export class StandContent extends BaseSizer {
         config,
         height,
         width
-    }: SizerBaseConstructorParams) {
+    }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config) 
 
         const { data } = this.scene.cache.obj.get(
@@ -49,7 +49,7 @@ export class StandContent extends BaseSizer {
 
     private updateStandGridSizer() {
         const items = this.getItems()
-        const background = this.scene.add.image(0, 0, BaseAssetKey.ModalStand)
+        const background = this.scene.add.image(0, 0, BaseAssetKey.UIModalStand)
         // Create Fixed Grid Table
         this.gridSizer = this.scene.rexUI.add
             .gridSizer({
@@ -63,7 +63,7 @@ export class StandContent extends BaseSizer {
                     const item = items[y * COLUMN_COUNT + x]
                     const container = scene.rexUI.add.container(0, 0)
                     const tag = scene.add
-                        .image(0, 0, BaseAssetKey.ModalStandTag)
+                        .image(0, 0, BaseAssetKey.UIModalStandTag)
                         .setOrigin(0.5, 0)
                     container.addLocal(tag)
                     // if item is existed
@@ -79,13 +79,12 @@ export class StandContent extends BaseSizer {
                 },
             })
             .addBackground(background)
-            .layout()
             .setOrigin(0.5, 0.5)
         this.addLocal(this.gridSizer)
     }
 
     private createAddButton() {
-        const image = this.scene.add.image(0, 0, BaseAssetKey.ModalStandAddButton)
+        const image = this.scene.add.image(0, 0, BaseAssetKey.UIModalStandAddButton)
         image.setInteractive()
         image.on("pointerdown", () => {
             onGameObjectPress({

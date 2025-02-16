@@ -12,12 +12,12 @@ export class StandHeader extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         // Background header covering the full width
-        this.header = this.scene.add.image(0, 0, BaseAssetKey.ModalStandHeader)
+        this.header = this.scene.add.image(0, 0, BaseAssetKey.UIModalStandHeader)
             .setOrigin(0.5, 0)
         this.addLocal(this.header)
 
         this.closeButton = scene.add
-            .image(this.header.width/2 - 50, 90, BaseAssetKey.ModalInventoryBtnClose)
+            .image(this.header.width/2 - 50, 90, BaseAssetKey.UIModalInventoryBtnClose)
             .setOrigin(0.5, 0)
             .setDepth(1)
             .setInteractive()

@@ -17,7 +17,7 @@ import {
     getScreenCenterX,
 } from "../../utils"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
-import { CacheKey, SizerBaseConstructorParams } from "../../../types"
+import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
 import {
     AnimalSchema,
     BuildingSchema,
@@ -72,7 +72,7 @@ export class ShopContent extends BaseSizer {
         x,
         y,
         config,
-    }: SizerBaseConstructorParams) {
+    }: BaseSizerBaseConstructorParams) {
         super(scene, height, width, x, y, config)
 
         // load animals
@@ -442,13 +442,13 @@ export class ShopContent extends BaseSizer {
         const shopItemCardImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopItemCard
+            BaseAssetKey.UIModalShopItemCard
         )
 
         const cardTitleImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopCardTitle
+            BaseAssetKey.UIModalShopCardTitle
         )
 
         const titleText = new BaseText({
@@ -475,7 +475,7 @@ export class ShopContent extends BaseSizer {
         const avatarShop = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopAvatarShop
+            BaseAssetKey.UIModalShopAvatarShop
         )
         iconContainer.add(avatarShop)
 
@@ -509,7 +509,7 @@ export class ShopContent extends BaseSizer {
         const buttonPriceImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopButtonPrice
+            BaseAssetKey.UIModalShopButtonPrice
         )
         const priceText = new BaseText({
             baseParams: {
