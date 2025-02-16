@@ -284,7 +284,10 @@ export class InputTilemap extends ItemTilemap {
     //check current mouse position is in which tile
         if (this.placingInProgress) {
             const { worldX, worldY } = this.scene.input.activePointer
+
+            console.log("active pointer", worldX, worldY)
             const tile = this.getTileAtWorldXY(worldX, worldY)
+            console.log("hehehe", tile)
             // do nothing if tile is not found
             if (!tile) {
                 return
@@ -314,6 +317,7 @@ export class InputTilemap extends ItemTilemap {
         // if temporary place item object is already created
         if (this.temporaryPlaceItemObject) {
             // update the temporary place item object position
+            console.log("Updating temporary place item object position", tile.x, tile.y)
             const position = this.tileToWorldXY(tile.x, tile.y)
             if (!position) {
                 throw new Error("Position not found")
@@ -323,12 +327,8 @@ export class InputTilemap extends ItemTilemap {
             this.temporaryPlaceItemObject
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
                 .setOrigin(0.5, 1)
-
-            if (this.placementPopup) {
-                this.placementPopup.setPosition(position.x + 20, position.y - 2)
-            } else {
-                this.showPlacmentPopupUI(tile)
-            }
+            
+            this.showPlacmentPopupUI(tile)
 
             return
         }
@@ -366,16 +366,25 @@ export class InputTilemap extends ItemTilemap {
         if (!position) {
             throw new Error("Position not found")
         }
+
+        if (this.placementPopup) {
+            this.placementPopup.setPosition(position.x + 20, position.y - 2)
+            return
+        } 
+
+        if (!position) {
+            throw new Error("Position not found")
+        }
         
         this.placementPopup = new PlacementPopup({
             scene: this.scene,
             onCancel: () => {
                 this.cancelPlacement()
             },
-            onConfirm: () => this.placeItemOnTile(tile),
+            onConfirm: () => this.handlePlaced(),
         }).setPosition(
-            position.x + 20,
-            position.y - 2
+            620,
+            900
         ).setDepth(
             calculateUiDepth({
                 layer: UILayer.Overlay,
@@ -386,6 +395,25 @@ export class InputTilemap extends ItemTilemap {
 
         console.log("placementPopup set", this.placementPopup)
     }
+
+    private handlePlaced() {
+        if (!this.temporaryPlaceItemObject) {
+            console.error("No temporary place item object found")
+            return
+        }
+
+        const { worldX, worldY } = this.scene.input.activePointer
+
+        const tileWorld = this.getTileAtWorldXY(worldX, worldY)
+        console.log("Tile world", tileWorld)
+        if (!tileWorld) {
+            console.error("No tile found for temporary place item object")
+            return
+        }
+        console.log("getActualTileCoordinates", this.getActualTileCoordinates(tileWorld.x, tileWorld.y))
+
+        this.placeItemOnTile(this.getActualTileCoordinates(tileWorld.x, tileWorld.y))
+    }
     
 
     private removePlacmentPopupUI() {
@@ -394,9 +422,7 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemData = undefined
     }
 
-    private placeItemOnTile(tile: Phaser.Tilemaps.Tile) {
-        console.log("Item placed on tile:", tile)
-
+    private placeItemOnTile(position: Phaser.Math.Vector2) {
         if (!this.temporaryPlaceItemData) {
             console.error("No item data found for placement")
             return
@@ -415,8 +441,8 @@ export class InputTilemap extends ItemTilemap {
             const eventMessage: ConstructBuildingRequest = {
                 buildingId: buildingKey as BuildingId,
                 position: {
-                    x: tile.x,
-                    y: tile.y,
+                    x: position.x,
+                    y: position.y,
                 },
             }
 
@@ -439,8 +465,8 @@ export class InputTilemap extends ItemTilemap {
             const eventMessage: BuyTileRequest = {
                 tileId: tileKey as TileId,
                 position: {
-                    x: tile.x,
-                    y: tile.y,
+                    x: position.x,
+                    y: position.y,
                 },
             }
 

@@ -214,6 +214,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             tileY: placedItem.y,
             layer: this.groundLayer,
         })
+        
+        // console.log("uytest: ", placedItem.x, placedItem.y, tile, placedItem)
         if (!tile) {
             throw new Error("Tile not found")
         }
