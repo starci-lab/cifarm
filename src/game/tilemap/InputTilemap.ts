@@ -26,6 +26,7 @@ import { ObjectLayerName } from "./types"
 import { PlacementPopup, ToolLike } from "../ui"
 
 export const POPUP_SCALE = 0.7
+export const TEMPORARY = "temporary"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
@@ -103,6 +104,7 @@ export class InputTilemap extends ItemTilemap {
 
         // listen for place in progress event
         EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
+            this.destroyTemporaryPlaceItemObject()
             this.handlePlaceInProgress(data)
         })
 
@@ -143,7 +145,7 @@ export class InputTilemap extends ItemTilemap {
 
         const object = data.object
         const currentPlacedItem = object.currentPlacedItem
-        console.log(currentPlacedItem)
+        
         const placedItemId = currentPlacedItem?.id
         // do nothing if placed item id is not found
         if (!placedItemId) {
@@ -264,17 +266,22 @@ export class InputTilemap extends ItemTilemap {
         // switch case to set the place item data
         switch (type) {
         case PlacedItemType.Animal:
-            this.temporaryPlaceItemData =
-          animalAssetMap[id as AnimalId].ages[AnimalAge.Baby]
-            this.temporaryPlaceItemData.type = PlacedItemType.Animal
+            this.temporaryPlaceItemData = {
+                ...animalAssetMap[id as AnimalId].ages[AnimalAge.Baby],
+                type: PlacedItemType.Animal,
+            }
             break
         case PlacedItemType.Building:
-            this.temporaryPlaceItemData = buildingAssetMap[id as BuildingId]
-            this.temporaryPlaceItemData.type = PlacedItemType.Building
+            this.temporaryPlaceItemData = {
+                ...buildingAssetMap[id as BuildingId],
+                type: PlacedItemType.Building,
+            }
             break
         case PlacedItemType.Tile:
-            this.temporaryPlaceItemData = tileAssetMap[id as TileId]
-            this.temporaryPlaceItemData.type = PlacedItemType.Tile
+            this.temporaryPlaceItemData = {
+                ...tileAssetMap[id as TileId],
+                type: PlacedItemType.Tile,
+            }
             break
         }
     }
@@ -290,6 +297,8 @@ export class InputTilemap extends ItemTilemap {
             if (!tile) {
                 return
             }
+
+            console.log("temporaryPlaceItemData", this.temporaryPlaceItemData)
 
             // place the item temporarily on the tile
             this.temporaryPlaceItemOnTile(tile)
@@ -335,7 +344,7 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryLayer.objects.push({
             gid: tilesetConfig.gid,
             id: 0,
-            name: "temporary",
+            name: TEMPORARY,
             width: width * this.scale,
             height: height * this.scale,
             type: "",
@@ -481,12 +490,20 @@ export class InputTilemap extends ItemTilemap {
 
     private cancelPlacement() {
         console.log("Placement canceled")
-        this.temporaryPlaceItemObject?.destroy()
-        this.temporaryPlaceItemObject = undefined
+        this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
         this.removePlacmentPopupUI()
     }
 
-    
-    
+    // destroy method to clean up the resources
+    public destroyTemporaryPlaceItemObject() {
+        this.temporaryPlaceItemObject?.destroy()
+        this.temporaryPlaceItemObject = undefined
+        // remove the temporary object from the temporary layer
+        this.temporaryLayer.objects = this.temporaryLayer.objects.filter(
+            (object) => object.name !== TEMPORARY
+        )
+        //temporaryPlaceItemData
+        this.temporaryPlaceItemData = undefined
+    }
 }

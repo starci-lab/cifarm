@@ -97,12 +97,14 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         const { placedItems } = current
 
-        console.log("uytest: ", previous)
-        console.log("uytest: ", current)
+        console.log("uytest: pre", previous)
+        console.log("uytest: cur", current)
 
 
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
+
+        console.log("uytest: placedItems", checkedPreviousPlacedItems)
 
         for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
