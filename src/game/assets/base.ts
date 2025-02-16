@@ -40,6 +40,7 @@ export enum BaseAssetKey {
     ModalShopIconTree = "modal-shop-icon-tree",
     ModalShopIconDecoration = "modal-shop-icon-decoration",
     ModalShopIconOther = "modal-shop-icon-other",
+    ModalShopIconTile = "modal-shop-icon-tile",
 
     // Inventory modal
     ModalInventoryTopRibbon = "modal-inventory-top-ribbon",
@@ -181,6 +182,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.ModalShopIconTree]: "modals/shop/icon-tree.png",
     [BaseAssetKey.ModalShopIconDecoration]: "modals/shop/icon-decoration.png",
     [BaseAssetKey.ModalShopIconOther]: "modals/shop/icon-other.png",
+    [BaseAssetKey.ModalShopIconTile]: "tiles/starter-tile.png",
 
     // Inventory Modals
     [BaseAssetKey.ModalInventoryTopRibbon]: "modals/inventory/top-ribbon.png",

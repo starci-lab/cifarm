@@ -1,10 +1,11 @@
-import { HarvestCropRequest, PlantSeedRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest } from "@/modules/axios"
+import { BuyTileRequest, ConstructBuildingRequest, HarvestCropRequest, PlantSeedRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest } from "@/modules/axios"
 import {
     AnimalId,
     BuildingId,
     CropCurrentState,
     InventoryType,
     PlacedItemType,
+    TileId,
     ToolId,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -14,6 +15,7 @@ import {
     animalAssetMap,
     buildingAssetMap,
     TextureConfig,
+    tileAssetMap,
     TilesetConfig,
 } from "../assets"
 import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
@@ -23,10 +25,13 @@ import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 import { PlacementPopup, ToolLike } from "../ui"
 
+export const POPUP_SCALE = 0.7
+
 // temporary place item data
 export interface TemporaryPlaceItemData {
   textureConfig: TextureConfig;
   tilesetConfig: TilesetConfig;
+  type?: PlacedItemType;
 }
 
 // tilemap for handling input events
@@ -64,6 +69,11 @@ export class InputTilemap extends ItemTilemap {
         this.pinch.on("pinch", (dragScale: Pinch) => {
             const scaleFactor = dragScale.scaleFactor
             camera.zoom *= scaleFactor
+
+            if (this.placementPopup) {
+                const newScale = POPUP_SCALE / camera.zoom
+                this.placementPopup.setScale(newScale)
+            }
         })
 
         // add event listener for mouse wheel event
@@ -82,6 +92,11 @@ export class InputTilemap extends ItemTilemap {
                 //zoom out
                 else {
                     camera.zoom -= 0.1
+                }
+
+                if (this.placementPopup) {
+                    const newScale = POPUP_SCALE / camera.zoom
+                    this.placementPopup.setScale(newScale)
                 }
             }
         )
@@ -254,7 +269,8 @@ export class InputTilemap extends ItemTilemap {
             this.temporaryPlaceItemData = buildingAssetMap[id as BuildingId]
             break
         case PlacedItemType.Tile:
-            throw new Error("Not implemented")
+            this.temporaryPlaceItemData = tileAssetMap[id as TileId]
+            break
         }
     }
 
@@ -306,7 +322,7 @@ export class InputTilemap extends ItemTilemap {
             if (this.placementPopup) {
                 this.placementPopup.setPosition(position.x + 20, position.y - 2)
             } else {
-                this.showConfirmationUI(tile)
+                this.showPlacmentPopupUI(tile)
             }
 
             return
@@ -339,7 +355,7 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemObject = object
     }
 
-    private showConfirmationUI(tile: Phaser.Tilemaps.Tile) {
+    private showPlacmentPopupUI(tile: Phaser.Tilemaps.Tile) {
         const position = this.tileToWorldXY(tile.x, tile.y)
 
         if (!position) {
@@ -367,7 +383,7 @@ export class InputTilemap extends ItemTilemap {
     }
     
 
-    private removeConfirmationUI() {
+    private removePlacmentPopupUI() {
         this.placementPopup?.destroy()
         this.placementPopup = undefined
     }
@@ -375,22 +391,65 @@ export class InputTilemap extends ItemTilemap {
     private placeItemOnTile(tile: Phaser.Tilemaps.Tile) {
         console.log("Item placed on tile:", tile)
 
-        // emit the event to place the item
-        // EventBus.emit(EventName.PlaceItem, {
-        //     id: this.temporaryPlaceItemData?.textureConfig.key,
-        //     x: tile.x,
-        //     y: tile.y,
-        // })
+        if (!this.temporaryPlaceItemData) {
+            console.error("No item data found for placement")
+            return
+        }
+    
+        const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
 
-        // switch (this.temporaryPlaceItemData) {
-        // case PlacedItemType.Building: 
-        //     console.log("Building placed")
-        //     break
-        // case PlacedItemType.Animal:
-        //     console.log("Animal placed")
-        //     break
-        // default:
-        // }
+        switch (placedItemType) {
+        case PlacedItemType.Building: {
+            const buildingKey = textureConfig.key
+            if (!buildingKey) {
+                console.error("Error: Building key is undefined")
+                return
+            }
+        
+            const eventMessage: ConstructBuildingRequest = {
+                buildingId: buildingKey as BuildingId,
+                position: {
+                    x: tile.x,
+                    y: tile.y,
+                },
+            }
+
+            console.log("Requesting to buy building:", eventMessage)
+        
+            EventBus.emit(EventName.RequestBuyBuilding, eventMessage)
+
+            EventBus.once(EventName.BuyBuildingCompleted, () => {
+                this.cancelPlacement()
+            })
+            break
+        }
+        case PlacedItemType.Tile: {
+            const tileKey = textureConfig.key
+            if (!tileKey) {
+                console.error("Error: Tile key is undefined")
+                return
+            }
+        
+            const eventMessage: BuyTileRequest = {
+                tileId: tileKey as TileId,
+                position: {
+                    x: tile.x,
+                    y: tile.y,
+                },
+            }
+
+            console.log("Requesting to buy tile:", eventMessage)
+        
+            EventBus.emit(EventName.RequestBuyTile, eventMessage)
+
+            EventBus.once(EventName.BuyTileCompleted, () => {
+                this.cancelPlacement()
+            })
+            break
+        }
+        default:
+            console.error("Unsupported placed item type:", placedItemType)
+        }
     }
 
     private cancelPlacement() {
@@ -398,7 +457,7 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemObject?.destroy()
         this.temporaryPlaceItemObject = undefined
         this.placingInProgress = false
-        this.removeConfirmationUI()
+        this.removePlacmentPopupUI()
     }
 
     

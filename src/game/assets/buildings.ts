@@ -42,7 +42,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             sizeY: 3,
         },
         textureConfig: {
-            key: "buildings-coop",
+            key: "coop",
             assetUrl: "buildings/coop.png",
             //assetUrl: "tiles/xxxx.png",
         }
@@ -59,7 +59,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             sizeY: 3,
         },
         textureConfig: {
-            key: "buildings-barn",
+            key: "barn",
             assetUrl: "buildings/barn.png",
         }
     },

@@ -15,17 +15,21 @@ export class PlacementPopup extends ContainerLite {
     constructor({ scene, x, y, width, height, children, onCancel, onConfirm }: PlacementPopupConstructorParams) {
         super(scene, x, y, width, height, children)
 
+        const camera = scene.cameras.main
+        const buttonScale = 0.5 / camera.zoom
+
         this.yesButton = scene.add
-            .image(0, 0, BaseAssetKey.PopupPlacementIconYes)
+            .image(-200, 30, BaseAssetKey.PopupPlacementIconYes)
             .setInteractive()
-            .setScale(1.5) // Phóng to ảnh
+            .setScale(buttonScale)
             .on("pointerdown", onConfirm)
 
         this.noButton = scene.add
-            .image(80, 0, BaseAssetKey.PopupPlacementIconNo)
+            .image(200, 30, BaseAssetKey.PopupPlacementIconNo)
             .setInteractive()
-            .setScale(1.5) // Phóng to ảnh
+            .setScale(buttonScale)
             .on("pointerdown", onCancel)
+
 
         this.setDepth(
             calculateUiDepth({

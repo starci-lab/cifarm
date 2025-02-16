@@ -61,6 +61,7 @@ export class LoadingScene extends Scene {
                 crops,
                 animals,
                 buildings,
+                tiles,
                 dailyRewards,
                 tools,
                 inventoryTypes,
@@ -71,6 +72,7 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.Animals, animals)
                 this.cache.obj.add(CacheKey.Crops, crops)
                 this.cache.obj.add(CacheKey.Buildings, buildings)
+                this.cache.obj.add(CacheKey.Tiles, tiles)
                 this.cache.obj.add(CacheKey.DailyRewards, dailyRewards)
                 this.cache.obj.add(CacheKey.Tools, tools)
                 this.cache.obj.add(CacheKey.InventoryTypes, inventoryTypes)
