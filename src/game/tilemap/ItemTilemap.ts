@@ -104,21 +104,23 @@ export abstract class ItemTilemap extends GroundTilemap {
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
-        console.log("uytest: placedItems", checkedPreviousPlacedItems)
-
         for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
+            console.log("placedItem:uydev", previousPlacedItems, placedItem.id)
             const found = previousPlacedItems.find(
                 (item) => item.id === placedItem.id
             )
             if (!found) {
                 // place the item using the shared tile placing logic
+                console.log("placedItem: 111111111111111", placedItem)
                 this.placeTileForItem(placedItem)
             } else {
                 // if the placed item is in the previous placed items, update the item
                 const gameObject = this.placedItemObjectMap[placedItem.id]?.object
                 if (!gameObject) {
-                    throw new Error("Game object not found")
+                    console.warn(`Game object not found for ID: ${placedItem.id}`)
+                    this.placeTileForItem(placedItem)
+                    continue
                 }
                 gameObject.update(
                     this.getPlacedItemType(placedItem.placedItemType).type,
@@ -131,6 +133,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // remove the unchecked previous placed items that are no longer in the current placed items
         for (const placedItem of previousPlacedItems) {
+            console.log("placedItem:uydev1", placedItem)
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
             ) {
@@ -142,6 +145,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.placedItemObjectMap[placedItem.id]?.object.destroy()
             }
         }
+
+        
+
+        
     }
 
     // method to create all placed items when user IDs differ
@@ -201,7 +208,8 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // reusable method to place a tile for a given placed item
     private placeTileForItem(placedItem: PlacedItemSchema) {
-    // get tileset data
+        console.log("placedtileforItem new: ", placedItem)
+        // get tileset data
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
             placedItem.placedItemType
         )
