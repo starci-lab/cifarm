@@ -190,6 +190,7 @@ const query = gql`
       supply
       product
       stackable
+      tool
     }
   }
 `

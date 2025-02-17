@@ -1,4 +1,9 @@
-import { CropCurrentState, Position, TutorialStep, UserSchema } from "@/modules/entities"
+import {
+    CropCurrentState,
+    Position,
+    TutorialStep,
+    UserSchema,
+} from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "@/game/assets"
@@ -8,11 +13,9 @@ import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     EventBus,
     EventName,
-    TutorialOpenInventoryResponsedMessage,
+    ShowPressHereArrowMessage,
     TutorialOpenRoadsideStandResponsedMessage,
-    TutorialOpenShopResponsedMessage,
     TutorialPrepareBuySeedsMessage,
-    TutorialPrepareCloseShopResponsedMessage,
 } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -46,10 +49,13 @@ export class Stacy extends ContainerLite {
             },
         })
             .setOrigin(0.5, 1)
-            .setVisible(false).setDepth(calculateUiDepth({
-                layer: UILayer.Tutorial,
-                layerDepth: 1
-            }))
+            .setVisible(false)
+            .setDepth(
+                calculateUiDepth({
+                    layer: UILayer.Tutorial,
+                    layerDepth: 1,
+                })
+            )
         this.scene.add.existing(this.pressToContinueText)
 
         // press here arrow
@@ -57,9 +63,11 @@ export class Stacy extends ContainerLite {
             .image(0, 0, BaseAssetKey.PressHereArrow)
             .setOrigin(0.5, 0)
             .setVisible(false)
-            .setDepth(calculateUiDepth({
-                layer: UILayer.Overlay,
-            }))
+            .setDepth(
+                calculateUiDepth({
+                    layer: UILayer.Overlay,
+                })
+            )
 
         // stacy image
         this.stacyImage = this.scene.add
@@ -139,33 +147,29 @@ export class Stacy extends ContainerLite {
         })
         this.scene.add.existing(helperText)
 
-        this.helpDialog = this.scene.rexUI.add.label({
-            x: getScreenCenterX(this.scene),
-            y: 300,
-            originY: 0,
-            space: {
-                left: 20,
-                right: 20,
-                top: 20,
-                bottom: 20,
-            },
-            text: helperText,
-        }).setDepth(
-            calculateUiDepth({
-                layer: UILayer.Tutorial,
-                layerDepth: 2,
+        this.helpDialog = this.scene.rexUI.add
+            .label({
+                originY: 0,
+                x: getScreenCenterX(this.scene),
+                y: 200,
+                space: {
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 20,
+                },
+                text: helperText,
             })
-        ).layout()
+            .setDepth(
+                calculateUiDepth({
+                    layer: UILayer.Tutorial,
+                    layerDepth: 2,
+                })
+            )
+            .layout()
         this.helpDialog.hide()
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
-    
-        this.scene.events.on(
-            EventName.HidePressHereArrow,
-            () => {
-                this.pressHereArrow?.setVisible(false)
-            }
-        )
 
         // callback when the tutorial is completed
         EventBus.on(EventName.UpdateTutorialCompleted, () => {
@@ -179,7 +183,54 @@ export class Stacy extends ContainerLite {
             })
             EventBus.emit(EventName.RefreshUser)
         })
-        
+
+        // callback when the tutorial is completed
+        EventBus.on(EventName.UpdateTutorialCompleted, () => {
+            EventBus.once(EventName.UserRefreshed, (user: UserSchema) => {
+                // check  if the tutorial is not shown
+                // set the user
+                this.user = user
+                // emit the event
+                // we perform switch case here to know what to do next
+                this.render()
+            })
+            EventBus.emit(EventName.RefreshUser)
+        })
+
+        // callback when the tutorial is completed
+        EventBus.on(EventName.UpdateTutorialCompleted, () => {
+            EventBus.once(EventName.UserRefreshed, (user: UserSchema) => {
+                // check  if the tutorial is not shown
+                // set the user
+                this.user = user
+                // emit the event
+                // we perform switch case here to know what to do next
+                this.render()
+            })
+            EventBus.emit(EventName.RefreshUser)
+        })
+
+        this.scene.events.on(EventName.HidePressHereArrow, () => {
+            this.pressHereArrow?.setVisible(false)
+        })
+
+        this.scene.events.on(
+            EventName.ShowPressHereArrow,
+            ({
+                originPosition,
+                targetPosition,
+                rotation,
+                requireSetVisibility,
+            }: ShowPressHereArrowMessage) => {
+                this.displayPressHereArrow({
+                    originPosition,
+                    targetPosition,
+                    requireSetVisibility,
+                    rotation,
+                })
+            }
+        )
+
         this.hide()
     }
 
@@ -205,16 +256,6 @@ export class Stacy extends ContainerLite {
             case TutorialStep.StartBuySeeds: {
                 // when user press the shop button
                 this.scene.events.once(
-                    EventName.TutorialOpenShopResponsed,
-                    ({ position }: TutorialOpenShopResponsedMessage) => {
-                        this.displayPressHereArrow({
-                            originPosition: { x: position.x + 60, y: position.y + 60 },
-                            targetPosition: { x: position.x + 40, y: position.y + 40 },
-                        })
-                    }
-                )
-                // when user press the shop button
-                this.scene.events.once(
                     EventName.TutorialPrepareBuySeeds,
                     ({ position }: TutorialPrepareBuySeedsMessage) => {
                         this.displayPressHereArrow({
@@ -223,22 +264,14 @@ export class Stacy extends ContainerLite {
                         })
                     }
                 )
-                // when user prepare to close the shop
                 this.scene.events.once(
-                    EventName.TutorialPrepareCloseShopResponsed,
-                    ({ position }: TutorialPrepareCloseShopResponsedMessage) => {
-                        this.displayPressHereArrow({
-                            rotation: 45,
-                            originPosition: { x: position.x - 60, y: position.y + 60 },
-                            targetPosition: { x: position.x - 40, y: position.y + 40 },
-                        })
+                    EventName.TutorialCloseShopButtonPressed,
+                    () => {
+                        this.scene.events.emit(EventName.HidePressHereArrow)
+                        // call the api to update the tutorial step
+                        EventBus.emit(EventName.RequestUpdateTutorial)
                     }
                 )
-                this.scene.events.once(EventName.TutorialCloseShopButtonPressed, () => {
-                    this.scene.events.emit(EventName.HidePressHereArrow)
-                    // call the api to update the tutorial step
-                    EventBus.emit(EventName.RequestUpdateTutorial)
-                })
                 this.scene.events.emit(EventName.TutorialOpenShop)
                 // thus, show an animated arrow pointing to the shop button
                 // get position of the shop button
@@ -246,17 +279,21 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartOpenInventory: {
-                // when user press the shop button
                 this.scene.events.once(
-                    EventName.TutorialOpenInventoryResponsed,
-                    ({ position }: TutorialOpenInventoryResponsedMessage) => {
-                        this.displayPressHereArrow({
-                            rotation: 45,
-                            originPosition: { x: position.x - 60, y: position.y + 60 },
-                            targetPosition: { x: position.x - 40, y: position.y + 40 },
-                        })
+                    EventName.TutorialInventoryButtonPressed,
+                    () => {
+                        this.showHelpDialog("Move the seeds from storage to toolbar.")
                     }
                 )
+                this.scene.events.once(
+                    EventName.TutorialInventorySeedMoveToToolbar,
+                    () => {
+                        //EventBus.emit(EventName.RequestUpdateTutorial)
+                    }
+                )
+                this.scene.events.once(EventName.TutorialCloseInventoryButtonPressed, () => {
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                })
                 // emit the event to open the inventory
                 this.scene.events.emit(EventName.TutorialOpenInventory)
                 // hide the stacy
@@ -266,7 +303,9 @@ export class Stacy extends ContainerLite {
             case TutorialStep.StartPlantSeeds: {
                 //check how many seeds planteds
                 let count = 2
-                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({
+                    scene: this.scene,
+                })
                 if (placedItems.length === 1) {
                     count = 1
                 }
@@ -282,7 +321,7 @@ export class Stacy extends ContainerLite {
                     EventBus.emit(EventName.HideButtons)
                     this.showHelpDialog(generatePlantSeedText(count))
                 })
-                
+
                 EventBus.on(EventName.TutorialSeedPlanted, () => {
                     count--
                     if (count === 0) {
@@ -305,11 +344,15 @@ export class Stacy extends ContainerLite {
                 this.showHelpDialog("Select seed from toolbar.")
                 return
             }
-            case TutorialStep.StartWaterCropAtStage1: 
-            {
-                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+            case TutorialStep.StartWaterCropAtStage1: {
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({
+                    scene: this.scene,
+                })
                 const placedItemsNeedWater = placedItems.filter((placedItem) => {
-                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.NeedWater
+                    return (
+                        placedItem.seedGrowthInfo?.currentState ===
+              CropCurrentState.NeedWater
+                    )
                 })
                 let count = placedItemsNeedWater.length
                 // emit update tutorial if there is no crop that need water
@@ -345,9 +388,14 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartWaterCropAtStage2: {
-                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({
+                    scene: this.scene,
+                })
                 const placedItemsNeedWater = placedItems.filter((placedItem) => {
-                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.NeedWater
+                    return (
+                        placedItem.seedGrowthInfo?.currentState ===
+              CropCurrentState.NeedWater
+                    )
                 })
                 let count = placedItemsNeedWater.length
                 // emit update tutorial if there is no crop that need water
@@ -380,9 +428,14 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartUsePesticide: {
-                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({
+                    scene: this.scene,
+                })
                 const placedItemsInfested = placedItems.filter((placedItem) => {
-                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.IsInfested
+                    return (
+                        placedItem.seedGrowthInfo?.currentState ===
+              CropCurrentState.IsInfested
+                    )
                 })
                 let count = placedItemsInfested.length
                 // emit update tutorial if there is no crop that need water
@@ -418,9 +471,14 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartUseHerbicide: {
-                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({
+                    scene: this.scene,
+                })
                 const placedItemsWeedy = placedItems.filter((placedItem) => {
-                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.IsWeedy
+                    return (
+                        placedItem.seedGrowthInfo?.currentState ===
+              CropCurrentState.IsWeedy
+                    )
                 })
                 let count = placedItemsWeedy.length
                 // emit update tutorial if there is no crop that need water
@@ -456,9 +514,14 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartHarvestCrop: {
-                const placedItems = getPlacedItemsWithSeedGrowthInfo({ scene: this.scene })
+                const placedItems = getPlacedItemsWithSeedGrowthInfo({
+                    scene: this.scene,
+                })
                 const placedItemsFullyMatured = placedItems.filter((placedItem) => {
-                    return placedItem.seedGrowthInfo?.currentState === CropCurrentState.FullyMatured
+                    return (
+                        placedItem.seedGrowthInfo?.currentState ===
+              CropCurrentState.FullyMatured
+                    )
                 })
                 let count = placedItemsFullyMatured.length
                 // emit update tutorial if there is no crop that need water
@@ -508,8 +571,10 @@ export class Stacy extends ContainerLite {
                     }
                 )
 
-                this.scene.events.once(EventName.TutorialRoadsideStandButtonPressed, () => {
-                })
+                this.scene.events.once(
+                    EventName.TutorialRoadsideStandButtonPressed,
+                    () => {}
+                )
 
                 // emit the event to open the inventory
                 this.scene.events.emit(EventName.TutorialOpenRoadsideStand)
@@ -582,12 +647,14 @@ export class Stacy extends ContainerLite {
 
     // render the stacy image
     public render() {
-        // show the stacy
+    // show the stacy
         if (!this.isShown()) {
             this.show()
         }
         // show the backdrop
-        EventBus.emit(EventName.ShowUIBackdrop, { depth: calculateUiDepth({ layer: UILayer.Tutorial }) })
+        EventBus.emit(EventName.ShowUIBackdrop, {
+            depth: calculateUiDepth({ layer: UILayer.Tutorial }),
+        })
         // hide the help dialog
         this.hideHelpDialog()
 

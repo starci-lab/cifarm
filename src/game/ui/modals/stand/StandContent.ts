@@ -1,6 +1,6 @@
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../assets"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
-import { IPaginatedResponse } from "@/modules/apollo/types"
+import { IPaginatedResponse } from "@/modules/apollo"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { onGameObjectPress } from "../../utils"
@@ -168,8 +168,10 @@ export class StandContent extends BaseSizer {
         const xButton = new XButton({
             baseParams: {
                 scene: this.scene, 
-                x: 0,
-                y: 0
+                config: {
+                    x: 0,
+                    y: 0
+                }
             },
             options: {
                 onPress: () => {

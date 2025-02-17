@@ -1,8 +1,7 @@
 import { AbstractSchema } from "./abstract"
 import { PlacedItemSchema } from "./placed-item"
 import { UserSchema } from "./user"
-import { CropCurrentState, CropId } from "../enums"
-import { CropSchema } from "./crop"
+import { CropCurrentState } from "../enums"
 
 export interface SeedGrowthInfoSchema extends AbstractSchema {
     currentStage: number
@@ -11,8 +10,7 @@ export interface SeedGrowthInfoSchema extends AbstractSchema {
     harvestQuantityRemaining: number
     harvestCount: number
     isQuality: boolean
-    cropId: CropId
-    crop: CropSchema
+    crop: string
     currentState: CropCurrentState
     thiefedBy: Array<UserSchema>
     isFertilized: boolean

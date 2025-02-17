@@ -18,7 +18,7 @@ import { CacheKey } from "../types"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { loadCropStateAssets } from "../assets/states"
-import { IPaginatedResponse } from "@/modules/apollo/types"
+import { IPaginatedResponse } from "@/modules/apollo"
 
 export enum LoadingPhase {
     DataFetching = "dataFetching",

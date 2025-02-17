@@ -35,15 +35,16 @@ import {
     EventName,
     ModalName,
     PlacedInprogressMessage,
-    TutorialPrepareBuySeedsMessage,
+    ShowPressHereArrowMessage,
 } from "../../../event-bus"
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateUiDepth, UILayer } from "../../../layers"
 import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
-import { getSpecificSeedInventories } from "../../../queries"
+import { getFirstSeedInventory } from "../../../queries"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { IPaginatedResponse } from "@/modules/apollo"
 
 // own depth for the shop content
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
@@ -89,7 +90,8 @@ export class ShopContent extends BaseSizer {
             (building) => building.availableInShop
         )
 
-        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+        this.inventories = data
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
 
         // create the scrollable panel
@@ -119,28 +121,29 @@ export class ShopContent extends BaseSizer {
             // disable the default scroller
             this.disableDefaultScroller()
 
-            const inventories = getSpecificSeedInventories({
+            const inventory = getFirstSeedInventory({
                 cropId: this.defaultInfo.defaultCropId,
                 scene: this.scene,
                 inventories: this.inventories,
             })
-            if (inventories.length > this.defaultInfo.defaultSeedQuantity) {
+            if (inventory && inventory.quantity > this.defaultInfo.defaultSeedQuantity) {
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }
 
             this.defaultItemCard.setDepth(HIGHLIGH_DEPTH)
 
-            const eventMessage: TutorialPrepareBuySeedsMessage = {
-                position: this.defaultSeedButton.getCenter(),
+            const eventMessage: ShowPressHereArrowMessage = {
+                originPosition: {
+                    x: this.defaultSeedButton.x + 60,
+                    y: this.defaultSeedButton.y + 60,
+                },
+                targetPosition: {
+                    x: this.defaultSeedButton.x + 40,
+                    y: this.defaultSeedButton.y + 40,
+                }
             }
-            // emit the event
-            this.scene.events.emit(
-                EventName.TutorialPrepareBuySeeds,
-                eventMessage
-            )
-
-            this.setDirty(false)
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
 
         EventBus.on(EventName.BuySeedsCompleted, () => {

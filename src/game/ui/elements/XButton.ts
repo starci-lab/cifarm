@@ -1,5 +1,5 @@
 import { BaseAssetKey } from "../../assets"
-import { ConstructorParams, ImageBaseConstructorParams } from "../../types"
+import { ConstructorParams, LabelBaseConstructorParams } from "../../types"
 import { onGameObjectPress } from "../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 
@@ -15,7 +15,7 @@ export interface XButtonOptions {
     height?: number
 }
 export class XButton extends Label {
-    constructor({ baseParams: { scene, x, y }, options }: ConstructorParams<ImageBaseConstructorParams, XButtonOptions>) {
+    constructor({ baseParams: { scene, config }, options }: ConstructorParams<LabelBaseConstructorParams, XButtonOptions>) {
         if (!options) {
             throw new Error("Button requires options")
         }
@@ -23,11 +23,10 @@ export class XButton extends Label {
 
         const icon = scene.add.image(0, 0, BaseAssetKey.UICommonX).setTint(color)
         super(scene, {
-            x,
-            y,
             width: width ?? icon.width,
             height: height ?? icon.height,
-            icon
+            icon,
+            ...config,
         })
         this.layout().setInteractive().on("pointerdown", () => {
             onGameObjectPress({

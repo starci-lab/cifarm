@@ -1,9 +1,7 @@
-import { AvailableInType, ToolId } from "../enums"
-import { AbstractSchema } from "./abstract"
+import { ToolId } from "../enums"
+import { StaticAbstractSchema } from "./abstract"
 
-export interface ToolSchema extends AbstractSchema {
-    // override id to acheive the correct type
-    id: ToolId;
-    availableIn: AvailableInType;
-    index: number;
+export interface ToolSchema extends StaticAbstractSchema<ToolId> {
+    sort: number;
+    default: boolean;
 }

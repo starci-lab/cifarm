@@ -16,8 +16,7 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 export const CONTENT_DEPTH = calculateUiDepth({
     layer: UILayer.Modal,
-    additionalDepth: 10,
-    layerDepth: 1,
+    additionalDepth: 1,
 })
 
 export const HIGHLIGH_DEPTH = calculateUiDepth({

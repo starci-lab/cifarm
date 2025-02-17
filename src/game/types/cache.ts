@@ -10,6 +10,7 @@ export enum CacheKey {
     User = "user",
     Tools = "tools",
     TutorialActive = "tutorial-active",
+    SeedInventoryMoveToToolbar = "seed-inventory-move-to-toolbar",
     SelectedTileId = "selected-tile-id",
     SelectedTileType = "selected-tile-type",
     SelectedTool = "selected-tool",

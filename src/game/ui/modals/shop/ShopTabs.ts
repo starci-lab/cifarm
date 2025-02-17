@@ -3,8 +3,8 @@ import { SCALE_TIME } from "@/game/constants"
 import { EventName } from "@/game/event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
-import { onGameObjectPress } from "../../utils"
 import { ShopTab, tabs } from "./types"
+import { BadgeLabel } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 // use own scale values
 const SCALE_DOWN_VALUE = 0.8
@@ -16,7 +16,7 @@ export class ShopTabs extends ContainerLite {
     // private property to store the selected tab
     private selectedTab: ShopTab = defaultShopTab
     // private property to store the tab map
-    private tabMap: Partial<Record<ShopTab, Phaser.GameObjects.Container>> = {}
+    private tabMap: Partial<Record<ShopTab, ContainerLite>> = {}
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -56,15 +56,15 @@ export class ShopTabs extends ContainerLite {
                 duration: SCALE_TIME,
                 ease: "Back",
             })
+            //tab.setScale(SCALE_PEAK_VALUE, SCALE_PEAK_VALUE)
         } else {
             tab.setScale(SCALE_PEAK_VALUE, SCALE_PEAK_VALUE)
         }
 
         // get the icon tab on and off
-        const [, iconTabOff] = tab.getAll() as Array<Phaser.GameObjects.Image>
+        const [, iconTabOff] = tab.getChildren() as Array<Phaser.GameObjects.Image>
         // set the icon tab off to be invisible
         iconTabOff.setVisible(false)
-
         return tab
     }
 
@@ -76,7 +76,7 @@ export class ShopTabs extends ContainerLite {
             throw new Error("tab is not found")
         }
 
-        // deactivate the selected tab
+        //deactivate the selected tab
         if (animate) {
             this.scene.tweens.add({
                 targets: tab,
@@ -85,66 +85,69 @@ export class ShopTabs extends ContainerLite {
                 duration: SCALE_TIME,
                 ease: "Back",
             })
+            // tab.setScale(SCALE_PEAK_VALUE, SCALE_PEAK_VALUE)
         } else {
             tab.setScale(SCALE_DOWN_VALUE, SCALE_DOWN_VALUE)
         }
+        //tab.setScale(SCALE_DOWN_VALUE, SCALE_DOWN_VALUE)
 
         // get the icon tab on and off
-        const [, iconTabOff] = tab.getAll() as Array<Phaser.GameObjects.Image>
+        const [, iconTabOff] = tab.getChildren() as Array<Phaser.GameObjects.Image>
         // set the icon tab off to be invisible
         iconTabOff.setVisible(true)
     }
 
     // method to create a button
     public createTab(shopTab: ShopTab = defaultShopTab) {
-        const tab = this.scene.add.container(0, 0)
+        const tab = this.scene.rexUI.add.container(0, 0)
         // create the icon tab on
-        const iconTabOn = this.scene.add
+        const iconTabOnBackground = this.scene.add
             .image(0, 0, BaseAssetKey.UIModalShopIconTabOn)
-            .setOrigin(0, 1)
-        iconTabOn.setInteractive()
+        // iconTabOn.setInteractive()
         // add the icon tab on to the container
-        tab.add(iconTabOn)
+        // Add icon
+        const iconBackground = this.scene.add.image(0, 0, tabs[shopTab].iconKey)
+        const icon = this.scene.rexUI.add.label({
+            x: tabs[shopTab].offSets?.x,
+            y: tabs[shopTab].offSets?.y,
+            background: iconBackground,
+            width: iconBackground.width * (tabs[shopTab].scale || 1),
+            height: iconBackground.height * (tabs[shopTab].scale || 1),
+        }).layout()
+        const badgeLabel = this.scene.rexUI.add.label({
+            background: iconTabOnBackground,
+            width: iconTabOnBackground.width,
+            height: iconTabOnBackground.height,
+            originY: 1,
+            originX: 0,
+            align: "center",
+            icon
+        }).layout()
+        tab.addLocal(badgeLabel)
         // create the icon tab off
         const iconTabOff = this.scene.add
             .image(0, 0, BaseAssetKey.UIModalShopIconTabOff)
-            .setOrigin(0, 1)
-        // add the icon tab off to the container
-        tab.add(iconTabOff)
-
-        // Add icon
-        const icon = this.scene.add.image(0, 0, tabs[shopTab].iconKey)
-            .setOrigin(0, 1)
-            .setScale(tabs[shopTab].scale || 1)
-            .setX(tabs[shopTab].offSets?.x || 0)
-            .setY(tabs[shopTab].offSets?.y || 0)
-        tab.add(icon)
-
+            .setOrigin(0, 1).setVisible(false)
         // store the container to the container tab
         this.tabMap[shopTab] = tab
 
         // method to handle when the tab is clicked
-        iconTabOn.on("pointerdown", () => {
-            onGameObjectPress({
-                gameObject: iconTabOn,
-                onPress: () => {
-                    this.scene.events.emit(EventName.SelectShopTab, shopTab)
-                },
-                scene: this.scene,
-                peakValue: SCALE_PEAK_VALUE
-            })
+        badgeLabel.setInteractive().on("pointerdown", () => {
+            this.scene.events.emit(EventName.SelectShopTab, shopTab)
         })
 
         // check active
         const isActive = shopTab === this.selectedTab
         if (isActive) {
             // activate the selected tab
-            this.activateTab(shopTab)
+            tab.setScale(SCALE_PEAK_VALUE, SCALE_PEAK_VALUE)
         } else {
             // deactivate the selected tab
-            this.deactivateTab(shopTab)
+            tab.setScale(SCALE_DOWN_VALUE, SCALE_DOWN_VALUE)
+            iconTabOff.setVisible(true)
         }
         // return the tab
+        tab.addLocal(iconTabOff)
         return tab
     }
 
@@ -153,7 +156,7 @@ export class ShopTabs extends ContainerLite {
         let count = 0
         for (const [, value] of Object.entries(this.tabMap)) {
             // get the width of the tab
-            const iconTabOn = value.getAt(0) as Phaser.GameObjects.Image
+            const iconTabOn = value.getChildren()[0] as BadgeLabel
             const { width } = iconTabOn
             // set the position of the tab
             value.setPosition(count * (width - 60), 0)

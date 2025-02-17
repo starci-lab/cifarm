@@ -2,7 +2,7 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../../types"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseGridTable, BaseGridTableCell, BaseGridTableFrame, CellInfo, getCellInfo, RibbonTitle } from "../../../elements"
+import { BaseGridTable, ItemQuantity, BaseGridTableFrame, CellInfo, getCellInfo, RibbonTitle } from "../../../elements"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { getProductInventories } from "../../../../queries"
 import { EventBus, EventName, ModalName } from "../../../../event-bus"
@@ -71,7 +71,7 @@ export class SelectProductContent extends BaseSizer {
                     const background = new BaseGridTableFrame({ scene: this.scene, x: 0, y: 0 })
                     this.scene.add.existing(background)
                     if (cellContainer === null) {
-                        let gridTableCell: BaseGridTableCell | undefined
+                        let gridTableCell: ItemQuantity | undefined
                         if (cell.item) {
                             gridTableCell = this.createCell(cell.item as InventorySchema)
                         }
@@ -116,7 +116,7 @@ export class SelectProductContent extends BaseSizer {
             textureConfig: { key },
         } = inventoryTypeAssetMap[inventoryType.displayId]
 
-        const cell = new BaseGridTableCell({
+        const cell = new ItemQuantity({
             baseParams: {
                 scene: this.scene
             },

@@ -65,6 +65,7 @@ export enum EventName {
     UpdateUIBackdrop = "update_ui_backdrop",
 
     // hide press here arrow
+    ShowPressHereArrow = "show_press_here_arrow",
     HidePressHereArrow = "hide_press_here_arrow",
     
     // hide the buttons
@@ -97,6 +98,7 @@ export enum EventName {
     TutorialPrepareBuySeeds = "tutorial_prepare_buy_seeds",
     TutorialPrepareBuySeedsResponsed = "tutorial_prepare_buy_seeds_responsed",
     TutorialPrepareCloseShop = "tutorial_prepare_close_shop",
+    TutorialCloseInventoryButtonPressed = "tutorial_close_inventory_button_pressed",
     TutorialPrepareCloseShopResponsed = "tutorial_prepare_close_shop_responsed",
     TutorialCloseShopButtonPressed = "tutorial_close_shop_button_pressed",
     TutorialOpenInventory = "tutorial_open_inventory",
@@ -104,6 +106,7 @@ export enum EventName {
     TutorialOpenRoadsideStandResponsed = "tutorial_open_roadside_stand_responsed",
     TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
+    TutorialInventorySeedMoveToToolbar = "tutorial_inventory_seed_move_to_toolbar",
     TutorialPlantSeeds = "tutorial_plant_seeds",
     TutorialSeedsPressed = "tutorial_seeds_pressed",
     TutorialScythePressed = "tutorial_scythe_pressed",
@@ -171,6 +174,11 @@ export interface TutorialOpenInventoryResponsedMessage {
     position: Position,
 }
 
+export interface SelectToolMessage {
+    index: number,
+    animate?: boolean
+}
+
 export interface TutorialOpenRoadsideStandResponsedMessage {
     // position of the shop button
     position: Position,
@@ -222,6 +230,13 @@ export interface UpdateUIBackdropMessage {
     depth: number
 }
 
+export interface ShowPressHereArrowMessage {
+    // position of the arrow
+    originPosition: Position
+    targetPosition: Position
+    rotation?: number
+    requireSetVisibility?: boolean
+}
 
 export enum ModalName {
   Shop = "shop",

@@ -14,6 +14,7 @@ import {
     BuildingId,
     CropCurrentState,
     InventoryType,
+    InventoryTypeSchema,
     PlacedItemType,
     ToolId,
 } from "@/modules/entities"
@@ -39,6 +40,7 @@ export class InputTilemap extends ItemTilemap {
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
+    private inventoryTypes: Array<InventoryTypeSchema> = []
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -87,6 +89,8 @@ export class InputTilemap extends ItemTilemap {
             this.handlePlaceInProgress(data)
         })
 
+        this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
+
         // click on empty tile to plant seed
         this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
@@ -122,16 +126,29 @@ export class InputTilemap extends ItemTilemap {
             CacheKey.SelectedTool
         ) as ToolLike
 
+        // do nothing if selected tool is default
+        if (selectedTool.default) {
+            return
+        }
+
+        const inventoryType = this.inventoryTypes.find(
+            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
+        )
+        if (!inventoryType) {
+            throw new Error(
+                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+            )
+        }
+        console.log("Seed")
         const object = data.object
         const currentPlacedItem = object.currentPlacedItem
-        console.log(currentPlacedItem)
         const placedItemId = currentPlacedItem?.id
         // do nothing if placed item id is not found
         if (!placedItemId) {
             return
         }
 
-        switch (selectedTool.inventoryType) {
+        switch (inventoryType.type) {
         case InventoryType.Seed: {
             // return if seed growth info is found
             if (currentPlacedItem?.seedGrowthInfo) {

@@ -1,5 +1,5 @@
 import { BaseAssetKey } from "../../../assets"
-import { CloseModalMessage, EventBus, EventName, TutorialPrepareCloseShopResponsedMessage, ModalName } from "../../../event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName, ShowPressHereArrowMessage } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
@@ -90,10 +90,13 @@ export class ShopHeader extends ContainerLite {
             // await until the shop is opened
             await sleep(SCALE_TIME)
             this.closeButton = this.closeButton.setDepth(HIGHLIGH_DEPTH)
-            const eventMessage: TutorialPrepareCloseShopResponsedMessage = {
-                position: this.closeButton.getCenter(),
+            const { x, y } = this.closeButton.getCenter()
+            const eventMessage: ShowPressHereArrowMessage = {
+                rotation: 45,
+                originPosition: { x: x - 60, y: y + 60 },
+                targetPosition: { x: x - 40, y: y + 40 },
             }
-            this.scene.events.emit(EventName.TutorialPrepareCloseShopResponsed, eventMessage)
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
     }
 }

@@ -1,5 +1,6 @@
 import {
     CropCurrentState,
+    CropSchema,
     PlacedItemSchema,
     PlacedItemType,
 } from "@/modules/entities"
@@ -10,6 +11,7 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { BaseText } from "../ui"
 import { formatTime } from "@/modules/common"
+import { CacheKey } from "../types"
 
 export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     // list of extra sprites that are part of the placed item
@@ -18,6 +20,13 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private bubbleState: Label | undefined
     public currentPlacedItem: PlacedItemSchema | undefined
     private timer: Phaser.GameObjects.Text | undefined
+    private crops: Array<CropSchema> = []
+
+    constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+        super(scene, x, y, texture)
+
+        this.crops = scene.cache.obj.get(CacheKey.Crops)
+    }
 
     public update(type: PlacedItemType, placedItem: PlacedItemSchema) {
         switch (type) {
@@ -57,30 +66,45 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             // Update the timer
             this.updateSeedGrowthInfoTimer(placedItem, container)
         }
-    }   
+    }
 
-    private updateSeedGrowthInfoTexture(placedItem: PlacedItemSchema, container: ContainerLite) {
+    private updateSeedGrowthInfoTexture(
+        placedItem: PlacedItemSchema,
+        container: ContainerLite
+    ) {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
 
         if (
             this.currentPlacedItem?.seedGrowthInfo?.currentStage !==
-        placedItem.seedGrowthInfo.currentStage
+      placedItem.seedGrowthInfo.currentStage
         ) {
-            const key = cropAssetMap[placedItem.seedGrowthInfo.cropId].stages?.[
-                placedItem.seedGrowthInfo.currentStage
-            ].textureConfig.key
-            const data = cropAssetMap[placedItem.seedGrowthInfo.cropId]
+            const crop = this.crops.find(
+                (crop) => crop.id === placedItem?.seedGrowthInfo?.crop
+            )
+            if (!crop) {
+                throw new Error("Crop not found")
+            }
+
+            const data = cropAssetMap[crop.displayId]
             if (!data) {
                 throw new Error("Crop data not found")
             }
-            const offsets = data.stages?.[placedItem.seedGrowthInfo.currentStage].tilesetConfig
-                ?.extraOffsets
+            const assetData = data.stages?.[placedItem.seedGrowthInfo.currentStage]
+            if (!assetData) {
+                throw new Error("Asset data not found")
+            }
+            const {
+                textureConfig: { key },
+                tilesetConfig: { extraOffsets: offsets },
+            } = assetData
             const { x = 0, y = 0 } = { ...offsets }
 
             if (!this.seedGrowthInfoSprite) {
-                this.seedGrowthInfoSprite = this.scene.add.sprite(x, y, key).setDepth(this.depth + 1)
+                this.seedGrowthInfoSprite = this.scene.add
+                    .sprite(x, y, key)
+                    .setDepth(this.depth + 1)
                 container.addLocal(this.seedGrowthInfoSprite)
             } else {
                 this.seedGrowthInfoSprite.setTexture(key)
@@ -88,34 +112,45 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
     }
 
-    private updateSeedGrowthInfoBubble(placedItem: PlacedItemSchema, container: ContainerLite) {
+    private updateSeedGrowthInfoBubble(
+        placedItem: PlacedItemSchema,
+        container: ContainerLite
+    ) {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
         if (placedItem.seedGrowthInfo.currentState !== CropCurrentState.Normal) {
             if (
-                this.currentPlacedItem?.seedGrowthInfo?.currentState !== placedItem.seedGrowthInfo.currentState
+                this.currentPlacedItem?.seedGrowthInfo?.currentState !==
+        placedItem.seedGrowthInfo.currentState
             ) {
                 if (!this.bubbleState) {
-                    const background = this.scene.add.image(0, 0, BaseAssetKey.BubbleState)
-                    this.bubbleState = this.scene.rexUI.add.label({
-                        background,
-                        icon: this.scene.add.image(0, 0, ""),
-                        width: background.width,
-                        height: background.height,
-                        align: "center",
-                        space: {
-                            bottom: 10,
-                        },
-                    })
+                    const background = this.scene.add.image(
+                        0,
+                        0,
+                        BaseAssetKey.BubbleState
+                    )
+                    this.bubbleState = this.scene.rexUI.add
+                        .label({
+                            background,
+                            icon: this.scene.add.image(0, 0, ""),
+                            width: background.width,
+                            height: background.height,
+                            align: "center",
+                            space: {
+                                bottom: 10,
+                            },
+                        })
                         .setScale(0.5)
                         .setDepth(this.depth + 2)
                         .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
                     container.addLocal(this.bubbleState)
                 }
-    
+
                 // update the icon
-                const stateKey = cropStateAssetMap[placedItem.seedGrowthInfo.currentState]?.textureConfig.key
+                const stateKey =
+          cropStateAssetMap[placedItem.seedGrowthInfo.currentState]
+              ?.textureConfig.key
                 if (!stateKey) {
                     throw new Error("State key not found")
                 }
@@ -130,14 +165,19 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
     }
 
-    private updateSeedGrowthInfoTimer(placedItem: PlacedItemSchema, container: ContainerLite) {
+    private updateSeedGrowthInfoTimer(
+        placedItem: PlacedItemSchema,
+        container: ContainerLite
+    ) {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
-        if (placedItem.seedGrowthInfo.currentState != CropCurrentState.FullyMatured) {
+        if (
+            placedItem.seedGrowthInfo.currentState != CropCurrentState.FullyMatured
+        ) {
             if (
                 placedItem.seedGrowthInfo.currentStageTimeElapsed !==
-                this.currentPlacedItem?.seedGrowthInfo?.currentStageTimeElapsed
+        this.currentPlacedItem?.seedGrowthInfo?.currentStageTimeElapsed
             ) {
                 if (!this.timer) {
                     const text = new BaseText({
@@ -157,11 +197,13 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     this.timer = text
                     container.pinLocal(this.timer, {
                         syncScale: false,
-                        syncPosition: true
+                        syncPosition: true,
                     })
                 }
-    
-                const formattedTime = formatTime(placedItem.seedGrowthInfo.currentStageTimeElapsed)
+
+                const formattedTime = formatTime(
+                    placedItem.seedGrowthInfo.currentStageTimeElapsed
+                )
                 this.timer.setText(formattedTime)
             }
             this.currentPlacedItem = placedItem

@@ -76,12 +76,8 @@ export enum BaseAssetKey {
     UIModalQuestIconClose = "ui-modal-quest-icon-close",
 
     // Toolbar
-    ToolbarBackground = "toolbar-background",
-    ToolbarNextIcon = "toolbar-button-next-icon",
-    ToolbarPrevIcon = "toolbar-button-prev-icon",
-    ToolbarNextAvatar = "toolbar-next-avatar",
-    ToolbarPrevAvatar = "toolbar-prev-avatar",
-    ToolbarSelectedArrow = "toolbar-selected",
+    UIToolbarBackground = "ui-toolbar-background",
+    UIToolbarSelectedArrow = "ui-toolbar-selected",
 
     //Stand
     UIModalStandWall = "ui-modal-stand-wall",
@@ -222,12 +218,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalQuestIconClose]: "ui/modals/quest/icon-close.png",
 
     // Toolbar
-    [BaseAssetKey.ToolbarBackground]: "toolbar/background.png",
-    [BaseAssetKey.ToolbarNextIcon]: "toolbar/next-icon.png",
-    [BaseAssetKey.ToolbarPrevIcon]: "toolbar/prev-icon.png",
-    [BaseAssetKey.ToolbarNextAvatar]: "toolbar/next-avatar.png",
-    [BaseAssetKey.ToolbarPrevAvatar]: "toolbar/prev-avatar.png",
-    [BaseAssetKey.ToolbarSelectedArrow]: "toolbar/selected.png",
+    [BaseAssetKey.UIToolbarBackground]: "ui/toolbar/background.png",
+    [BaseAssetKey.UIToolbarSelectedArrow]: "ui/toolbar/selected-arrow.png",
     //Stand
     [BaseAssetKey.UIModalStandWall]: "ui/modals/stand/wall.png",
     [BaseAssetKey.UIModalStandHeader]: "ui/modals/stand/header.png",
