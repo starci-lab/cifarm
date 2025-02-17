@@ -19,30 +19,37 @@ export class PlacementPopup extends ContainerLite {
         const camera = scene.cameras.main
         const buttonScale = 0.5 / camera.zoom
 
+        const hitbox = scene.add.rectangle(0, 0, width, height, 0x000000, 0).setInteractive()
+        hitbox.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+            pointer.event.stopPropagation()
+            pointer.event.preventDefault()
+            pointer.event.stopImmediatePropagation()
+        })
+
         this.yesButton = scene.add
-            .image(100, 30, BaseAssetKey.PopupPlacementIconYes)
-            .setInteractive()
+            .image(-100, 30, BaseAssetKey.PopupPlacementIconYes)
+            .setInteractive({ useHandCursor: true })
             .setScale(buttonScale)
             .on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 pointer.event.stopPropagation()
+                pointer.event.preventDefault()
+                pointer.event.stopImmediatePropagation()
                 onConfirm()
             })
 
         this.noButton = scene.add
-            .image(-100, 30, BaseAssetKey.PopupPlacementIconNo)
-            .setInteractive()
+            .image(100, 30, BaseAssetKey.PopupPlacementIconNo)
+            .setInteractive({ useHandCursor: true })
             .setScale(buttonScale)
             .on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 pointer.event.stopPropagation()
+                pointer.event.preventDefault()
+                pointer.event.stopImmediatePropagation()
                 onCancel()
             })
 
         this.buttonContainer = new ContainerLite(scene, 0, 0, width, height)
         this.buttonContainer.add([this.yesButton, this.noButton])
-
-        const spacing = 100
-        this.yesButton.setX(-spacing / 2)
-        this.noButton.setX(spacing / 2)
 
         this.setDepth(
             calculateUiDepth({
@@ -51,7 +58,7 @@ export class PlacementPopup extends ContainerLite {
             })
         )
 
-        this.add(this.buttonContainer)
+        this.add([hitbox, this.buttonContainer])
 
         scene.add.existing(this)
     }
