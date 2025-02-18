@@ -1,14 +1,16 @@
 import { BaseAssetKey } from "../../../assets"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { BaseText, TextColor } from "../../elements"
-import { onGameObjectPress } from "../../utils"
+import { BaseText, Pagination, TextColor } from "../../elements"
+import { getScreenBottomY, getScreenCenterX, onGameObjectPress } from "../../utils"
 import { UserSchema } from "@/modules/entities"
-import { IPaginatedResponse } from "@/modules/apollo"
+import { IPaginatedResponse, QueryNeighborsArgs } from "@/modules/apollo"
 
-export class WorldNeighborsContent extends ContainerLite {
+export class CommunityNeighborsContent extends ContainerLite {
     private neighbors: Array<UserSchema>
-    private count: number
+    private neighborCount = 0
+    private args: QueryNeighborsArgs
+    private pagination: Pagination | undefined
     constructor({
         scene,
         x,
@@ -21,9 +23,20 @@ export class WorldNeighborsContent extends ContainerLite {
 
         const { data, count } = this.scene.cache.obj.get(CacheKey.Neighbors) as IPaginatedResponse<UserSchema>
         this.neighbors = data
-        this.count = count
+        this.neighborCount = count
+        this.args = this.scene.cache.obj.get(CacheKey.NeighborsArgs)
 
+        this.createPagination()
         this.updateScrollablePanel()
+    }
+
+    // get the current page and the max page
+    private getPage() : GetPageResult {
+        const offset = this.args.offset || 0
+        const limit = this.args.limit || 5
+        const currentPage = Math.floor(offset / limit) + 1
+        const maxPage = Math.ceil(this.neighborCount / limit)
+        return { currentPage, maxPage }
     }
 
     private updateScrollablePanel() {
@@ -46,6 +59,26 @@ export class WorldNeighborsContent extends ContainerLite {
             })
             .layout()
         this.addLocal(scrollablePanel)
+    }   
+
+    private createPagination() {
+        const { currentPage, maxPage } = this.getPage()
+        this.pagination = new Pagination({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                defaultValue: currentPage,
+                min: 1,
+                max: maxPage,
+                onChange: (value) => {
+                    console.log(value)
+                },
+            },
+        }).layout().setPosition(getScreenCenterX(this.scene), getScreenBottomY(this.scene) - 300)
+        this.scene.add.existing(this.pagination )
+        this.add(this.pagination)
+        return this.pagination 
     }
 
     private createNeighborCards() {
@@ -190,4 +223,9 @@ export interface CreateNeighborCardParams {
   text: string;
   // on click event
   onPress: () => void;
+}
+
+export interface GetPageResult {
+    currentPage: number;
+    maxPage: number;
 }

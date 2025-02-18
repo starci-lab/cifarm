@@ -34,6 +34,8 @@ export class SelectProductContent extends BaseSizer {
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
 
+        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+        this.inventories = data
         this.background = this.scene.add.image(
             0,
             0,

@@ -5,6 +5,7 @@ import { NinePatch3x3 } from "./NinePatch3x3"
 import { TextColor } from "./BaseText"
 import { onGameObjectPress } from "../utils"
 import { BaseBBCodeText } from "./BaseBBCodeText"
+import { UpdateValueParams, SetBoundsParams } from "./types"
 
 export interface NumberInputOptions {
     // show left, right arrows
@@ -200,12 +201,3 @@ export class NumberInput extends Sizer {
     }
 }
 
-export interface SetBoundsParams {
-    min?: number
-    max?: number
-}
-
-export interface UpdateValueParams {
-    intValue: number
-    onChange: (value: number) => void
-}

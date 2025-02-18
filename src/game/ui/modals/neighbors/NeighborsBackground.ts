@@ -16,7 +16,6 @@ export class NeighborsBackground extends ContainerLite {
         this.wall = this.scene.add.image(0, 0, BaseAssetKey.UIModalNeighborsWall)
         this.addLocal(this.wall)
 
-
         // create the close button
         this.closeButton = this.createCloseButton()
     }
