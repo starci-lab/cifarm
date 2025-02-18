@@ -558,7 +558,7 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartDeliverProduct: {
-                this.scene.events.once(EventName.TutorialRoadsideStandCloseButtonPressed, () => {
+                this.scene.events.once(EventName.TutorialCloseStandButtonPressed, () => {
                     EventBus.emit(EventName.RequestUpdateTutorial)
                 })
                 // emit the event to open the inventory
