@@ -37,7 +37,7 @@ export class StandHeader extends ContainerLite {
                             }
                             EventBus.emit(EventName.CloseModal, eventMessage)
                             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                                this.scene.events.emit(EventName.TutorialRoadsideStandCloseButtonPressed)
+                                this.scene.events.emit(EventName.TutorialCloseStandButtonPressed)
                                 this.scene.events.emit(EventName.HidePressHereArrow)
                             }
                         },
