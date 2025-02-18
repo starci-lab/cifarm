@@ -27,8 +27,10 @@ export enum EventName {
     LoadInventories = "load_inventories",
     // inventory loaded, from React to Phaser
     InventoriesLoaded = "inventories_loaded",
-    // delivering products loaded, from React to Phaser
-    LoadDeliveringProducts = "load_delivering_products",
+    // neighbors loaded, from React to Phaser
+    LoadNeighbors = "load_neighbors",
+    // neighbors loaded, from React to Phaser
+    NeighborsLoaded = "neighbors_loaded",
     // delivering products loaded, from React to Phaser
     DeliveringProductsLoaded = "delivering_products_loaded",
 
@@ -39,7 +41,8 @@ export enum EventName {
     InventoriesRefreshed = "inventories_refreshed",
     RefreshDeliveringProducts = "refresh_delivering_products",
     DeliveringProductsRefreshed = "delivering_products_refreshed",
-
+    RefreshNeighbors = "refresh_neighbors",
+    NeighborsRefreshed = "neighbors_refreshed",
     // open shop
     OpenShop = "open_shop",
     CloseShop = "close_shop",

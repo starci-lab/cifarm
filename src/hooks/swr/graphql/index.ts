@@ -1,3 +1,4 @@
-export * from "./useQueryUserSwr"
-export * from "./useQueryStaticSwr"
-export * from "./useQueryInventoriesSwr"
+export * from "./useQueryUserSwrMuation"
+export * from "./useQueryInventoriesSwrMutation"
+export * from "./useQueryNeighborsSwrMutation"
+export * from "./useQueryStaticSwrMutation"

@@ -13,7 +13,7 @@ import {
 } from "../assets"
 import { LoadingProgressBar } from "../containers"
 import { EventBus, EventName } from "../event-bus"
-import { QueryStaticResponse } from "@/modules/apollo"
+import { QueryNeighborsArgs, QueryNeighborsParams, QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
@@ -41,7 +41,7 @@ export class LoadingScene extends Scene {
 
     // data fetching
     private dataFetchingLoaded = 0
-    private totalDataFetching = 3
+    private totalDataFetching = 4
 
     init() {
     // Listen to the shutdown event
@@ -95,6 +95,15 @@ export class LoadingScene extends Scene {
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, data)
                 this.handleFetchData("Loading inventories...")
+            })
+    
+        //listen for load neighbors event
+        EventBus.once(
+            EventName.NeighborsLoaded, (data: IPaginatedResponse<UserSchema>
+            ) => {
+                //load the user inventory
+                this.cache.obj.add(CacheKey.Neighbors, data)
+                this.handleFetchData("Loading neighbors...")
             })
 
         this.events.once(EventName.LoadCompleted, () => {
@@ -188,10 +197,18 @@ export class LoadingScene extends Scene {
         // sleep 0.1 seconds to ensure the hook is updated
         await sleep(100)
         // start fetching the data    
-        EventBus.emit(EventName.LoadStaticData, this)
-        EventBus.emit(EventName.LoadUser, this)
-        EventBus.emit(EventName.LoadInventories, this)
-        EventBus.emit(EventName.LoadDeliveringProducts, this)
+        EventBus.emit(EventName.LoadStaticData)
+        EventBus.emit(EventName.LoadUser)
+        EventBus.emit(EventName.LoadInventories)
+        const args: QueryNeighborsArgs = {
+            limit: 5,
+            offset: 0,
+        }
+        const params: QueryNeighborsParams = {
+            args
+        }
+        this.cache.obj.add(CacheKey.NeighborsArgs, params)
+        EventBus.emit(EventName.LoadNeighbors, params)
     }
 
     private handleFetchData(message: string) {

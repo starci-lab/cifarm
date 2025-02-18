@@ -5,6 +5,8 @@ export enum CacheKey {
     Animals = "animals",
     Buildings = "buildings",
     Inventories = "inventories",
+    NeighborsArgs = "neighbors-args",
+    Neighbors = "neighbors",
     InventoryTypes = "inventory-types",
     DailyRewards = "daily-rewards",
     User = "user",
@@ -14,7 +16,6 @@ export enum CacheKey {
     SelectedTileType = "selected-tile-type",
     SelectedTool = "selected-tool",
     DefaultInfo = "default-info",
-    DeliveringProducts = "delivering-products",
     DeliveryIndex = "delivery-index",
     TutorialDepth = "tutorial-depth",
 }

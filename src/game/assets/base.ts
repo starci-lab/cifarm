@@ -97,10 +97,11 @@ export enum BaseAssetKey {
     UIModalNeighborsIconQuestion = "ui-modal-neighbors-icon-question",
     UIModalNeighborsIconSearch = "ui-modal-neighbors-icon-search",
     UIModalNeighborsIconRandom = "ui-modal-neighbors-icon-random",
-    UIModalNeighborsFrameFriends = "ui-modal-neighbors-frame-friends",
+    UIModalNeighborsCardBackground = "ui-modal-neighbors-frame-friends",
     UIModalNeighborsFrameSearch = "ui-modal-neighbors-frame-search",
     UIModalNeighborsIconAdd = "ui-modal-neighbors-icon-add",
     UIModalNeighborsIconHome = "ui-modal-neighbors-icon-home",
+    UIModalNeighborsFrameVisit = "ui-modal-neighbors-frame-visit",
 
     //Common Modal
     UIModalCommonBackground1 = "ui-modal-common-background-1",
@@ -236,11 +237,12 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalNeighborsIconClose]: "ui/modals/neighbors/btn-icon-close.png",
     [BaseAssetKey.UIModalNeighborsIconQuestion]: "ui/modals/neighbors/btn-icon-question.png",
     [BaseAssetKey.UIModalNeighborsIconSearch]: "ui/modals/neighbors/btn-icon-search.png",
-    [BaseAssetKey.UIModalNeighborsIconRandom]: "ui/modals/neighbors/icon-random.png",
-    [BaseAssetKey.UIModalNeighborsFrameFriends]: "ui/modals/neighbors/frame-listfriends.png",
+    [BaseAssetKey.UIModalNeighborsIconRandom]: "ui/modals/neighbors/btn-random.png",
+    [BaseAssetKey.UIModalNeighborsCardBackground]: "ui/modals/neighbors/card-background.png",
     [BaseAssetKey.UIModalNeighborsFrameSearch]: "ui/modals/neighbors/frame-search.png",
     [BaseAssetKey.UIModalNeighborsIconAdd]: "ui/modals/neighbors/icon-add.png",
     [BaseAssetKey.UIModalNeighborsIconHome]: "ui/modals/neighbors/icon-home.png",
+    [BaseAssetKey.UIModalNeighborsFrameVisit]: "ui/modals/neighbors/frame-visit.png",
 
     //Topbar
     [BaseAssetKey.TopbarHeader]: "topbar/header.png",

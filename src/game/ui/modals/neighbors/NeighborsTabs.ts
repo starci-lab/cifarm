@@ -18,7 +18,7 @@ export class NeighborsTabs extends ContainerLite {
     // private property to store the selected tab
     private selectedTab: NeighborsTab = defaultNeighborsTab
     // private property to store the tab map
-    private tabMap: Partial<Record<NeighborsTab, Phaser.GameObjects.Container>> = {}
+    private tabMap: Partial<Record<NeighborsTab, ContainerLite>> = {}
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
@@ -63,7 +63,7 @@ export class NeighborsTabs extends ContainerLite {
         }
 
         // get the icon tab on and off
-        const [, iconTabOff] = tab.getAll() as Array<Phaser.GameObjects.Image>
+        const [, iconTabOff] = tab.getChildren() as Array<Phaser.GameObjects.Image>
         // set the icon tab off to be invisible
         iconTabOff.setVisible(false)
 
@@ -92,14 +92,14 @@ export class NeighborsTabs extends ContainerLite {
         }
 
         // get the icon tab on and off
-        const [, iconTabOff] = tab.getAll() as Array<Phaser.GameObjects.Image>
+        const [, iconTabOff] = tab.getChildren() as Array<Phaser.GameObjects.Image>
         // set the icon tab off to be invisible
         iconTabOff.setVisible(true)
     }
 
     // method to create a button
     public createTab(neighborsTab: NeighborsTab = defaultNeighborsTab) {
-        const tab = this.scene.add.container(0, 0)
+        const tab = this.scene.rexUI.add.container(0, 0)
     
         // Get the total container width (assuming parent container has a set width)
         const totalWidth = this.scene.scale.width - PADDING_X
@@ -137,9 +137,9 @@ export class NeighborsTabs extends ContainerLite {
         tabText.setPosition(0, 0)
     
         // Add everything to the container
-        tab.add(iconTabOn)
-        tab.add(iconTabOff)
-        tab.add(tabText)
+        tab.addLocal(iconTabOn)
+        tab.addLocal(iconTabOff)
+        tab.addLocal(tabText)
     
         // Store the container in the tab map
         this.tabMap[neighborsTab] = tab

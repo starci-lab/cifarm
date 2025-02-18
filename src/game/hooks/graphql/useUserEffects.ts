@@ -1,35 +1,36 @@
-import { QUERY_USER_SWR } from "@/app/constants"
+import { QUERY_USER_SWR_MUTATION } from "@/app/constants"
 import { EventBus, EventName } from "@/game/event-bus"
-import { useQueryUserSwr } from "@/hooks"
+import { useQueryUserSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
+
 export const useUserEffects = () => {
     //get the singleton instance of the user swr
-    const { swr } = useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
+    const { swrMutation } = useSingletonHook<ReturnType<typeof useQueryUserSwrMutation>>(QUERY_USER_SWR_MUTATION)
     
     // load user data
     useEffect(() => {
         EventBus.on(EventName.LoadUser, async () => {
             //load user data
-            const data = await swr.mutate()
-            EventBus.emit(EventName.UserLoaded, data?.user)
+            const { data } = await swrMutation.trigger({})
+            EventBus.emit(EventName.UserLoaded, data.user)
         })
 
         return () => {
             EventBus.removeListener(EventName.LoadUser)
         }
-    }, [swr])
+    }, [swrMutation])
 
     // refresh user data
     useEffect(() => {
         EventBus.on(EventName.RefreshUser, async () => {
             //load user data
-            const data = await swr.mutate()
-            EventBus.emit(EventName.UserRefreshed, data?.user)
+            const { data } = await swrMutation.trigger({})
+            EventBus.emit(EventName.UserRefreshed, data.user)
         })
 
         return () => {
             EventBus.removeListener(EventName.RefreshUser)
         }
-    }, [swr])
+    }, [swrMutation])
 }

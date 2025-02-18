@@ -20,12 +20,13 @@ import {
     useEnterPinForm,
     useGameplayIo,
     useNativeCoinGeckoSWR,
-    useQueryInventoriesSwr,
-    useQueryStaticSwr,
-    useQueryUserSwr,
     useApiMoveInventorySwrMutation,
     useApiDeliverProductSwrMutation,
     useApiRetainProductSwrMutation,
+    useQueryUserSwrMutation,
+    useQueryStaticSwrMutation,
+    useQueryInventoriesSwrMutation,
+    useQueryNeighborsSwrMutation,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -59,9 +60,10 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_DELIVER_PRODUCT_SWR_MUTATION: useApiDeliverProductSwrMutation(),
                             API_RETAIN_PRODUCT_SWR_MUTATION: useApiRetainProductSwrMutation(),
 
-                            QUERY_USER_SWR: useQueryUserSwr(),
-                            QUERY_STATIC_SWR: useQueryStaticSwr(),
-                            QUERY_INVENTORIES_SWR: useQueryInventoriesSwr(),
+                            QUERY_USER_SWR_MUTATION: useQueryUserSwrMutation(),
+                            QUERY_STATIC_SWR_MUTATION: useQueryStaticSwrMutation(),
+                            QUERY_INVENTORIES_SWR_MUTATION: useQueryInventoriesSwrMutation(),
+                            QUERY_NEIGHBORS_SWR_MUTATION: useQueryNeighborsSwrMutation(),
                             //io
                             GAMEPLAY_IO: useGameplayIo()
                         }}
