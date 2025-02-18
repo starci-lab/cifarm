@@ -11,9 +11,9 @@ import { MODAL_DEPTH_1 } from "../ModalManager"
 import { BaseText, XButton } from "../../elements"
 import { RetainProductRequest } from "@/modules/axios"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { calculateUiDepth, UILayer } from "@/game/layers"
 import { SCALE_TIME } from "@/game/constants"
 import { sleep } from "@/modules/common"
+import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 
 const ROW_COUNT = 3
 const COLUMN_COUNT = 3
@@ -27,16 +27,6 @@ export interface ContainerData {
     hasItem: boolean;
     container: ContainerLite;
 }
-
-export const CONTENT_DEPTH = calculateUiDepth({
-    layer: UILayer.Modal,
-    additionalDepth: 1,
-})
-
-export const HIGHLIGH_DEPTH = calculateUiDepth({
-    layer: UILayer.Tutorial,
-    layerDepth: 1,
-})
 
 export class StandContent extends BaseSizer {
     private gridSizer: GridSizer | undefined
@@ -62,7 +52,6 @@ export class StandContent extends BaseSizer {
         this.updateStandGridSizer()
 
         EventBus.on(EventName.InventoriesRefreshed, ({ data }: IPaginatedResponse<InventorySchema>) => {
-            console.log(data)
             this.inventories = data
             this.updateStandGridSizer()
         })
@@ -82,7 +71,10 @@ export class StandContent extends BaseSizer {
             if (!emptyCell) {
                 throw new Error("No empty cell found")
             }
-            emptyCell.container.setDepth(HIGHLIGH_DEPTH)
+            setTutorialDepth({
+                gameObject: emptyCell.container,
+                scene: this.scene,
+            })
             // show the press here arrow
             const { x, y } = emptyCell.container.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
@@ -201,11 +193,16 @@ export class StandContent extends BaseSizer {
                 // close the arrow
                 this.scene.events.emit(EventName.HidePressHereArrow)
                 // remove the highlight
-                const emptyCell = this.containerMap[index]
-                if (!emptyCell) {
-                    throw new Error("No empty cell found")
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    const emptyCell = this.containerMap[index]
+                    if (!emptyCell) {
+                        throw new Error("No empty cell found")
+                    }
+                    restoreTutorialDepth({
+                        gameObject: emptyCell.container,
+                        scene: this.scene,
+                    })
                 }
-                emptyCell.container.setDepth(CONTENT_DEPTH)
             }
         })
         addButton.setPosition(0, -addButton.height / 2 - 10)
@@ -286,7 +283,10 @@ export class StandContent extends BaseSizer {
             if (!emptyCell) {
                 throw new Error("No empty cell found")
             }
-            emptyCell.container.setDepth(CONTENT_DEPTH)
+            restoreTutorialDepth({
+                gameObject: emptyCell.container,
+                scene: this.scene,
+            })
             onGameObjectPress({
                 gameObject: label,
                 scene: this.scene,

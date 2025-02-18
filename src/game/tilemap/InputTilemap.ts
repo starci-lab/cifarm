@@ -247,6 +247,7 @@ export class InputTilemap extends ItemTilemap {
                 // emit the event to water the plant
                 EventBus.once(EventName.HarvestCropCompleted, () => {
                     EventBus.emit(EventName.RefreshUser)
+                    EventBus.emit(EventName.RefreshInventories)
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                         EventBus.emit(EventName.TutorialCropHarvested)
                     }

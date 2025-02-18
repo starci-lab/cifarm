@@ -30,19 +30,9 @@ import {
     getToolInventories,
 } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { calculateUiDepth, UILayer } from "../../layers"
 import { ItemQuantity } from "../elements"
 import { IPaginatedResponse } from "@/modules/apollo"
-
-export const CONTENT_DEPTH = calculateUiDepth({
-    layer: UILayer.Base,
-    layerDepth: 1,
-})
-
-export const HIGHLIGH_DEPTH = calculateUiDepth({
-    layer: UILayer.Tutorial,
-    layerDepth: 1,
-})
+import { restoreTutorialDepth, setTutorialDepth } from "../tutorial"
 
 // number of items to show
 const ITEM_COUNT = 4
@@ -139,21 +129,32 @@ export class Toolbar extends ContainerLite {
                 scene: this.scene,
                 kind: InventoryKind.Tool
             })
-            console.log(this.seedInventory)
-            this.setDepth(HIGHLIGH_DEPTH)
+            setTutorialDepth({
+                gameObject: this,
+                scene: this.scene,
+            })
             this.enableTutorial = true
         })
 
         this.scene.events.on(EventName.TutorialResetToolbar, () => {
-            this.setDepth(CONTENT_DEPTH)
+            // re update the item sizer
+            this.updateItemSizer()
+            restoreTutorialDepth({
+                gameObject: this,
+                scene: this.scene,
+            })
             this.enableTutorial = false
         })
 
         EventBus.on(EventName.InventoriesRefreshed, ({ data }: IPaginatedResponse<InventorySchema>) => {
             this.inventories = data
             this.toolItems = this.getToolItems()
-            this.selectedIndex = 0
-            this.startIndex = 0
+            // check if the selected index is still valid
+            const lastIndex = this.toolItems.length - 1
+            if (this.selectedIndex + this.startIndex > lastIndex) {
+                this.selectedIndex = defaultSelectedIndex
+                this.startIndex = 0
+            }
             this.controlArrowVisibility()
             this.updateCacheSelectedTool()
             this.updateItemSizer()
@@ -479,14 +480,18 @@ export class Toolbar extends ContainerLite {
                 slot.addLocal(itemContainer)
 
                 // check if the tool is selected
-                if (actualIndex === this.selectedIndex) {
+                if (i === this.selectedIndex) {
                     this.onSelect({ index: i, animate: false, enableSelectedArrow: false })
                 } else {
                     this.onDeselect({ index: i, animate: false })
                 }
             }
             if (this.scene.cache.obj.get(CacheKey.TutorialActive) && this.enableTutorial) {
-                this.setDepth(HIGHLIGH_DEPTH)
+                setTutorialDepth({
+                    gameObject: this,
+                    scene: this.scene,
+                    storeDepth: false,
+                })
             }
         }
     }

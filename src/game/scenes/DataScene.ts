@@ -3,6 +3,7 @@ import { EventBus, EventName } from "../event-bus"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { CacheKey } from "../types"
 import { SceneName } from "../scene"
+import { IPaginatedResponse } from "@/modules/apollo"
 //import { EventName } from "../event-bus"
 
 export class DataScene extends Scene {
@@ -17,7 +18,7 @@ export class DataScene extends Scene {
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            (inventories: Array<InventorySchema>) => {
+            (inventories: IPaginatedResponse<InventorySchema>) => {
                 this.cache.obj.add(CacheKey.Inventories, inventories)
             }
         )

@@ -195,6 +195,7 @@ export class Stacy extends ContainerLite {
                 rotation,
                 requireSetVisibility,
             }: ShowPressHereArrowMessage) => {
+                console.log("called")
                 this.displayPressHereArrow({
                     originPosition,
                     targetPosition,
@@ -300,7 +301,6 @@ export class Stacy extends ContainerLite {
                     count--
                     if (count === 0) {
                         EventBus.off(EventName.TutorialSeedPlanted)
-                        // reset toolbar depth
                         this.scene.events.emit(EventName.TutorialResetToolbar)
                         EventBus.emit(EventName.RequestUpdateTutorial)
                         return

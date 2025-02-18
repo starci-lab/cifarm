@@ -8,7 +8,7 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText, Button, ButtonBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverProductRequest } from "@/modules/axios"
-import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "../StandContent"
+import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 
 const LABEL_SCALE = 1.5
 
@@ -107,7 +107,10 @@ export class InputQuantityContent extends BaseSizer {
                     })
                     EventBus.emit(EventName.RequestDeliverProduct, eventName)
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                        this.button.setDepth(CONTENT_DEPTH)
+                        restoreTutorialDepth({
+                            gameObject: this.button,
+                            scene: this.scene,
+                        })
                         this.scene.events.emit(EventName.TutorialPrepareCloseStand)
                     }
                 },
@@ -150,7 +153,10 @@ export class InputQuantityContent extends BaseSizer {
         this.iconContainer.addLocal(image)  
 
         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-            this.button.setDepth(HIGHLIGH_DEPTH)
+            setTutorialDepth({
+                gameObject: this.button,
+                scene: this.scene,
+            })
         }
     }
 }

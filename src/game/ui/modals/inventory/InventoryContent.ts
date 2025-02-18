@@ -88,7 +88,7 @@ export class InventoryContent extends BaseSizer {
                             const eventMessage: CloseModalMessage = {
                                 modalName: ModalName.Inventory,
                             }
-                            if (this.inventorySeedMoveToToolbar) {
+                            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                                 this.scene.events.emit(EventName.TutorialCloseInventoryButtonPressed)
                                 this.scene.events.emit(EventName.HidePressHereArrow)
                                 restoreTutorialDepth({
@@ -237,6 +237,7 @@ export class InventoryContent extends BaseSizer {
         // if finalized
         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
             if (this.inventorySeedMoveToToolbar) {
+                this.inventorySeedMoveToToolbar = false
                 this.scene.events.emit(EventName.TutorialInventorySeedMoveToToolbar)
                 const { x, y } = this.closeButton.getCenter()
                 const eventMessage: ShowPressHereArrowMessage = {

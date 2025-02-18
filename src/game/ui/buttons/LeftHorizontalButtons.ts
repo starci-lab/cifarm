@@ -3,8 +3,7 @@ import { BaseAssetKey } from "../../assets"
 import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMessage } from "../../event-bus"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
-import { calculateUiDepth, UILayer } from "../../layers"
-import { restoreTutorialDepth } from "../tutorial"
+import { restoreTutorialDepth, setTutorialDepth } from "../tutorial"
 
 export class LeftHorizontalButtons extends HorizontalButtons {
     private nftMarketplaceButton : Sizer
@@ -54,7 +53,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                         scene: this.scene,
                     })
                     // emit the event
-                    this.scene.events.emit(EventName.TutorialInventoryButtonPressed)
+                    this.scene.events.emit(EventName.TutorialShopButtonPressed)
                     // hide the press here arrow
                     this.scene.events.emit(EventName.HidePressHereArrow)
                 }
@@ -101,10 +100,10 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenShop, () => {
-            this.shopButton.setDepth(calculateUiDepth({
-                layer: UILayer.Tutorial,
-                layerDepth: 2,
-            }))
+            setTutorialDepth({
+                gameObject: this.shopButton,
+                scene: this.scene,
+            })
             const { x, y } = this.shopButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
                 originPosition: {
@@ -121,10 +120,10 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenRoadsideStand, () => {
-            this.roadsideStandButton.setDepth(calculateUiDepth({
-                layer: UILayer.Tutorial,
-                layerDepth: 2,
-            }))
+            setTutorialDepth({
+                gameObject: this.roadsideStandButton,
+                scene: this.scene,
+            })
             const { x, y } = this.roadsideStandButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
                 originPosition: {
