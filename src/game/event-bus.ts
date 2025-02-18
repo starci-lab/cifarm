@@ -94,6 +94,7 @@ export enum EventName {
     TutorialOpenShopPressed = "tutorial_open_shop_pressed",
     TutorialShopButtonPressed = "tutorial_shop_button_pressed",
     TutorialRoadsideStandButtonPressed = "tutorial_roadside_stand_button_pressed",
+    TutorialRoadsideStandCloseButtonPressed = "tutorial_roadside_stand_close_button_pressed",
     TutorialShopButtonPressedResponsed = "tutorial_shop_button_pressed_responsed",
     TutorialPrepareBuySeeds = "tutorial_prepare_buy_seeds",
     TutorialPrepareBuySeedsResponsed = "tutorial_prepare_buy_seeds_responsed",
@@ -122,6 +123,8 @@ export enum EventName {
     TutorialWateringCanPressed = "tutorial_water_can_pressed",
     TutorialResetToolbar = "tutorial_reset_toolbar",
     TutorialHighlightToolbar = "tutorial_highlight_toolbar",
+    TutorialPrepareCloseStand = "tutorial_prepare_close_stand",
+    TutorialCloseStandButtonPressed = "tutorial_close_stand_button_pressed",
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
     UpdateTutorialCompleted = "update_tutorial_completed",

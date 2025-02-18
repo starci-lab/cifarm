@@ -5,9 +5,10 @@ import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseGridTable, ItemQuantity, BaseGridTableFrame, CellInfo, getCellInfo, RibbonTitle } from "../../../elements"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { getProductInventories } from "../../../../queries"
-import { EventBus, EventName, ModalName } from "../../../../event-bus"
+import { EventBus, EventName, ModalName, ShowPressHereArrowMessage } from "../../../../event-bus"
 import { onGameObjectPress } from "@/game/ui/utils"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
+import { HIGHLIGH_DEPTH } from "../StandContent"
 
 export class SelectProductContent extends BaseSizer {
     private background: Phaser.GameObjects.Image
@@ -15,6 +16,7 @@ export class SelectProductContent extends BaseSizer {
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private gridTable: BaseGridTable<InventorySchema>|undefined
     private cellInfo: CellInfo
+    private gridMap: Record<number, ItemQuantity> = {}
 
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
@@ -53,7 +55,6 @@ export class SelectProductContent extends BaseSizer {
     private updateGridTable() {
         const items = getProductInventories({ scene: this.scene })
         if (this.gridTable) {
-            console.log(items)
             this.gridTable.setItems(items)
             this.gridTable.layout()
             return
@@ -71,10 +72,8 @@ export class SelectProductContent extends BaseSizer {
                     const background = new BaseGridTableFrame({ scene: this.scene, x: 0, y: 0 })
                     this.scene.add.existing(background)
                     if (cellContainer === null) {
-                        let gridTableCell: ItemQuantity | undefined
-                        if (cell.item) {
-                            gridTableCell = this.createCell(cell.item as InventorySchema)
-                        }
+                        const gridTableCell = this.createCell(cell.item as InventorySchema)
+                        this.gridMap[cell.index] = gridTableCell
                         if (!cellContainer) {
                             cellContainer = this.scene.rexUI.add.sizer({ orientation: "y" })
                             const _cellContainer = cellContainer as Sizer
@@ -100,6 +99,25 @@ export class SelectProductContent extends BaseSizer {
         }).setDepth(MODAL_DEPTH_2 + 1).layout()
         this.scene.add.existing(this.gridTable)
         this.addLocal(this.gridTable)
+
+        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+            const firstCell = this.gridMap[0]
+            if (firstCell) {
+                firstCell.setDepth(HIGHLIGH_DEPTH)
+                const { x, y } = firstCell.getCenter()
+                const eventMessage: ShowPressHereArrowMessage = {
+                    originPosition: {
+                        x: x + 60,
+                        y: y + 60,
+                    },
+                    targetPosition: {
+                        x: x + 40,
+                        y: y + 40,
+                    },
+                }
+                this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+            }
+        }
         return this.gridTable
     }
 

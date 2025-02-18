@@ -1,6 +1,6 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
-import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMessage, TutorialOpenRoadsideStandResponsedMessage } from "../../event-bus"
+import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMessage } from "../../event-bus"
 import { ButtonsBaseConstructorParams } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { calculateUiDepth, UILayer } from "../../layers"
@@ -113,12 +113,21 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                 layer: UILayer.Tutorial,
                 layerDepth: 2,
             }))
-            const eventMessage: TutorialOpenRoadsideStandResponsedMessage = {
-                position: this.roadsideStandButton.getCenter()
+            const { x, y } = this.roadsideStandButton.getCenter()
+            const eventMessage: ShowPressHereArrowMessage = {
+                originPosition: {
+                    x: x + 60,
+                    y: y + 60,
+                },
+                targetPosition: {
+                    x: x + 40,
+                    y: y + 45,
+                },
             }
-            this.scene.events.emit(EventName.TutorialOpenRoadsideStandResponsed, eventMessage)
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+
             // if shop button is press, we will console go
-            this.roadsideStandButton.once("pointerdown", () => {
+            this.roadsideStandButton.once("pointerdown", async () => {
                 // return to normal depth
                 this.roadsideStandButton.setDepth(calculateUiDepth({
                     layer: UILayer.Base,

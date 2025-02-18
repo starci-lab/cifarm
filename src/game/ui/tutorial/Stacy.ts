@@ -6,7 +6,7 @@ import {
 } from "@/modules/entities"
 import { tutorialStepMap } from "./config"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, stacyAssetMap } from "@/game/assets"
 import { BaseText, NinePatch3x3, TextColor } from "../elements"
 import { sleep } from "@/modules/common"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
@@ -14,7 +14,6 @@ import {
     EventBus,
     EventName,
     ShowPressHereArrowMessage,
-    TutorialOpenRoadsideStandResponsedMessage,
     TutorialPrepareBuySeedsMessage,
 } from "../../event-bus"
 import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
@@ -559,23 +558,9 @@ export class Stacy extends ContainerLite {
                 return
             }
             case TutorialStep.StartDeliverProduct: {
-                // when user press the shop button
-                this.scene.events.once(
-                    EventName.TutorialOpenRoadsideStandResponsed,
-                    ({ position }: TutorialOpenRoadsideStandResponsedMessage) => {
-                        this.displayPressHereArrow({
-                            rotation: -45,
-                            originPosition: { x: position.x + 60, y: position.y + 60 },
-                            targetPosition: { x: position.x + 40, y: position.y + 40 },
-                        })
-                    }
-                )
-
-                this.scene.events.once(
-                    EventName.TutorialRoadsideStandButtonPressed,
-                    () => {}
-                )
-
+                this.scene.events.once(EventName.TutorialRoadsideStandCloseButtonPressed, () => {
+                    EventBus.emit(EventName.RequestUpdateTutorial)
+                })
                 // emit the event to open the inventory
                 this.scene.events.emit(EventName.TutorialOpenRoadsideStand)
                 // hide the stacy
@@ -661,8 +646,9 @@ export class Stacy extends ContainerLite {
         // if press to continue is true, turn it off
         this.disallowPressToContinue(true)
         // set continue to false
-        const textureAssetKey = tutorialStepMap[this.user.tutorialStep].assetKey
-        this.stacyImage.setTexture(textureAssetKey)
+        const stacyAssetKey = tutorialStepMap[this.user.tutorialStep].key
+        const { textureConfig: { key }} = stacyAssetMap[stacyAssetKey]
+        this.stacyImage.setTexture(key)
         this.playSetTextAnimation(tutorialStepMap[this.user.tutorialStep].message)
     }
 

@@ -1,12 +1,14 @@
 import { BaseAssetKey } from "../../../assets"
-import { CloseModalMessage, EventBus, EventName, ModalName } from "../../../event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName, ShowPressHereArrowMessage } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { ContainerLiteBaseConstructorParams } from "../../../types"
+import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import { onGameObjectPress } from "../../utils"
+import { HIGHLIGH_DEPTH } from "../inventory"
+import { XButton } from "../../elements"
 
 export class StandHeader extends ContainerLite {
     private header: Phaser.GameObjects.Image
-    private closeButton: Phaser.GameObjects.Image
+    private closeButton: XButton
 
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -16,25 +18,45 @@ export class StandHeader extends ContainerLite {
             .setOrigin(0.5, 0)
         this.addLocal(this.header)
 
-        this.closeButton = scene.add
-            .image(this.header.width/2 - 50, 90, BaseAssetKey.UIModalInventoryBtnClose)
-            .setOrigin(0.5, 0)
-            .setDepth(1)
-            .setInteractive()
-
-        this.closeButton.on("pointerdown", () => {
-            onGameObjectPress({
-                gameObject: this.closeButton,
+        this.closeButton = new XButton({
+            baseParams: {
                 scene: this.scene,
+                config: {
+                    x: this.header.width/2 - 50, 
+                    y: 90,
+                }
+            },
+            options: {
                 onPress: () => {
-                    const eventMessage: CloseModalMessage = {
-                        modalName: ModalName.Stand,
-                    }
-                    EventBus.emit(EventName.CloseModal, eventMessage)
-                },
-            })
+                    onGameObjectPress({
+                        gameObject: this.closeButton,
+                        scene: this.scene,
+                        onPress: () => {
+                            const eventMessage: CloseModalMessage = {
+                                modalName: ModalName.Stand,
+                            }
+                            EventBus.emit(EventName.CloseModal, eventMessage)
+                            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                                this.scene.events.emit(EventName.TutorialRoadsideStandCloseButtonPressed)
+                                this.scene.events.emit(EventName.HidePressHereArrow)
+                            }
+                        },
+                    })
+                }
+            }
         })
-
+        this.scene.add.existing(this.closeButton)
         this.addLocal(this.closeButton)
+
+        this.scene.events.once(EventName.TutorialPrepareCloseStand, () => {
+            this.closeButton.setDepth(HIGHLIGH_DEPTH)
+            const { x, y } = this.closeButton.getCenter()
+            const eventMessage: ShowPressHereArrowMessage = {
+                originPosition: { x: x - 60, y: y + 60 },
+                targetPosition: { x: x - 40, y: y + 40 },
+                rotation: 45
+            }
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+        })
     }
 }

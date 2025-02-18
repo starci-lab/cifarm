@@ -56,9 +56,6 @@ export class TutorialManager extends ContainerLite {
 
     //run on start
     private start() {
-        // set the tutorial to active
-        this.scene.cache.obj.add(CacheKey.TutorialActive, true)
-
         const { lastOfThisPhase, message, phase } =
       tutorialStepMap[this.user.tutorialStep]
         // do nothing if the tutorial step is last of this phase
@@ -84,6 +81,7 @@ export class TutorialManager extends ContainerLite {
 
     // open the tutorial
     private onOpen() {
+        this.scene.cache.obj.add(CacheKey.TutorialActive, true)
         this.showBackdrop()
         this.stacy.show()
         this.stacy.render()
@@ -91,6 +89,7 @@ export class TutorialManager extends ContainerLite {
 
     // close the tutorial
     private onClose() {
+        this.scene.cache.obj.add(CacheKey.TutorialActive, false)
         this.hideBackdrop()
         this.stacy.hide()
     }

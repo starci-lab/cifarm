@@ -89,6 +89,7 @@ export class Toolbar extends ContainerLite {
     // flags to check if the events are emitted
     private defaultInfo: DefaultInfo
     private mainContainer: ContainerLite | undefined
+    private enableTutorial = false
     constructor({
         scene,
         x,
@@ -140,10 +141,12 @@ export class Toolbar extends ContainerLite {
             })
             console.log(this.seedInventory)
             this.setDepth(HIGHLIGH_DEPTH)
+            this.enableTutorial = true
         })
 
         this.scene.events.on(EventName.TutorialResetToolbar, () => {
             this.setDepth(CONTENT_DEPTH)
+            this.enableTutorial = false
         })
 
         EventBus.on(EventName.InventoriesRefreshed, ({ data }: IPaginatedResponse<InventorySchema>) => {
@@ -482,9 +485,9 @@ export class Toolbar extends ContainerLite {
                     this.onDeselect({ index: i, animate: false })
                 }
             }
-            // if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-            //     this.setDepth(HIGHLIGH_DEPTH)
-            // }
+            if (this.scene.cache.obj.get(CacheKey.TutorialActive) && this.enableTutorial) {
+                this.setDepth(HIGHLIGH_DEPTH)
+            }
         }
     }
 

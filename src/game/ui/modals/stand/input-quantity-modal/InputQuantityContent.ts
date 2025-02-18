@@ -8,6 +8,7 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText, Button, ButtonBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverProductRequest } from "@/modules/axios"
+import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "../StandContent"
 
 const LABEL_SCALE = 1.5
 
@@ -20,6 +21,7 @@ export class InputQuantityContent extends BaseSizer {
     private numberInput: NumberInput
     private iconContainer: ContainerLite
     private inventory: InventorySchema | undefined
+    private button: Button
 
     constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
@@ -76,7 +78,7 @@ export class InputQuantityContent extends BaseSizer {
         this.addLocal(this.numberInput)
 
         const buttonContainer = this.scene.rexUI.add.container(0, 0).setOrigin(0.5, 0).setPosition(0, 225)
-        const button = new Button({
+        this.button = new Button({
             baseParams: {
                 scene: this.scene,
             },
@@ -104,15 +106,18 @@ export class InputQuantityContent extends BaseSizer {
                         EventBus.emit(EventName.CloseModal, eventMessage)
                     })
                     EventBus.emit(EventName.RequestDeliverProduct, eventName)
+                    if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                        this.button.setDepth(CONTENT_DEPTH)
+                        this.scene.events.emit(EventName.TutorialPrepareCloseStand)
+                    }
                 },
                 width: 300,
                 background: ButtonBackground.Primary,
             }
         }).layout()
-        buttonContainer.addLocal(button)
-
-        this.scene.add.existing(button)
-        this.addLocal(button)
+        this.scene.add.existing(this.button)
+        buttonContainer.addLocal(this.button)
+        this.addLocal(buttonContainer)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
@@ -143,5 +148,9 @@ export class InputQuantityContent extends BaseSizer {
         })
         this.iconContainer.clear(true)
         this.iconContainer.addLocal(image)  
+
+        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+            this.button.setDepth(HIGHLIGH_DEPTH)
+        }
     }
 }

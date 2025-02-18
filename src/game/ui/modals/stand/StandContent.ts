@@ -4,12 +4,16 @@ import { IPaginatedResponse } from "@/modules/apollo"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { onGameObjectPress } from "../../utils"
-import { EventBus, EventName, ModalName, OpenModalMessage } from "../../../event-bus"
+import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMessage } from "../../../event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "@/game/queries"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { BaseText, XButton } from "../../elements"
 import { RetainProductRequest } from "@/modules/axios"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import { calculateUiDepth, UILayer } from "@/game/layers"
+import { SCALE_TIME } from "@/game/constants"
+import { sleep } from "@/modules/common"
 
 const ROW_COUNT = 3
 const COLUMN_COUNT = 3
@@ -19,11 +23,26 @@ const MOVE_Y_ROW_2 = -21
 const MOVE_Y_ROW_3 = 0
 const ADD_BUTTON_SCALE = 0.5
 
+export interface ContainerData {
+    hasItem: boolean;
+    container: ContainerLite;
+}
+
+export const CONTENT_DEPTH = calculateUiDepth({
+    layer: UILayer.Modal,
+    additionalDepth: 1,
+})
+
+export const HIGHLIGH_DEPTH = calculateUiDepth({
+    layer: UILayer.Tutorial,
+    layerDepth: 1,
+})
+
 export class StandContent extends BaseSizer {
     private gridSizer: GridSizer | undefined
     private inventories: Array<InventorySchema> = []
     private inventoryTypes: Array<InventoryTypeSchema> = []
-
+    private containerMap: Record<number, ContainerData> = {}
     constructor({
         scene,
         x,
@@ -46,6 +65,37 @@ export class StandContent extends BaseSizer {
             console.log(data)
             this.inventories = data
             this.updateStandGridSizer()
+        })
+
+        this.scene.events.once(EventName.TutorialRoadsideStandButtonPressed, async () => {
+            // wait for the scale time
+            await sleep(SCALE_TIME)
+            // get the first non empty cell
+            const nonEmptyCell = Object.values(this.containerMap).find(({ hasItem }) => hasItem)
+            if (nonEmptyCell) {
+                this.scene.events.emit(EventName.TutorialPrepareCloseStand)
+                return
+            }
+            // get the first empty cell
+            const emptyCell = Object.values(this.containerMap).find(({ hasItem }) => !hasItem)
+            // highlight the empty cell
+            if (!emptyCell) {
+                throw new Error("No empty cell found")
+            }
+            emptyCell.container.setDepth(HIGHLIGH_DEPTH)
+            // show the press here arrow
+            const { x, y } = emptyCell.container.getCenter()
+            const eventMessage: ShowPressHereArrowMessage = {
+                originPosition: {
+                    x: x + 60,
+                    y: y,
+                },
+                targetPosition: {
+                    x: x + 40,
+                    y: y - 20,
+                },
+            }
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
     }
 
@@ -88,6 +138,10 @@ export class StandContent extends BaseSizer {
                         2: MOVE_Y_ROW_3,
                     }
                     const container = scene.rexUI.add.container(0, map[y])
+                    this.containerMap[index] = {
+                        hasItem: !!item,
+                        container
+                    }
                     const tagBackground = scene.add.image(0, 0, BaseAssetKey.UIModalStandTag)
                     
                     let tagText: BaseText | undefined
@@ -144,7 +198,14 @@ export class StandContent extends BaseSizer {
                     modalName: ModalName.SelectProduct,
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
-                // wait until the modal is scaled
+                // close the arrow
+                this.scene.events.emit(EventName.HidePressHereArrow)
+                // remove the highlight
+                const emptyCell = this.containerMap[index]
+                if (!emptyCell) {
+                    throw new Error("No empty cell found")
+                }
+                emptyCell.container.setDepth(CONTENT_DEPTH)
             }
         })
         addButton.setPosition(0, -addButton.height / 2 - 10)
@@ -219,6 +280,13 @@ export class StandContent extends BaseSizer {
             background,
         }).layout()
         label.setInteractive().on("pointerdown", () => {
+            // get the first empty cell
+            const emptyCell = Object.values(this.containerMap).find(({ hasItem }) => !hasItem)
+            // highlight the empty cell
+            if (!emptyCell) {
+                throw new Error("No empty cell found")
+            }
+            emptyCell.container.setDepth(CONTENT_DEPTH)
             onGameObjectPress({
                 gameObject: label,
                 scene: this.scene,

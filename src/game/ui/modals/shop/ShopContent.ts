@@ -474,7 +474,7 @@ export class ShopContent extends BaseSizer {
         this.scene.add.existing(titleText)
 
         // create the icon sizer
-        const iconContainer = this.scene.add.container(0, 0)
+        const iconContainer = this.scene.rexUI.add.container(0, 0)
         const avatarShop = this.scene.add.image(
             0,
             0,
