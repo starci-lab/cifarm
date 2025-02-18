@@ -5,13 +5,13 @@ import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
 import { onGameObjectPress } from "../../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { HIGHLIGH_DEPTH } from "./ShopModal"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
+import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 
 export class ShopHeader extends ContainerLite {
     // close button
-    private closeButton: Phaser.GameObjects.Image
+    private closeButton: Label
     private titleShop: Label
     constructor({
         scene,
@@ -29,9 +29,12 @@ export class ShopHeader extends ContainerLite {
         backgroundContainer.addLocal(background)
 
         // add the close button
-        this.closeButton = this.scene.add
-            .image(background.width / 2 - 50, 0, BaseAssetKey.UIModalShopX)
-            .setOrigin(1, 0.5)
+        const closeButtonBackground = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopX)
+        this.closeButton = this.scene.rexUI.add.label({
+            width: closeButtonBackground.width,
+            height: closeButtonBackground.height,
+            background: closeButtonBackground,
+        }).layout().setPosition(background.width / 2 - closeButtonBackground.width / 2 - 50, 0)
         // add the on click event
         this.closeButton.setInteractive().on("pointerdown", () => {
             onGameObjectPress({
@@ -45,6 +48,10 @@ export class ShopHeader extends ContainerLite {
                     EventBus.emit(EventName.CloseModal, eventMessage)
                     // emit the events related to the tutorial
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                        restoreTutorialDepth({
+                            gameObject: this.closeButton,
+                            scene: this.scene,
+                        })
                         this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
                         this.scene.events.emit(EventName.HidePressHereArrow)
                     }
@@ -89,7 +96,10 @@ export class ShopHeader extends ContainerLite {
         this.scene.events.once(EventName.TutorialPrepareCloseShop, async () => {
             // await until the shop is opened
             await sleep(SCALE_TIME)
-            this.closeButton = this.closeButton.setDepth(HIGHLIGH_DEPTH)
+            setTutorialDepth({
+                gameObject: this.closeButton,
+                scene: this.scene,
+            })
             const { x, y } = this.closeButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
                 rotation: 45,

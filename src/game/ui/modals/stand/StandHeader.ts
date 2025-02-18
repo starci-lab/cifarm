@@ -3,8 +3,8 @@ import { CloseModalMessage, EventBus, EventName, ModalName, ShowPressHereArrowMe
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import { onGameObjectPress } from "../../utils"
-import { HIGHLIGH_DEPTH } from "../inventory"
 import { XButton } from "../../elements"
+import { setTutorialDepth } from "../../tutorial"
 
 export class StandHeader extends ContainerLite {
     private header: Phaser.GameObjects.Image
@@ -49,7 +49,10 @@ export class StandHeader extends ContainerLite {
         this.addLocal(this.closeButton)
 
         this.scene.events.once(EventName.TutorialPrepareCloseStand, () => {
-            this.closeButton.setDepth(HIGHLIGH_DEPTH)
+            setTutorialDepth({
+                gameObject: this.closeButton,
+                scene: this.scene,
+            })
             const { x, y } = this.closeButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
                 originPosition: { x: x - 60, y: y + 60 },

@@ -22,9 +22,9 @@ import {
     ShowPressHereArrowMessage,
 } from "@/game/event-bus"
 import { onGameObjectPress } from "../../utils"
+import { HIGHLIGH_DEPTH, restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { MODAL_BACKDROP_DEPTH_1, MODAL_DEPTH_1 } from "../ModalManager"
-import { HIGHLIGH_DEPTH } from "./InventoryModal"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "@/game/constants"
 
@@ -41,6 +41,7 @@ export class InventoryContent extends BaseSizer {
     private storageGridTable: BaseGridTable<InventorySchema | null> | undefined
     private toolbarGridSizer: GridSizer | undefined
     private cellInfo: CellInfo
+    private inventorySeedMoveToToolbar = false
     // zones
     private toolbarZones: Array<Zone> = []
 
@@ -87,10 +88,14 @@ export class InventoryContent extends BaseSizer {
                             const eventMessage: CloseModalMessage = {
                                 modalName: ModalName.Inventory,
                             }
-                            if (this.scene.cache.obj.get(CacheKey.SeedInventoryMoveToToolbar)) {
+                            if (this.inventorySeedMoveToToolbar) {
                                 this.scene.events.emit(EventName.TutorialCloseInventoryButtonPressed)
                                 this.scene.events.emit(EventName.HidePressHereArrow)
-                                this.scene.cache.obj.remove(CacheKey.SeedInventoryMoveToToolbar)
+                                restoreTutorialDepth({
+                                    gameObject: this.closeButton,
+                                    scene: this.scene,
+                                })
+                                this.enableScroller()
                             }
                             EventBus.emit(EventName.CloseModal, eventMessage)
                         },
@@ -117,12 +122,12 @@ export class InventoryContent extends BaseSizer {
         this.scene.events.once(EventName.TutorialInventoryButtonPressed, async () => {
             await sleep(SCALE_TIME)
             this.enableTutorial = true
-            this.highlightToolbar()
+            this.highlightCell()
         })
     //this.updateToolbar()
     }
 
-    private highlightToolbar() {
+    private highlightCell() {
         // get the label that 
         const inventory = getFirstSeedInventory({
             inventories: this.inventories,
@@ -137,7 +142,11 @@ export class InventoryContent extends BaseSizer {
         if (!cell) {
             throw new Error("Cell not found")
         }
-        cell.setDepth(HIGHLIGH_DEPTH)
+        setTutorialDepth({
+            gameObject: cell,
+            scene: this.scene,
+            storeDepth: false
+        })
 
         const { x,y } = cell.getCenter()
         
@@ -154,11 +163,15 @@ export class InventoryContent extends BaseSizer {
         }
         this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
 
+        this.disableScroller()
+    }
+
+    private disableScroller() {
         this.storageGridTable?.setScrollerEnable(false)
         this.storageGridTable?.setMouseWheelScrollerEnable(false)
     }
 
-    private unhighlightToolbar() {
+    private enableScroller() {
         this.storageGridTable?.setScrollerEnable(true)
         this.storageGridTable?.setMouseWheelScrollerEnable(true)
     }
@@ -223,7 +236,7 @@ export class InventoryContent extends BaseSizer {
         const result = this.handleUpdateStorageGridTable()
         // if finalized
         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-            if (this.scene.cache.obj.get(CacheKey.SeedInventoryMoveToToolbar)) {
+            if (this.inventorySeedMoveToToolbar) {
                 this.scene.events.emit(EventName.TutorialInventorySeedMoveToToolbar)
                 const { x, y } = this.closeButton.getCenter()
                 const eventMessage: ShowPressHereArrowMessage = {
@@ -232,12 +245,15 @@ export class InventoryContent extends BaseSizer {
                     targetPosition: { x: x - 40, y: y + 40 },
                 }
                 this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-                this.unhighlightToolbar()
-                this.closeButton.setDepth(HIGHLIGH_DEPTH)
+                this.disableScroller()
+                setTutorialDepth({
+                    gameObject: this.closeButton,
+                    scene: this.scene,
+                })
                 return result
             }
             if (this.enableTutorial) {
-                this.highlightToolbar()
+                this.highlightCell()
             }
         }
         return result
@@ -394,7 +410,7 @@ export class InventoryContent extends BaseSizer {
                 }
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     if (isTool) {
-                        this.scene.cache.obj.add(CacheKey.SeedInventoryMoveToToolbar, true)
+                        this.inventorySeedMoveToToolbar = true
                         this.enableTutorial = false
                     }
                 }

@@ -2,8 +2,8 @@ import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
 import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMessage } from "../../event-bus"
 import { HorizontalButtons } from "./HorizontalButtons"
-import { ButtonsBaseConstructorParams } from "@/game/types"
-import { calculateUiDepth, UILayer } from "../../layers"
+import { ButtonsBaseConstructorParams, CacheKey } from "@/game/types"
+import { restoreTutorialDepth, setTutorialDepth } from "../tutorial"
 
 export class RightHorizontalButtons extends HorizontalButtons {
     private settingButton: Sizer
@@ -46,6 +46,17 @@ export class RightHorizontalButtons extends HorizontalButtons {
                     modalName: ModalName.Inventory
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    // return to normal depth
+                    restoreTutorialDepth({
+                        gameObject: this.inventoryButton,
+                        scene: this.scene,
+                    })
+                    // emit the event
+                    this.scene.events.emit(EventName.TutorialInventoryButtonPressed)
+                    // hide the press here arrow
+                    this.scene.events.emit(EventName.HidePressHereArrow)
+                }
             },
         })
         this.addButton(this.inventoryButton)
@@ -78,10 +89,10 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenInventory, () => {
-            this.inventoryButton.setDepth(calculateUiDepth({
-                layer: UILayer.Tutorial,
-                layerDepth: 2,
-            }))
+            setTutorialDepth({
+                gameObject: this.inventoryButton,
+                scene: this.scene,
+            })
             const { x, y } = this.inventoryButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
                 rotation: 45,
@@ -89,17 +100,6 @@ export class RightHorizontalButtons extends HorizontalButtons {
                 targetPosition: { x: x - 40, y: y + 40 },
             }
             this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-            // if shop button is press, we will console go
-            this.inventoryButton.once("pointerdown", () => {
-                // return to normal depth
-                this.inventoryButton.setDepth(calculateUiDepth({
-                    layer: UILayer.Base,
-                }))
-                // emit the event
-                this.scene.events.emit(EventName.TutorialInventoryButtonPressed)
-                // hide the press here arrow
-                this.scene.events.emit(EventName.HidePressHereArrow)
-            })
         })
     }
 }

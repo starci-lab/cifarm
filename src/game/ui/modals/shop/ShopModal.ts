@@ -10,19 +10,8 @@ import {
     getScreenLeftX,
 } from "../../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { calculateUiDepth, UILayer } from "../../../layers"
 import { IModal } from "@/game/interfaces"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-
-export const CONTENT_DEPTH = calculateUiDepth({
-    layer: UILayer.Modal,
-    additionalDepth: 1,
-})
-
-export const HIGHLIGH_DEPTH = calculateUiDepth({
-    layer: UILayer.Tutorial,
-    layerDepth: 1,
-})
 
 // shop modal extends BaseSizer
 export class ShopModal extends BaseSizer implements IModal {
@@ -52,7 +41,7 @@ export class ShopModal extends BaseSizer implements IModal {
         //create the shop content
         this.shopContent = new ShopContent({
             scene: this.scene,
-        }).setDepth(CONTENT_DEPTH)
+        })
 
         this.scene.add.existing(this.shopContent)
         this.add(this.shopContent)
@@ -75,7 +64,5 @@ export class ShopModal extends BaseSizer implements IModal {
         
         this.scene.add.existing(this.shopHeader)
         this.add(this.shopHeader)
-
-        this.setDirty(false)
     }
 }

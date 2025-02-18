@@ -16,6 +16,7 @@ import {
     getScreenBottomY,
     getScreenCenterX,
 } from "../../utils"
+import { setTutorialDepth, restoreTutorialDepth } from "../../tutorial"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
 import {
@@ -39,7 +40,6 @@ import {
 } from "../../../event-bus"
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateUiDepth, UILayer } from "../../../layers"
-import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
 import { getFirstSeedInventory } from "../../../queries"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
@@ -131,7 +131,10 @@ export class ShopContent extends BaseSizer {
                 return
             }
 
-            this.defaultItemCard.setDepth(HIGHLIGH_DEPTH)
+            setTutorialDepth({
+                scene: this.scene,
+                gameObject: this.defaultItemCard,
+            })
 
             const eventMessage: ShowPressHereArrowMessage = {
                 originPosition: {
@@ -324,7 +327,10 @@ export class ShopContent extends BaseSizer {
                         // send request to buy seeds
                         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            this.defaultItemCard?.setDepth(CONTENT_DEPTH)
+                            restoreTutorialDepth({
+                                gameObject: itemCard,
+                                scene: this.scene,
+                            })
                             this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                         }
                     },

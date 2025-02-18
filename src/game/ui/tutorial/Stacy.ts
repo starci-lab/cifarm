@@ -183,32 +183,6 @@ export class Stacy extends ContainerLite {
             EventBus.emit(EventName.RefreshUser)
         })
 
-        // callback when the tutorial is completed
-        EventBus.on(EventName.UpdateTutorialCompleted, () => {
-            EventBus.once(EventName.UserRefreshed, (user: UserSchema) => {
-                // check  if the tutorial is not shown
-                // set the user
-                this.user = user
-                // emit the event
-                // we perform switch case here to know what to do next
-                this.render()
-            })
-            EventBus.emit(EventName.RefreshUser)
-        })
-
-        // callback when the tutorial is completed
-        EventBus.on(EventName.UpdateTutorialCompleted, () => {
-            EventBus.once(EventName.UserRefreshed, (user: UserSchema) => {
-                // check  if the tutorial is not shown
-                // set the user
-                this.user = user
-                // emit the event
-                // we perform switch case here to know what to do next
-                this.render()
-            })
-            EventBus.emit(EventName.RefreshUser)
-        })
-
         this.scene.events.on(EventName.HidePressHereArrow, () => {
             this.pressHereArrow?.setVisible(false)
         })
@@ -309,6 +283,7 @@ export class Stacy extends ContainerLite {
                     count = 1
                 }
                 if (placedItems.length >= 2) {
+                    console.log("Planted seeds")
                     EventBus.emit(EventName.RequestUpdateTutorial)
                     return
                 }
