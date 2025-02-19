@@ -1,25 +1,25 @@
 import { UseSWRMutation } from "../types"
 import {
-    queryNeighbors,
-    QueryNeighborsParams,
-    QueryNeighborsResponse,
+    queryFollowees,
+    QueryFolloweesParams,
+    QueryFolloweesResponse,
 } from "@/modules/apollo"
 import useSWRMutation from "swr/mutation"
 import { ApolloQueryResult } from "@apollo/client"
 import { v4 } from "uuid"
 
-export const useQueryNeighborsSwrMutation = (): UseSWRMutation<
-  ApolloQueryResult<QueryNeighborsResponse>,
-  QueryNeighborsParams
+export const useQueryFolloweesSwrMutation = (): UseSWRMutation<
+  ApolloQueryResult<QueryFolloweesResponse>,
+  QueryFolloweesParams
 > => {
     const swrMutation = useSWRMutation(
         v4(),
         async (
             _: string,
-            extraArgs: { arg: QueryNeighborsParams }
+            extraArgs: { arg: QueryFolloweesParams }
         ) => {
             const { arg } = { ...extraArgs }
-            return await queryNeighbors(arg)
+            return await queryFollowees(arg)
         }
     )
 

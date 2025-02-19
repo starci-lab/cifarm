@@ -31,8 +31,10 @@ export enum EventName {
     LoadNeighbors = "load_neighbors",
     // neighbors loaded, from React to Phaser
     NeighborsLoaded = "neighbors_loaded",
-    // delivering products loaded, from React to Phaser
-    DeliveringProductsLoaded = "delivering_products_loaded",
+    // followees loaded, from React to Phaser
+    LoadFollowees = "request_followees",
+    // followees loaded, from React to Phaser
+    FolloweesLoaded = "followees_loaded",
 
     // refresh
     RefreshUser = "refresh_user",
@@ -43,6 +45,9 @@ export enum EventName {
     DeliveringProductsRefreshed = "delivering_products_refreshed",
     RefreshNeighbors = "refresh_neighbors",
     NeighborsRefreshed = "neighbors_refreshed",
+    RefreshFollowees = "refresh_followees",
+    FolloweesRefreshed = "followees_refreshed",
+    
     // open shop
     OpenShop = "open_shop",
     CloseShop = "close_shop",
@@ -158,6 +163,12 @@ export enum EventName {
 
     RequestRetainProduct = "request_retain_product",
     RetainProductCompleted = "retain_product_completed",
+
+    RequestFollow = "request_follow",
+    FollowCompleted = "follow_completed",
+    
+    RequestUnfollow = "request_unfollow",
+    UnfollowCompleted = "unfollow_completed",
 }
 
 export interface OpenTutorialMessage {

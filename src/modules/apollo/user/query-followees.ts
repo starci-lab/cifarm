@@ -9,40 +9,39 @@ import {
 } from "../types"
 
 const query1 = gql`
-  query ($args: GetNeighborsArgs!) {
-    neighbors(args: $args) {
+  query ($args: GetFolloweesArgs!) {
+    followees(args: $args) {
       data {
         id
         avatarUrl
-        followed
         username
       }
     }
   }
 `
 
-export interface QueryNeighborsResponse {
+export interface QueryFolloweesResponse {
   neighbors: IPaginatedResponse<UserSchema>;
 }
 
-export enum QueryNeighbors {
+export enum QueryFollowees {
   Query1 = "query1",
 }
 
-const queryMap: Record<QueryNeighbors, DocumentNode> = {
-    [QueryNeighbors.Query1]: query1,
+const queryMap: Record<QueryFollowees, DocumentNode> = {
+    [QueryFollowees.Query1]: query1,
 }
 
-export type QueryNeighborsArgs = QueryManyArgs;
-export type QueryNeighborsParams = QueryParams<QueryNeighbors, QueryNeighborsArgs>;
-export const queryNeighbors = async ({
-    query = QueryNeighbors.Query1,
+export type QueryFolloweesArgs = QueryManyArgs;
+export type QueryFolloweesParams = QueryParams<QueryFollowees, QueryFolloweesArgs>;
+export const queryFollowees = async ({
+    query = QueryFollowees.Query1,
     args = { limit: 5, offset: 0 },
-}: QueryNeighborsParams) => {
+}: QueryFolloweesParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    QueryNeighborsResponse,
-    QueryVariables<QueryNeighborsArgs>
+    QueryFolloweesResponse,
+    QueryVariables<QueryFolloweesArgs>
   >({
       query: queryDocument,
       variables: {

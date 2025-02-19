@@ -7,6 +7,8 @@ export enum CacheKey {
     Inventories = "inventories",
     NeighborsArgs = "neighbors-args",
     Neighbors = "neighbors",
+    FolloweesArgs = "followees-args",
+    Followees = "followees",
     InventoryTypes = "inventory-types",
     DailyRewards = "daily-rewards",
     User = "user",

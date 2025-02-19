@@ -27,6 +27,9 @@ import {
     useQueryStaticSwrMutation,
     useQueryInventoriesSwrMutation,
     useQueryNeighborsSwrMutation,
+    useApiFollowSwrMutation,
+    useApiUnfollowSwrMutation,
+    useQueryFolloweesSwrMutation,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -59,11 +62,14 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_MOVE_INVENTORY_SWR_MUTATION: useApiMoveInventorySwrMutation(),
                             API_DELIVER_PRODUCT_SWR_MUTATION: useApiDeliverProductSwrMutation(),
                             API_RETAIN_PRODUCT_SWR_MUTATION: useApiRetainProductSwrMutation(),
+                            API_FOLLOW_SWR_MUTATION: useApiFollowSwrMutation(),
+                            API_UNFOLLOW_SWR_MUTATION: useApiUnfollowSwrMutation(),
 
                             QUERY_USER_SWR_MUTATION: useQueryUserSwrMutation(),
                             QUERY_STATIC_SWR_MUTATION: useQueryStaticSwrMutation(),
                             QUERY_INVENTORIES_SWR_MUTATION: useQueryInventoriesSwrMutation(),
                             QUERY_NEIGHBORS_SWR_MUTATION: useQueryNeighborsSwrMutation(),
+                            QUERY_FOLLOWEES_SWR_MUTATION: useQueryFolloweesSwrMutation(),
                             //io
                             GAMEPLAY_IO: useGameplayIo()
                         }}
