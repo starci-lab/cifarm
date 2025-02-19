@@ -166,9 +166,19 @@ export enum EventName {
 
     RequestFollow = "request_follow",
     FollowCompleted = "follow_completed",
-    
+
     RequestUnfollow = "request_unfollow",
     UnfollowCompleted = "unfollow_completed",
+
+    RequestVisit = "request_visit",
+    VisitCompleted = "visit_completed",
+
+    RequestReturn = "request_return",
+    ReturnCompleted = "return_completed",
+
+    FadeIn = "fade_in",
+    FadeOut = "fade_out",
+    FadeAll = "fade_all",
 }
 
 export interface OpenTutorialMessage {

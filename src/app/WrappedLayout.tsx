@@ -30,6 +30,8 @@ import {
     useApiFollowSwrMutation,
     useApiUnfollowSwrMutation,
     useQueryFolloweesSwrMutation,
+    useApiReturnSwrMutation,
+    useApiVisitSwrMutation,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -64,6 +66,8 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_RETAIN_PRODUCT_SWR_MUTATION: useApiRetainProductSwrMutation(),
                             API_FOLLOW_SWR_MUTATION: useApiFollowSwrMutation(),
                             API_UNFOLLOW_SWR_MUTATION: useApiUnfollowSwrMutation(),
+                            API_VISIT_SWR_MUTATION: useApiVisitSwrMutation(),
+                            API_RETURN_SWR_MUTATION: useApiReturnSwrMutation(),
 
                             QUERY_USER_SWR_MUTATION: useQueryUserSwrMutation(),
                             QUERY_STATIC_SWR_MUTATION: useQueryStaticSwrMutation(),

@@ -11,6 +11,8 @@ import { useDeliverProductEffects } from "./useDeliverProductEffects"
 import { useRetainProductEffects } from "./useRetainProductEffects"
 import { useFollowEffects } from "./useFollowEffects"
 import { useUnfollowEffects } from "./useUnfollowEffects"
+import { useVisitEffects } from "./useVisitEffects"
+import { useReturnEffects } from "./useReturnEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -26,4 +28,6 @@ export const useApiEffects = () => {
     useRetainProductEffects()
     useFollowEffects()
     useUnfollowEffects()
+    useVisitEffects()
+    useReturnEffects()
 }

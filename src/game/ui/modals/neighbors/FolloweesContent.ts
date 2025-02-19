@@ -44,14 +44,13 @@ export class FolloweesContent extends ContainerLite {
     }
 
     private updateScrollablePanel() {
-        const followeesCards = this.createFolloweesCards()
         const scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
                 width: 750,
                 height: 1000,
                 scrollMode: "y",
                 panel: {
-                    child: followeesCards,
+                    child: this.createUserCards(),
                     mask: {
                         padding: 1,
                     },
@@ -85,14 +84,11 @@ export class FolloweesContent extends ContainerLite {
         return this.pagination 
     }
 
-    private createFolloweesCards() {
+    private createUserCards() {
         const sizer = this.scene.rexUI.add.sizer({
             orientation: "y",
             space: { item: 20 },
         })
-        // first card is the random neighbor card
-        const randomNeighborCard = this.createRandomNeighborCard()
-        sizer.add(randomNeighborCard)
 
         // create cards from the neighbors
         for (const user of this.users) {
@@ -133,21 +129,7 @@ export class FolloweesContent extends ContainerLite {
         return sizer
     }
 
-    private createRandomNeighborCard() {
-        const userCard = new UserCard({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                avatarAssetKey: BaseAssetKey.UIModalNeighborsIconQuestion,
-                badgeAssetKey: BaseAssetKey.UIModalNeighborsIconRandom,
-                text: "Random",
-                onPress: () => console.log("Clicked on John Doe"),
-            }
-        })
-        this.scene.add.existing(userCard)
-        return userCard
-    }
+    
 }
 
 export interface GetPageResult {

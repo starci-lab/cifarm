@@ -1,6 +1,7 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import {
+    Fade,
     LeftHorizontalButtons,
     ModalManager,
     RightHorizontalButtons,
@@ -59,5 +60,10 @@ export class UIScene extends Scene {
             scene: this
         })
         this.add.existing(tutorialManager)
+
+        const fade =  new Fade({
+            scene: this,
+        })
+        this.add.existing(fade)
     }
 }

@@ -5,10 +5,12 @@ import { Pagination } from "../../elements"
 import { getScreenBottomY, getScreenCenterX } from "../../utils"
 import { UserSchema } from "@/modules/entities"
 import { IPaginatedResponse, QueryNeighborsArgs } from "@/modules/apollo"
-import { EventBus, EventName } from "@/game/event-bus"
-import { FollowRequest } from "@/modules/axios"
+import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { FollowRequest, VisitRequest } from "@/modules/axios"
 import { ITEM_COUNT } from "./constants"
 import { UserCard } from "./UserCard"
+import { sleep } from "@/modules/common"
+import { FADE_HOLD_TIME, FADE_TIME } from "@/game/constants"
 
 export class NeighborsContent extends ContainerLite {
     private users: Array<UserSchema>
@@ -98,6 +100,10 @@ export class NeighborsContent extends ContainerLite {
             space: { item: 20 },
         })
 
+        // create the random user card
+        const randomUserCard = this.createRandomUserCard()
+        sizer.add(randomUserCard)
+
         // create cards from the neighbors
         for (const user of this.users) {
             //fetch the source image from the avatarUrl
@@ -121,11 +127,26 @@ export class NeighborsContent extends ContainerLite {
                         const eventMessage: FollowRequest = {
                             followeeUserId: user.id,
                         }
-                        console.log(EventName.RequestFollow)
                         EventBus.emit(EventName.RequestFollow, eventMessage)
                     },
-                    onPress: () => {
-                        console.log("Clicked on John Doe")
+                    onPress: async () => {
+                        EventBus.once(EventName.VisitCompleted, async () => {
+                            // close the modal
+                            EventBus.emit(EventName.CloseModal, {
+                                modalName: ModalName.Neighbors
+                            })
+                            // hold for a while
+                            await sleep(FADE_HOLD_TIME)
+                            // fade out
+                            EventBus.emit(EventName.FadeOut)
+                        })
+
+                        const eventMessage: VisitRequest = {
+                            followeeUserId: user.id,
+                        }
+                        EventBus.emit(EventName.FadeIn)
+                        await sleep(FADE_TIME)
+                        EventBus.emit(EventName.RequestVisit, eventMessage)
                     },
                 },
             })
@@ -135,6 +156,38 @@ export class NeighborsContent extends ContainerLite {
 
         sizer.layout()
         return sizer
+    }
+
+    private createRandomUserCard() {
+        const userCard = new UserCard({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                avatarAssetKey: BaseAssetKey.UIModalNeighborsIconQuestion,
+                badgeAssetKey: BaseAssetKey.UIModalNeighborsIconRandom,
+                text: "Random",
+                onPress: async () => {
+                    EventBus.once(EventName.VisitCompleted, async () => {
+                        // close the modal
+                        EventBus.emit(EventName.CloseModal, {
+                            modalName: ModalName.Neighbors
+                        }) 
+                        // hold for a while
+                        await sleep(FADE_HOLD_TIME)
+                        // fade all
+                        EventBus.emit(EventName.FadeOut)
+                    })
+
+                    const eventMessage: VisitRequest = {}
+                    EventBus.emit(EventName.FadeIn)
+                    await sleep(FADE_TIME)
+                    EventBus.emit(EventName.RequestVisit, eventMessage)
+                }
+            }
+        })
+        this.scene.add.existing(userCard)
+        return userCard
     }
 }
 
