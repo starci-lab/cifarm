@@ -5,6 +5,7 @@ import {
     CropCurrentState,
     InventoryType,
     PlacedItemType,
+    PlacedItemTypeId,
     TileId,
     ToolId
 } from "@/modules/entities"
@@ -114,13 +115,21 @@ export class InputTilemap extends ItemTilemap {
             if (!tile) {
                 return
             }
-            const data = this.getObjectAtTile(tile.x, tile.y)
+
+            console.log("Tile clicked", tile, this.placedItemObjectMap)
+
+            const data = this.findPlacedItemRoot(tile.x, tile.y)
             if (!data) {
+                console.error("No placed item found for position")
                 return
             }
+
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
                 this.handlePressOnTile(data)
+                break
+            case PlacedItemType.Building:
+                console.log("Placed item type building with id ", data.placedItemType.displayId, data)
                 break
             }
         })
@@ -133,6 +142,7 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryLayer = temporaryLayer
         //set depth of the temporary layer
     }
+
 
     // method to handle press on tile
     private handlePressOnTile(data: PlacedItemObjectData ) {

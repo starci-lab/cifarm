@@ -394,6 +394,21 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         return item
     }
+
+    // method to findPlacedItemRoot
+    protected findPlacedItemRoot(x: number, y: number): PlacedItemObjectData | null {
+        for (const placedItem of Object.values(this.placedItemObjectMap)) {
+            const { tileX, tileY, placedItemType } = placedItem
+
+            const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItemType.id as PlacedItemTypeId)
+    
+            if (x <= tileX && x > tileX - tileSizeWidth &&
+                y <= tileY && y > tileY - tileSizeHeight) {
+                return placedItem
+            }
+        }
+        return null
+    }
 }
 
 export interface PlacedItemObjectData {
