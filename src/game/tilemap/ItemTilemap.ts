@@ -47,11 +47,56 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.previousPlacedItems = data
             }
         )
+
+        EventBus.on(EventName.HighlightPlacement, () => {
+            this.highlightTilesCanPlace()
+        })
+        EventBus.on(EventName.UnhighlightPlacement, () => {
+            this.unhighlightTilesCanPlace()
+        })
     }
+
+    private highlightTilesCanPlace() {
+        console.log("uytest: highlightTilesCanPlace", this.itemLayer, this.previousPlacedItems)
+
+        if (!this.scene || !this.groundLayer) return
+
+        for (let x = 0; x < this.groundLayer.width; x++) {
+            for (let y = 0; y < this.groundLayer.height; y++) {
+                const tile = this.getTileAt(x, y, false, this.groundLayer)
+                if (!tile) continue
+
+                if (!this.getObjectAtTile(x, y)) {
+                    // full green latte
+                    tile.tint = 0x00ff00
+                    tile.alpha = 0.1
+                }
+            }
+        }
+    }
+
+    private unhighlightTilesCanPlace() {
+        console.log("uytest: unhighlightTilesCanPlace", this.itemLayer, this.previousPlacedItems)
+
+        if (!this.scene || !this.groundLayer) return
+
+        for (let x = 0; x < this.groundLayer.width; x++) {
+            for (let y = 0; y < this.groundLayer.height; y++) {
+                const tile = this.getTileAt(x, y, false, this.groundLayer)
+                if (!tile) continue
+
+                tile.clearAlpha()
+                tile.tint = 0xffffff
+            }
+        }
+    }
+
 
     // method called when the scene is shutdown
     public shutdown() {
         EventBus.off(EventName.PlacedItemsSynced)
+        EventBus.off(EventName.HighlightPlacement)
+        EventBus.off(EventName.UnhighlightPlacement)
     }
 
     // method to create tilesets for all tile assets
@@ -145,10 +190,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.placedItemObjectMap[placedItem.id]?.object.destroy()
             }
         }
-
-        
-
-        
     }
 
     // method to create all placed items when user IDs differ

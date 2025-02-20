@@ -8,7 +8,6 @@ import {
     TileId,
     ToolId,
 } from "@/modules/entities"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import {
     AnimalAge,
@@ -21,9 +20,9 @@ import {
 import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
 import { calculateUiDepth, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
+import { PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
-import { PlacementPopup, ToolLike } from "../ui"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -48,7 +47,7 @@ export class InputTilemap extends ItemTilemap {
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
 
-    private placementPopup: ContainerLite | undefined
+    private placementPopup: PlacementPopup | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -132,6 +131,7 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Temporary layer not found")
         }
         this.temporaryLayer = temporaryLayer
+        //set depth of the temporary layer
     }
 
     // method to handle press on tile
@@ -262,6 +262,9 @@ export class InputTilemap extends ItemTilemap {
         this.placingInProgress = true
         this.removePlacmentPopupUI()
 
+        //Emit highlight placement event
+        EventBus.emit(EventName.HighlightPlacement)
+
         console.log("Place in progress:", id, type)
         // switch case to set the place item data
         switch (type) {
@@ -321,6 +324,11 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Source image not found")
         }
         const { width, height } = sourceImage
+
+        const existingObject = this.getObjectAtTile(tile.x, tile.y)
+        const isOccupied
+            = !existingObject
+
         // if temporary place item object is already created
         if (this.temporaryPlaceItemObject) {
             // update the temporary place item object position
@@ -333,8 +341,13 @@ export class InputTilemap extends ItemTilemap {
             this.temporaryPlaceItemObject
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
                 .setOrigin(0.5, 1)
+
+            // set tint based on can place
+            this.temporaryPlaceItemObject.setTint(isOccupied ? 0xffffff : 0xff0000)
             
             this.showPlacmentPopupUI(tile)
+
+            this.placementPopup?.setYesButtonVisible(!isOccupied)
 
             return
         }
@@ -351,6 +364,8 @@ export class InputTilemap extends ItemTilemap {
             visible: true,
             ...this.computePositionForTiledObject(tile),
         })
+        
+        
 
         // create the temporary place item
         const object = this.createFromObjects(ObjectLayerName.Temporary, {
@@ -362,7 +377,12 @@ export class InputTilemap extends ItemTilemap {
         }
         // set the origin of the object
         object.setOrigin(1, 0.5)
-        object.setDepth(tile.x + tile.y + 1)
+        object.setDepth(
+            calculateUiDepth({
+                layer: UILayer.Base,
+                layerDepth: 5,
+            })
+        )
         this.temporaryPlaceItemObject = object
     }
 
@@ -394,7 +414,7 @@ export class InputTilemap extends ItemTilemap {
         ).setDepth(
             calculateUiDepth({
                 layer: UILayer.Overlay,
-                layerDepth: 2,
+                layerDepth: 6,
             })
         )
         this.scene.add.existing(this.placementPopup)
@@ -493,6 +513,9 @@ export class InputTilemap extends ItemTilemap {
         this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
         this.removePlacmentPopupUI()
+
+        //Emit unhighlight placement event
+        EventBus.emit(EventName.UnhighlightPlacement)
     }
 
     // destroy method to clean up the resources

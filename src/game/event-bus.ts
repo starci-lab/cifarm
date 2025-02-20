@@ -149,6 +149,11 @@ export enum EventName {
 
     RequestBuyTile = "request_buy_tile",
     BuyTileCompleted = "buy_tile_completed",
+
+
+    //Highlight the placement
+    HighlightPlacement = "highlight_placement",
+    UnhighlightPlacement = "unhighlight_placement",
 }
 
 export interface OpenTutorialMessage {

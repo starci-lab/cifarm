@@ -62,4 +62,8 @@ export class PlacementPopup extends ContainerLite {
 
         scene.add.existing(this)
     }
+
+    public setYesButtonVisible(visible: boolean) {
+        this.yesButton.setVisible(visible)
+    }
 }
