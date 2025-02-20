@@ -6,7 +6,7 @@ import {
     InventoryType,
     PlacedItemType,
     TileId,
-    ToolId,
+    ToolId
 } from "@/modules/entities"
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import {
@@ -265,7 +265,6 @@ export class InputTilemap extends ItemTilemap {
         //Emit highlight placement event
         EventBus.emit(EventName.HighlightPlacement)
 
-        console.log("Place in progress:", id, type)
         // switch case to set the place item data
         switch (type) {
         case PlacedItemType.Animal:
@@ -301,8 +300,6 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            console.log("temporaryPlaceItemData", this.temporaryPlaceItemData)
-
             // place the item temporarily on the tile
             this.temporaryPlaceItemOnTile(tile)
         }
@@ -325,9 +322,25 @@ export class InputTilemap extends ItemTilemap {
         }
         const { width, height } = sourceImage
 
-        const existingObject = this.getObjectAtTile(tile.x, tile.y)
-        const isOccupied
-            = !existingObject
+        const { tileSizeWidth = 1, tileSizeHeight = 1 } = tilesetConfig
+
+        const position = this.getActualTileCoordinates(tile.x, tile.y)
+        
+        let isOccupied = false
+
+        for (let dx = 0; dx < tileSizeWidth; dx++) {
+            for (let dy = 0; dy < tileSizeHeight; dy++) {
+                const checkTileKey = `${position.x - dx},${position.y - dy}`
+                console.log("checkTileKey", checkTileKey, this.occupiedTiles, tile, position)
+                if (this.occupiedTiles.has(checkTileKey)) {
+                    isOccupied = true
+                    break
+                }
+            }
+            if (isOccupied) break
+        }
+
+
 
         // if temporary place item object is already created
         if (this.temporaryPlaceItemObject) {
@@ -343,7 +356,7 @@ export class InputTilemap extends ItemTilemap {
                 .setOrigin(0.5, 1)
 
             // set tint based on can place
-            this.temporaryPlaceItemObject.setTint(isOccupied ? 0xffffff : 0xff0000)
+            this.temporaryPlaceItemObject.setTint(!isOccupied ? 0xffffff : 0xff0000)
             
             this.showPlacmentPopupUI(tile)
 

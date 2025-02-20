@@ -1,19 +1,19 @@
 import { PlacedItemsSyncedMessage } from "@/hooks"
-import { ObjectLayerName } from "./types"
-import { EventBus, EventName } from "../event-bus"
 import {
+    BuildingId,
+    getId,
     PlacedItemSchema,
     PlacedItemType,
-    PlacedItemTypeSchema,
     PlacedItemTypeId,
-    getId,
+    PlacedItemTypeSchema,
     TileId,
-    BuildingId,
 } from "@/modules/entities"
-import { PlacedItemObject } from "./PlacedItemObject"
+import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
+import { EventBus, EventName } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
-import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
+import { PlacedItemObject } from "./PlacedItemObject"
+import { ObjectLayerName } from "./types"
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -25,6 +25,9 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // place item objects map
     protected readonly placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
+
+    //occupied tiles
+    public occupiedTiles = new Set<string>()
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -45,46 +48,93 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
                 // update the previous placed items
                 this.previousPlacedItems = data
+
+                this.updateOccupiedTiles(data)
             }
         )
 
         EventBus.on(EventName.HighlightPlacement, () => {
-            this.highlightTilesCanPlace()
+            // this.highlightTilesCanPlace()
         })
         EventBus.on(EventName.UnhighlightPlacement, () => {
-            this.unhighlightTilesCanPlace()
+            // this.unhighlightTilesCanPlace()
         })
     }
 
-    private highlightTilesCanPlace() {
-        console.log("uytest: highlightTilesCanPlace", this.itemLayer, this.previousPlacedItems)
-
-        if (!this.scene || !this.groundLayer) return
-
-        for (let x = 0; x < this.groundLayer.width; x++) {
-            for (let y = 0; y < this.groundLayer.height; y++) {
-                const tile = this.getTileAt(x, y, false, this.groundLayer)
-                if (!tile) continue
-
-                if (!this.getObjectAtTile(x, y)) {
-                    // full green latte
-                    tile.tint = 0x00ff00
-                    tile.alpha = 0.1
+    private updateOccupiedTiles(data: PlacedItemsSyncedMessage) {
+        this.occupiedTiles.clear()
+        
+        for (const placedItem of data.placedItems) {
+            const { x, y, placedItemType } = placedItem
+            const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItemType)
+    
+            for (let dx = 0; dx < tileSizeWidth; dx++) {
+                for (let dy = 0; dy < tileSizeHeight; dy++) {
+                    this.occupiedTiles.add(`${x - dx},${y - dy}`)
                 }
             }
         }
     }
+    
+    private highlightTilesCanPlace() {
+        console.log("Highlighting available tiles", this.occupiedTiles)
+    
+        // if (!this.scene || !this.groundLayer) return
+    
+        // const checkedTiles = new Set<string>()
 
+        // //Convert to array
+        // const occupiedTilesArray = Array.from(this.occupiedTiles)
+    
+        // for (const occupiedTile of occupiedTilesArray) {
+        //     console.log("uytest: occupiedTile", occupiedTile, checkedTiles)
+        //     if (checkedTiles.has(occupiedTile)) continue
+            
+        //     const [startX, startY] = occupiedTile.split(",").map(Number)
+        //     const tile = this.getTileCenteredAt({ tileX: startX, tileY: startY, layer: this.groundLayer })
+        //     if (!tile) continue
+    
+        //     const placedItem = this.getObjectAtTile(tile.x, tile.y)
+        //     if (!placedItem) continue
+    
+        //     const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItem.placedItemType.displayId as PlacedItemTypeId)
+        //     console.log("uytest: ", tileSizeWidth, tileSizeHeight, placedItem.placedItemType.displayId, "tile", tile, 
+        //         "startX", startX, "startY", startY, "placedItem", placedItem, "occupiedTile", occupiedTile,
+        //         "tilex", tile.x, "tiley", tile.y, "tileSizeWidth", tileSizeWidth, "tileSizeHeight", tileSizeHeight
+        //     )
+    
+        //     // Đánh dấu toàn bộ cụm tile
+        //     for (let dx = 0; dx < tileSizeWidth; dx++) {
+        //         for (let dy = 0; dy < tileSizeHeight; dy++) {
+        //             const checkTileKey = `${startX + dx},${startY + dy}`
+        //             checkedTiles.add(checkTileKey)
+    
+        //             const checkTile = this.getTileAt(startX + dx, startY + dy, false, this.groundLayer)
+        //             if (!checkTile) continue
+    
+        //             // Highlight cụm ô bị chiếm
+        //             checkTile.tint = 0xff0000
+        //             checkTile.alpha = 0.3
+        //         }
+        //     }
+        // }
+    }
+    
+    
     private unhighlightTilesCanPlace() {
-        console.log("uytest: unhighlightTilesCanPlace", this.itemLayer, this.previousPlacedItems)
-
+        console.log("Removing highlight from available tiles")
+    
         if (!this.scene || !this.groundLayer) return
-
+    
         for (let x = 0; x < this.groundLayer.width; x++) {
             for (let y = 0; y < this.groundLayer.height; y++) {
+                const tileKey = `${x},${y}`
+                if (this.occupiedTiles.has(tileKey)) continue 
+    
                 const tile = this.getTileAt(x, y, false, this.groundLayer)
                 if (!tile) continue
-
+    
+                // Xóa highlight
                 tile.clearAlpha()
                 tile.tint = 0xffffff
             }
@@ -92,7 +142,6 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
 
-    // method called when the scene is shutdown
     public shutdown() {
         EventBus.off(EventName.PlacedItemsSynced)
         EventBus.off(EventName.HighlightPlacement)
@@ -142,16 +191,11 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         const { placedItems } = current
 
-        console.log("uytest: pre", previous)
-        console.log("uytest: cur", current)
-
-
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
         for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
-            console.log("placedItem:uydev", previousPlacedItems, placedItem.id)
             const found = previousPlacedItems.find(
                 (item) => item.id === placedItem.id
             )
@@ -178,7 +222,6 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // remove the unchecked previous placed items that are no longer in the current placed items
         for (const placedItem of previousPlacedItems) {
-            console.log("placedItem:uydev1", placedItem)
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
             ) {
@@ -201,7 +244,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // method to get the GID for a placed item type
-    private getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
+    protected getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
         const found = this.getPlacedItemType(placedItemTypeId)
         switch (found.type) {
         case PlacedItemType.Tile: {
@@ -234,7 +277,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     private tiledObjectId = 0
 
     // get placed item type from cache
-    private getPlacedItemType(
+    protected getPlacedItemType(
         placedItemTypeId: PlacedItemTypeId
     ): PlacedItemTypeSchema {
         const placedItemTypes = this.scene.cache.obj.get(
