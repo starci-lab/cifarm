@@ -4,7 +4,7 @@ import { AxiosOptions, Version } from "../types"
 import { AxiosResponse } from "axios"
 
 export interface VisitRequest {
-    followeeUserId?: string
+    neighborUserId?: string
 }
 
 export const visit = (

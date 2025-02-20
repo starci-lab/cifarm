@@ -135,14 +135,15 @@ export class NeighborsContent extends ContainerLite {
                             EventBus.emit(EventName.CloseModal, {
                                 modalName: ModalName.Neighbors
                             })
+                            EventBus.emit(EventName.Visit)
+                            this.scene.cache.obj.add(CacheKey.VisitedNeighbor, user)
                             // hold for a while
                             await sleep(FADE_HOLD_TIME)
                             // fade out
                             EventBus.emit(EventName.FadeOut)
                         })
-
                         const eventMessage: VisitRequest = {
-                            followeeUserId: user.id,
+                            neighborUserId: user.id,
                         }
                         EventBus.emit(EventName.FadeIn)
                         await sleep(FADE_TIME)
@@ -173,6 +174,7 @@ export class NeighborsContent extends ContainerLite {
                         EventBus.emit(EventName.CloseModal, {
                             modalName: ModalName.Neighbors
                         }) 
+                        
                         // hold for a while
                         await sleep(FADE_HOLD_TIME)
                         // fade all

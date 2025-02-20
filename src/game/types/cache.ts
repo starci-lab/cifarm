@@ -20,4 +20,5 @@ export enum CacheKey {
     DefaultInfo = "default-info",
     DeliveryIndex = "delivery-index",
     TutorialDepth = "tutorial-depth",
+    VisitedNeighbor = "visited-neighbor",
 }

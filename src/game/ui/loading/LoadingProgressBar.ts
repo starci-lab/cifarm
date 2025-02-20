@@ -1,7 +1,7 @@
 import { sleep } from "@/modules/common"
-import { ConstructorParams, ContainerBaseConstructorParams } from "../types"
+import { ConstructorParams, ContainerBaseConstructorParams } from "../../types"
 import { ProgressBar } from "./ProgressBar"
-import { BaseText, TextColor } from "../ui/elements"
+import { BaseText, TextColor } from "../elements"
 
 export interface LoadingProgressOptions {
   stepLength: number;
@@ -106,8 +106,6 @@ export class LoadingProgressBar extends Phaser.GameObjects.Container {
             this.progressBar = new ProgressBar({
                 baseParams: {
                     scene: this.scene,
-                    x: 0,
-                    y: 0,
                 },
                 options: {
                     progress,

@@ -11,7 +11,7 @@ import {
     loadTileAssets,
     loadToolsAssets
 } from "../assets"
-import { LoadingProgressBar } from "../containers"
+import { LoadingProgressBar } from "../ui"
 import { EventBus, EventName } from "../event-bus"
 import { QueryFolloweesArgs, QueryNeighborsArgs, QueryNeighborsParams, QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"

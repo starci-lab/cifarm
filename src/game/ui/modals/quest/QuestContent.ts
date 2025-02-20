@@ -1,6 +1,6 @@
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseAssetKey } from "../../../assets"
-import { ProgressBar } from "../../../containers"
+import { ProgressBar } from "../../loading"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
 
@@ -19,8 +19,6 @@ export class QuestContent extends ContainerLite {
         const progressBar = new ProgressBar({
             baseParams: {
                 scene: this.scene,
-                x: 0,
-                y: - 20,
             },
             options: {
                 progress: 0.5,

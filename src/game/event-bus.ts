@@ -179,6 +179,9 @@ export enum EventName {
     FadeIn = "fade_in",
     FadeOut = "fade_out",
     FadeAll = "fade_all",
+
+    Visit = "visit",
+    Return = "return",
 }
 
 export interface OpenTutorialMessage {

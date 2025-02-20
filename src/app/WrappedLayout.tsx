@@ -15,9 +15,7 @@ import {
     useApiUseHerbicideSwrMutation,
     useApiUsePesticideSwrMutation,
     useApiWaterSwrMutation,
-    useCreatePinForm,
     UseEffects,
-    useEnterPinForm,
     useGameplayIo,
     useNativeCoinGeckoSWR,
     useApiMoveInventorySwrMutation,
@@ -46,8 +44,6 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                 <SWRConfig value={{ provider: () => new Map() }}>
                     <SingletonHookProvider
                         hooks={{
-                            CREATE_PIN_FORM: useCreatePinForm(),
-                            ENTER_PIN_FORM: useEnterPinForm(),
                             NATIVE_COINGEKCO_SWR: useNativeCoinGeckoSWR(),
                             PRIVATE_KEY_DISCLOSURE: useDisclosure(),
                             MNEMONIC_DISCLOSURE: useDisclosure(),

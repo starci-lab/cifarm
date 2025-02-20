@@ -10,7 +10,7 @@ import {
     TutorialManager,
     UIBackdrop,
 } from "../ui"
-import { getScreenCenterX, getScreenBottomY } from "../ui/utils"
+import { getScreenCenterX, getScreenBottomY, getScreenTopY } from "../ui"
 
 export class UIScene extends Scene {
     constructor() {
@@ -40,7 +40,12 @@ export class UIScene extends Scene {
             .setPosition(width - 50, 200)
         this.add.existing(rightHorizontalButtons)
 
-        new Topbar(this)
+        const topbar = new Topbar({
+            scene: this,
+            x: getScreenCenterX(this),
+            y: getScreenTopY(this)
+        })
+        this.add.existing(topbar)
 
         const toolbar = new Toolbar({
             scene: this,

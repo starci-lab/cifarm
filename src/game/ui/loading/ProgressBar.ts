@@ -1,37 +1,44 @@
 import { v4 } from "uuid"
-import { BootstrapAssetKey } from "../assets"
-import { ConstructorParams, ContainerBaseConstructorParams } from "../types"
+import { BootstrapAssetKey } from "../../assets"
+import { ConstructorParams, SizerBaseConstructorParams } from "../../types"
+import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
-export class ProgressBar extends Phaser.GameObjects.Container {
+export class ProgressBar extends Sizer {
     // loading bar
     private loadingBar: Phaser.GameObjects.Image
     private loadingFill: Phaser.GameObjects.Image | undefined
     // constructor
-    constructor({ baseParams: { scene, x, y }, options }: ConstructorParams<ContainerBaseConstructorParams, ProgressBarOptions>) {
-        const { progress = 0 } = { ...options }
-        // super to call the parent class constructor
-        super(scene, x, y)
-
+    constructor({ baseParams: { scene, config }, options }: ConstructorParams<SizerBaseConstructorParams, ProgressBarOptions>) {
         //add loading bar
-        this.loadingBar = this.scene.add
+        const loadingBar = scene.add
             .image(0, 0, BootstrapAssetKey.LoadingBar)
         // We add the loading bar to the container
-        this.add(this.loadingBar)
+
+        const { progress = 0 } = { ...options }
+        // super to call the parent class constructor
+        super(
+            scene, {
+                width: loadingBar.width,
+                height: loadingBar.height,
+                ...config
+            })
+        // set the loading bar
+        this.loadingBar = loadingBar
+        this.addBackground(loadingBar)
         // update the fill
         this.updateFill(progress)
     }
 
     // update method
     public updateFill(progress: number) {
-        const cutLength = 2
         // update the progress bar
         if (!this.loadingBar) {
             throw new Error("Loading bar not found")
         }
         // calculate the progress
-        const maxLoadingFillWidth = this.loadingBar.displayWidth - 2 * cutLength
+        const maxLoadingFillWidth = this.loadingBar.displayWidth
         const loadingFillWidth = maxLoadingFillWidth * progress
-        const loadingFillHeight = this.loadingBar.displayHeight - 2 * cutLength
+        const loadingFillHeight = this.loadingBar.displayHeight
         // declare a unique frame name
         const frameName = v4()
         // get the original texture
@@ -45,10 +52,10 @@ export class ProgressBar extends Phaser.GameObjects.Container {
         const texture = originTexture.add(
             frameName,
             0,
-            cutLength,
-            cutLength,
-            (sourceImage.width - 2 * cutLength) * progress,
-            sourceImage.height - 2 * cutLength
+            0,
+            0,
+            (sourceImage.width) * progress,
+            sourceImage.height
         )?.texture
         // if the texture is not found, throw an error
         if (!texture) {
@@ -64,7 +71,9 @@ export class ProgressBar extends Phaser.GameObjects.Container {
             if (!this) {
                 throw new Error("Container not found")
             }
-            this.add(this.loadingFill)
+            this.add(this.loadingFill, {
+                align: "left-center",
+            })
         } else {
             // if loaderFill is found, update the frame
             this.loadingFill

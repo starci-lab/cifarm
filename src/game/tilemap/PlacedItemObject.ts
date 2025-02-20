@@ -68,6 +68,14 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
     }
 
+    public destroyAll() {
+        this.container?.clear(true)
+        this.container?.destroy()
+        this.seedGrowthInfoSprite?.destroy()
+        this.bubbleState?.destroy()
+        this.timer?.destroy()
+        this.destroy()
+    }
     private updateSeedGrowthInfoTexture(
         placedItem: PlacedItemSchema,
         container: ContainerLite
