@@ -99,7 +99,7 @@ export const productAssetMap: Record<
     [ProductId.Pineapple]: {
         name: "Pineapple",
         textureConfig: {
-            assetUrl: "crops/pineapple.png",
+            assetUrl: "products/pineapple.png",
             key: "pineapple",
             isQuality: false,
         },
@@ -107,7 +107,7 @@ export const productAssetMap: Record<
     [ProductId.PineappleQuality]: {
         name: "Pineapple Quality",
         textureConfig: {
-            assetUrl: "crops/pineapple.png",
+            assetUrl: "products/pineapple.png",
             key: "pineapple",
             isQuality: true,
         },
@@ -115,7 +115,7 @@ export const productAssetMap: Record<
     [ProductId.Watermelon]: {
         name: "Watermelon",
         textureConfig: {
-            assetUrl: "crops/watermelon.png",
+            assetUrl: "products/watermelon.png",
             key: "watermelon",
             isQuality: false,
         },
@@ -123,7 +123,7 @@ export const productAssetMap: Record<
     [ProductId.WatermelonQuality]: {
         name: "Watermelon Quality",
         textureConfig: {
-            assetUrl: "crops/watermelon.png",
+            assetUrl: "products/watermelon.png",
             key: "watermelon",
             isQuality: true,
         },
@@ -131,7 +131,7 @@ export const productAssetMap: Record<
     [ProductId.BellPepper]: {
         name: "Bell Pepper",
         textureConfig: {
-            assetUrl: "crops/bell-pepper.png",
+            assetUrl: "products/bell-pepper.png",
             key: "bell-pepper",
             isQuality: false,
         },
@@ -139,7 +139,7 @@ export const productAssetMap: Record<
     [ProductId.BellPepperQuality]: {
         name: "Bell Pepper Quality",
         textureConfig: {
-            assetUrl: "crops/bell-pepper.png",
+            assetUrl: "products/bell-pepper.png",
             key: "bell-pepper",
             useExisting: true,
             isQuality: true,

@@ -21,6 +21,7 @@ export interface TextOptions {
 
 export enum TextColor {
   Brown = "#553320",
+  DarkBrown = "#522D28",
   White = "#ffffff",
 }
 

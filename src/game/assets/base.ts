@@ -20,6 +20,11 @@ export enum BaseAssetKey {
     IconQuest = "icon-quest",
     IconSetting = "icon-setting",
 
+    // UI Backgrounds
+    UIBackgroundLarge = "ui-background-large",
+    UIBackgroundMedium = "ui-background-medium",
+    UIBackgroundXButton = "ui-background-x-button",
+
     //Shop ui-modal
     UIModalShopAvatarShop = "ui-modal-shop-avatar-shop",
     UIModalShopBottomBar = "ui-modal-shop-bottom-bar",
@@ -167,6 +172,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.IconDaily]: "icons/daily.png",
     [BaseAssetKey.IconQuest]: "icons/quest.png",
     [BaseAssetKey.IconSetting]: "icons/setting.png",
+
+    [BaseAssetKey.UIBackgroundLarge]: "ui/backgrounds/large.png",
+    [BaseAssetKey.UIBackgroundMedium]: "ui/backgrounds/medium.png",
+    [BaseAssetKey.UIBackgroundXButton]: "ui/backgrounds/x-button.png",
+
 
     // shop UIModals
     [BaseAssetKey.UIModalShopAvatarShop]: "ui/modals/shop/avatar-shop.png",

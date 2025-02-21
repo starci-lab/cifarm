@@ -13,9 +13,9 @@ export const useHarvestCropEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestHarvestCrop, async (message: HarvestCropRequest) => {
-            await swrMutation.trigger({ request: message })
+            const response = await swrMutation.trigger({ request: message })
             // return the user to the phaser game
-            EventBus.emit(EventName.HarvestCropCompleted)
+            EventBus.emit(EventName.HarvestCropCompleted, response.data)
         })
     
         return () => {

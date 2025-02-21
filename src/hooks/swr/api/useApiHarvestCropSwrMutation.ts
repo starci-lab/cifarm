@@ -1,13 +1,14 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
 import { v4 } from "uuid"
-import { harvestCrop, HarvestCropRequest } from "@/modules/axios"
+import { harvestCrop, HarvestCropRequest, HarvestCropResponse } from "@/modules/axios"
 import { WithAxiosOptionsAndRequest } from "./types"
+import { AxiosResponse } from "axios"
 
 export type UseApiHarvestCropSwrMutationArgs = WithAxiosOptionsAndRequest<HarvestCropRequest>
 
 export const useApiHarvestCropSwrMutation = (): UseSWRMutation<
-  void,
+  AxiosResponse<HarvestCropResponse>,
   UseApiHarvestCropSwrMutationArgs
 > => {
     const swrMutation = useSWRMutation(
@@ -18,7 +19,7 @@ export const useApiHarvestCropSwrMutation = (): UseSWRMutation<
         ) => {
             const { request, options } = { ...extraArgs.arg }
             //update the tutorial only
-            await harvestCrop(request, options)
+            return await harvestCrop(request, options)
         }
     )
 

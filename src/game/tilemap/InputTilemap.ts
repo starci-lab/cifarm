@@ -1,4 +1,17 @@
-import { BuyTileRequest, ConstructBuildingRequest, HarvestCropRequest, PlantSeedRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest, HelpUseHerbicideRequest, HelpUsePesticideRequest, HelpWaterRequest, ThiefCropRequest } from "@/modules/axios"
+import {
+    BuyTileRequest,
+    ConstructBuildingRequest,
+    HarvestCropRequest,
+    PlantSeedRequest,
+    UseHerbicideRequest,
+    UsePesticideRequest,
+    WaterRequest,
+    HelpUseHerbicideRequest,
+    HelpUsePesticideRequest,
+    HelpWaterRequest,
+    ThiefCropRequest,
+    HarvestCropResponse,
+} from "@/modules/axios"
 import {
     AnimalId,
     BuildingId,
@@ -18,18 +31,17 @@ import {
     AnimalAge,
     animalAssetMap,
     buildingAssetMap,
+    productAssetMap,
     TextureConfig,
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
-import { calculateUiDepth, UILayer } from "../layers"
+import { EventBus, EventName, PlacedInprogressMessage, Position } from "../event-bus"
+import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { PlacementPopup, ToolLike } from "../ui"
+import { FlyItem, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
-import { sleep } from "@/modules/common"
-import { PlacedItemObject } from "./PlacedItemObject"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -133,8 +145,6 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            console.log("Tile clicked", tile, this.placedItemObjectMap)
-
             const data = this.findPlacedItemRoot(tile.x, tile.y)
             if (!data) {
                 console.error("No placed item found for position")
@@ -143,10 +153,14 @@ export class InputTilemap extends ItemTilemap {
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
-                this.handlePressOnTile(data, pointer)
+                this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
-                console.log("Placed item type building with id ", data.placedItemType.displayId, data)
+                console.log(
+                    "Placed item type building with id ",
+                    data.placedItemType.displayId,
+                    data
+                )
                 break
             }
         })
@@ -157,14 +171,17 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Temporary layer not found")
         }
         this.temporaryLayer = temporaryLayer
-        //set depth of the temporary layer
+    //set depth of the temporary layer
     }
 
-
     // method to handle press on tile
-    private async handlePressOnTile(data: PlacedItemObjectData, pointer: Phaser.Input.Pointer) {
+    private async handlePressOnTile(
+        data: PlacedItemObjectData
+    ) {
         // check if current is visited or not
-        const visitedNeighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor) as UserSchema
+        const visitedNeighbor = this.scene.cache.obj.get(
+            CacheKey.VisitedNeighbor
+        ) as UserSchema
         if (data.placedItemType.type !== PlacedItemType.Tile) {
             throw new Error("Invalid placed item type")
         }
@@ -187,7 +204,7 @@ export class InputTilemap extends ItemTilemap {
         }
         const object = data.object
         const currentPlacedItem = object.currentPlacedItem
-        
+
         const placedItemId = currentPlacedItem?.id
         // do nothing if placed item id is not found
         if (!placedItemId) {
@@ -196,7 +213,7 @@ export class InputTilemap extends ItemTilemap {
 
         switch (inventoryType.type) {
         case InventoryType.Seed: {
-            // return if seed growth info is found
+        // return if seed growth info is found
             if (currentPlacedItem?.seedGrowthInfo) {
                 return
             }
@@ -204,7 +221,6 @@ export class InputTilemap extends ItemTilemap {
             if (visitedNeighbor) {
                 return
             }
-            await this.playToolAnimation(selectedTool, object)
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -220,22 +236,28 @@ export class InputTilemap extends ItemTilemap {
             break
         }
         case InventoryType.Tool: {
-            const tools = this.scene.cache.obj.get(CacheKey.Tools) as Array<ToolSchema>
+            const tools = this.scene.cache.obj.get(
+                CacheKey.Tools
+            ) as Array<ToolSchema>
             if (!tools) {
                 throw new Error("Tools not found")
-            }   
-            const tool = tools.find((tool) => tool.id === selectedTool.inventoryType?.id)
+            }
+            const tool = tools.find(
+                (tool) => tool.id === selectedTool.inventoryType?.id
+            )
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
             }
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.WateringCan: {
-                // return if seed growth info is not need water
-                if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
+            // return if seed growth info is not need water
+                if (
+                    currentPlacedItem.seedGrowthInfo?.currentState !==
+              CropCurrentState.NeedWater
+                ) {
                     return
                 }
-                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpWaterCompleted, () => {
@@ -266,11 +288,13 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
             case ToolId.Pesticide: {
-                // return if seed growth info is not need water
-                if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsInfested) {
+            // return if seed growth info is not need water
+                if (
+                    currentPlacedItem.seedGrowthInfo?.currentState !==
+              CropCurrentState.IsInfested
+                ) {
                     return
                 }
-                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
@@ -282,7 +306,7 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
                 } else {
-                // emit the event to water the plant
+                    // emit the event to water the plant
                     EventBus.once(EventName.UsePesticideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -298,11 +322,13 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
             case ToolId.Herbicide: {
-                // return if seed growth info is not need water
-                if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsWeedy) {
+            // return if seed growth info is not need water
+                if (
+                    currentPlacedItem.seedGrowthInfo?.currentState !==
+              CropCurrentState.IsWeedy
+                ) {
                     return
                 }
-                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
@@ -314,7 +340,7 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
                 } else {
-                // emit the event to water the plant
+                    // emit the event to water the plant
                     EventBus.once(EventName.UseHerbicideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -330,11 +356,13 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
             case ToolId.Scythe: {
-                // return if seed growth info is not need water
-                if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.FullyMatured) {
+            // return if seed growth info is not need water
+                if (
+                    currentPlacedItem.seedGrowthInfo?.currentState !==
+              CropCurrentState.FullyMatured
+                ) {
                     return
                 }
-                await this.playToolAnimation(selectedTool, object)
                 const placedItem = object.currentPlacedItem
                 if (!placedItem) {
                     throw new Error("Placed item not found")
@@ -351,13 +379,27 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
+                const center = object.getCenter()
                 if (visitedNeighbor) {
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefCropCompleted, () => {
+                    EventBus.once(EventName.ThiefCropCompleted, (data: HarvestCropResponse) => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
-                        console.log(product)
-                        this.playProductFlyAnimation(pointer, product.displayId)
+                        const flyItem = new FlyItem({
+                            baseParams: {
+                                scene: this.scene,
+                            },
+                            options: {
+                                assetKey: productAssetMap[product.displayId].textureConfig.key,
+                                quantity: data.quantity,
+                                x: center.x,
+                                y: center.y,
+                                depth: calculateGameplayDepth({
+                                    layer: GameplayLayer.Effects,
+                                }),
+                            }
+                        })
+                        this.scene.add.existing(flyItem)
                     })
                     // emit the event to plant seed
                     const eventMessage: ThiefCropRequest = {
@@ -365,14 +407,28 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestThiefCrop, eventMessage)
                 } else {
-                // emit the event to water the plant
-                    EventBus.once(EventName.HarvestCropCompleted, () => {
+                    // emit the event to water the plant
+                    EventBus.once(EventName.HarvestCropCompleted, (data: HarvestCropResponse) => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHarvested)
                         }
-                        this.playProductFlyAnimation(pointer, product.displayId)
+                        const flyItem = new FlyItem({
+                            baseParams: {
+                                scene: this.scene,
+                            },
+                            options: {
+                                assetKey: productAssetMap[product.displayId].textureConfig.key,
+                                quantity: data.quantity,
+                                x: center.x,
+                                y: center.y,
+                                depth: calculateGameplayDepth({
+                                    layer: GameplayLayer.Effects,
+                                }),
+                            }
+                        })
+                        this.scene.add.existing(flyItem)
                     })
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {
@@ -453,7 +509,7 @@ export class InputTilemap extends ItemTilemap {
         const { tileSizeWidth = 1, tileSizeHeight = 1 } = tilesetConfig
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
-        
+
         const isPlacementValid = this.canPlaceItemAtTile({
             tileX: position.x,
             tileY: position.y,
@@ -475,8 +531,10 @@ export class InputTilemap extends ItemTilemap {
                 .setOrigin(0.5, 1)
 
             // set tint based on can place
-            this.temporaryPlaceItemObject.setTint(isPlacementValid ? 0xffffff : 0xff0000)
-            
+            this.temporaryPlaceItemObject.setTint(
+                isPlacementValid ? 0xffffff : 0xff0000
+            )
+
             this.showPlacmentPopupUI(tile)
 
             this.placementPopup?.setYesButtonVisible(isPlacementValid)
@@ -484,7 +542,6 @@ export class InputTilemap extends ItemTilemap {
             return
         }
 
-    
         // push the temporary object to the temporary layer
         this.temporaryLayer.objects.push({
             gid: tilesetConfig.gid,
@@ -496,8 +553,6 @@ export class InputTilemap extends ItemTilemap {
             visible: true,
             ...this.computePositionForTiledObject(tile),
         })
-        
-        
 
         // create the temporary place item
         const object = this.createFromObjects(ObjectLayerName.Temporary, {
@@ -528,29 +583,27 @@ export class InputTilemap extends ItemTilemap {
         if (this.placementPopup) {
             this.placementPopup.setPosition(position.x + 20, position.y - 2)
             return
-        } 
+        }
 
         if (!position) {
             throw new Error("Position not found")
         }
-        
+
         this.placementPopup = new PlacementPopup({
             scene: this.scene,
             onCancel: () => {
                 this.cancelPlacement()
             },
             onConfirm: () => this.handlePlaced(),
-        }).setPosition(
-            620,
-            900
-        ).setDepth(
-            calculateUiDepth({
-                layer: UILayer.Overlay,
-                layerDepth: 6,
-            })
-        )
+        })
+            .setPosition(620, 900)
+            .setDepth(
+                calculateUiDepth({
+                    layer: UILayer.Overlay,
+                    layerDepth: 6,
+                })
+            )
         this.scene.add.existing(this.placementPopup)
-
     }
 
     private handlePlaced() {
@@ -566,11 +619,15 @@ export class InputTilemap extends ItemTilemap {
             console.error("No tile found for temporary place item object")
             return
         }
-        console.log("getActualTileCoordinates", this.getActualTileCoordinates(tileWorld.x, tileWorld.y))
+        console.log(
+            "getActualTileCoordinates",
+            this.getActualTileCoordinates(tileWorld.x, tileWorld.y)
+        )
 
-        this.placeItemOnTile(this.getActualTileCoordinates(tileWorld.x, tileWorld.y))
+        this.placeItemOnTile(
+            this.getActualTileCoordinates(tileWorld.x, tileWorld.y)
+        )
     }
-    
 
     private removePlacmentPopupUI() {
         this.placementPopup?.destroy()
@@ -583,7 +640,7 @@ export class InputTilemap extends ItemTilemap {
             console.error("No item data found for placement")
             return
         }
-    
+
         const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
 
         switch (placedItemType) {
@@ -593,7 +650,7 @@ export class InputTilemap extends ItemTilemap {
                 console.error("Error: Building key is undefined")
                 return
             }
-        
+
             const eventMessage: ConstructBuildingRequest = {
                 buildingId: buildingKey as BuildingId,
                 position: {
@@ -603,7 +660,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             console.log("Requesting to buy building:", eventMessage)
-        
+
             EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
 
             EventBus.once(EventName.ConstructBuildingCompleted, () => {
@@ -617,7 +674,7 @@ export class InputTilemap extends ItemTilemap {
                 console.error("Error: Tile key is undefined")
                 return
             }
-        
+
             const eventMessage: BuyTileRequest = {
                 tileId: tileKey as TileId,
                 position: {
@@ -627,7 +684,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             console.log("Requesting to buy tile:", eventMessage)
-        
+
             EventBus.emit(EventName.RequestBuyTile, eventMessage)
 
             EventBus.once(EventName.BuyTileCompleted, () => {
@@ -658,52 +715,10 @@ export class InputTilemap extends ItemTilemap {
         //temporaryPlaceItemData
         this.temporaryPlaceItemData = undefined
     }
-    
-    private playProductFlyAnimation(pointer: Phaser.Input.Pointer, assetKey: string) {
-        const { x, y } = pointer
-        const duration = 500
-        const scale = 0.5
-        const productImage = this.scene.add.image(x, y, assetKey).setDepth(calculateUiDepth({
-            layer: UILayer.Overlay,
-            layerDepth: 1
-        })).setPosition(x, y)
+}
 
-        productImage.setScale(this.scale * scale)
-        this.scene.tweens.add({
-            targets: productImage,
-            y: productImage.y - 200,
-            alpha: 0, // Set alpha to 0 for fading effect
-            duration: duration,
-            onComplete: () => {
-                productImage.destroy()
-            },
-        })
-    }
-
-    private async playToolAnimation(selectedTool: ToolLike, object: PlacedItemObject) {
-        // create an image then yoyo it
-        const toolImage = this.scene.add.image(0, 0, selectedTool.assetKey).setDepth(calculateUiDepth({
-            layer: UILayer.Overlay,
-            layerDepth: 1
-        }))
-        const { x, y } = object.getCenter()
-        const duration = 250
-        const repeat = 2
-        const peakValue = 1.2
-        const scale = 0.5
-        toolImage.setPosition(x, y - 150).setScale(this.scale * scale) 
-        this.scene.tweens.add({
-            targets: toolImage,
-            scaleX: peakValue,
-            scaleY: peakValue,
-            duration,
-            yoyo: true,
-            repeat,
-            ease: "Power1",
-            onComplete: () => {
-                toolImage.destroy()
-            }
-        })
-        await sleep(duration * repeat)
-    }
+export interface PlayProductFlyAnimationParams {
+    position: Position
+    assetKey: string
+    quantity: number
 }

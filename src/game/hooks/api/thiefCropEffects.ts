@@ -13,9 +13,9 @@ export const useThiefCropEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestThiefCrop, async (message: ThiefCropRequest) => {
-            await swrMutation.trigger({ request: message })
+            const response = await swrMutation.trigger({ request: message })
             // return the user to the phaser game
-            EventBus.emit(EventName.ThiefCropCompleted)
+            EventBus.emit(EventName.ThiefCropCompleted, response.data)
         })
     
         return () => {

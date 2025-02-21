@@ -3,8 +3,9 @@ import {
     CropSchema,
     PlacedItemSchema,
     PlacedItemType,
+    ProductSchema,
 } from "@/modules/entities"
-import { BaseAssetKey, cropAssetMap } from "../assets"
+import { BaseAssetKey, cropAssetMap, productAssetMap } from "../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { cropStateAssetMap } from "../assets/states"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -21,11 +22,13 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     public currentPlacedItem: PlacedItemSchema | undefined
     private timer: Phaser.GameObjects.Text | undefined
     private crops: Array<CropSchema> = []
+    private products: Array<ProductSchema> = []
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture)
 
         this.crops = scene.cache.obj.get(CacheKey.Crops)
+        this.products = scene.cache.obj.get(CacheKey.Products)
     }
 
     public update(type: PlacedItemType, placedItem: PlacedItemSchema) {
@@ -60,6 +63,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!placedItem.seedGrowthInfo) {
             // remove everything in the container
             container.clear(true)
+            this.setAllPropsToUndefined()
         } else {
             // Update the texture
             this.updateSeedGrowthInfoTexture(placedItem, container)
@@ -72,14 +76,16 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
     }
 
+    private setAllPropsToUndefined() {
+        this.seedGrowthInfoSprite = undefined
+        this.bubbleState = undefined
+        this.timer = undefined
+    }
     public destroyAll() {
         this.container?.clear(true)
-        this.container?.destroy()
-        this.seedGrowthInfoSprite?.destroy()
-        this.bubbleState?.destroy()
-        this.timer?.destroy()
-        this.destroy()
+        this.setAllPropsToUndefined()
     }
+    
     private updateSeedGrowthInfoTexture(
         placedItem: PlacedItemSchema,
         container: ContainerLite
@@ -159,13 +165,33 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     container.addLocal(this.bubbleState)
                 }
 
+                let stateKey: string | undefined
                 // update the icon
-                const stateKey =
+                // for state 0-3, use the icon in the crop asset map
+                if (placedItem.seedGrowthInfo.currentState !== CropCurrentState.FullyMatured) {
+                    stateKey =
           cropStateAssetMap[placedItem.seedGrowthInfo.currentState]
               ?.textureConfig.key
+                } else {
+                    // use the product icon
+                    const crop = this.crops.find(
+                        (crop) => crop.id === placedItem.seedGrowthInfo?.crop
+                    )
+                    if (!crop) {
+                        throw new Error("Crop not found")
+                    }
+                    const product = this.products.find(
+                        (product) => product.crop === crop.id
+                    )
+                    if (!product) {
+                        throw new Error("Product not found")
+                    }
+                    stateKey = productAssetMap[product.displayId].textureConfig.key
+                }
                 if (!stateKey) {
                     throw new Error("State key not found")
                 }
+                console.log(stateKey)
                 this.bubbleState.setIconTexture(stateKey).layout()
             }
         } else {
@@ -214,7 +240,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 }
 
                 const formattedTime = formatTime(
-                    placedItem.seedGrowthInfo.currentStageTimeElapsed
+                    Math.round(placedItem.seedGrowthInfo.currentStageTimeElapsed)
                 )
                 this.timer.setText(formattedTime)
             }
