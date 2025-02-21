@@ -13,6 +13,7 @@ export enum CacheKey {
     DailyRewards = "daily-rewards",
     User = "user",
     Tools = "tools",
+    Products = "products",
     TutorialActive = "tutorial-active",
     SelectedTileId = "selected-tile-id",
     SelectedTileType = "selected-tile-type",

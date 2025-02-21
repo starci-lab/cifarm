@@ -14,6 +14,7 @@ import {
     SpinInfo,
     DefaultInfo,
     ToolSchema,
+    ProductSchema,
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -192,6 +193,17 @@ const query = gql`
       stackable
       tool
     }
+    products {
+      id
+      displayId
+      maxStack
+      isQuality
+      goldAmount
+      tokenAmount
+      type
+      crop
+      animal
+    }
   }
 `
 
@@ -209,6 +221,7 @@ export interface QueryStaticResponse {
   dailyRewards: Array<DailyRewardSchema>;
   tools: Array<ToolSchema>;
   inventoryTypes: Array<InventoryTypeSchema>;
+  products: Array<ProductSchema>
 }
 
 export const queryStatic = async () => {

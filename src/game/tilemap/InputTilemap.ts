@@ -13,9 +13,11 @@ import {
     AnimalId,
     BuildingId,
     CropCurrentState,
+    CropSchema,
     InventoryType,
     InventoryTypeSchema,
     PlacedItemType,
+    ProductSchema,
     ToolId,
     ToolSchema,
     UserSchema,
@@ -46,6 +48,8 @@ export class InputTilemap extends ItemTilemap {
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
     private inventoryTypes: Array<InventoryTypeSchema> = []
+    private crops: Array<CropSchema> = []
+    private products: Array<ProductSchema> = []
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -95,6 +99,8 @@ export class InputTilemap extends ItemTilemap {
         })
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
+        this.crops = this.scene.cache.obj.get(CacheKey.Crops)
+        this.products = this.scene.cache.obj.get(CacheKey.Products)
 
         // click on empty tile to plant seed
         this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -295,12 +301,29 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
                 await this.playToolAnimation(selectedTool, object)
+                const placedItem = object.currentPlacedItem
+                if (!placedItem) {
+                    throw new Error("Placed item not found")
+                }
+                const crop = this.crops.find(
+                    (crop) => crop.id === placedItem.seedGrowthInfo?.crop
+                )
+                if (!crop) {
+                    throw new Error("Crop not found")
+                }
+                const product = this.products.find(
+                    (product) => product.crop === crop.id
+                )
+                if (!product) {
+                    throw new Error("Product not found")
+                }
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.ThiefCropCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
-                        this.playProductFlyAnimation(pointer, )
+                        console.log(product)
+                        this.playProductFlyAnimation(pointer, product.displayId)
                     })
                     // emit the event to plant seed
                     const eventMessage: ThiefCropRequest = {
@@ -315,7 +338,7 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHarvested)
                         }
-                        this.playProductFlyAnimation(pointer, )
+                        this.playProductFlyAnimation(pointer, product.displayId)
                     })
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {
