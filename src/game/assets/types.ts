@@ -13,8 +13,8 @@ export interface TilesetConfig {
   scaleTextureHeight?: number;
   textureHeight?: number;
   extraOffsets?: ExtraOffsets;
-  sizeX?: number;
-  sizeY?: number;
+  tileSizeWidth?: number;
+  tileSizeHeight?: number;
 }
 
 // interface for configuration of textures

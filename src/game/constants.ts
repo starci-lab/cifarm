@@ -22,6 +22,7 @@ export const CACHE_BUILDINGS = "buildings"
 
 // colors
 export const BLACK_COLOR = 0x000000
+export const GREEN_COLOR = 0x00ff00
 
 export const SCALE_TIME = 300 // 0.3 seconds
 export const FADE_TIME = 500 // 0.5 seconds

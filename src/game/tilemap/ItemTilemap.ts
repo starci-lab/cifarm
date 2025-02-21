@@ -1,19 +1,20 @@
 import { PlacedItemsSyncedMessage } from "@/hooks"
-import { ObjectLayerName } from "./types"
-import { EventBus, EventName } from "../event-bus"
 import {
+    BuildingId,
+    getId,
     PlacedItemSchema,
     PlacedItemType,
-    PlacedItemTypeSchema,
     PlacedItemTypeId,
-    getId,
+    PlacedItemTypeSchema,
     TileId,
-    BuildingId,
 } from "@/modules/entities"
-import { PlacedItemObject } from "./PlacedItemObject"
+import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
+import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
-import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
+import { PlacedItemObject } from "./PlacedItemObject"
+import { ObjectLayerName } from "./types"
+import _ from "lodash"
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -50,7 +51,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         )
     }
 
-    // method called when the scene is shutdown
     public shutdown() {
         EventBus.off(EventName.PlacedItemsSynced)
     }
@@ -74,7 +74,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                 key: value.textureConfig.key,
                 ...value.tilesetConfig,
             })
-            console.log(value)
+            console.log({
+                key: value.textureConfig.key,
+                ...value.tilesetConfig,
+            })
         }
     }
 
@@ -106,12 +109,15 @@ export abstract class ItemTilemap extends GroundTilemap {
             )
             if (!found) {
                 // place the item using the shared tile placing logic
+                console.log("placedItem: 111111111111111", placedItem)
                 this.placeTileForItem(placedItem)
             } else {
                 // if the placed item is in the previous placed items, update the item
                 const gameObject = this.placedItemObjectMap[placedItem.id]?.object
                 if (!gameObject) {
-                    throw new Error("Game object not found")
+                    console.warn(`Game object not found for ID: ${placedItem.id}`)
+                    this.placeTileForItem(placedItem)
+                    continue
                 }
                 gameObject.update(
                     this.getPlacedItemType(placedItem.placedItemType).type,
@@ -153,7 +159,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // method to get the GID for a placed item type
-    private getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
+    protected getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
         const found = this.getPlacedItemType(placedItemTypeId)
         switch (found.type) {
         case PlacedItemType.Tile: {
@@ -186,7 +192,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     private tiledObjectId = 0
 
     // get placed item type from cache
-    private getPlacedItemType(
+    protected getPlacedItemType(
         placedItemTypeId: PlacedItemTypeId
     ): PlacedItemTypeSchema {
         const placedItemTypes = this.scene.cache.obj.get(
@@ -201,7 +207,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // reusable method to place a tile for a given placed item
     private placeTileForItem(placedItem: PlacedItemSchema) {
-        console.log(placedItem)
+        console.log("placedtileforItem new: ", placedItem)
         // get tileset data
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
             placedItem.placedItemType
@@ -224,7 +230,10 @@ export abstract class ItemTilemap extends GroundTilemap {
             tileY: placedItem.y,
             layer: this.groundLayer,
         })
+        console.log("uytest: ", placedItem.x, placedItem.y, tile, placedItem)
+        
         if (!tile) {
+            console.log("placedItem", placedItem)
             throw new Error("Tile not found")
         }
 
@@ -273,13 +282,44 @@ export abstract class ItemTilemap extends GroundTilemap {
             object,
             tileX: tile.x,
             tileY: tile.y,
-            placedItemType
+            placedItemType,
+            occupiedTiles: this.getOccupiedTiles(placedItem),
         }
         // update the object
         object.update(placedItemType.type, placedItem)
 
         // increment the object id to ensure uniqueness
         this.tiledObjectId++
+    }
+
+    private getOccupiedTiles(placedItem: PlacedItemSchema) {
+        const { x, y, placedItemType } = placedItem
+        const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItemType)
+        const occupiedTiles: Array<Position> = []
+
+        for (let dx = 0; dx < tileSizeWidth; dx++) {
+            for (let dy = 0; dy < tileSizeHeight; dy++) {
+                occupiedTiles.push({ x: x - dx, y: y - dy })
+            }
+        }
+
+        return occupiedTiles
+    }
+
+    protected canPlaceItemAtTile({tileX, tileY, tileSizeWidth, tileSizeHeight}: CanPlaceItemAtTileParams) : boolean {
+        const occupiedTiles: Array<Position> = _.flatMap(
+            Object.values(this.placedItemObjectMap),
+            item => item.occupiedTiles
+        )
+
+        const occupiedTemporaryObjectTiles: Array<Position> = _.range(tileSizeWidth).flatMap(dx => 
+            _.range(tileSizeHeight).map(dy => 
+                ({ x: tileX - dx, y: tileY - dy })
+            )
+        )
+
+        return !_.some(occupiedTemporaryObjectTiles, tile => 
+            _.some(occupiedTiles, occupiedTile => _.isEqual(occupiedTile, tile)))
     }
 
     // method to get the object at a given tile
@@ -299,6 +339,21 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         return item
     }
+
+    // method to findPlacedItemRoot
+    protected findPlacedItemRoot(x: number, y: number): PlacedItemObjectData | null {
+        for (const placedItem of Object.values(this.placedItemObjectMap)) {
+            const { tileX, tileY, placedItemType } = placedItem
+
+            const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItemType.id as PlacedItemTypeId)
+    
+            if (x <= tileX && x > tileX - tileSizeWidth &&
+                y <= tileY && y > tileY - tileSizeHeight) {
+                return placedItem
+            }
+        }
+        return null
+    }
 }
 
 export interface PlacedItemObjectData {
@@ -306,4 +361,12 @@ export interface PlacedItemObjectData {
     tileX: number
     tileY: number
     placedItemType: PlacedItemTypeSchema
+    occupiedTiles: Array<Position>
+}
+
+export interface CanPlaceItemAtTileParams {
+    tileX: number
+    tileY: number
+    tileSizeWidth: number
+    tileSizeHeight: number
 }

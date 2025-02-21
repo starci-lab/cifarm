@@ -34,6 +34,10 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             this.updateSeedGrowthInfo(placedItem)
             break
         }
+        case PlacedItemType.Building: {
+            // this.updateBuildingInfo(placedItem)
+            break
+        }
         default:
             break
         }

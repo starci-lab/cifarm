@@ -1,14 +1,14 @@
-import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import { calculateUiDepth, UILayer } from "@/game/layers"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "../../constants"
+import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import { ContainerLiteBaseConstructorParams } from "../../types"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
 import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
-import { calculateUiDepth, UILayer } from "../../layers"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
@@ -29,6 +29,7 @@ export const MODAL_DEPTH_2 = calculateUiDepth({
 export const TUTORIAL_BACKDROP_DEPTH = calculateUiDepth({
     layer: UILayer.Tutorial,
 })
+
 
 export class ModalManager extends ContainerLite {
     // the shop modal
@@ -172,7 +173,7 @@ export class ModalManager extends ContainerLite {
     }
 
     private checkTutorialActive() {
-        return this.scene.cache.obj.has(CacheKey.TutorialActive)
+        return false
     }
 
     private getModal(name: ModalName) {
@@ -237,7 +238,7 @@ export class ModalManager extends ContainerLite {
             modal.input.enabled = false
         }
         // show the modal
-        modal.show().popUp(SCALE_TIME)
+        modal?.show()?.popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
             if (modal.input) {

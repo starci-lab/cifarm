@@ -15,6 +15,7 @@ import {
     DefaultInfo,
     ToolSchema,
     ProductSchema,
+    TileSchema,
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -172,6 +173,16 @@ const query = gql`
       maxUpgrade
       price
     }
+    tiles {
+      qualityProductChanceStack
+      qualityProductChanceLimit
+      price
+      displayId
+      placedItemTypeKey
+      maxOwnership
+      isNft
+      availableInShop
+    }
     tools {
       id
       displayId
@@ -218,6 +229,7 @@ export interface QueryStaticResponse {
   crops: Array<CropSchema>;
   animals: Array<AnimalSchema>;
   buildings: Array<BuildingSchema>;
+  tiles: Array<TileSchema>;
   dailyRewards: Array<DailyRewardSchema>;
   tools: Array<ToolSchema>;
   inventoryTypes: Array<InventoryTypeSchema>;

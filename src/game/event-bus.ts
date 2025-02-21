@@ -155,6 +155,11 @@ export enum EventName {
     RequestHarvestCrop = "request_harvest_crop",
     HarvestCropCompleted = "harvest_crop_completed",
 
+    RequestConstructBuilding = "request_construct_building",
+    ConstructBuildingCompleted = "construct_building_completed",
+
+    RequestBuyTile = "request_buy_tile",
+    BuyTileCompleted = "buy_tile_completed",
     RequestMoveInventory = "request_move_inventory",
     MoveInventoryCompleted = "move_inventory_completed",
 
