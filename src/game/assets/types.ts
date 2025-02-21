@@ -22,4 +22,5 @@ export interface TextureConfig {
     key: string;
     assetUrl: string;
     useExisting?: boolean;
+    isQuality?: boolean;
 }

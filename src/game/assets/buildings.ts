@@ -75,7 +75,10 @@ export const loadBuildingAssets = (scene: Scene) => {
         }
 
         // Load the asset for the building
-        const { key, assetUrl} = buildingData.textureConfig
+        const { key, assetUrl, useExisting } = buildingData.textureConfig
+        if (useExisting) {
+            return
+        }
         scene.load.image(
             key,
             assetUrl

@@ -26,10 +26,11 @@ import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
+import { sleep } from "@/modules/common"
+import { PlacedItemObject } from "./PlacedItemObject"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
-
 // temporary place item data
 export interface TemporaryPlaceItemData {
   textureConfig: TextureConfig;
@@ -131,7 +132,7 @@ export class InputTilemap extends ItemTilemap {
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
-                this.handlePressOnTile(data)
+                this.handlePressOnTile(data, pointer)
                 break
             case PlacedItemType.Building:
                 console.log("Placed item type building with id ", data.placedItemType.displayId, data)
@@ -150,7 +151,7 @@ export class InputTilemap extends ItemTilemap {
 
 
     // method to handle press on tile
-    private handlePressOnTile(data: PlacedItemObjectData ) {
+    private async handlePressOnTile(data: PlacedItemObjectData, pointer: Phaser.Input.Pointer) {
         // check if current is visited or not
         const visitedNeighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor) as UserSchema
         if (data.placedItemType.type !== PlacedItemType.Tile) {
@@ -192,6 +193,7 @@ export class InputTilemap extends ItemTilemap {
             if (visitedNeighbor) {
                 return
             }
+            await this.playToolAnimation(selectedTool, object)
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -222,6 +224,7 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpWaterCompleted, () => {
@@ -256,6 +259,7 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsInfested) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
@@ -287,6 +291,7 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsWeedy) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
@@ -318,11 +323,13 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.FullyMatured) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.ThiefCropCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
+                        // this.playProductFlyAnimation(pointer, )
                     })
                     // emit the event to plant seed
                     const eventMessage: ThiefCropRequest = {
@@ -337,6 +344,7 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHarvested)
                         }
+                        // this.playProductFlyAnimation(pointer, )
                     })
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {
@@ -621,5 +629,53 @@ export class InputTilemap extends ItemTilemap {
         )
         //temporaryPlaceItemData
         this.temporaryPlaceItemData = undefined
+    }
+    
+    private playProductFlyAnimation(pointer: Phaser.Input.Pointer, assetKey: string) {
+        const { x, y } = pointer
+        const duration = 500
+        const scale = 0.5
+        const productImage = this.scene.add.image(x, y, assetKey).setDepth(calculateUiDepth({
+            layer: UILayer.Overlay,
+            layerDepth: 1
+        })).setPosition(x, y)
+
+        productImage.setScale(this.scale * scale)
+        this.scene.tweens.add({
+            targets: productImage,
+            y: productImage.y - 200,
+            alpha: 0, // Set alpha to 0 for fading effect
+            duration: duration,
+            onComplete: () => {
+                productImage.destroy()
+            },
+        })
+    }
+
+    private async playToolAnimation(selectedTool: ToolLike, object: PlacedItemObject) {
+        // create an image then yoyo it
+        const toolImage = this.scene.add.image(0, 0, selectedTool.assetKey).setDepth(calculateUiDepth({
+            layer: UILayer.Overlay,
+            layerDepth: 1
+        }))
+        const { x, y } = object.getCenter()
+        const duration = 250
+        const repeat = 2
+        const peakValue = 1.2
+        const scale = 0.5
+        toolImage.setPosition(x, y - 150).setScale(this.scale * scale) 
+        this.scene.tweens.add({
+            targets: toolImage,
+            scaleX: peakValue,
+            scaleY: peakValue,
+            duration,
+            yoyo: true,
+            repeat,
+            ease: "Power1",
+            onComplete: () => {
+                toolImage.destroy()
+            }
+        })
+        await sleep(duration * repeat)
     }
 }
