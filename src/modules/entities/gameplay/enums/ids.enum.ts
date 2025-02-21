@@ -140,7 +140,6 @@ export enum InventoryTypeId {
     BellPepperQuality = "bellPepperQuality",
     Hand = "hand",
     Scythe = "scythe",
-    ThiefHand = "thiefHand",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
     Pesticide = "pesticide"
@@ -209,7 +208,6 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(InventoryTypeId.MilkQuality)]: InventoryTypeId.MilkQuality,
     [createObjectId(InventoryTypeId.Hand)]: InventoryTypeId.Hand,
     [createObjectId(InventoryTypeId.Scythe)]: InventoryTypeId.Scythe,
-    [createObjectId(InventoryTypeId.ThiefHand)]: InventoryTypeId.ThiefHand,
     [createObjectId(InventoryTypeId.WateringCan)]: InventoryTypeId.WateringCan,
     [createObjectId(InventoryTypeId.Herbicide)]: InventoryTypeId.Herbicide,
     [createObjectId(InventoryTypeId.Pesticide)]: InventoryTypeId.Pesticide,

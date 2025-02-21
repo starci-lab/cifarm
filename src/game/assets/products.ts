@@ -148,7 +148,7 @@ export const productAssetMap: Record<
 }
 
 // Function to load inventory assets in Phaser scene
-export const loadProductsAssets = (scene: Scene) => {
+export const loadProductAssets = (scene: Scene) => {
     Object.keys(productAssetMap).forEach((productId) => {
         const _productId = productId as ProductId
         const productData = productAssetMap[_productId]

@@ -300,6 +300,7 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.once(EventName.ThiefCropCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
+                        this.playProductFlyAnimation(pointer, )
                     })
                     // emit the event to plant seed
                     const eventMessage: ThiefCropRequest = {
@@ -314,7 +315,7 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHarvested)
                         }
-                        this.playProductFlyAnimation(pointer, currentPlacedItem.productAssetKey)
+                        this.playProductFlyAnimation(pointer, )
                     })
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {

@@ -7,7 +7,9 @@ import {
     loadBuildingAssets,
     loadCropAssets,
     loadInventoryTypesAssets,
+    loadProductAssets,
     loadStacyAssets,
+    loadSupplyAssets,
     loadTileAssets,
     loadToolsAssets
 } from "../assets"
@@ -180,6 +182,8 @@ export class LoadingScene extends Scene {
         loadCropAssets(this)
         loadAnimalAssets(this)
         loadBuildingAssets(this)
+        loadSupplyAssets(this)
+        loadProductAssets(this)
         loadTileAssets(this)
         loadToolsAssets(this)
         loadStacyAssets(this)

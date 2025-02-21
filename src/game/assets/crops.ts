@@ -311,7 +311,10 @@ export const loadCropAssets = (scene: Scene) => {
         // Load the asset for each growth stage
         for (const stage of Object.keys(cropData.stages)) {
             const stageData = cropData.stages[parseInt(stage)]
-            const { key, assetUrl } = stageData.textureConfig
+            const { key, assetUrl, useExisting } = stageData.textureConfig
+            if (useExisting) {
+                continue
+            }
             scene.load.image(key, assetUrl)
         }
     })

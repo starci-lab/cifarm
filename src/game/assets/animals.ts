@@ -7,10 +7,6 @@ export enum AnimalAge {
     Adult = "adult",
 }
 
-export interface ProductAssetData {
-    textureConfig: TextureConfig;
-}
-
 export interface AnimalAgeAssetData {
     textureConfig: TextureConfig;
     tilesetConfig: TilesetConfig;
@@ -19,7 +15,6 @@ export interface AnimalAgeAssetData {
 export interface AnimalAssetData {
     name: string;
     ages: Record<AnimalAge, AnimalAgeAssetData>;
-    product: ProductAssetData;
 }
 
 export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
@@ -35,9 +30,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: { gid: 10002, tilesetName: "animals-cow-adult" },
             },
         },
-        product: {
-            textureConfig: { key: "milk", assetUrl: "animals/cow/milk.png" }
-        }
     },
     [AnimalId.Chicken]: {
         name: "Chicken",
@@ -51,9 +43,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: { gid: 10012, tilesetName: "animals-chicken-adult" },
             },
         },
-        product: {
-            textureConfig: { key: "egg", assetUrl: "animals/chicken/egg.png" }
-        }
     },
     [AnimalId.Pig]: {
         name: "Pig",
@@ -67,9 +56,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: { gid: 10023, tilesetName: "animals-pig-adult" },
             },
         },
-        product: {
-            textureConfig: { key: "meat", assetUrl: "animals/pig/pork.png" }
-        }
     },
     [AnimalId.Sheep]: {
         name: "Sheep",
@@ -83,9 +69,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: { gid: 10032, tilesetName: "animals-sheep-adult" },
             },
         },
-        product: {
-            textureConfig: { key: "wool", assetUrl: "animals/sheep/wool.png" }
-        }
     }
 }
 
@@ -100,11 +83,11 @@ export const loadAnimalAssets = (scene: Scene) => {
         }
 
         for (const age of Object.values(AnimalAge)) {
-            const { key, assetUrl } = animalData.ages[age].textureConfig
+            const { key, assetUrl, useExisting } = animalData.ages[age].textureConfig
+            if (useExisting) {
+                continue
+            }
             scene.load.image(key, assetUrl)
         }
-
-        // Load animal product
-        scene.load.image(animalData.product.textureConfig.key, animalData.product.textureConfig.assetUrl)
     })
 }

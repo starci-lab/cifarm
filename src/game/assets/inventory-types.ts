@@ -1,10 +1,10 @@
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
 import { cropAssetMap } from "./crops"
-import { AnimalId, CropId, InventoryTypeId, ProductId, ToolId } from "@/modules/entities"
-import { animalAssetMap } from "./animals"
+import { CropId, InventoryTypeId, ProductId, SupplyId, ToolId } from "@/modules/entities"
 import { toolAssetMap } from "./tools"
 import { productAssetMap } from "./products"
+import { supplyAssetMap } from "./supply"
 
 export interface InventoryAssetData {
   name: string;
@@ -109,65 +109,31 @@ export const inventoryTypeAssetMap: Record<
 
     [InventoryTypeId.BasicFertilizer]: {
         name: "Basic Fertilizer",
-        textureConfig: {
-            key: "basic-fertilizer",
-            assetUrl: "inventory/basic-fertilizer.png",
-        },
+        textureConfig: { ...supplyAssetMap[SupplyId.BasicFertilizer].textureConfig, useExisting: true },
     },
     [InventoryTypeId.AnimalFeed]: {
         name: "Animal Feed",
-        textureConfig: {
-            key: "animal-feed",
-            assetUrl: "inventory/animal-feed.png",
-        },
+        textureConfig: { ...supplyAssetMap[SupplyId.AnimalFeed].textureConfig, useExisting: true },
     },
     [InventoryTypeId.Hand]: {
         name: "Hand",
-        textureConfig: {
-            key: "hand",
-            assetUrl: toolAssetMap[ToolId.Hand].textureConfig.assetUrl,
-            useExisting: true,
-        },
+        textureConfig: { ...toolAssetMap[ToolId.Hand].textureConfig, useExisting: true },
     },
     [InventoryTypeId.Scythe]: {
         name: "Scythe",
-        textureConfig: {
-            key: "scythe",
-            assetUrl: toolAssetMap[ToolId.Scythe].textureConfig.assetUrl,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.ThiefHand]: {
-        name: "Thief Hand",
-        textureConfig: {
-            key: "thief-hand",
-            assetUrl: toolAssetMap[ToolId.ThiefHand].textureConfig.assetUrl,
-            useExisting: true,
-        },
+        textureConfig: {...toolAssetMap[ToolId.Scythe].textureConfig, useExisting: true },
     },
     [InventoryTypeId.WateringCan]: {
         name: "Watering Can",
-        textureConfig: {
-            key: "watering-can",
-            assetUrl: toolAssetMap[ToolId.WateringCan].textureConfig.assetUrl,
-            useExisting: true,
-        },
+        textureConfig: { ...toolAssetMap[ToolId.WateringCan].textureConfig, useExisting: true },
     },
     [InventoryTypeId.Herbicide]: {
         name: "Herbicide",
-        textureConfig: {
-            key: "herbicide",
-            assetUrl: toolAssetMap[ToolId.Herbicide].textureConfig.assetUrl,
-            useExisting: true,
-        },
+        textureConfig: { ...toolAssetMap[ToolId.Herbicide].textureConfig, useExisting: true },
     },
     [InventoryTypeId.Pesticide]: {
         name: "Pesticide",
-        textureConfig: {
-            key: "pesticide",
-            assetUrl: toolAssetMap[ToolId.Pesticide].textureConfig.assetUrl,
-            useExisting: true,
-        },
+        textureConfig: { ...toolAssetMap[ToolId.Pesticide].textureConfig, useExisting: true },
     },
 }
 
