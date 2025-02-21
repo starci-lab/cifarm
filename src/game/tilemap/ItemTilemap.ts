@@ -39,6 +39,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         EventBus.on(
             EventName.PlacedItemsSynced,
             (data: PlacedItemsSyncedMessage) => {
+                console.log(`Current: ${data.userId}`)
                 //store the placed items in the cache
                 this.scene.cache.obj.add(CacheKey.PlacedItems, data.placedItems)
                 // handle the placed items update

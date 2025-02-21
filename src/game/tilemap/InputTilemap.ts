@@ -23,6 +23,9 @@ import {
 import { ObjectLayerName } from "./types"
 import { ToolLike } from "../ui"
 import { HarvestCropRequest, HelpUseHerbicideRequest, HelpUsePesticideRequest, HelpWaterRequest, PlantSeedRequest, ThiefCropRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest } from "@/modules/axios"
+import { calculateUiDepth, UILayer } from "../layers"
+import { sleep } from "@/modules/common"
+import { PlacedItemObject } from "./PlacedItemObject"
 
 // temporary place item data
 export interface TemporaryPlaceItemData {
@@ -106,7 +109,7 @@ export class InputTilemap extends ItemTilemap {
             }
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
-                this.handlePressOnTile(data)
+                this.handlePressOnTile(data, pointer)
                 break
             }
         })
@@ -120,7 +123,7 @@ export class InputTilemap extends ItemTilemap {
     }
 
     // method to handle press on tile
-    private handlePressOnTile(data: PlacedItemObjectData ) {
+    private async handlePressOnTile(data: PlacedItemObjectData, pointer: Phaser.Input.Pointer) {
         // check if current is visited or not
         const visitedNeighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor) as UserSchema
         if (data.placedItemType.type !== PlacedItemType.Tile) {
@@ -161,6 +164,7 @@ export class InputTilemap extends ItemTilemap {
             if (visitedNeighbor) {
                 return
             }
+            await this.playToolAnimation(selectedTool, object)
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -191,6 +195,7 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.NeedWater) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpWaterCompleted, () => {
@@ -225,6 +230,7 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsInfested) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
@@ -256,6 +262,7 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.IsWeedy) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
@@ -287,6 +294,7 @@ export class InputTilemap extends ItemTilemap {
                 if (currentPlacedItem.seedGrowthInfo?.currentState !== CropCurrentState.FullyMatured) {
                     return
                 }
+                await this.playToolAnimation(selectedTool, object)
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.ThiefCropCompleted, () => {
@@ -306,6 +314,7 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHarvested)
                         }
+                        this.playProductFlyAnimation(pointer, currentPlacedItem.productAssetKey)
                     })
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {
@@ -409,5 +418,53 @@ export class InputTilemap extends ItemTilemap {
         object.setOrigin(1, 0.5)
         object.setDepth(tile.x + tile.y + 1)
         this.temporaryPlaceItemObject = object
+    }
+
+    private playProductFlyAnimation(pointer: Phaser.Input.Pointer, assetKey: string) {
+        const { x, y } = pointer
+        const duration = 500
+        const scale = 0.5
+        const productImage = this.scene.add.image(x, y, assetKey).setDepth(calculateUiDepth({
+            layer: UILayer.Overlay,
+            layerDepth: 1
+        })).setPosition(x, y)
+
+        productImage.setScale(this.scale * scale)
+        this.scene.tweens.add({
+            targets: productImage,
+            y: productImage.y - 200,
+            alpha: 0, // Set alpha to 0 for fading effect
+            duration: duration,
+            onComplete: () => {
+                productImage.destroy()
+            },
+        })
+    }
+
+    private async playToolAnimation(selectedTool: ToolLike, object: PlacedItemObject) {
+        // create an image then yoyo it
+        const toolImage = this.scene.add.image(0, 0, selectedTool.assetKey).setDepth(calculateUiDepth({
+            layer: UILayer.Overlay,
+            layerDepth: 1
+        }))
+        const { x, y } = object.getCenter()
+        const duration = 250
+        const repeat = 2
+        const peakValue = 1.2
+        const scale = 0.5
+        toolImage.setPosition(x, y - 150).setScale(this.scale * scale) 
+        this.scene.tweens.add({
+            targets: toolImage,
+            scaleX: peakValue,
+            scaleY: peakValue,
+            duration,
+            yoyo: true,
+            repeat,
+            ease: "Power1",
+            onComplete: () => {
+                toolImage.destroy()
+            }
+        })
+        await sleep(duration * repeat)
     }
 }

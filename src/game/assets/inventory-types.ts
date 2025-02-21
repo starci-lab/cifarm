@@ -1,14 +1,14 @@
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
 import { cropAssetMap } from "./crops"
-import { AnimalId, CropId, InventoryTypeId, ToolId } from "@/modules/entities"
+import { AnimalId, CropId, InventoryTypeId, ProductId, ToolId } from "@/modules/entities"
 import { animalAssetMap } from "./animals"
 import { toolAssetMap } from "./tools"
+import { productAssetMap } from "./products"
 
 export interface InventoryAssetData {
   name: string;
   textureConfig: TextureConfig;
-  isQuality?: boolean;
 }
 
 export const inventoryTypeAssetMap: Record<
@@ -17,108 +17,90 @@ export const inventoryTypeAssetMap: Record<
 > = {
     [InventoryTypeId.Egg]: {
         name: "Egg",
-        textureConfig: animalAssetMap[AnimalId.Chicken].product.textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.Egg].textureConfig, useExisting: true },
     },
     [InventoryTypeId.EggQuality]: {
         name: "High-Quality Egg",
-        textureConfig: animalAssetMap[AnimalId.Chicken].product.textureConfig,
-        isQuality: true,
-    },
-    [InventoryTypeId.Chicken]: {
-        name: "Chicken",
-        textureConfig: animalAssetMap[AnimalId.Chicken].ages.baby.textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.EggQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.Milk]: {
         name: "Milk",
-        textureConfig: animalAssetMap[AnimalId.Cow].product.textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.Milk].textureConfig, useExisting: true },
     },
     [InventoryTypeId.MilkQuality]: {
-        name: "High-Quality Milk",
-        textureConfig: animalAssetMap[AnimalId.Cow].product.textureConfig,
-        isQuality: true,
-    },
-    [InventoryTypeId.Cow]: {
-        name: "Cow",
-        textureConfig: animalAssetMap[AnimalId.Cow].ages.baby.textureConfig,
+        name: "Milk Quality",
+        textureConfig: { ...productAssetMap[ProductId.MilkQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.Carrot]: {
         name: "Carrot",
-        textureConfig: cropAssetMap[CropId.Carrot].textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.Carrot].textureConfig, useExisting: true },  
     },
     [InventoryTypeId.CarrotQuality]: {
-        name: "High-Quality Carrot",
-        textureConfig: cropAssetMap[CropId.Carrot].textureConfig,
-        isQuality: true,
+        name: "Carrot Quality",
+        textureConfig: { ...productAssetMap[ProductId.CarrotQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.CarrotSeed]: {
         name: "Carrot Seed",
-        textureConfig: cropAssetMap[CropId.Carrot].seed.textureConfig,
+        textureConfig: { ...cropAssetMap[CropId.Carrot].seed.textureConfig, useExisting: true },
     },
-
     [InventoryTypeId.Potato]: {
         name: "Potato",
-        textureConfig: cropAssetMap[CropId.Potato].textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.Potato].textureConfig, useExisting: true },
     },
     [InventoryTypeId.PotatoQuality]: {
-        name: "High-Quality Potato",
-        textureConfig: cropAssetMap[CropId.Potato].textureConfig,
-        isQuality: true,
+        name: "Potato Quality",
+        textureConfig: { ...productAssetMap[ProductId.PotatoQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.PotatoSeed]: {
         name: "Potato Seed",
-        textureConfig: cropAssetMap[CropId.Potato].seed.textureConfig,
+        textureConfig: { ...cropAssetMap[CropId.Potato].seed.textureConfig, useExisting: true },
     },
 
     [InventoryTypeId.Cucumber]: {
         name: "Cucumber",
-        textureConfig: cropAssetMap[CropId.Cucumber].textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.Cucumber].textureConfig, useExisting: true },
     },
     [InventoryTypeId.CucumberQuality]: {
-        name: "High-Quality Cucumber",
-        textureConfig: cropAssetMap[CropId.Cucumber].textureConfig,
-        isQuality: true,
+        name: "Cucumber Quality",
+        textureConfig: { ...productAssetMap[ProductId.CucumberQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.CucumberSeed]: {
         name: "Cucumber Seed",
-        textureConfig: cropAssetMap[CropId.Cucumber].seed.textureConfig,
+        textureConfig: { ...cropAssetMap[CropId.Cucumber].seed.textureConfig, useExisting: true },
     },
 
     [InventoryTypeId.Pineapple]: {
         name: "Pineapple",
-        textureConfig: cropAssetMap[CropId.Pineapple].textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.Pineapple].textureConfig, useExisting: true },
     },
     [InventoryTypeId.PineappleQuality]: {
-        name: "High-Quality Pineapple",
-        textureConfig: cropAssetMap[CropId.Pineapple].textureConfig,
-        isQuality: true,
+        name: "Pineapple Quality",
+        textureConfig: { ...productAssetMap[ProductId.PineappleQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.PineappleSeed]: {
         name: "Pineapple Seed",
-        textureConfig: cropAssetMap[CropId.Pineapple].seed.textureConfig,
+        textureConfig: { ...cropAssetMap[CropId.Pineapple].seed.textureConfig, useExisting: true },
     },
-
     [InventoryTypeId.Watermelon]: {
         name: "Watermelon",
-        textureConfig: cropAssetMap[CropId.Watermelon].textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.Watermelon].textureConfig, useExisting: true },
     },
     [InventoryTypeId.WatermelonQuality]: {
-        name: "High-Quality Watermelon",
-        textureConfig: cropAssetMap[CropId.Watermelon].textureConfig,
-        isQuality: true,
+        name: "Watermelon Quality",
+        textureConfig: { ...productAssetMap[ProductId.WatermelonQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.WatermelonSeed]: {
         name: "Watermelon Seed",
-        textureConfig: cropAssetMap[CropId.Watermelon].seed.textureConfig,
+        textureConfig: { ...cropAssetMap[CropId.Watermelon].seed.textureConfig, useExisting: true },
     },
 
     [InventoryTypeId.BellPepper]: {
         name: "Bell Pepper",
-        textureConfig: cropAssetMap[CropId.BellPepper].textureConfig,
+        textureConfig: { ...productAssetMap[ProductId.BellPepper].textureConfig, useExisting: true },
     },
     [InventoryTypeId.BellPepperQuality]: {
-        name: "High-Quality Bell Pepper",
-        textureConfig: cropAssetMap[CropId.BellPepper].textureConfig,
-        isQuality: true,
+        name: "Bell Pepper Quality",
+        textureConfig: { ...productAssetMap[ProductId.BellPepperQuality].textureConfig, useExisting: true },
     },
     [InventoryTypeId.BellPepperSeed]: {
         name: "Bell Pepper Seed",

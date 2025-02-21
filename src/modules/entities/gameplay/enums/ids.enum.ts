@@ -138,8 +138,6 @@ export enum InventoryTypeId {
     CucumberQuality = "cucumberQuality",
     BellPepper = "bellPepper",
     BellPepperQuality = "bellPepperQuality",
-    Chicken = "chicken",
-    Cow = "cow",
     Hand = "hand",
     Scythe = "scythe",
     ThiefHand = "thiefHand",
