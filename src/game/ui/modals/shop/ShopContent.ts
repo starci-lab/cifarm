@@ -10,6 +10,7 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    tileAssetMap,
 } from "../../../assets"
 import {
     adjustTextMinLength,
@@ -27,6 +28,7 @@ import {
     InventorySchema,
     PlacedItemType,
     DefaultInfo,
+    TileSchema,
 } from "@/modules/entities"
 import { onGameObjectPress } from "../../utils"
 import { defaultShopTab } from "./ShopTabs"
@@ -57,6 +59,7 @@ export class ShopContent extends BaseSizer {
     private animals: Array<AnimalSchema> = []
     private crops: Array<CropSchema> = []
     private buildings: Array<BuildingSchema> = []
+    private tiles: Array<TileSchema> = []
 
     //default
     private defaultItemCard: Sizer | undefined
@@ -89,6 +92,9 @@ export class ShopContent extends BaseSizer {
         this.buildings = this.buildings.filter(
             (building) => building.availableInShop
         )
+
+        // load tiles
+        this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
         const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
         this.inventories = data
@@ -385,6 +391,31 @@ export class ShopContent extends BaseSizer {
             }
             break
         }
+        case ShopTab.Tiles:
+            for (const { displayId, price } of this.tiles) {
+                // get the image
+                const itemCard = this.createItemCard({
+                    assetKey: tileAssetMap[displayId].textureConfig.key,
+                    title: tileAssetMap[displayId].name,
+                    onPress: () => {
+                        // close the modal
+                        const eventMessage: CloseModalMessage = {
+                            modalName: ModalName.Shop,
+                        }
+                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        // then turn on the building mode
+                        const message: PlacedInprogressMessage = {
+                            id: displayId,
+                            type: PlacedItemType.Tile,
+                        }
+                        EventBus.emit(EventName.PlaceInprogress, message)
+                    },
+                    price,
+                })
+                itemCards.push(itemCard)
+                // add the item card to the scrollable panel
+            }
+            break
         case ShopTab.Decorations:
             for (const { displayId, price } of this.buildings) {
                 // get the image

@@ -1,8 +1,9 @@
-import { AbstractSchema } from "./abstract"
+import { TileId } from "../enums"
+import { StaticAbstractSchema } from "./abstract"
 import { InventoryTypeSchema } from "./inventory-type"
 import { PlacedItemTypeSchema } from "./placed-item-type"
 
-export interface TileSchema extends AbstractSchema {
+export interface TileSchema extends StaticAbstractSchema<TileId> {
     price?: number;
     maxOwnership?: number;
     isNft: boolean;

@@ -4,6 +4,7 @@ export enum ShopTab {
     Seeds = "Seeds",
     Animals = "Animals",
     Buildings = "Buildings",
+    Tiles = "Tiles",
     Trees = "Trees",
     Decorations = "Decorations",
     Others = "Others",
@@ -36,6 +37,13 @@ export const tabs: Record<ShopTab, ShopTabData> = {
     },
     [ShopTab.Buildings]: {
         iconKey: BaseAssetKey.UIModalShopIconTree,
+        offSets: {
+            x: 80,
+            y: -40,
+        }
+    },
+    [ShopTab.Tiles]: {
+        iconKey: BaseAssetKey.ModalShopIconTile,
         offSets: {
             x: 80,
             y: -40,

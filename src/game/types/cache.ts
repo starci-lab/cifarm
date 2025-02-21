@@ -4,6 +4,7 @@ export enum CacheKey {
     Crops = "crops",
     Animals = "animals",
     Buildings = "buildings",
+    Tiles = "tiles",
     Inventories = "inventories",
     NeighborsArgs = "neighbors-args",
     Neighbors = "neighbors",

@@ -1,4 +1,4 @@
 export * from "./types"
-export * from "./Tilemap"
+export * from "./TileMap"
 export * from "./constants"
 export * from "./PlacedItemObject"

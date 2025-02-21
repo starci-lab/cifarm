@@ -17,9 +17,8 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
     [TileId.StarterTile]: {
         name: "Starter Tile",
         textureConfig: {
-            key: "starter-tile",
+            key: TileId.StarterTile,
             assetUrl: "tiles/starter-tile.png",
-            //assetUrl: "tiles/xxxx.png",
         },
         tilesetConfig:{
             gid: 13001,
@@ -32,7 +31,7 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
     [TileId.BasicTile1]: {
         name: "Basic Tile 1",
         textureConfig: {
-            key: "starter-tile",
+            key: TileId.BasicTile1,
             assetUrl: "tiles/starter-tile.png",
         },
         tilesetConfig: {
@@ -43,7 +42,7 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
     [TileId.BasicTile2]: {
         name: "Basic Tile 2",
         textureConfig: {
-            key: "starter-tile",
+            key: TileId.BasicTile2,
             assetUrl: "tiles/starter-tile.png",
         },
         tilesetConfig: {
@@ -54,7 +53,7 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
     [TileId.BasicTile3]: {
         name: "Basic Tile 3",
         textureConfig: {
-            key: "starter-tile",
+            key: TileId.BasicTile3,
             assetUrl: "tiles/starter-tile.png",
         },
         tilesetConfig: {
@@ -65,7 +64,7 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
     [TileId.FertileTile]: {
         name: "Fertile Tile",
         textureConfig: {
-            key: "starter-tile",
+            key: TileId.FertileTile,
             assetUrl: "tiles/starter-tile.png",
         },
         tilesetConfig: {

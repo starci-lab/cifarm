@@ -54,6 +54,8 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         scaleTextureHeight = 1,
         textureHeight,
         textureWidth,
+        tileSizeHeight = 1,
+        tileSizeWidth = 1,
         gid = 0,
         extraOffsets = {},
     }: CreateTilesetOptions): Phaser.Tilemaps.Tileset {
@@ -189,6 +191,17 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         )
     }
 
+    // getTileCenteredAt method using the new GetTileCenteredAtParams interface
+    public getActualTileCoordinates(
+        centeredTileX: number, 
+        centeredTileY: number
+    ): Phaser.Math.Vector2 {
+        return new Phaser.Math.Vector2(
+            centeredTileX - Math.floor(WIDTH / 2),
+            centeredTileY - Math.floor(HEIGHT / 2)
+        )
+    }
+
     // removeTileCenteredAt method using the new RemoveTileCenteredAtParams interface
     public removeTileCenteredAt({
         tileX,
@@ -239,6 +252,10 @@ export interface CreateTilesetOptions {
   gid?: number;
   // extra offsets
   extraOffsets?: ExtraOffsets;
+  //tileSizeX
+  tileSizeWidth?: number;
+  //tileSizeY
+  tileSizeHeight?: number;
 }
 
 // Define the interface for the options used in tile functions

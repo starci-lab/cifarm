@@ -1,14 +1,4 @@
-import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
-import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
-import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
-import {
-    AnimalAge,
-    animalAssetMap,
-    buildingAssetMap,
-    TextureConfig,
-    TilesetConfig,
-} from "../assets"
+import { BuyTileRequest, ConstructBuildingRequest, HarvestCropRequest, PlantSeedRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest, HelpUseHerbicideRequest, HelpUsePesticideRequest, HelpWaterRequest, ThiefCropRequest } from "@/modules/axios"
 import {
     AnimalId,
     BuildingId,
@@ -16,21 +6,36 @@ import {
     InventoryType,
     InventoryTypeSchema,
     PlacedItemType,
+    TileId,
     ToolId,
     ToolSchema,
     UserSchema,
 } from "@/modules/entities"
-import { ObjectLayerName } from "./types"
-import { ToolLike } from "../ui"
-import { HarvestCropRequest, HelpUseHerbicideRequest, HelpUsePesticideRequest, HelpWaterRequest, PlantSeedRequest, ThiefCropRequest, UseHerbicideRequest, UsePesticideRequest, WaterRequest } from "@/modules/axios"
+import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
+import {
+    AnimalAge,
+    animalAssetMap,
+    buildingAssetMap,
+    TextureConfig,
+    tileAssetMap,
+    TilesetConfig,
+} from "../assets"
+import { EventBus, EventName, PlacedInprogressMessage } from "../event-bus"
 import { calculateUiDepth, UILayer } from "../layers"
+import { CacheKey, TilemapBaseConstructorParams } from "../types"
+import { PlacementPopup, ToolLike } from "../ui"
+import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
+import { ObjectLayerName } from "./types"
 import { sleep } from "@/modules/common"
 import { PlacedItemObject } from "./PlacedItemObject"
 
+export const POPUP_SCALE = 0.7
+export const TEMPORARY = "temporary"
 // temporary place item data
 export interface TemporaryPlaceItemData {
   textureConfig: TextureConfig;
   tilesetConfig: TilesetConfig;
+  type?: PlacedItemType;
 }
 
 // tilemap for handling input events
@@ -46,6 +51,8 @@ export class InputTilemap extends ItemTilemap {
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
     private inventoryTypes: Array<InventoryTypeSchema> = []
+
+    private placementPopup: PlacementPopup | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -67,6 +74,11 @@ export class InputTilemap extends ItemTilemap {
         this.pinch.on("pinch", (dragScale: Pinch) => {
             const scaleFactor = dragScale.scaleFactor
             camera.zoom *= scaleFactor
+
+            if (this.placementPopup) {
+                const newScale = POPUP_SCALE / camera.zoom
+                this.placementPopup.setScale(newScale)
+            }
         })
 
         // add event listener for mouse wheel event
@@ -86,11 +98,17 @@ export class InputTilemap extends ItemTilemap {
                 else {
                     camera.zoom -= 0.1
                 }
+
+                if (this.placementPopup) {
+                    const newScale = POPUP_SCALE / camera.zoom
+                    this.placementPopup.setScale(newScale)
+                }
             }
         )
 
         // listen for place in progress event
         EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
+            this.destroyTemporaryPlaceItemObject()
             this.handlePlaceInProgress(data)
         })
 
@@ -103,13 +121,26 @@ export class InputTilemap extends ItemTilemap {
             if (!tile) {
                 return
             }
-            const data = this.getObjectAtTile(tile.x, tile.y)
-            if (!data) {
+
+            //if placement in progress
+            if (this.placingInProgress) {
                 return
             }
+
+            console.log("Tile clicked", tile, this.placedItemObjectMap)
+
+            const data = this.findPlacedItemRoot(tile.x, tile.y)
+            if (!data) {
+                console.error("No placed item found for position")
+                return
+            }
+
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
                 this.handlePressOnTile(data, pointer)
+                break
+            case PlacedItemType.Building:
+                console.log("Placed item type building with id ", data.placedItemType.displayId, data)
                 break
             }
         })
@@ -120,7 +151,9 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Temporary layer not found")
         }
         this.temporaryLayer = temporaryLayer
+        //set depth of the temporary layer
     }
+
 
     // method to handle press on tile
     private async handlePressOnTile(data: PlacedItemObjectData, pointer: Phaser.Input.Pointer) {
@@ -148,6 +181,7 @@ export class InputTilemap extends ItemTilemap {
         }
         const object = data.object
         const currentPlacedItem = object.currentPlacedItem
+        
         const placedItemId = currentPlacedItem?.id
         // do nothing if placed item id is not found
         if (!placedItemId) {
@@ -300,7 +334,7 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.once(EventName.ThiefCropCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
-                        this.playProductFlyAnimation(pointer, )
+                        // this.playProductFlyAnimation(pointer, )
                     })
                     // emit the event to plant seed
                     const eventMessage: ThiefCropRequest = {
@@ -315,7 +349,7 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHarvested)
                         }
-                        this.playProductFlyAnimation(pointer, )
+                        // this.playProductFlyAnimation(pointer, )
                     })
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {
@@ -334,18 +368,28 @@ export class InputTilemap extends ItemTilemap {
     // method called to handle place in progress event
     private handlePlaceInProgress({ id, type }: PlacedInprogressMessage) {
         this.placingInProgress = true
+        this.removePlacmentPopupUI()
 
         // switch case to set the place item data
         switch (type) {
         case PlacedItemType.Animal:
-            this.temporaryPlaceItemData =
-          animalAssetMap[id as AnimalId].ages[AnimalAge.Baby]
+            this.temporaryPlaceItemData = {
+                ...animalAssetMap[id as AnimalId].ages[AnimalAge.Baby],
+                type: PlacedItemType.Animal,
+            }
             break
         case PlacedItemType.Building:
-            this.temporaryPlaceItemData = buildingAssetMap[id as BuildingId]
+            this.temporaryPlaceItemData = {
+                ...buildingAssetMap[id as BuildingId],
+                type: PlacedItemType.Building,
+            }
             break
         case PlacedItemType.Tile:
-            throw new Error("Not implemented")
+            this.temporaryPlaceItemData = {
+                ...tileAssetMap[id as TileId],
+                type: PlacedItemType.Tile,
+            }
+            break
         }
     }
 
@@ -354,6 +398,7 @@ export class InputTilemap extends ItemTilemap {
     //check current mouse position is in which tile
         if (this.placingInProgress) {
             const { worldX, worldY } = this.scene.input.activePointer
+
             const tile = this.getTileAtWorldXY(worldX, worldY)
             // do nothing if tile is not found
             if (!tile) {
@@ -381,6 +426,18 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Source image not found")
         }
         const { width, height } = sourceImage
+
+        const { tileSizeWidth = 1, tileSizeHeight = 1 } = tilesetConfig
+
+        const position = this.getActualTileCoordinates(tile.x, tile.y)
+        
+        const isPlacementValid = this.canPlaceItemAtTile({
+            tileX: position.x,
+            tileY: position.y,
+            tileSizeWidth,
+            tileSizeHeight,
+        })
+
         // if temporary place item object is already created
         if (this.temporaryPlaceItemObject) {
             // update the temporary place item object position
@@ -393,19 +450,31 @@ export class InputTilemap extends ItemTilemap {
             this.temporaryPlaceItemObject
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
                 .setOrigin(0.5, 1)
+
+            // set tint based on can place
+            this.temporaryPlaceItemObject.setTint(isPlacementValid ? 0xffffff : 0xff0000)
+            
+            this.showPlacmentPopupUI(tile)
+
+            this.placementPopup?.setYesButtonVisible(isPlacementValid)
+
             return
         }
+
+    
         // push the temporary object to the temporary layer
         this.temporaryLayer.objects.push({
             gid: tilesetConfig.gid,
             id: 0,
-            name: "temporary",
+            name: TEMPORARY,
             width: width * this.scale,
             height: height * this.scale,
             type: "",
             visible: true,
             ...this.computePositionForTiledObject(tile),
         })
+        
+        
 
         // create the temporary place item
         const object = this.createFromObjects(ObjectLayerName.Temporary, {
@@ -417,10 +486,156 @@ export class InputTilemap extends ItemTilemap {
         }
         // set the origin of the object
         object.setOrigin(1, 0.5)
-        object.setDepth(tile.x + tile.y + 1)
+        object.setDepth(
+            calculateUiDepth({
+                layer: UILayer.Base,
+                layerDepth: 5,
+            })
+        )
         this.temporaryPlaceItemObject = object
     }
 
+    private showPlacmentPopupUI(tile: Phaser.Tilemaps.Tile) {
+        const position = this.tileToWorldXY(tile.x, tile.y)
+
+        if (!position) {
+            throw new Error("Position not found")
+        }
+
+        if (this.placementPopup) {
+            this.placementPopup.setPosition(position.x + 20, position.y - 2)
+            return
+        } 
+
+        if (!position) {
+            throw new Error("Position not found")
+        }
+        
+        this.placementPopup = new PlacementPopup({
+            scene: this.scene,
+            onCancel: () => {
+                this.cancelPlacement()
+            },
+            onConfirm: () => this.handlePlaced(),
+        }).setPosition(
+            620,
+            900
+        ).setDepth(
+            calculateUiDepth({
+                layer: UILayer.Overlay,
+                layerDepth: 6,
+            })
+        )
+        this.scene.add.existing(this.placementPopup)
+
+    }
+
+    private handlePlaced() {
+        if (!this.temporaryPlaceItemObject) {
+            console.error("No temporary place item object found")
+            return
+        }
+
+        const { worldX, worldY } = this.scene.input.activePointer
+
+        const tileWorld = this.getTileAtWorldXY(worldX, worldY)
+        if (!tileWorld) {
+            console.error("No tile found for temporary place item object")
+            return
+        }
+        console.log("getActualTileCoordinates", this.getActualTileCoordinates(tileWorld.x, tileWorld.y))
+
+        this.placeItemOnTile(this.getActualTileCoordinates(tileWorld.x, tileWorld.y))
+    }
+    
+
+    private removePlacmentPopupUI() {
+        this.placementPopup?.destroy()
+        this.placementPopup = undefined
+        this.temporaryPlaceItemData = undefined
+    }
+
+    private placeItemOnTile(position: Phaser.Math.Vector2) {
+        if (!this.temporaryPlaceItemData) {
+            console.error("No item data found for placement")
+            return
+        }
+    
+        const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
+
+        switch (placedItemType) {
+        case PlacedItemType.Building: {
+            const buildingKey = textureConfig.key
+            if (!buildingKey) {
+                console.error("Error: Building key is undefined")
+                return
+            }
+        
+            const eventMessage: ConstructBuildingRequest = {
+                buildingId: buildingKey as BuildingId,
+                position: {
+                    x: position.x,
+                    y: position.y,
+                },
+            }
+
+            console.log("Requesting to buy building:", eventMessage)
+        
+            EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
+
+            EventBus.once(EventName.ConstructBuildingCompleted, () => {
+                this.cancelPlacement()
+            })
+            break
+        }
+        case PlacedItemType.Tile: {
+            const tileKey = textureConfig.key
+            if (!tileKey) {
+                console.error("Error: Tile key is undefined")
+                return
+            }
+        
+            const eventMessage: BuyTileRequest = {
+                tileId: tileKey as TileId,
+                position: {
+                    x: position.x,
+                    y: position.y,
+                },
+            }
+
+            console.log("Requesting to buy tile:", eventMessage)
+        
+            EventBus.emit(EventName.RequestBuyTile, eventMessage)
+
+            EventBus.once(EventName.BuyTileCompleted, () => {
+                this.cancelPlacement()
+            })
+            break
+        }
+        default:
+            console.error("Unsupported placed item type:", placedItemType)
+        }
+    }
+
+    private cancelPlacement() {
+        console.log("Placement canceled")
+        this.destroyTemporaryPlaceItemObject()
+        this.placingInProgress = false
+        this.removePlacmentPopupUI()
+    }
+
+    // destroy method to clean up the resources
+    public destroyTemporaryPlaceItemObject() {
+        this.temporaryPlaceItemObject?.destroy()
+        this.temporaryPlaceItemObject = undefined
+        // remove the temporary object from the temporary layer
+        this.temporaryLayer.objects = this.temporaryLayer.objects.filter(
+            (object) => object.name !== TEMPORARY
+        )
+        //temporaryPlaceItemData
+        this.temporaryPlaceItemData = undefined
+    }
+    
     private playProductFlyAnimation(pointer: Phaser.Input.Pointer, assetKey: string) {
         const { x, y } = pointer
         const duration = 500
