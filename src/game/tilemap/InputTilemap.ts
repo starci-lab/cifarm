@@ -332,21 +332,12 @@ export class InputTilemap extends ItemTilemap {
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
         
-        let isOccupied = false
-
-        for (let dx = 0; dx < tileSizeWidth; dx++) {
-            for (let dy = 0; dy < tileSizeHeight; dy++) {
-                const checkTileKey = `${position.x - dx},${position.y - dy}`
-                console.log("checkTileKey", checkTileKey, this.occupiedTiles, tile, position)
-                if (this.occupiedTiles.has(checkTileKey)) {
-                    isOccupied = true
-                    break
-                }
-            }
-            if (isOccupied) break
-        }
-
-
+        const isPlacementValid = this.canPlaceItemAtTile({
+            tileX: position.x,
+            tileY: position.y,
+            tileSizeWidth,
+            tileSizeHeight,
+        })
 
         // if temporary place item object is already created
         if (this.temporaryPlaceItemObject) {
@@ -362,11 +353,11 @@ export class InputTilemap extends ItemTilemap {
                 .setOrigin(0.5, 1)
 
             // set tint based on can place
-            this.temporaryPlaceItemObject.setTint(!isOccupied ? 0xffffff : 0xff0000)
+            this.temporaryPlaceItemObject.setTint(isPlacementValid ? 0xffffff : 0xff0000)
             
             this.showPlacmentPopupUI(tile)
 
-            this.placementPopup?.setYesButtonVisible(!isOccupied)
+            this.placementPopup?.setYesButtonVisible(isPlacementValid)
 
             return
         }

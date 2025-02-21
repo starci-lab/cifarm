@@ -9,11 +9,12 @@ import {
     TileId,
 } from "@/modules/entities"
 import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
-import { EventBus, EventName } from "../event-bus"
+import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { ObjectLayerName } from "./types"
+import _ from "lodash"
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -25,9 +26,6 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // place item objects map
     protected readonly placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
-
-    //occupied tiles
-    public occupiedTiles = new Set<string>()
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -48,25 +46,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
                 // update the previous placed items
                 this.previousPlacedItems = data
-
-                this.updateOccupiedTiles(data)
             }
         )
-    }
-
-    private updateOccupiedTiles(data: PlacedItemsSyncedMessage) {
-        this.occupiedTiles.clear()
-        
-        for (const placedItem of data.placedItems) {
-            const { x, y, placedItemType } = placedItem
-            const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItemType)
-    
-            for (let dx = 0; dx < tileSizeWidth; dx++) {
-                for (let dy = 0; dy < tileSizeHeight; dy++) {
-                    this.occupiedTiles.add(`${x - dx},${y - dy}`)
-                }
-            }
-        }
     }
 
     public shutdown() {
@@ -292,7 +273,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             object,
             tileX: tile.x,
             tileY: tile.y,
-            placedItemType
+            placedItemType,
+            occupiedTiles: this.getOccupiedTiles(placedItem),
         }
 
         // update the object
@@ -300,6 +282,36 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // increment the object id to ensure uniqueness
         this.tiledObjectId++
+    }
+
+    private getOccupiedTiles(placedItem: PlacedItemSchema) {
+        const { x, y, placedItemType } = placedItem
+        const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItemType)
+        const occupiedTiles: Array<Position> = []
+
+        for (let dx = 0; dx < tileSizeWidth; dx++) {
+            for (let dy = 0; dy < tileSizeHeight; dy++) {
+                occupiedTiles.push({ x: x - dx, y: y - dy })
+            }
+        }
+
+        return occupiedTiles
+    }
+
+    protected canPlaceItemAtTile({tileX, tileY, tileSizeWidth, tileSizeHeight}: CanPlaceItemAtTileParams) : boolean {
+        const occupiedTiles: Array<Position> = _.flatMap(
+            Object.values(this.placedItemObjectMap),
+            item => item.occupiedTiles
+        )
+
+        const occupiedTemporaryObjectTiles: Array<Position> = _.range(tileSizeWidth).flatMap(dx => 
+            _.range(tileSizeHeight).map(dy => 
+                ({ x: tileX - dx, y: tileY - dy })
+            )
+        )
+
+        return !_.some(occupiedTemporaryObjectTiles, tile => 
+            _.some(occupiedTiles, occupiedTile => _.isEqual(occupiedTile, tile)))
     }
 
     // method to get the object at a given tile
@@ -341,4 +353,12 @@ export interface PlacedItemObjectData {
     tileX: number
     tileY: number
     placedItemType: PlacedItemTypeSchema
+    occupiedTiles: Array<Position>
+}
+
+export interface CanPlaceItemAtTileParams {
+    tileX: number
+    tileY: number
+    tileSizeWidth: number
+    tileSizeHeight: number
 }
