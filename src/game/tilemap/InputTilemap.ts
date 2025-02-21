@@ -5,7 +5,6 @@ import {
     CropCurrentState,
     InventoryType,
     PlacedItemType,
-    PlacedItemTypeId,
     TileId,
     ToolId
 } from "@/modules/entities"
@@ -272,9 +271,6 @@ export class InputTilemap extends ItemTilemap {
         this.placingInProgress = true
         this.removePlacmentPopupUI()
 
-        //Emit highlight placement event
-        EventBus.emit(EventName.HighlightPlacement)
-
         // switch case to set the place item data
         switch (type) {
         case PlacedItemType.Animal:
@@ -536,9 +532,6 @@ export class InputTilemap extends ItemTilemap {
         this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
         this.removePlacmentPopupUI()
-
-        //Emit unhighlight placement event
-        EventBus.emit(EventName.UnhighlightPlacement)
     }
 
     // destroy method to clean up the resources

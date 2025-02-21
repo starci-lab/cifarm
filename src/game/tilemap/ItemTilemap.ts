@@ -52,13 +52,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.updateOccupiedTiles(data)
             }
         )
-
-        EventBus.on(EventName.HighlightPlacement, () => {
-            // this.highlightTilesCanPlace()
-        })
-        EventBus.on(EventName.UnhighlightPlacement, () => {
-            // this.unhighlightTilesCanPlace()
-        })
     }
 
     private updateOccupiedTiles(data: PlacedItemsSyncedMessage) {
@@ -75,77 +68,9 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         }
     }
-    
-    private highlightTilesCanPlace() {
-        console.log("Highlighting available tiles", this.occupiedTiles)
-    
-        // if (!this.scene || !this.groundLayer) return
-    
-        // const checkedTiles = new Set<string>()
-
-        // //Convert to array
-        // const occupiedTilesArray = Array.from(this.occupiedTiles)
-    
-        // for (const occupiedTile of occupiedTilesArray) {
-        //     console.log("uytest: occupiedTile", occupiedTile, checkedTiles)
-        //     if (checkedTiles.has(occupiedTile)) continue
-            
-        //     const [startX, startY] = occupiedTile.split(",").map(Number)
-        //     const tile = this.getTileCenteredAt({ tileX: startX, tileY: startY, layer: this.groundLayer })
-        //     if (!tile) continue
-    
-        //     const placedItem = this.getObjectAtTile(tile.x, tile.y)
-        //     if (!placedItem) continue
-    
-        //     const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItem.placedItemType.displayId as PlacedItemTypeId)
-        //     console.log("uytest: ", tileSizeWidth, tileSizeHeight, placedItem.placedItemType.displayId, "tile", tile, 
-        //         "startX", startX, "startY", startY, "placedItem", placedItem, "occupiedTile", occupiedTile,
-        //         "tilex", tile.x, "tiley", tile.y, "tileSizeWidth", tileSizeWidth, "tileSizeHeight", tileSizeHeight
-        //     )
-    
-        //     // Đánh dấu toàn bộ cụm tile
-        //     for (let dx = 0; dx < tileSizeWidth; dx++) {
-        //         for (let dy = 0; dy < tileSizeHeight; dy++) {
-        //             const checkTileKey = `${startX + dx},${startY + dy}`
-        //             checkedTiles.add(checkTileKey)
-    
-        //             const checkTile = this.getTileAt(startX + dx, startY + dy, false, this.groundLayer)
-        //             if (!checkTile) continue
-    
-        //             // Highlight cụm ô bị chiếm
-        //             checkTile.tint = 0xff0000
-        //             checkTile.alpha = 0.3
-        //         }
-        //     }
-        // }
-    }
-    
-    
-    private unhighlightTilesCanPlace() {
-        console.log("Removing highlight from available tiles")
-    
-        if (!this.scene || !this.groundLayer) return
-    
-        for (let x = 0; x < this.groundLayer.width; x++) {
-            for (let y = 0; y < this.groundLayer.height; y++) {
-                const tileKey = `${x},${y}`
-                if (this.occupiedTiles.has(tileKey)) continue 
-    
-                const tile = this.getTileAt(x, y, false, this.groundLayer)
-                if (!tile) continue
-    
-                // Xóa highlight
-                tile.clearAlpha()
-                tile.tint = 0xffffff
-            }
-        }
-    }
-
 
     public shutdown() {
         EventBus.off(EventName.PlacedItemsSynced)
-        EventBus.off(EventName.HighlightPlacement)
-        EventBus.off(EventName.UnhighlightPlacement)
     }
 
     // method to create tilesets for all tile assets
