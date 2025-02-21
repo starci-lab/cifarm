@@ -122,6 +122,11 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
+            //if placement in progress
+            if (this.placingInProgress) {
+                return
+            }
+
             console.log("Tile clicked", tile, this.placedItemObjectMap)
 
             const data = this.findPlacedItemRoot(tile.x, tile.y)
