@@ -294,7 +294,7 @@ export class InputTilemap extends ItemTilemap {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestWater, eventMessage)
-                    data.pressBlocked = false
+                    data.pressBlocked = true
                 }
                 break
             }
