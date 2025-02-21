@@ -12,7 +12,7 @@ export class RibbonTitle extends Label {
             throw new Error("RibbonTitle requires options")
         }
 
-        const background = scene.add.image(0, 0, BaseAssetKey.ModalCommonRibbon)
+        const background = scene.add.image(0, 0, BaseAssetKey.UIModalCommonRibbon)
 
         const text = new BaseText({
             baseParams: {

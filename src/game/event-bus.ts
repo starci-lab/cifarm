@@ -27,10 +27,14 @@ export enum EventName {
     LoadInventories = "load_inventories",
     // inventory loaded, from React to Phaser
     InventoriesLoaded = "inventories_loaded",
-    // delivering products loaded, from React to Phaser
-    LoadDeliveringProducts = "load_delivering_products",
-    // delivering products loaded, from React to Phaser
-    DeliveringProductsLoaded = "delivering_products_loaded",
+    // neighbors loaded, from React to Phaser
+    LoadNeighbors = "load_neighbors",
+    // neighbors loaded, from React to Phaser
+    NeighborsLoaded = "neighbors_loaded",
+    // followees loaded, from React to Phaser
+    LoadFollowees = "request_followees",
+    // followees loaded, from React to Phaser
+    FolloweesLoaded = "followees_loaded",
 
     // refresh
     RefreshUser = "refresh_user",
@@ -39,7 +43,11 @@ export enum EventName {
     InventoriesRefreshed = "inventories_refreshed",
     RefreshDeliveringProducts = "refresh_delivering_products",
     DeliveringProductsRefreshed = "delivering_products_refreshed",
-
+    RefreshNeighbors = "refresh_neighbors",
+    NeighborsRefreshed = "neighbors_refreshed",
+    RefreshFollowees = "refresh_followees",
+    FolloweesRefreshed = "followees_refreshed",
+    
     // open shop
     OpenShop = "open_shop",
     CloseShop = "close_shop",
@@ -60,11 +68,12 @@ export enum EventName {
     // backdrops
     ShowGameplayBackdrop = "show_gameplay_backdrop",
     HideGameplayBackdrop = "hide_gameplay_backdrop",
-    UpdateGameplayBackdrop = "update_gameplay_backdrop",
     ShowUIBackdrop = "show_ui_backdrop",
     HideUIBackdrop = "hide_ui_backdrop",
+    UpdateUIBackdrop = "update_ui_backdrop",
 
     // hide press here arrow
+    ShowPressHereArrow = "show_press_here_arrow",
     HidePressHereArrow = "hide_press_here_arrow",
     
     // hide the buttons
@@ -93,10 +102,12 @@ export enum EventName {
     TutorialOpenShopPressed = "tutorial_open_shop_pressed",
     TutorialShopButtonPressed = "tutorial_shop_button_pressed",
     TutorialRoadsideStandButtonPressed = "tutorial_roadside_stand_button_pressed",
+    TutorialRoadsideStandCloseButtonPressed = "tutorial_roadside_stand_close_button_pressed",
     TutorialShopButtonPressedResponsed = "tutorial_shop_button_pressed_responsed",
     TutorialPrepareBuySeeds = "tutorial_prepare_buy_seeds",
     TutorialPrepareBuySeedsResponsed = "tutorial_prepare_buy_seeds_responsed",
     TutorialPrepareCloseShop = "tutorial_prepare_close_shop",
+    TutorialCloseInventoryButtonPressed = "tutorial_close_inventory_button_pressed",
     TutorialPrepareCloseShopResponsed = "tutorial_prepare_close_shop_responsed",
     TutorialCloseShopButtonPressed = "tutorial_close_shop_button_pressed",
     TutorialOpenInventory = "tutorial_open_inventory",
@@ -104,6 +115,7 @@ export enum EventName {
     TutorialOpenRoadsideStandResponsed = "tutorial_open_roadside_stand_responsed",
     TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
+    TutorialInventorySeedMoveToToolbar = "tutorial_inventory_seed_move_to_toolbar",
     TutorialPlantSeeds = "tutorial_plant_seeds",
     TutorialSeedsPressed = "tutorial_seeds_pressed",
     TutorialScythePressed = "tutorial_scythe_pressed",
@@ -119,6 +131,8 @@ export enum EventName {
     TutorialWateringCanPressed = "tutorial_water_can_pressed",
     TutorialResetToolbar = "tutorial_reset_toolbar",
     TutorialHighlightToolbar = "tutorial_highlight_toolbar",
+    TutorialPrepareCloseStand = "tutorial_prepare_close_stand",
+    TutorialCloseStandButtonPressed = "tutorial_close_stand_button_pressed",
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
     UpdateTutorialCompleted = "update_tutorial_completed",
@@ -149,6 +163,45 @@ export enum EventName {
 
     RequestBuyTile = "request_buy_tile",
     BuyTileCompleted = "buy_tile_completed",
+    RequestMoveInventory = "request_move_inventory",
+    MoveInventoryCompleted = "move_inventory_completed",
+
+    RequestDeliverProduct = "request_deliver_product",
+    DeliverProductCompleted = "deliver_product_completed",
+
+    RequestRetainProduct = "request_retain_product",
+    RetainProductCompleted = "retain_product_completed",
+
+    RequestFollow = "request_follow",
+    FollowCompleted = "follow_completed",
+
+    RequestUnfollow = "request_unfollow",
+    UnfollowCompleted = "unfollow_completed",
+
+    RequestVisit = "request_visit",
+    VisitCompleted = "visit_completed",
+
+    RequestReturn = "request_return",
+    ReturnCompleted = "return_completed",
+
+    RequestHelpWater = "request_help_water",
+    HelpWaterCompleted = "help_water_completed",
+
+    RequestHelpUsePesticide = "request_help_pesticide",
+    HelpUsePesticideCompleted = "help_pesticide_completed",
+
+    RequestHelpUseHerbicide = "request_help_herbicide",
+    HelpUseHerbicideCompleted = "help_herbicide_completed",
+
+    RequestThiefCrop = "request_thief_crop",
+    ThiefCropCompleted = "thief_crop_completed",
+
+    FadeIn = "fade_in",
+    FadeOut = "fade_out",
+    FadeAll = "fade_all",
+
+    Visit = "visit",
+    Return = "return",
 }
 
 export interface OpenTutorialMessage {
@@ -169,6 +222,11 @@ export interface TutorialOpenShopResponsedMessage {
 export interface TutorialOpenInventoryResponsedMessage {
     // position of the shop button
     position: Position,
+}
+
+export interface SelectToolMessage {
+    index: number,
+    animate?: boolean
 }
 
 export interface TutorialOpenRoadsideStandResponsedMessage {
@@ -217,11 +275,18 @@ export interface ShowUIBackdropMessage {
     depth: number
 }
 
-export interface UpdateGameplayBackdropMessage {
+export interface UpdateUIBackdropMessage {
     // position of the backdrop
-    scrollXY: Position
+    depth: number
 }
 
+export interface ShowPressHereArrowMessage {
+    // position of the arrow
+    originPosition: Position
+    targetPosition: Position
+    rotation?: number
+    requireSetVisibility?: boolean
+}
 
 export enum ModalName {
   Shop = "shop",

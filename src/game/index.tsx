@@ -2,14 +2,12 @@
 
 import {
     API_AUTHENTICATION_SWR_MUTATION,
-    QUERY_STATIC_SWR,
 } from "@/app/constants"
 import {
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
     useApiAuthenticationSwrMutation,
     useGameplayIo,
-    useQueryStaticSwr,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { setAuthenticated, useAppDispatch } from "@/redux"
@@ -22,21 +20,6 @@ import { useEffects } from "./hooks"
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
     const dispatch = useAppDispatch()
-
-    //static data useEffect
-    const { swr: staticSwr } =
-    useSingletonHook<ReturnType<typeof useQueryStaticSwr>>(QUERY_STATIC_SWR)
-
-    useEffect(() => {
-        EventBus.on(EventName.LoadStaticData, async () => {
-            const data = await staticSwr.mutate()
-            EventBus.emit(EventName.StaticDataLoaded, data)
-        })
-        return () => {
-            //remove listeners
-            EventBus.removeListener(EventName.LoadStaticData)
-        }
-    }, [staticSwr])
 
     //authentication useEffect
     const { swrMutation: authenticationSwrMutation } = useSingletonHook<

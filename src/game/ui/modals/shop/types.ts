@@ -21,7 +21,7 @@ export interface ShopTabData {
 
 export const tabs: Record<ShopTab, ShopTabData> = {
     [ShopTab.Seeds]: {
-        iconKey: BaseAssetKey.ModalShopIconSeed,
+        iconKey: BaseAssetKey.UIModalShopIconSeed,
         scale: 0.6,
         offSets: {
             x: 70,
@@ -29,14 +29,14 @@ export const tabs: Record<ShopTab, ShopTabData> = {
         }
     },
     [ShopTab.Animals]: {
-        iconKey: BaseAssetKey.ModalShopIconAnimal,
+        iconKey: BaseAssetKey.UIModalShopIconAnimal,
         offSets: {
             x: 40,
             y: -20,
         }
     },
     [ShopTab.Buildings]: {
-        iconKey: BaseAssetKey.ModalShopIconTree,
+        iconKey: BaseAssetKey.UIModalShopIconTree,
         offSets: {
             x: 80,
             y: -40,
@@ -50,21 +50,21 @@ export const tabs: Record<ShopTab, ShopTabData> = {
         }
     },
     [ShopTab.Trees]: {
-        iconKey: BaseAssetKey.ModalShopIconTree,
+        iconKey: BaseAssetKey.UIModalShopIconTree,
         offSets: {
             x: 80,
             y: -40,
         }
     },
     [ShopTab.Decorations]: {
-        iconKey: BaseAssetKey.ModalShopIconTree,
+        iconKey: BaseAssetKey.UIModalShopIconTree,
         offSets: {
             x: 80,
             y: -40,
         }
     },
     [ShopTab.Others]: {
-        iconKey: BaseAssetKey.ModalShopIconTree,
+        iconKey: BaseAssetKey.UIModalShopIconTree,
         offSets: {
             x: 80,
             y: -40,

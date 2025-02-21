@@ -1,5 +1,5 @@
 import { BaseAssetKey, inventoryTypeAssetMap } from "@/game/assets"
-import { CacheKey, SizerBaseConstructorParams } from "@/game/types"
+import { CacheKey, BaseSizerBaseConstructorParams } from "@/game/types"
 import {
     DefaultInfo,
     InventorySchema,
@@ -10,24 +10,23 @@ import {
     GridSizer,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { calculateUiDepth, UILayer } from "@/game/layers"
-import { getStorageInventories, getToolbarInventories } from "@/game/queries"
-import { BaseGridTable, BaseGridTableCell, BaseGridTableFrame, getCellInfo, CellInfo } from "../../elements"
+import { getFirstSeedInventory, getStorageInventories, getToolInventories } from "@/game/queries"
+import { BaseGridTable, ItemQuantity, BaseGridTableFrame, getCellInfo, CellInfo, XButton } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { UpdateInventoryIndexRequest } from "@/modules/axios"
+import { MoveInventoryRequest } from "@/modules/axios"
 import {
     CloseModalMessage,
     EventBus,
     EventName,
     ModalName,
+    ShowPressHereArrowMessage,
 } from "@/game/event-bus"
 import { onGameObjectPress } from "../../utils"
-import { IPaginatedResponse } from "@/modules/apollo/types"
-
-export enum InventoryStorageTab {
-  All = "all",
-  Seeds = "seeds",
-}
+import { HIGHLIGH_DEPTH, restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
+import { IPaginatedResponse } from "@/modules/apollo"
+import { MODAL_BACKDROP_DEPTH_1, MODAL_DEPTH_1 } from "../ModalManager"
+import { sleep } from "@/modules/common"
+import { SCALE_TIME } from "@/game/constants"
 
 const TOOLBAR_COLUMN_COUNT = 4
 const TOOLBAR_ROW_COUNT = 2
@@ -37,28 +36,29 @@ const TOOLBAR_CELL_SIZE = 100
 // part of the inventory that holds the inventory items
 export class InventoryContent extends BaseSizer {
     private background: Phaser.GameObjects.Image
-    private closeButton: Phaser.GameObjects.Image
+    private closeButton: XButton
     // grid storage & toolbar
     private storageGridTable: BaseGridTable<InventorySchema | null> | undefined
     private toolbarGridSizer: GridSizer | undefined
     private cellInfo: CellInfo
+    private inventorySeedMoveToToolbar = false
     // zones
     private toolbarZones: Array<Zone> = []
+
+    // items
+    private items: Record<string, ItemQuantity> = {}
 
     // data loaded from cache
     private inventories: Array<InventorySchema> = []
     private inventoryTypes: Array<InventoryTypeSchema> = []
-
     private defaultInfo: DefaultInfo
+    private enableTutorial = false
 
-    private selectedTab = InventoryStorageTab.All
-
-    constructor({ scene, x, y, width, height }: SizerBaseConstructorParams) {
+    constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
-
         this.background = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalInventoryBackground)
+            .image(0, 0, BaseAssetKey.UIModalInventoryBackground)
             .setOrigin(0.5, 1)
         this.addLocal(this.background)
         // Load inventories from cache
@@ -71,27 +71,40 @@ export class InventoryContent extends BaseSizer {
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
-        this.closeButton = this.scene.add
-            .image(
-                this.background.width/2 - 50,
-                -this.background.height + 50,
-                BaseAssetKey.ModalInventoryBtnClose
-            )
-            .setOrigin(1, 0)
-            .setInteractive()
-            .on("pointerdown", () => {
-                onGameObjectPress({
-                    gameObject: this.closeButton,
-                    onPress: () => {
-                        const eventMessage: CloseModalMessage = {
-                            modalName: ModalName.Inventory,
-                        }
-                        EventBus.emit(EventName.CloseModal, eventMessage)
-                    },
-                    scene: this.scene,
-                })
-            })
 
+        this.closeButton = new XButton({
+            baseParams: {
+                scene: this.scene,
+                config: {
+                    x: this.background.width / 2 - 50,
+                    y: -this.background.height + 50,
+                }
+            },
+            options: { 
+                onPress: () => {
+                    onGameObjectPress({
+                        gameObject: this.closeButton,
+                        onPress: () => {
+                            const eventMessage: CloseModalMessage = {
+                                modalName: ModalName.Inventory,
+                            }
+                            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                                this.scene.events.emit(EventName.TutorialCloseInventoryButtonPressed)
+                                this.scene.events.emit(EventName.HidePressHereArrow)
+                                restoreTutorialDepth({
+                                    gameObject: this.closeButton,
+                                    scene: this.scene,
+                                })
+                                this.enableScroller()
+                            }
+                            EventBus.emit(EventName.CloseModal, eventMessage)
+                        },
+                        scene: this.scene,
+                    })
+                }
+            }
+        })
+        this.scene.add.existing(this.closeButton)
         this.addLocal(this.closeButton)
 
         this.updateStorageGridTable()
@@ -106,15 +119,69 @@ export class InventoryContent extends BaseSizer {
             }
         )
 
+        this.scene.events.once(EventName.TutorialInventoryButtonPressed, async () => {
+            await sleep(SCALE_TIME)
+            this.enableTutorial = true
+            this.highlightCell()
+        })
     //this.updateToolbar()
     }
 
-    private updateStorageGridTable() {
+    private highlightCell() {
+        // get the label that 
+        const inventory = getFirstSeedInventory({
+            inventories: this.inventories,
+            scene: this.scene,
+            cropId: this.defaultInfo.defaultCropId,
+        })
+        if (!inventory) {
+            throw new Error("Inventory was not found")
+        }
+        //this.setDepth(HIGHLIGH_DEPTH)
+        const cell = this.items[inventory.id]
+        if (!cell) {
+            throw new Error("Cell not found")
+        }
+        setTutorialDepth({
+            gameObject: cell,
+            scene: this.scene,
+            storeDepth: false
+        })
+
+        const { x,y } = cell.getCenter()
+        
+        const eventMessage: ShowPressHereArrowMessage = {
+            rotation: 45,
+            originPosition: {
+                x: x - 60,
+                y: y + 60,
+            },
+            targetPosition: {
+                x: x - 40,
+                y: y + 40,
+            },
+        }
+        this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+
+        this.disableScroller()
+    }
+
+    private disableScroller() {
+        this.storageGridTable?.setScrollerEnable(false)
+        this.storageGridTable?.setMouseWheelScrollerEnable(false)
+    }
+
+    private enableScroller() {
+        this.storageGridTable?.setScrollerEnable(true)
+        this.storageGridTable?.setMouseWheelScrollerEnable(true)
+    }
+
+    private handleUpdateStorageGridTable() {
         const items = this.getStorageItems()
         if (this.storageGridTable) {
             this.storageGridTable.setItems(items)
             this.storageGridTable.layout()
-            return
+            return this.storageGridTable
         }
         // create number of
         this.storageGridTable = new BaseGridTable<InventorySchema | null>({
@@ -131,7 +198,7 @@ export class InventoryContent extends BaseSizer {
                     const background = new BaseGridTableFrame({ scene: this.scene, x: 0, y: 0 })
                     this.scene.add.existing(background)
                     if (cellContainer === null) {
-                        let gridTableCell: BaseGridTableCell | undefined
+                        let gridTableCell: ItemQuantity | undefined
                         if (cell.item) {
                             gridTableCell = this.createCell(cell.item as InventorySchema)
                         }
@@ -148,16 +215,12 @@ export class InventoryContent extends BaseSizer {
                                     })
                                     .setScale(this.cellInfo.scale)
                                     .setDepth(
-                                        calculateUiDepth({
-                                            layer: UILayer.Modal,
-                                            layerDepth: 1,
-                                            additionalDepth: 1,
-                                        })
+                                        MODAL_DEPTH_1 + 1
                                     )
                             )
                         }
-                        //add separator
-                        //const separator = cellContainer.getElement("separator")
+                    //add separator
+                    //const separator = cellContainer.getElement("separator")
                     }
                     return cellContainer
                 },
@@ -169,12 +232,39 @@ export class InventoryContent extends BaseSizer {
         this.addLocal(this.storageGridTable)
         return this.storageGridTable
     }
+    private updateStorageGridTable() {
+        const result = this.handleUpdateStorageGridTable()
+        // if finalized
+        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+            if (this.inventorySeedMoveToToolbar) {
+                this.inventorySeedMoveToToolbar = false
+                this.scene.events.emit(EventName.TutorialInventorySeedMoveToToolbar)
+                const { x, y } = this.closeButton.getCenter()
+                const eventMessage: ShowPressHereArrowMessage = {
+                    rotation: 45,
+                    originPosition: { x: x - 60, y: y + 60 },
+                    targetPosition: { x: x - 40, y: y + 40 },
+                }
+                this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+                this.disableScroller()
+                setTutorialDepth({
+                    gameObject: this.closeButton,
+                    scene: this.scene,
+                })
+                return result
+            }
+            if (this.enableTutorial) {
+                this.highlightCell()
+            }
+        }
+        return result
+    }
 
     private updateToolbarGridSizer() {
         if (this.toolbarGridSizer) {
             this.remove(this.toolbarGridSizer, true)
         }
-        const items = this.getToolbarItems()
+        const items = this.getToolItems()
         const gridSizer = this.scene.rexUI.add
             .gridSizer({
                 x: 20,
@@ -190,7 +280,7 @@ export class InventoryContent extends BaseSizer {
                 rowProportions: 1,
                 createCellContainerCallback: (scene, x, y, config) => {
                     config.expand = true
-                    let gridTableCell: BaseGridTableCell | undefined
+                    let gridTableCell: ItemQuantity | undefined
                     const inventory = items[y * TOOLBAR_COLUMN_COUNT + x]
                     if (inventory) {
                         gridTableCell = this.createCell(inventory)
@@ -202,11 +292,7 @@ export class InventoryContent extends BaseSizer {
                             icon: gridTableCell,
                         })
                         .setDepth(
-                            calculateUiDepth({
-                                layer: UILayer.Modal,
-                                layerDepth: 1,
-                                additionalDepth: 1,
-                            })
+                            MODAL_DEPTH_1 + 2
                         )
                     this.toolbarZones.push({
                         index: y * TOOLBAR_COLUMN_COUNT + x,
@@ -235,7 +321,7 @@ export class InventoryContent extends BaseSizer {
             textureConfig: { key },
         } = inventoryTypeAssetMap[inventoryType.displayId]
             
-        const cell = new BaseGridTableCell({
+        const cell = new ItemQuantity({
             baseParams: {
                 scene: this.scene,
             },
@@ -245,6 +331,7 @@ export class InventoryContent extends BaseSizer {
                 showBadge: inventoryType.stackable,
             },
         })
+        this.items[inventory.id] = cell
         this.scene.add.existing(cell)
         cell.setInteractive()
 
@@ -258,29 +345,23 @@ export class InventoryContent extends BaseSizer {
                 throw new Error("Badge label not found")
             }
             original = cell.getCenter()
+            const depth = this.scene.cache.obj.get(CacheKey.TutorialActive) ? HIGHLIGH_DEPTH : MODAL_BACKDROP_DEPTH_1 + 4
             cell.setDepth(
-                calculateUiDepth({
-                    layer: UILayer.Modal,
-                    layerDepth: 1,
-                    additionalDepth: 3,
-                })
+                depth
             )
         })
         cell.on("dragend", (pointer: Phaser.Input.Pointer) => {
             if (!cell) {
                 throw new Error("Badge label not found")
             }
+            const depth = this.scene.cache.obj.get(CacheKey.TutorialActive) ? HIGHLIGH_DEPTH : MODAL_BACKDROP_DEPTH_1 + 2
             cell.setDepth(
-                calculateUiDepth({
-                    layer: UILayer.Modal,
-                    layerDepth: 1,
-                    additionalDepth: 1,
-                })
+                depth
             )
 
             // index of the inventory
             let index = -1
-            let inToolbar = true
+            let isTool = true
 
             // check if the badge label is inside the toolbar
             const zone = this.toolbarZones.find((zone) =>
@@ -305,7 +386,7 @@ export class InventoryContent extends BaseSizer {
                   .contains(pointer.x, pointer.y)
                     ) {
                         index = i
-                        inToolbar = false
+                        isTool = false
                         break
                     }
                 }
@@ -319,21 +400,27 @@ export class InventoryContent extends BaseSizer {
             }
 
             // call api to move the inventory
-            const eventMessage: UpdateInventoryIndexRequest = {
+            const eventMessage: MoveInventoryRequest = {
                 index,
-                inToolbar,
+                isTool,
                 inventoryId: inventory.id,
             }
-            EventBus.once(EventName.UpdateInventoryIndexCompleted, () => {
+            EventBus.once(EventName.MoveInventoryCompleted, () => {
                 if (!cell) {
                     throw new Error("Badge label not found")
                 }
-                // distroy the badge label
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    if (isTool) {
+                        this.inventorySeedMoveToToolbar = true
+                        this.enableTutorial = false
+                    }
+                }
+                //  dtroy the badge label
                 const parent = cell.getParent()
                 parent.remove(cell, true)
                 EventBus.emit(EventName.RefreshInventories)
             })
-            EventBus.emit(EventName.RequestUpdateInventoryIndex, eventMessage)
+            EventBus.emit(EventName.RequestMoveInventory, eventMessage)
         })
         return cell
     }
@@ -346,7 +433,7 @@ export class InventoryContent extends BaseSizer {
             scene: this.scene,
         })
         // create the inventory cells
-        for (let i = 0; i < this.defaultInfo.inventoryCapacity; i++) {
+        for (let i = 0; i < this.defaultInfo.storageCapacity; i++) {
             const inventory = storageInventories.find(
                 (inventory) => inventory.index === i
             )
@@ -355,14 +442,15 @@ export class InventoryContent extends BaseSizer {
         return result
     }
 
-    private getToolbarItems() {
+    private getToolItems() {
         const result: Array<InventorySchema | null> = []
         // filter all inventories based on the selected tab
         // create the inventory cells
-        const toolbarInventories = getToolbarInventories({
+        const toolbarInventories = getToolInventories({
             inventories: this.inventories,
             scene: this.scene,
         })
+        console.log(toolbarInventories)
         for (let i = 0; i < TOOLBAR_CELL_COUNT; i++) {
             const inventory = toolbarInventories.find(
                 (inventory) => inventory.index === i

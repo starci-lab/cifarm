@@ -12,11 +12,11 @@ export interface NeighborsTabData {
 
 export const tabs: Record<NeighborsTab, NeighborsTabData> = {
     [NeighborsTab.Random]: {
-        iconKey: BaseAssetKey.ModalNeighborsIconRandom,
+        iconKey: BaseAssetKey.UIModalNeighborsIconRandom,
         text: "Random",
     },
     [NeighborsTab.Followed]: {
-        iconKey: BaseAssetKey.ModalNeighborsIconAdd,
+        iconKey: BaseAssetKey.UIModalNeighborsIconAdd,
         text: "Followed",
     },
 }

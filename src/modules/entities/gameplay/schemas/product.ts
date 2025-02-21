@@ -3,7 +3,6 @@ import { AnimalSchema } from "./animal"
 import { CropSchema } from "./crop"
 import { ProductType } from "../enums"
 import { InventoryTypeSchema } from "./inventory-type"
-import { DeliveringProductSchema } from "./delivering-product"
 
 export interface ProductSchema extends AbstractSchema {
     isQuality: boolean
@@ -16,5 +15,4 @@ export interface ProductSchema extends AbstractSchema {
     animal: AnimalSchema
     inventoryTypeId: string
     inventoryType: InventoryTypeSchema
-    deliveringProducts?: Array<DeliveringProductSchema>
 }

@@ -1,10 +1,4 @@
-import { AnimalSchema } from "./animal"
-import { CropSchema } from "./crop"
-import { InventorySchema } from "./inventory"
-import { ProductSchema } from "./product"
-import { SupplySchema } from "./supply"
-import { TileSchema } from "./tile"
-import { AvailableInType, InventoryType, InventoryTypeId } from "../enums"
+import { InventoryType, InventoryTypeId } from "../enums"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface InventoryTypeSchema extends StaticAbstractSchema<InventoryTypeId> {
@@ -15,18 +9,10 @@ export interface InventoryTypeSchema extends StaticAbstractSchema<InventoryTypeI
     placeable: boolean
     deliverable: boolean
     asTool: boolean
-    availableIn: AvailableInType
     maxStack: number
-    cropId?: string
-    crop?: CropSchema
-    animalId?: string
-    animal?: AnimalSchema
-    supplyId?: string
-    supply?: SupplySchema
-    productId?: string
-    product?: ProductSchema
-    tileId?: string
-    tile?: TileSchema
+    crop?: string
+    supply?: string
+    product?: string 
+    tool?: string
     stackable: boolean
-    inventories?: Array<InventorySchema>
 }

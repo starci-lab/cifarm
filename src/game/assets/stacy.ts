@@ -70,7 +70,7 @@ export const stacyAssetMap: Record<StacyAssetKey, StacyAssetData> = {
     },
     [StacyAssetKey.StacyGoodbye]: {
         textureConfig: {
-            key: "stacy-bye",
+            key: "stacy-goodbye",
             assetUrl: "stacy/stacy-9.png",
         },
     },

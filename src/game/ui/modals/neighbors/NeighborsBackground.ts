@@ -13,9 +13,8 @@ export class NeighborsBackground extends ContainerLite {
         super(scene, x, y, width, height, children)
         
         // create the wall
-        this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalNeighborsWall)
+        this.wall = this.scene.add.image(0, 0, BaseAssetKey.UIModalNeighborsWall)
         this.addLocal(this.wall)
-
 
         // create the close button
         this.closeButton = this.createCloseButton()
@@ -24,7 +23,7 @@ export class NeighborsBackground extends ContainerLite {
     // create the close button
     public createCloseButton() {
         // create the close button
-        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.ModalNeighborsIconClose).setOrigin(1, 0)
+        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.UIModalNeighborsIconClose).setOrigin(1, 0)
         this.scene.add.existing(closeButton)
         
         // add the on click event

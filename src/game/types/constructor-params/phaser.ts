@@ -24,7 +24,7 @@ export interface TilemapBaseConstructorParams {
 
 
 // base constructor for Image
-export interface ImagepBaseConstructorParams {
+export interface ImageBaseConstructorParams {
     scene: Phaser.Scene
     x: number
     y: number

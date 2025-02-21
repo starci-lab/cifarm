@@ -1,9 +1,9 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
-import { EventBus, EventName, ModalName, OpenModalMessage, TutorialOpenRoadsideStandResponsedMessage, TutorialOpenShopResponsedMessage } from "../../event-bus"
-import { ButtonsBaseConstructorParams } from "../../types"
+import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMessage } from "../../event-bus"
+import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
-import { calculateUiDepth, UILayer } from "../../layers"
+import { restoreTutorialDepth, setTutorialDepth } from "../tutorial"
 
 export class LeftHorizontalButtons extends HorizontalButtons {
     private nftMarketplaceButton : Sizer
@@ -46,6 +46,17 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                     modalName: ModalName.Shop
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    // return to normal depth
+                    restoreTutorialDepth({
+                        gameObject: this.shopButton,
+                        scene: this.scene,
+                    })
+                    // emit the event
+                    this.scene.events.emit(EventName.TutorialShopButtonPressed)
+                    // hide the press here arrow
+                    this.scene.events.emit(EventName.HidePressHereArrow)
+                }
             },
         })
         this.addButton(this.shopButton)
@@ -59,6 +70,17 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                     modalName: ModalName.Stand
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    // return to normal depth
+                    restoreTutorialDepth({
+                        gameObject: this.roadsideStandButton,
+                        scene: this.scene,
+                    })
+                    // emit the event
+                    this.scene.events.emit(EventName.TutorialRoadsideStandButtonPressed)
+                    // hide the press here arrow
+                    this.scene.events.emit(EventName.HidePressHereArrow)
+                }
             },
         })
         this.addButton(this.roadsideStandButton)
@@ -78,48 +100,42 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenShop, () => {
-            this.shopButton.setDepth(calculateUiDepth({
-                layer: UILayer.Tutorial,
-                layerDepth: 2,
-            }))
-            const eventMessage: TutorialOpenShopResponsedMessage = {
-                position: this.shopButton.getCenter()
-            }
-            this.scene.events.emit(EventName.TutorialOpenShopResponsed, eventMessage)
-            // if shop button is press, we will console go
-            this.shopButton.once("pointerdown", () => {
-                // return to normal depth
-                this.shopButton.setDepth(calculateUiDepth({
-                    layer: UILayer.Base,
-                }))
-                // emit the event
-                this.scene.events.emit(EventName.TutorialShopButtonPressed)
-                // hide the press here arrow
-                this.scene.events.emit(EventName.HidePressHereArrow)
+            setTutorialDepth({
+                gameObject: this.shopButton,
+                scene: this.scene,
             })
+            const { x, y } = this.shopButton.getCenter()
+            const eventMessage: ShowPressHereArrowMessage = {
+                originPosition: {
+                    x: x + 60,
+                    y: y + 60,
+                },
+                targetPosition: {
+                    x: x + 40,
+                    y: y + 45,
+                },
+            }
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenRoadsideStand, () => {
-            this.roadsideStandButton.setDepth(calculateUiDepth({
-                layer: UILayer.Tutorial,
-                layerDepth: 2,
-            }))
-            const eventMessage: TutorialOpenRoadsideStandResponsedMessage = {
-                position: this.roadsideStandButton.getCenter()
-            }
-            this.scene.events.emit(EventName.TutorialOpenRoadsideStandResponsed, eventMessage)
-            // if shop button is press, we will console go
-            this.roadsideStandButton.once("pointerdown", () => {
-                // return to normal depth
-                this.roadsideStandButton.setDepth(calculateUiDepth({
-                    layer: UILayer.Base,
-                }))
-                // emit the event
-                this.scene.events.emit(EventName.TutorialRoadsideStandButtonPressed)
-                // hide the press here arrow
-                this.scene.events.emit(EventName.HidePressHereArrow)
+            setTutorialDepth({
+                gameObject: this.roadsideStandButton,
+                scene: this.scene,
             })
+            const { x, y } = this.roadsideStandButton.getCenter()
+            const eventMessage: ShowPressHereArrowMessage = {
+                originPosition: {
+                    x: x + 60,
+                    y: y + 60,
+                },
+                targetPosition: {
+                    x: x + 40,
+                    y: y + 45,
+                },
+            }
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
     }
 }

@@ -37,7 +37,8 @@ export enum InventoryType {
     Tile = "tile",
     Animal = "animal",
     Product = "product",
-    Supply = "supply"
+    Supply = "supply",
+    Tool = "tool",
 }
 
 
@@ -55,3 +56,10 @@ export enum AppearanceChance {
     Rare = "rare",
     VeryRare = "veryRare",  
 } 
+
+// Inventory Kind
+export enum InventoryKind {
+    Storage = "storage",
+    Tool = "tool",
+    Delivery = "delivery"
+}

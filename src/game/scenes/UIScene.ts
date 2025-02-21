@@ -1,12 +1,16 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import {
+    Fade,
     LeftHorizontalButtons,
     ModalManager,
     RightHorizontalButtons,
+    Toolbar,
     Topbar,
+    TutorialManager,
     UIBackdrop,
 } from "../ui"
+import { getScreenCenterX, getScreenBottomY, getScreenTopY } from "../ui"
 
 export class UIScene extends Scene {
     constructor() {
@@ -36,14 +40,19 @@ export class UIScene extends Scene {
             .setPosition(width - 50, 200)
         this.add.existing(rightHorizontalButtons)
 
-        new Topbar(this)
+        const topbar = new Topbar({
+            scene: this,
+            x: getScreenCenterX(this),
+            y: getScreenTopY(this)
+        })
+        this.add.existing(topbar)
 
-        // const toolbar = new Toolbar({
-        //     scene: this,
-        //     x: getScreenCenterX(this),
-        //     y: getScreenBottomY(this) - 100
-        // })
-        // this.add.existing(toolbar)
+        const toolbar = new Toolbar({
+            scene: this,
+            x: getScreenCenterX(this),
+            y: getScreenBottomY(this) - 100
+        })
+        this.add.existing(toolbar)
 
         // add the modal manager
         const modalManager = new ModalManager({
@@ -51,10 +60,15 @@ export class UIScene extends Scene {
         })
         this.add.existing(modalManager)
 
-        // add the tutorial manager
-        // const tutorialManager = new TutorialManager({
-        //     scene: this
-        // })
-        // this.add.existing(tutorialManager)
+        //add the tutorial manager
+        const tutorialManager = new TutorialManager({
+            scene: this
+        })
+        this.add.existing(tutorialManager)
+
+        const fade =  new Fade({
+            scene: this,
+        })
+        this.add.existing(fade)
     }
 }

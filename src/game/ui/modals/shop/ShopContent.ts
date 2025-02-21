@@ -17,8 +17,9 @@ import {
     getScreenBottomY,
     getScreenCenterX,
 } from "../../utils"
+import { setTutorialDepth, restoreTutorialDepth } from "../../tutorial"
 import { StrokeColor, BaseText, TextColor } from "../../elements"
-import { CacheKey, SizerBaseConstructorParams } from "../../../types"
+import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
 import {
     AnimalSchema,
     BuildingSchema,
@@ -37,15 +38,15 @@ import {
     EventName,
     ModalName,
     PlacedInprogressMessage,
-    TutorialPrepareBuySeedsMessage,
+    ShowPressHereArrowMessage,
 } from "../../../event-bus"
 import { BuySeedsRequest } from "@/modules/axios"
 import { calculateUiDepth, UILayer } from "../../../layers"
-import { CONTENT_DEPTH, HIGHLIGH_DEPTH } from "./ShopModal"
-import { getSpecificSeedInventories } from "../../../queries"
+import { getFirstSeedInventory } from "../../../queries"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { IPaginatedResponse } from "@/modules/apollo"
 
 // own depth for the shop content
 export const PLAY_BUY_CROP_ANIMATION_DURATION = 2000
@@ -75,7 +76,7 @@ export class ShopContent extends BaseSizer {
         x,
         y,
         config,
-    }: SizerBaseConstructorParams) {
+    }: BaseSizerBaseConstructorParams) {
         super(scene, height, width, x, y, config)
 
         // load animals
@@ -95,7 +96,8 @@ export class ShopContent extends BaseSizer {
         // load tiles
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
-        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+        this.inventories = data
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
 
         // create the scrollable panel
@@ -125,28 +127,32 @@ export class ShopContent extends BaseSizer {
             // disable the default scroller
             this.disableDefaultScroller()
 
-            const inventories = getSpecificSeedInventories({
+            const inventory = getFirstSeedInventory({
                 cropId: this.defaultInfo.defaultCropId,
                 scene: this.scene,
                 inventories: this.inventories,
             })
-            if (inventories.length > this.defaultInfo.defaultSeedQuantity) {
+            if (inventory && inventory.quantity > this.defaultInfo.defaultSeedQuantity) {
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }
 
-            this.defaultItemCard.setDepth(HIGHLIGH_DEPTH)
+            setTutorialDepth({
+                scene: this.scene,
+                gameObject: this.defaultItemCard,
+            })
 
-            const eventMessage: TutorialPrepareBuySeedsMessage = {
-                position: this.defaultSeedButton.getCenter(),
+            const eventMessage: ShowPressHereArrowMessage = {
+                originPosition: {
+                    x: this.defaultSeedButton.x + 60,
+                    y: this.defaultSeedButton.y + 60,
+                },
+                targetPosition: {
+                    x: this.defaultSeedButton.x + 40,
+                    y: this.defaultSeedButton.y + 40,
+                }
             }
-            // emit the event
-            this.scene.events.emit(
-                EventName.TutorialPrepareBuySeeds,
-                eventMessage
-            )
-
-            this.setDirty(false)
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
 
         EventBus.on(EventName.BuySeedsCompleted, () => {
@@ -327,7 +333,10 @@ export class ShopContent extends BaseSizer {
                         // send request to buy seeds
                         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            this.defaultItemCard?.setDepth(CONTENT_DEPTH)
+                            restoreTutorialDepth({
+                                gameObject: itemCard,
+                                scene: this.scene,
+                            })
                             this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                         }
                     },
@@ -473,13 +482,13 @@ export class ShopContent extends BaseSizer {
         const shopItemCardImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopItemCard
+            BaseAssetKey.UIModalShopItemCard
         )
 
         const cardTitleImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopCardTitle
+            BaseAssetKey.UIModalShopCardTitle
         )
 
         const titleText = new BaseText({
@@ -502,11 +511,11 @@ export class ShopContent extends BaseSizer {
         this.scene.add.existing(titleText)
 
         // create the icon sizer
-        const iconContainer = this.scene.add.container(0, 0)
+        const iconContainer = this.scene.rexUI.add.container(0, 0)
         const avatarShop = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopAvatarShop
+            BaseAssetKey.UIModalShopAvatarShop
         )
         iconContainer.add(avatarShop)
 
@@ -540,7 +549,7 @@ export class ShopContent extends BaseSizer {
         const buttonPriceImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalShopButtonPrice
+            BaseAssetKey.UIModalShopButtonPrice
         )
         const priceText = new BaseText({
             baseParams: {

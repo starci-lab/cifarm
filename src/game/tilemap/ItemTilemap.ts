@@ -25,7 +25,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     private previousPlacedItems: PlacedItemsSyncedMessage | undefined
 
     // place item objects map
-    protected readonly placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
+    protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -88,6 +88,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     // if current.userId doesn't match previous.userId, treat all placed items as new
         if (!previous || (previous && current.userId !== previous.userId)) {
             // if user ids are different, create all placed items (treat as new)
+            this.clearAllPlacedItems()
             this.createAllPlacedItems(current.placedItems)
             return // exit early to avoid redundant checks later
         }
@@ -147,6 +148,13 @@ export abstract class ItemTilemap extends GroundTilemap {
             // Place the item using the shared tile placing logic
             this.placeTileForItem(placedItem)
         }
+    }
+
+    private clearAllPlacedItems() {
+        for (const [, value] of Object.entries(this.placedItemObjectMap)) {
+            value.object.destroyAll()
+        }
+        this.placedItemObjectMap = {}
     }
 
     // method to get the GID for a placed item type
@@ -276,7 +284,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             placedItemType,
             occupiedTiles: this.getOccupiedTiles(placedItem),
         }
-
         // update the object
         object.update(placedItemType.type, placedItem)
 

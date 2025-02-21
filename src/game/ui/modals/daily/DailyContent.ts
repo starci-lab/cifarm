@@ -7,10 +7,10 @@ import { BaseText, StrokeColor, TextColor } from "../../elements"
 
 // daily coin icon map
 const iconMap: Record<DailyRewardId, BaseAssetKey> = {
-    [DailyRewardId.Day1]: BaseAssetKey.ModalDailyCoin1,
-    [DailyRewardId.Day2]: BaseAssetKey.ModalDailyCoin1,
-    [DailyRewardId.Day3]: BaseAssetKey.ModalDailyCoin2,
-    [DailyRewardId.Day4]: BaseAssetKey.ModalDailyCoin3,
+    [DailyRewardId.Day1]: BaseAssetKey.UIModalDailyCoin1,
+    [DailyRewardId.Day2]: BaseAssetKey.UIModalDailyCoin1,
+    [DailyRewardId.Day3]: BaseAssetKey.UIModalDailyCoin2,
+    [DailyRewardId.Day4]: BaseAssetKey.UIModalDailyCoin3,
     // temporary use the same icon
     [DailyRewardId.Day5]: BaseAssetKey.IconDaily,
 }
@@ -60,7 +60,7 @@ export class DailyContent extends ContainerLite {
         const backgroundImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalDailyBaseDayAvatar
+            BaseAssetKey.UIModalDailyBaseDayAvatar
         )
         // set the position and origin
         backgroundImage
@@ -69,7 +69,7 @@ export class DailyContent extends ContainerLite {
         backgroundContainer.add(backgroundImage)
         
         // add the day label
-        const dayImage = this.scene.add.image(0, 0, BaseAssetKey.ModalDailyDay)
+        const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
         const dayText = new BaseText({
             baseParams: {
                 scene: this.scene,
@@ -170,7 +170,7 @@ export class DailyContent extends ContainerLite {
         const backgroundImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.ModalDailyLastDayAvatar
+            BaseAssetKey.UIModalDailyLastDayAvatar
         )
         // set the position and origin
         backgroundImage
@@ -179,7 +179,7 @@ export class DailyContent extends ContainerLite {
         backgroundContainer.add(backgroundImage)
         // add the day image
         // add the day label
-        const dayImage = this.scene.add.image(0, 0, BaseAssetKey.ModalDailyDay)
+        const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
         const dayText = new BaseText({
             baseParams: {
                 scene: this.scene,

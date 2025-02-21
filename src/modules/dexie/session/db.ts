@@ -1,20 +1,20 @@
 // db.js
-import Dexie, { type SchemaTable } from "dexie"
+import Dexie, { type EntityTable } from "dexie"
 
 const sessionDb = new Dexie("SessionDB") as Dexie & {
-  keyValueStore: SchemaTable<
+  keyValueStore: EntityTable<
   KeyValueStore,
     "key" // primary key "id" (for the typings only)
   >;
-  accounts: SchemaTable<
+  accounts: EntityTable<
   Account,
     "id" // primary key "id" (for the typings only)
   >;
-  tokens: SchemaTable<
+  tokens: EntityTable<
   Token,
     "id" // primary key "id" (for the typings only)
   >;
-  currentAccount: SchemaTable<
+  currentAccount: EntityTable<
   CurrentAccount,
     "id" // primary key "id" (for the typings only)
   >;

@@ -1,30 +1,51 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { CacheKey, SizerBaseConstructorParams } from "../../../../types"
+import { CacheKey, BaseSizerBaseConstructorParams } from "../../../../types"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseGridTable, BaseGridTableCell, BaseGridTableFrame, CellInfo, getCellInfo, RibbonTitle } from "../../../elements"
+import {
+    BaseGridTable,
+    ItemQuantity,
+    BaseGridTableFrame,
+    CellInfo,
+    getCellInfo,
+    RibbonTitle,
+} from "../../../elements"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { getProductInventories } from "../../../../queries"
-import { calculateUiDepth, UILayer } from "../../../../layers"
-import { EventBus, EventName, ModalName } from "../../../../event-bus"
+import {
+    EventBus,
+    EventName,
+    ModalName,
+    ShowPressHereArrowMessage,
+} from "../../../../event-bus"
 import { onGameObjectPress } from "@/game/ui/utils"
+import { MODAL_DEPTH_2 } from "../../ModalManager"
+import { setTutorialDepth } from "@/game/ui/tutorial"
+import { IPaginatedResponse } from "@/modules/apollo"
 
 export class SelectProductContent extends BaseSizer {
     private background: Phaser.GameObjects.Image
     private ribbonTitle: Label
     private inventoryTypes: Array<InventoryTypeSchema> = []
-    private gridTable: BaseGridTable<InventorySchema>|undefined
+    private gridTable: BaseGridTable<InventorySchema> | undefined
     private cellInfo: CellInfo
-
-    constructor({ scene, x, y, width, height }: SizerBaseConstructorParams) {
+    private gridMap: Record<number, ItemQuantity> = {}
+    private inventories: Array<InventorySchema> = []
+    constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
 
-        this.background = this.scene.add.image(0, 0, BaseAssetKey.ModalCommonBackground1)
+        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+        this.inventories = data
+        this.background = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UIModalCommonBackground1
+        )
         this.addLocal(this.background)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.cellInfo = getCellInfo(this.scene)
-        
+
         this.ribbonTitle = new RibbonTitle({
             baseParams: {
                 scene,
@@ -32,26 +53,32 @@ export class SelectProductContent extends BaseSizer {
                     x: 0,
                     y: 100 - this.background.height / 2,
                     originY: 1,
-                }
+                },
             },
             options: {
                 text: "Select Product",
-            }
+            },
         }).layout()
         this.scene.add.existing(this.ribbonTitle)
         this.addLocal(this.ribbonTitle)
 
         this.scene.events.on(EventName.UpdateSelectProductModal, () => {
-            console.log("called")
             this.updateGridTable()
         })
 
-        // default no need to update
-        // this.updateGridTable()
+        EventBus.on(
+            EventName.InventoriesRefreshed,
+            ({ data }: IPaginatedResponse<InventorySchema>) => {
+                this.inventories = data
+            }
+        )
     }
 
-    public updateGridTable() {
-        const items = getProductInventories({ scene: this.scene })
+    private updateGridTable() {
+        const items = getProductInventories({
+            scene: this.scene,
+            inventories: this.inventories,
+        })
         if (this.gridTable) {
             this.gridTable.setItems(items)
             this.gridTable.layout()
@@ -63,17 +90,19 @@ export class SelectProductContent extends BaseSizer {
                 config: {
                     x: 0,
                     y: 150,
-                }
+                },
             },
             options: {
                 createCellContainerCallback: (cell, cellContainer) => {
-                    const background = new BaseGridTableFrame({ scene: this.scene, x: 0, y: 0 })
+                    const background = new BaseGridTableFrame({
+                        scene: this.scene,
+                        x: 0,
+                        y: 0,
+                    })
                     this.scene.add.existing(background)
                     if (cellContainer === null) {
-                        let gridTableCell: BaseGridTableCell | undefined
-                        if (cell.item) {
-                            gridTableCell = this.createCell(cell.item as InventorySchema)
-                        }
+                        const gridTableCell = this.createCell(cell.item as InventorySchema)
+                        this.gridMap[cell.index] = gridTableCell
                         if (!cellContainer) {
                             cellContainer = this.scene.rexUI.add.sizer({ orientation: "y" })
                             const _cellContainer = cellContainer as Sizer
@@ -86,27 +115,41 @@ export class SelectProductContent extends BaseSizer {
                                         icon: gridTableCell,
                                     })
                                     .setScale(this.cellInfo.scale)
-                                    .setDepth(
-                                        calculateUiDepth({
-                                            layer: UILayer.Modal,
-                                            layerDepth: 2,
-                                            additionalDepth: 3,
-                                        })
-                                    )
+                                    .setDepth(MODAL_DEPTH_2 + 2)
                             )
                         }
                     }
                     return cellContainer
                 },
                 items,
-            }
-        }).layout().setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 2,
-            additionalDepth: 2,
-        }))
+            },
+        })
+            .setDepth(MODAL_DEPTH_2 + 1)
+            .layout()
         this.scene.add.existing(this.gridTable)
         this.addLocal(this.gridTable)
+
+        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+            const firstCell = this.gridMap[0]
+            if (firstCell) {
+                setTutorialDepth({
+                    gameObject: firstCell,
+                    scene: this.scene,
+                })
+                const { x, y } = firstCell.getCenter()
+                const eventMessage: ShowPressHereArrowMessage = {
+                    originPosition: {
+                        x: x + 60,
+                        y: y + 60,
+                    },
+                    targetPosition: {
+                        x: x + 40,
+                        y: y + 40,
+                    },
+                }
+                this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+            }
+        }
         return this.gridTable
     }
 
@@ -123,15 +166,15 @@ export class SelectProductContent extends BaseSizer {
             textureConfig: { key },
         } = inventoryTypeAssetMap[inventoryType.displayId]
 
-        const cell = new BaseGridTableCell({
+        const cell = new ItemQuantity({
             baseParams: {
-                scene: this.scene
+                scene: this.scene,
             },
             options: {
                 assetKey: key,
                 quantity: inventory.quantity,
                 showBadge: true,
-            }
+            },
         })
         this.scene.add.existing(cell)
         cell.setInteractive().on("pointerdown", () => {

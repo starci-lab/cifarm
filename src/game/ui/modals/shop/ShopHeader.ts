@@ -1,17 +1,17 @@
 import { BaseAssetKey } from "../../../assets"
-import { CloseModalMessage, EventBus, EventName, TutorialPrepareCloseShopResponsedMessage, ModalName } from "../../../event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName, ShowPressHereArrowMessage } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
 import { onGameObjectPress } from "../../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { HIGHLIGH_DEPTH } from "./ShopModal"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
+import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 
 export class ShopHeader extends ContainerLite {
     // close button
-    private closeButton: Phaser.GameObjects.Image
+    private closeButton: Label
     private titleShop: Label
     constructor({
         scene,
@@ -25,13 +25,16 @@ export class ShopHeader extends ContainerLite {
 
         // create the background
         const backgroundContainer = this.scene.rexUI.add.container(0, 0)
-        const background = this.scene.add.image(0, 0, BaseAssetKey.ModalShopTopbar)
+        const background = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopTopbar)
         backgroundContainer.addLocal(background)
 
         // add the close button
-        this.closeButton = this.scene.add
-            .image(background.width / 2 - 50, 0, BaseAssetKey.ModalShopX)
-            .setOrigin(1, 0.5)
+        const closeButtonBackground = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopX)
+        this.closeButton = this.scene.rexUI.add.label({
+            width: closeButtonBackground.width,
+            height: closeButtonBackground.height,
+            background: closeButtonBackground,
+        }).layout().setPosition(background.width / 2 - closeButtonBackground.width / 2 - 50, 0)
         // add the on click event
         this.closeButton.setInteractive().on("pointerdown", () => {
             onGameObjectPress({
@@ -45,6 +48,10 @@ export class ShopHeader extends ContainerLite {
                     EventBus.emit(EventName.CloseModal, eventMessage)
                     // emit the events related to the tutorial
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                        restoreTutorialDepth({
+                            gameObject: this.closeButton,
+                            scene: this.scene,
+                        })
                         this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
                         this.scene.events.emit(EventName.HidePressHereArrow)
                     }
@@ -54,12 +61,12 @@ export class ShopHeader extends ContainerLite {
         backgroundContainer.addLocal(this.closeButton)
 
         const topDecorator = this.scene.add
-            .image(0, -background.height / 2, BaseAssetKey.ModalShopTopDecorator)
+            .image(0, -background.height / 2, BaseAssetKey.UIModalShopTopDecorator)
             .setOrigin(0.5, 1)
         backgroundContainer.addLocal(topDecorator)
         this.addLocal(backgroundContainer)
 
-        const frame = this.scene.add.image(0, 0, BaseAssetKey.ModalShopTitleShop)
+        const frame = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopTitleShop)
 
         // create the text
         const text = new BaseText({
@@ -89,11 +96,17 @@ export class ShopHeader extends ContainerLite {
         this.scene.events.once(EventName.TutorialPrepareCloseShop, async () => {
             // await until the shop is opened
             await sleep(SCALE_TIME)
-            this.closeButton = this.closeButton.setDepth(HIGHLIGH_DEPTH)
-            const eventMessage: TutorialPrepareCloseShopResponsedMessage = {
-                position: this.closeButton.getCenter(),
+            setTutorialDepth({
+                gameObject: this.closeButton,
+                scene: this.scene,
+            })
+            const { x, y } = this.closeButton.getCenter()
+            const eventMessage: ShowPressHereArrowMessage = {
+                rotation: 45,
+                originPosition: { x: x - 60, y: y + 60 },
+                targetPosition: { x: x - 40, y: y + 40 },
             }
-            this.scene.events.emit(EventName.TutorialPrepareCloseShopResponsed, eventMessage)
+            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
     }
 }

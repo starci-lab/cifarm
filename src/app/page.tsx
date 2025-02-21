@@ -5,9 +5,15 @@ import { useRouterWithSearchParams } from "@/hooks"
 import { Container } from "@/components"
 import React, { FC } from "react"
 import { pathConstants } from "@/constants"
+import { generateMnemonic } from "bip39"
+import { Account, CurrentAccount, sessionDb, SessionDbKey } from "@/modules/dexie"
+import { ChainKey, createAccount, Network } from "@/modules/blockchain"
+import { setMnemonic, triggerLoadAccounts } from "@/redux"
+import { useDispatch } from "react-redux"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
+    const dispatch = useDispatch()
     return (
         <Container centerContent hasPadding>
             <div className="w-full">
@@ -26,7 +32,75 @@ const Page: FC = () => {
                     <Button
                         color="primary"
                         size="lg"
-                        onPress={() => router.push(pathConstants.createPin)}
+                        onPress={async () => {
+                            const mnemonic = generateMnemonic(256)
+                            // put mnemonic to key-value store in IndexedDB
+                            await sessionDb.keyValueStore.put({
+                                key: SessionDbKey.Mnemonic,
+                                value: mnemonic
+                            })
+                            //start with index 0 for each chain
+                            const promises: Array<Promise<void>> = []
+                            for (const network of Object.values(Network)) {
+                                for (const chainKey of Object.values(ChainKey)) {
+                                    promises.push(
+                                        (async () => {
+                                            const created = await createAccount({
+                                                accountNumber: 0,
+                                                chainKey,
+                                                mnemonic,
+                                                network,
+                                            })
+                                            if (!created) {
+                                                throw new Error("Failed to create account")
+                                            }
+                                            const found = await sessionDb.accounts.filter(
+                                                (account) =>
+                                                    account.chainKey === chainKey &&
+                                    account.network === network &&
+                                    account.accountNumber === 0
+                                            )
+                                                .first()
+                                            if (found) {
+                                            // we will update the account
+                                                found.address = created.address
+                                                found.publicKey = created.publicKey
+                                                found.privateKey = created.privateKey
+                                                await sessionDb.accounts.put(found)
+                                                return
+                                            }
+                    
+                                            // create account
+                                            const account: Omit<Account, "id"> = {
+                                                chainKey,
+                                                network,
+                                                accountNumber: 0,
+                                                address: created.address,
+                                                publicKey: created.publicKey,
+                                                privateKey: created.privateKey,
+                                                username: "User",
+                                                imageUrl: "/logo.png",
+                                            }
+                    
+                                            const accountId = await sessionDb.accounts.add(account)
+                    
+                                            // create current account
+                                            const currentAccount: Omit<CurrentAccount, "id"> = {
+                                                chainKey,
+                                                network,
+                                                accountId,
+                                            }
+                                            await sessionDb.currentAccount.put(currentAccount)
+                                        })()
+                                    )
+                                    await Promise.all(promises)
+                                    //dispatch to set mnemonic
+                                    dispatch(setMnemonic(mnemonic))
+                                    //dispatch to all useEffects to update changes with key `loadAccountsKey`
+                                    dispatch(triggerLoadAccounts())
+                                    router.push(pathConstants.home)
+                                }}
+                        }}
                     >
             Create new account
                     </Button>
@@ -34,7 +108,7 @@ const Page: FC = () => {
                         color="primary"
                         variant="flat"
                         size="lg"
-                        onPress={() => router.push(pathConstants.createPin)}
+                        onPress={() => router.push(pathConstants.home)}
                     >
             Import existing account
                     </Button>

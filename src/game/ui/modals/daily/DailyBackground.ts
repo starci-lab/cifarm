@@ -15,11 +15,11 @@ export class DailyBackground extends ContainerLite {
         super(scene, x, y, width, height, children)
         
         // create the wall
-        this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalDailyWall)
+        this.wall = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyWall)
         this.addLocal(this.wall)
 
         // create the daily title
-        const dailyTitle = this.scene.add.image(0, 0, BaseAssetKey.ModalDailyTitle)
+        const dailyTitle = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyTitle)
         const text = new BaseText({
             baseParams: { 
                 scene: this.scene,
@@ -53,7 +53,7 @@ export class DailyBackground extends ContainerLite {
     // create the close button
     public createCloseButton() {
         // create the close button
-        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.ModalDailyIconClose).setOrigin(1, 0)
+        const closeButton = this.scene.add.sprite(0, 0, BaseAssetKey.UIModalDailyIconClose).setOrigin(1, 0)
         this.scene.add.existing(closeButton)
         
         // add the on click event

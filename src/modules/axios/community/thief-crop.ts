@@ -4,7 +4,7 @@ import { authAxios } from "../auth-axios"
 import { AxiosOptions, Version } from "../types"
 
 export interface ThiefCropRequest {
-    placedItemAnimalId: string
+    placedItemTileId: string
 }
 
 export const thiefCrop = (

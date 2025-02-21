@@ -12,7 +12,7 @@ export class QuestBackground extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         // create the wall
-        this.wall = this.scene.add.image(0, 0, BaseAssetKey.ModalQuestWall)
+        this.wall = this.scene.add.image(0, 0, BaseAssetKey.UIModalQuestWall)
         this.addLocal(this.wall)
 
         // create the close button
@@ -22,7 +22,7 @@ export class QuestBackground extends ContainerLite {
     private createCloseButton() {
     // create the close button
         const closeButton = this.scene.add
-            .image(0, 0, BaseAssetKey.ModalQuestIconClose)
+            .image(0, 0, BaseAssetKey.UIModalQuestIconClose)
             .setPosition(this.wall.width / 2 - 50, -this.wall.height / 2 + 50)
             .setOrigin(1, 0)
         // add the on click event

@@ -11,14 +11,14 @@ import {
     loadTileAssets,
     loadToolsAssets
 } from "../assets"
-import { LoadingProgressBar } from "../containers"
+import { LoadingProgressBar } from "../ui"
 import { EventBus, EventName } from "../event-bus"
-import { QueryStaticResponse } from "@/modules/apollo"
+import { QueryFolloweesArgs, QueryNeighborsArgs, QueryNeighborsParams, QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
-import { DeliveringProductSchema, InventorySchema, UserSchema } from "@/modules/entities"
+import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { loadCropStateAssets } from "../assets/states"
-import { IPaginatedResponse } from "@/modules/apollo/types"
+import { IPaginatedResponse } from "@/modules/apollo"
 
 export enum LoadingPhase {
     DataFetching = "dataFetching",
@@ -41,7 +41,7 @@ export class LoadingScene extends Scene {
 
     // data fetching
     private dataFetchingLoaded = 0
-    private totalDataFetching = 4
+    private totalDataFetching = 5
 
     init() {
     // Listen to the shutdown event
@@ -98,17 +98,25 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.Inventories, data)
                 this.handleFetchData("Loading inventories...")
             })
-
-        //listen for load delivering products event
+    
+        //listen for load neighbors event
         EventBus.once(
-            EventName.DeliveringProductsLoaded, (data: IPaginatedResponse<DeliveringProductSchema>
+            EventName.NeighborsLoaded, (data: IPaginatedResponse<UserSchema>
             ) => {
-                console.log(data)
-                //load the delivering products
-                this.cache.obj.add(CacheKey.DeliveringProducts, data)
-                this.handleFetchData("Loading delivering products...")
+                //load the user inventory
+                this.cache.obj.add(CacheKey.Neighbors, data)
+                this.handleFetchData("Loading neighbors...")
             })
- 
+
+        //listen for load followees event
+        EventBus.once(
+            EventName.FolloweesLoaded, (data: IPaginatedResponse<UserSchema>
+            ) => {
+                //load the user inventory
+                this.cache.obj.add(CacheKey.Followees, data)
+                this.handleFetchData("Loading followees...")
+            })
+
         this.events.once(EventName.LoadCompleted, () => {
             //load the main game scene
             this.scene.start(SceneName.Gameplay)
@@ -124,7 +132,8 @@ export class LoadingScene extends Scene {
         EventBus.off(EventName.StaticDataLoaded)
         EventBus.off(EventName.UserLoaded)
         EventBus.off(EventName.InventoriesLoaded)
-        EventBus.off(EventName.DeliveringProductsLoaded)
+        EventBus.off(EventName.NeighborsLoaded)
+        EventBus.off(EventName.FolloweesLoaded)
     }
 
     create() {
@@ -200,10 +209,30 @@ export class LoadingScene extends Scene {
         // sleep 0.1 seconds to ensure the hook is updated
         await sleep(100)
         // start fetching the data    
-        EventBus.emit(EventName.LoadStaticData, this)
-        EventBus.emit(EventName.LoadUser, this)
-        EventBus.emit(EventName.LoadInventories, this)
-        EventBus.emit(EventName.LoadDeliveringProducts, this)
+        EventBus.emit(EventName.LoadStaticData)
+        EventBus.emit(EventName.LoadUser)
+        EventBus.emit(EventName.LoadInventories)
+        // query neighbors
+        const queryNeighborsArgs: QueryNeighborsArgs = {
+            limit: 5,
+            offset: 0,
+        }
+        const queryNeighborsParams: QueryNeighborsParams = {
+            args: queryNeighborsArgs
+        }
+        this.cache.obj.add(CacheKey.NeighborsArgs, queryNeighborsParams)
+        EventBus.emit(EventName.LoadNeighbors, queryNeighborsParams)
+
+        // query followees
+        const queryFolloweesArgs: QueryFolloweesArgs = {
+            limit: 5,
+            offset: 0,
+        }
+        const queryFolloweesParams: QueryNeighborsParams = {
+            args: queryFolloweesArgs
+        }
+        this.cache.obj.add(CacheKey.FolloweesArgs, queryFolloweesParams)
+        EventBus.emit(EventName.LoadFollowees, queryFolloweesParams)
     }
 
     private handleFetchData(message: string) {

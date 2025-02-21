@@ -9,7 +9,26 @@ import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
-import { getScreenCenterX } from "../utils"
+import { getScreenCenterX, getScreenCenterY } from "../utils"
+
+export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
+    layer: UILayer.Modal,
+})
+export const MODAL_DEPTH_1 = calculateUiDepth({
+    layer: UILayer.Modal,
+    additionalDepth: 1
+})
+export const MODAL_BACKDROP_DEPTH_2 = calculateUiDepth({
+    layer: UILayer.Modal,
+    additionalDepth: 10
+})
+export const MODAL_DEPTH_2 = calculateUiDepth({
+    layer: UILayer.Modal,
+    additionalDepth: 11
+})
+export const TUTORIAL_BACKDROP_DEPTH = calculateUiDepth({
+    layer: UILayer.Tutorial,
+})
 
 
 export class ModalManager extends ContainerLite {
@@ -35,16 +54,13 @@ export class ModalManager extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         const centerX = getScreenCenterX(this.scene)
-        const centerY = getScreenCenterX(this.scene)
+        const centerY = getScreenCenterY(this.scene)
         // create the shop modal
         this.shopModal = new ShopModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.shopModal)
 
         // this.add(this.shopModal)
@@ -53,10 +69,7 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.inventoryModal)
 
         // create the daily modal
@@ -64,10 +77,7 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.dailyModal)
 
         // create the quest modal
@@ -75,10 +85,7 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.questModal)
 
         // create the stand modal
@@ -86,20 +93,14 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.standModal)
 
         this.neighborsModal = new NeighborsModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.neighborsModal)
         
         //selected product is a chained modal, so that it stay in layer depth 2 + 9, default is for the modal
@@ -107,22 +108,14 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 2,
-            additionalDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_2).hide()
         this.scene.add.existing(this.selectProductModal)
         // create the input quantity modal
         this.inputQuantityModal = new InputQuantityModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(calculateUiDepth({
-            layer: UILayer.Modal,
-            layerDepth: 2,
-            additionalDepth: 1
-        })).hide()
+        }).setDepth(MODAL_DEPTH_2).hide()
         this.scene.add.existing(this.inputQuantityModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
@@ -133,9 +126,6 @@ export class ModalManager extends ContainerLite {
         EventBus.on(EventName.CloseModal, (message: CloseModalMessage) => {
             this.onClose(message)
         })
-
-        // close the modal manager by default
-        this.hideBackdrop()
     }
  
     // show method, to show the modal
@@ -144,24 +134,17 @@ export class ModalManager extends ContainerLite {
         if (this.checkTutorialActive()) {
             if (showTutorialBackdrop) {
                 EventBus.emit(EventName.ShowUIBackdrop, {
-                    depth: calculateUiDepth({
-                        layer: UILayer.Tutorial,
-                    })
+                    depth: TUTORIAL_BACKDROP_DEPTH
                 })
             }
             return
         }
-        let depth = calculateUiDepth({
-            layer: UILayer.Modal,
-        })
+        let depth = MODAL_BACKDROP_DEPTH_1
 
         switch (modalName) {
         case ModalName.SelectProduct:
         case ModalName.InputQuantity:
-            depth = calculateUiDepth({
-                layer: UILayer.Modal,
-                layerDepth: 2
-            })
+            depth = MODAL_BACKDROP_DEPTH_2
             break
         }
         EventBus.emit(EventName.ShowUIBackdrop, {
@@ -169,14 +152,23 @@ export class ModalManager extends ContainerLite {
         })
     }
 
-    private hideBackdrop(hideTutorialBackdrop?: boolean) {
+    private hideBackdrop({ hideTutorialBackdrop = false, modalName }: HideBackdropParams) {
         // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        // if (this.checkTutorialActive()) {
-        //     if (hideTutorialBackdrop) {
-        //         EventBus.emit(EventName.HideUIBackdrop)
-        //     }
-        //     return
-        // }
+        if (this.checkTutorialActive()) {
+            if (hideTutorialBackdrop) {
+                EventBus.emit(EventName.HideUIBackdrop)
+            }
+            return
+        }
+        //check if modal is chained
+        switch (modalName) {
+        case ModalName.SelectProduct:
+        case ModalName.InputQuantity:
+            EventBus.emit(EventName.UpdateUIBackdrop, {
+                depth: MODAL_BACKDROP_DEPTH_1
+            })
+            return
+        }
         EventBus.emit(EventName.HideUIBackdrop)
     }
 
@@ -260,11 +252,16 @@ export class ModalManager extends ContainerLite {
         const modal = this.getModal(modalName)
         // hide the modal
         modal.hide()
-        this.hideBackdrop(hideTutorialBackdrop)
+        this.hideBackdrop({ modalName, hideTutorialBackdrop })
     }
 }
 
 interface ShowBackdropParams {
     showTutorialBackdrop?: boolean
+    modalName?: ModalName
+}
+
+interface HideBackdropParams {
+    hideTutorialBackdrop?: boolean
     modalName?: ModalName
 }
