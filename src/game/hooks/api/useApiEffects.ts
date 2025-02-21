@@ -13,6 +13,10 @@ import { useFollowEffects } from "./useFollowEffects"
 import { useUnfollowEffects } from "./useUnfollowEffects"
 import { useVisitEffects } from "./useVisitEffects"
 import { useReturnEffects } from "./useReturnEffects"
+import { useHelpUseHerbicideEffects } from "./helpUseHerbicideEffects"
+import { useHelpUsePesticideEffects } from "./helpUsePesticideEffects"
+import { useThiefCropEffects } from "./thiefCropEffects"
+import { useHelpWaterEffects } from "./helpWaterEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -30,4 +34,8 @@ export const useApiEffects = () => {
     useUnfollowEffects()
     useVisitEffects()
     useReturnEffects()
+    useHelpUseHerbicideEffects()
+    useHelpUsePesticideEffects()
+    useHelpWaterEffects()
+    useThiefCropEffects()
 }

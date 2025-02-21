@@ -176,6 +176,18 @@ export enum EventName {
     RequestReturn = "request_return",
     ReturnCompleted = "return_completed",
 
+    RequestHelpWater = "request_help_water",
+    HelpWaterCompleted = "help_water_completed",
+
+    RequestHelpUsePesticide = "request_help_pesticide",
+    HelpUsePesticideCompleted = "help_pesticide_completed",
+
+    RequestHelpUseHerbicide = "request_help_herbicide",
+    HelpUseHerbicideCompleted = "help_herbicide_completed",
+
+    RequestThiefCrop = "request_thief_crop",
+    ThiefCropCompleted = "thief_crop_completed",
+
     FadeIn = "fade_in",
     FadeOut = "fade_out",
     FadeAll = "fade_all",

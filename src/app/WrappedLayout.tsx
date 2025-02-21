@@ -30,6 +30,10 @@ import {
     useQueryFolloweesSwrMutation,
     useApiReturnSwrMutation,
     useApiVisitSwrMutation,
+    useApiHelpUseHerbicideSwrMutation,
+    useApiHelpUsePesticideSwrMutation,
+    useApiHelpWaterSwrMutation,
+    useApiThiefCropSwrMutation,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -64,7 +68,10 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_UNFOLLOW_SWR_MUTATION: useApiUnfollowSwrMutation(),
                             API_VISIT_SWR_MUTATION: useApiVisitSwrMutation(),
                             API_RETURN_SWR_MUTATION: useApiReturnSwrMutation(),
-
+                            API_HELP_USE_HERBICIDE_SWR_MUTATION: useApiHelpUseHerbicideSwrMutation(),
+                            API_HELP_USE_PESTICIDE_SWR_MUTATION: useApiHelpUsePesticideSwrMutation(),
+                            API_HELP_WATER_SWR_MUTATION: useApiHelpWaterSwrMutation(),
+                            API_THIEF_CROP_SWR_MUTATION: useApiThiefCropSwrMutation(),
                             QUERY_USER_SWR_MUTATION: useQueryUserSwrMutation(),
                             QUERY_STATIC_SWR_MUTATION: useQueryStaticSwrMutation(),
                             QUERY_INVENTORIES_SWR_MUTATION: useQueryInventoriesSwrMutation(),
