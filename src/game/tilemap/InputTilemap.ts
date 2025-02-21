@@ -153,6 +153,9 @@ export class InputTilemap extends ItemTilemap {
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
+                if (data.pressBlocked) {
+                    return
+                }
                 this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
@@ -226,6 +229,7 @@ export class InputTilemap extends ItemTilemap {
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialSeedPlanted)
                 }
+                data.pressBlocked = false
             })
             // emit the event to plant seed
             const eventMessage: PlantSeedRequest = {
@@ -233,6 +237,7 @@ export class InputTilemap extends ItemTilemap {
                 placedItemTileId: placedItemId,
             }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
+            data.pressBlocked = true
             break
         }
         case InventoryType.Tool: {
@@ -265,12 +270,15 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
                         }
+                        // reset the isPressed flag
+                        data.pressBlocked = true
                     })
                     // emit the event to plant seed
                     const eventMessage: HelpWaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpWater, eventMessage)
+                    data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
                     EventBus.once(EventName.WaterCompleted, () => {
@@ -278,12 +286,15 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
                         }
+                        // reset the isPressed flag
+                        data.pressBlocked = false
                     })
                     // emit the event to plant seed
                     const eventMessage: WaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestWater, eventMessage)
+                    data.pressBlocked = false
                 }
                 break
             }
@@ -299,12 +310,16 @@ export class InputTilemap extends ItemTilemap {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
+
+                        // reset the isPressed flag
+                        data.pressBlocked = false
                     })
                     // emit the event to help use pesticide
                     const eventMessage: HelpUsePesticideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
+                    data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
                     EventBus.once(EventName.UsePesticideCompleted, () => {
@@ -312,12 +327,15 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropPesticideUsed)
                         }
+                        // reset the isPressed flag
+                        data.pressBlocked = false
                     })
                     // emit the event to plant seed
                     const eventMessage: UsePesticideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUsePesticide, eventMessage)
+                    data.pressBlocked = true
                 }
                 break
             }
@@ -333,12 +351,16 @@ export class InputTilemap extends ItemTilemap {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
+
+                        // reset the isPressed flag
+                        data.pressBlocked = false
                     })
                     // emit the event to plant seed
                     const eventMessage: HelpUseHerbicideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
+                    data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
                     EventBus.once(EventName.UseHerbicideCompleted, () => {
@@ -346,12 +368,15 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHerbicideUsed)
                         }
+                        // reset the isPressed flag
+                        data.pressBlocked = false
                     })
                     // emit the event to plant seed
                     const eventMessage: UseHerbicideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUseHerbicide, eventMessage)
+                    data.pressBlocked = true
                 }
                 break
             }
@@ -382,7 +407,7 @@ export class InputTilemap extends ItemTilemap {
                 const center = object.getCenter()
                 if (visitedNeighbor) {
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefCropCompleted, (data: HarvestCropResponse) => {
+                    EventBus.once(EventName.ThiefCropCompleted, (message: HarvestCropResponse) => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
                         const flyItem = new FlyItem({
@@ -391,7 +416,7 @@ export class InputTilemap extends ItemTilemap {
                             },
                             options: {
                                 assetKey: productAssetMap[product.displayId].textureConfig.key,
-                                quantity: data.quantity,
+                                quantity: message.quantity,
                                 x: center.x,
                                 y: center.y,
                                 depth: calculateGameplayDepth({
@@ -400,15 +425,17 @@ export class InputTilemap extends ItemTilemap {
                             }
                         })
                         this.scene.add.existing(flyItem)
+                        data.pressBlocked = false
                     })
                     // emit the event to plant seed
                     const eventMessage: ThiefCropRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestThiefCrop, eventMessage)
+                    data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
-                    EventBus.once(EventName.HarvestCropCompleted, (data: HarvestCropResponse) => {
+                    EventBus.once(EventName.HarvestCropCompleted, (message: HarvestCropResponse) => {
                         EventBus.emit(EventName.RefreshUser)
                         EventBus.emit(EventName.RefreshInventories)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -420,7 +447,7 @@ export class InputTilemap extends ItemTilemap {
                             },
                             options: {
                                 assetKey: productAssetMap[product.displayId].textureConfig.key,
-                                quantity: data.quantity,
+                                quantity: message.quantity,
                                 x: center.x,
                                 y: center.y,
                                 depth: calculateGameplayDepth({
@@ -429,12 +456,14 @@ export class InputTilemap extends ItemTilemap {
                             }
                         })
                         this.scene.add.existing(flyItem)
+                        data.pressBlocked = false
                     })
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHarvestCrop, eventMessage)
+                    data.pressBlocked = true
                 }
                 break
             }

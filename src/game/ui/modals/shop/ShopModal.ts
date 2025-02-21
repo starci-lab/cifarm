@@ -1,20 +1,20 @@
 import { ShopContent } from "./ShopContent"
-import { ShopBackground } from "./ShopBackground"
 import { ShopHeader } from "./ShopHeader"
 import { ShopTabs } from "./ShopTabs"
 import { BaseSizerBaseConstructorParams } from "@/game/types"
 import {
     getScreenBottomY,
     getScreenCenterX,
-    getScreenCenterY,
-    getScreenLeftX,
 } from "../../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { IModal } from "@/game/interfaces"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { Background, ModalBackground } from "../../elements"
+import { EventBus, EventName, ModalName } from "@/game/event-bus"
 
 // shop modal extends BaseSizer
 export class ShopModal extends BaseSizer implements IModal {
+    private container: ContainerLite
     private shopContent: ShopContent
     private shopHeader: ShopHeader
     private shopTabs: ShopTabs
@@ -30,39 +30,31 @@ export class ShopModal extends BaseSizer implements IModal {
     }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
-        this.shopBackground = new ShopBackground({
-            scene: this.scene,
-            x: getScreenCenterX(this.scene),
-            y: getScreenBottomY(this.scene),
+        this.container = this.scene.rexUI.add.container(getScreenCenterX(this.scene), getScreenBottomY(this.scene) - 100)
+        this.add(this.container)
+        this.shopBackground = new ModalBackground({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                background: Background.Large,
+                onXButtonPress: () => {
+                    EventBus.emit(EventName.CloseModal, {
+                        modalName: ModalName.Shop
+                    })
+                },
+                title: "Shop",
+            }
         })
         this.scene.add.existing(this.shopBackground)
-        this.add(this.shopBackground)
+        this.container.addLocal(this.shopBackground)
 
         //create the shop content
         this.shopContent = new ShopContent({
             scene: this.scene,
+            y: -100,
         })
-
         this.scene.add.existing(this.shopContent)
-        this.add(this.shopContent)
-
-        // create the shop tabs
-        this.shopTabs = new ShopTabs({
-            scene: this.scene,
-            x: getScreenLeftX(this.scene),
-            y: getScreenCenterY(this.scene) - 600,
-        })
-        this.scene.add.existing(this.shopTabs)
-        this.add(this.shopTabs)
-
-        // create the shop header
-        this.shopHeader = new ShopHeader({
-            scene: this.scene,
-            x: getScreenCenterX(this.scene),
-            y: getScreenCenterY(this.scene) - 500,
-        })
-        
-        this.scene.add.existing(this.shopHeader)
-        this.add(this.shopHeader)
+        this.container.addLocal(this.shopContent)
     }
 }

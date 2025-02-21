@@ -139,6 +139,7 @@ const query = gql`
       growthStageDuration
       growthStages
       price
+      unlockLevel
       premium
       perennialCount
       nextGrowthStageAfterHarvest
@@ -152,6 +153,7 @@ const query = gql`
       id
       displayId
       yieldTime
+      unlockLevel
       offspringPrice
       price
       growthTime

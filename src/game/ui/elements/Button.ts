@@ -12,18 +12,19 @@ export enum ButtonBackground {
 
 export interface ButtonOptions {
     text: string
-    onPress: () => void
+    onPress: (pointer: Phaser.Input.Pointer) => void
     background?: ButtonBackground
     disableInteraction?: boolean
     width?: number
     height?: number
+    fontSize?: number
 }
 export class Button extends Label {
     constructor({ baseParams: { scene, config }, options }: ConstructorParams<LabelBaseConstructorParams, ButtonOptions>) {
         if (!options) {
             throw new Error("Button requires options")
         }
-        const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, height, width } = options
+        const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, height, width, fontSize = 48 } = options
 
         const backgroundKeyMap: Record<ButtonBackground, BaseAssetKey> = {
             [ButtonBackground.Primary]: BaseAssetKey.UICommonButtonRed,
@@ -50,7 +51,7 @@ export class Button extends Label {
             },
             options: {
                 enableStroke: true,
-                fontSize: 48,
+                fontSize,
             }
         })
         scene.add.existing(textObj)
@@ -65,13 +66,14 @@ export class Button extends Label {
             ...config
         })
 
-        this.setInteractive().on("pointerdown", () => {
+        this.setInteractive().on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             onGameObjectPress({
                 gameObject: this,
-                onPress,
+                onPress: () => onPress(pointer),
                 scene: this.scene,
                 disableInteraction
             })
         })
+        this.layout()
     }
 }

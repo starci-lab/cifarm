@@ -362,6 +362,7 @@ export interface PlacedItemObjectData {
     tileY: number
     placedItemType: PlacedItemTypeSchema
     occupiedTiles: Array<Position>
+    pressBlocked?: boolean
 }
 
 export interface CanPlaceItemAtTileParams {

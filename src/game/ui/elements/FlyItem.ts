@@ -28,7 +28,7 @@ export class FlyItem extends Sizer {
             assetKey,
             quantity,
             scale = 1,
-            duration = 500,
+            duration = 2000,
             depth = 1,
             x,
             y,

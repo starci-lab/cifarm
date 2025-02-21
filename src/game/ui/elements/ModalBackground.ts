@@ -16,11 +16,13 @@ export interface ModalBackgroundOptions {
   background: Background;
   title: string;
   onXButtonPress: () => void;
+  tutorialConfig?: () => void;
 }
 export class ModalBackground extends ContainerLite {
     private xButton: Label
     private titleText: BaseText
     private backgroundImage: Phaser.GameObjects.Image
+    
     constructor({
         baseParams: { scene, children, height, width, x, y },
         options,
@@ -33,23 +35,28 @@ export class ModalBackground extends ContainerLite {
         }
         super(scene, x, y, width, height, children)
 
-        const { background, title, onXButtonPress } = options
-        this.backgroundImage = scene.add.image(0, 0, background).setOrigin(0.5, 1)
-        this.add(this.backgroundImage)
+        const { background, title, onXButtonPress, tutorialConfig } = options
+        const backgroundMap: Record<Background, BaseAssetKey> = {
+            [Background.Large]: BaseAssetKey.UIBackgroundLarge,
+            [Background.Medium]: BaseAssetKey.UIBackgroundMedium,
+        }
+        this.backgroundImage = scene.add.image(0, 0, backgroundMap[background]).setOrigin(0.5, 1)
+        this.addLocal(this.backgroundImage)
 
         this.titleText = new BaseText({
             baseParams: {
                 scene,
                 text: title,
                 x: 0,
-                y: 0,
+                y: -(this.backgroundImage.height - 75),
             },
             options: {
+                fontSize: 72,
                 textColor: TextColor.DarkBrown
             }
         })
         this.scene.add.existing(this.titleText)
-        this.add(this.titleText)
+        this.addLocal(this.titleText)
 
         const xButtonImage = scene.add.image(0, 0, BaseAssetKey.UIBackgroundXButton)
         this.xButton = this.scene.rexUI.add.label(
@@ -58,7 +65,7 @@ export class ModalBackground extends ContainerLite {
                 width: xButtonImage.width,
                 height: xButtonImage.height,
             }
-        )
+        ).setPosition(this.backgroundImage.width / 2 - 75, -(this.backgroundImage.height - 75)).layout()
         this.xButton.setInteractive().on("pointerdown", () => {
             onGameObjectPress({
                 gameObject: this.xButton,
@@ -67,6 +74,10 @@ export class ModalBackground extends ContainerLite {
                 scene: this.scene,
             })
         })
-        this.add(this.xButton)
+        this.addLocal(this.xButton)
+
+        if (tutorialConfig) {
+            tutorialConfig()
+        }
     }
 }
