@@ -24,29 +24,23 @@ export enum BaseAssetKey {
     UIBackgroundLarge = "ui-background-large",
     UIBackgroundMedium = "ui-background-medium",
     UIBackgroundXButton = "ui-background-x-button",
+    UIBackgroundXLarge = "ui-background-x-large",
+    UIBackgroundLargeContainer = "ui-background-large-container",
+
+    // Tab
+    UITabFrame = "ui-tab-frame",
+    UITabSlat = "ui-tab-slat",
 
     // Shop Modal
     UIModalShopCard = "ui-modal-shop-card",
     UIModalShopContainer = "ui-modal-shop-container",
     UIModalShopLock = "ui-modal-shop-lock",
     UIModalShopOff = "ui-modal-shop-off",
-    UIModalShopTab = "ui-modal-shop-tab",
-    UIModalShopTabOff = "ui-modal-shop-tab-off",
 
     // Inventory ui-modal
-    UIModalInventoryTopRibbon = "ui-modal-inventory-top-ribbon",
-    UIModalInventoryBtnClose = "ui-modal-inventory-btn-close",
-    UIModalInventoryCell = "ui-modal-inventory-cell",
-    UIModalInventoryCellQuantity = "ui-modal-inventory-cell-quantity",
-    UIModalInventoryBackground = "ui-modal-inventory-background",
-    UIModalInventoryIconTabOn = "ui-modal-inventory-icon-tab-on",
-    UIModalInventoryIconTabOff = "ui-modal-inventory-icon-tab-off",
-    UIModalInventoryIconAnimal = "ui-modal-inventory-icon-animal",
-    UIModalInventoryIconCan = "ui-modal-inventory-icon-can",
-    UIModalInventoryIconCrop = "ui-modal-inventory-icon-crop",
-    UIModalInventoryIconMenu = "ui-modal-inventory-icon-menu",
-    UIModalInventoryIconProduct = "ui-modal-inventory-icon-product",
-    UIModalInventoryIconTile = "ui-modal-inventory-icon-tile",
+    UIModalInventoryChain = "ui-modal-inventory-chain",
+    UIModalInventoryToolbar = "ui-modal-inventory-toolbar",
+    UIModalInventoryToolbarContainer = "ui-modal-inventory-toolbar-container",
 
     // Daily ui-modal
     UIModalDailyWall = "ui-modal-daily-wall",
@@ -96,12 +90,10 @@ export enum BaseAssetKey {
     UIModalNeighborsFrameVisit = "ui-modal-neighbors-frame-visit",
 
     //Common Modal
-    UIModalCommonBackground1 = "ui-modal-common-background-1",
-    UIModalCommonBackground2 = "ui-modal-common-background-2",
     UIModalCommonFrame = "ui-modal-common-frame",
     UIModalCommonThumb = "ui-modal-common-thumb",
     UIModalCommonQuantityFrame = "ui-modal-common-quantity-frame",
-    UIModalCommonRibbon = "ui-modal-common-ribbon",
+    UIModalCommonGrass = "ui-modal-common-grass",
 
     //Common UI
     UICommonNextAvatar = "ui-common-next-avatar",
@@ -160,33 +152,27 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.IconQuest]: "icons/quest.png",
     [BaseAssetKey.IconSetting]: "icons/setting.png",
 
+    // backgrounds
     [BaseAssetKey.UIBackgroundLarge]: "ui/backgrounds/large.png",
     [BaseAssetKey.UIBackgroundMedium]: "ui/backgrounds/medium.png",
     [BaseAssetKey.UIBackgroundXButton]: "ui/backgrounds/x-button.png",
+    [BaseAssetKey.UIBackgroundXLarge]: "ui/backgrounds/xlarge.png",
+    [BaseAssetKey.UIBackgroundLargeContainer]: "ui/backgrounds/large-container.png",
 
+    // tab
+    [BaseAssetKey.UITabFrame]: "ui/tab/frame.png",
+    [BaseAssetKey.UITabSlat]: "ui/tab/slat.png",
 
     // shop UIModals
     [BaseAssetKey.UIModalShopCard]: "ui/modals/shop/card.png",
     [BaseAssetKey.UIModalShopContainer]: "ui/modals/shop/container.png",
     [BaseAssetKey.UIModalShopLock]: "ui/modals/shop/lock.png",
     [BaseAssetKey.UIModalShopOff]: "ui/modals/shop/off.png",
-    [BaseAssetKey.UIModalShopTab]: "ui/modals/shop/tab.png",
-    [BaseAssetKey.UIModalShopTabOff]: "ui/modals/shop/tab-off.png",
 
     // Inventory UIModals
-    [BaseAssetKey.UIModalInventoryTopRibbon]: "ui/modals/inventory/top-ribbon.png",
-    [BaseAssetKey.UIModalInventoryBtnClose]: "ui/modals/inventory/btn-close.png",
-    [BaseAssetKey.UIModalInventoryCell]: "ui/modals/inventory/cell.png",
-    [BaseAssetKey.UIModalInventoryCellQuantity]: "ui/modals/inventory/cell-quantity.png",
-    [BaseAssetKey.UIModalInventoryBackground]: "ui/modals/inventory/background.png",
-    [BaseAssetKey.UIModalInventoryIconTabOn]: "ui/modals/inventory/icon-tab-on.png",
-    [BaseAssetKey.UIModalInventoryIconTabOff]: "ui/modals/inventory/icon-tab-off.png",
-    [BaseAssetKey.UIModalInventoryIconAnimal]: "ui/modals/inventory/icon-animal.png",
-    [BaseAssetKey.UIModalInventoryIconCan]: "ui/modals/inventory/icon-can.png",
-    [BaseAssetKey.UIModalInventoryIconCrop]: "ui/modals/inventory/icon-crop.png",
-    [BaseAssetKey.UIModalInventoryIconMenu]: "ui/modals/inventory/icon-menu.png",
-    [BaseAssetKey.UIModalInventoryIconProduct]: "ui/modals/inventory/icon-product.png",
-    [BaseAssetKey.UIModalInventoryIconTile]: "ui/modals/inventory/icon-tile.png",
+    [BaseAssetKey.UIModalInventoryChain]: "ui/modals/inventory/chain.png",
+    [BaseAssetKey.UIModalInventoryToolbar]: "ui/modals/inventory/toolbar.png",
+    [BaseAssetKey.UIModalInventoryToolbarContainer]: "ui/modals/inventory/toolbar-container.png",
 
     // Daily UIModals
     [BaseAssetKey.UIModalDailyWall]: "ui/modals/daily/wall.png",
@@ -251,14 +237,12 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     //Press here arrow
     [BaseAssetKey.PressHereArrow]: "press-here-arrow.png",
 
-    //Common Modals
-    [BaseAssetKey.UIModalCommonBackground1]: "ui/modals/common/background-1.png",
-    [BaseAssetKey.UIModalCommonBackground2]: "ui/modals/common/background-2.png",
+    //Common UI Modals
     [BaseAssetKey.UIModalCommonFrame]: "ui/modals/common/frame.png",
     [BaseAssetKey.UIModalCommonQuantityFrame]: "ui/modals/common/quantity-frame.png",
     [BaseAssetKey.UIModalCommonThumb]: "ui/modals/common/thumb.png",
-    [BaseAssetKey.UIModalCommonRibbon]: "ui/modals/common/ribbon.png",
-
+    [BaseAssetKey.UIModalCommonGrass]: "ui/modals/common/grass.png",
+    
     //Common UI
     [BaseAssetKey.UICommonNextAvatar]: "ui/common/next-avatar.png",
     [BaseAssetKey.UICommonPrevAvatar]: "ui/common/prev-avatar.png",

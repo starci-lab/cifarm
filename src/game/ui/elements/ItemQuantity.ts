@@ -1,6 +1,5 @@
 import { ConstructorParams, BadgeLabelBaseConstructorParams } from "@/game/types"
 import { BadgeLabel } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { getCellInfo } from "./BaseGridTable"
 import { BaseText } from "./BaseText"
 
 export interface ItemQuantityOptions {
@@ -9,6 +8,7 @@ export interface ItemQuantityOptions {
     quantity?: number
     // show the badge
     showBadge?: boolean
+    // scale the icon
     scale?: number
 }
 
@@ -17,16 +17,16 @@ export class ItemQuantity extends BadgeLabel {
         if (!options) {
             throw new Error("ItemQuantity requires options")
         }
-        const { cellWidth, cellHeight } = getCellInfo(scene)
-        const { assetKey, quantity = 1, scale = 1.2, showBadge = false } = options
-
+        const { assetKey, quantity = 1, showBadge = false, scale = 1 } = options
         // create the icon
         const iconContainer = scene.rexUI.add.container(0, 0)
-        const iconBackground = scene.add.image(0, 0, assetKey)
+        const iconImage = scene.add.image(0, 0, assetKey)
+        const width = iconImage.width * scale
+        const height = iconImage.height * scale
         const icon = scene.rexUI.add.label({
-            background: iconBackground,
-            width: iconBackground.width * scale,
-            height: iconBackground.height * scale,
+            background: iconImage,
+            width,
+            height,
         }).layout()
         iconContainer.addLocal(icon)
 
@@ -54,8 +54,8 @@ export class ItemQuantity extends BadgeLabel {
 
         super(scene, {
             center: iconContainer,
-            width: cellWidth,
-            height: cellHeight,
+            width,
+            height,
             rightBottom: text,
             ...config,
         })

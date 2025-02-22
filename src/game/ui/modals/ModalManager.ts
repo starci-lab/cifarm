@@ -238,7 +238,7 @@ export class ModalManager extends ContainerLite {
             modal.input.enabled = false
         }
         // show the modal
-        modal?.show()?.popUp(SCALE_TIME)
+        modal.show().popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
         this.scene.time.delayedCall(SCALE_TIME, () => {
             if (modal.input) {

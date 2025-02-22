@@ -13,7 +13,16 @@ import {
     tileAssetMap,
 } from "../../../assets"
 import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
-import { BaseText, Button, ButtonBackground, FlyItem } from "../../elements"
+import {
+    Background,
+    BaseTabs,
+    BaseText,
+    Button,
+    ButtonBackground,
+    FlyItem,
+    IconOffsets,
+    ModalBackground,
+} from "../../elements"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
 import {
     AnimalSchema,
@@ -25,13 +34,13 @@ import {
     TileSchema,
     UserSchema,
 } from "@/modules/entities"
-import { defaultShopTab } from "./ShopTabs"
 import {
     CloseModalMessage,
     EventBus,
     EventName,
     ModalName,
     PlacedInprogressMessage,
+    SelectTabMessage,
     ShowPressHereArrowMessage,
 } from "../../../event-bus"
 import { BuySeedsRequest } from "@/modules/axios"
@@ -43,11 +52,16 @@ import { IPaginatedResponse } from "@/modules/apollo"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { calculateUiDepth, UILayer } from "@/game/layers"
+import { tabsConfig } from "./constants"
+import { onGameObjectPress } from "../../utils"
 
 const CELL_SPACE = 25
-
+const defaultShopTab = ShopTab.Seeds
 export class ShopContent extends BaseSizer {
-    private gridTableBackground: Phaser.GameObjects.Image
+    private tabs: BaseTabs
+    private containerBackground: Phaser.GameObjects.Image
+    private contentContainer: ContainerLite
+    private background: ModalBackground
     // list of items
     private gridTableMap: Partial<Record<ShopTab, GridTable>> = {}
     // data
@@ -66,6 +80,7 @@ export class ShopContent extends BaseSizer {
     private user: UserSchema
     private cellWidth: number
     private cellHeight: number
+    private contentWidth: number
     constructor({
         scene,
         height,
@@ -74,10 +89,72 @@ export class ShopContent extends BaseSizer {
         y,
         config,
     }: BaseSizerBaseConstructorParams) {
-        const gridTableBackground = scene.add.image(0, 0, BaseAssetKey.UIModalShopContainer).setOrigin(0.5, 1)
-        super(scene, x, y, width ?? gridTableBackground.width, height ?? gridTableBackground.height, config)
-        this.gridTableBackground = gridTableBackground
-        this.addLocal(gridTableBackground)
+        const shopBackground = new ModalBackground({
+            baseParams: {
+                scene: scene,
+            },
+            options: {
+                background: Background.XLarge,
+                onXButtonPress: () => {
+                    EventBus.emit(EventName.CloseModal, {
+                        modalName: ModalName.Shop
+                    })
+                },
+                title: "Shop",
+            }
+        })
+        const containerBackground = scene.add
+            .image(0, 0, BaseAssetKey.UIModalShopContainer)
+            .setOrigin(0.5, 1)
+        super(
+            scene,
+            x,
+            y,
+            width ?? containerBackground.width,
+            height ?? containerBackground.height,
+            config
+        )
+        this.background = shopBackground
+        this.scene.add.existing(this.background)
+        this.addLocal(this.background)
+
+        // create the container
+        this.contentContainer = scene.rexUI.add.container(0, -100)
+        this.addLocal(this.contentContainer)
+
+        this.containerBackground = containerBackground
+        this.contentContainer.addLocal(containerBackground)
+
+        const cellSourceImage = this.scene.textures
+            .get(BaseAssetKey.UIModalShopCard)
+            .getSourceImage()
+        this.cellWidth = cellSourceImage.width
+        this.cellHeight = cellSourceImage.height
+
+        this.contentWidth = 3 * this.cellWidth + 2 * CELL_SPACE
+
+        this.tabs = new BaseTabs({
+            baseParams: {
+                scene,
+                width: this.contentWidth,
+                y: -(this.containerBackground.height - 200),
+            },
+            options: {
+                tabs: Object.values(ShopTab).map((tab) => ({
+                    tabKey: tab,
+                    iconKey: tabsConfig[tab].iconKey,
+                    scale: tabsConfig[tab].scale,
+                    offsets: tabsConfig[tab].offsets,
+                })),
+                name: ShopContent.name,
+                defaultTab: defaultShopTab,
+                tabsX: -this.contentWidth / 2,
+                tabsY: 0,
+            },
+        })
+        this.scene.add.existing(this.tabs)
+        this.contentContainer.addLocal(this.tabs)
+
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
         this.animals = this.animals.filter((animal) => animal.availableInShop)
@@ -92,11 +169,9 @@ export class ShopContent extends BaseSizer {
             (building) => building.availableInShop
         )
 
-        const cellSourceImage = this.scene.textures.get(BaseAssetKey.UIModalShopCard).getSourceImage()
-        this.cellWidth = cellSourceImage.width
-        this.cellHeight = cellSourceImage.height
-
-        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+        const { data } = this.scene.cache.obj.get(
+            CacheKey.Inventories
+        ) as IPaginatedResponse<InventorySchema>
         this.inventories = data
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.user = this.scene.cache.obj.get(CacheKey.User)
@@ -109,9 +184,15 @@ export class ShopContent extends BaseSizer {
 
         //this.layout()
         // listen for the select shop tab event
-        this.scene.events.on(EventName.SelectShopTab, (shopTab: ShopTab) => {
-            this.onShopTabSelected(shopTab)
-        })
+        this.scene.events.on(
+            EventName.SelectTab,
+            ({ name, tabKey }: SelectTabMessage<ShopTab>) => {
+                if (name !== ShopContent.name) {
+                    return
+                }
+                this.onShopTabSelected(tabKey)
+            }
+        )
 
         this.scene.events.once(EventName.TutorialShopButtonPressed, async () => {
             // wait for the scale time
@@ -132,7 +213,10 @@ export class ShopContent extends BaseSizer {
                 scene: this.scene,
                 inventories: this.inventories,
             })
-            if (inventory && inventory.quantity > this.defaultInfo.defaultSeedQuantity) {
+            if (
+                inventory &&
+        inventory.quantity > this.defaultInfo.defaultSeedQuantity
+            ) {
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
                 return
             }
@@ -150,7 +234,7 @@ export class ShopContent extends BaseSizer {
                 targetPosition: {
                     x: this.defaultSeedButton.x + 40,
                     y: this.defaultSeedButton.y + 40,
-                }
+                },
             }
             this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
@@ -158,11 +242,12 @@ export class ShopContent extends BaseSizer {
         EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
             this.user = user
         })
+
+        this.layout()
     }
 
     private disableDefaultScroller() {
-        const defaultScrollablePanel =
-      this.gridTableMap[this.selectedShopTab]
+        const defaultScrollablePanel = this.gridTableMap[this.selectedShopTab]
         if (!defaultScrollablePanel) {
             throw new Error("Default scrollable panel is not found")
         }
@@ -171,8 +256,7 @@ export class ShopContent extends BaseSizer {
     }
 
     private enableDefaultScroller() {
-        const defaultScrollablePanel =
-      this.gridTableMap[this.selectedShopTab]
+        const defaultScrollablePanel = this.gridTableMap[this.selectedShopTab]
         if (!defaultScrollablePanel) {
             throw new Error("Default scrollable panel is not found")
         }
@@ -183,8 +267,7 @@ export class ShopContent extends BaseSizer {
     // handle the selected shop tab
     private onShopTabSelected(shopTab: ShopTab) {
     // hide the previous scrollable panel
-        const previousGridTable =
-      this.gridTableMap[this.selectedShopTab]
+        const previousGridTable = this.gridTableMap[this.selectedShopTab]
         if (!previousGridTable) {
             throw new Error("Previous grid table is not found")
         }
@@ -201,7 +284,7 @@ export class ShopContent extends BaseSizer {
     }
 
     private updateGridTable(shopTab: ShopTab) {
-        // get the item cards
+    // get the item cards
         const items = this.createItems(shopTab)
         if (this.gridTableMap[shopTab]) {
             this.gridTableMap[shopTab].setItems(items)
@@ -209,50 +292,80 @@ export class ShopContent extends BaseSizer {
             return
         }
         // create a sizer to hold all the item cards
-        const gridTable = this.scene.rexUI.add.gridTable({
-            x: 0,
-            y: 0,
-            originY: 1,
-            height: 920,
-            width: 3 * this.cellWidth + 2 * CELL_SPACE,
-            scrollMode: 0,
-            table: {
-                cellWidth: this.cellWidth + CELL_SPACE,
-                cellHeight: this.cellHeight + CELL_SPACE,
-                columns: 3,
-                mask: {
-                    padding: 1,
+        const gridTable = this.scene.rexUI.add
+            .gridTable({
+                x: 0,
+                y: 0,
+                originY: 1,
+                height: 920,
+                width: 3 * this.cellWidth + 2 * CELL_SPACE,
+                scrollMode: 0,
+                table: {
+                    cellWidth: this.cellWidth + CELL_SPACE,
+                    cellHeight: this.cellHeight + CELL_SPACE,
+                    columns: 3,
+                    mask: {
+                        padding: 1,
+                    },
                 },
-            },
-            createCellContainerCallback: (cell, cellContainer) => {
-                if (cellContainer === null) {
-                    if (!cellContainer) {
-                        cellContainer = this.scene.rexUI.add.sizer({ orientation: "y" }).setDepth(MODAL_DEPTH_1 + 1)
-                        const  _cellContainer = cellContainer as Sizer
-                        const params = cell.item as CreateItemCardParams
-                        const itemCard = this.createItemCard(params)
-                        if (params.defaultSeed) {
-                            this.defaultItemCard = itemCard
-                            this.defaultSeedButton = itemCard.getChildren()[2] as Label
-                        }
-                        if (params.prepareCloseShop) {
-                            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                                restoreTutorialDepth({
-                                    gameObject: itemCard,
-                                    scene: this.scene,
-                                })
-                                this.scene.events.emit(EventName.TutorialPrepareCloseShop)
+                createCellContainerCallback: (cell, cellContainer) => {
+                    if (cellContainer === null) {
+                        if (!cellContainer) {
+                            cellContainer = this.scene.rexUI.add
+                                .sizer({ orientation: "y" })
+                                .setDepth(MODAL_DEPTH_1 + 1)
+                            const _cellContainer = cellContainer as Sizer
+                            const params = cell.item as ExtendedCreateItemCardParams
+                            const itemCard = this.createItemCard(params)
+                            if (params.defaultSeed) {
+                                this.defaultItemCard = itemCard
+                                this.defaultSeedButton = itemCard.getChildren()[2] as Label
                             }
+                            if (params.prepareCloseShop) {
+                                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                                    restoreTutorialDepth({
+                                        gameObject: itemCard,
+                                        scene: this.scene,
+                                    })
+                                    this.scene.events.emit(EventName.TutorialPrepareCloseShop)
+                                }
+                            }
+                            _cellContainer.add(itemCard).setDepth(MODAL_DEPTH_1 + 1)
+                            cellContainer.setData(CellKey.Data, params)
                         }
-                        _cellContainer.add(itemCard).setDepth(MODAL_DEPTH_1 + 1)
                     }
+                    return cellContainer
+                },
+                items,
+            })
+            .layout()
+
+        gridTable.on(
+            "cell.click",
+            (
+                cellContainer: ContainerLite,
+                _: number,
+                pointer: Phaser.Input.Pointer
+            ) => {
+                const { onPress, locked } = cellContainer.getData(CellKey.Data) as ExtendedCreateItemCardParams
+                const button = (
+          cellContainer.getChildren()[0] as ContainerLite
+        ).getChildren()[2] as Button
+                // check if clicked on the button
+                if (!locked && button.getBounds().contains(pointer.x, pointer.y)) {
+                    onGameObjectPress({
+                        gameObject: button,
+                        onPress: () => {
+                            onPress(pointer)
+                        },
+                        scene: this.scene,
+                    })
                 }
-                return cellContainer
-            },
-            items,
-        }).layout()
+            }
+        )
+
         this.gridTableMap[shopTab] = gridTable
-        this.addLocal(gridTable)
+        this.contentContainer.addLocal(gridTable)
 
         // hide the grid table if it is not the default shop tab
         if (shopTab !== this.selectedShopTab) {
@@ -268,17 +381,23 @@ export class ShopContent extends BaseSizer {
     }
 
     //create item cards based on the shop tab
-    private createItems(shopTab: ShopTab = defaultShopTab) {
+    private createItems(
+        shopTab: ShopTab = defaultShopTab
+    ): Array<ExtendedCreateItemCardParams> {
     //list of item cards
-        const items: Array<CreateItemCardParams> = []
+        const items: Array<ExtendedCreateItemCardParams> = []
         switch (shopTab) {
         case ShopTab.Seeds: {
             for (const { displayId, price } of this.crops) {
                 // get the image
                 items.push({
                     assetKey: cropAssetMap[displayId].seed.textureConfig.key,
-                    locked: !this.checkUnlock(this.crops.find(crop => crop.displayId === displayId)?.unlockLevel),
-                    unlockLevel: this.crops.find(crop => crop.displayId === displayId)?.unlockLevel,
+                    locked: !this.checkUnlock(
+                        this.crops.find((crop) => crop.displayId === displayId)
+                            ?.unlockLevel
+                    ),
+                    unlockLevel: this.crops.find((crop) => crop.displayId === displayId)
+                        ?.unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
                         EventBus.once(EventName.BuySeedsCompleted, () => {
                             // refresh user & inventories
@@ -295,9 +414,9 @@ export class ShopContent extends BaseSizer {
                                     quantity: 1,
                                     depth: calculateUiDepth({
                                         layer: UILayer.Overlay,
-                                        layerDepth: 1
-                                    })
-                                }
+                                        layerDepth: 1,
+                                    }),
+                                },
                             })
                             this.scene.add.existing(flyItem)
                         })
@@ -319,7 +438,8 @@ export class ShopContent extends BaseSizer {
             for (const { displayId, price } of this.animals) {
                 // get the image
                 items.push({
-                    assetKey: animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    assetKey:
+              animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
                     onPress: () => {
                         console.log("Clicked on animal", displayId)
                     },
@@ -425,11 +545,10 @@ export class ShopContent extends BaseSizer {
         assetKey,
         iconOffset,
         price,
-        onPress,
         scaleX = 1,
         scaleY = 1,
         unlockLevel,
-        locked = false
+        locked = false,
     }: CreateItemCardParams) {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
@@ -440,11 +559,16 @@ export class ShopContent extends BaseSizer {
             0,
             BaseAssetKey.UIModalShopCard
         )
-        const container = this.scene.rexUI.add
-            .container(0, 0, cardBackground.width, cardBackground.height,
-            )
+        const container = this.scene.rexUI.add.container(
+            0,
+            0,
+            cardBackground.width,
+            cardBackground.height
+        )
         container.addLocal(cardBackground)
-        const icon = this.scene.add.image(x, y - 40, assetKey).setScale(scaleX, scaleY)
+        const icon = this.scene.add
+            .image(x, y - 40, assetKey)
+            .setScale(scaleX, scaleY)
         container.addLocal(icon)
         // create button
         const buttonPrice = new Button({
@@ -452,44 +576,56 @@ export class ShopContent extends BaseSizer {
                 scene: this.scene,
             },
             options: {
-                onPress,
+                //onPress,
                 text: `$${price ?? 0}`,
                 background: ButtonBackground.Secondary,
                 disableInteraction: false,
                 height: 100,
                 width: 200,
-            }
-        }).setPosition(0, 90).setScale(0.8)
+            },
+        })
+            .setPosition(0, 90)
+            .setScale(0.8)
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
 
         if (locked) {
             const off = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopOff)
-            const lockContainer = this.scene.rexUI.add.container(0,0, off.width, off.height)
+            const lockContainer = this.scene.rexUI.add.container(
+                0,
+                0,
+                off.width,
+                off.height
+            )
 
-            const lock = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopLock).setOrigin(0,0)
+            const lock = this.scene.add
+                .image(0, 0, BaseAssetKey.UIModalShopLock)
+                .setOrigin(0, 0)
             const lockText = new BaseText({
                 baseParams: {
                     scene: this.scene,
                     text: `Lv. ${unlockLevel}`,
                     x: 0,
-                    y: 0
+                    y: 0,
                 },
                 options: {
-                    fontSize: 32
-                }
+                    fontSize: 32,
+                },
             }).setOrigin(0.5, 0)
             this.scene.add.existing(lockText)
             lockContainer.addLocal(off)
-            const lockLabel = this.scene.rexUI.add.label({
-                icon: lock,
-                text: lockText,
-                space: {
-                    icon: 10,
-                },
-                originX: 0,
-                originY: 0,
-            }).layout().setPosition(-(off.width/2-15), -(off.height/2-15))
+            const lockLabel = this.scene.rexUI.add
+                .label({
+                    icon: lock,
+                    text: lockText,
+                    space: {
+                        icon: 10,
+                    },
+                    originX: 0,
+                    originY: 0,
+                })
+                .layout()
+                .setPosition(-(off.width / 2 - 15), -(off.height / 2 - 15))
             lockContainer.addLocal(lockLabel)
             container.addLocal(lockContainer)
             if (buttonPrice.input) {
@@ -507,8 +643,6 @@ export interface CreateItemCardParams {
   iconOffset?: IconOffsets;
   // price
   price?: number;
-  // on click event
-  onPress: (pointer: Phaser.Input.Pointer) => void;
   // scale X
   scaleX?: number;
   // scale Y
@@ -518,12 +652,15 @@ export interface CreateItemCardParams {
   // level unlock
   unlockLevel?: number;
   // prepare close shop
-  prepareCloseShop?: boolean
+  prepareCloseShop?: boolean;
   // default seed
-  defaultSeed?: boolean
+  defaultSeed?: boolean;
 }
 
-export interface IconOffsets {
-  x?: number;
-  y?: number;
+export interface ExtendedCreateItemCardParams extends CreateItemCardParams {
+  onPress: (pointer: Phaser.Input.Pointer) => void;
+}
+
+export enum CellKey {
+  Data = "data",
 }

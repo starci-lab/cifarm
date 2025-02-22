@@ -11,6 +11,7 @@ import { onGameObjectPress } from "../utils"
 export enum Background {
   Large = "large",
   Medium = "medium",
+  XLarge = "xlarge",
 }
 export interface ModalBackgroundOptions {
   background: Background;
@@ -33,14 +34,16 @@ export class ModalBackground extends ContainerLite {
         if (!options) {
             throw new Error("ModalBackground requires options")
         }
-        super(scene, x, y, width, height, children)
-
+        
         const { background, title, onXButtonPress, tutorialConfig } = options
         const backgroundMap: Record<Background, BaseAssetKey> = {
             [Background.Large]: BaseAssetKey.UIBackgroundLarge,
             [Background.Medium]: BaseAssetKey.UIBackgroundMedium,
+            [Background.XLarge]: BaseAssetKey.UIBackgroundXLarge,
         }
-        this.backgroundImage = scene.add.image(0, 0, backgroundMap[background]).setOrigin(0.5, 1)
+        const backgroundImage = scene.add.image(0, 0, backgroundMap[background]).setOrigin(0.5, 1)
+        super(scene, x, y, width ?? backgroundImage.width, height ?? backgroundImage.height, children)
+        this.backgroundImage = backgroundImage
         this.addLocal(this.backgroundImage)
 
         this.titleText = new BaseText({

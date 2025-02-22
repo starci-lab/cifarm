@@ -12,7 +12,7 @@ export enum ButtonBackground {
 
 export interface ButtonOptions {
     text: string
-    onPress: (pointer: Phaser.Input.Pointer) => void
+    onPress?: (pointer: Phaser.Input.Pointer) => void
     background?: ButtonBackground
     disableInteraction?: boolean
     width?: number
@@ -65,15 +65,16 @@ export class Button extends Label {
             space: { top: 5, bottom: 25, left: 5, right: 5 },
             ...config
         })
-
-        this.setInteractive().on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-            onGameObjectPress({
-                gameObject: this,
-                onPress: () => onPress(pointer),
-                scene: this.scene,
-                disableInteraction
+        if (onPress) {
+            this.setInteractive().on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+                onGameObjectPress({
+                    gameObject: this,
+                    onPress: () => onPress(pointer),
+                    scene: this.scene,
+                    disableInteraction
+                })
             })
-        })
+        }
         this.layout()
     }
 }

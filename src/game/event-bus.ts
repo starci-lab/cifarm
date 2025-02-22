@@ -7,8 +7,9 @@ export const EventBus = new Events.EventEmitter()
 
 // events
 export enum EventName {
+    Dragging = "dragging",
+    DragEnd = "dragend",
     // Between Phaser and React
-
     // send authenticate event, from Phaser to React
     Authenticate = "authenticate",
     // send authenticated event, from React to Phaser
@@ -51,7 +52,7 @@ export enum EventName {
     // open shop
     OpenShop = "open_shop",
     CloseShop = "close_shop",
-    SelectShopTab = "select_shop_tab",
+    SelectTab = "select_tab",
 
     // modal events
     OpenModal = "open_modal",
@@ -311,4 +312,9 @@ export interface CloseModalMessage {
 
 export interface UpdateInputQuantityModalMessage {
     inventory: InventorySchema
+}
+
+export interface SelectTabMessage<T = string> {
+    name: string
+    tabKey: T
 }

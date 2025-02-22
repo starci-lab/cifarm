@@ -6,8 +6,6 @@ import {
     BaseGridTable,
     ItemQuantity,
     BaseGridTableFrame,
-    CellInfo,
-    getCellInfo,
     RibbonTitle,
 } from "../../../elements"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
@@ -28,7 +26,6 @@ export class SelectProductContent extends BaseSizer {
     private ribbonTitle: Label
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private gridTable: BaseGridTable<InventorySchema> | undefined
-    private cellInfo: CellInfo
     private gridMap: Record<number, ItemQuantity> = {}
     private inventories: Array<InventorySchema> = []
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
@@ -44,7 +41,6 @@ export class SelectProductContent extends BaseSizer {
         this.addLocal(this.background)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
-        this.cellInfo = getCellInfo(this.scene)
 
         this.ribbonTitle = new RibbonTitle({
             baseParams: {
