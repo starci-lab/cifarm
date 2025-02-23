@@ -15,13 +15,14 @@ import {
 import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 import {
     Background,
-    BaseTabs,
     BaseText,
     Button,
     ButtonBackground,
+    ContainerType,
     FlyItem,
     IconOffsets,
     ModalBackground,
+    XButton,
 } from "../../elements"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
 import {
@@ -53,14 +54,12 @@ import { IPaginatedResponse } from "@/modules/apollo"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { calculateUiDepth, UILayer } from "@/game/layers"
-import { tabsConfig } from "./constants"
+import { ITEM_DATA_KEY, tabsConfig } from "./constants"
 import { onGameObjectPress } from "../../utils"
 
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
 export class ShopContent extends BaseSizer {
-    private tabs: BaseTabs
-    private containerBackground: Phaser.GameObjects.Image
     private contentContainer: ContainerLite
     private background: ModalBackground
     // list of items
@@ -89,13 +88,31 @@ export class ShopContent extends BaseSizer {
         y,
         config,
     }: BaseSizerBaseConstructorParams) {
-        const background = new ModalBackground({
+        super(
+            scene,
+            x,
+            y,
+            width,
+            height,
+            config
+        )
+
+        
+        const cellSourceImage = this.scene.textures
+            .get(BaseAssetKey.UIModalShopCard)
+            .getSourceImage()
+        this.cellWidth = cellSourceImage.width
+        this.cellHeight = cellSourceImage.height
+
+        this.contentWidth = 3 * this.cellWidth + 2 * CELL_SPACE
+
+        this.background = new ModalBackground({
             baseParams: {
                 scene: scene,
             },
             options: {
                 background: Background.XLarge,
-                onXButtonPress: (xButton: Label) => {
+                onXButtonPress: (xButton: XButton) => {
                     EventBus.emit(EventName.CloseModal, {
                         modalName: ModalName.Shop
                     })
@@ -105,64 +122,37 @@ export class ShopContent extends BaseSizer {
                             gameObject: xButton,
                             scene,
                         })
-                        this.enableDefaultScroller()
                         this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
                         this.scene.events.emit(EventName.HidePressHereArrow)
                     }
                 },
                 title: "Shop",
+                tabs: {
+                    options: {
+                        tabs: Object.values(ShopTab).map((tab) => ({
+                            tabKey: tab,
+                            iconKey: tabsConfig[tab].iconKey,
+                            scale: tabsConfig[tab].scale,
+                            offsets: tabsConfig[tab].offsets,
+                        })),
+                        name: ShopContent.name,
+                        defaultTab: defaultShopTab,
+                        tabsX: -this.contentWidth / 2,
+                        tabsY: 0,
+                    },
+                    width: this.contentWidth,
+                },
+                container: {
+                    type: ContainerType.Dark
+                }
             }
         })
-        const containerBackground = scene.add
-            .image(0, 0, BaseAssetKey.UIModalShopContainer)
-            .setOrigin(0.5, 1)
-        super(
-            scene,
-            x,
-            y,
-            width ?? containerBackground.width,
-            height ?? containerBackground.height,
-            config
-        )
-        this.background = background
+        this.scene.add.existing(this.background)
         this.scene.add.existing(this.background)
         this.add(this.background)
         // create the container
         this.contentContainer = scene.rexUI.add.container(0, -100)
         this.add(this.contentContainer)
-
-        this.containerBackground = containerBackground
-        this.contentContainer.addLocal(containerBackground)
-
-        const cellSourceImage = this.scene.textures
-            .get(BaseAssetKey.UIModalShopCard)
-            .getSourceImage()
-        this.cellWidth = cellSourceImage.width
-        this.cellHeight = cellSourceImage.height
-
-        this.contentWidth = 3 * this.cellWidth + 2 * CELL_SPACE
-
-        this.tabs = new BaseTabs({
-            baseParams: {
-                scene,
-                width: this.contentWidth,
-                y: -(this.containerBackground.height - 200),
-            },
-            options: {
-                tabs: Object.values(ShopTab).map((tab) => ({
-                    tabKey: tab,
-                    iconKey: tabsConfig[tab].iconKey,
-                    scale: tabsConfig[tab].scale,
-                    offsets: tabsConfig[tab].offsets,
-                })),
-                name: ShopContent.name,
-                defaultTab: defaultShopTab,
-                tabsX: -this.contentWidth / 2,
-                tabsY: 0,
-            },
-        })
-        this.scene.add.existing(this.tabs)
-        this.contentContainer.addLocal(this.tabs)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -204,8 +194,7 @@ export class ShopContent extends BaseSizer {
         )
 
         // set the tutorial depth
-        scene.events.once(EventName.TutorialPrepareCloseShop, async () => {
-            await sleep(SCALE_TIME)
+        scene.events.once(EventName.TutorialPrepareCloseShop, () => {
             setTutorialDepth({
                 gameObject: this.background.xButton,
                 scene,
@@ -230,8 +219,6 @@ export class ShopContent extends BaseSizer {
             if (!this.defaultItemCard) {
                 throw new Error("Default item card is not found")
             }
-            // disable the default scroller
-            this.disableDefaultScroller()
 
             const inventory = getFirstSeedInventory({
                 cropId: this.defaultInfo.defaultCropId,
@@ -271,24 +258,6 @@ export class ShopContent extends BaseSizer {
         EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
             this.user = user
         })
-    }
-
-    private disableDefaultScroller() {
-        const defaultScrollablePanel = this.gridTableMap[this.selectedShopTab]
-        if (!defaultScrollablePanel) {
-            throw new Error("Default scrollable panel is not found")
-        }
-        defaultScrollablePanel.setMouseWheelScrollerEnable(false)
-        defaultScrollablePanel.setScrollerEnable(false)
-    }
-
-    private enableDefaultScroller() {
-        const defaultScrollablePanel = this.gridTableMap[this.selectedShopTab]
-        if (!defaultScrollablePanel) {
-            throw new Error("Default scrollable panel is not found")
-        }
-        defaultScrollablePanel.setMouseWheelScrollerEnable(true)
-        defaultScrollablePanel.setScrollerEnable(true)
     }
 
     // handle the selected shop tab
@@ -349,7 +318,7 @@ export class ShopContent extends BaseSizer {
                                 this.defaultSeedButton = itemCard.getChildren()[2] as Label
                             }
                             _cellContainer.add(itemCard).setDepth(MODAL_DEPTH_1 + 1)
-                            cellContainer.setData(CellKey.Data, params)
+                            cellContainer.setData(ITEM_DATA_KEY, params)
                         }
                     }
                     return cellContainer
@@ -365,7 +334,7 @@ export class ShopContent extends BaseSizer {
                 _: number,
                 pointer: Phaser.Input.Pointer
             ) => {
-                const { onPress, locked } = cellContainer.getData(CellKey.Data) as ExtendedCreateItemCardParams
+                const { onPress, locked } = cellContainer.getData(ITEM_DATA_KEY) as ExtendedCreateItemCardParams
                 const button = (
           cellContainer.getChildren()[0] as ContainerLite
         ).getChildren()[2] as Button
@@ -693,8 +662,4 @@ export interface CreateItemCardParams {
 
 export interface ExtendedCreateItemCardParams extends CreateItemCardParams {
   onPress: (pointer: Phaser.Input.Pointer) => void;
-}
-
-export enum CellKey {
-  Data = "data",
 }

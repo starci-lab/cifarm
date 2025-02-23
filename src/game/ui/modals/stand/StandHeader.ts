@@ -23,7 +23,7 @@ export class StandHeader extends ContainerLite {
                 scene: this.scene,
                 config: {
                     x: this.header.width/2 - 50, 
-                    y: 90,
+                    y: 120,
                 }
             },
             options: {

@@ -5,7 +5,7 @@ import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseText, Button, ButtonBackground, NumberInput } from "../../../elements"
+import { Background, BaseText, Button, ButtonBackground, ContainerType, ModalBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverProductRequest } from "@/modules/axios"
 import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
@@ -13,7 +13,7 @@ import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 const LABEL_SCALE = 1.5
 
 export class InputQuantityContent extends BaseSizer {
-    private background: Phaser.GameObjects.Image
+    private background: ModalBackground
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private productLabel: Label
     private nameText: BaseText
@@ -26,7 +26,30 @@ export class InputQuantityContent extends BaseSizer {
     constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
-        this.background = this.scene.add.image(0, 0, BaseAssetKey.UIModalCommonBackground2)
+        this.background = new ModalBackground({
+            baseParams: {
+                scene: this.scene,
+                x: 0,
+                y: 0,
+                width,
+                height,
+            },
+            options: {
+                container: {
+                    type: ContainerType.Light,
+                },
+                originY: 0.5,
+                background: Background.Small,
+                title: "Quantity",
+                titleFontSize: 48,
+                onXButtonPress: () => {
+                    EventBus.emit(EventName.CloseModal, {
+                        modalName: ModalName.InputQuantity,
+                    })
+                },
+            }
+        })
+        this.scene.add.existing(this.background)
         this.addLocal(this.background)
 
         const frame = this.scene.add.image(0, 0, BaseAssetKey.UIModalCommonFrame)
@@ -124,8 +147,8 @@ export class InputQuantityContent extends BaseSizer {
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
-        this.scene.events.on(EventName.UpdateInputQuantityModal, (message: UpdateInputQuantityModalMessage) => {
-            this.render(message.inventory)
+        this.scene.events.on(EventName.UpdateInputQuantityModal, ({ inventory }: UpdateInputQuantityModalMessage) => {
+            this.render(inventory)
         })
     }
 

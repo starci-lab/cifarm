@@ -120,7 +120,7 @@ export enum EventName {
     TutorialOpenRoadsideStandResponsed = "tutorial_open_roadside_stand_responsed",
     TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
-    TutorialInventorySeedMoveToToolbar = "tutorial_inventory_seed_move_to_toolbar",
+    TutorialPrepareCloseInventory = "tutorial_prepare_close_inventory",
     TutorialPlantSeeds = "tutorial_plant_seeds",
     TutorialSeedsPressed = "tutorial_seeds_pressed",
     TutorialScythePressed = "tutorial_scythe_pressed",

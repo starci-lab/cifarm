@@ -5,8 +5,6 @@ import { InventoryToolbar } from "./InventoryToolbar"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { InventoryStorage } from "./InventoryStorage"
 
-export const CELL_SIZE = 135
-
 export class InventoryModal extends BaseSizer {
     //private inventoryContent: InventoryContent
     private inventoryToolbar: InventoryToolbar

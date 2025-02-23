@@ -23,9 +23,11 @@ export enum BaseAssetKey {
     // UI Backgrounds
     UIBackgroundLarge = "ui-background-large",
     UIBackgroundMedium = "ui-background-medium",
-    UIBackgroundXButton = "ui-background-x-button",
     UIBackgroundXLarge = "ui-background-x-large",
     UIBackgroundLargeContainer = "ui-background-large-container",
+    UIBackgroundSmallContainer = "ui-background-small-container",
+    UIBackgroundSmall = "ui-background-small",
+    UIBackgroundXLargeDarkContainer = "ui-background-xlarge-dark-container",
 
     // Tab
     UITabFrame = "ui-tab-frame",
@@ -33,7 +35,6 @@ export enum BaseAssetKey {
 
     // Shop Modal
     UIModalShopCard = "ui-modal-shop-card",
-    UIModalShopContainer = "ui-modal-shop-container",
     UIModalShopLock = "ui-modal-shop-lock",
     UIModalShopOff = "ui-modal-shop-off",
 
@@ -155,9 +156,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     // backgrounds
     [BaseAssetKey.UIBackgroundLarge]: "ui/backgrounds/large.png",
     [BaseAssetKey.UIBackgroundMedium]: "ui/backgrounds/medium.png",
-    [BaseAssetKey.UIBackgroundXButton]: "ui/backgrounds/x-button.png",
     [BaseAssetKey.UIBackgroundXLarge]: "ui/backgrounds/xlarge.png",
     [BaseAssetKey.UIBackgroundLargeContainer]: "ui/backgrounds/large-container.png",
+    [BaseAssetKey.UIBackgroundSmallContainer]: "ui/backgrounds/small-container.png",
+    [BaseAssetKey.UIBackgroundSmall]: "ui/backgrounds/small.png",
+    [BaseAssetKey.UIBackgroundXLargeDarkContainer]: "ui/backgrounds/xlarge-dark-container.png",
 
     // tab
     [BaseAssetKey.UITabFrame]: "ui/tab/frame.png",
@@ -165,7 +168,6 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
 
     // shop UIModals
     [BaseAssetKey.UIModalShopCard]: "ui/modals/shop/card.png",
-    [BaseAssetKey.UIModalShopContainer]: "ui/modals/shop/container.png",
     [BaseAssetKey.UIModalShopLock]: "ui/modals/shop/lock.png",
     [BaseAssetKey.UIModalShopOff]: "ui/modals/shop/off.png",
 

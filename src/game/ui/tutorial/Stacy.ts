@@ -259,12 +259,6 @@ export class Stacy extends ContainerLite {
                         this.showHelpDialog("Move the seeds from storage to toolbar.")
                     }
                 )
-                this.scene.events.once(
-                    EventName.TutorialInventorySeedMoveToToolbar,
-                    () => {
-                        //EventBus.emit(EventName.RequestUpdateTutorial)
-                    }
-                )
                 this.scene.events.once(EventName.TutorialCloseInventoryButtonPressed, () => {
                     EventBus.emit(EventName.RequestUpdateTutorial)
                 })

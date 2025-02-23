@@ -1,6 +1,8 @@
-import { BaseAssetKey, cropAssetMap } from "@/game/assets";
+import { BaseAssetKey, cropAssetMap } from "@/game/assets"
 import { ShopTab, ShopTabData } from "./types"
 import { CropId } from "@/modules/entities"
+
+export const ITEM_DATA_KEY = "item-data"
 
 export const tabsConfig: Record<ShopTab, ShopTabData> = {
     [ShopTab.Seeds]: {
