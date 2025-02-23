@@ -2,7 +2,7 @@ import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "../../constants"
 import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
-import { ContainerLiteBaseConstructorParams } from "../../types"
+import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
 import { NeighborsModal } from "./neighbors"
@@ -173,7 +173,7 @@ export class ModalManager extends ContainerLite {
     }
 
     private checkTutorialActive() {
-        return false
+        return this.scene.cache.obj.get(CacheKey.TutorialActive)
     }
 
     private getModal(name: ModalName) {

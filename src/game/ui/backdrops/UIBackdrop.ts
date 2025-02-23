@@ -19,7 +19,7 @@ export class UIBackdrop extends ContainerLite {
                 gameWidth,
                 gameHeight,
                 BLACK_COLOR,
-                0.5
+                0.75
             )
             .setInteractive()
         this.add(this.backdrop)

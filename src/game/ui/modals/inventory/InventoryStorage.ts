@@ -7,35 +7,41 @@ import {
 } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
-    GridSizer,
-    Sizer,
+    Label,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { getFirstSeedInventory, getStorageInventories } from "@/game/queries"
-import { BaseGridTable, ItemQuantity, BaseGridTableFrame, ModalBackground, Background } from "../../elements"
+import {
+    BaseGridTable,
+    ItemQuantity,
+    BaseGridTableFrame,
+    ModalBackground,
+    Background,
+} from "../../elements"
 import {
     CloseModalMessage,
     EventBus,
     EventName,
     ModalName,
+    RequestStorageInventoryIndexMessage,
+    RequestToolbarInventoryIndexMessage,
     ShowPressHereArrowMessage,
 } from "@/game/event-bus"
 import { setTutorialDepth } from "../../tutorial"
 import { IPaginatedResponse } from "@/modules/apollo"
-import { MODAL_DEPTH_1 } from "../ModalManager"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "@/game/constants"
 import { CELL_SIZE } from "./InventoryModal"
+import { MoveInventoryRequest } from "@/modules/axios"
+import { CELL_STORAGE_DATA_KEY } from "./constants"
+import { DragItemParams } from "./types"
+import { getDepth } from "./utils"
 
 // part of the inventory that holds the inventory items
 export class InventoryStorage extends BaseSizer {
     private background: ModalBackground
     // grid storage & toolbar
-    private storageGridTable: BaseGridTable<InventorySchema | null> | undefined
-    private toolbarGridSizer: GridSizer | undefined
+    private gridTable: BaseGridTable<InventorySchema | null> | undefined
     private inventorySeedMoveToToolbar = false
-    // zones
-    private toolbarZones: Array<Zone> = []
-
     // items
     private items: Record<string, ItemQuantity> = {}
 
@@ -70,7 +76,7 @@ export class InventoryStorage extends BaseSizer {
                     EventBus.emit(EventName.CloseModal, eventMessage)
                 },
                 title: "Inventory",
-            }
+            },
         })
         this.addLocal(this.background)
         // Load inventories from cache
@@ -80,25 +86,32 @@ export class InventoryStorage extends BaseSizer {
         this.inventories = data
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
-        this.updateStorageGridTable()
+        this.updateGridTable()
 
         EventBus.on(
             EventName.InventoriesRefreshed,
             ({ data }: IPaginatedResponse<InventorySchema>) => {
                 this.inventories = data
-                this.updateStorageGridTable()
+                this.updateGridTable()
             }
         )
 
-        this.scene.events.once(EventName.TutorialInventoryButtonPressed, async () => {
-            await sleep(SCALE_TIME)
-            this.enableTutorial = true
-            this.highlightCell()
+        this.scene.events.once(
+            EventName.TutorialInventoryButtonPressed,
+            async () => {
+                await sleep(SCALE_TIME)
+                this.enableTutorial = true
+                this.highlightCell()
+            }
+        )
+
+        this.scene.events.on(EventName.RequestStorageInventoryIndex, ({ pointer }: RequestStorageInventoryIndexMessage) => {
+            this.scene.events.emit(EventName.StorageInventoryIndexResponsed,  this.getPositionIndex(pointer))
         })
     }
 
     private highlightCell() {
-        // get the label that 
+    // get the label that
         const inventory = getFirstSeedInventory({
             inventories: this.inventories,
             scene: this.scene,
@@ -115,11 +128,11 @@ export class InventoryStorage extends BaseSizer {
         setTutorialDepth({
             gameObject: cell,
             scene: this.scene,
-            storeDepth: false
+            storeDepth: false,
         })
 
-        const { x,y } = cell.getCenter()
-        
+        const { x, y } = cell.getCenter()
+
         const eventMessage: ShowPressHereArrowMessage = {
             rotation: 45,
             originPosition: {
@@ -137,40 +150,48 @@ export class InventoryStorage extends BaseSizer {
     }
 
     private disableScroller() {
-        this.storageGridTable?.setScrollerEnable(false)
-        this.storageGridTable?.setMouseWheelScrollerEnable(false)
+        this.gridTable?.setScrollerEnable(false)
+        this.gridTable?.setMouseWheelScrollerEnable(false)
     }
 
     private enableScroller() {
-        this.storageGridTable?.setScrollerEnable(true)
-        this.storageGridTable?.setMouseWheelScrollerEnable(true)
+        this.gridTable?.setScrollerEnable(true)
+        this.gridTable?.setMouseWheelScrollerEnable(true)
     }
 
-    private handleUpdateStorageGridTable() {
+    private handleUpdateGridTable() {
         const items = this.getStorageItems()
-        if (this.storageGridTable) {
-            this.storageGridTable.setItems(items)
-            this.storageGridTable.layout()
-            return this.storageGridTable
+        if (this.gridTable) {
+            this.gridTable.setItems(items)
+            this.gridTable.layout()
+            return this.gridTable
         }
         // create number of
-        this.storageGridTable = new BaseGridTable<InventorySchema | null>({
+        this.gridTable = new BaseGridTable<InventorySchema | null>({
             baseParams: {
                 scene: this.scene,
                 config: {
                     x: 0,
                     y: -100,
                     originY: 1,
-                }
+                },
             },
             options: {
                 createCellContainerCallback: (cell, cellContainer) => {
-                    const background = new BaseGridTableFrame({ scene: this.scene, x: 0, y: 0 })
+                    const background = new BaseGridTableFrame({
+                        scene: this.scene,
+                        x: 0,
+                        y: 0,
+                    })
                     this.scene.add.existing(background)
                     if (cellContainer === null) {
-                        let gridTableCell: ItemQuantity | undefined
+                        let itemQuantity: ItemQuantity | undefined
                         if (cell.item) {
-                            const { quantity, inventoryType: inventoryTypeId } = cell.item as InventorySchema
+                            const {
+                                quantity,
+                                inventoryType: inventoryTypeId,
+                                id,
+                            } = cell.item as InventorySchema
                             const inventoryType = this.inventoryTypes.find(
                                 (inventoryType) => inventoryType.id === inventoryTypeId
                             )
@@ -179,7 +200,7 @@ export class InventoryStorage extends BaseSizer {
                                     `Inventory type not found for inventory id: ${inventoryTypeId}`
                                 )
                             }
-                            gridTableCell = new ItemQuantity({
+                            itemQuantity = new ItemQuantity({
                                 baseParams: {
                                     scene: this.scene,
                                     config: {
@@ -188,43 +209,151 @@ export class InventoryStorage extends BaseSizer {
                                     },
                                 },
                                 options: {
-                                    assetKey: inventoryTypeAssetMap[inventoryType?.displayId].textureConfig.key,
+                                    assetKey:
+                    inventoryTypeAssetMap[inventoryType?.displayId]
+                        .textureConfig.key,
                                     quantity,
-                                    showBadge: true,
-                                }
+                                    showBadge: inventoryType.stackable,
+                                },
                             })
+                            this.items[id] = itemQuantity
                         }
                         if (!cellContainer) {
-                            cellContainer = this.scene.rexUI.add.sizer({ orientation: "y" })
-                            const _cellContainer = cellContainer as Sizer
-                            _cellContainer.add(
-                                this.scene.rexUI.add
-                                    .label({
-                                        width: background.width,
-                                        height: background.height,
-                                        background,
-                                        icon: gridTableCell,
-                                    })
-                                    .setDepth(
-                                        MODAL_DEPTH_1 + 1
-                                    )
-                            )
+                            cellContainer = this.scene.rexUI.add
+                                .label({
+                                    width: CELL_SIZE,
+                                    height: CELL_SIZE,
+                                    background,
+                                    icon: itemQuantity,
+                                })
+                                .setDepth(getDepth(this.scene, 1))
+                                .layout()
                         }
-                    //add separator
-                    //const separator = cellContainer.getElement("separator")
                     }
+                    cellContainer.setData(CELL_STORAGE_DATA_KEY, cell.item)
                     return cellContainer
                 },
                 items,
-            }
+            },
         }).layout()
+        this.gridTable.on(
+            "cell.pressstart",
+            (
+                cellContainer: Label,
+            ) => {
+                const itemQuantity = cellContainer.getElement("icon") as ItemQuantity
+                if (!itemQuantity) {
+                    throw new Error("Item quantity not found")
+                }
+                // disable the scroller
+                this.disableScroller()
+                if (this.scene.rexUI.isInTouching(itemQuantity)) {
+                    // detach from the parent
+                    const dragItem = itemQuantity.duplicate()
+                    const parent = itemQuantity.getParent()
+                    if (!parent) {
+                        throw new Error("Parent not found")
+                    }
+                    parent.remove(itemQuantity, true)
+                    const depth = getDepth(this.scene, 2)
+                    dragItem.setDepth(depth)
+                    this.scene.rexUI.add.drag(dragItem).drag()
+                    dragItem.on("dragend", (pointer: Phaser.Input.Pointer) => {
+                        if (!itemQuantity) {
+                            throw new Error("Badge label not found")
+                        }
+                        const depth = getDepth(this.scene, 1)
+                        dragItem.setDepth(depth)
+                        if (!this.gridTable) {
+                            throw new Error("Storage grid table not found")
+                        }
+                        this.dragItem({
+                            item: dragItem,
+                            pointer,
+                            data: cellContainer.getData(CELL_STORAGE_DATA_KEY) as InventorySchema,
+                        })
+                    })
+                }
+            }
+        )
 
-        this.scene.add.existing(this.storageGridTable)
-        this.addLocal(this.storageGridTable)
-        return this.storageGridTable
+        this.scene.add.existing(this.gridTable)
+        this.addLocal(this.gridTable)
+        return this.gridTable
     }
-    private updateStorageGridTable() {
-        const result = this.handleUpdateStorageGridTable()
+
+    // -1 indicate not found
+    private getPositionIndex(pointer: Phaser.Input.Pointer) {
+        if (!this.gridTable) {
+            throw new Error("Storage grid table not found")
+        }
+        for (let index = 0; index < this.gridTable.items.length; index++) {
+            const indexedCellContainer = this.gridTable.getCellContainer(
+                index
+            ) as Label
+            if (
+                indexedCellContainer &&
+        (indexedCellContainer as Label)
+            .getBounds()
+            .contains(pointer.x, pointer.y)
+            ) {
+                return index
+            }
+        }
+        return -1
+    }
+
+    private async dragItem({ item, pointer, data }: DragItemParams) {
+        let isTool = false
+        let index = this.getPositionIndex(pointer)
+        if (index === -1) {
+            // Wrap the event in a Promise to use async/await
+            index = await new Promise<number>((resolve) => {
+                this.scene.events.once(EventName.ToolbarInventoryIndexResponsed, (result: number) => {
+                    if (result !== -1) {
+                        isTool = true
+                    }
+                    resolve(result) // Resolve the promise with the result
+                })
+                
+                const eventMessage: RequestToolbarInventoryIndexMessage = {
+                    pointer
+                }
+                // Emit the event to request the toolbar inventory index
+                this.scene.events.emit(EventName.RequestToolbarInventoryIndex, eventMessage)
+            })
+        }
+        if (index !== -1) {
+            EventBus.once(EventName.MoveInventoryCompleted, () => {
+                if (!item) {
+                    throw new Error("Badge label not found")
+                }
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                // if (isTool) {
+                //     this.inventorySeedMoveToToolbar = true
+                //     this.enableTutorial = false
+                // }
+                }
+                //  destroy the badge label
+                item.destroy()
+                EventBus.emit(EventName.RefreshInventories)
+            })
+            const eventMessage: MoveInventoryRequest = {
+                index,
+                isTool,
+                inventoryId: data.id,
+            }
+            EventBus.emit(EventName.RequestMoveInventory, eventMessage)
+        } else {
+            //  destroy the badge label
+            item.destroy()
+            this.updateGridTable()
+        }
+        this.enableScroller()
+    }
+
+    private updateGridTable() {
+        const result = this.handleUpdateGridTable()
         // if finalized
         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
             if (this.inventorySeedMoveToToolbar) {
@@ -251,123 +380,6 @@ export class InventoryStorage extends BaseSizer {
         return result
     }
 
-    // private createCell(inventory: InventorySchema) {
-    //     const inventoryType = this.inventoryTypes.find(
-    //         (inventoryType) => inventoryType.id === inventory.inventoryType
-    //     )
-    //     if (!inventoryType) {
-    //         throw new Error(
-    //             `Inventory type not found for inventory id: ${inventory.inventoryType}`
-    //         )
-    //     }
-    //     const {
-    //         textureConfig: { key },
-    //     } = inventoryTypeAssetMap[inventoryType.displayId]
-            
-    //     const cell = new ItemQuantity({
-    //         baseParams: {
-    //             scene: this.scene,
-    //         },
-    //         options: {
-    //             assetKey: key,
-    //             quantity: inventory.quantity,
-    //             showBadge: inventoryType.stackable,
-    //         },
-    //     })
-    //     this.items[inventory.id] = cell
-    //     this.scene.add.existing(cell)
-    //     cell.setInteractive()
-
-    //     // allow the drag
-    //     this.scene.rexUI.add.drag(cell)
-    //     let original: Phaser.Geom.Point
-
-    //     // set depth
-    //     cell.on("dragstart", () => {
-    //         if (!cell) {
-    //             throw new Error("Badge label not found")
-    //         }
-    //         original = cell.getCenter()
-    //         const depth = this.scene.cache.obj.get(CacheKey.TutorialActive) ? HIGHLIGH_DEPTH : MODAL_BACKDROP_DEPTH_1 + 4
-    //         cell.setDepth(
-    //             depth
-    //         )
-    //     })
-    //     cell.on("dragend", (pointer: Phaser.Input.Pointer) => {
-    //         if (!cell) {
-    //             throw new Error("Badge label not found")
-    //         }
-    //         const depth = this.scene.cache.obj.get(CacheKey.TutorialActive) ? HIGHLIGH_DEPTH : MODAL_BACKDROP_DEPTH_1 + 2
-    //         cell.setDepth(
-    //             depth
-    //         )
-
-    //         // index of the inventory
-    //         let index = -1
-    //         let isTool = true
-
-    //         // check if the badge label is inside the toolbar
-    //         const zone = this.toolbarZones.find((zone) =>
-    //             (zone.object as ContainerLite)
-    //                 .getBounds()
-    //                 .contains(pointer.x, pointer.y)
-    //         )
-    //         if (zone) {
-    //             //console.log(zone)
-    //             // return the badge label to the original position
-    //             index = zone.index
-    //         } else {
-    //             if (!this.storageGridTable) {
-    //                 throw new Error("Storage grid table not found")
-    //             }
-    //             for (let i = 0; i < this.storageGridTable.items.length; i++) {
-    //                 const cellContainer = this.storageGridTable.getCellContainer(i)
-    //                 if (
-    //                     cellContainer &&
-    //           (cellContainer as ContainerLite)
-    //               .getBounds()
-    //               .contains(pointer.x, pointer.y)
-    //                 ) {
-    //                     index = i
-    //                     isTool = false
-    //                     break
-    //                 }
-    //             }
-    //         }
-
-    //         if (index === -1) {
-    //             //console.log(zone)
-    //             // return the badge label to the original position
-    //             cell.setPosition(original.x, original.y)
-    //             return
-    //         }
-
-    //         // call api to move the inventory
-    //         const eventMessage: MoveInventoryRequest = {
-    //             index,
-    //             isTool,
-    //             inventoryId: inventory.id,
-    //         }
-    //         EventBus.once(EventName.MoveInventoryCompleted, () => {
-    //             if (!cell) {
-    //                 throw new Error("Badge label not found")
-    //             }
-    //             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-    //                 if (isTool) {
-    //                     this.inventorySeedMoveToToolbar = true
-    //                     this.enableTutorial = false
-    //                 }
-    //             }
-    //             //  dtroy the badge label
-    //             const parent = cell.getParent()
-    //             parent.remove(cell, true)
-    //             EventBus.emit(EventName.RefreshInventories)
-    //         })
-    //         EventBus.emit(EventName.RequestMoveInventory, eventMessage)
-    //     })
-    //     return cell
-    // }
-
     private getStorageItems() {
         const result: Array<InventorySchema | null> = []
         // filter all inventories based on the selected tab
@@ -384,11 +396,4 @@ export class InventoryStorage extends BaseSizer {
         }
         return result
     }
-
-    
-}
-
-interface Zone {
-  index: number;
-  object: Phaser.GameObjects.GameObject;
 }
