@@ -295,6 +295,7 @@ export enum ModalName {
   Neighbors = "neighbors",
   SelectProduct = "select-product",
   InputQuantity = "input-quantity",
+  AnimalHousing = "animal-housing",
 }
 
 export interface OpenModalMessage {
@@ -302,6 +303,8 @@ export interface OpenModalMessage {
     modalName: ModalName
     // show tutorial backdrop
     showTutorialBackdrop?: boolean
+    // placed item id
+    placedItemId?: string
 }
 
 export interface CloseModalMessage {

@@ -1,6 +1,6 @@
-import { BaseAssetKey, cropAssetMap } from "@/game/assets";
+import { animalAssetMap, buildingAssetMap, cropAssetMap, tileAssetMap } from "@/game/assets"
+import { AnimalId, BuildingId, CropId, TileId } from "@/modules/entities"
 import { ShopTab, ShopTabData } from "./types"
-import { CropId } from "@/modules/entities"
 
 export const tabsConfig: Record<ShopTab, ShopTabData> = {
     [ShopTab.Seeds]: {
@@ -12,45 +12,51 @@ export const tabsConfig: Record<ShopTab, ShopTabData> = {
         }
     },
     [ShopTab.Animals]: {
-        iconKey: BaseAssetKey.UIModalShopIconAnimal,
+        iconKey: animalAssetMap[AnimalId.Cow].ages.baby.textureConfig.key,
         offsets: {
             x: 40,
             y: -20,
-        }
+        },
+        scale: 0.7
     },
     [ShopTab.Buildings]: {
-        iconKey: BaseAssetKey.UIModalShopIconTree,
+        iconKey: buildingAssetMap[BuildingId.Coop].textureConfig.key,
         offsets: {
             x: 80,
             y: -40,
-        }
+        },
+        scale: 0.3
     },
     [ShopTab.Tiles]: {
-        iconKey: BaseAssetKey.ModalShopIconTile,
+        iconKey: tileAssetMap[TileId.BasicTile1].textureConfig.key,
         offsets: {
             x: 80,
             y: -40,
-        }
+        },
+        scale: 0.8
     },
     [ShopTab.Trees]: {
-        iconKey: BaseAssetKey.UIModalShopIconTree,
+        iconKey: tileAssetMap[TileId.BasicTile1].textureConfig.key,
         offsets: {
             x: 80,
             y: -40,
-        }
+        },
+        scale: 0.8
     },
     [ShopTab.Decorations]: {
-        iconKey: BaseAssetKey.UIModalShopIconTree,
+        iconKey: tileAssetMap[TileId.BasicTile1].textureConfig.key,
         offsets: {
             x: 80,
             y: -40,
-        }
+        },
+        scale: 0.8
     },
     [ShopTab.Others]: {
-        iconKey: BaseAssetKey.UIModalShopIconTree,
+        iconKey: tileAssetMap[TileId.BasicTile1].textureConfig.key,
         offsets: {
             x: 80,
             y: -40,
-        }
+        },
+        scale: 0.8
     },
 }
