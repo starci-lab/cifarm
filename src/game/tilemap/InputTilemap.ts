@@ -167,8 +167,11 @@ export class InputTilemap extends ItemTilemap {
                 // eslint-disable-next-line no-case-declarations
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.AnimalHousing,
-                    placedItemId: data.object.currentPlacedItem?.id,
                 }
+
+                //Set cache
+                this.scene.cache.obj.add(CacheKey.ActivePlacedItem, data.object.currentPlacedItem)
+
                 EventBus.emit(EventName.OpenModal, eventMessage)
                 break
             }
@@ -531,6 +534,8 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Temporary place item data not found")
         }
         const { tilesetConfig } = this.temporaryPlaceItemData
+
+        console.log("http://localhost:3000/play", this.temporaryPlaceItemData)
         const tileset = this.getTileset(tilesetConfig.tilesetName)
         if (!tileset) {
             throw new Error("Tileset not found")

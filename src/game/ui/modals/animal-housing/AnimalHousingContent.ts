@@ -5,15 +5,17 @@ import {
     EventName,
     ModalName
 } from "../../../event-bus"
-import { BaseSizerBaseConstructorParams } from "../../../types"
+import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import {
     Background,
     ModalBackground
 } from "../../elements"
+import { PlacedItemSchema } from "@/modules/entities"
 
 export class AnimalHousingContent extends BaseSizer {
     private contentContainer: ContainerLite
     private background: ModalBackground
+    private placedItemBuilding: PlacedItemSchema
 
     constructor({
         scene,
@@ -23,6 +25,15 @@ export class AnimalHousingContent extends BaseSizer {
         y,
         config,
     }: BaseSizerBaseConstructorParams) {
+        super(
+            scene,
+            x,
+            y,
+            width ?? 0,
+            height ?? 0,
+            config
+        )
+
         const animalHousingBackground = new ModalBackground({
             baseParams: {
                 scene: scene,
@@ -31,21 +42,17 @@ export class AnimalHousingContent extends BaseSizer {
                 background: Background.XLarge,
                 onXButtonPress: () => {
                     EventBus.emit(EventName.CloseModal, {
-                        modalName: ModalName.Shop,
+                        modalName: ModalName.AnimalHousing,
                     })
                 },
                 title: "Barn",
             }
         })
         
-        super(
-            scene,
-            x,
-            y,
-            width ?? animalHousingBackground.width,
-            height ?? animalHousingBackground.height,
-            config
-        )
+        this.placedItemBuilding = scene.cache.obj.get(CacheKey.ActivePlacedItemId) as PlacedItemSchema
+
+        console.log("placedItemBuildingplacedItemBuilding", this.placedItemBuilding)
+
         this.background = animalHousingBackground
         this.scene.add.existing(this.background)
         this.addLocal(this.background)

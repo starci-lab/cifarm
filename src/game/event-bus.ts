@@ -200,6 +200,9 @@ export enum EventName {
 
     Visit = "visit",
     Return = "return",
+
+    RefreshActivePlacedItem = "refresh_active_placed_item",
+    ActivePlacedItemRefreshed = "active_placed_item_refreshed",
 }
 
 export interface OpenTutorialMessage {
@@ -303,8 +306,6 @@ export interface OpenModalMessage {
     modalName: ModalName
     // show tutorial backdrop
     showTutorialBackdrop?: boolean
-    // placed item id
-    placedItemId?: string
 }
 
 export interface CloseModalMessage {

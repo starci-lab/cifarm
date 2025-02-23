@@ -237,6 +237,8 @@ export class ShopContent extends BaseSizer {
                 },
             }
             this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+
+            // EventBus.on(EventName.RefreshActivePlacedItem)
         })
 
         EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
@@ -441,7 +443,17 @@ export class ShopContent extends BaseSizer {
                     assetKey:
               animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
                     onPress: () => {
-                        console.log("Clicked on animal", displayId)
+                        // close the modal
+                        const eventMessage: CloseModalMessage = {
+                            modalName: ModalName.Shop,
+                        }
+                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        // then turn on the building mode
+                        const message: PlacedInprogressMessage = {
+                            id: displayId,
+                            type: PlacedItemType.Animal,
+                        }
+                        EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
                 })

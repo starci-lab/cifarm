@@ -23,4 +23,5 @@ export enum CacheKey {
     DeliveryIndex = "delivery-index",
     TutorialDepth = "tutorial-depth",
     VisitedNeighbor = "visited-neighbor",
+    ActivePlacedItemId = "active-placed-item-id",
 }

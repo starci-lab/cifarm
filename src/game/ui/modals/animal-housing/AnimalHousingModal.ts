@@ -26,6 +26,5 @@ export class AnimalHousingModal extends BaseSizer {
         })
         this.scene.add.existing(this.animalHousingContent)
         this.add(this.animalHousingContent)
-
     }
 }

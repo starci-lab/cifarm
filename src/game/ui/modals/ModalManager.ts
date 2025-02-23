@@ -3,14 +3,14 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "../../constants"
 import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
 import { ContainerLiteBaseConstructorParams } from "../../types"
+import { getScreenCenterX, getScreenCenterY } from "../utils"
+import { AnimalHousingModal } from "./animal-housing"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
 import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
-import { getScreenCenterX, getScreenCenterY } from "../utils"
-import { AnimalHousingModal } from "./animal-housing"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,

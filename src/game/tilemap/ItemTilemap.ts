@@ -8,7 +8,7 @@ import {
     PlacedItemTypeSchema,
     TileId,
 } from "@/modules/entities"
-import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
+import { animalAssetMap, buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
 import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
@@ -79,6 +79,23 @@ export abstract class ItemTilemap extends GroundTilemap {
                 ...value.tilesetConfig,
             })
         }
+
+        // create tilesets for all animal assets
+        for (const [, value] of Object.entries(animalAssetMap)) {
+            for (const [age, ageValue] of Object.entries(value.ages)) {
+                this.createSingleTileTileset({
+                    key: ageValue.textureConfig.key,
+                    ...ageValue.tilesetConfig
+                })
+
+                console.log({
+                    age: age,
+                    key: ageValue.textureConfig.key,
+                    ...ageValue.tilesetConfig
+                })
+            }
+        }
+
     }
 
     // methods to handle changes in the placed items
