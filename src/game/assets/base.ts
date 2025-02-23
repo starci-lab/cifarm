@@ -27,8 +27,11 @@ export enum BaseAssetKey {
     UIBackgroundLargeContainer = "ui-background-large-container",
     UIBackgroundSmallContainer = "ui-background-small-container",
     UIBackgroundSmall = "ui-background-small",
-    UIBackgroundXLargeDarkContainer = "ui-background-xlarge-dark-container",
-
+    UIBackgroundXLargeWrapperContainer = "ui-background-xlarge-wrapper-container",
+    UIBackgroundXXLarge = "ui-background-xx-large",
+    UIBackgroundXXLargeTabContainer = "ui-background-xx-large-tab-container",
+    UIBackgroundLargeWrapperContainer = "ui-background-large-wrapper-container",
+    UIBackgroundXXLargeWrapperContainer = "ui-background-xx-large-wrapper-container",
     // Tab
     UITabFrame = "ui-tab-frame",
     UITabSlat = "ui-tab-slat",
@@ -89,6 +92,8 @@ export enum BaseAssetKey {
     UIModalNeighborsIconAdd = "ui-modal-neighbors-icon-add",
     UIModalNeighborsIconHome = "ui-modal-neighbors-icon-home",
     UIModalNeighborsFrameVisit = "ui-modal-neighbors-frame-visit",
+    UIModalNeighborsTabWorld = "ui-modal-neighbors-tab-world",
+    UIModalNeighborsTabFollowees = "ui-modal-neighbors-tab-followees",
 
     //Common Modal
     UIModalCommonFrame = "ui-modal-common-frame",
@@ -160,7 +165,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIBackgroundLargeContainer]: "ui/backgrounds/large-container.png",
     [BaseAssetKey.UIBackgroundSmallContainer]: "ui/backgrounds/small-container.png",
     [BaseAssetKey.UIBackgroundSmall]: "ui/backgrounds/small.png",
-    [BaseAssetKey.UIBackgroundXLargeDarkContainer]: "ui/backgrounds/xlarge-dark-container.png",
+    [BaseAssetKey.UIBackgroundXLargeWrapperContainer]: "ui/backgrounds/xlarge-wrapper-container.png",
+    [BaseAssetKey.UIBackgroundXXLarge]: "ui/backgrounds/xxlarge.png",
+    [BaseAssetKey.UIBackgroundXXLargeTabContainer]: "ui/backgrounds/xxlarge-tab-container.png",
+    [BaseAssetKey.UIBackgroundLargeWrapperContainer]: "ui/backgrounds/large-wrapper-container.png",
+    [BaseAssetKey.UIBackgroundXXLargeWrapperContainer]: "ui/backgrounds/xxlarge-wrapper-container.png",
 
     // tab
     [BaseAssetKey.UITabFrame]: "ui/tab/frame.png",
@@ -220,6 +229,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalNeighborsIconAdd]: "ui/modals/neighbors/icon-add.png",
     [BaseAssetKey.UIModalNeighborsIconHome]: "ui/modals/neighbors/icon-home.png",
     [BaseAssetKey.UIModalNeighborsFrameVisit]: "ui/modals/neighbors/frame-visit.png",
+    [BaseAssetKey.UIModalNeighborsTabWorld]: "ui/modals/neighbors/tab-world.png",
+    [BaseAssetKey.UIModalNeighborsTabFollowees]: "ui/modals/neighbors/tab-followees.png",
 
     //Topbar
     [BaseAssetKey.TopbarHeader]: "topbar/header.png",

@@ -19,7 +19,6 @@ import {
     XButton,
     CellSize,
     getCellSize,
-    ContainerType,
 } from "../../elements"
 import {
     CloseModalMessage,
@@ -67,7 +66,8 @@ export class InventoryStorage extends BaseSizer {
             options: {
                 background: Background.Large,
                 container: {
-                    type: ContainerType.Light
+                    showWrapperContainer: true,
+                    showContainer: true
                 },
                 onXButtonPress: (xButton: XButton) => {
                     const eventMessage: CloseModalMessage = {
@@ -203,7 +203,7 @@ export class InventoryStorage extends BaseSizer {
                     width: this.background.containerImage.width, 
                     height: this.background.containerImage.height,
                     originY: 1,
-                    y: this.background.containerOffsetY
+                    y: this.background.wrapperContainerOffsetY
                 },
             },
             options: {

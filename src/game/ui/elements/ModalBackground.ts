@@ -14,25 +14,25 @@ export enum Background {
   Medium = "medium",
   XLarge = "xlarge",
   Small = "small",
-}
-
-export enum ContainerType {
-    Light = "light",
-    Dark = "dark",
+  XXLarge = "xxlarge",
 }
 
 export interface BackgroundData {
     backgroundAssetKey: BaseAssetKey
     containerAssetKey?: BaseAssetKey
-    darkContainerAssetKey?: BaseAssetKey
+    wrapperContainerAssetKey?: BaseAssetKey
+    tabContainerAssetKey?: BaseAssetKey
     containerOffsetY?: number
+    containerToWrapperOffsetY?: number
 }
 
 const map: Record<Background, BackgroundData> = {
     [Background.Large]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundLarge,
         containerAssetKey: BaseAssetKey.UIBackgroundLargeContainer,
-        containerOffsetY: -100,
+        wrapperContainerAssetKey: BaseAssetKey.UIBackgroundLargeWrapperContainer,
+        containerOffsetY: -80,
+        containerToWrapperOffsetY: -10,
     },
     [Background.Medium]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundMedium,
@@ -40,7 +40,7 @@ const map: Record<Background, BackgroundData> = {
     },
     [Background.XLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXLarge,
-        darkContainerAssetKey: BaseAssetKey.UIBackgroundXLargeDarkContainer,
+        wrapperContainerAssetKey: BaseAssetKey.UIBackgroundXLargeWrapperContainer,
         // containerAssetKey: BaseAssetKey.UIBackgroundXLargeContainer,
         containerOffsetY: -100,
     },
@@ -48,6 +48,12 @@ const map: Record<Background, BackgroundData> = {
         backgroundAssetKey: BaseAssetKey.UIBackgroundSmall,
         containerAssetKey: BaseAssetKey.UIBackgroundSmallContainer,
         containerOffsetY: 20,
+    },
+    [Background.XXLarge]: {
+        backgroundAssetKey: BaseAssetKey.UIBackgroundXXLarge,
+        tabContainerAssetKey: BaseAssetKey.UIBackgroundXXLargeTabContainer,
+        wrapperContainerAssetKey: BaseAssetKey.UIBackgroundXXLargeWrapperContainer,
+        containerOffsetY: -100,
     },
 }
 
@@ -58,11 +64,13 @@ export interface ModalBackgroundOptions {
   originY?: number;
   titleFontSize?: number;
   container?: {
-    type: ContainerType;
+    showWrapperContainer?: boolean;
+    showContainer?: boolean;
   },
   tabs?: {
     width: number;
     options: BaseTabsOptions
+    tabContainerOffsetY?: number
   }
 }
 export class ModalBackground extends ContainerLite {
@@ -72,8 +80,13 @@ export class ModalBackground extends ContainerLite {
     private uiContainer: ContainerLite
     public container: ContainerLite | undefined
     public containerImage: Phaser.GameObjects.Image | undefined
+    public wrapperContainer: ContainerLite | undefined
+    public wrapperContainerImage: Phaser.GameObjects.Image | undefined
     private tabs: BaseTabs | undefined
+    public tabContainer: ContainerLite | undefined
+    public tabContainerImage: Phaser.GameObjects.Image | undefined
     public containerOffsetY: number
+    public wrapperContainerOffsetY: number
     constructor({
         baseParams: { scene, children, height, width, x, y },
         options,
@@ -86,23 +99,50 @@ export class ModalBackground extends ContainerLite {
         }
         const { background, title, onXButtonPress, originY = 1, titleFontSize = 48, container: containerConfig, tabs: tabsConfig } = options
         super(scene, x, y, width, height, children)
-        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, darkContainerAssetKey } = map[background]
+        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
         this.containerOffsetY = containerOffsetY
+        this.wrapperContainerOffsetY = containerToWrapperOffsetY
         this.backgroundImage = this.scene.add.image(0, 0, backgroundAssetKey).setOrigin(0.5, originY)
         this.uiContainer = this.scene.rexUI.add.container(0, 0)
         this.addLocal(this.uiContainer)
         this.uiContainer.addLocal(this.backgroundImage)
 
         if (containerConfig) {
-            const { type } = containerConfig
-            const assetKey = type === ContainerType.Dark ? darkContainerAssetKey : containerAssetKey
-            if (!assetKey) {
-                throw new Error("ContainerAssetKey is required")
+            const { showContainer = true, showWrapperContainer = true } = containerConfig
+            if (showWrapperContainer) {
+                if (!wrapperContainerAssetKey) {
+                    throw new Error("WrapperContainerAssetKey is required")
+                }
+                this.wrapperContainerImage = this.scene.add.image(0, 0, wrapperContainerAssetKey).setOrigin(0.5, originY)
+                this.wrapperContainer = this.scene.rexUI.add.container(0, containerOffsetY)
+                this.wrapperContainer.addLocal(this.wrapperContainerImage)
+                this.uiContainer.addLocal(this.wrapperContainer)
+            } 
+            if (showContainer) {
+                if (tabsConfig) {
+                    if (!tabContainerAssetKey) {
+                        throw new Error("TabContainerAssetKey is required")
+                    }
+                    this.tabContainerImage = this.scene.add.image(0, 0, tabContainerAssetKey).setOrigin(0.5, originY)
+                    this.tabContainer = this.scene.rexUI.add.container(0, containerToWrapperOffsetY)
+                    this.tabContainer.addLocal(this.tabContainerImage)
+                    this.wrapperContainer?.addLocal(this.tabContainer)
+                }
+                else {
+                    if (!containerAssetKey) {
+                        throw new Error("ContainerAssetKey is required")
+                    }
+                    this.containerImage = this.scene.add.image(0, 0, containerAssetKey).setOrigin(0.5, originY)
+                    const container = this.wrapperContainer || this.uiContainer
+                    this.container = this.scene.rexUI.add.container(0, containerToWrapperOffsetY)
+                    if (!this.wrapperContainer) {
+                        this.container.setOrigin(0.5, originY).setY(containerOffsetY)
+                    }
+                    this.container.addLocal(this.containerImage)
+                    container.addLocal(this.container)
+                }
+                
             }
-            this.containerImage = this.scene.add.image(0, 0, assetKey).setOrigin(0.5, originY).setY(containerOffsetY)
-            this.container = this.scene.rexUI.add.container(0, 0)
-            this.container.addLocal(this.containerImage)
-            this.uiContainer.addLocal(this.container)
         }
 
         if (tabsConfig) {

@@ -18,7 +18,6 @@ import {
     BaseText,
     Button,
     ButtonBackground,
-    ContainerType,
     FlyItem,
     IconOffsets,
     ModalBackground,
@@ -143,7 +142,8 @@ export class ShopContent extends BaseSizer {
                     width: this.contentWidth,
                 },
                 container: {
-                    type: ContainerType.Dark
+                    showWrapperContainer: true,
+                    showContainer: false,
                 }
             }
         })
@@ -151,8 +151,8 @@ export class ShopContent extends BaseSizer {
         this.scene.add.existing(this.background)
         this.add(this.background)
         // create the container
-        this.contentContainer = scene.rexUI.add.container(0, -100)
-        this.add(this.contentContainer)
+        this.contentContainer = scene.rexUI.add.container(0, 0)
+        this.background.wrapperContainer?.addLocal(this.contentContainer)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -291,7 +291,7 @@ export class ShopContent extends BaseSizer {
         const gridTable = this.scene.rexUI.add
             .gridTable({
                 x: 0,
-                y: 0,
+                y: -50,
                 originY: 1,
                 height: 920,
                 width: 3 * this.cellWidth + 2 * CELL_SPACE,

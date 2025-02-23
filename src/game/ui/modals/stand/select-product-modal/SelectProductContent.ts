@@ -9,7 +9,6 @@ import {
     XButton,
     CellSize,
     getCellSize,
-    ContainerType,
 } from "../../../elements"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { getProductInventories } from "../../../../queries"
@@ -50,7 +49,8 @@ export class SelectProductContent extends BaseSizer {
             options: {
                 originY: 0.5,
                 container: {
-                    type: ContainerType.Light,
+                    showContainer: true,
+                    showWrapperContainer: false,
                 },
                 background: Background.Small,
                 onXButtonPress: (xButton: XButton) => {

@@ -7,12 +7,3 @@ export enum ShopTab {
     Decorations = "Decorations",
     Others = "Others",
 }
-
-export interface ShopTabData {
-    iconKey: string,
-    offsets?: {
-        x: number,
-        y: number,
-    },
-    scale?: number,
-}

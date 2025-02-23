@@ -1,22 +1,19 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../../types"
-import { CloseModalMessage, EventBus, EventName, ModalName, UpdateInputQuantityModalMessage } from "@/game/event-bus"
+import { CloseModalMessage, EventBus, EventName, ModalName, UpdateInputQuantityModalMessage } from "../../../../event-bus"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { Background, BaseText, Button, ButtonBackground, ContainerType, ModalBackground, NumberInput } from "../../../elements"
+import { Background, Button, ButtonBackground, ModalBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverProductRequest } from "@/modules/axios"
 import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
-
-const LABEL_SCALE = 1.5
 
 export class InputQuantityContent extends BaseSizer {
     private background: ModalBackground
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private productLabel: Label
-    private nameText: BaseText
     private quantity = 1
     private numberInput: NumberInput
     private iconContainer: ContainerLite
@@ -36,7 +33,8 @@ export class InputQuantityContent extends BaseSizer {
             },
             options: {
                 container: {
-                    type: ContainerType.Light,
+                    showContainer: true,
+                    showWrapperContainer: false,
                 },
                 originY: 0.5,
                 background: Background.Small,
@@ -59,33 +57,15 @@ export class InputQuantityContent extends BaseSizer {
             width: frame.width,
             height: frame.height,
             align: "center",
-            originY: 1,
-            //y: 200,
             icon: this.iconContainer, 
-        }).layout().setScale(LABEL_SCALE).setPosition(0, -150)
+        }).layout().setPosition(0, -50)
         this.addLocal(this.productLabel)
-
-        this.nameText = new BaseText({
-            baseParams: {
-                scene: this.scene,
-                x: 0,
-                y: -50,
-                text: ""
-            },
-            options: {
-                fontSize: 48,
-                enableStroke: true,
-            }
-        }).setOrigin(0.5, 1)
-        this.scene.add.existing(this.nameText)
-        this.addLocal(this.nameText)
-
         //const input = new Input(userNameField)
         this.numberInput = new NumberInput({
             baseParams: {
                 scene: this.scene,
                 config: {
-                    originY: 0,
+                    y: 100,
                 }
             },
             options: {
@@ -96,14 +76,16 @@ export class InputQuantityContent extends BaseSizer {
                 showLeftArrow: true,
                 showRightArrow: true,
             }
-        })
+        }).layout()
         this.scene.add.existing(this.numberInput)
         this.addLocal(this.numberInput)
 
-        const buttonContainer = this.scene.rexUI.add.container(0, 0).setOrigin(0.5, 0).setPosition(0, 225)
         this.button = new Button({
             baseParams: {
                 scene: this.scene,
+                config: {
+                    y: 250,
+                }
             },
             options: {
                 text: "Confirm",
@@ -142,8 +124,7 @@ export class InputQuantityContent extends BaseSizer {
             }
         }).layout()
         this.scene.add.existing(this.button)
-        buttonContainer.addLocal(this.button)
-        this.addLocal(buttonContainer)
+        this.addLocal(this.button)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
@@ -161,12 +142,10 @@ export class InputQuantityContent extends BaseSizer {
             throw new Error("Inventory type not found")
         }
         const {
-            textureConfig: { key }, name
+            textureConfig: { key }
         } = inventoryTypeAssetMap[inventoryType.displayId]
 
         const image = this.scene.add.image(0, 0, key).setDepth(MODAL_DEPTH_2 + 1)
-
-        this.nameText.setText(name)
 
         this.numberInput.setBounds({
             min: 1,
