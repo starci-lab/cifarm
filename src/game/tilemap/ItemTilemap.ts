@@ -1,5 +1,6 @@
 import { PlacedItemsSyncedMessage } from "@/hooks"
 import {
+    AnimalId,
     BuildingId,
     getId,
     PlacedItemSchema,
@@ -200,7 +201,13 @@ export abstract class ItemTilemap extends GroundTilemap {
             return tilesetConfig
         }
         case PlacedItemType.Animal: {
-            throw new Error("Not implemented")
+            if(!found.animal)
+                throw new Error("Animal ID not found")
+            const tilesetConfig = animalAssetMap[getId<AnimalId>(found.animal)].ages.baby.tilesetConfig
+            if (!tilesetConfig) {
+                throw new Error("Tileset config not found")
+            }
+            return tilesetConfig
         }
         }
     }
@@ -229,6 +236,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
             placedItem.placedItemType
         )
+        console.log(gid, extraOffsets, tilesetName) 
         // get the tileset
         const tileset = this.getTileset(tilesetName)
         if (!tileset) {

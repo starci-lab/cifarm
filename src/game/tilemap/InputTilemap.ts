@@ -11,6 +11,7 @@ import {
     HelpWaterRequest,
     ThiefCropRequest,
     HarvestCropResponse,
+    BuyAnimalRequest,
 } from "@/modules/axios"
 import {
     AnimalId,
@@ -31,6 +32,7 @@ import {
     AnimalAge,
     animalAssetMap,
     buildingAssetMap,
+    getAnimalIdFromKey,
     productAssetMap,
     TextureConfig,
     tileAssetMap,
@@ -162,7 +164,8 @@ export class InputTilemap extends ItemTilemap {
                 console.log(
                     "Placed item type building with id ",
                     data.placedItemType.displayId,
-                    data
+                    data,
+                    data.object.currentPlacedItem?.id
                 )
                 // eslint-disable-next-line no-case-declarations
                 const eventMessage: OpenModalMessage = {
@@ -170,7 +173,8 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 //Set cache
-                this.scene.cache.obj.add(CacheKey.ActivePlacedItem, data.object.currentPlacedItem)
+                this.scene.cache.obj.add(CacheKey.ActivePlacedItemId, data.object.currentPlacedItem?.id)
+                console.log("CacheKey.ActivePlacedItemId", this.scene.cache.obj.get(CacheKey.ActivePlacedItemId))
 
                 EventBus.emit(EventName.OpenModal, eventMessage)
                 break
@@ -728,6 +732,42 @@ export class InputTilemap extends ItemTilemap {
             EventBus.emit(EventName.RequestBuyTile, eventMessage)
 
             EventBus.once(EventName.BuyTileCompleted, () => {
+                this.cancelPlacement()
+            })
+            break
+        }
+        case PlacedItemType.Animal: {
+            const tileKey = textureConfig.key
+            if (!tileKey) {
+                console.error("Error: Tile key is undefined")
+                return
+            }
+
+            const placedItemBuildingId = this.scene.cache.obj.get(CacheKey.ActivePlacedItemId)
+
+            if(!placedItemBuildingId){
+                throw new Error("Placed item building id not found")
+            }
+
+            const animalId: AnimalId = getAnimalIdFromKey(tileKey) as AnimalId
+            if(!animalId){
+                throw new Error("Animal id not found")
+            }
+
+            const eventMessage: BuyAnimalRequest = {
+                position: {
+                    x: position.x,
+                    y: position.y,
+                },
+                animalId,
+                placedItemBuildingId
+            }
+
+            console.log("Requesting to buy animal:", eventMessage)
+
+            EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
+
+            EventBus.once(EventName.BuyAnimalCompleted, () => {
                 this.cancelPlacement()
             })
             break

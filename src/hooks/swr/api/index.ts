@@ -19,3 +19,5 @@ export * from "./useApiHelpUseHerbicideSwrMutation"
 export * from "./useApiHelpUsePesticideSwrMutation"
 export * from "./useApiHelpWaterSwrMutation"
 export * from "./useApiThiefCropSwrMutation"
+export * from "./useApiBuyAnimalSwrMutation"
+

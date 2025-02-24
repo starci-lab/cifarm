@@ -48,11 +48,6 @@ export class AnimalHousingContent extends BaseSizer {
                 title: "Barn",
             }
         })
-        
-        this.placedItemBuilding = scene.cache.obj.get(CacheKey.ActivePlacedItemId) as PlacedItemSchema
-
-        console.log("placedItemBuildingplacedItemBuilding", this.placedItemBuilding)
-
         this.background = animalHousingBackground
         this.scene.add.existing(this.background)
         this.addLocal(this.background)

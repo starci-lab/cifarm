@@ -194,6 +194,9 @@ export enum EventName {
     RequestThiefCrop = "request_thief_crop",
     ThiefCropCompleted = "thief_crop_completed",
 
+    RequestBuyAnimal = "request_buy_animal",
+    BuyAnimalCompleted = "buy_animal_completed",
+
     FadeIn = "fade_in",
     FadeOut = "fade_out",
     FadeAll = "fade_all",

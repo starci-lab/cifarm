@@ -47,6 +47,7 @@ export const Game: FC = () => {
         if (!socket) return
         //listen for placed items synced
         socket.on(PLACED_ITEMS_SYNCED_EVENT, (data: PlacedItemsSyncedMessage) => {
+            console.log("[DATA]", data.placedItems)
             EventBus.emit(EventName.PlacedItemsSynced, data)
         })
     }, [connected])

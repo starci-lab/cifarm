@@ -19,6 +19,7 @@ import { useHelpUseHerbicideEffects } from "./helpUseHerbicideEffects"
 import { useHelpUsePesticideEffects } from "./helpUsePesticideEffects"
 import { useThiefCropEffects } from "./thiefCropEffects"
 import { useHelpWaterEffects } from "./helpWaterEffects"
+import { useBuyAnimalEffects } from "./useBuyAnimalEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -42,4 +43,5 @@ export const useApiEffects = () => {
     useHelpUsePesticideEffects()
     useHelpWaterEffects()
     useThiefCropEffects()
+    useBuyAnimalEffects()
 }
