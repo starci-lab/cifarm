@@ -111,6 +111,7 @@ export enum BaseAssetKey {
     UICommonIconCoin = "ui-common-icon-coin",
     UICommonIconCarrot = "ui-common-icon-carrot",
     UICommonCheck = "ui-common-check",
+    UICommonExperience = "ui-common-experience",
 
     //Topbar
     UITopbarHeader = "ui-topbar-header",
@@ -263,6 +264,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonIconCoin]: "ui/common/icon-coin.png",
     [BaseAssetKey.UICommonIconCarrot]: "ui/common/icon-carrot.png",
     [BaseAssetKey.UICommonCheck]: "ui/common/check.png",
+    [BaseAssetKey.UICommonExperience]: "ui/common/experience.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",

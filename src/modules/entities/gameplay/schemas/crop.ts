@@ -18,7 +18,7 @@ export interface CropSchema extends StaticAbstractSchema<CropId> {
     minHarvestQuantity: number
     maxHarvestQuantity: number
     basicHarvestExperiences: number
-    premiumHarvestExperiences: number
+    qualityHarvestExperiences: number
     availableInShop: boolean
     productIds?: string
     products?: Array<ProductSchema>

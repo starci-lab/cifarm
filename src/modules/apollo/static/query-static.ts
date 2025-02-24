@@ -146,7 +146,7 @@ const query = gql`
       minHarvestQuantity
       maxHarvestQuantity
       basicHarvestExperiences
-      premiumHarvestExperiences
+      qualityHarvestExperiences
       availableInShop
     }
     animals {
@@ -164,7 +164,7 @@ const query = gql`
       minHarvestQuantity
       maxHarvestQuantity
       basicHarvestExperiences
-      premiumHarvestExperiences
+      qualityHarvestExperiences
       type
     }
     buildings {

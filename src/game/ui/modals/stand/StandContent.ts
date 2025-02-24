@@ -73,7 +73,6 @@ export class StandContent extends BaseSizer {
             }
             setTutorialDepth({
                 gameObject: emptyCell.container,
-                scene: this.scene,
             })
             // show the press here arrow
             const { x, y } = emptyCell.container.getCenter()
@@ -200,7 +199,6 @@ export class StandContent extends BaseSizer {
                     }
                     restoreTutorialDepth({
                         gameObject: emptyCell.container,
-                        scene: this.scene,
                     })
                 }
             }
@@ -277,16 +275,6 @@ export class StandContent extends BaseSizer {
             background,
         }).layout()
         label.setInteractive().on("pointerdown", () => {
-            // get the first empty cell
-            const emptyCell = Object.values(this.containerMap).find(({ hasItem }) => !hasItem)
-            // highlight the empty cell
-            if (!emptyCell) {
-                throw new Error("No empty cell found")
-            }
-            restoreTutorialDepth({
-                gameObject: emptyCell.container,
-                scene: this.scene,
-            })
             onGameObjectPress({
                 gameObject: label,
                 scene: this.scene,

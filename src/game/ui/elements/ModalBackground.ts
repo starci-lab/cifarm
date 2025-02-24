@@ -5,7 +5,6 @@ import {
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseText, TextColor } from "./BaseText"
 import { BaseAssetKey } from "@/game/assets"
-import { onGameObjectPress } from "../utils"
 import { XButton } from "./XButton"
 import { BaseTabs, BaseTabsOptions } from "./BaseTabs"
 import { Button } from "./Button"
@@ -199,15 +198,6 @@ export class ModalBackground extends ContainerLite {
             },
         }).layout().setPosition(this.backgroundImage.width / 2 - 75,-(this.backgroundImage.height - 75))
         this.scene.add.existing(this.xButton)
-        //.setPosition(0, -400)
-        this.xButton.setInteractive().on("pointerdown", () => {
-            onGameObjectPress({
-                gameObject: this.xButton,
-                onPress: () => onXButtonPress(this.xButton),
-                animate: false,
-                scene: this.scene,
-            })
-        })
         this.uiContainer.addLocal(this.xButton)
 
         if (mainButton) {

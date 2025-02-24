@@ -70,7 +70,6 @@ export class InputQuantityContent extends BaseSizer {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             restoreTutorialDepth({
                                 gameObject: button,
-                                scene: this.scene,
                             })
                             this.scene.events.emit(EventName.TutorialPrepareCloseStand)
                         }
@@ -154,7 +153,15 @@ export class InputQuantityContent extends BaseSizer {
             }
             setTutorialDepth({
                 gameObject: this.background.mainButton,
-                scene: this.scene,
+            })
+        }
+
+        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+            if (!this.background.mainButton) {
+                throw new Error("Main button not found")
+            }
+            setTutorialDepth({
+                gameObject: this.background.mainButton,
             })
         }
     }

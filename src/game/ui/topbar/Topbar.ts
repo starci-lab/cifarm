@@ -138,17 +138,6 @@ export class Topbar extends BaseSizer {
                 offsetX: -5,
             })
             .layout()
-            // .overlapSizer({
-            //     width: dataBackground.width,
-            //     height: dataBackground.height,
-            //     space: {
-            //         bottom: 20,
-            //         left: 20,
-            //         right: 20,
-            //         top: 20,
-            //     }
-            // })
-        console.log(background.width)
         const x = this.visited ? 0 : -(this.background.width / 2 - background.width / 2 - 10)
         const rightColumn = this.scene.rexUI.add
             .overlapSizer({

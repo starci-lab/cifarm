@@ -78,7 +78,6 @@ export class InventoryStorage extends BaseSizer {
                         this.scene.events.emit(EventName.HidePressHereArrow)
                         restoreTutorialDepth({
                             gameObject: xButton,
-                            scene: this.scene,
                         })
                     }
                     EventBus.emit(EventName.CloseModal, eventMessage)
@@ -120,11 +119,16 @@ export class InventoryStorage extends BaseSizer {
         // set the tutorial depth
         scene.events.once(EventName.TutorialPrepareCloseInventory, () => {
             this.tutorialEnabled = false
+            if (!this.background.container) {
+                throw new Error("Background container not found")
+            }
+            restoreTutorialDepth({
+                gameObject: this.background.container,
+            })
             // re-render the grid table
             this.updateGridTable()
             setTutorialDepth({
                 gameObject: this.background.xButton,
-                scene,
             })
             const { x, y } = this.background.xButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
@@ -157,8 +161,12 @@ export class InventoryStorage extends BaseSizer {
         }
         setTutorialDepth({
             gameObject: this.gridTable,
-            scene: this.scene,
-            storeDepth: false,
+        })
+        if (!this.background.container) {
+            throw new Error("Background container not found")
+        }
+        setTutorialDepth({
+            gameObject: this.background.container,
         })
         const { x, y } = cell.getCenter()
         const eventMessage: ShowPressHereArrowMessage = {

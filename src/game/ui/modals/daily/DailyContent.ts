@@ -8,7 +8,6 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { GRAY_TINT_COLOR } from "@/game/constants"
 import { MODAL_DEPTH_1 } from "../ModalManager"
-import { isoUtcDateToLocale } from "@/modules/common"
 import dayjs from "dayjs"
 
 export interface DailyRewardData {
@@ -141,7 +140,7 @@ export class DailyContent extends BaseSizer {
 
     private checkClaimable() {
         if (!this.user.dailyRewardLastClaimTime) {
-            throw new Error("Daily reward last claim time is not defined")
+            return false
         }
         const day = dayjs(this.user.dailyRewardLastClaimTime)
         // get current utc date

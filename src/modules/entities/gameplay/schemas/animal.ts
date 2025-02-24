@@ -20,7 +20,7 @@ export interface AnimalSchema extends StaticAbstractSchema<AnimalId> {
     minHarvestQuantity: number
     maxHarvestQuantity: number
     basicHarvestExperiences: number
-    premiumHarvestExperiences: number
+    qualityHarvestExperiences: number
     type: AnimalType
     productIds: Array<string>
     products: Array<ProductSchema>

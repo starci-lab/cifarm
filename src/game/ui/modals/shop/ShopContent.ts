@@ -118,7 +118,6 @@ export class ShopContent extends BaseSizer {
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                         restoreTutorialDepth({
                             gameObject: xButton,
-                            scene,
                         })
                         this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
                         this.scene.events.emit(EventName.HidePressHereArrow)
@@ -199,7 +198,6 @@ export class ShopContent extends BaseSizer {
         scene.events.once(EventName.TutorialPrepareCloseShop, () => {
             setTutorialDepth({
                 gameObject: this.background.xButton,
-                scene,
             })
             const { x, y } = this.background.xButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
@@ -240,7 +238,6 @@ export class ShopContent extends BaseSizer {
                 throw new Error("Grid table is not found")
             }
             setTutorialDepth({
-                scene: this.scene,
                 gameObject: gridTable,
             })
             
@@ -625,7 +622,6 @@ export class ShopContent extends BaseSizer {
                 }
                 restoreTutorialDepth({
                     gameObject: gridTable,
-                    scene: this.scene,
                     plusOne: true
                 })
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)

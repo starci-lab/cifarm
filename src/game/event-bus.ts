@@ -202,6 +202,8 @@ export enum EventName {
     RequestClaimDailyReward = "request_claim_daily_reward",
     ClaimDailyRewardCompleted = "claim_daily_reward_completed",
 
+    CreateFlyItem = "item_flown",
+
     FadeIn = "fade_in",
     FadeOut = "fade_out",
     FadeAll = "fade_all",
@@ -347,4 +349,10 @@ export interface RequestToolbarInventoryIndexMessage {
 
 export interface RequestStorageInventoryIndexMessage {
     pointer: Phaser.Input.Pointer
+}
+
+export interface CreateFlyItemMessage {
+    position: Position
+    quantity: number
+    assetKey: string
 }
