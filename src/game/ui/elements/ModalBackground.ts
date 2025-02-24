@@ -8,6 +8,7 @@ import { BaseAssetKey } from "@/game/assets"
 import { onGameObjectPress } from "../utils"
 import { XButton } from "./XButton"
 import { BaseTabs, BaseTabsOptions } from "./BaseTabs"
+import { Button } from "./Button"
 
 export enum Background {
   Large = "large",
@@ -24,6 +25,8 @@ export interface BackgroundData {
     tabContainerAssetKey?: BaseAssetKey
     containerOffsetY?: number
     containerToWrapperOffsetY?: number
+    mainButtonScale?: number
+    mainButtonOffsetY?: number
 }
 
 const map: Record<Background, BackgroundData> = {
@@ -39,6 +42,8 @@ const map: Record<Background, BackgroundData> = {
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         containerAssetKey:  BaseAssetKey.UIBackgroundMediumContainer,
         containerOffsetY: -100,
+        mainButtonScale: 1.4,
+        mainButtonOffsetY: 40,
     },
     [Background.XLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXLarge,
@@ -73,6 +78,10 @@ export interface ModalBackgroundOptions {
     width: number;
     options: BaseTabsOptions
     tabContainerOffsetY?: number
+  },
+  mainButton?: {
+    text: string;
+    onPress: (button: Button) => void;
   }
 }
 export class ModalBackground extends ContainerLite {
@@ -89,6 +98,7 @@ export class ModalBackground extends ContainerLite {
     public tabContainerImage: Phaser.GameObjects.Image | undefined
     public containerOffsetY: number
     public wrapperContainerOffsetY: number
+    public mainButton: Button | undefined
     constructor({
         baseParams: { scene, children, height, width, x, y },
         options,
@@ -99,9 +109,9 @@ export class ModalBackground extends ContainerLite {
         if (!options) {
             throw new Error("ModalBackground requires options")
         }
-        const { background, title, onXButtonPress, titleFontSize = 48, container: containerConfig, tabs: tabsConfig, align = "top" } = options
+        const { background, title, onXButtonPress, titleFontSize = 48, container: containerConfig, mainButton, tabs: tabsConfig, align = "top" } = options
         super(scene, x, y, width, height, children)
-        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
+        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, mainButtonScale = 1, mainButtonOffsetY = 10, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
         this.containerOffsetY = containerOffsetY
         this.wrapperContainerOffsetY = containerToWrapperOffsetY
         this.backgroundImage = this.scene.add.image(0, 0, backgroundAssetKey).setOrigin(0.5, 1)
@@ -199,6 +209,32 @@ export class ModalBackground extends ContainerLite {
             })
         })
         this.uiContainer.addLocal(this.xButton)
+
+        if (mainButton) {
+            const { text, onPress } = mainButton
+            this.mainButton = new Button({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    text,
+                    syncTextScale: true,
+                    scale: mainButtonScale,
+                    onPress: () => {
+                        if (!this.mainButton) {
+                            throw new Error("Main button is not set")
+                        }
+                        onPress(this.mainButton)
+                    }
+                }
+            })
+            this.mainButton.setY(mainButtonOffsetY)
+            this.scene.add.existing(this.mainButton)
+            if (!this.container) {
+                throw new Error("Container is not set")
+            }
+            this.container.addLocal(this.mainButton)
+        }
 
         if (align === "center") {
             this.setPosition(0, this.backgroundImage.height / 2)

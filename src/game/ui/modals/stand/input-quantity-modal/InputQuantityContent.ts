@@ -5,7 +5,7 @@ import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { Background, Button, ButtonBackground, ModalBackground, NumberInput } from "../../../elements"
+import { Background, Button, ModalBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverProductRequest } from "@/modules/axios"
 import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
@@ -19,7 +19,6 @@ export class InputQuantityContent extends BaseSizer {
     private mainContainer: Sizer
     private iconContainer: ContainerLite
     private inventory: InventorySchema | undefined
-    private button: Button
 
     constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
@@ -40,12 +39,44 @@ export class InputQuantityContent extends BaseSizer {
                 align: "center",
                 background: Background.Small,
                 title: "Quantity",
-                titleFontSize: 48,
                 onXButtonPress: () => {
                     EventBus.emit(EventName.CloseModal, {
                         modalName: ModalName.InputQuantity,
                     })
                 },
+                mainButton: {
+                    onPress: (button: Button) => {
+                        if (!this.inventory) {
+                            throw new Error("Inventory is not set")
+                        }
+                        EventBus.on(EventName.DeliverProductCompleted, () => {
+                            this.scene.events.emit(EventName.CloseModal)
+                        })
+                        const index = this.scene.cache.obj.get(CacheKey.DeliveryIndex)
+                        const eventName: DeliverProductRequest = {
+                            quantity: this.quantity,
+                            inventoryId: this.inventory.id,
+                            index
+                        }
+
+                        EventBus.once(EventName.DeliverProductCompleted, () => {
+                            EventBus.emit(EventName.RefreshInventories)
+                            const eventMessage: CloseModalMessage = { 
+                                modalName: ModalName.InputQuantity
+                            }
+                            EventBus.emit(EventName.CloseModal, eventMessage)
+                        })
+                        EventBus.emit(EventName.RequestDeliverProduct, eventName)
+                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                            restoreTutorialDepth({
+                                gameObject: button,
+                                scene: this.scene,
+                            })
+                            this.scene.events.emit(EventName.TutorialPrepareCloseStand)
+                        }
+                    },
+                    text: "Confirm",
+                }
             }
         })
         this.scene.add.existing(this.background)
@@ -82,53 +113,14 @@ export class InputQuantityContent extends BaseSizer {
         }).layout()
         this.scene.add.existing(this.numberInput)
         this.mainContainer.add(this.numberInput)
-
-        this.button = new Button({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                text: "Confirm",
-                onPress: () => {
-                    if (!this.inventory) {
-                        throw new Error("Inventory is not set")
-                    }
-                    EventBus.on(EventName.DeliverProductCompleted, () => {
-                        this.scene.events.emit(EventName.CloseModal)
-                    })
-                    const index = this.scene.cache.obj.get(CacheKey.DeliveryIndex)
-                    const eventName: DeliverProductRequest = {
-                        quantity: this.quantity,
-                        inventoryId: this.inventory.id,
-                        index
-                    }
-
-                    EventBus.once(EventName.DeliverProductCompleted, () => {
-                        EventBus.emit(EventName.RefreshInventories)
-                        const eventMessage: CloseModalMessage = { 
-                            modalName: ModalName.InputQuantity
-                        }
-                        EventBus.emit(EventName.CloseModal, eventMessage)
-                    })
-                    EventBus.emit(EventName.RequestDeliverProduct, eventName)
-                    if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                        restoreTutorialDepth({
-                            gameObject: this.button,
-                            scene: this.scene,
-                        })
-                        this.scene.events.emit(EventName.TutorialPrepareCloseStand)
-                    }
-                },
-                width: 300,
-                background: ButtonBackground.Primary,
-            }
-        }).layout()
-        this.scene.add.existing(this.button)
-        this.mainContainer.add(this.button)
-        this.mainContainer.setY(this.background.backgroundImage.height / 2 + this.button.height / 2 - 20)
-        this.mainContainer.layout()
-        this.addLocal(this.mainContainer)
-
+        if (!this.background.mainButton) {
+            throw new Error("Main button not found")
+        }
+        this.mainContainer.layout().setPosition(this.background.mainButton.x, this.background.mainButton.y - (this.background.mainButton.height / 2 + 40))
+        if (!this.background.container) {
+            throw new Error("Container not found")
+        }
+        this.background.container.add(this.mainContainer)
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.scene.events.on(EventName.UpdateInputQuantityModal, ({ inventory }: UpdateInputQuantityModalMessage) => {
             this.render(inventory)
@@ -157,8 +149,11 @@ export class InputQuantityContent extends BaseSizer {
         this.iconContainer.addLocal(image)  
 
         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+            if (!this.background.mainButton) {
+                throw new Error("Main button not found")
+            }
             setTutorialDepth({
-                gameObject: this.button,
+                gameObject: this.background.mainButton,
                 scene: this.scene,
             })
         }

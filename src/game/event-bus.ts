@@ -56,6 +56,7 @@ export enum EventName {
     // modal events
     OpenModal = "open_modal",
     CloseModal = "close_modal",
+    CloseAllModals = "close_all_modals",
 
     // tutorial events
     OpenTutorial = "open_tutorial",
@@ -64,7 +65,7 @@ export enum EventName {
     // stand
     UpdateSelectProductModal = "update_select_product_modal",
     UpdateInputQuantityModal = "update_input_quantity_modal",
-
+    UpdateClaimModal = "update_claim_modal",
     // backdrops
     ShowGameplayBackdrop = "show_gameplay_backdrop",
     HideGameplayBackdrop = "hide_gameplay_backdrop",
@@ -299,6 +300,7 @@ export enum ModalName {
   Neighbors = "neighbors",
   SelectProduct = "select-product",
   InputQuantity = "input-quantity",
+  Claim = "claim",
 }
 
 export interface OpenModalMessage {
@@ -316,6 +318,19 @@ export interface CloseModalMessage {
 
 export interface UpdateInputQuantityModalMessage {
     inventory: InventorySchema
+}
+
+export interface ClaimItem {
+    assetKey: string;
+    quantity?: number;
+    stackable: boolean;
+    scale?: number;
+}
+export interface ClaimData {
+    items: Array<ClaimItem>;
+}
+export interface UpdateClaimModalMessage {
+    data: ClaimData
 }
 
 export interface SelectTabMessage<T = string> {

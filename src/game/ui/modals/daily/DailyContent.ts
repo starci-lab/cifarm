@@ -1,29 +1,54 @@
 import { BaseAssetKey } from "@/game/assets"
-import { DailyRewardSchema, DailyRewardId } from "@/modules/entities"
+import { DailyRewardId, DailyRewardInfo } from "@/modules/entities"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
-import { Background, BaseText, ModalBackground, StrokeColor, TextColor, XButton } from "../../elements"
+import { Background, BaseText, ModalBackground, XButton } from "../../elements"
 import { onGameObjectPress } from "../../utils"
-import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { EventBus, EventName, ModalName, UpdateClaimModalMessage } from "@/game/event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+
+export interface DailyRewardData {
+    baseAssetKey: BaseAssetKey
+}
+
+export const GOLD_SCALE = 1.5
+export const TOKEN_SCALE = 1.2
 
 // daily coin icon map
-const iconMap: Record<DailyRewardId, BaseAssetKey> = {
-    [DailyRewardId.Day1]: BaseAssetKey.UIModalDailyCoin1,
-    [DailyRewardId.Day2]: BaseAssetKey.UIModalDailyCoin1,
-    [DailyRewardId.Day3]: BaseAssetKey.UIModalDailyCoin2,
-    [DailyRewardId.Day4]: BaseAssetKey.UIModalDailyCoin3,
+const iconMap: Record<DailyRewardId, DailyRewardData> = {
+    [DailyRewardId.Day1]: {
+        baseAssetKey: BaseAssetKey.UIModalDailyCoin1,
+    },
+    [DailyRewardId.Day2]: {
+        baseAssetKey: BaseAssetKey.UIModalDailyCoin1,
+    },
+    [DailyRewardId.Day3]: {
+        baseAssetKey: BaseAssetKey.UIModalDailyCoin2,
+    },
+    [DailyRewardId.Day4]: {
+        baseAssetKey: BaseAssetKey.UIModalDailyCoin3,
+    },
     // temporary use the same icon
-    [DailyRewardId.Day5]: BaseAssetKey.IconDaily,
+    [DailyRewardId.Day5]: {
+        baseAssetKey: BaseAssetKey.IconDaily,
+    }
 }
 export class DailyContent extends BaseSizer {
-    private modalBackground: ModalBackground
-    
+    private background: ModalBackground
+    private rewardContainersSizer: Sizer
+    private goldBaseAssetKey: BaseAssetKey
+    private tokenBaseAssetKey: BaseAssetKey
     // daily rewards data
-    private dailyRewards: Array<DailyRewardSchema> = []
+    private dailyRewardInfo: DailyRewardInfo
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
 
-        this.modalBackground = new ModalBackground({
+        this.goldBaseAssetKey = BaseAssetKey.UICommonIconCoin
+        this.tokenBaseAssetKey = BaseAssetKey.UICommonIconCarrot
+
+        // get the daily rewards data
+        this.dailyRewardInfo = this.scene.cache.obj.get(CacheKey.DailyRewardInfo)
+        this.background = new ModalBackground({
             baseParams: {
                 scene,
             },
@@ -46,28 +71,34 @@ export class DailyContent extends BaseSizer {
                 },
                 title: "Daily",
                 background: Background.Medium,
+                mainButton: {
+                    onPress: () => {
+                        //call api
+                    },
+                    text: "Claim",
+                }
             }
         })
-        this.scene.add.existing(this.modalBackground)
-        this.addLocal(this.modalBackground)
-        // get the daily rewards data
-        this.dailyRewards = this.scene.cache.obj.get(CacheKey.DailyRewards)
+        this.scene.add.existing(this.background)
+        this.addLocal(this.background)
 
-        // // create the reward containers
-        // this.rewardContainersSizer = this.scene.rexUI.add
-        //     .sizer({
-        //         orientation: "y",
-        //         x: 0,
-        //         y: 0,
-        //         space: {
-        //             item: 10,
-        //         },
-        //     })
-        //     .add(this.createBaseDayRewardContainers())
-        //     .add(this.createLastDayRewardContainer())
-        //     .layout()
-        // // add the reward containers to the sizer
-        // this.addLocal(this.rewardContainersSizer)
+        // create the reward containers
+        this.rewardContainersSizer = this.scene.rexUI.add
+            .sizer({
+                orientation: "y",
+                originY: 1,
+                y: -80,
+                space: {
+                    item: 10,
+                },
+            })
+            .add(this.createBaseDayRewardContainers())
+            .add(this.createLastDayRewardContainer())
+            .layout()
+        if (!this.background.container) {
+            throw new Error("Background container is not defined")
+        }
+        this.background.container.addLocal(this.rewardContainersSizer)
     }
 
     // create base day reward container
@@ -76,26 +107,17 @@ export class DailyContent extends BaseSizer {
             throw new Error("Day 5 is not the base day")
         }
         // get the daily reward
-        // const dailyReward = this.dailyRewards.find(
-        //     (dailyReward) => dailyReward.id === id
-        // )
-        // if (!dailyReward) {
-        //     throw new Error("Daily not found")
-        // }
-        // create the background container
-        const backgroundContainer = this.scene.add.container(0, 0)
+        const dailyReward = this.dailyRewardInfo[id]
+        if (!dailyReward) {
+            throw new Error("Daily not found")
+        }
         // add the background image
         const backgroundImage = this.scene.add.image(
             0,
             0,
             BaseAssetKey.UIModalDailyBaseDayAvatar
         )
-        // set the position and origin
-        backgroundImage
-            .setPosition(-backgroundImage.x / 2, -backgroundImage.y / 2)
-            .setOrigin(0, 0)
-        backgroundContainer.add(backgroundImage)
-        
+
         // add the day label
         const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
         const dayText = new BaseText({
@@ -103,7 +125,7 @@ export class DailyContent extends BaseSizer {
                 scene: this.scene,
                 x: 0,
                 y: 0,
-                text: "3",
+                text: this.dailyRewardInfo[id].day.toString(),
             },
             options: {
                 fontSize: 32,
@@ -114,62 +136,62 @@ export class DailyContent extends BaseSizer {
             width: dayImage.width,
             height: dayImage.height,
             background: dayImage,
-            originX: 0,
-            originY: 0,
             text: dayText,
             align: "center",
         }).layout()
-            .setPosition(backgroundImage.x, backgroundImage.y)
-
-        backgroundContainer.add(day)
-        // set the position of the background container to the center
-        backgroundContainer.setPosition(
-            -backgroundContainer.width / 2,
-            -backgroundContainer.height / 2
-        )
-        const wrapperBackgroundContainer = this.scene.add
-            .container(0, 0)
-            .add(
-                backgroundContainer.setPosition(
-                    -backgroundImage.width / 2,
-                    -backgroundImage.height / 2
-                )
-            )
-
-        // create the icon container
-        const iconContainer = this.scene.add.container(0, 0)
-
-        // create the container contains the icon, quantity and claimed status
-        const icon = this.scene.add.image(0, -20, iconMap[id]).setScale(1.2)
-        iconContainer.add(icon)
-
-        // create the quantity text
+        const { baseAssetKey } = iconMap[id]
+        const icon = this.scene.add.image(0, 0, baseAssetKey)
         const quantityText = new BaseText({
             baseParams: {
-                x: 0,
-                y: 20,
                 scene: this.scene,
-                text: `x${100}`,
+                x: 0,
+                y: 0,
+                text: `x${dailyReward.golds}`,
             },
             options: {
-                textColor: TextColor.White,
-                fontSize: 40,
-                enableStroke: true,
-                strokeColor: StrokeColor.Chestnut,
+                enableStroke: true
             },
         })
         this.scene.add.existing(quantityText)
-        iconContainer.add(quantityText)
-        // create the claimed status
-        // create the label
-        const label = this.scene.rexUI.add.label({
+        const iconSizerContainer = this.scene.rexUI.add.container(0, 0)
+        const iconSizer = this.scene.rexUI.add.sizer({
+            y: 30,
+            orientation: "y",
+            originY: 1,
+            space: {
+                item: -20,
+            },
+        })
+            .add(icon)
+            .add(quantityText)
+            .layout()
+        iconSizerContainer.addLocal(iconSizer)
+
+        const badgeLabel = this.scene.rexUI.add.badgeLabel({
+            background: backgroundImage,
             width: backgroundImage.width,
             height: backgroundImage.height,
-            background: wrapperBackgroundContainer,
-            icon: iconContainer,
-            align: "center",
+            leftTop: day,
+            center: iconSizerContainer,
+        }).layout().setInteractive().on("pointerdown", () => {
+            const eventMessage: UpdateClaimModalMessage = {
+                data: {
+                    items: [
+                        {
+                            assetKey: this.goldBaseAssetKey,
+                            quantity: dailyReward.golds,
+                            stackable: true,
+                            scale: GOLD_SCALE,
+                        }
+                    ]
+                }
+            }
+            this.scene.events.emit(EventName.UpdateClaimModal, eventMessage)
+            EventBus.emit(EventName.OpenModal, {
+                modalName: ModalName.Claim
+            })
         })
-        return label
+        return badgeLabel
     }
 
     // create the base day reward containers
@@ -185,27 +207,19 @@ export class DailyContent extends BaseSizer {
                     item: 10,
                 },
             })
-            .addMultiple(containers)
+            .addMultiple(containers).layout()
         return sizer
     }
 
     // create the last day reward container
     private createLastDayRewardContainer() {
         const id = DailyRewardId.Day5
-        // create the background container
-        const backgroundContainer = this.scene.add.container(0, 0)
         // add the background image
         const backgroundImage = this.scene.add.image(
             0,
             0,
             BaseAssetKey.UIModalDailyLastDayAvatar
         )
-        // set the position and origin
-        backgroundImage
-            .setPosition(-backgroundImage.x / 2, -backgroundImage.y / 2)
-            .setOrigin(0, 0)
-        backgroundContainer.add(backgroundImage)
-        // add the day image
         // add the day label
         const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
         const dayText = new BaseText({
@@ -213,7 +227,7 @@ export class DailyContent extends BaseSizer {
                 scene: this.scene,
                 x: 0,
                 y: 0,
-                text: "5",
+                text: this.dailyRewardInfo[id].day.toString(),
             },
             options: {
                 fontSize: 32,
@@ -224,36 +238,52 @@ export class DailyContent extends BaseSizer {
             width: dayImage.width,
             height: dayImage.height,
             background: dayImage,
-            originX: 0,
-            originY: 0,
             text: dayText,
             align: "center",
         }).layout()
-            .setPosition(backgroundImage.x, backgroundImage.y)
-        backgroundContainer.add(day)
-        const wrapperBackgroundContainer = this.scene.add
-            .container(0, 0)
-            .add(
-                backgroundContainer.setPosition(
-                    -backgroundImage.width / 2,
-                    -backgroundImage.height / 2
-                )
-            )
-        // set the position of the background container to the center
-        // create the container contains the icon, quantity and claimed status
-        // create the icon container
-        const iconContainer = this.scene.add.container(0, 0)
-        const icon = this.scene.add.image(0, 0, iconMap[id])
-        iconContainer.add(icon)
-        // create the claimed status
-        // create the label
-        const label = this.scene.rexUI.add.label({
+        const { baseAssetKey } = iconMap[id]
+        const icon = this.scene.add.image(0, 0, baseAssetKey)
+        const iconSizerContainer = this.scene.rexUI.add.container(0, 0)
+        const iconSizer = this.scene.rexUI.add.sizer({
+            orientation: "y",
+            space: {
+                item: -20,
+            },
+        })
+            .add(icon)
+            .layout()
+        iconSizerContainer.addLocal(iconSizer)
+
+        const badgeLabel = this.scene.rexUI.add.badgeLabel({
+            background: backgroundImage,
             width: backgroundImage.width,
             height: backgroundImage.height,
-            background: wrapperBackgroundContainer,
-            icon: iconContainer,
-            align: "center",
+            leftTop: day,
+            center: iconSizerContainer,
+        }).layout().setInteractive().on("pointerdown", () => {
+            const eventMessage: UpdateClaimModalMessage = {
+                data: {
+                    items: [
+                        {
+                            assetKey: this.goldBaseAssetKey,
+                            quantity: this.dailyRewardInfo[id].golds,
+                            stackable: true,
+                            scale: GOLD_SCALE,
+                        },
+                        {
+                            assetKey: this.tokenBaseAssetKey,
+                            quantity: this.dailyRewardInfo[id].tokens,
+                            stackable: true,
+                            scale: TOKEN_SCALE,
+                        }
+                    ]
+                }
+            }
+            this.scene.events.emit(EventName.UpdateClaimModal, eventMessage)
+            EventBus.emit(EventName.OpenModal, {
+                modalName: ModalName.Claim
+            })
         })
-        return label
+        return badgeLabel
     }
 }

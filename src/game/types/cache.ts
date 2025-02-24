@@ -11,7 +11,7 @@ export enum CacheKey {
     FolloweesArgs = "followees-args",
     Followees = "followees",
     InventoryTypes = "inventory-types",
-    DailyRewards = "daily-rewards",
+    DailyRewardInfo = "daily-reward-info",
     User = "user",
     Tools = "tools",
     Products = "products",

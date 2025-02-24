@@ -108,11 +108,11 @@ export enum BaseAssetKey {
     UICommonIconMagnifyingGlass = "ui-common-icon-magnifying-glass",
     UICommonMinus = "ui-common-minus",
     UICommonPlus = "ui-common-plus",
+    UICommonIconCoin = "ui-common-icon-coin",
+    UICommonIconCarrot = "ui-common-icon-carrot",
 
     //Topbar
     UITopbarHeader = "ui-topbar-header",
-    UITopbarIconCoin = "ui-topbar-icon-coin",
-    UITopbarIconCarrot = "ui-topbar-icon-carrot",
     UITopbarIconEnergy = "ui-topbar-icon-energy",
     UITopbarBackgroundCurrency = "ui-topbar-background-currency",
     UITopbarAvatar = "ui-topbar-avatar",
@@ -226,8 +226,6 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalNeighborsTabFollowees]: "ui/modals/neighbors/tab-followees.png",
     //Topbar
     [BaseAssetKey.UITopbarHeader]: "ui/topbar/header.png",
-    [BaseAssetKey.UITopbarIconCoin]: "ui/topbar/icon-coin.png",
-    [BaseAssetKey.UITopbarIconCarrot]: "ui/topbar/icon-carrot.png",
     [BaseAssetKey.UITopbarIconEnergy]: "ui/topbar/icon-energy.png",
     [BaseAssetKey.UITopbarBackgroundCurrency]: "ui/topbar/background-currency.png",
     [BaseAssetKey.UITopbarAvatar]: "ui/topbar/avatar.png",
@@ -261,6 +259,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonIconMagnifyingGlass]: "ui/common/icon-magnifying-glass.png",
     [BaseAssetKey.UICommonMinus]: "ui/common/minus.png",
     [BaseAssetKey.UICommonPlus]: "ui/common/plus.png",
+    [BaseAssetKey.UICommonIconCoin]: "ui/common/icon-coin.png",
+    [BaseAssetKey.UICommonIconCarrot]: "ui/common/icon-carrot.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",

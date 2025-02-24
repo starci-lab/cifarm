@@ -1,5 +1,5 @@
 import { Position } from "../base"
-import { AppearanceChance, CropId } from "../enums"
+import { AppearanceChance, CropId, DailyRewardId } from "../enums"
 
 export interface SystemSchema {
     value: object;
@@ -72,4 +72,19 @@ export interface SpinInfo {
 
 export interface EnergyRegen {
     time: number; // In milliseconds
+}
+
+export interface DailyReward {
+    golds: number
+    tokens: number
+    day: number
+    lastDay: boolean
+}
+
+export interface DailyRewardInfo {
+    [DailyRewardId.Day1]: DailyReward
+    [DailyRewardId.Day2]: DailyReward
+    [DailyRewardId.Day3]: DailyReward
+    [DailyRewardId.Day4]: DailyReward
+    [DailyRewardId.Day5]: DailyReward
 }

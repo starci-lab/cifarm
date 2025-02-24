@@ -18,17 +18,19 @@ export interface ButtonOptions {
     width?: number
     height?: number
     fontSize?: number
+    scale?: number
+    syncTextScale?: boolean
 }
 export class Button extends Label {
     constructor({ baseParams: { scene, config }, options }: ConstructorParams<LabelBaseConstructorParams, ButtonOptions>) {
         if (!options) {
             throw new Error("Button requires options")
         }
-        const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, height, width, fontSize = 48 } = options
+        const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, syncTextScale, height, width, fontSize = 48, scale = 1 } = options
 
         const backgroundKeyMap: Record<ButtonBackground, BaseAssetKey> = {
-            [ButtonBackground.Primary]: BaseAssetKey.UICommonButtonRed,
-            [ButtonBackground.Secondary]: BaseAssetKey.UICommonButtonGreen,
+            [ButtonBackground.Primary]: BaseAssetKey.UICommonButtonGreen,
+            [ButtonBackground.Secondary]: BaseAssetKey.UICommonButtonRed,
         }
         const buttonBackground = new NinePatch3x3({
             baseParams: {
@@ -51,15 +53,15 @@ export class Button extends Label {
             },
             options: {
                 enableStroke: true,
-                fontSize,
+                fontSize: syncTextScale ? fontSize * scale : fontSize,
             }
         })
         scene.add.existing(textObj)
 
         super(scene, {
             background: buttonBackground,
-            width: width ?? buttonBackground.width,
-            height: height ?? buttonBackground.height,
+            width: (width ?? buttonBackground.width) * scale,
+            height: (height ?? buttonBackground.height) * scale,
             text: textObj,
             align: "center",
             space: { top: 5, bottom: 25, left: 5, right: 5 },

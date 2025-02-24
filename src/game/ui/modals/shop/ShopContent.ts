@@ -152,7 +152,10 @@ export class ShopContent extends BaseSizer {
         this.add(this.background)
         // create the container
         this.contentContainer = scene.rexUI.add.container(0, 0)
-        this.background.wrapperContainer?.addLocal(this.contentContainer)
+        if (!this.background.wrapperContainer) {
+            throw new Error("Wrapper container is not defined")
+        }
+        this.background.wrapperContainer.addLocal(this.contentContainer)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -538,7 +541,6 @@ export class ShopContent extends BaseSizer {
             },
             options: {
                 text: `$${price ?? 0}`,
-                background: ButtonBackground.Secondary,
                 disableInteraction: false,
                 height: 100,
                 width: 200,

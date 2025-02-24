@@ -181,28 +181,6 @@ export class SelectProductContent extends BaseSizer {
             throw new Error("Background container not found")
         }
         this.background.container.addLocal(this.gridTable)
-
-        // if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-        //     const firstCell = this.gridMap[0]
-        //     if (firstCell) {
-        //         setTutorialDepth({
-        //             gameObject: firstCell,
-        //             scene: this.scene,
-        //         })
-        //         const { x, y } = firstCell.getCenter()
-        //         const eventMessage: ShowPressHereArrowMessage = {
-        //             originPosition: {
-        //                 x: x + 60,
-        //                 y: y + 60,
-        //             },
-        //             targetPosition: {
-        //                 x: x + 40,
-        //                 y: y + 40,
-        //             },
-        //         }
-        //         this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-        //     }
-        // }
         return this.gridTable
     }
 }

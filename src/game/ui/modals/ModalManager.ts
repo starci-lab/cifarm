@@ -10,6 +10,7 @@ import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
+import { ClaimModal } from "./claim"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
@@ -46,6 +47,8 @@ export class ModalManager extends ContainerLite {
     private selectProductModal: SelectProductModal | undefined
     // // input quantity modal
     private inputQuantityModal: InputQuantityModal | undefined
+    // claim modal
+    private claimModal: ClaimModal | undefined
     //private inputQuantityModal: StandModal | undefined
     // neighbors
     private neighborsModal: NeighborsModal | undefined
@@ -117,6 +120,13 @@ export class ModalManager extends ContainerLite {
             y: centerY,
         }).setDepth(MODAL_DEPTH_2).hide()
         this.scene.add.existing(this.inputQuantityModal)
+        // create the input quantity modal
+        this.claimModal = new ClaimModal({
+            scene: this.scene,
+            x: centerX,
+            y: centerY,
+        }).setDepth(MODAL_DEPTH_2).hide()
+        this.scene.add.existing(this.inputQuantityModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
             this.onOpen(message)
@@ -144,6 +154,7 @@ export class ModalManager extends ContainerLite {
         switch (modalName) {
         case ModalName.SelectProduct:
         case ModalName.InputQuantity:
+        case ModalName.Claim:
             depth = MODAL_BACKDROP_DEPTH_2
             break
         }
@@ -164,6 +175,7 @@ export class ModalManager extends ContainerLite {
         switch (modalName) {
         case ModalName.SelectProduct:
         case ModalName.InputQuantity:
+        case ModalName.Claim:
             EventBus.emit(EventName.UpdateUIBackdrop, {
                 depth: MODAL_BACKDROP_DEPTH_1
             })
@@ -225,6 +237,12 @@ export class ModalManager extends ContainerLite {
                 throw new Error("Neighbors modal not found")
             }
             return this.neighborsModal
+        }
+        case ModalName.Claim: {
+            if (!this.claimModal) {
+                throw new Error("Claim modal not found")
+            }
+            return this.claimModal
         }
         }
     }
