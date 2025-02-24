@@ -220,7 +220,7 @@ export class LoadingScene extends Scene {
         EventBus.emit(EventName.LoadInventories)
         // query neighbors
         const queryNeighborsArgs: QueryNeighborsArgs = {
-            limit: 5,
+            limit: 10,
             offset: 0,
         }
         const queryNeighborsParams: QueryNeighborsParams = {
@@ -231,7 +231,7 @@ export class LoadingScene extends Scene {
 
         // query followees
         const queryFolloweesArgs: QueryFolloweesArgs = {
-            limit: 5,
+            limit: 10,
             offset: 0,
         }
         const queryFolloweesParams: QueryNeighborsParams = {

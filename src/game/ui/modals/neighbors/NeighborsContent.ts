@@ -3,11 +3,13 @@ import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { Background, ModalBackground } from "../../elements"
 import { NeighborsTab, tabsConfig } from "./constants"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { WorldTab } from "./WorldTab"
 
 const defaultNeighborsTab = NeighborsTab.World
 
 export class NeighborsContent extends ContainerLite {
     private background: ModalBackground
+    private worldTab: WorldTab
     constructor({
         scene,
         x,
@@ -51,5 +53,14 @@ export class NeighborsContent extends ContainerLite {
         })
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
+
+        this.worldTab = new WorldTab({
+            scene: this.scene,
+            config: {
+                originY: 1,
+            }
+        })
+        this.scene.add.existing(this.worldTab)
+        this.addLocal(this.worldTab)
     }
 }

@@ -47,7 +47,7 @@ export class SelectProductContent extends BaseSizer {
                 height,
             },
             options: {
-                originY: 0.5,
+                align: "center",
                 container: {
                     showContainer: true,
                     showWrapperContainer: false,
@@ -100,9 +100,9 @@ export class SelectProductContent extends BaseSizer {
             baseParams: {
                 scene: this.scene,
                 config: {
-                    y: this.background.containerOffsetY,
                     width: this.background.containerImage.width,
-                    height: this.background.containerImage.height
+                    height: this.background.containerImage.height,
+                    originY: 1,
                 }
             },
             options: {

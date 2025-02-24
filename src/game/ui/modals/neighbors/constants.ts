@@ -17,3 +17,5 @@ export const tabsConfig: Record<NeighborsTab, TabData> = {
         iconKey: BaseAssetKey.UIModalNeighborsTabFollowees,
     },
 }
+
+export const USER_DATA = "user_data"

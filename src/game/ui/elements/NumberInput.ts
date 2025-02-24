@@ -21,12 +21,14 @@ export interface NumberInputOptions {
     width?: number
     min?: number
     max?: number
+    // show as paginator
+    asPagination?: boolean
 }
 export class NumberInput extends Sizer {
     private leftArrow: Label | undefined
     private rightArrow: Label | undefined
     private inputText: Label  
-    private text: BaseBBCodeText  
+    private bbCodeText: BaseBBCodeText  
     private min: number
     private max: number
 
@@ -41,7 +43,7 @@ export class NumberInput extends Sizer {
         if (!options) {
             throw new Error("NumberInput requires options")
         }
-        const { showLeftArrow, showRightArrow, defaultValue = 1, onChange, fontSize = 48, min = 0, max = Infinity, textColor = TextColor.White, width = 200 } = options
+        const { showLeftArrow, showRightArrow, defaultValue = 1, onChange, fontSize = 48, min = 0, max = Infinity, textColor = TextColor.White, width = 200, asPagination = false } = options
         this.min = min
         this.max = max
 
@@ -58,7 +60,7 @@ export class NumberInput extends Sizer {
         })
         scene.add.existing(inputBackground)
 
-        this.text = new BaseBBCodeText({
+        this.bbCodeText = new BaseBBCodeText({
             baseParams: {
                 scene: this.scene,
                 text: defaultValue.toString(),
@@ -71,7 +73,7 @@ export class NumberInput extends Sizer {
                 textColor,
             }
         })
-        this.scene.add.existing(this.text)
+        this.scene.add.existing(this.bbCodeText)
 
         if (showLeftArrow) {
         // left arrow icon
@@ -90,7 +92,7 @@ export class NumberInput extends Sizer {
                 onGameObjectPress({
                     gameObject: this.leftArrow,
                     onPress: () => {
-                        const value = this.text.text
+                        const value = this.bbCodeText.text
                         const afterValue = this.getValue(parseInt(value) - 1)
                         this.updateValue({ intValue: afterValue, onChange })
                     },
@@ -106,23 +108,26 @@ export class NumberInput extends Sizer {
             background: inputBackground,
             width,
             height: sourceImage.height,
-            text: this.text,
+            text: this.bbCodeText,
             space: { top: 5, bottom: 5, left: 5, right: 5 },
             align: "center",
             originY: 0,
-        }).setInteractive().on("pointerdown",() =>{
-            const config: TextEdit.IConfigOpen = {
-                type: "number",
-                onTextChanged: (_, text) => {
-                    const intValue = this.getValue(parseInt(text))
-                    this.updateValue({ intValue, onChange })
-                },
-                onClose: () => {
-                    this.inputText.layout()
-                },
-            }
-            scene.rexUI.edit(this.text, config)
         })
+        if (!asPagination) {
+            this.inputText.setInteractive().on("pointerdown",() =>{
+                const config: TextEdit.IConfigOpen = {
+                    type: "number",
+                    onTextChanged: (_, text) => {
+                        const intValue = this.getValue(parseInt(text))
+                        this.updateValue({ intValue, onChange })
+                    },
+                    onClose: () => {
+                        this.inputText.layout()
+                    },
+                }
+                scene.rexUI.edit(this.bbCodeText, config)
+            })
+        } 
         this.add(this.inputText)
 
         if (showRightArrow) {
@@ -142,7 +147,7 @@ export class NumberInput extends Sizer {
                 onGameObjectPress({
                     gameObject: this.rightArrow,
                     onPress: () => {
-                        const value = this.text.text
+                        const value = this.bbCodeText.text
                         const afterValue = this.getValue(parseInt(value) + 1)
                         this.updateValue({ intValue: afterValue, onChange })
                     },
@@ -157,7 +162,7 @@ export class NumberInput extends Sizer {
         this.layout()
     }
 
-    private controlArrowVisibility(intValue: number = parseInt(this.text.text)) {
+    private controlArrowVisibility(intValue: number = parseInt(this.bbCodeText.text)) {
         if (this.leftArrow) {
             if (intValue <= this.min) {
                 this.leftArrow.hide()
@@ -176,7 +181,7 @@ export class NumberInput extends Sizer {
 
     private updateValue({ intValue, onChange }: UpdateValueParams) {
         onChange(intValue)
-        this.text.setText(intValue)
+        this.bbCodeText.setText(intValue)
         this.controlArrowVisibility(intValue)
         this.inputText.layout()
     }

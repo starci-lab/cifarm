@@ -32,6 +32,7 @@ export enum BaseAssetKey {
     UIBackgroundXXLargeTabContainer = "ui-background-xx-large-tab-container",
     UIBackgroundLargeWrapperContainer = "ui-background-large-wrapper-container",
     UIBackgroundXXLargeWrapperContainer = "ui-background-xx-large-wrapper-container",
+    UIBackgroundMediumContainer = "ui-background-medium-container",
     // Tab
     UITabFrame = "ui-tab-frame",
     UITabSlat = "ui-tab-slat",
@@ -80,18 +81,12 @@ export enum BaseAssetKey {
     UIModalStandAddButton = "ui-modal-stand-add-button",
 
     //Neighbors
-    UIModalNeighborsWall = "ui-modal-neighbors-wall",
-    UIModalNeighborsAvatarFriends = "ui-modal-neighbors-avatar-friends",
-    UIModalNeighborsAvatarRandom = "ui-modal-neighbors-avatar-random",
-    UIModalNeighborsIconClose = "ui-modal-neighbors-icon-close",
-    UIModalNeighborsIconQuestion = "ui-modal-neighbors-icon-question",
-    UIModalNeighborsIconSearch = "ui-modal-neighbors-icon-search",
+    UIModalNeighborsQuestion = "ui-modal-neighbors-button-icon-question",
+    UIModalNeighborsButton = "ui-modal-neighbors-button",
+    UIModalNeighborsCard = "ui-modal-neighbors-card",
+    UIModalNeighborsFrame = "ui-modal-neighbors-frame",
+    UIModalNeighborsIconHome = "ui-modal-neighbor-icon-home",
     UIModalNeighborsIconRandom = "ui-modal-neighbors-icon-random",
-    UIModalNeighborsCardBackground = "ui-modal-neighbors-frame-friends",
-    UIModalNeighborsFrameSearch = "ui-modal-neighbors-frame-search",
-    UIModalNeighborsIconAdd = "ui-modal-neighbors-icon-add",
-    UIModalNeighborsIconHome = "ui-modal-neighbors-icon-home",
-    UIModalNeighborsFrameVisit = "ui-modal-neighbors-frame-visit",
     UIModalNeighborsTabWorld = "ui-modal-neighbors-tab-world",
     UIModalNeighborsTabFollowees = "ui-modal-neighbors-tab-followees",
 
@@ -110,21 +105,25 @@ export enum BaseAssetKey {
     UICommonButtonRed = "ui-common-button-red",
     UICommonX = "ui-common-x",
     UICommonButtonGreen = "ui-common-button-green",
+    UICommonIconMagnifyingGlass = "ui-common-icon-magnifying-glass",
+    UICommonMinus = "ui-common-minus",
+    UICommonPlus = "ui-common-plus",
 
     //Topbar
-    TopbarHeader = "topbar-header",
-    TopbarIconCoin = "topbar-icon-coin",
-    TopbarBackgroundCurrency = "topbar-background-currency",
-    TopbarAvatar = "topbar-avatar",
-    TopbarInfo = "topbar-info",
-    TopbarLevelBar = "topbar-level-bar",
-    TopbarLevelBarBackground = "topbar-level-bar-background",
-    TopbarLevelBox = "topbar-level-box",
+    UITopbarHeader = "ui-topbar-header",
+    UITopbarIconCoin = "ui-topbar-icon-coin",
+    UITopbarIconCarrot = "ui-topbar-icon-carrot",
+    UITopbarIconEnergy = "ui-topbar-icon-energy",
+    UITopbarBackgroundCurrency = "ui-topbar-background-currency",
+    UITopbarAvatar = "ui-topbar-avatar",
+    UITopbarInfo = "ui-topbar-info",
+    UITopbarLevelBar = "ui-topbar-level-bar",
+    UITopbarLevelBarBackground = "ui-topbar-level-bar-background",
+    UITopbarLevelBox = "ui-topbar-level-box",
+    UITopbarData = "ui-topbar-data",
 
     //Bubble
     Bubble = "bubble",
-    TopbarIconCarrot = "topbar-icon-carrot",
-    TopbarIconEnergy = "topbar-icon-energy",
 
     //Press here arrow
     PressHereArrow = "press-here-arrow",
@@ -170,7 +169,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIBackgroundXXLargeTabContainer]: "ui/backgrounds/xxlarge-tab-container.png",
     [BaseAssetKey.UIBackgroundLargeWrapperContainer]: "ui/backgrounds/large-wrapper-container.png",
     [BaseAssetKey.UIBackgroundXXLargeWrapperContainer]: "ui/backgrounds/xxlarge-wrapper-container.png",
-
+    [BaseAssetKey.UIBackgroundMediumContainer]: "ui/backgrounds/medium-container.png",
     // tab
     [BaseAssetKey.UITabFrame]: "ui/tab/frame.png",
     [BaseAssetKey.UITabSlat]: "ui/tab/slat.png",
@@ -217,35 +216,29 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalStandShadow]: "ui/modals/stand/shadow.png",
     [BaseAssetKey.UIModalStandAddButton]: "ui/modals/stand/add-button.png",
     //Neighbors
-    [BaseAssetKey.UIModalNeighborsWall]: "ui/modals/neighbors/wall.png",
-    [BaseAssetKey.UIModalNeighborsAvatarFriends]: "ui/modals/neighbors/ava-friends.png",
-    [BaseAssetKey.UIModalNeighborsAvatarRandom]: "ui/modals/neighbors/ava-random.png",
-    [BaseAssetKey.UIModalNeighborsIconClose]: "ui/modals/neighbors/btn-icon-close.png",
-    [BaseAssetKey.UIModalNeighborsIconQuestion]: "ui/modals/neighbors/btn-icon-question.png",
-    [BaseAssetKey.UIModalNeighborsIconSearch]: "ui/modals/neighbors/btn-icon-search.png",
-    [BaseAssetKey.UIModalNeighborsIconRandom]: "ui/modals/neighbors/btn-random.png",
-    [BaseAssetKey.UIModalNeighborsCardBackground]: "ui/modals/neighbors/card-background.png",
-    [BaseAssetKey.UIModalNeighborsFrameSearch]: "ui/modals/neighbors/frame-search.png",
-    [BaseAssetKey.UIModalNeighborsIconAdd]: "ui/modals/neighbors/icon-add.png",
+    [BaseAssetKey.UIModalNeighborsIconRandom]: "ui/modals/neighbors/icon-random.png",
     [BaseAssetKey.UIModalNeighborsIconHome]: "ui/modals/neighbors/icon-home.png",
-    [BaseAssetKey.UIModalNeighborsFrameVisit]: "ui/modals/neighbors/frame-visit.png",
+    [BaseAssetKey.UIModalNeighborsQuestion]: "ui/modals/neighbors/question.png",
+    [BaseAssetKey.UIModalNeighborsButton]: "ui/modals/neighbors/button.png",
+    [BaseAssetKey.UIModalNeighborsCard]: "ui/modals/neighbors/card.png",
+    [BaseAssetKey.UIModalNeighborsFrame]: "ui/modals/neighbors/frame.png",
     [BaseAssetKey.UIModalNeighborsTabWorld]: "ui/modals/neighbors/tab-world.png",
     [BaseAssetKey.UIModalNeighborsTabFollowees]: "ui/modals/neighbors/tab-followees.png",
-
     //Topbar
-    [BaseAssetKey.TopbarHeader]: "topbar/header.png",
-    [BaseAssetKey.TopbarIconCoin]: "topbar/coin.png",
-    [BaseAssetKey.TopbarBackgroundCurrency]: "topbar/background-currency.png",
-    [BaseAssetKey.TopbarAvatar]: "topbar/avatar.png",
-    [BaseAssetKey.TopbarInfo]: "topbar/info.png",
-    [BaseAssetKey.TopbarLevelBar]: "topbar/level-bar.png",
-    [BaseAssetKey.TopbarLevelBarBackground]: "topbar/level-bar-background.png",
-    [BaseAssetKey.TopbarLevelBox]: "topbar/lv.png",
+    [BaseAssetKey.UITopbarHeader]: "ui/topbar/header.png",
+    [BaseAssetKey.UITopbarIconCoin]: "ui/topbar/icon-coin.png",
+    [BaseAssetKey.UITopbarIconCarrot]: "ui/topbar/icon-carrot.png",
+    [BaseAssetKey.UITopbarIconEnergy]: "ui/topbar/icon-energy.png",
+    [BaseAssetKey.UITopbarBackgroundCurrency]: "ui/topbar/background-currency.png",
+    [BaseAssetKey.UITopbarAvatar]: "ui/topbar/avatar.png",
+    [BaseAssetKey.UITopbarInfo]: "ui/topbar/info.png",
+    [BaseAssetKey.UITopbarLevelBar]: "ui/topbar/level-bar.png",
+    [BaseAssetKey.UITopbarLevelBarBackground]: "ui/topbar/level-bar-background.png",
+    [BaseAssetKey.UITopbarLevelBox]: "ui/topbar/lv.png",
+    [BaseAssetKey.UITopbarData]: "ui/topbar/data.png",
 
     //Bubble
     [BaseAssetKey.Bubble]: "bubble.png",
-    [BaseAssetKey.TopbarIconCarrot]: "topbar/icon-carrot.png",
-    [BaseAssetKey.TopbarIconEnergy]: "topbar/icon-energy.png",
 
     //Press here arrow
     [BaseAssetKey.PressHereArrow]: "press-here-arrow.png",
@@ -265,6 +258,9 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonButtonRed]: "ui/common/button-red.png",
     [BaseAssetKey.UICommonButtonGreen]: "ui/common/button-green.png",
     [BaseAssetKey.UICommonX]: "ui/common/x.png",
+    [BaseAssetKey.UICommonIconMagnifyingGlass]: "ui/common/icon-magnifying-glass.png",
+    [BaseAssetKey.UICommonMinus]: "ui/common/minus.png",
+    [BaseAssetKey.UICommonPlus]: "ui/common/plus.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",

@@ -1,38 +1,40 @@
 import { BaseAssetKey } from "../../../assets"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { onGameObjectPress } from "../../utils"
 import { BaseText, TextColor } from "../../elements"
 import {
     ConstructorParams,
-    ContainerLiteBaseConstructorParams,
-} from "@/game/types"
+    SizerBaseConstructorParams,
+} from "../../../types"
+import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 export interface UserCardOptions {
   avatarAssetKey: string;
   text: string;
-  onPress: () => void;
   badgeAssetKey?: string;
-  onBadgePress?: () => void;
   hideBadge?: boolean;
 }
 
-export class UserCard extends ContainerLite {
+export class UserCard extends Sizer {
+    public badge: Phaser.GameObjects.Image | undefined
+    public button: Label
     constructor({
-        baseParams: { scene, children, height, width, x, y },
+        baseParams: { scene, config },
         options,
-    }: ConstructorParams<ContainerLiteBaseConstructorParams, UserCardOptions>) {
+    }: ConstructorParams<SizerBaseConstructorParams, UserCardOptions>) {
         const background = scene.add.image(
             0,
             0,
-            BaseAssetKey.UIModalNeighborsCardBackground
+            BaseAssetKey.UIModalNeighborsCard
         )
         super(
             scene,
-            x,
-            y,
-            background.width ?? width,
-            background.height ?? height,
-            children
+            {
+                width: background.width,
+                height: background.height,
+                space: {
+                    right: 40
+                },
+                ...config,
+            }
         )
 
         if (!options) {
@@ -41,52 +43,36 @@ export class UserCard extends ContainerLite {
         const {
             avatarAssetKey,
             text,
-            onPress,
             badgeAssetKey,
-            onBadgePress,
             hideBadge,
         } = options
 
-        this.add(background)
-        const avatarBackground = this.scene.add.image(
+        this.addLocal(background)
+        const frame = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UIModalNeighborsAvatarFriends
+            BaseAssetKey.UIModalNeighborsFrame
         )
         const avatar = this.scene.add.image(0, 0, avatarAssetKey)
 
-        let badge: Phaser.GameObjects.Image | undefined
         if (!hideBadge) {
             if (!badgeAssetKey) {
                 throw new Error("Badge asset key is required")
             }
-            badge = this.scene.add
+            this.badge = this.scene.add
                 .image(0, 0, badgeAssetKey)
-                .setInteractive()
-                .on("pointerdown", () => {
-                    if (!badge) {
-                        throw new Error("Badge is not defined")
-                    }
-                    if (onBadgePress) {
-                        onGameObjectPress({
-                            gameObject: badge,
-                            onPress: onBadgePress,
-                            scene: this.scene,
-                        })
-                    }
-                })
         }
         const avatarLabel = this.scene.rexUI.add.badgeLabel({
-            background: avatarBackground,
-            width: avatarBackground.width,
-            height: avatarBackground.height,
+            background: frame,
+            width: frame.width,
+            height: frame.height,
             center: avatar,
-            rightBottom: badge,
+            rightBottom: this.badge,
         })
         const nameText = new BaseText({
             baseParams: { scene: this.scene, text, x: 0, y: 0 },
             options: {
-                textColor: TextColor.Brown,
+                textColor: TextColor.White,
             },
         })
         this.scene.add.existing(nameText)
@@ -102,53 +88,41 @@ export class UserCard extends ContainerLite {
             })
             .add(nameText, {
                 align: "top",
-                offsetY: 10,
+                offsetY: 30,
             })
             .layout()
-        leftContainer.setX(
-            -(this.width / 2 - leftContainer.width / 2 - 20)
-        )
-        const visitBackground = this.scene.add.image(
+        const buttonBackground = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UIModalNeighborsFrameVisit
+            BaseAssetKey.UIModalNeighborsButton
         )
         const homeIcon = this.scene.add.image(
             0,
             0,
             BaseAssetKey.UIModalNeighborsIconHome
         )
-        const visitButton = this.scene.rexUI.add
+        this.button = this.scene.rexUI.add
             .label({
-                background: visitBackground,
-                width: visitBackground.width,
-                height: visitBackground.height,
+                background: buttonBackground,
+                width: buttonBackground.width,
+                height: buttonBackground.height,
                 icon: homeIcon,
                 align: "center",
             })
-            .setInteractive()
-            .on("pointerdown", () => {
-                onGameObjectPress({
-                    gameObject: visitButton,
-                    onPress,
-                    scene: this.scene,
-                })
-            })
-        this.addLocal(leftContainer)
-
+        this.add(leftContainer)
+        this.addSpace()
         const rightContainer = this.scene.rexUI.add
             .sizer({
                 space: {
                     item: 20,
                 },
             })
-            .add(visitButton, {
+            .add(this.button, {
                 align: "center",
             })
             .layout()
-        rightContainer.setX(
-            this.width / 2 - rightContainer.width / 2 - 60
-        )
-        this.addLocal(rightContainer)
+
+        this.add(rightContainer)
+        this.layout()
     }
 }

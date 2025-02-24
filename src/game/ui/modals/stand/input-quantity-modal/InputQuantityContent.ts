@@ -4,7 +4,7 @@ import { CloseModalMessage, EventBus, EventName, ModalName, UpdateInputQuantityM
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Background, Button, ButtonBackground, ModalBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverProductRequest } from "@/modules/axios"
@@ -16,6 +16,7 @@ export class InputQuantityContent extends BaseSizer {
     private productLabel: Label
     private quantity = 1
     private numberInput: NumberInput
+    private mainContainer: Sizer
     private iconContainer: ContainerLite
     private inventory: InventorySchema | undefined
     private button: Button
@@ -36,7 +37,7 @@ export class InputQuantityContent extends BaseSizer {
                     showContainer: true,
                     showWrapperContainer: false,
                 },
-                originY: 0.5,
+                align: "center",
                 background: Background.Small,
                 title: "Quantity",
                 titleFontSize: 48,
@@ -50,6 +51,11 @@ export class InputQuantityContent extends BaseSizer {
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
 
+        this.mainContainer = this.scene.rexUI.add.sizer({
+            orientation: "y",
+            space: { item: 40 },
+            originY: 1,
+        })
         const frame = this.scene.add.image(0, 0, BaseAssetKey.UIModalCommonFrame)
         this.iconContainer = this.scene.rexUI.add.container(0, 0)
         this.productLabel = this.scene.rexUI.add.label({
@@ -58,15 +64,12 @@ export class InputQuantityContent extends BaseSizer {
             height: frame.height,
             align: "center",
             icon: this.iconContainer, 
-        }).layout().setPosition(0, -50)
-        this.addLocal(this.productLabel)
+        }).layout()
+        this.mainContainer.add(this.productLabel)
         //const input = new Input(userNameField)
         this.numberInput = new NumberInput({
             baseParams: {
                 scene: this.scene,
-                config: {
-                    y: 100,
-                }
             },
             options: {
                 onChange: (value) => {
@@ -78,14 +81,11 @@ export class InputQuantityContent extends BaseSizer {
             }
         }).layout()
         this.scene.add.existing(this.numberInput)
-        this.addLocal(this.numberInput)
+        this.mainContainer.add(this.numberInput)
 
         this.button = new Button({
             baseParams: {
                 scene: this.scene,
-                config: {
-                    y: 250,
-                }
             },
             options: {
                 text: "Confirm",
@@ -124,10 +124,12 @@ export class InputQuantityContent extends BaseSizer {
             }
         }).layout()
         this.scene.add.existing(this.button)
-        this.addLocal(this.button)
+        this.mainContainer.add(this.button)
+        this.mainContainer.setY(this.background.backgroundImage.height / 2 + this.button.height / 2 - 20)
+        this.mainContainer.layout()
+        this.addLocal(this.mainContainer)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
-
         this.scene.events.on(EventName.UpdateInputQuantityModal, ({ inventory }: UpdateInputQuantityModalMessage) => {
             this.render(inventory)
         })

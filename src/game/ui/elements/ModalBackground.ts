@@ -37,6 +37,8 @@ const map: Record<Background, BackgroundData> = {
     [Background.Medium]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundMedium,
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
+        containerAssetKey:  BaseAssetKey.UIBackgroundMediumContainer,
+        containerOffsetY: -100,
     },
     [Background.XLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXLarge,
@@ -47,7 +49,7 @@ const map: Record<Background, BackgroundData> = {
     [Background.Small]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundSmall,
         containerAssetKey: BaseAssetKey.UIBackgroundSmallContainer,
-        containerOffsetY: 20,
+        containerOffsetY: -60,
     },
     [Background.XXLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXXLarge,
@@ -61,12 +63,12 @@ export interface ModalBackgroundOptions {
   background: Background;
   title: string;
   onXButtonPress: (xButton: XButton) => void;
-  originY?: number;
   titleFontSize?: number;
   container?: {
     showWrapperContainer?: boolean;
     showContainer?: boolean;
   },
+  align?: "center" | "top" | "bottom";
   tabs?: {
     width: number;
     options: BaseTabsOptions
@@ -76,8 +78,8 @@ export interface ModalBackgroundOptions {
 export class ModalBackground extends ContainerLite {
     public xButton: XButton
     private titleText: BaseText
-    private backgroundImage: Phaser.GameObjects.Image
-    private uiContainer: ContainerLite
+    public backgroundImage: Phaser.GameObjects.Image
+    public uiContainer: ContainerLite
     public container: ContainerLite | undefined
     public containerImage: Phaser.GameObjects.Image | undefined
     public wrapperContainer: ContainerLite | undefined
@@ -97,12 +99,12 @@ export class ModalBackground extends ContainerLite {
         if (!options) {
             throw new Error("ModalBackground requires options")
         }
-        const { background, title, onXButtonPress, originY = 1, titleFontSize = 48, container: containerConfig, tabs: tabsConfig } = options
+        const { background, title, onXButtonPress, titleFontSize = 48, container: containerConfig, tabs: tabsConfig, align = "top" } = options
         super(scene, x, y, width, height, children)
         const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
         this.containerOffsetY = containerOffsetY
         this.wrapperContainerOffsetY = containerToWrapperOffsetY
-        this.backgroundImage = this.scene.add.image(0, 0, backgroundAssetKey).setOrigin(0.5, originY)
+        this.backgroundImage = this.scene.add.image(0, 0, backgroundAssetKey).setOrigin(0.5, 1)
         this.uiContainer = this.scene.rexUI.add.container(0, 0)
         this.addLocal(this.uiContainer)
         this.uiContainer.addLocal(this.backgroundImage)
@@ -113,7 +115,7 @@ export class ModalBackground extends ContainerLite {
                 if (!wrapperContainerAssetKey) {
                     throw new Error("WrapperContainerAssetKey is required")
                 }
-                this.wrapperContainerImage = this.scene.add.image(0, 0, wrapperContainerAssetKey).setOrigin(0.5, originY)
+                this.wrapperContainerImage = this.scene.add.image(0, 0, wrapperContainerAssetKey).setOrigin(0.5, 1)
                 this.wrapperContainer = this.scene.rexUI.add.container(0, containerOffsetY)
                 this.wrapperContainer.addLocal(this.wrapperContainerImage)
                 this.uiContainer.addLocal(this.wrapperContainer)
@@ -123,7 +125,7 @@ export class ModalBackground extends ContainerLite {
                     if (!tabContainerAssetKey) {
                         throw new Error("TabContainerAssetKey is required")
                     }
-                    this.tabContainerImage = this.scene.add.image(0, 0, tabContainerAssetKey).setOrigin(0.5, originY)
+                    this.tabContainerImage = this.scene.add.image(0, 0, tabContainerAssetKey).setOrigin(0.5, 1)
                     this.tabContainer = this.scene.rexUI.add.container(0, containerToWrapperOffsetY)
                     this.tabContainer.addLocal(this.tabContainerImage)
                     this.wrapperContainer?.addLocal(this.tabContainer)
@@ -132,11 +134,11 @@ export class ModalBackground extends ContainerLite {
                     if (!containerAssetKey) {
                         throw new Error("ContainerAssetKey is required")
                     }
-                    this.containerImage = this.scene.add.image(0, 0, containerAssetKey).setOrigin(0.5, originY)
+                    this.containerImage = this.scene.add.image(0, 0, containerAssetKey).setOrigin(0.5, 1)
                     const container = this.wrapperContainer || this.uiContainer
                     this.container = this.scene.rexUI.add.container(0, containerToWrapperOffsetY)
                     if (!this.wrapperContainer) {
-                        this.container.setOrigin(0.5, originY).setY(containerOffsetY)
+                        this.container.setY(containerOffsetY)
                     }
                     this.container.addLocal(this.containerImage)
                     container.addLocal(this.container)
@@ -164,7 +166,7 @@ export class ModalBackground extends ContainerLite {
                 scene,
                 text: title,
                 x: 0,
-                y: -(this.backgroundImage.height * originY - 75),
+                y: -(this.backgroundImage.height - 75),
             },
             options: {
                 fontSize: titleFontSize,
@@ -185,7 +187,7 @@ export class ModalBackground extends ContainerLite {
                 onPress: () => onXButtonPress(this.xButton),
                 disableInteraction: false,
             },
-        }).layout().setPosition(this.backgroundImage.width / 2 - 75,-(this.backgroundImage.height * originY - 75))
+        }).layout().setPosition(this.backgroundImage.width / 2 - 75,-(this.backgroundImage.height - 75))
         this.scene.add.existing(this.xButton)
         //.setPosition(0, -400)
         this.xButton.setInteractive().on("pointerdown", () => {
@@ -197,5 +199,13 @@ export class ModalBackground extends ContainerLite {
             })
         })
         this.uiContainer.addLocal(this.xButton)
+
+        if (align === "center") {
+            this.setPosition(0, this.backgroundImage.height / 2)
+        } else if (align === "top") {
+            this.setPosition(0, 0)
+        } else if (align === "bottom") {
+            this.setPosition(0, this.backgroundImage.height)
+        }
     }
 }
