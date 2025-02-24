@@ -1,0 +1,1 @@
+export const CELL_SELECT_PRODUCT_DATA_KEY = "cell-select-product-data-key"

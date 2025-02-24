@@ -20,12 +20,22 @@ export interface BaseTab {
   offsets?: IconOffsets;
   scale?: number;
 }
+
 export interface BaseTabsOptions {
   name: string;
   tabs: Array<BaseTab>;
   defaultTab: string;
-  tabsX: number;
-  tabsY: number;
+  tabsX?: number;
+  tabsY?: number;
+}
+
+export interface TabData {
+    iconKey: string,
+    offsets?: {
+        x: number,
+        y: number,
+    },
+    scale?: number,
 }
 
 // Helper constants for scaling
@@ -54,7 +64,7 @@ export class BaseTabs extends ContainerLite {
         if (!options) {
             throw new Error("Tabs requires options")
         }
-        const { defaultTab, tabs, name: tabsName, tabsX, tabsY } = options
+        const { defaultTab, tabs, name: tabsName, tabsX = -400, tabsY = 0 } = options
         this.tabContainer = scene.rexUI.add.container(tabsX, tabsY - slatSourceImage.height)
         this.tabWidth = tabSourceImage.width
         this.tabHeight = tabSourceImage.height

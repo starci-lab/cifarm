@@ -1,4 +1,6 @@
 import { BaseAssetKey } from "@/game/assets"
+import { ItemQuantity } from "../../elements"
+import { InventorySchema } from "@/modules/entities"
 
 export enum InventoryTab {
     Menu = "Menu",
@@ -15,23 +17,8 @@ export interface InventoryTabData {
 
 export const defaultInventoryTab = InventoryTab.Menu
 
-export const tabs: Record<InventoryTab, InventoryTabData> = {
-    [InventoryTab.Menu]: {
-        iconKey: BaseAssetKey.UIModalInventoryIconMenu,
-    },
-    [InventoryTab.Tiles]: {
-        iconKey: BaseAssetKey.UIModalInventoryIconTile,
-    },
-    [InventoryTab.Products]: {
-        iconKey: BaseAssetKey.UIModalInventoryIconProduct,
-    },
-    [InventoryTab.Seeds]: {
-        iconKey: BaseAssetKey.UIModalInventoryIconCrop,
-    },
-    [InventoryTab.Animals]: {
-        iconKey: BaseAssetKey.UIModalInventoryIconAnimal,
-    },
-    [InventoryTab.Tools]: {
-        iconKey: BaseAssetKey.UIModalInventoryIconCan,
-    },
+export interface DragItemParams {
+    item: ItemQuantity
+    pointer: Phaser.Input.Pointer
+    data: InventorySchema
 }

@@ -36,7 +36,6 @@ export enum EventName {
     LoadFollowees = "request_followees",
     // followees loaded, from React to Phaser
     FolloweesLoaded = "followees_loaded",
-
     // refresh
     RefreshUser = "refresh_user",
     UserRefreshed = "user_refreshed",
@@ -97,6 +96,11 @@ export enum EventName {
     SelectNeighborsTab = "select_neighbors_tab",
     PageMoved = "page_moved",
 
+    RequestStorageInventoryIndex = "request_storage_inventory_index",
+    RequestToolbarInventoryIndex = "request_toolbar_inventory_index",
+    StorageInventoryIndexResponsed = "storage_inventory_index_responsed",
+    ToolbarInventoryIndexResponsed = "toolbar_inventory_index_responsed",
+
     // tutorial events
     TutorialOpenShop = "tutorial_open_shop",
     TutorialOpenShopResponsed = "tutorial_open_shop_responsed",
@@ -116,7 +120,7 @@ export enum EventName {
     TutorialOpenRoadsideStandResponsed = "tutorial_open_roadside_stand_responsed",
     TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
     TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
-    TutorialInventorySeedMoveToToolbar = "tutorial_inventory_seed_move_to_toolbar",
+    TutorialPrepareCloseInventory = "tutorial_prepare_close_inventory",
     TutorialPlantSeeds = "tutorial_plant_seeds",
     TutorialSeedsPressed = "tutorial_seeds_pressed",
     TutorialScythePressed = "tutorial_scythe_pressed",
@@ -324,4 +328,12 @@ export interface UpdateInputQuantityModalMessage {
 export interface SelectTabMessage<T = string> {
     name: string
     tabKey: T
+}
+
+export interface RequestToolbarInventoryIndexMessage {
+    pointer: Phaser.Input.Pointer
+}
+
+export interface RequestStorageInventoryIndexMessage {
+    pointer: Phaser.Input.Pointer
 }

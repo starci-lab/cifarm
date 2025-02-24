@@ -2,16 +2,15 @@ import { UserSchema } from "@/modules/entities"
 import { ProgressBar } from "../loading"
 import { BaseAssetKey } from "../../assets"
 import { BaseText, TextColor } from "../elements"
-import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Label, OverlapSizer, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
 import { EventBus, EventName } from "@/game/event-bus"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 export class Topbar extends BaseSizer {
     private background: Phaser.GameObjects.Image
     private user: UserSchema
-    private profileContainer: ContainerLite | undefined
+    private profileContainer: OverlapSizer | undefined
     private resourcesContainer: Sizer | undefined
     private energyLabel: Label | undefined
     private tokenLabel: Label | undefined
@@ -26,7 +25,7 @@ export class Topbar extends BaseSizer {
         height,
     }: BaseSizerBaseConstructorParams) {
         const background = scene.add
-            .image(0, 0, BaseAssetKey.TopbarHeader)
+            .image(0, 0, BaseAssetKey.UITopbarHeader)
             .setOrigin(0.5, 0)
         super(scene, x, y, width || background.width, height || background.height)
         this.background = background
@@ -67,17 +66,21 @@ export class Topbar extends BaseSizer {
         }
         const user = this.visited ? this.neighbor : this.user
 
-        const background = this.scene.add.image(0, 0, BaseAssetKey.TopbarInfo)
+        const background = this.scene.add.image(0, 0, BaseAssetKey.UITopbarInfo)
+        const avatarBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatar)
         // Left column - Avatar
-        const avatar = this.scene.add
-            .image(0, 0, BaseAssetKey.TopbarAvatar)
-            .setDisplaySize(80, 80)
+        const avatar = this.scene.rexUI.add.label({
+            background: avatarBackground,
+            width: avatarBackground.width,
+            height: avatarBackground.height,
+        }).layout()
         const leftColumn = this.scene.rexUI.add
             .sizer({
                 orientation: 1,
             })
-            .add(avatar, { align: "center" })
+            .add(avatar, { align: "center" }).layout()
 
+        const dataBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarData)
         // Right column - Username and Level stacked vertically
         const username = new BaseText({
             baseParams: {
@@ -93,7 +96,7 @@ export class Topbar extends BaseSizer {
         })
         this.scene.add.existing(username)
 
-        const levelBox = this.scene.add.image(0, 0, BaseAssetKey.TopbarLevelBox)
+        const levelBox = this.scene.add.image(0, 0, BaseAssetKey.UITopbarLevelBox)
         const levelText = new BaseText({
             baseParams: {
                 scene: this.scene,
@@ -106,58 +109,84 @@ export class Topbar extends BaseSizer {
                 textColor: TextColor.White,
             },
         })
-        this.scene.add.existing(levelText)
-        const levelLabel = this.scene.rexUI.add
-            .label({
-                background: levelBox,
-                width: 50,
-                height: 50,
-                text: levelText,
-                align: "center",
-            })
-            .setDepth(1)
-            .layout()
         // Replace old level progress bar with ProgressBar component
         const experienceBar = new ProgressBar({
             baseParams: { scene: this.scene },
             options: { progress: 0.5 },
         })
         this.scene.add.existing(experienceBar)
-
+        this.scene.add.existing(levelText)
+        const levelLabel = this.scene.rexUI.add
+            .label({
+                background: levelBox,
+                width: levelBox.width,
+                height: levelBox.height,
+                text: levelText,
+                align: "center",
+            })
+            .layout()
         // Experience bar layout with two columns
         const experienceContainer = this.scene.rexUI.add
             .sizer({
-                orientation: "x", // Horizontal layout
+                orientation: "x",
             })
             .add(levelLabel, {
-                align: "left",
+                align: "center",
             })
             .add(experienceBar, {
-                align: "right",
-                offsetX: -10,
+                align: "center",
+                offsetX: -5,
             })
             .layout()
-        
-        const x = this.visited ? 0 : -(this.background.width / 2 - 50)
+            // .overlapSizer({
+            //     width: dataBackground.width,
+            //     height: dataBackground.height,
+            //     space: {
+            //         bottom: 20,
+            //         left: 20,
+            //         right: 20,
+            //         top: 20,
+            //     }
+            // })
+        console.log(background.width)
+        const x = this.visited ? 0 : -(this.background.width / 2 - background.width / 2 - 10)
         const rightColumn = this.scene.rexUI.add
-            .sizer({
-                orientation: "y", // Vertical layout
+            .overlapSizer({
+                width: dataBackground.width,
+                height: dataBackground.height,
+                space: {
+                    bottom: 10,
+                    left: 15,
+                    right: 15,
+                    top: 10,
+                },
             })
-            .add(username, { align: "left", offsetY: 0 })
-            .add(experienceContainer, { align: "center" })
+            .addBackground(dataBackground)
+            .add(username, { align: "left-top", expand: false, })
+            .add(experienceContainer, { align: "left-bottom", expand: false, })
             .layout()
         this.profileContainer = this.scene.rexUI.add
-            .sizer({
-                orientation: "x",
+            .overlapSizer({
+                width: background.width,
+                height: background.height,
+                space: {
+                    bottom: 30,
+                    left: 18,
+                    right: 18,
+                    top: 15,
+                },
                 x,
-                y: this.background.height / 2 - 20,
-                originX: this.visited ? 0.5 : 0,
-                originY: 0.5,
+                y: this.background.height / 2 + 10
             })
-            .add(leftColumn)
-            .add(rightColumn)
             .addBackground(background)
-            .setItemSpacing(10)
+            .add(leftColumn, {
+                align: "left-center",
+                expand: false,
+            })
+            .add(rightColumn, {
+                align: "right-center",
+                expand: false,
+            })
             .layout()
         this.addLocal(this.profileContainer)
     }
@@ -181,18 +210,18 @@ export class Topbar extends BaseSizer {
             return
         }
         this.energyLabel = this.addLabel({
-            iconKey: BaseAssetKey.TopbarIconEnergy,
+            iconKey: BaseAssetKey.UITopbarIconEnergy,
             amount: `${this.user.energy}/${this.computeExperiencesQuota(
                 this.user.level
             )}`,
             scale: 0.7,
         })
         this.goldLabel = this.addLabel({
-            iconKey: BaseAssetKey.TopbarIconCoin,
+            iconKey: BaseAssetKey.UITopbarIconCoin,
             amount: `${this.user.golds ?? 0}`,
         }).setVisible(!this.visited)
         this.tokenLabel = this.addLabel({
-            iconKey: BaseAssetKey.TopbarIconCarrot,
+            iconKey: BaseAssetKey.UITopbarIconCarrot,
             amount: `${this.user.tokens ?? 0}`,
             scale: 0.9,
         }).setVisible(!this.visited)
@@ -216,7 +245,7 @@ export class Topbar extends BaseSizer {
         const background = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.TopbarBackgroundCurrency
+            BaseAssetKey.UITopbarBackgroundCurrency
         )
         const iconContainer = this.scene.add.container(0, 0)
         const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)

@@ -1,19 +1,35 @@
-import { ConstructorParams, BadgeLabelBaseConstructorParams } from "@/game/types"
+import {
+    ConstructorParams,
+    BadgeLabelBaseConstructorParams,
+} from "@/game/types"
 import { BadgeLabel } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "./BaseText"
 
 export interface ItemQuantityOptions {
-    assetKey: string
-    //quantity of the item
-    quantity?: number
-    // show the badge
-    showBadge?: boolean
-    // scale the icon
-    scale?: number
+  assetKey: string;
+  //quantity of the item
+  quantity?: number;
+  // show the badge
+  showBadge?: boolean;
+  // scale the icon
+  scale?: number;
 }
 
 export class ItemQuantity extends BadgeLabel {
-    constructor({ baseParams: { scene, config }, options}: ConstructorParams<BadgeLabelBaseConstructorParams, ItemQuantityOptions>) {
+    private constructorParams: ConstructorParams<
+    BadgeLabelBaseConstructorParams,
+    ItemQuantityOptions
+  >
+    constructor(
+        constructorParams: ConstructorParams<
+      BadgeLabelBaseConstructorParams,
+      ItemQuantityOptions
+    >
+    ) {
+        const {
+            baseParams: { scene, config },
+            options,
+        } = constructorParams
         if (!options) {
             throw new Error("ItemQuantity requires options")
         }
@@ -23,16 +39,18 @@ export class ItemQuantity extends BadgeLabel {
         const iconImage = scene.add.image(0, 0, assetKey)
         const width = iconImage.width * scale
         const height = iconImage.height * scale
-        const icon = scene.rexUI.add.label({
-            background: iconImage,
-            width,
-            height,
-        }).layout()
+        const icon = scene.rexUI.add
+            .label({
+                background: iconImage,
+                width,
+                height,
+            })
+            .layout()
         iconContainer.addLocal(icon)
 
-        let text: BaseText | undefined
+        let rightBottomText: BaseText | undefined
         if (showBadge) {
-            text = new BaseText({
+            rightBottomText = new BaseText({
                 baseParams: {
                     scene,
                     text: quantity.toString(),
@@ -49,15 +67,25 @@ export class ItemQuantity extends BadgeLabel {
                     enableStroke: true,
                 },
             })
-            scene.add.existing(text)
+            scene.add.existing(rightBottomText)
         }
 
         super(scene, {
             center: iconContainer,
             width,
             height,
-            rightBottom: text,
+            rightBottom: rightBottomText,
             ...config,
         })
+
+        this.constructorParams = constructorParams
+    }
+
+    public duplicate() {
+        const position = this.getCenter()
+        const duplicated = new ItemQuantity(this.constructorParams).setPosition(position.x, position.y)
+        this.scene.add.existing(duplicated)
+        duplicated.layout()
+        return duplicated
     }
 }

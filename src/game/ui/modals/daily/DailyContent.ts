@@ -1,9 +1,10 @@
 import { BaseAssetKey } from "@/game/assets"
 import { DailyRewardSchema, DailyRewardId } from "@/modules/entities"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
-import { BaseText, StrokeColor, TextColor } from "../../elements"
+import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
+import { Background, BaseText, ModalBackground, StrokeColor, TextColor, XButton } from "../../elements"
+import { onGameObjectPress } from "../../utils"
+import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 
 // daily coin icon map
 const iconMap: Record<DailyRewardId, BaseAssetKey> = {
@@ -14,32 +15,59 @@ const iconMap: Record<DailyRewardId, BaseAssetKey> = {
     // temporary use the same icon
     [DailyRewardId.Day5]: BaseAssetKey.IconDaily,
 }
-export class DailyContent extends ContainerLite {
-    private rewardContainersSizer: Sizer
+export class DailyContent extends BaseSizer {
+    private modalBackground: ModalBackground
     
     // daily rewards data
     private dailyRewards: Array<DailyRewardSchema> = []
-    constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
-        super(scene, x, y, width, height, children)
+    constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
+        super(scene, x, y, width, height)
 
+        this.modalBackground = new ModalBackground({
+            baseParams: {
+                scene,
+            },
+            options: {
+                align: "center",
+                container: {
+                    showWrapperContainer: false,
+                    showContainer: true,
+                },
+                onXButtonPress: (button: XButton) => {
+                    onGameObjectPress({
+                        gameObject: button,
+                        onPress: () => {
+                            EventBus.emit(EventName.CloseModal, {
+                                modalName: ModalName.Daily
+                            })
+                        },
+                        scene: this.scene,
+                    })
+                },
+                title: "Daily",
+                background: Background.Medium,
+            }
+        })
+        this.scene.add.existing(this.modalBackground)
+        this.addLocal(this.modalBackground)
         // get the daily rewards data
         this.dailyRewards = this.scene.cache.obj.get(CacheKey.DailyRewards)
 
-        // create the reward containers
-        this.rewardContainersSizer = this.scene.rexUI.add
-            .sizer({
-                orientation: "y",
-                x: 0,
-                y: 0,
-                space: {
-                    item: 10,
-                },
-            })
-            .add(this.createBaseDayRewardContainers())
-            .add(this.createLastDayRewardContainer())
-            .layout()
-        // add the reward containers to the sizer
-        this.addLocal(this.rewardContainersSizer)
+        // // create the reward containers
+        // this.rewardContainersSizer = this.scene.rexUI.add
+        //     .sizer({
+        //         orientation: "y",
+        //         x: 0,
+        //         y: 0,
+        //         space: {
+        //             item: 10,
+        //         },
+        //     })
+        //     .add(this.createBaseDayRewardContainers())
+        //     .add(this.createLastDayRewardContainer())
+        //     .layout()
+        // // add the reward containers to the sizer
+        // this.addLocal(this.rewardContainersSizer)
     }
 
     // create base day reward container

@@ -1,8 +1,11 @@
 import { animalAssetMap, buildingAssetMap, cropAssetMap, tileAssetMap } from "@/game/assets"
 import { AnimalId, BuildingId, CropId, TileId } from "@/modules/entities"
-import { ShopTab, ShopTabData } from "./types"
+import { TabData } from "../../elements"
+import { ShopTab } from "./types"
 
-export const tabsConfig: Record<ShopTab, ShopTabData> = {
+export const ITEM_DATA_KEY = "item-data"
+
+export const tabsConfig: Record<ShopTab, TabData> = {
     [ShopTab.Seeds]: {
         iconKey: cropAssetMap[CropId.Carrot].seed.textureConfig.key,
         scale: 0.8,
