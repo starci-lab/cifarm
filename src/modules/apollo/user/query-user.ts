@@ -9,7 +9,6 @@ const query1 = gql`
       accountAddress
       chainKey
       dailyRewardLastClaimTime
-      dailyRewardNumberOfClaim
       dailyRewardStreak
       energy
       energyFull

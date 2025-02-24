@@ -41,6 +41,7 @@ import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
 import { Modals } from "./Modals"
 import { SWRConfig } from "swr"
+import { useApiClaimDailyRewardSwrMutation } from "@/hooks/swr"
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
     const loaded = useAppSelector((state) => state.sessionReducer.loaded)
@@ -59,6 +60,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
                             API_BUY_SEEDS_SWR_MUTATION: useApiBuySeedsSwrMutation(),
                             API_PLANT_SEED_SWR_MUTATION: useApiPlantSeedSwrMutation(),
+                            API_CLAIM_DAILY_REWARD_SWR_MUTATION: useApiClaimDailyRewardSwrMutation(),
                             API_WATER_SWR_MUTATION: useApiWaterSwrMutation(),
                             API_CONSTRUCT_BUILDING_SWR_MUTATION: useApiConstructBuildingSwrMutation(),
                             API_BUY_TILE_SWR_MUTATION: useApiBuyTileSwrMutation(),

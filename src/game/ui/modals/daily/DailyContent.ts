@@ -1,11 +1,15 @@
 import { BaseAssetKey } from "@/game/assets"
-import { DailyRewardId, DailyRewardInfo } from "@/modules/entities"
+import { DailyRewardId, DailyRewardInfo, UserSchema } from "@/modules/entities"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import { Background, BaseText, ModalBackground, XButton } from "../../elements"
 import { onGameObjectPress } from "../../utils"
-import { EventBus, EventName, ModalName, UpdateClaimModalMessage } from "@/game/event-bus"
+import { ClaimItem, EventBus, EventName, ModalName, UpdateClaimModalMessage } from "@/game/event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { GRAY_TINT_COLOR } from "@/game/constants"
+import { MODAL_DEPTH_1 } from "../ModalManager"
+import { isoUtcDateToLocale } from "@/modules/common"
+import dayjs from "dayjs"
 
 export interface DailyRewardData {
     baseAssetKey: BaseAssetKey
@@ -35,7 +39,8 @@ const iconMap: Record<DailyRewardId, DailyRewardData> = {
 }
 export class DailyContent extends BaseSizer {
     private background: ModalBackground
-    private rewardContainersSizer: Sizer
+    private rewardContainersSizer: Sizer | undefined
+    private user: UserSchema
     private goldBaseAssetKey: BaseAssetKey
     private tokenBaseAssetKey: BaseAssetKey
     // daily rewards data
@@ -45,6 +50,8 @@ export class DailyContent extends BaseSizer {
 
         this.goldBaseAssetKey = BaseAssetKey.UICommonIconCoin
         this.tokenBaseAssetKey = BaseAssetKey.UICommonIconCarrot
+
+        this.user = this.scene.cache.obj.get(CacheKey.User)
 
         // get the daily rewards data
         this.dailyRewardInfo = this.scene.cache.obj.get(CacheKey.DailyRewardInfo)
@@ -73,7 +80,43 @@ export class DailyContent extends BaseSizer {
                 background: Background.Medium,
                 mainButton: {
                     onPress: () => {
-                        //call api
+                        let id = DailyRewardId.Day5
+                        if (this.user.dailyRewardStreak < 4) {
+                            const ids = Object.values(DailyRewardId)
+                            for (let i = 0; i < ids.length; i++) {
+                                if (this.user.dailyRewardStreak + 1 === this.dailyRewardInfo[ids[i]].day) {
+                                    id = ids[i]
+                                    break
+                                }
+                            }
+                        }
+                        EventBus.once(EventName.ClaimDailyRewardCompleted, () => {
+                            EventBus.emit(EventName.RefreshUser)
+                            const items : Array<ClaimItem> = [{
+                                assetKey: this.goldBaseAssetKey,
+                                quantity: this.dailyRewardInfo[id].golds,
+                                stackable: true,
+                                scale: GOLD_SCALE,
+                            }]
+                            if (this.dailyRewardInfo[id].tokens) {
+                                items.push({
+                                    assetKey: this.tokenBaseAssetKey,
+                                    quantity: this.dailyRewardInfo[id].tokens,
+                                    stackable: true,
+                                    scale: TOKEN_SCALE,
+                                })
+                            }      
+                            const eventMessage: UpdateClaimModalMessage = {
+                                data: {
+                                    items
+                                }
+                            }
+                            this.scene.events.emit(EventName.UpdateClaimModal, eventMessage)
+                            EventBus.emit(EventName.OpenModal, {
+                                modalName: ModalName.Claim
+                            })
+                        })
+                        EventBus.emit(EventName.RequestClaimDailyReward)
                     },
                     text: "Claim",
                 }
@@ -82,6 +125,37 @@ export class DailyContent extends BaseSizer {
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
 
+        if (!this.background.container) {
+            throw new Error("Background container is not defined")
+        }
+        this.updateSizer()
+        if (!this.rewardContainersSizer) {
+            throw new Error("Reward container sizer is not defined")
+        }
+
+        EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
+            this.user = user
+            this.updateSizer()
+        })
+    }
+
+    private checkClaimable() {
+        if (!this.user.dailyRewardLastClaimTime) {
+            throw new Error("Daily reward last claim time is not defined")
+        }
+        const day = dayjs(this.user.dailyRewardLastClaimTime)
+        // get current utc date
+        const utcNow = dayjs().utc()
+        return !day.isSame(utcNow, "day")
+    }
+
+    private updateSizer() {
+        if (this.rewardContainersSizer) {
+            if (!this.background.container) {
+                throw new Error("Background container is not defined")
+            }
+            this.background.container.remove(this.rewardContainersSizer, true)
+        }
         // create the reward containers
         this.rewardContainersSizer = this.scene.rexUI.add
             .sizer({
@@ -94,11 +168,23 @@ export class DailyContent extends BaseSizer {
             })
             .add(this.createBaseDayRewardContainers())
             .add(this.createLastDayRewardContainer())
-            .layout()
+            .layout().setDepth(MODAL_DEPTH_1 + 1)
         if (!this.background.container) {
             throw new Error("Background container is not defined")
         }
         this.background.container.addLocal(this.rewardContainersSizer)
+        
+        if (!this.checkClaimable()) {
+            if (!this.background.mainButton) {
+                throw new Error("Main button is not defined")
+            }
+            this.background.mainButton.disable()
+        } else {
+            if (!this.background.mainButton) {
+                throw new Error("Main button is not defined")
+            }
+            this.background.mainButton.enable()
+        }
     }
 
     // create base day reward container
@@ -106,6 +192,7 @@ export class DailyContent extends BaseSizer {
         if (id === DailyRewardId.Day5) {
             throw new Error("Day 5 is not the base day")
         }
+        const claimed = this.user.dailyRewardStreak >= this.dailyRewardInfo[id].day
         // get the daily reward
         const dailyReward = this.dailyRewardInfo[id]
         if (!dailyReward) {
@@ -139,6 +226,7 @@ export class DailyContent extends BaseSizer {
             text: dayText,
             align: "center",
         }).layout()
+
         const { baseAssetKey } = iconMap[id]
         const icon = this.scene.add.image(0, 0, baseAssetKey)
         const quantityText = new BaseText({
@@ -165,6 +253,7 @@ export class DailyContent extends BaseSizer {
             .add(icon)
             .add(quantityText)
             .layout()
+        
         iconSizerContainer.addLocal(iconSizer)
 
         const badgeLabel = this.scene.rexUI.add.badgeLabel({
@@ -173,24 +262,14 @@ export class DailyContent extends BaseSizer {
             height: backgroundImage.height,
             leftTop: day,
             center: iconSizerContainer,
-        }).layout().setInteractive().on("pointerdown", () => {
-            const eventMessage: UpdateClaimModalMessage = {
-                data: {
-                    items: [
-                        {
-                            assetKey: this.goldBaseAssetKey,
-                            quantity: dailyReward.golds,
-                            stackable: true,
-                            scale: GOLD_SCALE,
-                        }
-                    ]
-                }
-            }
-            this.scene.events.emit(EventName.UpdateClaimModal, eventMessage)
-            EventBus.emit(EventName.OpenModal, {
-                modalName: ModalName.Claim
-            })
-        })
+        }).layout()
+
+        if (claimed) {
+            icon.setTint(GRAY_TINT_COLOR)
+            quantityText.setTint(GRAY_TINT_COLOR)
+            const image = this.scene.add.image(0, 0, BaseAssetKey.UICommonCheck)
+            iconSizerContainer.addLocal(image)
+        }
         return badgeLabel
     }
 
@@ -260,30 +339,7 @@ export class DailyContent extends BaseSizer {
             height: backgroundImage.height,
             leftTop: day,
             center: iconSizerContainer,
-        }).layout().setInteractive().on("pointerdown", () => {
-            const eventMessage: UpdateClaimModalMessage = {
-                data: {
-                    items: [
-                        {
-                            assetKey: this.goldBaseAssetKey,
-                            quantity: this.dailyRewardInfo[id].golds,
-                            stackable: true,
-                            scale: GOLD_SCALE,
-                        },
-                        {
-                            assetKey: this.tokenBaseAssetKey,
-                            quantity: this.dailyRewardInfo[id].tokens,
-                            stackable: true,
-                            scale: TOKEN_SCALE,
-                        }
-                    ]
-                }
-            }
-            this.scene.events.emit(EventName.UpdateClaimModal, eventMessage)
-            EventBus.emit(EventName.OpenModal, {
-                modalName: ModalName.Claim
-            })
-        })
+        }).layout()
         return badgeLabel
     }
 }

@@ -19,8 +19,7 @@ export const useApiClaimDailyRewardSwrMutation = (): UseSWRMutation<
             extraArgs: { arg: UseApiClaimDailyRewardSwrMutationArgs }
         ) => {
             const { options } = { ...extraArgs.arg }
-            console.log("called")
-            //update the tutorial only
+            //claim the daily reward
             await claimDailyReward(options)
         }
     )

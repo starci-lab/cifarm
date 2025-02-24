@@ -25,8 +25,8 @@ export interface BackgroundData {
     tabContainerAssetKey?: BaseAssetKey
     containerOffsetY?: number
     containerToWrapperOffsetY?: number
-    mainButtonScale?: number
-    mainButtonOffsetY?: number
+    buttonScale?: number
+    buttonOffsetY?: number
 }
 
 const map: Record<Background, BackgroundData> = {
@@ -42,8 +42,8 @@ const map: Record<Background, BackgroundData> = {
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         containerAssetKey:  BaseAssetKey.UIBackgroundMediumContainer,
         containerOffsetY: -100,
-        mainButtonScale: 1.4,
-        mainButtonOffsetY: 40,
+        buttonScale: 1.4,
+        buttonOffsetY: 40,
     },
     [Background.XLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXLarge,
@@ -111,7 +111,7 @@ export class ModalBackground extends ContainerLite {
         }
         const { background, title, onXButtonPress, titleFontSize = 48, container: containerConfig, mainButton, tabs: tabsConfig, align = "top" } = options
         super(scene, x, y, width, height, children)
-        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, mainButtonScale = 1, mainButtonOffsetY = 10, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
+        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, buttonScale = 1, buttonOffsetY = 10, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
         this.containerOffsetY = containerOffsetY
         this.wrapperContainerOffsetY = containerToWrapperOffsetY
         this.backgroundImage = this.scene.add.image(0, 0, backgroundAssetKey).setOrigin(0.5, 1)
@@ -219,7 +219,7 @@ export class ModalBackground extends ContainerLite {
                 options: {
                     text,
                     syncTextScale: true,
-                    scale: mainButtonScale,
+                    scale: buttonScale,
                     onPress: () => {
                         if (!this.mainButton) {
                             throw new Error("Main button is not set")
@@ -228,7 +228,7 @@ export class ModalBackground extends ContainerLite {
                     }
                 }
             })
-            this.mainButton.setY(mainButtonOffsetY)
+            this.mainButton.setY(buttonOffsetY)
             this.scene.add.existing(this.mainButton)
             if (!this.container) {
                 throw new Error("Container is not set")
