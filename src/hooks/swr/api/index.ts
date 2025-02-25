@@ -20,4 +20,4 @@ export * from "./useApiHelpUsePesticideSwrMutation"
 export * from "./useApiHelpWaterSwrMutation"
 export * from "./useApiThiefCropSwrMutation"
 export * from "./useApiBuyAnimalSwrMutation"
-
+export * from "./useApiClaimDailyRewardSwrMutation"

@@ -56,6 +56,7 @@ export enum EventName {
     // modal events
     OpenModal = "open_modal",
     CloseModal = "close_modal",
+    CloseAllModals = "close_all_modals",
 
     // tutorial events
     OpenTutorial = "open_tutorial",
@@ -64,7 +65,7 @@ export enum EventName {
     // stand
     UpdateSelectProductModal = "update_select_product_modal",
     UpdateInputQuantityModal = "update_input_quantity_modal",
-
+    UpdateClaimModal = "update_claim_modal",
     // backdrops
     ShowGameplayBackdrop = "show_gameplay_backdrop",
     HideGameplayBackdrop = "hide_gameplay_backdrop",
@@ -200,6 +201,10 @@ export enum EventName {
 
     RequestBuyAnimal = "request_buy_animal",
     BuyAnimalCompleted = "buy_animal_completed",
+    RequestClaimDailyReward = "request_claim_daily_reward",
+    ClaimDailyRewardCompleted = "claim_daily_reward_completed",
+
+    CreateFlyItem = "item_flown",
 
     FadeIn = "fade_in",
     FadeOut = "fade_out",
@@ -306,6 +311,7 @@ export enum ModalName {
   SelectProduct = "select-product",
   InputQuantity = "input-quantity",
   AnimalHousing = "animal-housing",
+  Claim = "claim",
 }
 
 export interface OpenModalMessage {
@@ -325,6 +331,19 @@ export interface UpdateInputQuantityModalMessage {
     inventory: InventorySchema
 }
 
+export interface ClaimItem {
+    assetKey: string;
+    quantity?: number;
+    stackable: boolean;
+    scale?: number;
+}
+export interface ClaimData {
+    items: Array<ClaimItem>;
+}
+export interface UpdateClaimModalMessage {
+    data: ClaimData
+}
+
 export interface SelectTabMessage<T = string> {
     name: string
     tabKey: T
@@ -336,4 +355,10 @@ export interface RequestToolbarInventoryIndexMessage {
 
 export interface RequestStorageInventoryIndexMessage {
     pointer: Phaser.Input.Pointer
+}
+
+export interface CreateFlyItemMessage {
+    position: Position
+    quantity: number
+    assetKey: string
 }

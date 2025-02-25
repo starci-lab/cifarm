@@ -50,7 +50,6 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                     // return to normal depth
                     restoreTutorialDepth({
                         gameObject: this.shopButton,
-                        scene: this.scene,
                     })
                     // emit the event
                     this.scene.events.emit(EventName.TutorialShopButtonPressed)
@@ -74,7 +73,6 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                     // return to normal depth
                     restoreTutorialDepth({
                         gameObject: this.roadsideStandButton,
-                        scene: this.scene,
                     })
                     // emit the event
                     this.scene.events.emit(EventName.TutorialRoadsideStandButtonPressed)
@@ -102,7 +100,6 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         this.scene.events.once(EventName.TutorialOpenShop, () => {
             setTutorialDepth({
                 gameObject: this.shopButton,
-                scene: this.scene,
             })
             const { x, y } = this.shopButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
@@ -122,7 +119,6 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         this.scene.events.once(EventName.TutorialOpenRoadsideStand, () => {
             setTutorialDepth({
                 gameObject: this.roadsideStandButton,
-                scene: this.scene,
             })
             const { x, y } = this.roadsideStandButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {

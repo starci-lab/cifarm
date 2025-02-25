@@ -2,16 +2,16 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseAssetKey } from "../../../assets"
 import { ProgressBar } from "../../loading"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
-import { BaseText } from "../../elements"
+import { BaseText, ModalBackground } from "../../elements"
 
 export class QuestContent extends ContainerLite {
+    private background: ModalBackground
     constructor({ scene, x, y, width, height, children }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
 
         // create the quest background
         this.createInviteUserItemCard()
     }
-
     // create the item card
     private createInviteUserItemCard() {
         const content = this.scene.add.container(this.x, this.y)
@@ -58,7 +58,7 @@ export class QuestContent extends ContainerLite {
     }
 
     // create the item card
-    private createItemCard({ title, onPress, content, contentPosition }: CreateItemCardParams) {
+    private createItemCard({ title, content, contentPosition }: CreateItemCardParams) {
     // create card container
         const backgroundContainer = this.scene.add.container(0, 0)
         // create card item image

@@ -5,9 +5,9 @@ import {
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { BaseText, TextColor } from "./BaseText"
 import { BaseAssetKey } from "@/game/assets"
-import { onGameObjectPress } from "../utils"
 import { XButton } from "./XButton"
 import { BaseTabs, BaseTabsOptions } from "./BaseTabs"
+import { Button } from "./Button"
 
 export enum Background {
   Large = "large",
@@ -24,6 +24,8 @@ export interface BackgroundData {
     tabContainerAssetKey?: BaseAssetKey
     containerOffsetY?: number
     containerToWrapperOffsetY?: number
+    buttonScale?: number
+    buttonOffsetY?: number
 }
 
 const map: Record<Background, BackgroundData> = {
@@ -39,6 +41,8 @@ const map: Record<Background, BackgroundData> = {
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         containerAssetKey:  BaseAssetKey.UIBackgroundMediumContainer,
         containerOffsetY: -100,
+        buttonScale: 1.4,
+        buttonOffsetY: 40,
     },
     [Background.XLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXLarge,
@@ -73,6 +77,10 @@ export interface ModalBackgroundOptions {
     width: number;
     options: BaseTabsOptions
     tabContainerOffsetY?: number
+  },
+  mainButton?: {
+    text: string;
+    onPress: (button: Button) => void;
   }
 }
 export class ModalBackground extends ContainerLite {
@@ -89,6 +97,7 @@ export class ModalBackground extends ContainerLite {
     public tabContainerImage: Phaser.GameObjects.Image | undefined
     public containerOffsetY: number
     public wrapperContainerOffsetY: number
+    public mainButton: Button | undefined
     constructor({
         baseParams: { scene, children, height, width, x, y },
         options,
@@ -99,9 +108,9 @@ export class ModalBackground extends ContainerLite {
         if (!options) {
             throw new Error("ModalBackground requires options")
         }
-        const { background, title, onXButtonPress, titleFontSize = 48, container: containerConfig, tabs: tabsConfig, align = "top" } = options
+        const { background, title, onXButtonPress, titleFontSize = 48, container: containerConfig, mainButton, tabs: tabsConfig, align = "top" } = options
         super(scene, x, y, width, height, children)
-        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
+        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, buttonScale = 1, buttonOffsetY = 10, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
         this.containerOffsetY = containerOffsetY
         this.wrapperContainerOffsetY = containerToWrapperOffsetY
         this.backgroundImage = this.scene.add.image(0, 0, backgroundAssetKey).setOrigin(0.5, 1)
@@ -189,16 +198,33 @@ export class ModalBackground extends ContainerLite {
             },
         }).layout().setPosition(this.backgroundImage.width / 2 - 75,-(this.backgroundImage.height - 75))
         this.scene.add.existing(this.xButton)
-        //.setPosition(0, -400)
-        this.xButton.setInteractive().on("pointerdown", () => {
-            onGameObjectPress({
-                gameObject: this.xButton,
-                onPress: () => onXButtonPress(this.xButton),
-                animate: false,
-                scene: this.scene,
-            })
-        })
         this.uiContainer.addLocal(this.xButton)
+
+        if (mainButton) {
+            const { text, onPress } = mainButton
+            this.mainButton = new Button({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    text,
+                    syncTextScale: true,
+                    scale: buttonScale,
+                    onPress: () => {
+                        if (!this.mainButton) {
+                            throw new Error("Main button is not set")
+                        }
+                        onPress(this.mainButton)
+                    }
+                }
+            })
+            this.mainButton.setY(buttonOffsetY)
+            this.scene.add.existing(this.mainButton)
+            if (!this.container) {
+                throw new Error("Container is not set")
+            }
+            this.container.addLocal(this.mainButton)
+        }
 
         if (align === "center") {
             this.setPosition(0, this.backgroundImage.height / 2)

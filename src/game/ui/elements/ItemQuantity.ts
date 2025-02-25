@@ -47,7 +47,6 @@ export class ItemQuantity extends BadgeLabel {
             })
             .layout()
         iconContainer.addLocal(icon)
-
         let rightBottomText: BaseText | undefined
         if (showBadge) {
             rightBottomText = new BaseText({

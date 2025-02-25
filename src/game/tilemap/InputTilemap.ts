@@ -1,19 +1,21 @@
 import {
+    BuyAnimalRequest,
     BuyTileRequest,
     ConstructBuildingRequest,
     HarvestCropRequest,
-    PlantSeedRequest,
-    UseHerbicideRequest,
-    UsePesticideRequest,
-    WaterRequest,
+    HarvestCropResponse,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
     HelpWaterRequest,
+    PlantSeedRequest,
     ThiefCropRequest,
-    HarvestCropResponse,
-    BuyAnimalRequest,
+    UseHerbicideRequest,
+    UsePesticideRequest,
+    WaterRequest,
 } from "@/modules/axios"
+import { sleep } from "@/modules/common"
 import {
+    Activities,
     AnimalId,
     BuildingId,
     CropCurrentState,
@@ -31,6 +33,7 @@ import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import {
     AnimalAge,
     animalAssetMap,
+    BaseAssetKey,
     buildingAssetMap,
     getAnimalIdFromKey,
     productAssetMap,
@@ -38,7 +41,7 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
+import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
@@ -53,7 +56,9 @@ export interface TemporaryPlaceItemData {
   tilesetConfig: TilesetConfig;
   type?: PlacedItemType;
 }
-
+// key for experience
+const DELAY_TIME = 1000
+const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 // tilemap for handling input events
 export class InputTilemap extends ItemTilemap {
     // pinch instance
@@ -69,7 +74,7 @@ export class InputTilemap extends ItemTilemap {
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private crops: Array<CropSchema> = []
     private products: Array<ProductSchema> = []
-
+    private activities: Activities 
     private placementPopup: PlacementPopup | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
@@ -133,6 +138,7 @@ export class InputTilemap extends ItemTilemap {
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.crops = this.scene.cache.obj.get(CacheKey.Crops)
         this.products = this.scene.cache.obj.get(CacheKey.Products)
+        this.activities = this.scene.cache.obj.get(CacheKey.Activities)
 
         // click on empty tile to plant seed
         this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -187,14 +193,32 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Temporary layer not found")
         }
         this.temporaryLayer = temporaryLayer
-    //set depth of the temporary layer
+
+        this.scene.events.on(
+            EventName.CreateFlyItem,
+            ({ assetKey, position, quantity }: CreateFlyItemMessage) => {
+                const flyItem = new FlyItem({
+                    baseParams: {
+                        scene: this.scene,
+                    },
+                    options: {
+                        assetKey,
+                        quantity,
+                        x: position.x,
+                        y: position.y,
+                        depth: calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        }),
+                    },
+                })
+                this.scene.add.existing(flyItem)
+            }
+        )
     }
 
     // method to handle press on tile
-    private async handlePressOnTile(
-        data: PlacedItemObjectData
-    ) {
-        // check if current is visited or not
+    private async handlePressOnTile(data: PlacedItemObjectData) {
+    // check if current is visited or not
         const visitedNeighbor = this.scene.cache.obj.get(
             CacheKey.VisitedNeighbor
         ) as UserSchema
@@ -282,6 +306,11 @@ export class InputTilemap extends ItemTilemap {
                         EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
+                            this.scene.events.emit(EventName.CreateFlyItem, {
+                                assetKey: EXPERIENCE_KEY,
+                                position: object.getCenter(),
+                                quantity: this.activities.helpWater.experiencesGain,
+                            })
                         }
                         // reset the isPressed flag
                         data.pressBlocked = true
@@ -299,6 +328,11 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
                         }
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.water.experiencesGain,
+                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -323,7 +357,11 @@ export class InputTilemap extends ItemTilemap {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
-
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.helpUsePesticide.experiencesGain,
+                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -340,6 +378,11 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropPesticideUsed)
                         }
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.usePesticide.experiencesGain,
+                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -364,7 +407,11 @@ export class InputTilemap extends ItemTilemap {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
-
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.helpUseHerbicide.experiencesGain,
+                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -381,6 +428,11 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHerbicideUsed)
                         }
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.useHerbicide.experiencesGain,
+                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -420,26 +472,29 @@ export class InputTilemap extends ItemTilemap {
                 const center = object.getCenter()
                 if (visitedNeighbor) {
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefCropCompleted, (message: HarvestCropResponse) => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
-                        const flyItem = new FlyItem({
-                            baseParams: {
-                                scene: this.scene,
-                            },
-                            options: {
-                                assetKey: productAssetMap[product.displayId].textureConfig.key,
+                    EventBus.once(
+                        EventName.ThiefCropCompleted,
+                        async (message: HarvestCropResponse) => {
+                            EventBus.emit(EventName.RefreshUser)
+                            EventBus.emit(EventName.RefreshInventories)
+                
+                            this.scene.events.emit(EventName.CreateFlyItem, {
+                                assetKey:
+                      productAssetMap[product.displayId].textureConfig.key,
+                                position: center,
                                 quantity: message.quantity,
-                                x: center.x,
-                                y: center.y,
-                                depth: calculateGameplayDepth({
-                                    layer: GameplayLayer.Effects,
-                                }),
-                            }
-                        })
-                        this.scene.add.existing(flyItem)
-                        data.pressBlocked = false
-                    })
+                            })
+                            await sleep(DELAY_TIME)
+                            this.scene.events.emit(EventName.CreateFlyItem, {
+                                assetKey: EXPERIENCE_KEY,
+                                position: center,
+                                quantity: placedItem.seedGrowthInfo?.isQuality
+                                    ? crop.qualityHarvestExperiences
+                                    : crop.basicHarvestExperiences,
+                            })
+                            data.pressBlocked = false
+                        }
+                    )
                     // emit the event to plant seed
                     const eventMessage: ThiefCropRequest = {
                         placedItemTileId: placedItemId,
@@ -448,29 +503,32 @@ export class InputTilemap extends ItemTilemap {
                     data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
-                    EventBus.once(EventName.HarvestCropCompleted, (message: HarvestCropResponse) => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropHarvested)
-                        }
-                        const flyItem = new FlyItem({
-                            baseParams: {
-                                scene: this.scene,
-                            },
-                            options: {
-                                assetKey: productAssetMap[product.displayId].textureConfig.key,
-                                quantity: message.quantity,
-                                x: center.x,
-                                y: center.y,
-                                depth: calculateGameplayDepth({
-                                    layer: GameplayLayer.Effects,
-                                }),
+                    EventBus.once(
+                        EventName.HarvestCropCompleted,
+                        async (message: HarvestCropResponse) => {
+                            EventBus.emit(EventName.RefreshUser)
+                            EventBus.emit(EventName.RefreshInventories)
+                            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                                EventBus.emit(EventName.TutorialCropHarvested)
                             }
-                        })
-                        this.scene.add.existing(flyItem)
-                        data.pressBlocked = false
-                    })
+                            
+                            this.scene.events.emit(EventName.CreateFlyItem, {
+                                assetKey:
+                      productAssetMap[product.displayId].textureConfig.key,
+                                position: center,
+                                quantity: message.quantity,
+                            })
+                            await sleep(DELAY_TIME)
+                            this.scene.events.emit(EventName.CreateFlyItem, {
+                                assetKey: EXPERIENCE_KEY,
+                                position: center,
+                                quantity: placedItem.seedGrowthInfo?.isQuality
+                                    ? crop.qualityHarvestExperiences
+                                    : crop.basicHarvestExperiences,
+                            })
+                            data.pressBlocked = false
+                        }
+                    )
                     // emit the event to plant seed
                     const eventMessage: HarvestCropRequest = {
                         placedItemTileId: placedItemId,
@@ -798,7 +856,7 @@ export class InputTilemap extends ItemTilemap {
 }
 
 export interface PlayProductFlyAnimationParams {
-    position: Position
-    assetKey: string
-    quantity: number
+  position: Position;
+  assetKey: string;
+  quantity: number;
 }

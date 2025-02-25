@@ -4,6 +4,7 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseText } from "./BaseText"
 import { onGameObjectPress } from "../utils"
 import { NinePatch3x3 } from "./NinePatch3x3"
+import { GRAY_TINT_COLOR } from "@/game/constants"
 
 export enum ButtonBackground {
     Primary = "button-primary",
@@ -18,17 +19,22 @@ export interface ButtonOptions {
     width?: number
     height?: number
     fontSize?: number
+    scale?: number
+    syncTextScale?: boolean
 }
 export class Button extends Label {
+    private textObj: BaseText
+    private background: NinePatch3x3
+    private disabled = false
     constructor({ baseParams: { scene, config }, options }: ConstructorParams<LabelBaseConstructorParams, ButtonOptions>) {
         if (!options) {
             throw new Error("Button requires options")
         }
-        const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, height, width, fontSize = 48 } = options
+        const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, syncTextScale, height, width, fontSize = 48, scale = 1 } = options
 
         const backgroundKeyMap: Record<ButtonBackground, BaseAssetKey> = {
-            [ButtonBackground.Primary]: BaseAssetKey.UICommonButtonRed,
-            [ButtonBackground.Secondary]: BaseAssetKey.UICommonButtonGreen,
+            [ButtonBackground.Primary]: BaseAssetKey.UICommonButtonGreen,
+            [ButtonBackground.Secondary]: BaseAssetKey.UICommonButtonRed,
         }
         const buttonBackground = new NinePatch3x3({
             baseParams: {
@@ -51,20 +57,23 @@ export class Button extends Label {
             },
             options: {
                 enableStroke: true,
-                fontSize,
+                fontSize: syncTextScale ? fontSize * scale : fontSize,
             }
         })
         scene.add.existing(textObj)
 
         super(scene, {
             background: buttonBackground,
-            width: width ?? buttonBackground.width,
-            height: height ?? buttonBackground.height,
+            width: (width ?? buttonBackground.width) * scale,
+            height: (height ?? buttonBackground.height) * scale,
             text: textObj,
             align: "center",
             space: { top: 5, bottom: 25, left: 5, right: 5 },
             ...config
         })
+        this.background = buttonBackground
+        this.textObj = textObj
+
         if (onPress) {
             this.setInteractive().on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 onGameObjectPress({
@@ -76,5 +85,25 @@ export class Button extends Label {
             })
         }
         this.layout()
+    }
+
+    public disable() {
+        if (this.disabled) {
+            return
+        }
+        this.removeInteractive()
+        this.background.setTint(GRAY_TINT_COLOR)
+        this.textObj.setTint(GRAY_TINT_COLOR)
+        this.disabled = true
+    }
+
+    public enable() {
+        if (!this.disabled) {
+            return
+        }
+        this.setInteractive()
+        this.background.clearTint()
+        this.textObj.clearTint()
+        this.disabled = false
     }
 }

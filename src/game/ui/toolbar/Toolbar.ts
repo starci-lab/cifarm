@@ -131,7 +131,6 @@ export class Toolbar extends ContainerLite {
             })
             setTutorialDepth({
                 gameObject: this,
-                scene: this.scene,
             })
             this.enableTutorial = true
         })
@@ -141,7 +140,6 @@ export class Toolbar extends ContainerLite {
             this.updateItemSizer()
             restoreTutorialDepth({
                 gameObject: this,
-                scene: this.scene,
             })
             this.enableTutorial = false
         })
@@ -489,8 +487,6 @@ export class Toolbar extends ContainerLite {
             if (this.scene.cache.obj.get(CacheKey.TutorialActive) && this.enableTutorial) {
                 setTutorialDepth({
                     gameObject: this,
-                    scene: this.scene,
-                    storeDepth: false,
                 })
             }
         }

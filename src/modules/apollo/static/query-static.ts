@@ -7,7 +7,6 @@ import {
     BuildingSchema,
     CropSchema,
     CropRandomness,
-    DailyRewardSchema,
     EnergyRegen,
     InventoryTypeSchema,
     PlacedItemTypeSchema,
@@ -16,6 +15,7 @@ import {
     ToolSchema,
     ProductSchema,
     TileSchema,
+    DailyRewardInfo,
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -146,7 +146,7 @@ const query = gql`
       minHarvestQuantity
       maxHarvestQuantity
       basicHarvestExperiences
-      premiumHarvestExperiences
+      qualityHarvestExperiences
       availableInShop
     }
     animals {
@@ -164,7 +164,7 @@ const query = gql`
       minHarvestQuantity
       maxHarvestQuantity
       basicHarvestExperiences
-      premiumHarvestExperiences
+      qualityHarvestExperiences
       type
     }
     buildings {
@@ -217,6 +217,38 @@ const query = gql`
       crop
       animal
     }
+    dailyRewardInfo {
+      day1 {
+        golds
+        tokens
+        day
+        lastDay
+      }
+      day2 {
+        golds
+        tokens
+        day
+        lastDay
+      }
+      day3 {
+        golds
+        tokens
+        day
+        lastDay
+      }
+      day4 {
+        golds
+        tokens
+        day
+        lastDay
+      }
+      day5 {
+        golds
+        tokens
+        day
+        lastDay
+      }
+    }
   }
 `
 
@@ -232,7 +264,7 @@ export interface QueryStaticResponse {
   animals: Array<AnimalSchema>;
   buildings: Array<BuildingSchema>;
   tiles: Array<TileSchema>;
-  dailyRewards: Array<DailyRewardSchema>;
+  dailyRewardInfo: DailyRewardInfo;
   tools: Array<ToolSchema>;
   inventoryTypes: Array<InventoryTypeSchema>;
   products: Array<ProductSchema>

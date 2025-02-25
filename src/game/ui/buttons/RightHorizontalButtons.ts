@@ -50,7 +50,6 @@ export class RightHorizontalButtons extends HorizontalButtons {
                     // return to normal depth
                     restoreTutorialDepth({
                         gameObject: this.inventoryButton,
-                        scene: this.scene,
                     })
                     // emit the event
                     this.scene.events.emit(EventName.TutorialInventoryButtonPressed)
@@ -91,7 +90,6 @@ export class RightHorizontalButtons extends HorizontalButtons {
         this.scene.events.once(EventName.TutorialOpenInventory, () => {
             setTutorialDepth({
                 gameObject: this.inventoryButton,
-                scene: this.scene,
             })
             const { x, y } = this.inventoryButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {

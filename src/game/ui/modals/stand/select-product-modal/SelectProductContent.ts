@@ -23,6 +23,7 @@ import { IPaginatedResponse } from "@/modules/apollo"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { inventoryTypeAssetMap } from "@/game/assets"
 import { CELL_SELECT_PRODUCT_DATA_KEY } from "./constants"
+import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 
 export class SelectProductContent extends BaseSizer {
     private background: ModalBackground
@@ -83,7 +84,51 @@ export class SelectProductContent extends BaseSizer {
         )
     }
 
+    private highlight() {
+        if (!this.background.container) {
+            throw new Error("Background container not found")
+        }
+        setTutorialDepth({
+            gameObject: this.background.container,  
+        })
+
+        if (!this.gridTable) {
+            throw new Error("Grid table not found")
+        }
+        setTutorialDepth({
+            gameObject: this.gridTable
+        })
+    }
+
+    private unhighlight() {
+        if (!this.background.container) {
+            throw new Error("Background container not found")
+        }
+        restoreTutorialDepth({
+            gameObject: this.background.container,  
+        })
+
+        if (!this.gridTable) {
+            throw new Error("Grid table not found")
+        }
+        restoreTutorialDepth({
+            gameObject: this.gridTable
+        })
+    }
+
     private updateGridTable() {
+        this._updateGridTable()
+        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+            this.highlight()
+        } else {
+            if (!this.gridTable) {
+                throw new Error("Grid table not found")
+            }
+            this.gridTable.setDepth(MODAL_DEPTH_2 + 1)
+        }
+    }
+
+    private _updateGridTable() {
         const items = getProductInventories({
             scene: this.scene,
             inventories: this.inventories,
@@ -153,7 +198,6 @@ export class SelectProductContent extends BaseSizer {
                 items,
             },
         })
-            .setDepth(MODAL_DEPTH_2 + 1)
             .layout()
 
         this.gridTable.on(
@@ -174,6 +218,10 @@ export class SelectProductContent extends BaseSizer {
                 this.scene.events.emit(EventName.UpdateInputQuantityModal, {
                     inventory,
                 })
+
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    this.unhighlight()
+                }
             }
         )
         this.scene.add.existing(this.gridTable)
@@ -181,28 +229,6 @@ export class SelectProductContent extends BaseSizer {
             throw new Error("Background container not found")
         }
         this.background.container.addLocal(this.gridTable)
-
-        // if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-        //     const firstCell = this.gridMap[0]
-        //     if (firstCell) {
-        //         setTutorialDepth({
-        //             gameObject: firstCell,
-        //             scene: this.scene,
-        //         })
-        //         const { x, y } = firstCell.getCenter()
-        //         const eventMessage: ShowPressHereArrowMessage = {
-        //             originPosition: {
-        //                 x: x + 60,
-        //                 y: y + 60,
-        //             },
-        //             targetPosition: {
-        //                 x: x + 40,
-        //                 y: y + 40,
-        //             },
-        //         }
-        //         this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-        //     }
-        // }
         return this.gridTable
     }
 }

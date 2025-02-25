@@ -17,7 +17,6 @@ import {
     Background,
     BaseText,
     Button,
-    ButtonBackground,
     FlyItem,
     IconOffsets,
     ModalBackground,
@@ -119,7 +118,6 @@ export class ShopContent extends BaseSizer {
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                         restoreTutorialDepth({
                             gameObject: xButton,
-                            scene,
                         })
                         this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
                         this.scene.events.emit(EventName.HidePressHereArrow)
@@ -152,7 +150,10 @@ export class ShopContent extends BaseSizer {
         this.add(this.background)
         // create the container
         this.contentContainer = scene.rexUI.add.container(0, 0)
-        this.background.wrapperContainer?.addLocal(this.contentContainer)
+        if (!this.background.wrapperContainer) {
+            throw new Error("Wrapper container is not defined")
+        }
+        this.background.wrapperContainer.addLocal(this.contentContainer)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -197,7 +198,6 @@ export class ShopContent extends BaseSizer {
         scene.events.once(EventName.TutorialPrepareCloseShop, () => {
             setTutorialDepth({
                 gameObject: this.background.xButton,
-                scene,
             })
             const { x, y } = this.background.xButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {
@@ -238,7 +238,6 @@ export class ShopContent extends BaseSizer {
                 throw new Error("Grid table is not found")
             }
             setTutorialDepth({
-                scene: this.scene,
                 gameObject: gridTable,
             })
             
@@ -550,7 +549,6 @@ export class ShopContent extends BaseSizer {
             },
             options: {
                 text: `$${price ?? 0}`,
-                background: ButtonBackground.Secondary,
                 disableInteraction: false,
                 height: 100,
                 width: 200,
@@ -636,7 +634,6 @@ export class ShopContent extends BaseSizer {
                 }
                 restoreTutorialDepth({
                     gameObject: gridTable,
-                    scene: this.scene,
                     plusOne: true
                 })
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)

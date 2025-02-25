@@ -138,17 +138,6 @@ export class Topbar extends BaseSizer {
                 offsetX: -5,
             })
             .layout()
-            // .overlapSizer({
-            //     width: dataBackground.width,
-            //     height: dataBackground.height,
-            //     space: {
-            //         bottom: 20,
-            //         left: 20,
-            //         right: 20,
-            //         top: 20,
-            //     }
-            // })
-        console.log(background.width)
         const x = this.visited ? 0 : -(this.background.width / 2 - background.width / 2 - 10)
         const rightColumn = this.scene.rexUI.add
             .overlapSizer({
@@ -217,11 +206,11 @@ export class Topbar extends BaseSizer {
             scale: 0.7,
         })
         this.goldLabel = this.addLabel({
-            iconKey: BaseAssetKey.UITopbarIconCoin,
+            iconKey: BaseAssetKey.UICommonIconCoin,
             amount: `${this.user.golds ?? 0}`,
         }).setVisible(!this.visited)
         this.tokenLabel = this.addLabel({
-            iconKey: BaseAssetKey.UITopbarIconCarrot,
+            iconKey: BaseAssetKey.UICommonIconCarrot,
             amount: `${this.user.tokens ?? 0}`,
             scale: 0.9,
         }).setVisible(!this.visited)
