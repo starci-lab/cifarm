@@ -253,6 +253,7 @@ export class ModalManager extends ContainerLite {
                 throw new Error("Animal Housing modal not found")
             }
             return this.animalHousingModal
+        }
         case ModalName.Claim: {
             if (!this.claimModal) {
                 throw new Error("Claim modal not found")

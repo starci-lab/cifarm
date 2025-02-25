@@ -282,7 +282,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             width: width * this.scale,
             height: height * this.scale,
             type: placedItemType.type,
-            visible: true,
+            //if not animal then set visible to false
+            visible: placedItemType.type !== PlacedItemType.Animal,
             ...this.computePositionForTiledObject(tile),
         })
 

@@ -6,7 +6,6 @@ import { EmptyObject } from "@/modules/common"
 
 export interface BuyAnimalRequest {
   animalId: AnimalId;
-  placedItemBuildingId: string;
   position: Position;
 }
 

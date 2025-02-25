@@ -1,4 +1,4 @@
-import { CropCurrentState } from "@/modules/entities"
+import { AnimalCurrentState, CropCurrentState } from "@/modules/entities"
 import { TextureConfig } from "./types"
 import { Scene } from "phaser"
 
@@ -31,5 +31,34 @@ export const loadCropStateAssets = (scene: Scene) => {
             throw new Error(`Crop state data not found for state: ${state}`)
         }
         scene.load.image(cropStateData.textureConfig.key, cropStateData.textureConfig.assetUrl)
+    })
+}
+
+export interface AnimalStateAssetData {
+    textureConfig: TextureConfig;
+}
+
+export const animalStateAssetMap: Partial<Record<AnimalCurrentState, AnimalStateAssetData>> = {
+    [AnimalCurrentState.Hungry]: {
+        textureConfig: { key: "is-animal-hungry", assetUrl: "states/is-hungry.png" },
+    },
+    [AnimalCurrentState.Sick]: {
+        textureConfig: { key: "is-animal-sick", assetUrl: "states/is-sick.png" },
+    },
+    [AnimalCurrentState.Yield]: {
+        textureConfig: { key: "is-animal-ready", assetUrl: "states/is-ready.png" },
+    },
+}
+
+// Function to load animal assets in Phaser scene
+export const loadAnimalStateAssets = (scene: Scene) => {
+    Object.keys(animalStateAssetMap).forEach((state) => {
+        const _state = state as AnimalCurrentState
+        const animalStateData = animalStateAssetMap[_state]
+
+        if (!animalStateData) {
+            throw new Error(`Animal state data not found for state: ${state}`)
+        }
+        scene.load.image(animalStateData.textureConfig.key, animalStateData.textureConfig.assetUrl)
     })
 }

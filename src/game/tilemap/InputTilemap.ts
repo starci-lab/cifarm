@@ -178,10 +178,6 @@ export class InputTilemap extends ItemTilemap {
                     modalName: ModalName.AnimalHousing,
                 }
 
-                //Set cache
-                this.scene.cache.obj.add(CacheKey.ActivePlacedItemId, data.object.currentPlacedItem?.id)
-                console.log("CacheKey.ActivePlacedItemId", this.scene.cache.obj.get(CacheKey.ActivePlacedItemId))
-
                 EventBus.emit(EventName.OpenModal, eventMessage)
                 break
             }
@@ -801,12 +797,6 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            const placedItemBuildingId = this.scene.cache.obj.get(CacheKey.ActivePlacedItemId)
-
-            if(!placedItemBuildingId){
-                throw new Error("Placed item building id not found")
-            }
-
             const animalId: AnimalId = getAnimalIdFromKey(tileKey) as AnimalId
             if(!animalId){
                 throw new Error("Animal id not found")
@@ -818,7 +808,6 @@ export class InputTilemap extends ItemTilemap {
                     y: position.y,
                 },
                 animalId,
-                placedItemBuildingId
             }
 
             console.log("Requesting to buy animal:", eventMessage)
