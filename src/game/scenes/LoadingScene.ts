@@ -19,7 +19,7 @@ import { QueryFolloweesArgs, QueryNeighborsArgs, QueryNeighborsParams, QueryStat
 import { CacheKey } from "../types"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
-import { loadCropStateAssets } from "../assets/states"
+import { loadAnimalStateAssets, loadCropStateAssets } from "../assets/states"
 import { IPaginatedResponse } from "@/modules/apollo"
 
 export enum LoadingPhase {
@@ -195,6 +195,7 @@ export class LoadingScene extends Scene {
         loadStacyAssets(this)
         loadInventoryTypesAssets(this)
         loadCropStateAssets(this)
+        loadAnimalStateAssets(this)
     }
 
     async update() {

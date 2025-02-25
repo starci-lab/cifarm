@@ -3,13 +3,14 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "../../constants"
 import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
+import { getScreenCenterX, getScreenCenterY } from "../utils"
+import { AnimalHousingModal } from "./animal-housing"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
 import { NeighborsModal } from "./neighbors"
 import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
-import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { ClaimModal } from "./claim"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
@@ -52,6 +53,8 @@ export class ModalManager extends ContainerLite {
     //private inputQuantityModal: StandModal | undefined
     // neighbors
     private neighborsModal: NeighborsModal | undefined
+
+    private animalHousingModal: AnimalHousingModal | undefined
 
     constructor({ scene, x, y, width, height, children } : ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -127,6 +130,13 @@ export class ModalManager extends ContainerLite {
             y: centerY,
         }).setDepth(MODAL_DEPTH_2).hide()
         this.scene.add.existing(this.inputQuantityModal)
+
+        this.animalHousingModal = new AnimalHousingModal({
+            scene: this.scene,
+            x: centerX,
+            y: centerY
+        }).setDepth(MODAL_DEPTH_1).hide()
+        this.scene.add.existing(this.animalHousingModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
             this.onOpen(message)
@@ -237,6 +247,12 @@ export class ModalManager extends ContainerLite {
                 throw new Error("Neighbors modal not found")
             }
             return this.neighborsModal
+        }
+        case ModalName.AnimalHousing: {
+            if (!this.animalHousingModal) {
+                throw new Error("Animal Housing modal not found")
+            }
+            return this.animalHousingModal
         }
         case ModalName.Claim: {
             if (!this.claimModal) {

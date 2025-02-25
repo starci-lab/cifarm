@@ -199,6 +199,8 @@ export enum EventName {
     RequestThiefCrop = "request_thief_crop",
     ThiefCropCompleted = "thief_crop_completed",
 
+    RequestBuyAnimal = "request_buy_animal",
+    BuyAnimalCompleted = "buy_animal_completed",
     RequestClaimDailyReward = "request_claim_daily_reward",
     ClaimDailyRewardCompleted = "claim_daily_reward_completed",
 
@@ -210,6 +212,9 @@ export enum EventName {
 
     Visit = "visit",
     Return = "return",
+
+    RefreshActivePlacedItem = "refresh_active_placed_item",
+    ActivePlacedItemRefreshed = "active_placed_item_refreshed",
 }
 
 export interface OpenTutorialMessage {
@@ -305,6 +310,7 @@ export enum ModalName {
   Neighbors = "neighbors",
   SelectProduct = "select-product",
   InputQuantity = "input-quantity",
+  AnimalHousing = "animal-housing",
   Claim = "claim",
 }
 

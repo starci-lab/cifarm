@@ -1,25 +1,26 @@
 import { useUserEffects } from "../graphql/useUserEffects"
-import { useBuySeedsEffects } from "./useBuySeedsEffects"
-import { useBuyTileEffects } from "./useBuyTileEffects"
-import { useConstructBuildingEffects } from "./useConstructBuilding"
-import { useHarvestCropEffects } from "./useHarvestCropEffects"
-import { useUseHerbicideEffects } from "./useHerbicideEffects"
-import { useUsePesticideEffects } from "./usePesticideEffects"
-import { usePlantSeedEffects } from "./usePlantSeedEffects"
-import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
-import { useUpdateTutorialEffects } from "./useUpdateTutorialEffects"
-import { useWaterEffects } from "./useWaterEffects"
-import { useDeliverProductEffects } from "./useDeliverProductEffects"
-import { useRetainProductEffects } from "./useRetainProductEffects"
-import { useFollowEffects } from "./useFollowEffects"
-import { useUnfollowEffects } from "./useUnfollowEffects"
-import { useVisitEffects } from "./useVisitEffects"
-import { useReturnEffects } from "./useReturnEffects"
 import { useHelpUseHerbicideEffects } from "./helpUseHerbicideEffects"
 import { useHelpUsePesticideEffects } from "./helpUsePesticideEffects"
-import { useThiefCropEffects } from "./thiefCropEffects"
 import { useHelpWaterEffects } from "./helpWaterEffects"
+import { useThiefCropEffects } from "./thiefCropEffects"
+import { useBuyAnimalEffects } from "./useBuyAnimalEffects"
+import { useBuySeedsEffects } from "./useBuySeedsEffects"
+import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
+import { useConstructBuildingEffects } from "./useConstructBuilding"
+import { useDeliverProductEffects } from "./useDeliverProductEffects"
+import { useFollowEffects } from "./useFollowEffects"
+import { useHarvestCropEffects } from "./useHarvestCropEffects"
+import { useUseHerbicideEffects } from "./useHerbicideEffects"
+import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
+import { useUsePesticideEffects } from "./usePesticideEffects"
+import { usePlantSeedEffects } from "./usePlantSeedEffects"
+import { useRetainProductEffects } from "./useRetainProductEffects"
+import { useReturnEffects } from "./useReturnEffects"
+import { useUnfollowEffects } from "./useUnfollowEffects"
+import { useUpdateTutorialEffects } from "./useUpdateTutorialEffects"
+import { useVisitEffects } from "./useVisitEffects"
+import { useWaterEffects } from "./useWaterEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -43,5 +44,6 @@ export const useApiEffects = () => {
     useHelpUsePesticideEffects()
     useHelpWaterEffects()
     useThiefCropEffects()
+    useBuyAnimalEffects()
     useClaimDailyRewardEffects()
 }

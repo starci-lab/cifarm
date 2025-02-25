@@ -1,17 +1,19 @@
 import {
+    BuyAnimalRequest,
     BuyTileRequest,
     ConstructBuildingRequest,
     HarvestCropRequest,
-    PlantSeedRequest,
-    UseHerbicideRequest,
-    UsePesticideRequest,
-    WaterRequest,
+    HarvestCropResponse,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
     HelpWaterRequest,
+    PlantSeedRequest,
     ThiefCropRequest,
-    HarvestCropResponse,
+    UseHerbicideRequest,
+    UsePesticideRequest,
+    WaterRequest,
 } from "@/modules/axios"
+import { sleep } from "@/modules/common"
 import {
     Activities,
     AnimalId,
@@ -33,29 +35,18 @@ import {
     animalAssetMap,
     BaseAssetKey,
     buildingAssetMap,
+    getAnimalIdFromKey,
     productAssetMap,
     TextureConfig,
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import {
-    EventBus,
-    EventName,
-    CreateFlyItemMessage,
-    PlacedInprogressMessage,
-    Position,
-} from "../event-bus"
-import {
-    calculateGameplayDepth,
-    calculateUiDepth,
-    GameplayLayer,
-    UILayer,
-} from "../layers"
+import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
+import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
-import { sleep } from "@/modules/common"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -179,8 +170,15 @@ export class InputTilemap extends ItemTilemap {
                 console.log(
                     "Placed item type building with id ",
                     data.placedItemType.displayId,
-                    data
+                    data,
+                    data.object.currentPlacedItem?.id
                 )
+                // eslint-disable-next-line no-case-declarations
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.AnimalHousing,
+                }
+
+                EventBus.emit(EventName.OpenModal, eventMessage)
                 break
             }
         })
@@ -594,6 +592,8 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Temporary place item data not found")
         }
         const { tilesetConfig } = this.temporaryPlaceItemData
+
+        console.log("http://localhost:3000/play", this.temporaryPlaceItemData)
         const tileset = this.getTileset(tilesetConfig.tilesetName)
         if (!tileset) {
             throw new Error("Tileset not found")
@@ -786,6 +786,35 @@ export class InputTilemap extends ItemTilemap {
             EventBus.emit(EventName.RequestBuyTile, eventMessage)
 
             EventBus.once(EventName.BuyTileCompleted, () => {
+                this.cancelPlacement()
+            })
+            break
+        }
+        case PlacedItemType.Animal: {
+            const tileKey = textureConfig.key
+            if (!tileKey) {
+                console.error("Error: Tile key is undefined")
+                return
+            }
+
+            const animalId: AnimalId = getAnimalIdFromKey(tileKey) as AnimalId
+            if(!animalId){
+                throw new Error("Animal id not found")
+            }
+
+            const eventMessage: BuyAnimalRequest = {
+                position: {
+                    x: position.x,
+                    y: position.y,
+                },
+                animalId,
+            }
+
+            console.log("Requesting to buy animal:", eventMessage)
+
+            EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
+
+            EventBus.once(EventName.BuyAnimalCompleted, () => {
                 this.cancelPlacement()
             })
             break
