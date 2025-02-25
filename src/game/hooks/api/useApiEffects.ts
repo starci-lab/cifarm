@@ -5,6 +5,7 @@ import { useHelpWaterEffects } from "./helpWaterEffects"
 import { useThiefCropEffects } from "./thiefCropEffects"
 import { useBuyAnimalEffects } from "./useBuyAnimalEffects"
 import { useBuySeedsEffects } from "./useBuySeedsEffects"
+import { useBuySuppliesEffects } from "./useBuySuppliesEffect"
 import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
 import { useConstructBuildingEffects } from "./useConstructBuilding"
@@ -46,4 +47,5 @@ export const useApiEffects = () => {
     useThiefCropEffects()
     useBuyAnimalEffects()
     useClaimDailyRewardEffects()
+    useBuySuppliesEffects()
 }

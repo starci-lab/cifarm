@@ -1,5 +1,5 @@
-import { animalAssetMap, buildingAssetMap, cropAssetMap, tileAssetMap } from "@/game/assets"
-import { AnimalId, BuildingId, CropId, TileId } from "@/modules/entities"
+import { animalAssetMap, buildingAssetMap, cropAssetMap, supplyAssetMap, tileAssetMap } from "@/game/assets"
+import { AnimalId, BuildingId, CropId, SupplyId, TileId } from "@/modules/entities"
 import { TabData } from "../../elements"
 import { ShopTab } from "./types"
 
@@ -37,6 +37,14 @@ export const tabsConfig: Record<ShopTab, TabData> = {
             y: -40,
         },
         scale: 0.8
+    },
+    [ShopTab.Supply]: {
+        iconKey: supplyAssetMap[SupplyId.BasicFertilizer].textureConfig.key,
+        offsets: {
+            x: 80,
+            y: -40,
+        },
+        scale: 0.6
     },
     [ShopTab.Trees]: {
         iconKey: tileAssetMap[TileId.BasicTile1].textureConfig.key,

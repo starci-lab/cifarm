@@ -16,6 +16,7 @@ import {
     ProductSchema,
     TileSchema,
     DailyRewardInfo,
+    SupplySchema,
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -218,6 +219,14 @@ const query = gql`
       crop
       animal
     }
+    supplies {
+      displayId
+      id
+      fertilizerEffectTimeReduce
+      availableInShop
+      price
+      type
+    }
     dailyRewardInfo {
       day1 {
         golds
@@ -269,6 +278,7 @@ export interface QueryStaticResponse {
   tools: Array<ToolSchema>;
   inventoryTypes: Array<InventoryTypeSchema>;
   products: Array<ProductSchema>
+  supplies: Array<SupplySchema>
 }
 
 export const queryStatic = async () => {

@@ -204,6 +204,9 @@ export enum EventName {
     RequestClaimDailyReward = "request_claim_daily_reward",
     ClaimDailyRewardCompleted = "claim_daily_reward_completed",
 
+    RequestBuySupplies = "request_buy_supplies",
+    BuySuppliesCompleted = "buy_supplies_completed",
+
     CreateFlyItem = "item_flown",
 
     FadeIn = "fade_in",
