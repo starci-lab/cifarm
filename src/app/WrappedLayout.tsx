@@ -36,12 +36,14 @@ import {
     useApiHelpUsePesticideSwrMutation,
     useApiHelpWaterSwrMutation,
     useApiThiefCropSwrMutation,
+    useApiClaimDailyRewardSwrMutation,
+    useApiClaimHoneycombDailyRewardSwrMutation,
+    useHoneycombSendTransactionSwrMutation,
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
 import { Modals } from "./Modals"
 import { SWRConfig } from "swr"
-import { useApiClaimDailyRewardSwrMutation } from "@/hooks/swr"
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
     const loaded = useAppSelector((state) => state.sessionReducer.loaded)
@@ -55,6 +57,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             PRIVATE_KEY_DISCLOSURE: useDisclosure(),
                             MNEMONIC_DISCLOSURE: useDisclosure(),
                             WARNING_DISCLOSURE: useDisclosure(),
+                            SIGN_TRANSACTION_DISCLOSURE: useDisclosure(),
                             //swr mutations
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
@@ -78,6 +81,9 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_HELP_USE_PESTICIDE_SWR_MUTATION: useApiHelpUsePesticideSwrMutation(),
                             API_HELP_WATER_SWR_MUTATION: useApiHelpWaterSwrMutation(),
                             API_THIEF_CROP_SWR_MUTATION: useApiThiefCropSwrMutation(),
+                            API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useApiClaimHoneycombDailyRewardSwrMutation(),
+
+                            HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),
                             QUERY_USER_SWR_MUTATION: useQueryUserSwrMutation(),
                             QUERY_STATIC_SWR_MUTATION: useQueryStaticSwrMutation(),
                             QUERY_INVENTORIES_SWR_MUTATION: useQueryInventoriesSwrMutation(),

@@ -24,6 +24,7 @@ export enum SessionDbKey {
   Mnemonic = "mnemonic",
   AccessToken = "accessToken",
   RefreshToken = "refreshToken",
+  HoneycombDailyRewardTransaction = "honeycombDailyRewardTransaction",
 }
 
 export interface KeyValueStore {
