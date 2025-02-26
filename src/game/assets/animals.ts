@@ -91,3 +91,14 @@ export const loadAnimalAssets = (scene: Scene) => {
         }
     })
 }
+
+export const getAnimalIdFromKey = (tileKey: string): AnimalId | null => {
+    for (const [animalId, animalData] of Object.entries(animalAssetMap)) {
+        for (const ageData of Object.values(animalData.ages)) {
+            if (ageData.textureConfig.key === tileKey) {
+                return animalId as AnimalId
+            }
+        }
+    }
+    return null
+}

@@ -1,5 +1,6 @@
 import { PlacedItemsSyncedMessage } from "@/hooks"
 import {
+    AnimalId,
     BuildingId,
     getId,
     PlacedItemSchema,
@@ -8,7 +9,7 @@ import {
     PlacedItemTypeSchema,
     TileId,
 } from "@/modules/entities"
-import { buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
+import { animalAssetMap, buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
 import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
@@ -79,6 +80,23 @@ export abstract class ItemTilemap extends GroundTilemap {
                 ...value.tilesetConfig,
             })
         }
+
+        // create tilesets for all animal assets
+        for (const [, value] of Object.entries(animalAssetMap)) {
+            for (const [age, ageValue] of Object.entries(value.ages)) {
+                this.createSingleTileTileset({
+                    key: ageValue.textureConfig.key,
+                    ...ageValue.tilesetConfig
+                })
+
+                console.log({
+                    age: age,
+                    key: ageValue.textureConfig.key,
+                    ...ageValue.tilesetConfig
+                })
+            }
+        }
+
     }
 
     // methods to handle changes in the placed items
@@ -183,7 +201,13 @@ export abstract class ItemTilemap extends GroundTilemap {
             return tilesetConfig
         }
         case PlacedItemType.Animal: {
-            throw new Error("Not implemented")
+            if(!found.animal)
+                throw new Error("Animal ID not found")
+            const tilesetConfig = animalAssetMap[getId<AnimalId>(found.animal)].ages.baby.tilesetConfig
+            if (!tilesetConfig) {
+                throw new Error("Tileset config not found")
+            }
+            return tilesetConfig
         }
         }
     }
@@ -212,6 +236,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
             placedItem.placedItemType
         )
+        console.log(gid, extraOffsets, tilesetName) 
         // get the tileset
         const tileset = this.getTileset(tilesetName)
         if (!tileset) {
@@ -257,7 +282,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             width: width * this.scale,
             height: height * this.scale,
             type: placedItemType.type,
-            visible: true,
+            //if not animal then set visible to false
+            visible: placedItemType.type !== PlacedItemType.Animal,
             ...this.computePositionForTiledObject(tile),
         })
 
