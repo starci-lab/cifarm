@@ -11,11 +11,6 @@ import { Spacer, Link, Card, CardBody, Divider, Image, Button, useDisclosure } f
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
 
-export enum HoneycombFeatureKey {
-    HoneycombDailyReward = "honeycomb-daily-reward",
-    HoneycombStaking = "honeycomb-staking",
-}
-
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
 

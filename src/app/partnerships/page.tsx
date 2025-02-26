@@ -7,17 +7,8 @@ import { valuesWithKey } from "@/modules/common"
 import { Card, CardBody,Divider, Image, Link, Spacer } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
+import { Partnership, PartnershipKey } from "./types"
 
-export enum PartnershipKey {
-    HoneycombProtocol = "honeycomb-protocol",
-}
-
-export interface Partnership {
-    name: string
-    description: string
-    logo: string
-    onPress: () => void
-}
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
 

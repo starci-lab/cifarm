@@ -1,6 +1,5 @@
 export * from "./NinePatch3x3"
 export * from "./BaseText"
-export * from "./RibbonTitle"
 export * from "./BaseGridTable"
 export * from "./NumberInput"
 export * from "./Button"

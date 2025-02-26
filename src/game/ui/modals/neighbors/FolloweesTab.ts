@@ -1,20 +1,16 @@
-import { BaseAssetKey } from "../../../assets"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { Pagination } from "../../elements"
 import { getScreenBottomY, getScreenCenterX } from "../../utils"
 import { UserSchema } from "@/modules/entities"
 import { IPaginatedResponse, QueryNeighborsArgs } from "@/modules/apollo"
-import { EventBus, EventName } from "@/game/event-bus"
-import { FollowRequest } from "@/modules/axios"
 import { ITEM_COUNT } from "./constants"
-import { UserCard } from "./UserCard"
+import { NumberInput } from "../../elements"
 
 export class FolloweesContent extends ContainerLite {
     private users: Array<UserSchema>
     private userCount = 0
     private args: QueryNeighborsArgs
-    private pagination: Pagination | undefined
+    private pagination: NumberInput | undefined
     constructor({
         scene,
         x,
@@ -66,7 +62,7 @@ export class FolloweesContent extends ContainerLite {
 
     private createPagination() {
         const { currentPage, maxPage } = this.getPage()
-        this.pagination = new Pagination({
+        this.pagination = new NumberInput({
             baseParams: {
                 scene: this.scene,
             },
@@ -77,6 +73,7 @@ export class FolloweesContent extends ContainerLite {
                 onChange: (value) => {
                     console.log(value)
                 },
+                asPagination: true
             },
         }).layout().setPosition(getScreenCenterX(this.scene), getScreenBottomY(this.scene) - 300)
         this.scene.add.existing(this.pagination )
@@ -91,39 +88,39 @@ export class FolloweesContent extends ContainerLite {
         })
 
         // create cards from the neighbors
-        for (const user of this.users) {
-            //fetch the source image from the avatarUrl
-            // this.scene.load.image(neighbor.id, neighbor.avatarUrl)
-            const neighborCard = new UserCard({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    avatarAssetKey: "", // tech dept here, need to fetch the image from the avatarUrl
-                    badgeAssetKey: BaseAssetKey.UIModalNeighborsIconAdd,
-                    text: user.username,
-                    hideBadge: user.followed,
-                    onBadgePress: () => {
-                        EventBus.once(EventName.FollowCompleted, () => {
-                        // refresh the neighbors, users
-                            EventBus.emit(EventName.RefreshNeighbors)
-                            EventBus.emit(EventName.RefreshUser)
-                        })
+        //for (const user of this.users) {
+        //fetch the source image from the avatarUrl
+        // this.scene.load.image(neighbor.id, neighbor.avatarUrl)
+        // const neighborCard = new UserCard({
+        //     baseParams: {
+        //         scene: this.scene,
+        //     },
+        //     options: {
+        //         avatarAssetKey: "", // tech dept here, need to fetch the image from the avatarUrl
+        //         badgeAssetKey: BaseAssetKey.UIModalNeighborsIconAdd,
+        //         text: user.username,
+        //         hideBadge: user.followed,
+        //         onBadgePress: () => {
+        //             EventBus.once(EventName.FollowCompleted, () => {
+        //             // refresh the neighbors, users
+        //                 EventBus.emit(EventName.RefreshNeighbors)
+        //                 EventBus.emit(EventName.RefreshUser)
+        //             })
 
-                        const eventMessage: FollowRequest = {
-                            followeeUserId: user.id,
-                        }
-                        console.log(EventName.RequestFollow)
-                        EventBus.emit(EventName.RequestFollow, eventMessage)
-                    },
-                    onPress: () => {
-                        console.log("Clicked on John Doe")
-                    }
-                }
-            })
-            this.scene.add.existing(neighborCard)
-            sizer.add(neighborCard)
-        }
+        //             const eventMessage: FollowRequest = {
+        //                 followeeUserId: user.id,
+        //             }
+        //             console.log(EventName.RequestFollow)
+        //             EventBus.emit(EventName.RequestFollow, eventMessage)
+        //         },
+        //         onPress: () => {
+        //             console.log("Clicked on John Doe")
+        //         }
+        //     }
+        // })
+        // this.scene.add.existing(neighborCard)
+        // sizer.add(neighborCard)
+        //}
 
         sizer.layout()
         return sizer

@@ -11,11 +11,11 @@ import { pathConstants } from "@/constants"
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
     return (
-        <div className="m-auto fixed top-auto bottom-0 border-t h-16 z-50">
+        <div className="m-auto fixed top-auto bottom-0 border-t h-16 z-50 max-w-[500px] w-full">
             <HeroUiNavbar
                 isBlurred={false}
                 classNames={{
-                    base: "m-auto max-w-[500px]",
+                    base: "m-auto w-full",
                 }}
             >
                 <NavbarContent justify="start">

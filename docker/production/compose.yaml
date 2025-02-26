@@ -1,0 +1,11 @@
+
+services:
+  client:
+    build:
+      context: ../../
+      dockerfile: docker/production/Dockerfile
+    image: cifarm/client
+    ports:
+      - "3000:3000"
+
+# docker compose -f docker/production/compose.yaml up --build -d
