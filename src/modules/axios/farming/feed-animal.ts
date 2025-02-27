@@ -5,6 +5,7 @@ import { AxiosResponse } from "axios"
 
 export interface FeedAnimalRequest {
     placedItemAnimalId: string
+    inventorySupplyId: string
 }
 
 export const feedAnimal = (

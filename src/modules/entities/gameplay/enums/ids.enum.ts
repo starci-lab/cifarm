@@ -56,7 +56,8 @@ export enum DailyRewardPossibilityId {
 // Supply Enum
 export enum SupplyId {
     BasicFertilizer = "basicFertilizer",
-    AnimalFeed = "animalFeed"
+    AnimalFeed = "animalFeed",
+    AnimalPill = "animalPill",
 }
 
 // Tile Enum
@@ -122,6 +123,7 @@ export enum InventoryTypeId {
     BellPepperSeed = "bellPepperSeed",
     BasicFertilizer = "basicFertilizer",
     AnimalFeed = "animalFeed",
+    AnimalPill = "animalPill",
     Egg = "egg",
     EggQuality = "eggQuality",
     Milk = "milk",
@@ -215,6 +217,7 @@ const objectIdMap: Record<string, string> = {
     // supply types
     [createObjectId(SupplyId.BasicFertilizer)]: SupplyId.BasicFertilizer,
     [createObjectId(SupplyId.AnimalFeed)]: SupplyId.AnimalFeed,
+    [createObjectId(SupplyId.AnimalPill)]: SupplyId.AnimalPill,
 
     // tile types
     [createObjectId(TileId.StarterTile)]: TileId.StarterTile,
