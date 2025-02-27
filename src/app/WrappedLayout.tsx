@@ -36,7 +36,6 @@ import {
     useApiHelpUsePesticideSwrMutation,
     useApiHelpWaterSwrMutation,
     useApiThiefCropSwrMutation,
-    useApiClaimDailyRewardSwrMutation,
     useApiClaimHoneycombDailyRewardSwrMutation,
     useHoneycombSendTransactionSwrMutation,
     useApiBuyAnimalSwrMutation,
