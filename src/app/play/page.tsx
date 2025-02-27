@@ -1,7 +1,6 @@
 "use client"
 
 import React, { FC } from "react"
-import { Container } from "@/components"
 import dynamic from "next/dynamic"
 
 const Game = dynamic(() => import("@/game"), {
@@ -10,9 +9,7 @@ const Game = dynamic(() => import("@/game"), {
 
 const Page : FC = () => {
     return (
-        <Container>
-            <Game />
-        </Container>
+        <Game />
     )
 }
 

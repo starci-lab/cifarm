@@ -51,7 +51,6 @@ export class StandHeader extends ContainerLite {
         this.scene.events.once(EventName.TutorialPrepareCloseStand, () => {
             setTutorialDepth({
                 gameObject: this.closeButton,
-                scene: this.scene,
             })
             const { x, y } = this.closeButton.getCenter()
             const eventMessage: ShowPressHereArrowMessage = {

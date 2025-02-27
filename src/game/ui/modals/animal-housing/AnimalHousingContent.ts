@@ -5,17 +5,17 @@ import {
     EventName,
     ModalName
 } from "../../../event-bus"
-import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
+import { BaseSizerBaseConstructorParams } from "../../../types"
 import {
     Background,
     ModalBackground
 } from "../../elements"
-import { PlacedItemSchema } from "@/modules/entities"
+//import { PlacedItemSchema } from "@/modules/entities"
 
 export class AnimalHousingContent extends BaseSizer {
     private contentContainer: ContainerLite
     private background: ModalBackground
-    private placedItemBuilding: PlacedItemSchema
+    //private placedItemBuilding: PlacedItemSchema
 
     constructor({
         scene,

@@ -13,7 +13,7 @@ export const Container: FC<ContainerProps> = ({
 }: ContainerProps) => {
     return (
         <div
-            className={`relative mx-auto ${hasPadding ? "p-6" : ""} ${
+            className={`relative mx-auto max-w-[500px] ${hasPadding ? "p-6" : ""} ${
                 centerContent ? "grid place-items-center" : ""
             } min-h-screen grid`}
         >

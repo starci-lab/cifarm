@@ -140,7 +140,7 @@ export class DailyContent extends BaseSizer {
 
     private checkClaimable() {
         if (!this.user.dailyRewardLastClaimTime) {
-            return false
+            return true
         }
         const day = dayjs(this.user.dailyRewardLastClaimTime)
         // get current utc date

@@ -12,7 +12,7 @@ export const BottomNavbar: FC = () => {
             isBlurred={false}
             classNames={{
                 base: "m-auto fixed top-auto bottom-0 left-0 border-t h-16",
-                wrapper: "px-4 max-w-full",
+                wrapper: "px-4 max-w-[500px] w-full",
             }}
         >
             <NavbarContent>

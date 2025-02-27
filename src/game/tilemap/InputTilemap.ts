@@ -61,7 +61,7 @@ export interface TemporaryPlaceItemData {
   type?: PlacedItemType;
 }
 // key for experience
-const DELAY_TIME = 1000
+const DELAY_TIME = 300
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 // tilemap for handling input events
 export class InputTilemap extends ItemTilemap {
@@ -493,9 +493,7 @@ export class InputTilemap extends ItemTilemap {
                             this.scene.events.emit(EventName.CreateFlyItem, {
                                 assetKey: EXPERIENCE_KEY,
                                 position: center,
-                                quantity: placedItem.seedGrowthInfo?.isQuality
-                                    ? crop.qualityHarvestExperiences
-                                    : crop.basicHarvestExperiences,
+                                quantity: this.activities.thiefCrop.experiencesGain,
                             })
                             data.pressBlocked = false
                         }

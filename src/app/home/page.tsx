@@ -35,7 +35,7 @@ const Page: FC = () => {
                             color="success"
                             variant="dot"
                         >
-              233 playings
+              1 playings
                         </Chip>
                         <Spacer y={6} />
                         <Market />

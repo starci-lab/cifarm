@@ -1,0 +1,9 @@
+
+services:
+  client:
+    build:
+      context: ../../
+      dockerfile: docker/local/Dockerfile
+    image: cifarm/client
+    ports:
+      - "3000:3000"

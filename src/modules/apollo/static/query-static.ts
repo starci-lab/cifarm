@@ -172,7 +172,7 @@ const query = gql`
       id
       displayId
       availableInShop
-      maxCount
+
       type
       maxUpgrade
       price

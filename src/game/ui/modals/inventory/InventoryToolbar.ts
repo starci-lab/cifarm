@@ -85,8 +85,6 @@ export class InventoryToolbar extends ContainerLite {
         }
         setTutorialDepth({
             gameObject: this.gridSizer,
-            scene: this.scene,
-            storeDepth: false,
         })
     }
 
