@@ -1,5 +1,4 @@
 import { UserSchema } from "@/modules/entities"
-import { ProgressBar } from "../loading"
 import { BaseAssetKey } from "../../assets"
 import { BaseText, TextColor } from "../elements"
 import { Label, OverlapSizer, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -65,119 +64,82 @@ export class Topbar extends BaseSizer {
             this.remove(this.profileContainer, true)
         }
         const user = this.visited ? this.neighbor : this.user
-
-        const background = this.scene.add.image(0, 0, BaseAssetKey.UITopbarInfo)
-        const avatarBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatar)
-        // Left column - Avatar
-        const avatar = this.scene.rexUI.add.label({
-            background: avatarBackground,
-            width: avatarBackground.width,
-            height: avatarBackground.height,
-        }).layout()
-        const leftColumn = this.scene.rexUI.add
-            .sizer({
-                orientation: 1,
-            })
-            .add(avatar, { align: "center" }).layout()
-
-        const dataBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarData)
-        // Right column - Username and Level stacked vertically
-        const username = new BaseText({
+        if (!user) {
+            throw new Error("User not found")
+        }
+        const nameBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarName)
+        const nameText = new BaseText({
             baseParams: {
                 scene: this.scene,
                 x: 0,
                 y: 0,
-                text: user?.username ?? "NAME",
-            },
-            options: {
-                fontSize: 32,
-                textColor: TextColor.Brown,
-            },
-        })
-        this.scene.add.existing(username)
-
-        const levelBox = this.scene.add.image(0, 0, BaseAssetKey.UITopbarLevelBox)
-        const levelText = new BaseText({
-            baseParams: {
-                scene: this.scene,
-                text: user?.level?.toString() ?? "1",
-                x: 0,
-                y: 0,
+                text: "ABCDE",
             },
             options: {
                 fontSize: 24,
                 textColor: TextColor.White,
             },
         })
-        // Replace old level progress bar with ProgressBar component
-        const experienceBar = new ProgressBar({
-            baseParams: { scene: this.scene },
-            options: { progress: 0.5 },
+        this.scene.add.existing(nameText)
+        const name = this.scene.rexUI.add.label({
+            text: nameText,
+            align: "left",
+            space: {
+                left: 50,
+                top: -2
+            },
+            background: nameBackground,
+            width: nameBackground.width,
+            height: nameBackground.height,
         })
-        this.scene.add.existing(experienceBar)
+        const avatarWrapperBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarWrapper)
+        const avatarImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatar)
+        const avatarLabel = this.scene.rexUI.add.label({
+            background: avatarImage,
+            height: avatarImage.height,
+            width: avatarImage.width,
+        })
+        const levelBoxImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarLevelBox)
+        const levelText = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                x: 0,
+                y: 0,
+                text: `${user.level}`,
+            },
+            options: {
+                fontSize: 24,
+            }
+        })
         this.scene.add.existing(levelText)
-        const levelLabel = this.scene.rexUI.add
-            .label({
-                background: levelBox,
-                width: levelBox.width,
-                height: levelBox.height,
-                text: levelText,
-                align: "center",
-            })
-            .layout()
-        // Experience bar layout with two columns
-        const experienceContainer = this.scene.rexUI.add
+        const levelBoxLabel = this.scene.rexUI.add.label({
+            background: levelBoxImage,
+            text: levelText,
+            width: levelBoxImage.width,
+            height: levelBoxImage.height,
+            align: "center",
+        })
+        // Left column - Avatar
+        const avatar = this.scene.rexUI.add.badgeLabel({
+            background: avatarWrapperBackground,
+            width: avatarWrapperBackground.width,
+            height: avatarWrapperBackground.height,
+            rightBottom: levelBoxLabel,
+            center: avatarLabel,
+        }).layout()
+        const profileContainer = this.scene.rexUI.add
             .sizer({
                 orientation: "x",
-            })
-            .add(levelLabel, {
-                align: "center",
-            })
-            .add(experienceBar, {
-                align: "center",
-                offsetX: -5,
-            })
-            .layout()
-        const x = this.visited ? 0 : -(this.background.width / 2 - background.width / 2 - 10)
-        const rightColumn = this.scene.rexUI.add
-            .overlapSizer({
-                width: dataBackground.width,
-                height: dataBackground.height,
-                space: {
-                    bottom: 10,
-                    left: 15,
-                    right: 15,
-                    top: 10,
-                },
-            })
-            .addBackground(dataBackground)
-            .add(username, { align: "left-top", expand: false, })
-            .add(experienceContainer, { align: "left-bottom", expand: false, })
-            .layout()
-        this.profileContainer = this.scene.rexUI.add
-            .overlapSizer({
-                width: background.width,
-                height: background.height,
-                space: {
-                    bottom: 30,
-                    left: 18,
-                    right: 18,
-                    top: 15,
-                },
-                x,
-                y: this.background.height / 2 + 10
-            })
-            .addBackground(background)
-            .add(leftColumn, {
+                originX: 0,
+                originY: 0,
+                x: - this.background.width / 2 + 20,
+            }).add(avatar).add(name, {
                 align: "left-center",
-                expand: false,
-            })
-            .add(rightColumn, {
-                align: "right-center",
-                expand: false,
-            })
-            .layout()
-        this.addLocal(this.profileContainer)
+                offsetY: (this.background.height / 2 - avatarWrapperBackground.height / 2),
+                offsetX: -30,
+            }).layout()
+        this.addLocal(profileContainer)
+        return profileContainer
     }
 
     private updateResourcesContainer() {
@@ -203,7 +165,7 @@ export class Topbar extends BaseSizer {
             amount: `${this.user.energy}/${this.computeExperiencesQuota(
                 this.user.level
             )}`,
-            scale: 0.7,
+            scale: 0.8,
         })
         this.goldLabel = this.addLabel({
             iconKey: BaseAssetKey.UICommonIconCoin,
@@ -216,8 +178,8 @@ export class Topbar extends BaseSizer {
         }).setVisible(!this.visited)
         this.resourcesContainer = this.scene.rexUI.add
             .sizer({
-                x: this.background.width / 2 - 50,
-                y: this.background.height / 2 - 20,
+                x: this.background.width / 2 - 20,
+                y: this.background.height / 2,
                 originX: 1,
                 originY: 0.5,
                 orientation: "h",
@@ -234,7 +196,7 @@ export class Topbar extends BaseSizer {
         const background = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UITopbarBackgroundCurrency
+            BaseAssetKey.UITopbarResource
         )
         const iconContainer = this.scene.add.container(0, 0)
         const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)
@@ -256,14 +218,11 @@ export class Topbar extends BaseSizer {
             background,
             icon: iconContainer,
             text: amountText,
-            width: 150,
-            height: 50,
-            expandTextWidth: true,
-            expandTextHeight: true,
+            width: background.width,
+            height: background.height,
             space: {
-                icon: 30,
-                top: 2,
-                bottom: 10,
+                icon: 40,
+                top: -2
             },
         })
         return label

@@ -116,13 +116,11 @@ export enum BaseAssetKey {
     //Topbar
     UITopbarHeader = "ui-topbar-header",
     UITopbarIconEnergy = "ui-topbar-icon-energy",
-    UITopbarBackgroundCurrency = "ui-topbar-background-currency",
+    UITopbarResource = "ui-topbar-resource",
     UITopbarAvatar = "ui-topbar-avatar",
-    UITopbarInfo = "ui-topbar-info",
-    UITopbarLevelBar = "ui-topbar-level-bar",
-    UITopbarLevelBarBackground = "ui-topbar-level-bar-background",
+    UITopbarAvatarWrapper = "ui-topbar-avatar-wrapper",
     UITopbarLevelBox = "ui-topbar-level-box",
-    UITopbarData = "ui-topbar-data",
+    UITopbarName = "ui-topbar-name",
 
     //Bubble
     Bubble = "bubble",
@@ -229,13 +227,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     //Topbar
     [BaseAssetKey.UITopbarHeader]: "ui/topbar/header.png",
     [BaseAssetKey.UITopbarIconEnergy]: "ui/topbar/icon-energy.png",
-    [BaseAssetKey.UITopbarBackgroundCurrency]: "ui/topbar/background-currency.png",
+    [BaseAssetKey.UITopbarResource]: "ui/topbar/resource.png",
     [BaseAssetKey.UITopbarAvatar]: "ui/topbar/avatar.png",
-    [BaseAssetKey.UITopbarInfo]: "ui/topbar/info.png",
-    [BaseAssetKey.UITopbarLevelBar]: "ui/topbar/level-bar.png",
-    [BaseAssetKey.UITopbarLevelBarBackground]: "ui/topbar/level-bar-background.png",
-    [BaseAssetKey.UITopbarLevelBox]: "ui/topbar/lv.png",
-    [BaseAssetKey.UITopbarData]: "ui/topbar/data.png",
+    [BaseAssetKey.UITopbarAvatarWrapper]: "ui/topbar/avatar-wrapper.png",
+    [BaseAssetKey.UITopbarLevelBox]: "ui/topbar/level-box.png",
+    [BaseAssetKey.UITopbarName]: "ui/topbar/name.png",
 
     //Bubble
     [BaseAssetKey.Bubble]: "bubble.png",
