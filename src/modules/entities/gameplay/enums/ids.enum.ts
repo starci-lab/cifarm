@@ -71,7 +71,7 @@ export enum TileId {
 // Tool Enum
 export enum ToolId {
     Hand = "hand",
-    Scythe = "scythe",
+    Crate = "crate",
     ThiefHand = "thiefHand",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
@@ -139,7 +139,7 @@ export enum InventoryTypeId {
     BellPepper = "bellPepper",
     BellPepperQuality = "bellPepperQuality",
     Hand = "hand",
-    Scythe = "scythe",
+    Crate = "crate",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
     Pesticide = "pesticide"
@@ -207,7 +207,7 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(InventoryTypeId.Milk)]: InventoryTypeId.Milk,
     [createObjectId(InventoryTypeId.MilkQuality)]: InventoryTypeId.MilkQuality,
     [createObjectId(InventoryTypeId.Hand)]: InventoryTypeId.Hand,
-    [createObjectId(InventoryTypeId.Scythe)]: InventoryTypeId.Scythe,
+    [createObjectId(InventoryTypeId.Crate)]: InventoryTypeId.Crate,
     [createObjectId(InventoryTypeId.WateringCan)]: InventoryTypeId.WateringCan,
     [createObjectId(InventoryTypeId.Herbicide)]: InventoryTypeId.Herbicide,
     [createObjectId(InventoryTypeId.Pesticide)]: InventoryTypeId.Pesticide,
@@ -225,7 +225,7 @@ const objectIdMap: Record<string, string> = {
 
     // tool types
     [createObjectId(ToolId.Hand)]: ToolId.Hand,
-    [createObjectId(ToolId.Scythe)]: ToolId.Scythe,
+    [createObjectId(ToolId.Crate)]: ToolId.Crate,
     [createObjectId(ToolId.ThiefHand)]: ToolId.ThiefHand,
     [createObjectId(ToolId.WateringCan)]: ToolId.WateringCan,
     [createObjectId(ToolId.Herbicide)]: ToolId.Herbicide,

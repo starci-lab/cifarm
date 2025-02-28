@@ -441,7 +441,7 @@ export class InputTilemap extends ItemTilemap {
                 }
                 break
             }
-            case ToolId.Scythe: {
+            case ToolId.Crate: {
             // return if seed growth info is not need water
                 if (
                     currentPlacedItem.seedGrowthInfo?.currentState !==

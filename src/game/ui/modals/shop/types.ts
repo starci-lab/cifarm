@@ -3,7 +3,7 @@ export enum ShopTab {
     Animals = "Animals",
     Buildings = "Buildings",
     Tiles = "Tiles",
-    Trees = "Trees",
+    //Trees = "Trees",
     Decorations = "Decorations",
-    Others = "Others",
+    //Others = "Others",
 }

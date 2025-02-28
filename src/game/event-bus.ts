@@ -124,7 +124,7 @@ export enum EventName {
     TutorialPrepareCloseInventory = "tutorial_prepare_close_inventory",
     TutorialPlantSeeds = "tutorial_plant_seeds",
     TutorialSeedsPressed = "tutorial_seeds_pressed",
-    TutorialScythePressed = "tutorial_scythe_pressed",
+    TutorialCratePressed = "tutorial_crate_pressed",
     TutorialSeedPlanted = "tutorial_seed_planted",
     TutorialTilePressed = "tutorial_tile_pressed",
     TutorialCropWatered = "tutorial_crop_watered",

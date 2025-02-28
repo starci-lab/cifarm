@@ -41,6 +41,12 @@ export enum BaseAssetKey {
     UIModalShopCard = "ui-modal-shop-card",
     UIModalShopLock = "ui-modal-shop-lock",
     UIModalShopOff = "ui-modal-shop-off",
+    UIModalShopAnimalTab = "ui-modal-shop-animal-tab",
+    UIModalShopBuildingTab = "ui-modal-shop-building-tab",
+    UIModalShopDecorationTab = "ui-modal-shop-decoration-tab",
+    UIModalShopPetTab = "ui-modal-shop-pet-tab",
+    UIModalShopTileTab = "ui-modal-shop-tile-tab",
+    UIModalShopSeedTab = "ui-modal-shop-seed-tab",
 
     // Inventory ui-modal
     UIModalInventoryChain = "ui-modal-inventory-chain",
@@ -178,6 +184,12 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalShopCard]: "ui/modals/shop/card.png",
     [BaseAssetKey.UIModalShopLock]: "ui/modals/shop/lock.png",
     [BaseAssetKey.UIModalShopOff]: "ui/modals/shop/off.png",
+    [BaseAssetKey.UIModalShopAnimalTab]: "ui/modals/shop/animal-tab.png",
+    [BaseAssetKey.UIModalShopBuildingTab]: "ui/modals/shop/building-tab.png",
+    [BaseAssetKey.UIModalShopDecorationTab]: "ui/modals/shop/decoration-tab.png",
+    [BaseAssetKey.UIModalShopPetTab]: "ui/modals/shop/pet-tab.png",
+    [BaseAssetKey.UIModalShopTileTab]: "ui/modals/shop/tile-tab.png",
+    [BaseAssetKey.UIModalShopSeedTab]: "ui/modals/shop/seed-tab.png",
 
     // Inventory UIModals
     [BaseAssetKey.UIModalInventoryChain]: "ui/modals/inventory/chain.png",

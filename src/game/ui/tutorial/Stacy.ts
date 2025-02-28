@@ -515,7 +515,7 @@ export class Stacy extends ContainerLite {
                     }
                     this.showHelpDialog(generateHarvestText(count))
                 })
-                this.scene.events.once(EventName.TutorialScythePressed, () => {
+                this.scene.events.once(EventName.TutorialCratePressed, () => {
                     EventBus.emit(EventName.HideUIBackdrop)
                     EventBus.emit(EventName.HideButtons)
                     this.showHelpDialog(generateHarvestText(count))
@@ -523,7 +523,7 @@ export class Stacy extends ContainerLite {
                 // hide the stacy
                 this.hide()
                 this.scene.events.emit(EventName.TutorialHighlightToolbar)
-                this.showHelpDialog("Select scythe from toolbar.")
+                this.showHelpDialog("Select crate from toolbar.")
                 return
             }
             case TutorialStep.StartDeliverProduct: {
