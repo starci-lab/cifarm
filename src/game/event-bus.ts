@@ -204,6 +204,15 @@ export enum EventName {
     RequestClaimDailyReward = "request_claim_daily_reward",
     ClaimDailyRewardCompleted = "claim_daily_reward_completed",
 
+    RequestFeedAnimal = "request_feed_animal",
+    FeedAnimalCompleted = "feed_animal_completed",
+
+    RequestCureAnimal = "request_cure_animal",
+    CureAnimalCompleted = "cure_animal_completed",
+
+    RequestBuySupplies = "request_buy_supplies",
+    BuySuppliesCompleted = "buy_supplies_completed",
+
     CreateFlyItem = "item_flown",
 
     FadeIn = "fade_in",
@@ -215,6 +224,9 @@ export enum EventName {
 
     RefreshActivePlacedItem = "refresh_active_placed_item",
     ActivePlacedItemRefreshed = "active_placed_item_refreshed",
+
+    SyncDelayStarted = "sync_delay_started",
+    SyncDelayEnded = "sync_delay_ended",
 }
 
 export interface OpenTutorialMessage {

@@ -36,10 +36,13 @@ import {
     useApiHelpUsePesticideSwrMutation,
     useApiHelpWaterSwrMutation,
     useApiThiefCropSwrMutation,
-    useApiClaimDailyRewardSwrMutation,
     useApiClaimHoneycombDailyRewardSwrMutation,
     useHoneycombSendTransactionSwrMutation,
     useApiBuyAnimalSwrMutation,
+    useApiClaimDailyRewardSwrMutation,
+    useApiFeedAnimalSwrMutation,
+    useApiBuySuppliesSwrMutation,
+    useApiCureAnimalSwrMutation
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -63,12 +66,15 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
                             API_BUY_SEEDS_SWR_MUTATION: useApiBuySeedsSwrMutation(),
+                            API_BUY_SUPPLIES_SWR_MUTATION: useApiBuySuppliesSwrMutation(),
                             API_PLANT_SEED_SWR_MUTATION: useApiPlantSeedSwrMutation(),
                             API_CLAIM_DAILY_REWARD_SWR_MUTATION: useApiClaimDailyRewardSwrMutation(),
                             API_WATER_SWR_MUTATION: useApiWaterSwrMutation(),
                             API_CONSTRUCT_BUILDING_SWR_MUTATION: useApiConstructBuildingSwrMutation(),
                             API_BUY_TILE_SWR_MUTATION: useApiBuyTileSwrMutation(),
                             API_BUY_ANIMAL_SWR_MUTATION: useApiBuyAnimalSwrMutation(),
+                            API_FEED_ANIMAL_SWR_MUTATION: useApiFeedAnimalSwrMutation(),
+                            API_CURE_ANIMAL_SWR_MUTATION: useApiCureAnimalSwrMutation(),
                             API_USE_HERBICIDE_SWR_MUTATION: useApiUseHerbicideSwrMutation(),
                             API_USE_PESTICIDE_SWR_MUTATION: useApiUsePesticideSwrMutation(),
                             API_HARVEST_CROP_SWR_MUTATION: useApiHarvestCropSwrMutation(),

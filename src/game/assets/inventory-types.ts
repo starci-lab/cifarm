@@ -115,6 +115,10 @@ export const inventoryTypeAssetMap: Record<
         name: "Animal Feed",
         textureConfig: { ...supplyAssetMap[SupplyId.AnimalFeed].textureConfig, useExisting: true },
     },
+    [InventoryTypeId.AnimalPill]: {
+        name: "Animal Pill",
+        textureConfig: { ...supplyAssetMap[SupplyId.AnimalPill].textureConfig, useExisting: true },
+    },
     [InventoryTypeId.Hand]: {
         name: "Hand",
         textureConfig: { ...toolAssetMap[ToolId.Hand].textureConfig, useExisting: true },

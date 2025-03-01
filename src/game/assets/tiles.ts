@@ -28,48 +28,15 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
             }
         }
     },
-    [TileId.BasicTile1]: {
+    [TileId.BasicTile]: {
         name: "Basic Tile 1",
         textureConfig: {
-            key: TileId.BasicTile1,
+            key: TileId.BasicTile,
             assetUrl: "tiles/starter-tile.png",
         },
         tilesetConfig: {
             gid: 13002,
-            tilesetName: "tiles-basic-tile-1",
-        }
-    },
-    [TileId.BasicTile2]: {
-        name: "Basic Tile 2",
-        textureConfig: {
-            key: TileId.BasicTile2,
-            assetUrl: "tiles/starter-tile.png",
-        },
-        tilesetConfig: {
-            gid: 13003,
-            tilesetName: "tiles-basic-tile-2",
-        }
-    },
-    [TileId.BasicTile3]: {
-        name: "Basic Tile 3",
-        textureConfig: {
-            key: TileId.BasicTile3,
-            assetUrl: "tiles/starter-tile.png",
-        },
-        tilesetConfig: {
-            gid: 13004,
-            tilesetName: "tiles-basic-tile-3",
-        }
-    },
-    [TileId.FertileTile]: {
-        name: "Fertile Tile",
-        textureConfig: {
-            key: TileId.FertileTile,
-            assetUrl: "tiles/starter-tile.png",
-        },
-        tilesetConfig: {
-            gid: 13005,
-            tilesetName: "tiles-fertile-tile",
+            tilesetName: "tiles-basic-tile",
         }
     },
 }

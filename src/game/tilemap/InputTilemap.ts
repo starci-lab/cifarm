@@ -1,7 +1,10 @@
+import { IPaginatedResponse } from "@/modules/apollo"
 import {
     BuyAnimalRequest,
     BuyTileRequest,
     ConstructBuildingRequest,
+    CureAnimalRequest,
+    FeedAnimalRequest,
     HarvestCropRequest,
     HarvestCropResponse,
     HelpUseHerbicideRequest,
@@ -11,7 +14,7 @@ import {
     ThiefCropRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
-    WaterRequest,
+    WaterRequest
 } from "@/modules/axios"
 import { sleep } from "@/modules/common"
 import {
@@ -19,11 +22,16 @@ import {
     AnimalId,
     BuildingId,
     CropCurrentState,
+    CropId,
     CropSchema,
+    InventorySchema,
     InventoryType,
     InventoryTypeSchema,
+    PlacedItemSchema,
     PlacedItemType,
     ProductSchema,
+    SupplyId,
+    SupplySchema,
     TileId,
     ToolId,
     ToolSchema,
@@ -41,12 +49,14 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
+import { CreateFlyItemMessage, EventBus, EventName, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
+import { DeepPartial } from "react-hook-form"
+import { SYNC_DELAY_TIME } from "../constants"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -161,9 +171,9 @@ export class InputTilemap extends ItemTilemap {
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
-                if (data.pressBlocked) {
-                    return
-                }
+                // if (data.pressBlocked) {
+                //     return
+                // }
                 this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
@@ -174,13 +184,17 @@ export class InputTilemap extends ItemTilemap {
                     data.object.currentPlacedItem?.id
                 )
                 // eslint-disable-next-line no-case-declarations
-                const eventMessage: OpenModalMessage = {
-                    modalName: ModalName.AnimalHousing,
-                }
+                // const eventMessage: OpenModalMessage = {
+                //     modalName: ModalName.AnimalHousing,
+                // }
 
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                // EventBus.emit(EventName.OpenModal, eventMessage)
+                break
+            case PlacedItemType.Animal:
+                this.handlePressOnAnimal(data)
                 break
             }
+
         })
 
         // get the temporary layer
@@ -215,12 +229,13 @@ export class InputTilemap extends ItemTilemap {
     // method to handle press on tile
     private async handlePressOnTile(data: PlacedItemObjectData) {
     // check if current is visited or not
-        const visitedNeighbor = this.scene.cache.obj.get(
-            CacheKey.VisitedNeighbor
-        ) as UserSchema
         if (data.placedItemType.type !== PlacedItemType.Tile) {
             throw new Error("Invalid placed item type")
         }
+
+        const visitedNeighbor = this.scene.cache.obj.get(
+            CacheKey.VisitedNeighbor
+        ) as UserSchema
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
@@ -257,12 +272,47 @@ export class InputTilemap extends ItemTilemap {
             if (visitedNeighbor) {
                 return
             }
+
+            const { data: inventories } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+            const inventory = inventories.find(
+                (inventory) => inventory.id === selectedTool.id
+            )
+
+            if (!inventory) {
+                throw new Error(`Inventory not found for inventory id: ${selectedTool.id}`)
+            }
+
+            const inventoryType = this.inventoryTypes.find(
+                (inventoryType) => inventoryType.id === inventory.inventoryType
+            )
+
+            const cropId = inventoryType?.crop as CropId
+
+            EventBus.emit(EventName.SyncDelayStarted)
+
+            this.updatePlacedItemInClient({
+                placedItem: {
+                    ...currentPlacedItem,
+                    seedGrowthInfo: {
+                        crop: cropId,
+                        currentStage: 0,
+                        currentStageTimeElapsed: 0,
+                        isQuality: false,
+                        currentState: CropCurrentState.Normal,
+                        isFertilized: false,
+                    }
+                },
+                type: PlacedItemType.Tile,
+            })
+
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialSeedPlanted)
                 }
                 data.pressBlocked = false
+
+                EventBus.emit(EventName.SyncDelayEnded)
             })
             // emit the event to plant seed
             const eventMessage: PlantSeedRequest = {
@@ -271,6 +321,11 @@ export class InputTilemap extends ItemTilemap {
             }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
             data.pressBlocked = true
+
+            setTimeout(() => {
+                EventBus.emit(EventName.SyncDelayEnded)
+            }, SYNC_DELAY_TIME)
+
             break
         }
         case InventoryType.Tool: {
@@ -289,13 +344,25 @@ export class InputTilemap extends ItemTilemap {
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.WateringCan: {
-            // return if seed growth info is not need water
+                // return if seed growth info is not need water
                 if (
                     currentPlacedItem.seedGrowthInfo?.currentState !==
               CropCurrentState.NeedWater
                 ) {
                     return
                 }
+
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpWaterCompleted, () => {
@@ -342,13 +409,27 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
             case ToolId.Pesticide: {
-            // return if seed growth info is not need water
+                // return if seed growth info is not need water
                 if (
                     currentPlacedItem.seedGrowthInfo?.currentState !==
               CropCurrentState.IsInfested
                 ) {
                     return
                 }
+
+                // update the placed item in client
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
+
                 if (visitedNeighbor) {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
@@ -392,13 +473,26 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
             case ToolId.Herbicide: {
-            // return if seed growth info is not need water
+                // return if seed growth info is not need water
                 if (
                     currentPlacedItem.seedGrowthInfo?.currentState !==
               CropCurrentState.IsWeedy
                 ) {
                     return
                 }
+                
+                // update the placed item in client
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
@@ -465,6 +559,16 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
+
+                // update the placed item in client
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: undefined
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
                 const center = object.getCenter()
                 if (visitedNeighbor) {
                     // emit the event to water the plant
@@ -534,6 +638,142 @@ export class InputTilemap extends ItemTilemap {
             }
             }
             break
+        }
+        case InventoryType.Supply: {
+            const supplies = this.scene.cache.obj.get(
+                CacheKey.Supplies
+            ) as Array<SupplySchema>
+
+            if (!supplies) {
+                throw new Error("Supplies not found")
+            }
+
+            const supply = supplies.find(
+                (supply) => supply.id === selectedTool.inventoryType?.id
+            )
+
+            if (!supply) {
+                throw new Error(`Supply not found for supply id: ${selectedTool.id}`)
+            }
+
+            switch (supply.displayId) {
+            case SupplyId.BasicFertilizer: {
+                throw new Error("Basic Fertilizer not implemented")
+
+                break
+            }
+                break
+            }
+        }
+        }
+    }
+
+    //handlePressOnAnimal
+    private async handlePressOnAnimal(data: PlacedItemObjectData) {
+        console.log("DATAAAAA", data)
+        if (data.placedItemType.type !== PlacedItemType.Animal) {
+            throw new Error("Invalid placed item type")
+        }
+
+        const visitedNeighbor = this.scene.cache.obj.get(
+            CacheKey.VisitedNeighbor
+        ) as UserSchema
+        const selectedTool = this.scene.cache.obj.get(
+            CacheKey.SelectedTool
+        ) as ToolLike
+
+        // do nothing if selected tool is default
+        if (selectedTool.default) {
+            return
+        }
+
+        const inventoryType = this.inventoryTypes.find(
+            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
+        )
+        if (!inventoryType) {
+            throw new Error(
+                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+            )
+        }
+        const object = data.object
+        const currentPlacedItem = object.currentPlacedItem
+
+
+        console.log("currentPlacedItem", currentPlacedItem, "currentPlacedItem?.id", currentPlacedItem?.id, "inventoryType", inventoryType)
+
+        const placedItemId = currentPlacedItem?.id
+        // do nothing if placed item id is not found
+        if (!placedItemId) {
+            return
+        }
+
+        switch (inventoryType.type) {
+        case InventoryType.Supply: {
+            const supplies = this.scene.cache.obj.get(
+                CacheKey.Supplies
+            ) as Array<SupplySchema>
+
+            if (!supplies) {
+                throw new Error("Supplies not found")
+            }
+
+            console.log("selectedTool", selectedTool)
+            
+
+            const supply = supplies.find(
+                (supply) => supply.id === selectedTool.inventoryType?.id
+            )
+
+            console.log("supply", supply)
+
+            if (!supply) {
+                throw new Error(`Supply not found for supply id: ${selectedTool.id}`)
+            }
+
+            switch (supply.displayId) {
+            case SupplyId.AnimalFeed: {
+                if (!currentPlacedItem?.animalInfo) {
+                    return
+                }
+                // do nothing if neighbor user id is found
+                if (visitedNeighbor) {
+                    return
+                }
+                EventBus.once(EventName.FeedAnimalCompleted, () => {
+                    EventBus.emit(EventName.RefreshInventories)
+                    data.pressBlocked = false
+                })
+                // emit the event to plant seed
+                const eventMessage: FeedAnimalRequest = {
+                    inventorySupplyId: selectedTool.id,
+                    placedItemAnimalId: placedItemId,
+                }
+                EventBus.emit(EventName.RequestFeedAnimal, eventMessage)
+                data.pressBlocked = true
+                break
+            }
+            case SupplyId.AnimalPill: {
+                if (!currentPlacedItem?.animalInfo) {
+                    return
+                }
+                // do nothing if neighbor user id is found
+                if (visitedNeighbor) {
+                    return
+                }
+                EventBus.once(EventName.CureAnimalCompleted, () => {
+                    EventBus.emit(EventName.RefreshInventories)
+                    data.pressBlocked = false
+                })
+                // emit the event to plant seed
+                const eventMessage: CureAnimalRequest = {
+                    inventorySupplyId: selectedTool.id,
+                    placedItemAnimalId: placedItemId,
+                }
+                EventBus.emit(EventName.RequestCureAnimal, eventMessage)
+                data.pressBlocked = true
+                break
+            }
+            }
         }
         }
     }
@@ -840,6 +1080,28 @@ export class InputTilemap extends ItemTilemap {
         //temporaryPlaceItemData
         this.temporaryPlaceItemData = undefined
     }
+
+    public updatePlacedItemInClient({placedItem, type}: UpdatePlacedItemInClientParams) {
+        if (!placedItem.id || !placedItem) {
+            throw new Error("Placed item id not found")
+        }
+
+        const placedItemUpdated: PlacedItemSchema = {
+            ...placedItem,
+        } as PlacedItemSchema
+
+        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+        gameObject.update(
+            type,
+            placedItemUpdated
+        )
+    }
+
+}
+
+export interface UpdatePlacedItemInClientParams {
+    placedItem: DeepPartial<PlacedItemSchema>
+    type : PlacedItemType
 }
 
 export interface PlayProductFlyAnimationParams {

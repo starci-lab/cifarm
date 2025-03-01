@@ -56,16 +56,14 @@ export enum DailyRewardPossibilityId {
 // Supply Enum
 export enum SupplyId {
     BasicFertilizer = "basicFertilizer",
-    AnimalFeed = "animalFeed"
+    AnimalFeed = "animalFeed",
+    AnimalPill = "animalPill",
 }
 
 // Tile Enum
 export enum TileId {
     StarterTile = "starterTile",
-    BasicTile1 = "basicTile1",
-    BasicTile2 = "basicTile2",
-    BasicTile3 = "basicTile3",
-    FertileTile = "fertileTile"
+    BasicTile = "basicTile",
 }
 
 // Tool Enum
@@ -122,6 +120,7 @@ export enum InventoryTypeId {
     BellPepperSeed = "bellPepperSeed",
     BasicFertilizer = "basicFertilizer",
     AnimalFeed = "animalFeed",
+    AnimalPill = "animalPill",
     Egg = "egg",
     EggQuality = "eggQuality",
     Milk = "milk",
@@ -154,10 +153,7 @@ export enum PlacedItemTypeId {
     Barn = "barn",
     Home = "home",
     StarterTile = "starterTile",
-    BasicTile1 = "basicTile1",
-    BasicTile2 = "basicTile2",
-    BasicTile3 = "basicTile3",
-    FertileTile = "fertileTile"
+    BasicTile = "basicTile",
 }
 
 const objectIdMap: Record<string, string> = {
@@ -188,10 +184,7 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(PlacedItemTypeId.Barn)]: PlacedItemTypeId.Barn,
     [createObjectId(PlacedItemTypeId.Home)]: PlacedItemTypeId.Home,
     [createObjectId(PlacedItemTypeId.StarterTile)]: PlacedItemTypeId.StarterTile,
-    [createObjectId(PlacedItemTypeId.BasicTile1)]: PlacedItemTypeId.BasicTile1,
-    [createObjectId(PlacedItemTypeId.BasicTile2)]: PlacedItemTypeId.BasicTile2,
-    [createObjectId(PlacedItemTypeId.BasicTile3)]: PlacedItemTypeId.BasicTile3,
-    [createObjectId(PlacedItemTypeId.FertileTile)]: PlacedItemTypeId.FertileTile,
+    [createObjectId(PlacedItemTypeId.BasicTile)]: PlacedItemTypeId.BasicTile,
 
     // inventory types
     [createObjectId(InventoryTypeId.CarrotSeed)]: InventoryTypeId.CarrotSeed,
@@ -215,13 +208,11 @@ const objectIdMap: Record<string, string> = {
     // supply types
     [createObjectId(SupplyId.BasicFertilizer)]: SupplyId.BasicFertilizer,
     [createObjectId(SupplyId.AnimalFeed)]: SupplyId.AnimalFeed,
+    [createObjectId(SupplyId.AnimalPill)]: SupplyId.AnimalPill,
 
     // tile types
     [createObjectId(TileId.StarterTile)]: TileId.StarterTile,
-    [createObjectId(TileId.BasicTile1)]: TileId.BasicTile1,
-    [createObjectId(TileId.BasicTile2)]: TileId.BasicTile2,
-    [createObjectId(TileId.BasicTile3)]: TileId.BasicTile3,
-    [createObjectId(TileId.FertileTile)]: TileId.FertileTile,
+    [createObjectId(TileId.BasicTile)]: TileId.BasicTile,
 
     // tool types
     [createObjectId(ToolId.Hand)]: ToolId.Hand,
