@@ -19,6 +19,12 @@ export enum Background {
   XXLarge = "xxlarge",
 }
 
+export enum BackgroundAlign {
+  Center = "center",
+  Top = "top",
+  Bottom = "bottom",
+}
+
 export interface BackgroundData {
   backgroundAssetKey: BaseAssetKey;
   containerAssetKey?: BaseAssetKey;
@@ -41,12 +47,12 @@ const map: Record<Background, BackgroundData> = {
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         buttonScale: 1.4,
-        buttonOffsetY: 40,
+        buttonOffsetY: -60,
     },
     [Background.XLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXLarge,
         wrapperContainerAssetKey: BaseAssetKey.UIBackgroundXLargeWrapperContainer,
-        // containerAssetKey: BaseAssetKey.UIBackgroundXLargeContainer,
+    // containerAssetKey: BaseAssetKey.UIBackgroundXLargeContainer,
     },
     [Background.Small]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundSmall,
@@ -106,7 +112,7 @@ export class ModalBackground extends ContainerLite {
             background,
             title,
             onXButtonPress,
-            titleFontSize = 48,
+            titleFontSize = 72,
             container: containerConfig,
             mainButton,
             tabs: tabsConfig,
@@ -128,14 +134,17 @@ export class ModalBackground extends ContainerLite {
             .setOrigin(0.5, 1)
         this.addLocal(this.backgroundImage)
 
-        this.uiContainer = this.scene.rexUI.add.container(0, -this.backgroundImage.height + CONTAINER_OFFSET_Y)
+        this.uiContainer = this.scene.rexUI.add.container(
+            0,
+            -this.backgroundImage.height + CONTAINER_OFFSET_Y
+        )
         if (tabsConfig) {
             const { width: contentWidth, options } = tabsConfig
             this.tabs = new BaseTabs({
                 baseParams: {
                     scene,
                     width: contentWidth,
-                    y: 0
+                    y: 0,
                 },
                 options,
             })
@@ -149,10 +158,7 @@ export class ModalBackground extends ContainerLite {
         if (containerConfig) {
             const { showContainer = true, showWrapperContainer = true } =
         containerConfig
-            this.wrapperContainer = this.scene.rexUI.add.container(
-                0,
-                0
-            )
+            this.wrapperContainer = this.scene.rexUI.add.container(0, 0)
             if (showWrapperContainer) {
                 if (!wrapperContainerAssetKey) {
                     throw new Error("WrapperContainerAssetKey is required")
@@ -169,7 +175,7 @@ export class ModalBackground extends ContainerLite {
                 if (!this.tabs) {
                     throw new Error("Tabs is not set")
                 }
-                tabHeight = this.tabs.getHeight()  
+                tabHeight = this.tabs.getHeight()
             }
             this.container = this.scene.rexUI.add.container(
                 0,
@@ -185,7 +191,7 @@ export class ModalBackground extends ContainerLite {
                         .image(0, 0, tabContainerAssetKey)
                         .setOrigin(0.5, 0)
                     this.container.addLocal(this.tabContainerImage)
-                } else{
+                } else {
                     if (!containerAssetKey) {
                         throw new Error("ContainerAssetKey is required")
                     }
@@ -200,7 +206,7 @@ export class ModalBackground extends ContainerLite {
         if (this.tabs) {
             this.uiContainer.bringChildToTop(this.tabs)
         }
-        
+
         this.titleText = new BaseText({
             baseParams: {
                 scene,
@@ -259,15 +265,22 @@ export class ModalBackground extends ContainerLite {
             if (!this.container) {
                 throw new Error("Container is not set")
             }
-            this.container.addLocal(this.mainButton)
+            this.addLocal(this.mainButton)
         }
 
-        if (align === "center") {
+        switch (align) {
+        case BackgroundAlign.Center: {
             this.setPosition(0, this.backgroundImage.height / 2)
-        } else if (align === "top") {
+            break
+        }
+        case BackgroundAlign.Top: {
             this.setPosition(0, 0)
-        } else if (align === "bottom") {
+            break
+        }
+        case BackgroundAlign.Bottom: {
             this.setPosition(0, this.backgroundImage.height)
+            break
+        }
         }
     }
 }

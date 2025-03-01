@@ -159,8 +159,8 @@ export class DailyContent extends BaseSizer {
         this.rewardContainersSizer = this.scene.rexUI.add
             .sizer({
                 orientation: "y",
-                originY: 1,
-                y: -80,
+                originY: 0,
+                y: 60,
                 space: {
                     item: 10,
                 },
