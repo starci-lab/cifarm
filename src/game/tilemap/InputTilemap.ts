@@ -45,7 +45,7 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
+import { CreateFlyItemMessage, EventBus, EventName, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
@@ -178,11 +178,11 @@ export class InputTilemap extends ItemTilemap {
                     data.object.currentPlacedItem?.id
                 )
                 // eslint-disable-next-line no-case-declarations
-                const eventMessage: OpenModalMessage = {
-                    modalName: ModalName.AnimalHousing,
-                }
+                // const eventMessage: OpenModalMessage = {
+                //     modalName: ModalName.AnimalHousing,
+                // }
 
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                // EventBus.emit(EventName.OpenModal, eventMessage)
                 break
             case PlacedItemType.Animal:
                 this.handlePressOnAnimal(data)
