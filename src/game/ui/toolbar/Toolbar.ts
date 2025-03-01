@@ -215,8 +215,8 @@ export class Toolbar extends ContainerLite {
                     this.scene.events.emit(EventName.TutorialPesiticidePressed)
                     break
                 }
-                case ToolId.Scythe: {
-                    this.scene.events.emit(EventName.TutorialScythePressed)
+                case ToolId.Crate: {
+                    this.scene.events.emit(EventName.TutorialCratePressed)
                     break
                 }
                 }

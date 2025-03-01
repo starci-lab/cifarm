@@ -123,9 +123,9 @@ export const inventoryTypeAssetMap: Record<
         name: "Hand",
         textureConfig: { ...toolAssetMap[ToolId.Hand].textureConfig, useExisting: true },
     },
-    [InventoryTypeId.Scythe]: {
-        name: "Scythe",
-        textureConfig: {...toolAssetMap[ToolId.Scythe].textureConfig, useExisting: true },
+    [InventoryTypeId.Crate]: {
+        name: "Crate",
+        textureConfig: {...toolAssetMap[ToolId.Crate].textureConfig, useExisting: true },
     },
     [InventoryTypeId.WateringCan]: {
         name: "Watering Can",

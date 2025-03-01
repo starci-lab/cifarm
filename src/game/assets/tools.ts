@@ -39,11 +39,11 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
             assetUrl: "tools/pesticide.png",
         }
     },
-    [ToolId.Scythe]: {
-        name: "Scythe",
+    [ToolId.Crate]: {
+        name: "Crate",
         textureConfig: {
-            key: "scythe",
-            assetUrl: "tools/scythe.png",
+            key: "crate",
+            assetUrl: "tools/crate.png",
         }
     },
     [ToolId.ThiefHand]: {
