@@ -5,6 +5,7 @@ import { BaseText } from "./BaseText"
 import { onGameObjectPress } from "../utils"
 import { NinePatch3x3 } from "./NinePatch3x3"
 import { GRAY_TINT_COLOR } from "@/game/constants"
+import RexButton from "phaser3-rex-plugins/plugins/button.js"
 
 export enum ButtonBackground {
     Primary = "button-primary",
@@ -75,7 +76,12 @@ export class Button extends Label {
         this.textObj = textObj
 
         if (onPress) {
-            this.setInteractive().on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+            const button = new RexButton(this)
+            button.on("click", (
+                button: Button, 
+                gameObject: Label, 
+                pointer: Phaser.Input.Pointer
+            ) => {
                 onGameObjectPress({
                     gameObject: this,
                     onPress: () => onPress(pointer),

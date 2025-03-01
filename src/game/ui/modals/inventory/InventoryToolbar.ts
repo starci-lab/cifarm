@@ -100,7 +100,7 @@ export class InventoryToolbar extends ContainerLite {
         const background = this.scene.add.image(0, 0, BaseAssetKey.UIModalInventoryToolbarContainer)
         this.gridSizer = this.scene.rexUI.add
             .gridSizer({
-                y: -150,
+                y: -140,
                 originY: 1,
                 space: {
                     column: 10,
@@ -153,7 +153,8 @@ export class InventoryToolbar extends ContainerLite {
                         gridTableCell = itemQuantity
                         
                         // add drag to cell
-                        itemQuantity.setInteractive().on("pointerdown", () => {
+                        const press = scene.rexGestures.add.press(itemQuantity)
+                        press.on("pressstart", () => {
                             const dragItem = itemQuantity.duplicate()
                             // detach from the parent
                             const parent = itemQuantity.getParent()

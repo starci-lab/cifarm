@@ -50,6 +50,7 @@ export class BaseTabs extends ContainerLite {
     private tabHeight: number
     private scrollablePanel: ScrollablePanel
     private tabContainer: ContainerLite
+    private slat: Phaser.GameObjects.Image
     constructor({
         baseParams: { scene, x, y, width, height, children },
         options,
@@ -65,7 +66,7 @@ export class BaseTabs extends ContainerLite {
             throw new Error("Tabs requires options")
         }
         const { defaultTab, tabs, name: tabsName, tabsX = -400, tabsY = 0 } = options
-        this.tabContainer = scene.rexUI.add.container(tabsX, tabsY - slatSourceImage.height)
+        this.tabContainer = scene.rexUI.add.container(tabsX, tabsY - slatSourceImage.height + 10)
         this.tabWidth = tabSourceImage.width
         this.tabHeight = tabSourceImage.height
         this.selectedTab = defaultTab
@@ -81,6 +82,7 @@ export class BaseTabs extends ContainerLite {
                 x: 0,
                 y: 0,
                 originX: 0,
+                originY: 1,
                 height: this.tabHeight,
                 width,
                 scrollMode: "horizontal",
@@ -113,8 +115,8 @@ export class BaseTabs extends ContainerLite {
         this.tabContainer.addLocal(this.scrollablePanel)
         this.addLocal(this.tabContainer)
         const center = this.getCenter()
-        const slat = scene.add.image(center.x, center.y, BaseAssetKey.UITabSlat)
-        this.add(slat)
+        this.slat = scene.add.image(center.x, center.y, BaseAssetKey.UITabSlat).setOrigin(0.5, 1)
+        this.addLocal(this.slat)
 
         this.scene.events.on(
             EventName.SelectTab,
@@ -131,6 +133,10 @@ export class BaseTabs extends ContainerLite {
                 // call layout again to reposition the tabs
             }
         )
+    }
+
+    public getHeight() {
+        return this.tabHeight + this.slat.height
     }
 
     // method to create a button

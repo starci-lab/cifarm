@@ -2,6 +2,7 @@ import { BaseAssetKey } from "../../assets"
 import { ConstructorParams, LabelBaseConstructorParams } from "../../types"
 import { onGameObjectPress } from "../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
+import Button from "phaser3-rex-plugins/plugins/button.js"
 
 export interface XButtonOptions {
     onPress: () => void
@@ -23,7 +24,8 @@ export class XButton extends Label {
             icon,
             ...config,
         })
-        this.layout().setInteractive().on("pointerdown", () => {
+        const button = new Button(this)
+        button.on("click", () => {
             onGameObjectPress({
                 gameObject: this,
                 onPress,
