@@ -56,6 +56,7 @@ import { FlyItem, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 import { DeepPartial } from "react-hook-form"
+import { SYNC_DELAY_TIME } from "../constants"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -287,6 +288,8 @@ export class InputTilemap extends ItemTilemap {
 
             const cropId = inventoryType?.crop as CropId
 
+            EventBus.emit(EventName.SyncDelayStarted)
+
             this.updatePlacedItemInClient({
                 placedItem: {
                     ...currentPlacedItem,
@@ -308,6 +311,8 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.TutorialSeedPlanted)
                 }
                 data.pressBlocked = false
+
+                EventBus.emit(EventName.SyncDelayEnded)
             })
             // emit the event to plant seed
             const eventMessage: PlantSeedRequest = {
@@ -316,6 +321,11 @@ export class InputTilemap extends ItemTilemap {
             }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
             data.pressBlocked = true
+
+            setTimeout(() => {
+                EventBus.emit(EventName.SyncDelayEnded)
+            }, SYNC_DELAY_TIME)
+
             break
         }
         case InventoryType.Tool: {

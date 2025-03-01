@@ -224,6 +224,9 @@ export enum EventName {
 
     RefreshActivePlacedItem = "refresh_active_placed_item",
     ActivePlacedItemRefreshed = "active_placed_item_refreshed",
+
+    SyncDelayStarted = "sync_delay_started",
+    SyncDelayEnded = "sync_delay_ended",
 }
 
 export interface OpenTutorialMessage {
