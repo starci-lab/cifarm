@@ -210,7 +210,7 @@ export class InventoryStorage extends BaseSizer {
                 config: {
                     width: this.background.containerImage.width, 
                     height: this.background.containerImage.height,
-                    originY: 1,
+                    originY: 0,
                     y: this.background.wrapperContainerOffsetY
                 },
             },

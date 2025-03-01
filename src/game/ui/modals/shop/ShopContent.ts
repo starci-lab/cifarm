@@ -95,7 +95,6 @@ export class ShopContent extends BaseSizer {
             config
         )
 
-        
         const cellSourceImage = this.scene.textures
             .get(BaseAssetKey.UIModalShopCard)
             .getSourceImage()
@@ -146,14 +145,13 @@ export class ShopContent extends BaseSizer {
             }
         })
         this.scene.add.existing(this.background)
-        this.scene.add.existing(this.background)
         this.add(this.background)
         // create the container
-        this.contentContainer = scene.rexUI.add.container(0, 0)
-        if (!this.background.wrapperContainer) {
-            throw new Error("Wrapper container is not defined")
+        this.contentContainer = scene.rexUI.add.container(0, 20)
+        if (!this.background.container) {
+            throw new Error("Container is not found")
         }
-        this.background.wrapperContainer.addLocal(this.contentContainer)
+        this.background.container.addLocal(this.contentContainer)
 
         // load animals
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
@@ -292,8 +290,8 @@ export class ShopContent extends BaseSizer {
         const gridTable = this.scene.rexUI.add
             .gridTable({
                 x: 0,
-                y: -50,
-                originY: 1,
+                y: 0,
+                originY: 0,
                 height: 920,
                 width: 3 * this.cellWidth + 2 * CELL_SPACE,
                 scrollMode: 0,
@@ -446,7 +444,7 @@ export class ShopContent extends BaseSizer {
             }
             break
         }
-        case ShopTab.Tiles:
+        case ShopTab.Tiles: {
             for (const { displayId, price } of this.tiles) {
                 // get the image
                 items.push({
@@ -469,7 +467,8 @@ export class ShopContent extends BaseSizer {
                 // add the item card to the scrollable panel
             }
             break
-        case ShopTab.Decorations:
+        }
+        case ShopTab.Decorations: {
             for (const { displayId, price } of this.buildings) {
                 // get the image
                 items.push({
@@ -482,32 +481,7 @@ export class ShopContent extends BaseSizer {
                 // add the item card to the scrollable panel
             }
             break
-        case ShopTab.Others:
-            for (const { displayId, price } of this.buildings) {
-                // get the image
-                items.push({
-                    assetKey: buildingAssetMap[displayId].textureConfig.key,
-                    onPress: () => {
-                        console.log("Clicked on building", displayId)
-                    },
-                    price,
-                })
-                // add the item card to the scrollable panel
-            }
-            break
-        case ShopTab.Trees:
-            for (const { displayId, price } of this.buildings) {
-                // get the image
-                items.push({
-                    assetKey: buildingAssetMap[displayId].textureConfig.key,
-                    onPress: () => {
-                        console.log("Clicked on building", displayId)
-                    },
-                    price,
-                })
-                // add the item card to the scrollable panel
-            }
-            break
+        }
         }
         return items
     }

@@ -9,6 +9,8 @@ import { XButton } from "./XButton"
 import { BaseTabs, BaseTabsOptions } from "./BaseTabs"
 import { Button } from "./Button"
 
+export const CONTAINER_OFFSET_Y = 150
+
 export enum Background {
   Large = "large",
   Medium = "medium",
@@ -18,14 +20,13 @@ export enum Background {
 }
 
 export interface BackgroundData {
-    backgroundAssetKey: BaseAssetKey
-    containerAssetKey?: BaseAssetKey
-    wrapperContainerAssetKey?: BaseAssetKey
-    tabContainerAssetKey?: BaseAssetKey
-    containerOffsetY?: number
-    containerToWrapperOffsetY?: number
-    buttonScale?: number
-    buttonOffsetY?: number
+  backgroundAssetKey: BaseAssetKey;
+  containerAssetKey?: BaseAssetKey;
+  wrapperContainerAssetKey?: BaseAssetKey;
+  tabContainerAssetKey?: BaseAssetKey;
+  containerToWrapperOffsetY?: number;
+  buttonScale?: number;
+  buttonOffsetY?: number;
 }
 
 const map: Record<Background, BackgroundData> = {
@@ -33,14 +34,12 @@ const map: Record<Background, BackgroundData> = {
         backgroundAssetKey: BaseAssetKey.UIBackgroundLarge,
         containerAssetKey: BaseAssetKey.UIBackgroundLargeContainer,
         wrapperContainerAssetKey: BaseAssetKey.UIBackgroundLargeWrapperContainer,
-        containerOffsetY: -80,
-        containerToWrapperOffsetY: -10,
+        containerToWrapperOffsetY: 14,
     },
     [Background.Medium]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundMedium,
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
-        containerAssetKey:  BaseAssetKey.UIBackgroundMediumContainer,
-        containerOffsetY: -100,
+        containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         buttonScale: 1.4,
         buttonOffsetY: 40,
     },
@@ -48,18 +47,15 @@ const map: Record<Background, BackgroundData> = {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXLarge,
         wrapperContainerAssetKey: BaseAssetKey.UIBackgroundXLargeWrapperContainer,
         // containerAssetKey: BaseAssetKey.UIBackgroundXLargeContainer,
-        containerOffsetY: -100,
     },
     [Background.Small]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundSmall,
         containerAssetKey: BaseAssetKey.UIBackgroundSmallContainer,
-        containerOffsetY: -60,
     },
     [Background.XXLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXXLarge,
         tabContainerAssetKey: BaseAssetKey.UIBackgroundXXLargeTabContainer,
         wrapperContainerAssetKey: BaseAssetKey.UIBackgroundXXLargeWrapperContainer,
-        containerOffsetY: -100,
     },
 }
 
@@ -71,17 +67,17 @@ export interface ModalBackgroundOptions {
   container?: {
     showWrapperContainer?: boolean;
     showContainer?: boolean;
-  },
+  };
   align?: "center" | "top" | "bottom";
   tabs?: {
     width: number;
-    options: BaseTabsOptions
-    tabContainerOffsetY?: number
-  },
+    options: BaseTabsOptions;
+    tabContainerOffsetY?: number;
+  };
   mainButton?: {
     text: string;
     onPress: (button: Button) => void;
-  }
+  };
 }
 export class ModalBackground extends ContainerLite {
     public xButton: XButton
@@ -92,10 +88,8 @@ export class ModalBackground extends ContainerLite {
     public containerImage: Phaser.GameObjects.Image | undefined
     public wrapperContainer: ContainerLite | undefined
     public wrapperContainerImage: Phaser.GameObjects.Image | undefined
-    private tabs: BaseTabs | undefined
-    public tabContainer: ContainerLite | undefined
+    public tabs: BaseTabs | undefined
     public tabContainerImage: Phaser.GameObjects.Image | undefined
-    public containerOffsetY: number
     public wrapperContainerOffsetY: number
     public mainButton: Button | undefined
     constructor({
@@ -108,68 +102,105 @@ export class ModalBackground extends ContainerLite {
         if (!options) {
             throw new Error("ModalBackground requires options")
         }
-        const { background, title, onXButtonPress, titleFontSize = 48, container: containerConfig, mainButton, tabs: tabsConfig, align = "top" } = options
+        const {
+            background,
+            title,
+            onXButtonPress,
+            titleFontSize = 48,
+            container: containerConfig,
+            mainButton,
+            tabs: tabsConfig,
+            align = "top",
+        } = options
         super(scene, x, y, width, height, children)
-        const { backgroundAssetKey, containerAssetKey, containerOffsetY = 0, buttonScale = 1, buttonOffsetY = 10, tabContainerAssetKey, wrapperContainerAssetKey, containerToWrapperOffsetY = -5 } = map[background]
-        this.containerOffsetY = containerOffsetY
+        const {
+            backgroundAssetKey,
+            containerAssetKey,
+            buttonScale = 1,
+            buttonOffsetY = 10,
+            tabContainerAssetKey,
+            wrapperContainerAssetKey,
+            containerToWrapperOffsetY = -5,
+        } = map[background]
         this.wrapperContainerOffsetY = containerToWrapperOffsetY
-        this.backgroundImage = this.scene.add.image(0, 0, backgroundAssetKey).setOrigin(0.5, 1)
-        this.uiContainer = this.scene.rexUI.add.container(0, 0)
-        this.addLocal(this.uiContainer)
-        this.uiContainer.addLocal(this.backgroundImage)
+        this.backgroundImage = this.scene.add
+            .image(0, 0, backgroundAssetKey)
+            .setOrigin(0.5, 1)
+        this.addLocal(this.backgroundImage)
 
-        if (containerConfig) {
-            const { showContainer = true, showWrapperContainer = true } = containerConfig
-            if (showWrapperContainer) {
-                if (!wrapperContainerAssetKey) {
-                    throw new Error("WrapperContainerAssetKey is required")
-                }
-                this.wrapperContainerImage = this.scene.add.image(0, 0, wrapperContainerAssetKey).setOrigin(0.5, 1)
-                this.wrapperContainer = this.scene.rexUI.add.container(0, containerOffsetY)
-                this.wrapperContainer.addLocal(this.wrapperContainerImage)
-                this.uiContainer.addLocal(this.wrapperContainer)
-            } 
-            if (showContainer) {
-                if (tabsConfig) {
-                    if (!tabContainerAssetKey) {
-                        throw new Error("TabContainerAssetKey is required")
-                    }
-                    this.tabContainerImage = this.scene.add.image(0, 0, tabContainerAssetKey).setOrigin(0.5, 1)
-                    this.tabContainer = this.scene.rexUI.add.container(0, containerToWrapperOffsetY)
-                    this.tabContainer.addLocal(this.tabContainerImage)
-                    this.wrapperContainer?.addLocal(this.tabContainer)
-                }
-                else {
-                    if (!containerAssetKey) {
-                        throw new Error("ContainerAssetKey is required")
-                    }
-                    this.containerImage = this.scene.add.image(0, 0, containerAssetKey).setOrigin(0.5, 1)
-                    const container = this.wrapperContainer || this.uiContainer
-                    this.container = this.scene.rexUI.add.container(0, containerToWrapperOffsetY)
-                    if (!this.wrapperContainer) {
-                        this.container.setY(containerOffsetY)
-                    }
-                    this.container.addLocal(this.containerImage)
-                    container.addLocal(this.container)
-                }
-                
-            }
-        }
-
+        this.uiContainer = this.scene.rexUI.add.container(0, -this.backgroundImage.height + CONTAINER_OFFSET_Y)
         if (tabsConfig) {
             const { width: contentWidth, options } = tabsConfig
             this.tabs = new BaseTabs({
                 baseParams: {
                     scene,
                     width: contentWidth,
-                    y: -(this.backgroundImage.height - 350),
+                    y: 0
                 },
-                options
+                options,
             })
+            this.tabs.setY(this.tabs.getHeight())
             this.scene.add.existing(this.tabs)
             this.uiContainer.addLocal(this.tabs)
         }
 
+        this.addLocal(this.uiContainer)
+        
+        if (containerConfig) {
+            const { showContainer = true, showWrapperContainer = true } =
+        containerConfig
+            this.wrapperContainer = this.scene.rexUI.add.container(
+                0,
+                0
+            )
+            if (showWrapperContainer) {
+                if (!wrapperContainerAssetKey) {
+                    throw new Error("WrapperContainerAssetKey is required")
+                }
+                this.wrapperContainerImage = this.scene.add
+                    .image(0, 0, wrapperContainerAssetKey)
+                    .setOrigin(0.5, 0)
+                this.wrapperContainer.addLocal(this.wrapperContainerImage)
+            }
+            this.uiContainer.addLocal(this.wrapperContainer)
+
+            let tabHeight = 0
+            if (tabsConfig) {
+                if (!this.tabs) {
+                    throw new Error("Tabs is not set")
+                }
+                tabHeight = this.tabs.getHeight()  
+            }
+            this.container = this.scene.rexUI.add.container(
+                0,
+                containerToWrapperOffsetY + tabHeight
+            )
+
+            if (showContainer) {
+                if (tabsConfig) {
+                    if (!tabContainerAssetKey) {
+                        throw new Error("TabContainerAssetKey is required")
+                    }
+                    this.tabContainerImage = this.scene.add
+                        .image(0, 0, tabContainerAssetKey)
+                        .setOrigin(0.5, 0)
+                    this.container.addLocal(this.tabContainerImage)
+                } else{
+                    if (!containerAssetKey) {
+                        throw new Error("ContainerAssetKey is required")
+                    }
+                    this.containerImage = this.scene.add
+                        .image(0, 0, containerAssetKey)
+                        .setOrigin(0.5, 0)
+                    this.container.addLocal(this.containerImage)
+                }
+            }
+            this.wrapperContainer.addLocal(this.container)
+        }
+        if (this.tabs) {
+            this.uiContainer.bringChildToTop(this.tabs)
+        }
+        
         this.titleText = new BaseText({
             baseParams: {
                 scene,
@@ -179,11 +210,11 @@ export class ModalBackground extends ContainerLite {
             },
             options: {
                 fontSize: titleFontSize,
-                textColor: TextColor.DarkBrown
-            }
+                textColor: TextColor.DarkBrown,
+            },
         })
         scene.add.existing(this.titleText)
-        this.uiContainer.addLocal(this.titleText)
+        this.addLocal(this.titleText)
         this.xButton = new XButton({
             baseParams: {
                 scene,
@@ -196,9 +227,14 @@ export class ModalBackground extends ContainerLite {
                 onPress: () => onXButtonPress(this.xButton),
                 disableInteraction: false,
             },
-        }).layout().setPosition(this.backgroundImage.width / 2 - 75,-(this.backgroundImage.height - 75))
+        })
+            .layout()
+            .setPosition(
+                this.backgroundImage.width / 2 - 75,
+                -(this.backgroundImage.height - 75)
+            )
         this.scene.add.existing(this.xButton)
-        this.uiContainer.addLocal(this.xButton)
+        this.addLocal(this.xButton)
 
         if (mainButton) {
             const { text, onPress } = mainButton
@@ -215,8 +251,8 @@ export class ModalBackground extends ContainerLite {
                             throw new Error("Main button is not set")
                         }
                         onPress(this.mainButton)
-                    }
-                }
+                    },
+                },
             })
             this.mainButton.setY(buttonOffsetY)
             this.scene.add.existing(this.mainButton)
