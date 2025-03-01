@@ -65,10 +65,10 @@ export class BaseGridTable<TItem> extends GridTable {
         } = options
         super(scene, {
             space: {
-                left: 40,
-                right: 50,
-                top: 40,
-                bottom: 40,
+                left: 30,
+                right: 40,
+                top: 30,
+                bottom: 30,
             },
             table: {
                 columns, // Fixed 3 columns

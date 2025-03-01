@@ -43,7 +43,6 @@ export class InventoryStorage extends BaseSizer {
     private background: ModalBackground
     // grid storage & toolbar
     private gridTable: BaseGridTable<InventorySchema | null> | undefined
-    private inventorySeedMoveToToolbar = false
     // items
     private items: Record<string, ItemQuantity> = {}
 
