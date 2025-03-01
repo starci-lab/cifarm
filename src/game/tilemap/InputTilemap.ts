@@ -1,3 +1,4 @@
+import { IPaginatedResponse } from "@/modules/apollo"
 import {
     BuyAnimalRequest,
     BuyTileRequest,
@@ -13,7 +14,7 @@ import {
     ThiefCropRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
-    WaterRequest,
+    WaterRequest
 } from "@/modules/axios"
 import { sleep } from "@/modules/common"
 import {
@@ -21,9 +22,12 @@ import {
     AnimalId,
     BuildingId,
     CropCurrentState,
+    CropId,
     CropSchema,
+    InventorySchema,
     InventoryType,
     InventoryTypeSchema,
+    PlacedItemSchema,
     PlacedItemType,
     ProductSchema,
     SupplyId,
@@ -51,6 +55,7 @@ import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
+import { DeepPartial } from "react-hook-form"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -165,9 +170,9 @@ export class InputTilemap extends ItemTilemap {
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
-                if (data.pressBlocked) {
-                    return
-                }
+                // if (data.pressBlocked) {
+                //     return
+                // }
                 this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
@@ -266,6 +271,37 @@ export class InputTilemap extends ItemTilemap {
             if (visitedNeighbor) {
                 return
             }
+
+            const { data: inventories } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
+            const inventory = inventories.find(
+                (inventory) => inventory.id === selectedTool.id
+            )
+
+            if (!inventory) {
+                throw new Error(`Inventory not found for inventory id: ${selectedTool.id}`)
+            }
+
+            const inventoryType = this.inventoryTypes.find(
+                (inventoryType) => inventoryType.id === inventory.inventoryType
+            )
+
+            const cropId = inventoryType?.crop as CropId
+
+            this.updatePlacedItemInClient({
+                placedItem: {
+                    ...currentPlacedItem,
+                    seedGrowthInfo: {
+                        crop: cropId,
+                        currentStage: 0,
+                        currentStageTimeElapsed: 0,
+                        isQuality: false,
+                        currentState: CropCurrentState.Normal,
+                        isFertilized: false,
+                    }
+                },
+                type: PlacedItemType.Tile,
+            })
+
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -305,6 +341,18 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     return
                 }
+
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpWaterCompleted, () => {
@@ -358,6 +406,20 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     return
                 }
+
+                // update the placed item in client
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
+
                 if (visitedNeighbor) {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
@@ -408,6 +470,19 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     return
                 }
+                
+                // update the placed item in client
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
@@ -474,6 +549,16 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
+
+                // update the placed item in client
+                this.updatePlacedItemInClient({
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: undefined
+                    },
+                    type: PlacedItemType.Tile,
+                })
+
                 const center = object.getCenter()
                 if (visitedNeighbor) {
                     // emit the event to water the plant
@@ -985,6 +1070,28 @@ export class InputTilemap extends ItemTilemap {
         //temporaryPlaceItemData
         this.temporaryPlaceItemData = undefined
     }
+
+    public updatePlacedItemInClient({placedItem, type}: UpdatePlacedItemInClientParams) {
+        if (!placedItem.id || !placedItem) {
+            throw new Error("Placed item id not found")
+        }
+
+        const placedItemUpdated: PlacedItemSchema = {
+            ...placedItem,
+        } as PlacedItemSchema
+
+        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+        gameObject.update(
+            type,
+            placedItemUpdated
+        )
+    }
+
+}
+
+export interface UpdatePlacedItemInClientParams {
+    placedItem: DeepPartial<PlacedItemSchema>
+    type : PlacedItemType
 }
 
 export interface PlayProductFlyAnimationParams {
