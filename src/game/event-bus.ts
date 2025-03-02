@@ -164,6 +164,9 @@ export enum EventName {
     RequestConstructBuilding = "request_construct_building",
     ConstructBuildingCompleted = "construct_building_completed",
 
+    RequestUseFertilizer = "request_use_fertilizer",
+    UseFertilizerCompleted = "use_fertilizer_completed",
+
     RequestBuyTile = "request_buy_tile",
     BuyTileCompleted = "buy_tile_completed",
     RequestMoveInventory = "request_move_inventory",
@@ -228,6 +231,8 @@ export enum EventName {
 
     SyncDelayStarted = "sync_delay_started",
     SyncDelayEnded = "sync_delay_ended",
+
+    RequestUpdatePlacedItemLocal = "update_placed_item_local",
 }
 
 export interface OpenTutorialMessage {

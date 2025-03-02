@@ -1,3 +1,4 @@
+import { formatTime } from "@/modules/common"
 import {
     AnimalCurrentState,
     AnimalSchema,
@@ -7,14 +8,13 @@ import {
     PlacedItemType,
     ProductSchema,
 } from "@/modules/entities"
-import { AnimalAge, animalAssetMap, BaseAssetKey, cropAssetMap, productAssetMap } from "../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
-import { BaseText } from "../ui"
-import { formatTime } from "@/modules/common"
+import { AnimalAge, animalAssetMap, BaseAssetKey, cropAssetMap, productAssetMap } from "../assets"
+import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
+import { BaseText } from "../ui"
+import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 
 export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     // list of extra sprites that are part of the placed item
@@ -23,6 +23,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private animalInfoSprite: Phaser.GameObjects.Sprite | undefined
     private bubbleState: Label | undefined
     public currentPlacedItem: PlacedItemSchema | undefined
+    private fertilizerParticle: Phaser.GameObjects.Sprite | undefined
     private timer: Phaser.GameObjects.Text | undefined
     private crops: Array<CropSchema> = []
     private products: Array<ProductSchema> = []
@@ -85,6 +86,9 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
 
             // Update the timer
             this.updateSeedGrowthInfoTimer(placedItem, container)
+
+            // Update the fertilizer
+            this.updateSeedGrowthInfoFertilizer(placedItem, container)
         }
     }
 
@@ -234,6 +238,34 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
     }
 
+    private updateSeedGrowthInfoFertilizer(
+        placedItem: PlacedItemSchema,
+        container: ContainerLite
+    ) {
+        if (!placedItem.seedGrowthInfo) {
+            throw new Error("Seed growth info not found")
+        }
+    
+        if (placedItem.seedGrowthInfo.isFertilized) {
+            // Create fertilizer sprite if it doesn’t exist
+            if (!this.fertilizerParticle) {
+                this.fertilizerParticle = this.scene.add
+                    .sprite(0, 0, BaseAssetKey.FertilizerParticle) // Using sprite instead of image
+                    .setDepth(this.depth)
+                    .setScale(0.7)
+                    .setPosition(0, 0)
+
+                container.addLocal(this.fertilizerParticle)
+            }
+        } else {
+            // Remove fertilizer sprite if fertilizer effect is gone
+            if (this.fertilizerParticle) {
+                this.fertilizerParticle.destroy()
+                this.fertilizerParticle = undefined
+            }
+        }
+    }
+    
     private updateSeedGrowthInfoTimer(
         placedItem: PlacedItemSchema,
         container: ContainerLite

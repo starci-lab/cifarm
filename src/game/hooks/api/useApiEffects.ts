@@ -22,6 +22,7 @@ import { useRetainProductEffects } from "./useRetainProductEffects"
 import { useReturnEffects } from "./useReturnEffects"
 import { useUnfollowEffects } from "./useUnfollowEffects"
 import { useUpdateTutorialEffects } from "./useUpdateTutorialEffects"
+import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
 import { useVisitEffects } from "./useVisitEffects"
 import { useWaterEffects } from "./useWaterEffects"
 
@@ -52,4 +53,5 @@ export const useApiEffects = () => {
     useBuySuppliesEffects()
     useFeedAnimalEffects()
     useCureAnimalEffects()
+    useUseFertilizerEffects()
 }

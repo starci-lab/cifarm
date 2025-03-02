@@ -58,7 +58,11 @@ export const Game: FC = () => {
                 EventBus.emit(EventName.PlacedItemsSynced, data)
             }
         })
-    }, [connected])
+
+        return () => {
+            socket.off(PLACED_ITEMS_SYNCED_EVENT)
+        }
+    }, [connected, socket, isSyncDelayed])
 
     useEffect(() => {
         EventBus.on(EventName.SyncDelayStarted, () => {

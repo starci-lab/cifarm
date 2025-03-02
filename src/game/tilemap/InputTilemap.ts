@@ -27,7 +27,6 @@ import {
     InventorySchema,
     InventoryType,
     InventoryTypeSchema,
-    PlacedItemSchema,
     PlacedItemType,
     ProductSchema,
     SupplyId,
@@ -35,7 +34,7 @@ import {
     TileId,
     ToolId,
     ToolSchema,
-    UserSchema,
+    UserSchema
 } from "@/modules/entities"
 import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
 import {
@@ -49,14 +48,14 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
+import { RED_TINT_COLOR, SYNC_DELAY_TIME, WHITE_TINT_COLOR } from "../constants"
 import { CreateFlyItemMessage, EventBus, EventName, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
-import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
+import { ItemTilemap, PlacedItemObjectData, UpdatePlacedItemLocalParams } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
-import { DeepPartial } from "react-hook-form"
-import { SYNC_DELAY_TIME } from "../constants"
+import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -264,7 +263,13 @@ export class InputTilemap extends ItemTilemap {
 
         switch (inventoryType.type) {
         case InventoryType.Seed: {
-        // return if seed growth info is found
+            EventBus.emit(EventName.SyncDelayStarted)
+
+            setTimeout(() => {
+                EventBus.emit(EventName.SyncDelayEnded)
+            }, SYNC_DELAY_TIME)
+
+            // return if seed growth info is found
             if (currentPlacedItem?.seedGrowthInfo) {
                 return
             }
@@ -288,9 +293,9 @@ export class InputTilemap extends ItemTilemap {
 
             const cropId = inventoryType?.crop as CropId
 
-            EventBus.emit(EventName.SyncDelayStarted)
+            
 
-            this.updatePlacedItemInClient({
+            const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
                 placedItem: {
                     ...currentPlacedItem,
                     seedGrowthInfo: {
@@ -303,13 +308,23 @@ export class InputTilemap extends ItemTilemap {
                     }
                 },
                 type: PlacedItemType.Tile,
-            })
+            }
+
+            // update the placed item in client
+            EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialSeedPlanted)
                 }
+
+                this.scene.events.emit(EventName.CreateFlyItem, {
+                    assetKey: EXPERIENCE_KEY,
+                    position: object.getCenter(),
+                    quantity: this.activities.plantSeed.experiencesGain,
+                })
+
                 data.pressBlocked = false
 
                 EventBus.emit(EventName.SyncDelayEnded)
@@ -321,10 +336,6 @@ export class InputTilemap extends ItemTilemap {
             }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
             data.pressBlocked = true
-
-            setTimeout(() => {
-                EventBus.emit(EventName.SyncDelayEnded)
-            }, SYNC_DELAY_TIME)
 
             break
         }
@@ -352,7 +363,9 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                this.updatePlacedItemInClient({
+                EventBus.emit(EventName.SyncDelayStarted)
+
+                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
                     placedItem: {
                         ...currentPlacedItem,
                         seedGrowthInfo: {
@@ -361,7 +374,10 @@ export class InputTilemap extends ItemTilemap {
                         }
                     },
                     type: PlacedItemType.Tile,
-                })
+                }
+
+                // update the placed item in client
+                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
                 if (visitedNeighbor) {
                     // emit the event to water the plant
@@ -377,6 +393,8 @@ export class InputTilemap extends ItemTilemap {
                         }
                         // reset the isPressed flag
                         data.pressBlocked = true
+
+                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: HelpWaterRequest = {
@@ -398,6 +416,8 @@ export class InputTilemap extends ItemTilemap {
                         })
                         // reset the isPressed flag
                         data.pressBlocked = false
+
+                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: WaterRequest = {
@@ -406,6 +426,9 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestWater, eventMessage)
                     data.pressBlocked = true
                 }
+                setTimeout(() => {
+                    EventBus.emit(EventName.SyncDelayEnded)
+                }, SYNC_DELAY_TIME)
                 break
             }
             case ToolId.Pesticide: {
@@ -417,8 +440,9 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                // update the placed item in client
-                this.updatePlacedItemInClient({
+                EventBus.emit(EventName.SyncDelayStarted)
+
+                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
                     placedItem: {
                         ...currentPlacedItem,
                         seedGrowthInfo: {
@@ -427,7 +451,10 @@ export class InputTilemap extends ItemTilemap {
                         }
                     },
                     type: PlacedItemType.Tile,
-                })
+                }
+
+                // update the placed item in client
+                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
 
                 if (visitedNeighbor) {
@@ -441,6 +468,8 @@ export class InputTilemap extends ItemTilemap {
                         })
                         // reset the isPressed flag
                         data.pressBlocked = false
+
+                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to help use pesticide
                     const eventMessage: HelpUsePesticideRequest = {
@@ -462,6 +491,8 @@ export class InputTilemap extends ItemTilemap {
                         })
                         // reset the isPressed flag
                         data.pressBlocked = false
+
+                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: UsePesticideRequest = {
@@ -470,6 +501,12 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestUsePesticide, eventMessage)
                     data.pressBlocked = true
                 }
+                
+
+                setTimeout(() => {
+                    EventBus.emit(EventName.SyncDelayEnded)
+                }, SYNC_DELAY_TIME)
+
                 break
             }
             case ToolId.Herbicide: {
@@ -480,9 +517,10 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     return
                 }
-                
-                // update the placed item in client
-                this.updatePlacedItemInClient({
+
+                EventBus.emit(EventName.SyncDelayStarted)
+
+                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
                     placedItem: {
                         ...currentPlacedItem,
                         seedGrowthInfo: {
@@ -491,7 +529,10 @@ export class InputTilemap extends ItemTilemap {
                         }
                     },
                     type: PlacedItemType.Tile,
-                })
+                }
+
+                // update the placed item in client
+                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
                 if (visitedNeighbor) {
                     // emit the event to water the plant
@@ -504,6 +545,8 @@ export class InputTilemap extends ItemTilemap {
                         })
                         // reset the isPressed flag
                         data.pressBlocked = false
+
+                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: HelpUseHerbicideRequest = {
@@ -525,6 +568,8 @@ export class InputTilemap extends ItemTilemap {
                         })
                         // reset the isPressed flag
                         data.pressBlocked = false
+
+                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: UseHerbicideRequest = {
@@ -532,6 +577,10 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestUseHerbicide, eventMessage)
                     data.pressBlocked = true
+
+                    setTimeout(() => {
+                        EventBus.emit(EventName.SyncDelayEnded)
+                    }, SYNC_DELAY_TIME)
                 }
                 break
             }
@@ -560,14 +609,18 @@ export class InputTilemap extends ItemTilemap {
                     throw new Error("Product not found")
                 }
 
-                // update the placed item in client
-                this.updatePlacedItemInClient({
+                EventBus.emit(EventName.SyncDelayStarted)
+
+                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
                     placedItem: {
                         ...currentPlacedItem,
                         seedGrowthInfo: undefined
                     },
                     type: PlacedItemType.Tile,
-                })
+                }
+
+                // update the placed item in client
+                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
                 const center = object.getCenter()
                 if (visitedNeighbor) {
@@ -591,6 +644,8 @@ export class InputTilemap extends ItemTilemap {
                                 quantity: this.activities.thiefCrop.experiencesGain,
                             })
                             data.pressBlocked = false
+
+                            EventBus.emit(EventName.SyncDelayEnded)
                         }
                     )
                     // emit the event to plant seed
@@ -625,6 +680,8 @@ export class InputTilemap extends ItemTilemap {
                                     : crop.basicHarvestExperiences,
                             })
                             data.pressBlocked = false
+
+                            EventBus.emit(EventName.SyncDelayEnded)
                         }
                     )
                     // emit the event to plant seed
@@ -633,6 +690,10 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestHarvestCrop, eventMessage)
                     data.pressBlocked = true
+
+                    setTimeout(() => {
+                        EventBus.emit(EventName.SyncDelayEnded)
+                    }, SYNC_DELAY_TIME)
                 }
                 break
             }
@@ -658,7 +719,59 @@ export class InputTilemap extends ItemTilemap {
 
             switch (supply.displayId) {
             case SupplyId.BasicFertilizer: {
-                throw new Error("Basic Fertilizer not implemented")
+                // return if seed growth info is not need water
+
+                if(currentPlacedItem.seedGrowthInfo == null){
+                    return
+                }
+
+                if (
+                    currentPlacedItem.seedGrowthInfo?.isFertilized
+                ) {
+                    return
+                }
+
+                EventBus.emit(EventName.SyncDelayStarted)
+
+                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            isFertilized: true,
+                        }
+                    },
+                    type: PlacedItemType.Tile,
+                }
+
+                // update the placed item in client
+                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
+
+                EventBus.once(EventName.UseFertilizerCompleted, () => {
+                    EventBus.emit(EventName.RefreshUser)
+
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        assetKey: EXPERIENCE_KEY,
+                        position: object.getCenter(),
+                        quantity: this.activities.usePesticide.experiencesGain,
+                    })
+                    // reset the isPressed flag
+                    data.pressBlocked = false
+
+                    EventBus.emit(EventName.SyncDelayEnded)
+                })
+
+                // emit the event to plant seed
+                const eventMessage: UseFertilizerRequest = {
+                    placedItemTileId: placedItemId,
+                    inventorySupplyId: selectedTool.id,
+                }
+                EventBus.emit(EventName.RequestUseFertilizer, eventMessage)
+                data.pressBlocked = true
+
+                setTimeout(() => {
+                    EventBus.emit(EventName.SyncDelayEnded)
+                }, SYNC_DELAY_TIME)
 
                 break
             }
@@ -670,7 +783,7 @@ export class InputTilemap extends ItemTilemap {
 
     //handlePressOnAnimal
     private async handlePressOnAnimal(data: PlacedItemObjectData) {
-        console.log("DATAAAAA", data)
+        console.log("[DATAAAAA - Press on animal]", data)
         if (data.placedItemType.type !== PlacedItemType.Animal) {
             throw new Error("Invalid placed item type")
         }
@@ -868,7 +981,7 @@ export class InputTilemap extends ItemTilemap {
 
             // set tint based on can place
             this.temporaryPlaceItemObject.setTint(
-                isPlacementValid ? 0xffffff : 0xff0000
+                isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
             )
 
             this.showPlacmentPopupUI(tile)
@@ -1080,28 +1193,6 @@ export class InputTilemap extends ItemTilemap {
         //temporaryPlaceItemData
         this.temporaryPlaceItemData = undefined
     }
-
-    public updatePlacedItemInClient({placedItem, type}: UpdatePlacedItemInClientParams) {
-        if (!placedItem.id || !placedItem) {
-            throw new Error("Placed item id not found")
-        }
-
-        const placedItemUpdated: PlacedItemSchema = {
-            ...placedItem,
-        } as PlacedItemSchema
-
-        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
-        gameObject.update(
-            type,
-            placedItemUpdated
-        )
-    }
-
-}
-
-export interface UpdatePlacedItemInClientParams {
-    placedItem: DeepPartial<PlacedItemSchema>
-    type : PlacedItemType
 }
 
 export interface PlayProductFlyAnimationParams {

@@ -31,6 +31,10 @@ const query = gql`
         experiencesGain
         energyConsume
       }
+      plantSeed {
+        experiencesGain
+        energyConsume
+      }
       usePesticide {
         experiencesGain
         energyConsume
