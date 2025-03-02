@@ -16,6 +16,7 @@ import { GroundTilemap } from "./GroundTilemap"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { ObjectLayerName } from "./types"
 import _ from "lodash"
+import { DeepPartial } from "react-hook-form"
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -50,6 +51,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.previousPlacedItems = data
             }
         )
+
+        EventBus.on(EventName.RequestUpdatePlacedItemLocal, (params: UpdatePlacedItemLocalParams) => {
+            this.updatePlacedItemLocal(params)
+        })
     }
 
     public shutdown() {
@@ -382,7 +387,29 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         return null
     }
+
+    private updatePlacedItemLocal({placedItem, type}: UpdatePlacedItemLocalParams) {
+        if (!placedItem.id || !placedItem) {
+            throw new Error("Placed item id not found")
+        }
+
+        const placedItemUpdated: PlacedItemSchema = {
+            ...placedItem,
+        } as PlacedItemSchema
+
+        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+        gameObject.update(
+            type,
+            placedItemUpdated
+        )
+    }
 }
+
+export interface UpdatePlacedItemLocalParams {
+    placedItem: DeepPartial<PlacedItemSchema>
+    type : PlacedItemType
+}
+
 
 export interface PlacedItemObjectData {
     object: PlacedItemObject

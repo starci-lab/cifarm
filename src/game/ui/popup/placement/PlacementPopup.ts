@@ -17,7 +17,7 @@ export class PlacementPopup extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         const camera = scene.cameras.main
-        const buttonScale = 0.5 / camera.zoom
+        const buttonScale = 0.8 / camera.zoom
 
         const hitbox = scene.add.rectangle(0, 0, width, height, 0x000000, 0).setInteractive()
         hitbox.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -27,7 +27,7 @@ export class PlacementPopup extends ContainerLite {
         })
 
         this.yesButton = scene.add
-            .image(-100, 30, BaseAssetKey.PopupPlacementIconYes)
+            .image(-100, 30, BaseAssetKey.UICommonPlus)
             .setInteractive({ useHandCursor: true })
             .setScale(buttonScale)
             .on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -38,7 +38,7 @@ export class PlacementPopup extends ContainerLite {
             })
 
         this.noButton = scene.add
-            .image(100, 30, BaseAssetKey.PopupPlacementIconNo)
+            .image(100, 30, BaseAssetKey.UICommonMinus)
             .setInteractive({ useHandCursor: true })
             .setScale(buttonScale)
             .on("pointerdown", (pointer: Phaser.Input.Pointer) => {

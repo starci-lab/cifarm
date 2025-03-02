@@ -228,6 +228,8 @@ export enum EventName {
 
     SyncDelayStarted = "sync_delay_started",
     SyncDelayEnded = "sync_delay_ended",
+
+    RequestUpdatePlacedItemLocal = "update_placed_item_local",
 }
 
 export interface OpenTutorialMessage {
