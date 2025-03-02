@@ -55,6 +55,10 @@ export interface DefaultInfo {
   toolCapacity: number;
   deliveryCapacity: number;
   followeeLimit: number;
+  referredLimit: number;
+  referralRewardQuantity: number
+  referredRewardQuantity: number
+  followXRewardQuantity: number;
 }
 
 export interface SlotInfo {

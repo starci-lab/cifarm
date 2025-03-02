@@ -1,9 +1,7 @@
 import { UseSWRMutation } from "../types"
 import {
-    QueryUser,
     queryUser,
     QueryUserResponse,
-    QueryParams,
     QueryUserParams,
 } from "@/modules/apollo"
 import useSWRMutation from "swr/mutation"

@@ -1,14 +1,14 @@
 import { v4 } from "uuid"
 import { BootstrapAssetKey } from "../../assets"
-import { ConstructorParams, SizerBaseConstructorParams } from "../../types"
-import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { ConstructorParams, OverlapBaseSizerBaseConstructorParams } from "../../types"
+import { OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
-export class ProgressBar extends Sizer {
+export class ProgressBar extends OverlapSizer {
     // loading bar
     private loadingBar: Phaser.GameObjects.Image
     private loadingFill: Phaser.GameObjects.Image | undefined
     // constructor
-    constructor({ baseParams: { scene, config }, options }: ConstructorParams<SizerBaseConstructorParams, ProgressBarOptions>) {
+    constructor({ baseParams: { scene, config }, options }: ConstructorParams<OverlapBaseSizerBaseConstructorParams, ProgressBarOptions>) {
         //add loading bar
         const loadingBar = scene.add
             .image(0, 0, BootstrapAssetKey.LoadingBar)
@@ -35,10 +35,6 @@ export class ProgressBar extends Sizer {
         if (!this.loadingBar) {
             throw new Error("Loading bar not found")
         }
-        // calculate the progress
-        const maxLoadingFillWidth = this.loadingBar.displayWidth
-        const loadingFillWidth = maxLoadingFillWidth * progress
-        const loadingFillHeight = this.loadingBar.displayHeight
         // declare a unique frame name
         const frameName = v4()
         // get the original texture
@@ -66,29 +62,28 @@ export class ProgressBar extends Sizer {
             this.loadingFill = this.scene.add
                 .image(0, 0, texture, frameName)
                 .setOrigin(0, 0.5)
-                .setDisplaySize(loadingFillWidth, loadingFillHeight)
-                .setPosition(-maxLoadingFillWidth / 2, 0)
             if (!this) {
                 throw new Error("Container not found")
             }
             this.add(this.loadingFill, {
                 align: "left-center",
+                expand: false
             })
         } else {
             // if loaderFill is found, update the frame
             this.loadingFill
                 .setFrame(frameName)
-                .setDisplaySize(loadingFillWidth, loadingFillHeight)
         }
         // destroy the old frame
         this.scene.textures.getFrame(frameName)?.destroy()
+        this.layout()
     }
 
     // get the actual size of the progress bar, based on the loading bar
     public getSize() {
         return {
-            width: this.loadingBar.displayWidth,
-            height: this.loadingBar.displayHeight,
+            width: this.loadingBar.width,
+            height: this.loadingBar.height,
         }
     }
 }

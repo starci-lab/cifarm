@@ -44,7 +44,8 @@ import {
     useApiBuySuppliesSwrMutation,
     useApiCureAnimalSwrMutation,
     useApiUpdateReferralSwrMutation,
-    useApiUseFertilizerSwrMutation
+    useApiUseFertilizerSwrMutation,
+    useApiUpdateFollowXSwrMutation
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -95,6 +96,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_THIEF_CROP_SWR_MUTATION: useApiThiefCropSwrMutation(),
                             API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useApiClaimHoneycombDailyRewardSwrMutation(),
                             API_UPDATE_REFERRAL_SWR_MUTATION: useApiUpdateReferralSwrMutation(),
+                            API_UPDATE_FOLLOW_X_SWR_MUTATION: useApiUpdateFollowXSwrMutation(),
                             // honeycomb
                             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),
                             

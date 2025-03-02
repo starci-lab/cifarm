@@ -6,7 +6,7 @@ import { DefaultInfo, UserSchema } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 
-export class SocialTab extends BaseSizer {
+export class DailyTab extends BaseSizer {
     private scrollablePanel: ScrollablePanel | undefined
     private defaultInfo: DefaultInfo
     private user: UserSchema
@@ -30,66 +30,8 @@ export class SocialTab extends BaseSizer {
         })
     }
 
-    // create the item card
-    private createInviteUserQuest() {
-    //create the item card
-        const questCard = new QuestCard({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                title: "Invite User",
-                onPress: () => {
-                    EventBus.emit(EventName.OpenReferralLinkModal)
-                },
-                done: this.user.referredUserIds.length >= this.defaultInfo.referredLimit,
-                buttonText: "Invite",
-            },
-        })
-        this.scene.add.existing(questCard)
-        questCard.addProgress({
-            progress: this.user.referredUserIds.length / this.defaultInfo.referredLimit,
-            text: `${this.user.referredUserIds.length}/${this.defaultInfo.referredLimit} referred`,
-        })
-        return questCard
-    }
-
-    // create the item card
-    private createFollowXQuest() {
-    //create the item card
-        const questCard = new QuestCard({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                onPress: () => {
-                    EventBus.once(EventName.UpdateFollowXCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)                     
-                    })
-                    //open the x href in a new tab
-                    window.open(
-                        "https://x.com/intent/follow?screen_name=cifarmonsol",
-                        "_blank"
-                    )
-                    EventBus.emit(EventName.RequestUpdateFollowX)
-                },
-                done: this.user.followXAwarded,
-                buttonText: "Follow",
-                title: "Follow X",
-            },
-        })
-        this.scene.add.existing(questCard)
-        questCard.addReward({
-            quantity: this.defaultInfo.followXRewardQuantity,
-        })
-        return questCard
-    }
-
     private updateScrollablePanel() {
-        const items: Array<QuestCard> = [
-            this.createInviteUserQuest(),
-            this.createFollowXQuest()
-        ]
+        const items: Array<QuestCard> = []
         if (this.scrollablePanel) {
             // reset the scrollable panel
             const panel = this.scrollablePanel.getElement("panel") as Sizer

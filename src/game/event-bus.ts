@@ -145,6 +145,9 @@ export enum EventName {
     RequestUpdateTutorial = "request_update_tutorial",
     UpdateTutorialCompleted = "update_tutorial_completed",
 
+    RequestUpdateFollowX = "request_update_follow_x",
+    UpdateFollowXCompleted = "update_follow_x_completed",
+
     RequestUpdateReferral = "request_update_referral",
     UpdateReferralCompleted = "update_referral_completed",
 

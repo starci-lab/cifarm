@@ -5,11 +5,13 @@ import { EventBus, EventName, ModalName } from "@/game/event-bus"
 import { QuestTab } from "./types"
 import { tabsConfig } from "./constants"
 import { SocialTab } from "./SocialTab"
+import { DailyTab } from "./DailyTab"
 
 const defaultTab = QuestTab.Social
 export class QuestContent extends ContainerLite {
     private background: ModalBackground
-    private socialTab: SocialTab
+    private tabs: Record<QuestTab, SocialTab | DailyTab>
+
     //private background: ModalBackground
     constructor({
         scene,
@@ -57,16 +59,28 @@ export class QuestContent extends ContainerLite {
         this.addLocal(this.background)
 
         // create the base tab
-        this.socialTab = new SocialTab({
+        const socialTab = new SocialTab({
             scene: this.scene,
             width: 750,
             height: 800,
         })
-        this.scene.add.existing(this.socialTab)
+        this.scene.add.existing(socialTab)
+
+        const dailyTab = new DailyTab({
+            scene: this.scene,
+            width: 750,
+            height: 800,
+        })
+        this.scene.add.existing(dailyTab)
+
+        this.tabs = {
+            [QuestTab.Social]: socialTab,
+            [QuestTab.Daily]: dailyTab,
+        }
         if (!this.background.container) {
             throw new Error("QuestContent requires a container")
         }
-        this.background.container.addLocal(this.socialTab)
+        this.background.container.addLocal(socialTab)
     }
 }
 

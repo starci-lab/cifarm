@@ -23,4 +23,7 @@ export interface UserSchema extends AbstractSchema {
     spinLastTime?: Date;
     spinCount: number;
     followed?: boolean;
+    referralUserId?: string;
+    referredUserIds: Array<string>;
+    followXAwarded: boolean;
 }

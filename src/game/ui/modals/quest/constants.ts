@@ -6,7 +6,7 @@ export const ITEM_DATA_KEY = "item-data"
 
 export const tabsConfig: Record<QuestTab, TabData> = {
     [QuestTab.Social]: {
-        iconKey: BaseAssetKey.UIModalQuestBaseTab
+        iconKey: BaseAssetKey.UIModalQuestSocialTab
     },
     [QuestTab.Daily]: {
         iconKey: BaseAssetKey.UIModalQuestDailyTab,
