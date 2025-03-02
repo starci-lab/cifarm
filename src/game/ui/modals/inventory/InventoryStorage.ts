@@ -139,6 +139,10 @@ export class InventoryStorage extends BaseSizer {
         })
     }
 
+    private updateInventories() {
+
+    }
+
     private highlight() {
         // get the label that
         const inventory = getFirstSeedInventory({
@@ -396,7 +400,6 @@ export class InventoryStorage extends BaseSizer {
                 }
                 //  destroy the badge label
                 item.destroy()
-                EventBus.emit(EventName.RefreshInventories)
             })
             const eventMessage: MoveInventoryRequest = {
                 index,
@@ -404,6 +407,7 @@ export class InventoryStorage extends BaseSizer {
                 inventoryId: data.id,
             }
             EventBus.emit(EventName.RequestMoveInventory, eventMessage)
+            EventBus.emit(EventName.RequestMoveInventoryLocal, eventMessage)
         } else {
             //  destroy the badge label
             item.destroy()

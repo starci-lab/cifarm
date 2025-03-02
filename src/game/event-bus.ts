@@ -167,6 +167,7 @@ export enum EventName {
     RequestBuyTile = "request_buy_tile",
     BuyTileCompleted = "buy_tile_completed",
     RequestMoveInventory = "request_move_inventory",
+    RequestMoveInventoryLocal = "request_move_inventory_local",
     MoveInventoryCompleted = "move_inventory_completed",
 
     RequestDeliverProduct = "request_deliver_product",

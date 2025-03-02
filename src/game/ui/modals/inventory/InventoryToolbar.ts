@@ -267,7 +267,6 @@ export class InventoryToolbar extends ContainerLite {
                 }
                 //  destroy the badge label
                 item.destroy()
-                EventBus.emit(EventName.RefreshInventories)
             })
             const eventMessage: MoveInventoryRequest = {
                 index,
@@ -275,6 +274,7 @@ export class InventoryToolbar extends ContainerLite {
                 inventoryId: data.id,
             }
             EventBus.emit(EventName.RequestMoveInventory, eventMessage)
+            EventBus.emit(EventName.RequestMoveInventoryLocal, eventMessage)
         } else {
             //  destroy the badge label
             item.destroy()
