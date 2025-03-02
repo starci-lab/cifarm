@@ -604,22 +604,6 @@ export class ShopContent extends BaseSizer {
             // refresh user & inventories
             EventBus.emit(EventName.RefreshUser)
             EventBus.emit(EventName.RefreshInventories)
-            const flyItem = new FlyItem({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    assetKey: cropAssetMap[displayId].seed.textureConfig.key,
-                    x: pointer.x,
-                    y: pointer.y,
-                    quantity: 1,
-                    depth: calculateUiDepth({
-                        layer: UILayer.Overlay,
-                        layerDepth: 1,
-                    }),
-                },
-            })
-            this.scene.add.existing(flyItem)
             // emit the events related to the tutorial
             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                 const gridTable = this.gridTableMap[this.selectedShopTab]
@@ -639,6 +623,22 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
+        const flyItem = new FlyItem({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                x: pointer.x,
+                y: pointer.y,
+                quantity: 1,
+                depth: calculateUiDepth({
+                    layer: UILayer.Overlay,
+                    layerDepth: 1,
+                }),
+            },
+        })
+        this.scene.add.existing(flyItem)
     }
 
     //onBuySupplyPress

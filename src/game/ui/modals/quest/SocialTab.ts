@@ -5,8 +5,9 @@ import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { BaseText } from "../../elements"
 import { ScrollablePanel } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { QuestCard } from "./QuestCard"
+import { EventBus, EventName } from "@/game/event-bus"
 
-export class BaseTab extends ContainerLite {
+export class SocialTab extends ContainerLite {
     private scrollablePanel: ScrollablePanel | undefined
     //private background: ModalBackground
     constructor({
@@ -73,7 +74,7 @@ export class BaseTab extends ContainerLite {
             options: {
                 title: "Invite User",
                 onPress: () => {
-                    console.log("Invite User")
+                    EventBus.emit(EventName.OpenReferralLinkModal)
                 },
                 content,
                 buttonText: "Invite",

@@ -42,7 +42,8 @@ import {
     useApiClaimDailyRewardSwrMutation,
     useApiFeedAnimalSwrMutation,
     useApiBuySuppliesSwrMutation,
-    useApiCureAnimalSwrMutation
+    useApiCureAnimalSwrMutation,
+    useApiUpdateReferralSwrMutation
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -62,6 +63,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             MNEMONIC_DISCLOSURE: useDisclosure(),
                             WARNING_DISCLOSURE: useDisclosure(),
                             SIGN_TRANSACTION_DISCLOSURE: useDisclosure(),
+                            REFERRAL_LINK_DISCLOSURE: useDisclosure(),
                             //swr mutations
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
@@ -90,8 +92,11 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_HELP_WATER_SWR_MUTATION: useApiHelpWaterSwrMutation(),
                             API_THIEF_CROP_SWR_MUTATION: useApiThiefCropSwrMutation(),
                             API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useApiClaimHoneycombDailyRewardSwrMutation(),
-
+                            API_UPDATE_REFERRAL_SWR_MUTATION: useApiUpdateReferralSwrMutation(),
+                            // honeycomb
                             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),
+                            
+                            // queries
                             QUERY_USER_SWR_MUTATION: useQueryUserSwrMutation(),
                             QUERY_STATIC_SWR_MUTATION: useQueryStaticSwrMutation(),
                             QUERY_INVENTORIES_SWR_MUTATION: useQueryInventoriesSwrMutation(),

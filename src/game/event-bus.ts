@@ -62,6 +62,8 @@ export enum EventName {
     OpenTutorial = "open_tutorial",
     CloseTutorial = "close_tutorial",
 
+    OpenReferralLinkModal = "open-referral-link-modal",
+
     // stand
     UpdateSelectProductModal = "update_select_product_modal",
     UpdateInputQuantityModal = "update_input_quantity_modal",
@@ -142,6 +144,9 @@ export enum EventName {
     // api events
     RequestUpdateTutorial = "request_update_tutorial",
     UpdateTutorialCompleted = "update_tutorial_completed",
+
+    RequestUpdateReferral = "request_update_referral",
+    UpdateReferralCompleted = "update_referral_completed",
 
     RequestBuySeeds = "request_buy_seeds",
     BuySeedsCompleted = "buy_seeds_completed",

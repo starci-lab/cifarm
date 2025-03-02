@@ -37,6 +37,9 @@ export class InventoryModal extends BaseSizer {
         })
     }
 
+    private updateInvetories() {
+        
+    }
     // client-process logic
     private async moveInventoryLocal({
         isTool,
@@ -47,64 +50,65 @@ export class InventoryModal extends BaseSizer {
         const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
         let inventories = data
 
-        const inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
-        const user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
+        const updateInventories = () => {
+            const inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
+            const user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
-        const { storageCapacity, toolCapacity } = this.scene.cache.obj.get(CacheKey.DefaultInfo) as DefaultInfo
-        const capacity = isTool ? toolCapacity : storageCapacity
+            const { storageCapacity, toolCapacity } = this.scene.cache.obj.get(CacheKey.DefaultInfo) as DefaultInfo
+            const capacity = isTool ? toolCapacity : storageCapacity
 
-        // Check if index is out of bounds
-        if (index >= capacity) {
-            throw new Error("Inventory index is out of range")
-        }
+            // Check if index is out of bounds
+            if (index >= capacity) {
+                throw new Error("Inventory index is out of range")
+            }
 
-        const kind = isTool ? InventoryKind.Tool : InventoryKind.Storage
+            const kind = isTool ? InventoryKind.Tool : InventoryKind.Storage
 
-        // Find the inventory by inventoryId
-        const inventory = inventories.find((inventory) => inventory.id === inventoryId)
-        if (!inventory) {
-            throw new Error("Inventory not found")
-        }
+            // Find the inventory by inventoryId
+            const inventory = inventories.find((inventory) => inventory.id === inventoryId)
+            if (!inventory) {
+                throw new Error("Inventory not found")
+            }
 
-        const inventoryType = inventoryTypes.find((inventoryType) => inventoryType.id === inventory.inventoryType)
-        if (!inventoryType) {
-            throw new Error("Inventory type not found")
-        }
+            const inventoryType = inventoryTypes.find((inventoryType) => inventoryType.id === inventory.inventoryType)
+            if (!inventoryType) {
+                throw new Error("Inventory type not found")
+            }
 
-        // Check if there is already an inventory at the target index
-        const foundInventory = inventories.find((inventory) => inventory.kind === kind && inventory.index === index && user.id === inventory.user)
+            // Check if there is already an inventory at the target index
+            const foundInventory = inventories.find((inventory) => inventory.kind === kind && inventory.index === index && user.id === inventory.user)
         
-        if (foundInventory) {
+            if (foundInventory) {
             // If found inventory exists, perform logic based on inventory type
-            if (foundInventory.id === inventoryId) {
+                if (foundInventory.id === inventoryId) {
                 // If it's the same inventory, no changes
-                return
-            }
-
-            // If inventories are of the same type, update quantity or perform actions
-            if (foundInventory.inventoryType.toString() === inventoryType.id) {
+                    return
+                }
+                // If inventories are of the same type, update quantity or perform actions
+                if (foundInventory.inventoryType.toString() === inventoryType.id) {
                 // Merge quantities or handle inventory item addition
-                foundInventory.quantity += inventory.quantity
+                    foundInventory.quantity += inventory.quantity
 
-                // Remove the old inventory
-                inventories = inventories.filter(inv => inv.id !== inventory.id)
-            } else {
+                    // Remove the old inventory
+                    inventories = inventories.filter(inv => inv.id !== inventory.id)
+                } else {
                 // Swap inventories
-                const tempIndex = foundInventory.index
-                const tempKind = foundInventory.kind
+                    const tempIndex = foundInventory.index
+                    const tempKind = foundInventory.kind
 
-                // Swap index and kind between the two inventories
-                foundInventory.index = inventory.index
-                foundInventory.kind = inventory.kind
-                inventory.index = tempIndex
-                inventory.kind = tempKind
-            }
-        } else {
+                    // Swap index and kind between the two inventories
+                    foundInventory.index = inventory.index
+                    foundInventory.kind = inventory.kind
+                    inventory.index = tempIndex
+                    inventory.kind = tempKind
+                }
+            } else {
             // If no inventory exists at the target index, just update the index and kind
-            inventory.index = index
-            inventory.kind = kind
+                inventory.index = index
+                inventory.kind = kind
+            }
         }
-
+        updateInventories()
         // emit the update inventory event
         const eventMessage: IPaginatedResponse<InventorySchema> = {
             data: inventories,
