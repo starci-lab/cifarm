@@ -81,6 +81,7 @@ export class QuestContent extends ContainerLite {
             throw new Error("QuestContent requires a container")
         }
         this.background.container.addLocal(socialTab)
+        this.background.container.addLocal(dailyTab)
     }
 }
 

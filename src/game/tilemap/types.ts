@@ -1,5 +1,6 @@
 export enum TilesetName {
     Grass = "grass-tileset",
+    FlowerGrass = "flower-grass-tileset",
     TileStarter = "tile-starter-tileset",
     BuildingHome = "building-home-tileset",
 }

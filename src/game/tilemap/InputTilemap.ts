@@ -456,7 +456,6 @@ export class InputTilemap extends ItemTilemap {
                 // update the placed item in client
                 EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
-
                 if (visitedNeighbor) {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
