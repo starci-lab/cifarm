@@ -42,7 +42,9 @@ import {
     useApiClaimDailyRewardSwrMutation,
     useApiFeedAnimalSwrMutation,
     useApiBuySuppliesSwrMutation,
-    useApiCureAnimalSwrMutation
+    useApiCureAnimalSwrMutation,
+    useApiUpdateReferralSwrMutation,
+    useApiUseFertilizerSwrMutation
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
