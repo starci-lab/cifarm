@@ -30,3 +30,5 @@ export const FADE_HOLD_TIME = 500 // 0,5 second
 export const SCALE_PEAK_VALUE = 1.1 // 10% increase
 
 export const GRAY_TINT_COLOR = new Phaser.Display.Color(192, 192, 192).color
+
+export const SYNC_DELAY_TIME = 5000

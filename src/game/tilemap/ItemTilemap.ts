@@ -371,6 +371,8 @@ export abstract class ItemTilemap extends GroundTilemap {
         for (const placedItem of Object.values(this.placedItemObjectMap)) {
             const { tileX, tileY, placedItemType } = placedItem
 
+            console.log("placedItemType.id", placedItemType.id)
+
             const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(placedItemType.id as PlacedItemTypeId)
     
             if (x <= tileX && x > tileX - tileSizeWidth &&

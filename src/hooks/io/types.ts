@@ -13,4 +13,5 @@ export interface PlacedItemsSyncedMessage {
     placedItems: Array<PlacedItemSchema>
     //current user id, beneficial for debugging
     userId: string
+    isSecondarySync: boolean
 }

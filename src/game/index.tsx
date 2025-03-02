@@ -20,6 +20,7 @@ import { useEffects } from "./hooks"
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
     const dispatch = useAppDispatch()
+    const [isSyncDelayed, setIsSyncDelayed] = React.useState(false)
 
     //authentication useEffect
     const { swrMutation: authenticationSwrMutation } = useSingletonHook<
@@ -48,9 +49,31 @@ export const Game: FC = () => {
         //listen for placed items synced
         socket.on(PLACED_ITEMS_SYNCED_EVENT, (data: PlacedItemsSyncedMessage) => {
             console.log("[DATA]", data.placedItems)
-            EventBus.emit(EventName.PlacedItemsSynced, data)
+
+            if (!data.isSecondarySync) {
+                EventBus.emit(EventName.SyncDelayEnded)
+            }
+    
+            if (!isSyncDelayed || !data.isSecondarySync) {
+                EventBus.emit(EventName.PlacedItemsSynced, data)
+            }
         })
     }, [connected])
+
+    useEffect(() => {
+        EventBus.on(EventName.SyncDelayStarted, () => {
+            setIsSyncDelayed(true)
+        })
+    
+        EventBus.on(EventName.SyncDelayEnded, () => {
+            setIsSyncDelayed(false)
+        })
+    
+        return () => {
+            EventBus.removeListener(EventName.SyncDelayStarted)
+            EventBus.removeListener(EventName.SyncDelayEnded)
+        }
+    }, [])
 
     //ensure all swr queries are done
     useLayoutEffect(() => {

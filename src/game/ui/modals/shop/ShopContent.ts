@@ -10,6 +10,7 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    supplyAssetMap,
     tileAssetMap,
 } from "../../../assets"
 import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
@@ -33,6 +34,8 @@ import {
     TileSchema,
     UserSchema,
     CropId,
+    SupplySchema,
+    SupplyId,
 } from "@/modules/entities"
 import {
     CloseModalMessage,
@@ -43,7 +46,7 @@ import {
     SelectTabMessage,
     ShowPressHereArrowMessage,
 } from "../../../event-bus"
-import { BuySeedsRequest } from "@/modules/axios"
+import { BuySeedsRequest, BuySuppliesRequest } from "@/modules/axios"
 import { getFirstSeedInventory } from "../../../queries"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "../../../constants"
@@ -67,6 +70,7 @@ export class ShopContent extends BaseSizer {
     private crops: Array<CropSchema> = []
     private buildings: Array<BuildingSchema> = []
     private tiles: Array<TileSchema> = []
+    private supplies: Array<SupplySchema> = []
     //default
     private defaultItemCard: ContainerLite | undefined
     private defaultSeedButton: Label | undefined
@@ -174,6 +178,8 @@ export class ShopContent extends BaseSizer {
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
+
+        this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -444,7 +450,7 @@ export class ShopContent extends BaseSizer {
             }
             break
         }
-        case ShopTab.Tiles: {
+        case ShopTab.Tiles:
             for (const { displayId, price } of this.tiles) {
                 // get the image
                 items.push({
@@ -467,8 +473,22 @@ export class ShopContent extends BaseSizer {
                 // add the item card to the scrollable panel
             }
             break
-        }
-        case ShopTab.Decorations: {
+        case ShopTab.Supply:
+            for (const { displayId, price } of this.supplies) {
+                // get the image
+                items.push({
+                    assetKey: supplyAssetMap[displayId].textureConfig.key,
+                    locked: false,
+                    unlockLevel: 0,
+                    onPress: (pointer: Phaser.Input.Pointer) => {
+                        this.onBuySupplyPress(displayId, pointer)
+                    },
+                    prepareCloseShop: true,
+                    price,
+                })
+            }
+            break
+        case ShopTab.Decorations:
             for (const { displayId, price } of this.buildings) {
                 // get the image
                 items.push({
@@ -481,7 +501,6 @@ export class ShopContent extends BaseSizer {
                 // add the item card to the scrollable panel
             }
             break
-        }
         }
         return items
     }
@@ -620,6 +639,37 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
+    }
+
+    //onBuySupplyPress
+    private onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
+        EventBus.once(EventName.BuySuppliesCompleted, () => {
+            // refresh user & inventories
+            EventBus.emit(EventName.RefreshUser)
+            EventBus.emit(EventName.RefreshInventories)
+            const flyItem = new FlyItem({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    assetKey: supplyAssetMap[displayId].textureConfig.key,
+                    x: pointer.x,
+                    y: pointer.y,
+                    quantity: 1,
+                    depth: calculateUiDepth({
+                        layer: UILayer.Overlay,
+                        layerDepth: 1,
+                    }),
+                },
+            })
+            this.scene.add.existing(flyItem)
+        })
+        const eventMessage: BuySuppliesRequest = {
+            supplyId: displayId,
+            quantity: 1,
+        }
+        // send request to buy seeds
+        EventBus.emit(EventName.RequestBuySupplies, eventMessage)
     }
 }
 

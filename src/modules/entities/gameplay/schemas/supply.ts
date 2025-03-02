@@ -1,8 +1,9 @@
 import { SpinPrizeSchema } from "./spin-prize"
 import { InventoryTypeSchema } from "./inventory-type"
-import { SupplyType } from "../enums"
+import { SupplyId, SupplyType } from "../enums"
+import { StaticAbstractSchema } from "./abstract"
 
-export interface SupplySchema {
+export interface SupplySchema extends StaticAbstractSchema<SupplyId> {
     type: SupplyType
     price: number
     availableInShop: boolean
