@@ -42,7 +42,8 @@ import {
     useApiClaimDailyRewardSwrMutation,
     useApiFeedAnimalSwrMutation,
     useApiBuySuppliesSwrMutation,
-    useApiCureAnimalSwrMutation
+    useApiCureAnimalSwrMutation,
+    useApiUseFertilizerSwrMutation
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -87,6 +88,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_RETURN_SWR_MUTATION: useApiReturnSwrMutation(),
                             API_HELP_USE_HERBICIDE_SWR_MUTATION: useApiHelpUseHerbicideSwrMutation(),
                             API_HELP_USE_PESTICIDE_SWR_MUTATION: useApiHelpUsePesticideSwrMutation(),
+                            API_USE_FERTILIZER_SWR_MUTATION: useApiUseFertilizerSwrMutation(),
                             API_HELP_WATER_SWR_MUTATION: useApiHelpWaterSwrMutation(),
                             API_THIEF_CROP_SWR_MUTATION: useApiThiefCropSwrMutation(),
                             API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useApiClaimHoneycombDailyRewardSwrMutation(),

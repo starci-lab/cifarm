@@ -132,6 +132,7 @@ export enum BaseAssetKey {
 
     //Bubble
     Bubble = "bubble",
+    FertilizerParticle = "fertilizer-particle",
 
     //Press here arrow
     PressHereArrow = "press-here-arrow",
@@ -251,6 +252,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
 
     //Bubble
     [BaseAssetKey.Bubble]: "bubble.png",
+    [BaseAssetKey.FertilizerParticle]: "tiles/fertilizer-particle.png",
 
     //Press here arrow
     [BaseAssetKey.PressHereArrow]: "press-here-arrow.png",

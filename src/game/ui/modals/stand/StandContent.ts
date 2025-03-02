@@ -231,6 +231,7 @@ export class StandContent extends BaseSizer {
             },
             options: {
                 onPress: () => {
+                    console.log("XButton pressed!")
                     // call retain method
                     EventBus.once(EventName.RetainProductCompleted, () => {
                         EventBus.emit(EventName.RefreshInventories)
@@ -253,7 +254,7 @@ export class StandContent extends BaseSizer {
             percentWidth: ADD_BUTTON_SCALE
         })
         const addButtonContainer = this.scene.rexUI.add.container(0, 0).addLocal(addButton.setPosition(-5, 0))
-        this.scene.add.existing(xButton)
+        this.scene.add.existing(addButtonContainer)
         const badgeLabel = this.scene.rexUI.add.badgeLabel({
             width: image.width,
             height: image.height,

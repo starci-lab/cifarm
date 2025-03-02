@@ -13,6 +13,7 @@ export interface ActivityInfo {
 export interface Activities {
   water: ActivityInfo;
   feedAnimal: ActivityInfo;
+  plantSeed: ActivityInfo;
   collectAnimalProduct: ActivityInfo;
   usePesticide: ActivityInfo;
   useFertilizer: ActivityInfo;
