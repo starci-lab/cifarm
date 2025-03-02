@@ -112,7 +112,7 @@ export class ModalBackground extends ContainerLite {
             background,
             title,
             onXButtonPress,
-            titleFontSize = 72,
+            titleFontSize = 64,
             container: containerConfig,
             mainButton,
             tabs: tabsConfig,

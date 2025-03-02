@@ -1,7 +1,7 @@
 import { BaseSizerBaseConstructorParams } from "@/game/types"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { QuestContent } from "./QuestContent"
-import { getScreenCenterX, getScreenCenterY } from "../../utils"
+import { getScreenBottomY, getScreenCenterX } from "../../utils"
 
 export class QuestModal extends BaseSizer {
     private questContent: QuestContent
@@ -13,7 +13,7 @@ export class QuestModal extends BaseSizer {
         this.questContent = new QuestContent({
             scene: this.scene,
             x: getScreenCenterX(this.scene),
-            y: getScreenCenterY(this.scene),
+            y: getScreenBottomY(this.scene) - 100,
         })
         this.scene.add.existing(this.questContent)
         this.add(this.questContent)

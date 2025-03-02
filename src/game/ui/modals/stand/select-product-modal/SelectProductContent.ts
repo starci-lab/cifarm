@@ -147,7 +147,7 @@ export class SelectProductContent extends BaseSizer {
                 config: {
                     width: this.background.containerImage.width,
                     height: this.background.containerImage.height,
-                    originY: 1,
+                    originY: 0,
                 }
             },
             options: {

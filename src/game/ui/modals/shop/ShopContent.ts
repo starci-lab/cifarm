@@ -145,7 +145,7 @@ export class ShopContent extends BaseSizer {
             }
         })
         this.scene.add.existing(this.background)
-        this.add(this.background)
+        this.addLocal(this.background)
         // create the container
         this.contentContainer = scene.rexUI.add.container(0, 20)
         if (!this.background.container) {
@@ -526,10 +526,11 @@ export class ShopContent extends BaseSizer {
                 disableInteraction: false,
                 height: 100,
                 width: 200,
+                scale: 0.8,
+                syncTextScale: true,
             },
         })
             .setPosition(0, 90)
-            .setScale(0.8)
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
 

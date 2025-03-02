@@ -71,6 +71,8 @@ export enum BaseAssetKey {
     UIModalQuestPin = "ui-modal-quest-pin",
     UIModalQuestCardItem = "ui-modal-quest-card-item",
     UIModalQuestIconClose = "ui-modal-quest-icon-close",
+    UIModalQuestBaseTab = "ui-modal-quest-base-tab",
+    UIModalQuestDailyTab = "ui-modal-quest-daily-tab",
 
     // Toolbar
     UIToolbarBackground = "ui-toolbar-background",
@@ -214,6 +216,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalQuestPin]: "ui/modals/quest/pin.png",
     [BaseAssetKey.UIModalQuestCardItem]: "ui/modals/quest/card-item.png",
     [BaseAssetKey.UIModalQuestIconClose]: "ui/modals/quest/icon-close.png",
+    [BaseAssetKey.UIModalQuestBaseTab]: "ui/modals/quest/base-tab.png",
+    [BaseAssetKey.UIModalQuestDailyTab]: "ui/modals/quest/daily-tab.png",
 
     // Toolbar
     [BaseAssetKey.UIToolbarBackground]: "ui/toolbar/background.png",
