@@ -62,7 +62,6 @@ export enum SupplyId {
 
 // Tile Enum
 export enum TileId {
-    StarterTile = "starterTile",
     BasicTile = "basicTile",
 }
 
@@ -73,7 +72,9 @@ export enum ToolId {
     ThiefHand = "thiefHand",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
-    Pesticide = "pesticide"
+    Pesticide = "pesticide",
+    Hammer = "hammer",
+    Relocate = "relocate",
 }
 
 // Product Enum
@@ -141,7 +142,9 @@ export enum InventoryTypeId {
     Crate = "crate",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
-    Pesticide = "pesticide"
+    Pesticide = "pesticide",
+    Hammer = "hammer",
+    Relocate = "relocate",
 }
 
 export enum PlacedItemTypeId {
@@ -152,7 +155,6 @@ export enum PlacedItemTypeId {
     Coop = "coop",
     Barn = "barn",
     Home = "home",
-    StarterTile = "starterTile",
     BasicTile = "basicTile",
 }
 
@@ -183,7 +185,6 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(PlacedItemTypeId.Coop)]: PlacedItemTypeId.Coop,
     [createObjectId(PlacedItemTypeId.Barn)]: PlacedItemTypeId.Barn,
     [createObjectId(PlacedItemTypeId.Home)]: PlacedItemTypeId.Home,
-    [createObjectId(PlacedItemTypeId.StarterTile)]: PlacedItemTypeId.StarterTile,
     [createObjectId(PlacedItemTypeId.BasicTile)]: PlacedItemTypeId.BasicTile,
 
     // inventory types
@@ -204,6 +205,8 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(InventoryTypeId.WateringCan)]: InventoryTypeId.WateringCan,
     [createObjectId(InventoryTypeId.Herbicide)]: InventoryTypeId.Herbicide,
     [createObjectId(InventoryTypeId.Pesticide)]: InventoryTypeId.Pesticide,
+    [createObjectId(InventoryTypeId.Hammer)]: InventoryTypeId.Hammer,
+    [createObjectId(InventoryTypeId.Relocate)]: InventoryTypeId.Relocate,
 
     // supply types
     [createObjectId(SupplyId.BasicFertilizer)]: SupplyId.BasicFertilizer,
@@ -211,7 +214,6 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(SupplyId.AnimalPill)]: SupplyId.AnimalPill,
 
     // tile types
-    [createObjectId(TileId.StarterTile)]: TileId.StarterTile,
     [createObjectId(TileId.BasicTile)]: TileId.BasicTile,
 
     // tool types
@@ -221,6 +223,8 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(ToolId.WateringCan)]: ToolId.WateringCan,
     [createObjectId(ToolId.Herbicide)]: ToolId.Herbicide,
     [createObjectId(ToolId.Pesticide)]: ToolId.Pesticide,
+    [createObjectId(ToolId.Hammer)]: ToolId.Hammer,
+    [createObjectId(ToolId.Relocate)]: ToolId.Relocate,
 }
 
 export const getId = <IdType extends string>(objectId: string): IdType => (objectIdMap[objectId]) as IdType

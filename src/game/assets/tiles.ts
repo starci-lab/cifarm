@@ -14,20 +14,6 @@ export interface TileAssetData {
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const tileAssetMap: Record<TileId, TileAssetData> = {
-    [TileId.StarterTile]: {
-        name: "Starter Tile",
-        textureConfig: {
-            key: TileId.StarterTile,
-            assetUrl: "tiles/starter-tile.png",
-        },
-        tilesetConfig:{
-            gid: 13001,
-            tilesetName: "tiles-starter-tile",
-            extraOffsets: {
-                y: 5,
-            }
-        }
-    },
     [TileId.BasicTile]: {
         name: "Basic Tile 1",
         textureConfig: {

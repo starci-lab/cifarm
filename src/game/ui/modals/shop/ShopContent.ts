@@ -1,9 +1,27 @@
+import { calculateUiDepth, UILayer } from "@/game/layers"
+import { IPaginatedResponse } from "@/modules/apollo"
+import { BuySeedsRequest, BuySuppliesRequest } from "@/modules/axios"
+import { sleep } from "@/modules/common"
+import {
+    AnimalSchema,
+    BuildingSchema,
+    CropId,
+    CropSchema,
+    DefaultInfo,
+    InventorySchema,
+    PlacedItemType,
+    SupplyId,
+    SupplySchema,
+    TileSchema,
+    UserSchema,
+} from "@/modules/entities"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
     GridTable,
     Label,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { ShopTab } from "./types"
 import {
     AnimalAge,
     animalAssetMap,
@@ -13,30 +31,7 @@ import {
     supplyAssetMap,
     tileAssetMap,
 } from "../../../assets"
-import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
-import {
-    Background,
-    BaseText,
-    Button,
-    FlyItem,
-    IconOffsets,
-    ModalBackground,
-    XButton,
-} from "../../elements"
-import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
-import {
-    AnimalSchema,
-    BuildingSchema,
-    CropSchema,
-    InventorySchema,
-    PlacedItemType,
-    DefaultInfo,
-    TileSchema,
-    UserSchema,
-    CropId,
-    SupplySchema,
-    SupplyId,
-} from "@/modules/entities"
+import { SCALE_TIME } from "../../../constants"
 import {
     CloseModalMessage,
     EventBus,
@@ -46,17 +41,23 @@ import {
     SelectTabMessage,
     ShowPressHereArrowMessage,
 } from "../../../event-bus"
-import { BuySeedsRequest, BuySuppliesRequest } from "@/modules/axios"
 import { getFirstSeedInventory } from "../../../queries"
-import { sleep } from "@/modules/common"
-import { SCALE_TIME } from "../../../constants"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { IPaginatedResponse } from "@/modules/apollo"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { MODAL_DEPTH_1 } from "../ModalManager"
-import { calculateUiDepth, UILayer } from "@/game/layers"
-import { ITEM_DATA_KEY, tabsConfig } from "./constants"
+import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
+import {
+    Background,
+    BaseText,
+    Button,
+    FlyItem,
+    IconOffsets,
+    ModalBackground,
+    TextColor,
+    XButton,
+} from "../../elements"
+import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 import { onGameObjectPress } from "../../utils"
+import { MODAL_DEPTH_1 } from "../ModalManager"
+import { ITEM_DATA_KEY, tabsConfig } from "./constants"
+import { ShopTab } from "./types"
 
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
@@ -405,7 +406,13 @@ export class ShopContent extends BaseSizer {
                 // get the image
                 items.push({
                     assetKey:
-              animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    locked: !this.checkUnlock(
+                        this.animals.find((animal) => animal.displayId === displayId)
+                            ?.unlockLevel
+                    ),
+                    unlockLevel: this.animals.find((animal) => animal.displayId === displayId)
+                        ?.unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -420,6 +427,8 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
+                    maxOwnership: 5,
+                    currentOwnership: 1,
                 })
                 // add the item card to the scrollable panel
             }
@@ -430,6 +439,12 @@ export class ShopContent extends BaseSizer {
                 // get the image
                 items.push({
                     assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(
+                        this.buildings.find((building) => building.displayId === displayId)
+                            ?.unlockLevel
+                    ),
+                    unlockLevel: this.buildings.find((building) => building.displayId === displayId)
+                        ?.unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -514,6 +529,8 @@ export class ShopContent extends BaseSizer {
         scaleY = 1,
         unlockLevel,
         locked = false,
+        currentOwnership = 0,
+        maxOwnership = 0,
     }: CreateItemCardParams) {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
@@ -552,6 +569,26 @@ export class ShopContent extends BaseSizer {
             .setPosition(0, 90)
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
+
+        const ownershipText = maxOwnership !== undefined 
+            ? `${currentOwnership}/${maxOwnership}`
+            : ""
+
+        const ownershipLabel = new BaseText({
+            baseParams: {
+                scene: this.scene,
+                text: ownershipText,
+                x: cardBackground.width / 2 - 10,
+                y: -cardBackground.height / 2 + 10
+            },
+            options: {
+                fontSize: 28,
+                textColor: TextColor.Brown
+            }
+        }).setOrigin(1, 0)
+
+        this.scene.add.existing(ownershipLabel)
+        container.addLocal(ownershipLabel)
 
         if (locked) {
             const off = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopOff)
@@ -692,6 +729,10 @@ export interface CreateItemCardParams {
   prepareCloseShop?: boolean;
   // default seed
   defaultSeed?: boolean;
+  // Maximum ownership limit (only for applicable items)
+  maxOwnership?: number;
+  // Current ownership count
+  currentOwnership?: number;
 }
 
 export interface ExtendedCreateItemCardParams extends CreateItemCardParams {

@@ -139,6 +139,14 @@ export const inventoryTypeAssetMap: Record<
         name: "Pesticide",
         textureConfig: { ...toolAssetMap[ToolId.Pesticide].textureConfig, useExisting: true },
     },
+    [InventoryTypeId.Hammer]: {
+        name: "Hammer",
+        textureConfig: { ...toolAssetMap[ToolId.Hammer].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.Relocate]: {
+        name: "Relocate",
+        textureConfig: { ...toolAssetMap[ToolId.Relocate].textureConfig, useExisting: true },
+    },
 }
 
 // Function to load inventory assets in Phaser scene

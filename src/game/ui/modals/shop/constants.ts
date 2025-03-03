@@ -1,5 +1,4 @@
-import { BaseAssetKey, supplyAssetMap } from "@/game/assets"
-import { SupplyId } from "@/modules/entities"
+import { BaseAssetKey } from "@/game/assets"
 import { TabData } from "../../elements"
 import { ShopTab } from "./types"
 
@@ -20,12 +19,7 @@ export const tabsConfig: Record<ShopTab, TabData> = {
         iconKey: BaseAssetKey.UIModalShopTileTab,
     },
     [ShopTab.Supply]: {
-        iconKey: supplyAssetMap[SupplyId.BasicFertilizer].textureConfig.key,
-        offsets: {
-            x: 80,
-            y: -40,
-        },
-        scale: 0.6
+        iconKey: BaseAssetKey.UIModalShopSupplyTab,
     },
     // [ShopTab.Trees]: {
     //     iconKey: BaseAssetKey.UIModalShopDecorationTab,
