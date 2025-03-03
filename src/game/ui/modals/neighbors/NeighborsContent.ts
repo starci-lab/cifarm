@@ -56,7 +56,8 @@ export class NeighborsContent extends ContainerLite {
         this.worldTab = new WorldTab({
             scene: this.scene,
             config: {
-                originY: 1,
+                originY: 0,
+                y: 80
             }
         })
         this.scene.add.existing(this.worldTab)

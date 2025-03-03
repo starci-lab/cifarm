@@ -28,15 +28,12 @@ export class WorldTab extends Sizer {
         super(scene, {
             orientation: "y",
             space: { item: 40 },
-            originY: 1,
-            y: -180,
             ...config
         })
         this.size = getBackgroundContainerSize({
             style: SizeStyle.TabContainer,
             background: Background.XXLarge,
         })
-
         const input = new Input({
             baseParams: {
                 scene: this.scene,
@@ -78,7 +75,6 @@ export class WorldTab extends Sizer {
         })
         this.scene.add.existing(this.pagination)
         this.add(this.pagination)
-
         this.layout()
     }
 
@@ -99,7 +95,7 @@ export class WorldTab extends Sizer {
         this.scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
                 width: this.size?.width,
-                height: this.size?.height,
+                height: 800,
                 scrollMode: "y",
                 space: {
                     panel: 40,
