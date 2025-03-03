@@ -5,9 +5,12 @@ import {
     SizerBaseConstructorParams,
 } from "../../../types"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { loadImageAwait, loadSvgAwait } from "../../utils"
+import { createJazziconBlobUrl } from "@/modules/jazz"
+import { UserSchema } from "@/modules/entities"
 
 export interface UserCardOptions {
-  avatarAssetKey: string;
+  user?: UserSchema,
   text: string;
   badgeAssetKey?: string;
   hideBadge?: boolean;
@@ -16,6 +19,11 @@ export interface UserCardOptions {
 export class UserCard extends Sizer {
     public badge: Phaser.GameObjects.Image | undefined
     public button: Label
+    private options: UserCardOptions
+    private background: Phaser.GameObjects.Image
+    private image: Phaser.GameObjects.Image
+    private user: UserSchema | undefined
+    private avatarMask: Phaser.GameObjects.Image
     constructor({
         baseParams: { scene, config },
         options,
@@ -36,24 +44,35 @@ export class UserCard extends Sizer {
                 ...config,
             }
         )
-
         if (!options) {
-            throw new Error("Options is required")
+            throw new Error("UserCard options are required")
         }
+        this.background = background
+        this.options = options
+
         const {
-            avatarAssetKey,
+            user,
             text,
             badgeAssetKey,
             hideBadge,
-        } = options
-
-        this.addLocal(background)
+        } = this.options
+        this.user = user
+        this.addLocal(this.background)
         const frame = this.scene.add.image(
             0,
             0,
             BaseAssetKey.UIModalNeighborsFrame
         )
-        const avatar = this.scene.add.image(0, 0, avatarAssetKey)
+        this.avatarMask = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarMask)
+        this.image = this.scene.add.image(0, 0, "").setDisplaySize(this.avatarMask.width, this.avatarMask.height)
+        this.image.setMask(this.avatarMask.createBitmapMask())
+        const imageWithMask = this.scene.rexUI.add.label({
+            background: this.avatarMask,
+            icon: this.image,
+            width: this.avatarMask.width,
+            height: this.avatarMask.height,
+            align: "center",
+        }).layout()
 
         if (!hideBadge) {
             if (!badgeAssetKey) {
@@ -66,7 +85,7 @@ export class UserCard extends Sizer {
             background: frame,
             width: frame.width,
             height: frame.height,
-            center: avatar,
+            center: imageWithMask,
             rightBottom: this.badge,
         })
         const nameText = new BaseText({
@@ -123,6 +142,31 @@ export class UserCard extends Sizer {
             .layout()
 
         this.add(rightContainer)
+        this.layout()
+        this.fetchAvatar()
+    }
+
+    public async fetchAvatar() {
+        if (!this.user) {
+            return
+        }
+        if (this.user.avatarUrl) {
+            await loadImageAwait({
+                scene: this.scene,
+                key: this.user.id,
+                imageUrl: this.user.avatarUrl,
+            })
+        } else {
+            await loadSvgAwait({
+                scene: this.scene,
+                key: this.user.id,
+                svgUrl: createJazziconBlobUrl(this.user.accountAddress),
+                scale: 16
+            })
+        }
+        const texture = this.scene.textures.get(this.user.id)
+        console.log(texture)
+        this.image.setTexture(this.user.id).setDisplaySize(this.avatarMask.width, this.avatarMask.height)
         this.layout()
     }
 }

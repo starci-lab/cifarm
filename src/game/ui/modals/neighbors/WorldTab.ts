@@ -174,7 +174,7 @@ export class WorldTab extends Sizer {
                     scene: this.scene,
                 },
                 options: {
-                    avatarAssetKey: "", // tech dept here, need to fetch the image from the avatarUrl
+                    user,
                     badgeAssetKey: followed ? BaseAssetKey.UICommonMinus : BaseAssetKey.UICommonPlus,
                     text: user.username,
                     hideBadge: user.followed,
@@ -227,7 +227,6 @@ export class WorldTab extends Sizer {
                 scene: this.scene,
             },
             options: {
-                avatarAssetKey: BaseAssetKey.UIModalNeighborsQuestion,
                 badgeAssetKey: BaseAssetKey.UIModalNeighborsIconRandom,
                 text: "Random",
                 // onPress: async () => {

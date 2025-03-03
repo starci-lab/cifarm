@@ -3,17 +3,13 @@ export const loadImageAwait = async ({
     imageUrl,
     scene,
 }: LoadImageAwaitParams): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
     // Start loading the image
         scene.load.image(key, imageUrl)
 
         // Listen for 'filecomplete' (success) and 'loaderror' (failure) events
-        scene.load.on("filecomplete", () => {
+        scene.load.once(`filecomplete-image-${key}`, () => {
             resolve() // Resolves the promise if the file is loaded successfully
-        })
-
-        scene.load.on("loaderror", () => {
-            reject(new Error(`Failed to load image: ${key}`)) // Rejects the promise if there is an error
         })
 
         // Start loading
@@ -27,19 +23,15 @@ export const loadSvgAwait = async ({
     scene,
     scale = 1,
 }: LoadSvgAwaitParams): Promise<void> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
     // Start loading the SVG
         scene.load.svg(key, svgUrl, {
             scale
         })
 
         // Listen for 'filecomplete' (success) and 'loaderror' (failure) events
-        scene.load.on("filecomplete", () => {
+        scene.load.once(`filecomplete-svg-${key}`, () => {
             resolve() // Resolves the promise if the file is loaded successfully
-        })
-
-        scene.load.on("loaderror", () => {
-            reject(new Error(`Failed to load SVG: ${key}`)) // Rejects the promise if there is an error
         })
 
         // Start loading
