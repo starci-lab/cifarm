@@ -41,7 +41,7 @@ export interface Account {
     publicKey: string
     privateKey: string
     username: string
-    imageUrl: string
+    imageUrl?: string
 }
 
 export interface Token {

@@ -5,8 +5,8 @@ import { QuestTab } from "./types"
 export const ITEM_DATA_KEY = "item-data"
 
 export const tabsConfig: Record<QuestTab, TabData> = {
-    [QuestTab.Base]: {
-        iconKey: BaseAssetKey.UIModalQuestBaseTab
+    [QuestTab.Social]: {
+        iconKey: BaseAssetKey.UIModalQuestSocialTab
     },
     [QuestTab.Daily]: {
         iconKey: BaseAssetKey.UIModalQuestDailyTab,

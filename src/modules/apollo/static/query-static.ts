@@ -102,6 +102,11 @@ const query = gql`
       storageCapacity
       toolCapacity
       deliveryCapacity
+      followeeLimit
+      referredLimit
+      referralRewardQuantity
+      referredRewardQuantity
+      followXRewardQuantity
     }
     spinInfo {
       appearanceChanceSlots {

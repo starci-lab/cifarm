@@ -94,11 +94,23 @@ export class Topbar extends BaseSizer {
         })
         const avatarWrapperBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarWrapper)
         const avatarImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatar)
-        const avatarLabel = this.scene.rexUI.add.label({
-            background: avatarImage,
+        const avatarMask = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarMask).setVisible(false)
+        const image = this.scene.add.image(0, 0, user.id).setDisplaySize(avatarMask.width, avatarMask.height)
+        image.setMask(avatarMask.createBitmapMask())
+        const imageWithMask = this.scene.rexUI.add.label({
+            background: avatarMask,
+            icon: image,
+            width: avatarMask.width,
+            height: avatarMask.height,
+            align: "center",
+        }).layout()
+        const avatarSizer = this.scene.rexUI.add.overlapSizer({
             height: avatarImage.height,
             width: avatarImage.width,
-        })
+        }).addBackground(avatarImage).add(imageWithMask, {
+            align: "center-bottom",
+            expand: false
+        }).layout()
         const levelBoxImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarLevelBox)
         const levelText = new BaseText({
             baseParams: {
@@ -125,7 +137,7 @@ export class Topbar extends BaseSizer {
             width: avatarWrapperBackground.width,
             height: avatarWrapperBackground.height,
             rightBottom: levelBoxLabel,
-            center: avatarLabel,
+            center: avatarSizer,
         }).layout()
         const profileContainer = this.scene.rexUI.add
             .sizer({

@@ -1,4 +1,4 @@
 export enum QuestTab {
-    Base = "base",
+    Social = "social",
     Daily = "daily",
 }

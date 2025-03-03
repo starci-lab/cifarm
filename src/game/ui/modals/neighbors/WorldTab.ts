@@ -5,7 +5,7 @@ import { IPaginatedResponse, QueryNeighborsArgs } from "@/modules/apollo"
 import { ITEM_COUNT, USER_DATA } from "./constants"
 import { UserCard } from "./UserCard"
 import { Label, ScrollablePanel, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { Input, InputIcon, NumberInput } from "../../elements"
+import { Background, getBackgroundContainerSize, Input, InputIcon, NumberInput, Size, SizeStyle } from "../../elements"
 import { GetPageResult } from "./types"
 import { onGameObjectPress } from "../../utils"
 import { FADE_HOLD_TIME, FADE_TIME } from "@/game/constants"
@@ -20,6 +20,7 @@ export class WorldTab extends Sizer {
     private args: QueryNeighborsArgs
     private pagination: NumberInput | undefined
     private scrollablePanel: ScrollablePanel | undefined
+    private size: Size
     constructor({
         scene,
         config
@@ -27,11 +28,12 @@ export class WorldTab extends Sizer {
         super(scene, {
             orientation: "y",
             space: { item: 40 },
-            originY: 1,
-            y: -180,
             ...config
         })
-
+        this.size = getBackgroundContainerSize({
+            style: SizeStyle.TabContainer,
+            background: Background.XXLarge,
+        })
         const input = new Input({
             baseParams: {
                 scene: this.scene,
@@ -73,7 +75,6 @@ export class WorldTab extends Sizer {
         })
         this.scene.add.existing(this.pagination)
         this.add(this.pagination)
-
         this.layout()
     }
 
@@ -93,7 +94,7 @@ export class WorldTab extends Sizer {
         const userCards = this.createUserCards()
         this.scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                width: 750,
+                width: this.size?.width,
                 height: 800,
                 scrollMode: "y",
                 space: {
@@ -173,7 +174,7 @@ export class WorldTab extends Sizer {
                     scene: this.scene,
                 },
                 options: {
-                    avatarAssetKey: "", // tech dept here, need to fetch the image from the avatarUrl
+                    user,
                     badgeAssetKey: followed ? BaseAssetKey.UICommonMinus : BaseAssetKey.UICommonPlus,
                     text: user.username,
                     hideBadge: user.followed,
@@ -226,7 +227,6 @@ export class WorldTab extends Sizer {
                 scene: this.scene,
             },
             options: {
-                avatarAssetKey: BaseAssetKey.UIModalNeighborsQuestion,
                 badgeAssetKey: BaseAssetKey.UIModalNeighborsIconRandom,
                 text: "Random",
                 // onPress: async () => {

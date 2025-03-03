@@ -3,6 +3,7 @@ import { MnemonicModal } from "./Mnemonic"
 import { PrivateKeyModal } from "./PrivateKey"
 import { WarningModal } from "./Warning"
 import { SignTransactionModal } from "./SignTransaction"
+import { ReferralLinkModal } from "./ReferralLinkModal"
 
 export const Modals : FC = () => {
     return (
@@ -11,6 +12,7 @@ export const Modals : FC = () => {
             <PrivateKeyModal />
             <WarningModal />
             <SignTransactionModal />
+            <ReferralLinkModal />
         </div>
     )
 }

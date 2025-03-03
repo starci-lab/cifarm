@@ -13,7 +13,9 @@ const query1 = gql`
     neighbors(args: $args) {
       data {
         id
+        level
         avatarUrl
+        accountAddress
         followed
         username
       }

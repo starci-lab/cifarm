@@ -71,7 +71,7 @@ export class ClaimContent extends BaseSizer {
                     width: this.background.containerImage.width,
                     height: this.background.containerImage.height - 80,
                     y: -this.background.containerImage.height,
-                    originY: 0,
+                    originY: 1,
                 }
             },
             options: {

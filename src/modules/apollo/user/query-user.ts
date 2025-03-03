@@ -6,8 +6,10 @@ import { QueryParams } from "../types"
 const query1 = gql`
   query {
     user {
+      id
       accountAddress
       chainKey
+      username
       dailyRewardLastClaimTime
       dailyRewardStreak
       energy
@@ -18,6 +20,9 @@ const query1 = gql`
       golds
       tokens
       level
+      referralUserId
+      referredUserIds
+      followXAwarded
     }
   }
 `

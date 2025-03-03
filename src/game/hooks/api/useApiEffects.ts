@@ -1,4 +1,3 @@
-import { useUserEffects } from "../graphql/useUserEffects"
 import { useHelpUseHerbicideEffects } from "./helpUseHerbicideEffects"
 import { useHelpUsePesticideEffects } from "./helpUsePesticideEffects"
 import { useHelpWaterEffects } from "./helpWaterEffects"
@@ -21,6 +20,7 @@ import { usePlantSeedEffects } from "./usePlantSeedEffects"
 import { useRetainProductEffects } from "./useRetainProductEffects"
 import { useReturnEffects } from "./useReturnEffects"
 import { useUnfollowEffects } from "./useUnfollowEffects"
+import { useUpdateFollowXEffects } from "./useUpdateFollowXEffects"
 import { useUpdateTutorialEffects } from "./useUpdateTutorialEffects"
 import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
 import { useVisitEffects } from "./useVisitEffects"
@@ -29,7 +29,6 @@ import { useWaterEffects } from "./useWaterEffects"
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
     useBuySeedsEffects()
-    useUserEffects()
     usePlantSeedEffects()
     useWaterEffects()
     useUseHerbicideEffects()
@@ -54,4 +53,5 @@ export const useApiEffects = () => {
     useFeedAnimalEffects()
     useCureAnimalEffects()
     useUseFertilizerEffects()
+    useUpdateFollowXEffects()
 }

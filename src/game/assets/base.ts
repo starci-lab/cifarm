@@ -9,6 +9,7 @@ export enum BootstrapAssetKey {
 
 export enum BaseAssetKey {
     Grass = "grass",
+    FlowerGrass = "flower-grass",
 
     // Icons
     IconShop = "icon-shop",
@@ -33,6 +34,7 @@ export enum BaseAssetKey {
     UIBackgroundLargeWrapperContainer = "ui-background-large-wrapper-container",
     UIBackgroundXXLargeWrapperContainer = "ui-background-xx-large-wrapper-container",
     UIBackgroundMediumContainer = "ui-background-medium-container",
+    
     // Tab
     UITabFrame = "ui-tab-frame",
     UITabSlat = "ui-tab-slat",
@@ -67,12 +69,11 @@ export enum BaseAssetKey {
     UIModalDailyDay = "ui-modal-daily-day",
 
     // Quest ui-modal
-    UIModalQuestWall = "ui-modal-quest-wall",
     UIModalQuestCardTitle = "ui-modal-quest-card-title",
     UIModalQuestPin = "ui-modal-quest-pin",
     UIModalQuestCardItem = "ui-modal-quest-card-item",
     UIModalQuestIconClose = "ui-modal-quest-icon-close",
-    UIModalQuestBaseTab = "ui-modal-quest-base-tab",
+    UIModalQuestSocialTab = "ui-modal-quest-social-tab",
     UIModalQuestDailyTab = "ui-modal-quest-daily-tab",
 
     // Toolbar
@@ -120,6 +121,7 @@ export enum BaseAssetKey {
     UICommonIconCoin = "ui-common-icon-coin",
     UICommonIconCarrot = "ui-common-icon-carrot",
     UICommonCheck = "ui-common-check",
+    UICommonX2 = "ui-common-x2",
     UICommonExperience = "ui-common-experience",
 
     //Topbar
@@ -127,6 +129,7 @@ export enum BaseAssetKey {
     UITopbarIconEnergy = "ui-topbar-icon-energy",
     UITopbarResource = "ui-topbar-resource",
     UITopbarAvatar = "ui-topbar-avatar",
+    UITopbarAvatarMask = "ui-topbar-avatar-mask",
     UITopbarAvatarWrapper = "ui-topbar-avatar-wrapper",
     UITopbarLevelBox = "ui-topbar-level-box",
     UITopbarName = "ui-topbar-name",
@@ -157,6 +160,7 @@ export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
 // updated baseAssetMap with BaseAssetKey enum values
 export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.Grass]: "grass.png",
+    [BaseAssetKey.FlowerGrass]: "flower-grass.png",
     // icons
     [BaseAssetKey.IconShop]: "icons/shop.png",
     [BaseAssetKey.IconRoadsideStand]: "icons/roadside-stand.png",
@@ -214,12 +218,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalDailyDay]: "ui/modals/daily/day.png",
 
     // Quest
-    [BaseAssetKey.UIModalQuestWall]: "ui/modals/quest/wall.png",
     [BaseAssetKey.UIModalQuestCardTitle]: "ui/modals/quest/card-title.png",
     [BaseAssetKey.UIModalQuestPin]: "ui/modals/quest/pin.png",
     [BaseAssetKey.UIModalQuestCardItem]: "ui/modals/quest/card-item.png",
     [BaseAssetKey.UIModalQuestIconClose]: "ui/modals/quest/icon-close.png",
-    [BaseAssetKey.UIModalQuestBaseTab]: "ui/modals/quest/base-tab.png",
+    [BaseAssetKey.UIModalQuestSocialTab]: "ui/modals/quest/social-tab.png",
     [BaseAssetKey.UIModalQuestDailyTab]: "ui/modals/quest/daily-tab.png",
 
     // Toolbar
@@ -248,6 +251,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UITopbarIconEnergy]: "ui/topbar/icon-energy.png",
     [BaseAssetKey.UITopbarResource]: "ui/topbar/resource.png",
     [BaseAssetKey.UITopbarAvatar]: "ui/topbar/avatar.png",
+    [BaseAssetKey.UITopbarAvatarMask]: "ui/topbar/avatar-mask.png",
     [BaseAssetKey.UITopbarAvatarWrapper]: "ui/topbar/avatar-wrapper.png",
     [BaseAssetKey.UITopbarLevelBox]: "ui/topbar/level-box.png",
     [BaseAssetKey.UITopbarName]: "ui/topbar/name.png",
@@ -274,6 +278,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonButtonRed]: "ui/common/button-red.png",
     [BaseAssetKey.UICommonButtonGreen]: "ui/common/button-green.png",
     [BaseAssetKey.UICommonX]: "ui/common/x.png",
+    [BaseAssetKey.UICommonX2]: "ui/common/x2.png",
     [BaseAssetKey.UICommonIconMagnifyingGlass]: "ui/common/icon-magnifying-glass.png",
     [BaseAssetKey.UICommonMinus]: "ui/common/minus.png",
     [BaseAssetKey.UICommonPlus]: "ui/common/plus.png",

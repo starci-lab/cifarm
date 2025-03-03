@@ -11,6 +11,7 @@ import {
 } from "@/redux"
 import { useEffect } from "react"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
+import { createJazziconBlobUrl } from "@/modules/jazz"
 
 export const useAccounts = () => {
     const loadAccountsKey = useAppSelector(
@@ -29,6 +30,12 @@ export const useAccounts = () => {
             let accounts = await sessionDb.accounts
                 .filter((account) => account.chainKey === chainKey)
                 .toArray()
+            accounts = accounts.map((account) => {
+                const imageUrl =
+          account.imageUrl ?? createJazziconBlobUrl(account.address)
+                account.imageUrl = imageUrl
+                return account
+            })
             const currentAccount = await sessionDb.currentAccount
                 .filter((currentAccount) => currentAccount.chainKey === chainKey)
                 .first()

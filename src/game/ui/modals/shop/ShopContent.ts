@@ -50,8 +50,11 @@ import {
     BaseText,
     Button,
     FlyItem,
+    getBackgroundContainerSize,
     IconOffsets,
     ModalBackground,
+    Size,
+    SizeStyle,
     TextColor,
     XButton,
 } from "../../elements"
@@ -86,6 +89,7 @@ export class ShopContent extends BaseSizer {
     private cellWidth: number
     private cellHeight: number
     private contentWidth: number
+    private size: Size
     constructor({
         scene,
         height,
@@ -110,7 +114,10 @@ export class ShopContent extends BaseSizer {
         this.cellHeight = cellSourceImage.height
 
         this.contentWidth = 3 * this.cellWidth + 2 * CELL_SPACE
-
+        this.size = getBackgroundContainerSize({
+            background: Background.XLarge,
+            style: SizeStyle.TabContainer,
+        })
         this.background = new ModalBackground({
             baseParams: {
                 scene: scene,
@@ -144,7 +151,6 @@ export class ShopContent extends BaseSizer {
                         tabsX: -this.contentWidth / 2,
                         tabsY: 0,
                     },
-                    width: this.contentWidth,
                 },
                 container: {
                     showWrapperContainer: true,
@@ -307,7 +313,7 @@ export class ShopContent extends BaseSizer {
                 x: 0,
                 y: 0,
                 originY: 0,
-                height: 920,
+                height: this.size?.height,
                 width: 3 * this.cellWidth + 2 * CELL_SPACE,
                 scrollMode: 0,
                 table: {
@@ -666,22 +672,6 @@ export class ShopContent extends BaseSizer {
             // refresh user & inventories
             EventBus.emit(EventName.RefreshUser)
             EventBus.emit(EventName.RefreshInventories)
-            const flyItem = new FlyItem({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    assetKey: cropAssetMap[displayId].seed.textureConfig.key,
-                    x: pointer.x,
-                    y: pointer.y,
-                    quantity: 1,
-                    depth: calculateUiDepth({
-                        layer: UILayer.Overlay,
-                        layerDepth: 1,
-                    }),
-                },
-            })
-            this.scene.add.existing(flyItem)
             // emit the events related to the tutorial
             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                 const gridTable = this.gridTableMap[this.selectedShopTab]
@@ -701,6 +691,22 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
+        const flyItem = new FlyItem({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                x: pointer.x,
+                y: pointer.y,
+                quantity: 1,
+                depth: calculateUiDepth({
+                    layer: UILayer.Overlay,
+                    layerDepth: 1,
+                }),
+            },
+        })
+        this.scene.add.existing(flyItem)
     }
 
     //onBuySupplyPress

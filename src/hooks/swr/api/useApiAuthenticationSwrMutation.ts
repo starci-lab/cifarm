@@ -76,6 +76,7 @@ export const useApiAuthenticationSwrMutation = (): UseSWRMutation<
                     chainKey,
                     accountAddress: address,
                     network,
+                    username: account.username,
                 },
                 options
             )

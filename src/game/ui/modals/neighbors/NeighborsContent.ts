@@ -37,7 +37,6 @@ export class NeighborsContent extends ContainerLite {
                 title: "Neighbors",
                 background: Background.XXLarge,
                 tabs: {
-                    width: 800,
                     options: {
                         tabs: Object.values(NeighborsTab).map((tab) => ({
                             tabKey: tab,
@@ -57,10 +56,14 @@ export class NeighborsContent extends ContainerLite {
         this.worldTab = new WorldTab({
             scene: this.scene,
             config: {
-                originY: 1,
+                originY: 0,
+                y: 80
             }
         })
         this.scene.add.existing(this.worldTab)
-        this.addLocal(this.worldTab)
+        if (!this.background.container) {
+            throw new Error("Background container is not defined")
+        }
+        this.background.container.addLocal(this.worldTab)
     }
 }

@@ -223,7 +223,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // get placed item type from cache
     protected getPlacedItemType(
-        placedItemTypeId: PlacedItemTypeId
+        placedItemTypeId: string
     ): PlacedItemTypeSchema {
         const placedItemTypes = this.scene.cache.obj.get(
             CacheKey.PlacedItemTypes

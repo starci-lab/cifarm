@@ -456,7 +456,6 @@ export class InputTilemap extends ItemTilemap {
                 // update the placed item in client
                 EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
-
                 if (visitedNeighbor) {
                     // emit the event to use pesticide
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
@@ -943,8 +942,7 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Temporary place item data not found")
         }
         const { tilesetConfig } = this.temporaryPlaceItemData
-
-        console.log("http://localhost:3000/play", this.temporaryPlaceItemData)
+        
         const tileset = this.getTileset(tilesetConfig.tilesetName)
         if (!tileset) {
             throw new Error("Tileset not found")
