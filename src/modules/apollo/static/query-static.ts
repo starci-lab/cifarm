@@ -181,6 +181,12 @@ const query = gql`
       type
       maxUpgrade
       price
+      upgrades {
+        id
+        upgradePrice
+        upgradeLevel
+        capacity
+      }
     }
     tiles {
       qualityProductChanceStack

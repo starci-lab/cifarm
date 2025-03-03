@@ -13,7 +13,6 @@ export interface BuildingSchema extends StaticAbstractSchema<BuildingId> {
     unlockLevel: number
     maxOwnership: number
     price?: number
-    maxCount?: number
     upgrades?: Array<UpgradeSchema>
     upgradeIds: Array<string>
     placedItemTypeId?: string

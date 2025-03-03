@@ -24,8 +24,9 @@ export const useUserEffects = () => {
     // refresh user data
     useEffect(() => {
         EventBus.on(EventName.RefreshUser, async () => {
-            //load user data
             const { data } = await swrMutation.trigger({})
+            console.log("EventName.RefreshUser", data.user)
+            //load user data
             EventBus.emit(EventName.UserRefreshed, data.user)
         })
 

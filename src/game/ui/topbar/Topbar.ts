@@ -157,12 +157,24 @@ export class Topbar extends BaseSizer {
                 this.goldLabel.hide()
                 this.tokenLabel.hide()
             }
+
+            //update resources
+            if (this.energyLabel) {
+                this.energyLabel.text = `${this.user.energy}/${this.getMaxEnergy(this.user.level)}`
+            }
+            if (this.goldLabel) {
+                this.goldLabel.text = `${this.user.golds ?? 0}`
+            }
+            if (this.tokenLabel) {
+                this.tokenLabel.text = `${this.user.tokens ?? 0}`
+            }
+
             this.resourcesContainer.layout()
             return
         }
         this.energyLabel = this.addLabel({
             iconKey: BaseAssetKey.UITopbarIconEnergy,
-            amount: `${this.user.energy}/${this.computeExperiencesQuota(
+            amount: `${this.user.energy}/${this.getMaxEnergy(
                 this.user.level
             )}`,
             scale: 0.8,
@@ -228,8 +240,8 @@ export class Topbar extends BaseSizer {
         return label
     }
 
-    private computeExperiencesQuota(level: number = 1): number {
-        return 50 * level + 25 * Math.pow(level - 1, 2)
+    private getMaxEnergy(level: number = 1): number {
+        return 50 + (level - 1) * 3
     }
 }
 

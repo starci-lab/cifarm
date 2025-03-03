@@ -42,6 +42,8 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.IconShop,
             text: "Shop",
             onPress: () => {
+                EventBus.emit(EventName.RefreshPlaceItemsCacheKey)
+                
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Shop
                 }
