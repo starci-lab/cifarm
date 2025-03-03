@@ -593,26 +593,6 @@ export class ShopContent extends BaseSizer {
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
 
-        const ownershipText = maxOwnership !== undefined 
-            ? `${currentOwnership}/${maxOwnership}`
-            : ""
-
-        const ownershipLabel = new BaseText({
-            baseParams: {
-                scene: this.scene,
-                text: ownershipText,
-                x: cardBackground.width / 2 - 10,
-                y: -cardBackground.height / 2 + 10
-            },
-            options: {
-                fontSize: 28,
-                textColor: TextColor.Brown
-            }
-        }).setOrigin(1, 0)
-
-        this.scene.add.existing(ownershipLabel)
-        container.addLocal(ownershipLabel)
-
         if (locked) {
             const off = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopOff)
             const lockContainer = this.scene.rexUI.add.container(
@@ -655,6 +635,28 @@ export class ShopContent extends BaseSizer {
             if (buttonPrice.input) {
                 buttonPrice.input.enabled = false
             }
+        }else{
+            if(maxOwnership == 0) return container
+
+            const ownershipText = maxOwnership !== undefined 
+                ? `${currentOwnership}/${maxOwnership}`
+                : ""
+
+            const ownershipLabel = new BaseText({
+                baseParams: {
+                    scene: this.scene,
+                    text: ownershipText,
+                    x: cardBackground.width / 2 - 10,
+                    y: -cardBackground.height / 2 + 10
+                },
+                options: {
+                    fontSize: 28,
+                    textColor: TextColor.Brown
+                }
+            }).setOrigin(1, 0)
+
+            this.scene.add.existing(ownershipLabel)
+            container.addLocal(ownershipLabel)
         }
         return container
     }

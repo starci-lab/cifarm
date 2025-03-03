@@ -31,6 +31,18 @@ export const inventoryTypeAssetMap: Record<
         name: "Milk Quality",
         textureConfig: { ...productAssetMap[ProductId.MilkQuality].textureConfig, useExisting: true },
     },
+    [InventoryTypeId.Radish]: {
+        name: "Radish",
+        textureConfig: { ...productAssetMap[ProductId.Radish].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.RadishQuality]: {
+        name: "Radish Quality",
+        textureConfig: { ...productAssetMap[ProductId.RadishQuality].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.RadishSeed]: {
+        name: "Radish Seed",
+        textureConfig: { ...cropAssetMap[CropId.Radish].seed.textureConfig, useExisting: true },
+    },
     [InventoryTypeId.Carrot]: {
         name: "Carrot",
         textureConfig: { ...productAssetMap[ProductId.Carrot].textureConfig, useExisting: true },  
