@@ -27,6 +27,7 @@ export enum UpgradeId {
 
 // Crop Enum
 export enum CropId {
+    Radish = "radish",
     Carrot = "carrot",
     Potato = "potato",
     Pineapple = "pineapple",
@@ -62,7 +63,6 @@ export enum SupplyId {
 
 // Tile Enum
 export enum TileId {
-    StarterTile = "starterTile",
     BasicTile = "basicTile",
 }
 
@@ -73,7 +73,9 @@ export enum ToolId {
     ThiefHand = "thiefHand",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
-    Pesticide = "pesticide"
+    Pesticide = "pesticide",
+    Hammer = "hammer",
+    Relocate = "relocate",
 }
 
 // Product Enum
@@ -82,6 +84,8 @@ export enum ProductId {
     EggQuality = "eggQuality",
     Milk = "milk",
     MilkQuality = "milkQuality",
+    Radish = "radish",
+    RadishQuality = "radishQuality",
     Carrot = "carrot",
     CarrotQuality = "carrotQuality",
     Potato = "potato",
@@ -112,6 +116,7 @@ export enum KeyValueStoreId {
 }
 
 export enum InventoryTypeId {
+    RadishSeed = "radishSeed",
     CarrotSeed = "carrotSeed",
     PotatoSeed = "potatoSeed",
     PineappleSeed = "pineappleSeed",
@@ -125,6 +130,8 @@ export enum InventoryTypeId {
     EggQuality = "eggQuality",
     Milk = "milk",
     MilkQuality = "milkQuality",
+    Radish = "radish",
+    RadishQuality = "radishQuality",
     Carrot = "carrot",
     CarrotQuality = "carrotQuality",
     Potato = "potato",
@@ -141,7 +148,9 @@ export enum InventoryTypeId {
     Crate = "crate",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
-    Pesticide = "pesticide"
+    Pesticide = "pesticide",
+    Hammer = "hammer",
+    Relocate = "relocate",
 }
 
 export enum PlacedItemTypeId {
@@ -152,7 +161,6 @@ export enum PlacedItemTypeId {
     Coop = "coop",
     Barn = "barn",
     Home = "home",
-    StarterTile = "starterTile",
     BasicTile = "basicTile",
 }
 
@@ -168,6 +176,7 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(BuildingId.Home)]: BuildingId.Home,
 
     // crop ids
+    [createObjectId(CropId.Radish)]: CropId.Radish,
     [createObjectId(CropId.Carrot)]: CropId.Carrot,
     [createObjectId(CropId.Potato)]: CropId.Potato,
     [createObjectId(CropId.Pineapple)]: CropId.Pineapple,
@@ -183,10 +192,10 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(PlacedItemTypeId.Coop)]: PlacedItemTypeId.Coop,
     [createObjectId(PlacedItemTypeId.Barn)]: PlacedItemTypeId.Barn,
     [createObjectId(PlacedItemTypeId.Home)]: PlacedItemTypeId.Home,
-    [createObjectId(PlacedItemTypeId.StarterTile)]: PlacedItemTypeId.StarterTile,
     [createObjectId(PlacedItemTypeId.BasicTile)]: PlacedItemTypeId.BasicTile,
 
     // inventory types
+    [createObjectId(InventoryTypeId.RadishSeed)]: InventoryTypeId.RadishSeed,
     [createObjectId(InventoryTypeId.CarrotSeed)]: InventoryTypeId.CarrotSeed,
     [createObjectId(InventoryTypeId.PotatoSeed)]: InventoryTypeId.PotatoSeed,
     [createObjectId(InventoryTypeId.PineappleSeed)]: InventoryTypeId.PineappleSeed,
@@ -204,6 +213,8 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(InventoryTypeId.WateringCan)]: InventoryTypeId.WateringCan,
     [createObjectId(InventoryTypeId.Herbicide)]: InventoryTypeId.Herbicide,
     [createObjectId(InventoryTypeId.Pesticide)]: InventoryTypeId.Pesticide,
+    [createObjectId(InventoryTypeId.Hammer)]: InventoryTypeId.Hammer,
+    [createObjectId(InventoryTypeId.Relocate)]: InventoryTypeId.Relocate,
 
     // supply types
     [createObjectId(SupplyId.BasicFertilizer)]: SupplyId.BasicFertilizer,
@@ -211,7 +222,6 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(SupplyId.AnimalPill)]: SupplyId.AnimalPill,
 
     // tile types
-    [createObjectId(TileId.StarterTile)]: TileId.StarterTile,
     [createObjectId(TileId.BasicTile)]: TileId.BasicTile,
 
     // tool types
@@ -221,6 +231,8 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(ToolId.WateringCan)]: ToolId.WateringCan,
     [createObjectId(ToolId.Herbicide)]: ToolId.Herbicide,
     [createObjectId(ToolId.Pesticide)]: ToolId.Pesticide,
+    [createObjectId(ToolId.Hammer)]: ToolId.Hammer,
+    [createObjectId(ToolId.Relocate)]: ToolId.Relocate,
 }
 
 export const getId = <IdType extends string>(objectId: string): IdType => (objectIdMap[objectId]) as IdType

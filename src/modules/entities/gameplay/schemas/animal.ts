@@ -15,6 +15,7 @@ export interface AnimalSchema extends StaticAbstractSchema<AnimalId> {
     growthTime: number
     availableInShop: boolean
     hungerTime: number
+    unlockLevel: number
     qualityProductChanceStack: number
     qualityProductChanceLimit: number
     minHarvestQuantity: number

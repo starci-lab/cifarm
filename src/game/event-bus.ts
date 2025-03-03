@@ -241,6 +241,8 @@ export enum EventName {
     SyncDelayEnded = "sync_delay_ended",
 
     RequestUpdatePlacedItemLocal = "update_placed_item_local",
+
+    RefreshPlaceItemsCacheKey = "refresh_place_items_cache_key",
 }
 
 export interface OpenTutorialMessage {

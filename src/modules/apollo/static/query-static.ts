@@ -181,10 +181,17 @@ const query = gql`
       id
       displayId
       availableInShop
-
+      unlockLevel
+      maxOwnership
       type
       maxUpgrade
       price
+      upgrades {
+        id
+        upgradePrice
+        upgradeLevel
+        capacity
+      }
     }
     tiles {
       qualityProductChanceStack

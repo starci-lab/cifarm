@@ -59,6 +59,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     public shutdown() {
         EventBus.off(EventName.PlacedItemsSynced)
+        EventBus.off(EventName.RequestUpdatePlacedItemLocal)
     }
 
     // method to create tilesets for all tile assets

@@ -1,9 +1,29 @@
+import { calculateUiDepth, UILayer } from "@/game/layers"
+import { IPaginatedResponse } from "@/modules/apollo"
+import { BuySeedsRequest, BuySuppliesRequest } from "@/modules/axios"
+import { createObjectId, sleep } from "@/modules/common"
+import {
+    AnimalSchema,
+    BuildingSchema,
+    CropId,
+    CropSchema,
+    DefaultInfo,
+    InventorySchema,
+    PlacedItemSchema,
+    PlacedItemType,
+    PlacedItemTypeSchema,
+    SupplyId,
+    SupplySchema,
+    TileSchema,
+    UserSchema
+} from "@/modules/entities"
+import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
+import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
     GridTable,
     Label,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { ShopTab } from "./types"
 import {
     AnimalAge,
     animalAssetMap,
@@ -13,7 +33,18 @@ import {
     supplyAssetMap,
     tileAssetMap,
 } from "../../../assets"
-import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
+import { SCALE_TIME } from "../../../constants"
+import {
+    CloseModalMessage,
+    EventBus,
+    EventName,
+    ModalName,
+    PlacedInprogressMessage,
+    SelectTabMessage,
+    ShowPressHereArrowMessage,
+} from "../../../event-bus"
+import { getFirstSeedInventory } from "../../../queries"
+import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import {
     Background,
     BaseText,
@@ -24,42 +55,14 @@ import {
     ModalBackground,
     Size,
     SizeStyle,
+    TextColor,
     XButton,
 } from "../../elements"
-import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
-import {
-    AnimalSchema,
-    BuildingSchema,
-    CropSchema,
-    InventorySchema,
-    PlacedItemType,
-    DefaultInfo,
-    TileSchema,
-    UserSchema,
-    CropId,
-    SupplySchema,
-    SupplyId,
-} from "@/modules/entities"
-import {
-    CloseModalMessage,
-    EventBus,
-    EventName,
-    ModalName,
-    PlacedInprogressMessage,
-    SelectTabMessage,
-    ShowPressHereArrowMessage,
-} from "../../../event-bus"
-import { BuySeedsRequest, BuySuppliesRequest } from "@/modules/axios"
-import { getFirstSeedInventory } from "../../../queries"
-import { sleep } from "@/modules/common"
-import { SCALE_TIME } from "../../../constants"
-import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { IPaginatedResponse } from "@/modules/apollo"
-import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { MODAL_DEPTH_1 } from "../ModalManager"
-import { calculateUiDepth, UILayer } from "@/game/layers"
-import { ITEM_DATA_KEY, tabsConfig } from "./constants"
+import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 import { onGameObjectPress } from "../../utils"
+import { MODAL_DEPTH_1 } from "../ModalManager"
+import { ITEM_DATA_KEY, tabsConfig } from "./constants"
+import { ShopTab } from "./types"
 
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
@@ -74,6 +77,7 @@ export class ShopContent extends BaseSizer {
     private buildings: Array<BuildingSchema> = []
     private tiles: Array<TileSchema> = []
     private supplies: Array<SupplySchema> = []
+    private placedItems: Array<PlacedItemSchema> = []
     //default
     private defaultItemCard: ContainerLite | undefined
     private defaultSeedButton: Label | undefined
@@ -186,6 +190,7 @@ export class ShopContent extends BaseSizer {
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
+        this.placedItems = this.scene.cache.obj.get(CacheKey.PlacedItems)
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -268,6 +273,10 @@ export class ShopContent extends BaseSizer {
 
         EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
             this.user = user
+        })
+
+        EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
+            this.updateOwnership()
         })
     }
 
@@ -411,7 +420,13 @@ export class ShopContent extends BaseSizer {
                 // get the image
                 items.push({
                     assetKey:
-              animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    locked: !this.checkUnlock(
+                        this.animals.find((animal) => animal.displayId === displayId)
+                            ?.unlockLevel
+                    ),
+                    unlockLevel: this.animals.find((animal) => animal.displayId === displayId)
+                        ?.unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -426,6 +441,13 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
+                    maxOwnership: this.getAnimalMaxOwnership({
+                        displayId
+                    }),
+                    currentOwnership: this.getCurrentOwnership({
+                        type: PlacedItemType.Animal,
+                        displayId
+                    })
                 })
                 // add the item card to the scrollable panel
             }
@@ -436,6 +458,12 @@ export class ShopContent extends BaseSizer {
                 // get the image
                 items.push({
                     assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(
+                        this.buildings.find((building) => building.displayId === displayId)
+                            ?.unlockLevel
+                    ),
+                    unlockLevel: this.buildings.find((building) => building.displayId === displayId)
+                        ?.unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -452,6 +480,11 @@ export class ShopContent extends BaseSizer {
                     price,
                     scaleX: 0.5,
                     scaleY: 0.5,
+                    maxOwnership: this.buildings.find((building) => building.displayId === displayId)?.maxOwnership,
+                    currentOwnership: this.getCurrentOwnership({
+                        type: PlacedItemType.Building,
+                        displayId
+                    })
                 })
             }
             break
@@ -475,6 +508,11 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
+                    maxOwnership: this.tiles.find((tile) => tile.displayId === displayId)?.maxOwnership,
+                    currentOwnership: this.getCurrentOwnership({
+                        type: PlacedItemType.Tile,
+                        displayId
+                    })
                 })
                 // add the item card to the scrollable panel
             }
@@ -520,6 +558,8 @@ export class ShopContent extends BaseSizer {
         scaleY = 1,
         unlockLevel,
         locked = false,
+        currentOwnership = 0,
+        maxOwnership = 0,
     }: CreateItemCardParams) {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
@@ -601,6 +641,28 @@ export class ShopContent extends BaseSizer {
             if (buttonPrice.input) {
                 buttonPrice.input.enabled = false
             }
+        }else{
+            if(maxOwnership == 0) return container
+
+            const ownershipText = maxOwnership !== undefined 
+                ? `${currentOwnership}/${maxOwnership}`
+                : ""
+
+            const ownershipLabel = new BaseText({
+                baseParams: {
+                    scene: this.scene,
+                    text: ownershipText,
+                    x: cardBackground.width / 2 - 10,
+                    y: -cardBackground.height / 2 + 10
+                },
+                options: {
+                    fontSize: 28,
+                    textColor: TextColor.Brown
+                }
+            }).setOrigin(1, 0)
+
+            this.scene.add.existing(ownershipLabel)
+            container.addLocal(ownershipLabel)
         }
         return container
     }
@@ -677,6 +739,92 @@ export class ShopContent extends BaseSizer {
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySupplies, eventMessage)
     }
+
+    private getCurrentOwnership({ type, displayId }: GetCurrentOwnershipParams): number {
+        if(!this.placedItems) return 0
+
+        //all placed item types
+        const placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes) as Array<PlacedItemTypeSchema>
+
+        //get the placed item type
+        const placedItemType = placedItemTypes.find(item => item.displayId === displayId && item.type === type)
+        if (!placedItemType){
+            throw new Error("Placed item type not found.")
+        }
+
+        return this.placedItems.filter(item => item.placedItemType === createObjectId(displayId)).length
+    }
+    
+
+    private getAnimalMaxOwnership({ displayId }: GetAnimalMaxOwnershipParams): number {
+        const animal = this.animals.find(animal => animal.displayId === displayId)
+        if (!animal){
+            throw new Error("[getAnimalMaxOwnership] Animal not found.")
+        }
+    
+        const relatedBuilding = this.buildings.find(building => building.type === animal.type)
+        if (!relatedBuilding){
+            throw new Error("[getAnimalMaxOwnership] Related building not found.")
+        }
+    
+        console.log("Calculating max ownership for:", displayId, relatedBuilding.upgrades)
+    
+        if (!this.placedItems){
+            return 0
+        }
+    
+        const userBuildings = this.placedItems.filter(item => item.placedItemType === createObjectId(relatedBuilding.displayId))
+
+        console.log("[getAnimalMaxOwnership] userBuildings", userBuildings)
+    
+        let maxCapacity = 0
+        for (const building of userBuildings) {
+            console.log("[getAnimalMaxOwnership] building", building)
+            const upgradeLevel = building.buildingInfo?.currentUpgrade || 0
+            if (relatedBuilding.upgrades) {
+                console.log("[getAnimalMaxOwnership] upgradeLevel", upgradeLevel)
+                const upgrade = relatedBuilding.upgrades.find(upgrade => upgrade.upgradeLevel === upgradeLevel)
+                if (upgrade){
+                    maxCapacity += upgrade.capacity
+                }else{
+                    throw new Error("[getAnimalMaxOwnership] Upgrade not found.")
+                }
+            }
+        }
+    
+        return maxCapacity
+    }
+    
+
+    private updateOwnership() {
+        console.log("Updating ownership data...")
+        
+        this.placedItems = this.scene.cache.obj.get(CacheKey.PlacedItems) as Array<PlacedItemSchema>
+        if (!this.placedItems) {
+            console.warn("No placed items found.")
+            return
+        }
+    
+        Object.values(ShopTab).forEach((shopTab) => {
+            if (!this.gridTableMap[shopTab]) return
+            
+            const items = this.createItems(shopTab)
+            this.gridTableMap[shopTab].setItems(items)
+            this.gridTableMap[shopTab].layout()
+        })
+    
+        console.log("Ownership update complete.")
+    }
+}
+        
+
+export interface GetCurrentOwnershipParams {
+    type: PlacedItemType;
+    displayId: string;
+}
+
+export interface GetAnimalMaxOwnershipParams {
+    displayId: string;
 }
 
 export interface CreateItemCardParams {
@@ -698,6 +846,10 @@ export interface CreateItemCardParams {
   prepareCloseShop?: boolean;
   // default seed
   defaultSeed?: boolean;
+  // Maximum ownership limit (only for applicable items)
+  maxOwnership?: number;
+  // Current ownership count
+  currentOwnership?: number;
 }
 
 export interface ExtendedCreateItemCardParams extends CreateItemCardParams {

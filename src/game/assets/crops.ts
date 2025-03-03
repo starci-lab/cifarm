@@ -25,6 +25,50 @@ export interface CropAssetData {
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const cropAssetMap: Record<CropId, CropAssetData> = {
+    [CropId.Radish]: {
+        name: "Radish",
+        stages: {
+            0: {
+                textureConfig: { key: "crop-radish-1", assetUrl: "crops/radish/1.png" },
+                tilesetConfig: {
+                    gid: 1001,
+                    tilesetName: "crop-radish-0",
+                },
+            },
+            1: {
+                textureConfig: { key: "crop-radish-2", assetUrl: "crops/radish/2.png" },
+                tilesetConfig: {
+                    gid: 1002,
+                    tilesetName: "crop-radish-1",
+                },
+            },
+            2: {
+                textureConfig: { key: "crop-radish-3", assetUrl: "crops/radish/3.png" },
+                tilesetConfig: {
+                    gid: 1003,
+                    tilesetName: "crop-radish-2",
+                },
+            },
+            3: {
+                textureConfig: { key: "crop-radish-4", assetUrl: "crops/radish/4.png" },
+                tilesetConfig: {
+                    gid: 1004,
+                    tilesetName: "crop-radish-3",
+                },
+            },
+            4: {
+                textureConfig: { key: "crop-radish-5", assetUrl: "crops/radish/5.png" },
+                tilesetConfig: {
+                    gid: 1005,
+                    tilesetName: "crop-radish-4",
+                },
+            },
+        },
+        seed: {
+            textureConfig: { key: "crop-radish-seed", assetUrl: "crops/radish/seed.png" },
+        },
+        textureConfig: { key: "crop-radish", assetUrl: "crops/radish/base.png" },
+    },
     [CropId.Carrot]: {
         name: "Carrot",
         stages: {

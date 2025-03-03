@@ -31,6 +31,18 @@ export const inventoryTypeAssetMap: Record<
         name: "Milk Quality",
         textureConfig: { ...productAssetMap[ProductId.MilkQuality].textureConfig, useExisting: true },
     },
+    [InventoryTypeId.Radish]: {
+        name: "Radish",
+        textureConfig: { ...productAssetMap[ProductId.Radish].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.RadishQuality]: {
+        name: "Radish Quality",
+        textureConfig: { ...productAssetMap[ProductId.RadishQuality].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.RadishSeed]: {
+        name: "Radish Seed",
+        textureConfig: { ...cropAssetMap[CropId.Radish].seed.textureConfig, useExisting: true },
+    },
     [InventoryTypeId.Carrot]: {
         name: "Carrot",
         textureConfig: { ...productAssetMap[ProductId.Carrot].textureConfig, useExisting: true },  
@@ -138,6 +150,14 @@ export const inventoryTypeAssetMap: Record<
     [InventoryTypeId.Pesticide]: {
         name: "Pesticide",
         textureConfig: { ...toolAssetMap[ToolId.Pesticide].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.Hammer]: {
+        name: "Hammer",
+        textureConfig: { ...toolAssetMap[ToolId.Hammer].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.Relocate]: {
+        name: "Relocate",
+        textureConfig: { ...toolAssetMap[ToolId.Relocate].textureConfig, useExisting: true },
     },
 }
 

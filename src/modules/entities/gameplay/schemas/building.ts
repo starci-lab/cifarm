@@ -10,8 +10,9 @@ export interface BuildingSchema extends StaticAbstractSchema<BuildingId> {
     availableInShop: boolean
     type?: AnimalType
     maxUpgrade: number
+    unlockLevel: number
+    maxOwnership: number
     price?: number
-    maxCount?: number
     upgrades?: Array<UpgradeSchema>
     upgradeIds: Array<string>
     placedItemTypeId?: string

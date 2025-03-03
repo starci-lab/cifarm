@@ -45,6 +45,23 @@ export const productAssetMap: Record<
             isQuality: true,
         },
     },
+    [ProductId.Radish]: {
+        name: "Radish",
+        textureConfig: {
+            assetUrl: "products/radish.png",
+            key: "radish",
+            isQuality: false,
+        },
+    },
+    [ProductId.RadishQuality]: {
+        name: "Radish Quality",
+        textureConfig: {
+            assetUrl: "products/radish.png",
+            key: "radish",
+            useExisting: true,
+            isQuality: true,
+        },
+    },
     [ProductId.Carrot]: {
         name: "Carrot",
         textureConfig: {

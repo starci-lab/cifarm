@@ -70,8 +70,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
 
     private updateSeedGrowthInfo(placedItem: PlacedItemSchema) {
-        console.log("[UYDEV updateSeedGrowthInfo]", placedItem)
-
         const container = this.getContainer()
         if (!placedItem.seedGrowthInfo) {
             // remove everything in the container
