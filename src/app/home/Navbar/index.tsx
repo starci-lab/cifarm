@@ -8,6 +8,7 @@ import { MagnifyingGlassIcon, Cog6ToothIcon } from "@heroicons/react/24/outline"
 import { SelectChainButton } from "../SelectChainButton"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
+
 export const Navbar: FC = () => {
     //get all the data from the Redux store
     const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
@@ -31,7 +32,7 @@ export const Navbar: FC = () => {
                             <div className="flex gap-2 items-center">
                                 <Avatar size="sm" src={imageUrl}/>
                                 <div>
-                                    <div className="text-sm dark text-background font-bold">{username}</div>
+                                    <div className="text-sm dark text-background font-bold">{truncateString(username, 8, 0)}</div>
                                     <div className="text-xs dark text-foreground-500">{truncateString(address, 4)}</div>
                                 </div>
                             </div>

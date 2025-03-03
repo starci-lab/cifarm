@@ -11,6 +11,7 @@ export interface VerifySignatureRequest {
   chainKey?: ChainKey;
   network?: Network;
   accountAddress?: string;
+  username: string;
 }
 
 export interface VerifySignatureResponse {

@@ -5,13 +5,13 @@ import { EventBus, EventName } from "@/game/event-bus"
 import { DefaultInfo, UserSchema } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { MODAL_DEPTH_1 } from "../ModalManager"
-import { Background, getBackgroundSizeConfig, SizeConfig } from "../../elements"
+import { Background, getBackgroundContainerSize, Size, SizeStyle } from "../../elements"
 
 export class SocialTab extends BaseSizer {
     private scrollablePanel: ScrollablePanel | undefined
     private defaultInfo: DefaultInfo
     private user: UserSchema
-    private sizeConfig: SizeConfig
+    private size: Size
     //private background: ModalBackground
     constructor({
         scene,
@@ -21,7 +21,10 @@ export class SocialTab extends BaseSizer {
         height,
     }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
-        this.sizeConfig = getBackgroundSizeConfig(Background.XXLarge)
+        this.size = getBackgroundContainerSize({
+            style: SizeStyle.TabContainer,
+            background: Background.XXLarge,
+        })
         
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.user = this.scene.cache.obj.get(CacheKey.User)
@@ -103,8 +106,8 @@ export class SocialTab extends BaseSizer {
         }
         this.scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                width: this.sizeConfig.tabContainer?.width,
-                height: this.sizeConfig.tabContainer?.height,
+                width: this.size?.width,
+                height: this.size?.height,
                 originY: 0,
                 y: 60,
                 scrollMode: "y",

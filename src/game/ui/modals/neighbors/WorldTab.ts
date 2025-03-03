@@ -5,7 +5,7 @@ import { IPaginatedResponse, QueryNeighborsArgs } from "@/modules/apollo"
 import { ITEM_COUNT, USER_DATA } from "./constants"
 import { UserCard } from "./UserCard"
 import { Label, ScrollablePanel, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { Background, getBackgroundSizeConfig, Input, InputIcon, NumberInput, SizeConfig } from "../../elements"
+import { Background, getBackgroundContainerSize, Input, InputIcon, NumberInput, Size, SizeStyle } from "../../elements"
 import { GetPageResult } from "./types"
 import { onGameObjectPress } from "../../utils"
 import { FADE_HOLD_TIME, FADE_TIME } from "@/game/constants"
@@ -20,7 +20,7 @@ export class WorldTab extends Sizer {
     private args: QueryNeighborsArgs
     private pagination: NumberInput | undefined
     private scrollablePanel: ScrollablePanel | undefined
-    private sizeConfig: SizeConfig
+    private size: Size
     constructor({
         scene,
         config
@@ -32,7 +32,10 @@ export class WorldTab extends Sizer {
             y: -180,
             ...config
         })
-        this.sizeConfig = getBackgroundSizeConfig(Background.XXLarge)
+        this.size = getBackgroundContainerSize({
+            style: SizeStyle.TabContainer,
+            background: Background.XXLarge,
+        })
 
         const input = new Input({
             baseParams: {
@@ -95,8 +98,8 @@ export class WorldTab extends Sizer {
         const userCards = this.createUserCards()
         this.scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                width: this.sizeConfig.tabContainer?.width,
-                height: this.sizeConfig.tabContainer?.height,
+                width: this.size?.width,
+                height: this.size?.height,
                 scrollMode: "y",
                 space: {
                     panel: 40,

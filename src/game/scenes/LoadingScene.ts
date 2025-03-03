@@ -13,7 +13,7 @@ import {
     loadTileAssets,
     loadToolsAssets
 } from "../assets"
-import { LoadingProgressBar } from "../ui"
+import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
 import { QueryFolloweesArgs, QueryNeighborsArgs, QueryNeighborsParams, QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
@@ -21,6 +21,7 @@ import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { loadAnimalStateAssets, loadCropStateAssets } from "../assets/states"
 import { IPaginatedResponse } from "@/modules/apollo"
+import { createJazziconBlobUrl } from "@/modules/jazz"
 
 export enum LoadingPhase {
     DataFetching = "dataFetching",
@@ -92,9 +93,29 @@ export class LoadingScene extends Scene {
 
         //listen for load user data event
         EventBus.once(
-            EventName.UserLoaded, (user: UserSchema) => {
+            EventName.UserLoaded, async (user: UserSchema) => {
                 //load the user data
                 this.cache.obj.add(CacheKey.User, user)
+                // get the image url
+                if (user.avatarUrl) {
+                    await loadImageAwait({
+                        key: user.id,
+                        imageUrl: user.avatarUrl,
+                        scene: this,
+                    })
+                } else {
+                    // create jazzicon blob url
+                    const imageUrl = createJazziconBlobUrl(user.id)
+                    await loadSvgAwait({
+                        key: user.id,
+                        svgUrl: imageUrl,
+                        scene: this,
+                        scale: 16
+                    })
+                }
+                // load the image
+                
+                // create the image by the url
                 this.handleFetchData("Loading user...")
             })
 

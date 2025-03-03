@@ -10,7 +10,8 @@ import { BaseTabs, BaseTabsOptions } from "./BaseTabs"
 import { Button } from "./Button"
 
 const CONTAINER_OFFSET_Y = 150
-const WIDTH = 690
+const BASE_WIDTH = 884
+const TABS_WIDTH = 780
 export enum Background {
   Large = "large",
   Medium = "medium",
@@ -26,13 +27,18 @@ export enum BackgroundAlign {
 }
 
 export interface Size {
-    width?: number;
-    height?: number;
+  width?: number;
+  height?: number;
+}
+
+export enum SizeStyle {
+  Container = "container",
+  TabContainer = "tabContainer",
 }
 
 export interface SizeConfig {
-    container?: Size;
-    tabContainer?: Size;
+  [SizeStyle.Container]?: Size;
+  [SizeStyle.TabContainer]?: Size;
 }
 
 export interface BackgroundData {
@@ -43,7 +49,7 @@ export interface BackgroundData {
   containerToWrapperOffsetY?: number;
   buttonScale?: number;
   buttonOffsetY?: number;
-  sizeConfig: SizeConfig
+  sizeConfig: SizeConfig;
 }
 
 const map: Record<Background, BackgroundData> = {
@@ -54,10 +60,10 @@ const map: Record<Background, BackgroundData> = {
         containerToWrapperOffsetY: 14,
         sizeConfig: {
             container: {
-                width: WIDTH,
-                height: 753,    
+                width: BASE_WIDTH,
+                height: 753,
             },
-        }
+        },
     },
     [Background.Medium]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundMedium,
@@ -67,7 +73,7 @@ const map: Record<Background, BackgroundData> = {
         buttonOffsetY: -60,
         sizeConfig: {
             container: {
-                width: WIDTH,
+                width: BASE_WIDTH,
             },
         },
     },
@@ -76,13 +82,13 @@ const map: Record<Background, BackgroundData> = {
         wrapperContainerAssetKey: BaseAssetKey.UIBackgroundXLargeWrapperContainer,
         sizeConfig: {
             container: {
-                width: WIDTH
+                width: BASE_WIDTH,
             },
             tabContainer: {
-                width: WIDTH,
+                width: BASE_WIDTH,
                 height: 920,
             },
-        }
+        },
     // containerAssetKey: BaseAssetKey.UIBackgroundXLargeContainer,
     },
     [Background.Small]: {
@@ -90,12 +96,12 @@ const map: Record<Background, BackgroundData> = {
         containerAssetKey: BaseAssetKey.UIBackgroundSmallContainer,
         sizeConfig: {
             container: {
-                width: WIDTH,
+                width: BASE_WIDTH,
             },
             tabContainer: {
-                width: WIDTH,
+                width: BASE_WIDTH,
             },
-        }
+        },
     },
     [Background.XXLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXXLarge,
@@ -103,13 +109,13 @@ const map: Record<Background, BackgroundData> = {
         wrapperContainerAssetKey: BaseAssetKey.UIBackgroundXXLargeWrapperContainer,
         sizeConfig: {
             container: {
-                width: WIDTH,
+                width: BASE_WIDTH,
             },
             tabContainer: {
-                width: WIDTH,
-                height: 1100
+                width: BASE_WIDTH,
+                height: 1100,
             },
-        }
+        },
     },
 }
 
@@ -133,8 +139,19 @@ export interface ModalBackgroundOptions {
   };
 }
 
-export const getBackgroundSizeConfig = (background: Background) => {
-    return map[background].sizeConfig
+export interface GetBackgroundContainerSizeParams {
+  background: Background;
+  style: SizeStyle;
+}
+export const getBackgroundContainerSize = ({
+    background,
+    style = SizeStyle.Container,
+}: GetBackgroundContainerSizeParams) => {
+    const size = map[background].sizeConfig[style]
+    if (!size) {
+        throw new Error(`Size for ${style} not found`)
+    }
+    return size
 }
 
 export class ModalBackground extends ContainerLite {
@@ -195,10 +212,10 @@ export class ModalBackground extends ContainerLite {
             this.tabs = new BaseTabs({
                 baseParams: {
                     scene,
-                    width: WIDTH,
+                    width: TABS_WIDTH,
                     y: 0,
                 },
-                options,
+                options
             })
             this.tabs.setY(this.tabs.getHeight())
             this.scene.add.existing(this.tabs)
@@ -206,7 +223,7 @@ export class ModalBackground extends ContainerLite {
         }
 
         this.addLocal(this.uiContainer)
-        
+
         if (containerConfig) {
             const { showContainer = true, showWrapperContainer = true } =
         containerConfig

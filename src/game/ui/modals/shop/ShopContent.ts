@@ -19,10 +19,11 @@ import {
     BaseText,
     Button,
     FlyItem,
-    getBackgroundSizeConfig,
+    getBackgroundContainerSize,
     IconOffsets,
     ModalBackground,
-    SizeConfig,
+    Size,
+    SizeStyle,
     XButton,
 } from "../../elements"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
@@ -84,7 +85,7 @@ export class ShopContent extends BaseSizer {
     private cellWidth: number
     private cellHeight: number
     private contentWidth: number
-    private sizeConfig: SizeConfig
+    private size: Size
     constructor({
         scene,
         height,
@@ -109,7 +110,10 @@ export class ShopContent extends BaseSizer {
         this.cellHeight = cellSourceImage.height
 
         this.contentWidth = 3 * this.cellWidth + 2 * CELL_SPACE
-        this.sizeConfig = getBackgroundSizeConfig(Background.XLarge)
+        this.size = getBackgroundContainerSize({
+            background: Background.XLarge,
+            style: SizeStyle.TabContainer,
+        })
         this.background = new ModalBackground({
             baseParams: {
                 scene: scene,
@@ -300,7 +304,7 @@ export class ShopContent extends BaseSizer {
                 x: 0,
                 y: 0,
                 originY: 0,
-                height: this.sizeConfig.tabContainer?.height,
+                height: this.size?.height,
                 width: 3 * this.cellWidth + 2 * CELL_SPACE,
                 scrollMode: 0,
                 table: {
