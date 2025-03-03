@@ -13,6 +13,7 @@
     "@heroui/react": "^2.6.14",
     "@honeycomb-protocol/edge-client": "^0.0.7-beta.13",
     "@hookform/resolvers": "^3.10.0",
+    "@metamask/jazzicon": "^2.0.0",
     "@metaplex-foundation/mpl-token-metadata": "^3.3.0",
     "@metaplex-foundation/umi": "^1.0.0",
     "@metaplex-foundation/umi-bundle-defaults": "^1.0.0",

@@ -4,13 +4,14 @@ import { getScreenBottomY, getScreenCenterX } from "../../utils"
 import { UserSchema } from "@/modules/entities"
 import { IPaginatedResponse, QueryNeighborsArgs } from "@/modules/apollo"
 import { ITEM_COUNT } from "./constants"
-import { NumberInput } from "../../elements"
+import { Background, getBackgroundSizeConfig, NumberInput, SizeConfig } from "../../elements"
 
 export class FolloweesContent extends ContainerLite {
     private users: Array<UserSchema>
     private userCount = 0
     private args: QueryNeighborsArgs
     private pagination: NumberInput | undefined
+    private sizeConfig: SizeConfig
     constructor({
         scene,
         x,
@@ -21,6 +22,7 @@ export class FolloweesContent extends ContainerLite {
     }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
 
+        this.sizeConfig = getBackgroundSizeConfig(Background.XXLarge)
         const { data, count } = this.scene.cache.obj.get(CacheKey.Followees) as IPaginatedResponse<UserSchema>
         this.users = data
         this.userCount = count
@@ -42,8 +44,8 @@ export class FolloweesContent extends ContainerLite {
     private updateScrollablePanel() {
         const scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                width: 750,
-                height: 1000,
+                width: this.sizeConfig.tabContainer?.width,
+                height: this.sizeConfig.tabContainer?.height,
                 scrollMode: "y",
                 panel: {
                     child: this.createUserCards(),

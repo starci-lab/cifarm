@@ -11,7 +11,6 @@ const defaultTab = QuestTab.Social
 export class QuestContent extends ContainerLite {
     private background: ModalBackground
     private tabs: Record<QuestTab, SocialTab | DailyTab>
-
     //private background: ModalBackground
     constructor({
         scene,
@@ -41,7 +40,6 @@ export class QuestContent extends ContainerLite {
                         name: QuestTab.Social,
                         defaultTab
                     },
-                    width: 750,
                 },
                 title: "Quests",
                 onXButtonPress: () => {
@@ -61,15 +59,11 @@ export class QuestContent extends ContainerLite {
         // create the base tab
         const socialTab = new SocialTab({
             scene: this.scene,
-            width: 750,
-            height: 800,
         })
         this.scene.add.existing(socialTab)
 
         const dailyTab = new DailyTab({
             scene: this.scene,
-            width: 750,
-            height: 800,
         })
         this.scene.add.existing(dailyTab)
 

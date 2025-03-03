@@ -5,7 +5,7 @@ import { IPaginatedResponse, QueryNeighborsArgs } from "@/modules/apollo"
 import { ITEM_COUNT, USER_DATA } from "./constants"
 import { UserCard } from "./UserCard"
 import { Label, ScrollablePanel, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { Input, InputIcon, NumberInput } from "../../elements"
+import { Background, getBackgroundSizeConfig, Input, InputIcon, NumberInput, SizeConfig } from "../../elements"
 import { GetPageResult } from "./types"
 import { onGameObjectPress } from "../../utils"
 import { FADE_HOLD_TIME, FADE_TIME } from "@/game/constants"
@@ -20,6 +20,7 @@ export class WorldTab extends Sizer {
     private args: QueryNeighborsArgs
     private pagination: NumberInput | undefined
     private scrollablePanel: ScrollablePanel | undefined
+    private sizeConfig: SizeConfig
     constructor({
         scene,
         config
@@ -31,6 +32,7 @@ export class WorldTab extends Sizer {
             y: -180,
             ...config
         })
+        this.sizeConfig = getBackgroundSizeConfig(Background.XXLarge)
 
         const input = new Input({
             baseParams: {
@@ -93,8 +95,8 @@ export class WorldTab extends Sizer {
         const userCards = this.createUserCards()
         this.scrollablePanel = this.scene.rexUI.add
             .scrollablePanel({
-                width: 750,
-                height: 800,
+                width: this.sizeConfig.tabContainer?.width,
+                height: this.sizeConfig.tabContainer?.height,
                 scrollMode: "y",
                 space: {
                     panel: 40,
