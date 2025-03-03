@@ -24,6 +24,7 @@ export class UserCard extends Sizer {
     private image: Phaser.GameObjects.Image
     private user: UserSchema | undefined
     private avatarMask: Phaser.GameObjects.Image
+    private imageWithMask: Label
     constructor({
         baseParams: { scene, config },
         options,
@@ -63,10 +64,9 @@ export class UserCard extends Sizer {
             0,
             BaseAssetKey.UIModalNeighborsFrame
         )
-        this.avatarMask = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarMask)
+        this.avatarMask = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarMask).setVisible(false)
         this.image = this.scene.add.image(0, 0, "").setDisplaySize(this.avatarMask.width, this.avatarMask.height)
-        this.image.setMask(this.avatarMask.createBitmapMask())
-        const imageWithMask = this.scene.rexUI.add.label({
+        this.imageWithMask = this.scene.rexUI.add.label({
             background: this.avatarMask,
             icon: this.image,
             width: this.avatarMask.width,
@@ -85,17 +85,40 @@ export class UserCard extends Sizer {
             background: frame,
             width: frame.width,
             height: frame.height,
-            center: imageWithMask,
+            center: this.imageWithMask,
             rightBottom: this.badge,
         })
         const nameText = new BaseText({
             baseParams: { scene: this.scene, text, x: 0, y: 0 },
             options: {
+                enableStroke: true,
                 textColor: TextColor.White,
             },
         })
         this.scene.add.existing(nameText)
-
+        const levelText = new BaseText({
+            baseParams: { scene: this.scene, text: `Lv. ${user?.level}`, x: 0, y: 0 },
+            options: {
+                enableStroke: true,
+                textColor: TextColor.White,
+                fontSize: 28,
+            },
+        })
+        this.scene.add.existing(levelText)
+        const textSizer = this.scene.rexUI.add
+            .sizer({
+                orientation: "y",
+                space: {
+                    item: 5,
+                },
+            })
+            .add(nameText, {
+                align: "left"
+            })
+            .add(levelText, {
+                align: "left"
+            })
+            .layout()
         const leftContainer = this.scene.rexUI.add
             .sizer({
                 space: {
@@ -105,7 +128,7 @@ export class UserCard extends Sizer {
             .add(avatarLabel, {
                 align: "center",
             })
-            .add(nameText, {
+            .add(textSizer, {
                 align: "top",
                 offsetY: 30,
             })
@@ -164,9 +187,7 @@ export class UserCard extends Sizer {
                 scale: 16
             })
         }
-        const texture = this.scene.textures.get(this.user.id)
-        console.log(texture)
         this.image.setTexture(this.user.id).setDisplaySize(this.avatarMask.width, this.avatarMask.height)
-        this.layout()
+        this.imageWithMask.layout()
     }
 }
