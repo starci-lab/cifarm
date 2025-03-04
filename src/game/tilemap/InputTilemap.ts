@@ -182,12 +182,7 @@ export class InputTilemap extends ItemTilemap {
                     data,
                     data.object.currentPlacedItem?.id
                 )
-                // eslint-disable-next-line no-case-declarations
-                // const eventMessage: OpenModalMessage = {
-                //     modalName: ModalName.AnimalHousing,
-                // }
-
-                // EventBus.emit(EventName.OpenModal, eventMessage)
+                this.handlePressOnBuilding(data)
                 break
             case PlacedItemType.Animal:
                 this.handlePressOnAnimal(data)
@@ -1173,6 +1168,78 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
+    private handlePressOnBuilding(data: PlacedItemObjectData) {
+        if (data.placedItemType.type !== PlacedItemType.Building) {
+            throw new Error("Invalid placed item type")
+        }
+
+        const selectedTool = this.scene.cache.obj.get(
+            CacheKey.SelectedTool
+        ) as ToolLike
+
+        // do nothing if selected tool is default
+        if (selectedTool.default) {
+            return
+        }
+
+        const inventoryType = this.inventoryTypes.find(
+            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
+        )
+        if (!inventoryType) {
+            throw new Error(
+                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+            )
+        }
+        const object = data.object
+        const currentPlacedItem = object.currentPlacedItem
+
+        const placedItemId = currentPlacedItem?.id
+        // do nothing if placed item id is not found
+        if (!placedItemId) {
+            return
+        }
+
+        switch (inventoryType.type) {
+        case InventoryType.Tool: {
+            const tools = this.scene.cache.obj.get(
+                CacheKey.Tools
+            ) as Array<ToolSchema>
+            if (!tools) {
+                throw new Error("Tools not found")
+            }
+            const tool = tools.find(
+                (tool) => tool.id === selectedTool.inventoryType?.id
+            )
+            if (!tool) {
+                throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
+            }
+            // check if tool id is water can
+            switch (tool.displayId) {
+            case ToolId.Hammer: {
+                EventBus.emit(EventName.SyncDelayStarted)
+
+                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Building,
+                }
+
+                // update the placed item in client
+                EventBus.emit(EventName.RequestUpgradeBuilding, updatePlacedItemLocal)
+
+
+
+            }
+            }
+        }
+        }
+    }
+
     private cancelPlacement() {
         console.log("Placement canceled")
         this.destroyTemporaryPlaceItemObject()
@@ -1191,6 +1258,8 @@ export class InputTilemap extends ItemTilemap {
         //temporaryPlaceItemData
         this.temporaryPlaceItemData = undefined
     }
+
+    
 }
 
 export interface PlayProductFlyAnimationParams {

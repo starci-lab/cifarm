@@ -82,6 +82,16 @@ export class Button extends Label {
                 gameObject: Label, 
                 pointer: Phaser.Input.Pointer
             ) => {
+                if (this.disabled) {
+                    console.log("Button is disabled, ignoring click.")
+                    return
+                }
+
+                if (!this.input?.enabled) {
+                    console.log("Button interaction is disabled.")
+                    return
+                }
+
                 onGameObjectPress({
                     gameObject: this,
                     onPress: () => onPress(pointer),

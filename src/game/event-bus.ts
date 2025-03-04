@@ -225,6 +225,9 @@ export enum EventName {
     RequestBuySupplies = "request_buy_supplies",
     BuySuppliesCompleted = "buy_supplies_completed",
 
+    RequestUpgradeBuilding = "request_upgrade_building",
+    UpgradeBuildingCompleted = "upgrade_building_completed",
+
     CreateFlyItem = "item_flown",
 
     FadeIn = "fade_in",
@@ -340,6 +343,7 @@ export enum ModalName {
   InputQuantity = "input-quantity",
   AnimalHousing = "animal-housing",
   Claim = "claim",
+  UpgradeBuilding = "upgrade-building",
 }
 
 export interface OpenModalMessage {
