@@ -17,7 +17,7 @@ export const QuestionTooltip : FC<QuestionTooltipProps> = ({ message, size }: Qu
     }
     return (
         <Tooltip content={message}>
-            <QuestionMarkCircleIcon className={cn(sizeMap[size], "text-foreground-500")}/> 
+            <QuestionMarkCircleIcon className={cn(sizeMap[size], "text-foreground-400")}/> 
         </Tooltip>
     )
 }

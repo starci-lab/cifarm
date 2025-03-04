@@ -63,6 +63,7 @@ export enum EventName {
     CloseTutorial = "close_tutorial",
 
     OpenReferralLinkModal = "open-referral-link-modal",
+    OpenNeighborsModal = "open-neighbors-modal",
 
     // stand
     UpdateSelectProductModal = "update_select_product_modal",

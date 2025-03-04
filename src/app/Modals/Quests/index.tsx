@@ -12,22 +12,26 @@ import {
     useDisclosure,
 } from "@heroui/react"
 import React, { FC, ReactNode, useState } from "react"
-import { WorldTab } from "./WorldTab"
-import { FolloweesTab } from "./FolloweesTab"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { DailyTab } from "./DailyTab"
+import { GameTab } from "./GameTab"
+import { PartnershipTab } from "./PartnershipTab"
+import { SocialTab } from "./SocialTab"
 
-export const NeighborsModal: FC = () => {
+export const QuestsModal: FC = () => {
     const { onOpenChange, isOpen, onClose } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
     
-    const [selectedTab, setSelectedTab] = useState<NeighborsTab>(
-        NeighborsTab.World
+    const [selectedTab, setSelectedTab] = useState<QuestsTab>(
+        QuestsTab.Game
     )
 
     const renderTab = () => {
-        const map: Record<NeighborsTab, ReactNode> = {
-            [NeighborsTab.World]: <WorldTab />,
-            [NeighborsTab.Followees]: <FolloweesTab />,
+        const map: Record<QuestsTab, ReactNode> = {
+            [QuestsTab.Game]: <GameTab />,
+            [QuestsTab.Daily]: <DailyTab />,
+            [QuestsTab.Social]: <SocialTab />,
+            [QuestsTab.Partnership]: <PartnershipTab />,
         }
         return map[selectedTab]
     }
@@ -36,7 +40,7 @@ export const NeighborsModal: FC = () => {
         <Modal
             disableAnimation={true}
             placement="bottom"
-            isOpen={isOpen}
+            isOpen={true}
             onOpenChange={onOpenChange}
             onClose={async () => {
                 onClose()
@@ -59,10 +63,12 @@ export const NeighborsModal: FC = () => {
                   "group-data-[selected=true]:light group-data-[selected=true]:text-background",
                             }}
                             selectedKey={selectedTab}
-                            onSelectionChange={(tab) => setSelectedTab(tab as NeighborsTab)}
+                            onSelectionChange={(tab) => setSelectedTab(tab as QuestsTab)}
                         >
-                            <Tab key={NeighborsTab.World} title="Worlds" />
-                            <Tab key={NeighborsTab.Followees} title="Followees" />
+                            <Tab key={QuestsTab.Game} title="Game"/>
+                            <Tab key={QuestsTab.Daily} title="Daily"/>
+                            <Tab key={QuestsTab.Social} title="Social"/>
+                            <Tab key={QuestsTab.Partnership} title="Partnership"/>
                         </Tabs>
                         <Spacer y={4} />
                         {renderTab()}
@@ -73,7 +79,9 @@ export const NeighborsModal: FC = () => {
     )
 }
 
-export enum NeighborsTab {
-    World = "world",
-    Followees = "followees",
+export enum QuestsTab {
+    Game,
+    Daily,
+    Social,
+    Partnership
 }

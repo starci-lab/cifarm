@@ -1,25 +1,26 @@
 import { UseSWR } from "../types"
 import {
-    QueryFolloweesResponse,
     queryNeighbors,
     QueryNeighborsParams,
+    QueryNeighborsResponse,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
-import { v4 } from "uuid"
 import useSWR from "swr"
 import { useState } from "react"
 import { useAppSelector } from "@/redux"
+import { defaultArgs } from "./constants"
 
 export const useQueryNeighborsSwr = (): UseSWR<
-  ApolloQueryResult<QueryFolloweesResponse>,
+  ApolloQueryResult<QueryNeighborsResponse>,
   QueryNeighborsParams
 > => {
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
-    const [ params, setParams ] = useState<QueryNeighborsParams>({})
+    const [ params, setParams ] = useState<QueryNeighborsParams>({
+        args: defaultArgs
+    })
     const swr = useSWR(
-        authenticated ? [v4(), params] : null,
-        async (
-        ) => {
+        authenticated ? ["QUERY_NEIGHBORS", params] : null,
+        async () => {
             return await queryNeighbors(params)
         }
     )
@@ -27,6 +28,7 @@ export const useQueryNeighborsSwr = (): UseSWR<
     //return the state and the data
     return {
         swr,
+        params,
         setParams
     }
 }

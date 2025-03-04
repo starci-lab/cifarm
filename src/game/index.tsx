@@ -9,10 +9,24 @@ import { startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
 import { EventBus, EventName } from "./event-bus"
 import { useEffects } from "./hooks"
+import { useAppSelector } from "@/redux"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
     const [isSyncDelayed, setIsSyncDelayed] = React.useState(false)
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    
+    useEffect(() => {
+        EventBus.on(EventName.Authenticate, () => {
+            if (!authenticated) {
+                return
+            }
+            EventBus.emit(EventName.Authenticated)
+        })
+        return () => {
+            EventBus.removeListener(EventName.Authenticate)
+        }
+    }, [authenticated])
 
     const { socket, connected } = useGameplayIo()
 

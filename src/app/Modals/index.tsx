@@ -5,8 +5,10 @@ import { WarningModal } from "./Warning"
 import { SignTransactionModal } from "./SignTransaction"
 import { ReferralLinkModal } from "./ReferralLinkModal"
 import { NeighborsModal } from "./Neighbors"
+import { QuestsModal } from "./Quests"
 
-export const Modals : FC = () => {
+export const MODAL_CONTAINER_ID = "modals"
+const Modals : FC = () => {
     return (
         <div>
             <MnemonicModal />
@@ -15,6 +17,8 @@ export const Modals : FC = () => {
             <SignTransactionModal />
             <ReferralLinkModal />
             <NeighborsModal />
+            <QuestsModal />
         </div>
     )
 }
+export default Modals

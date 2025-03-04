@@ -55,7 +55,12 @@ export const QUERY_NEIGHBORS_SWR_MUTATION = "QUERY_NEIGHBORS_SWR_MUTATION"
 export const QUERY_FOLLOWEES_SWR_MUTATION = "QUERY_FOLLOWEES_SWR_MUTATION"
 export const QUERY_NEIGHBORS_SWR = "QUERY_NEIGHBORS_SWR"
 export const QUERY_FOLLOWEES_SWR = "QUERY_FOLLOWEES_SWR"
-
+export const QUERY_USER_SWR = "QUERY_USER_SWR"
 
 //io
 export const GAMEPLAY_IO = "GAMEPLAY_IO"
+
+// images
+export const EXPERIENCE_IMAGE_URL = "/assets/ui/common/experience.png"
+export const TOKEN_IMAGE_URL = "/assets/ui/common/icon-carrot.png"
+export const GOLD_IMAGE_URL = "/assets/ui/common/icon-coin.png"

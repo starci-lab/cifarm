@@ -266,6 +266,10 @@ export class ModalManager extends ContainerLite {
     // open the modal
     private onOpen({ modalName, showTutorialBackdrop }: OpenModalMessage) {
         this.showBackdrop({ modalName, showTutorialBackdrop })
+        if (modalName === ModalName.Neighbors) {
+            EventBus.emit(EventName.OpenNeighborsModal)
+            return
+        }
         const modal = this.getModal(modalName)
         // disable modal input
         if (modal.input) {

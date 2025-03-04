@@ -117,7 +117,7 @@ export class UserCard extends Sizer {
             })
             .add(levelText, {
                 align: "left"
-            })
+            }) 
             .layout()
         const leftContainer = this.scene.rexUI.add
             .sizer({

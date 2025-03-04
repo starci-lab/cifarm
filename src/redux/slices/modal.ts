@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface WarningModal {
     message: string
-    nextModalToken: string
+    nextModalToken?: string
+    callback?: () => void
 }
 
 export interface ReferralLinkModal {

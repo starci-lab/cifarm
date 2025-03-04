@@ -27,7 +27,7 @@ const Page: FC = () => {
                 <Spacer y={4} />
                 <div className="text-center">
                     <div className="text-4xl font-bold">CiFarm</div>
-                    <div className="text-foreground-500 text-sm">
+                    <div className="text-foreground-400 text-sm">
             The leading play-to-earn farming game on Telegram
                     </div>
                 </div>

@@ -13,15 +13,20 @@ const query1 = gql`
     followees(args: $args) {
       data {
         id
+        level
         avatarUrl
+        accountAddress
         username
+        chainKey
+        golds
       }
+      count
     }
   }
 `
 
 export interface QueryFolloweesResponse {
-  neighbors: IPaginatedResponse<UserSchema>;
+  followees: IPaginatedResponse<UserSchema>;
 }
 
 export enum QueryFollowees {
@@ -32,7 +37,10 @@ const queryMap: Record<QueryFollowees, DocumentNode> = {
     [QueryFollowees.Query1]: query1,
 }
 
-export type QueryFolloweesArgs = QueryManyArgs;
+export interface QueryFolloweesArgs extends QueryManyArgs {
+  searchString?: string;
+}
+
 export type QueryFolloweesParams = QueryParams<QueryFollowees, QueryFolloweesArgs>;
 export const queryFollowees = async ({
     query = QueryFollowees.Query1,

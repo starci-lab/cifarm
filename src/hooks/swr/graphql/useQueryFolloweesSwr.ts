@@ -5,20 +5,21 @@ import {
     QueryFolloweesResponse,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
-import { v4 } from "uuid"
 import useSWR from "swr"
 import { useState } from "react"
 import { useAppSelector } from "@/redux"
+import { defaultArgs } from "./constants"
 
 export const useQueryFolloweesSwr = (): UseSWR<
   ApolloQueryResult<QueryFolloweesResponse>,
   QueryFolloweesParams
 > => {
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
-    console.log(authenticated)
-    const [ params, setParams ] = useState<QueryFolloweesParams>({})
+    const [ params, setParams ] = useState<QueryFolloweesParams>({
+        args: defaultArgs
+    })
     const swr = useSWR(
-        authenticated ? [v4(), params] : null,
+        authenticated ? ["QUERY_FOLLOWEES", params] : null,
         async (
         ) => {
             return await queryFollowees(params)
@@ -28,6 +29,7 @@ export const useQueryFolloweesSwr = (): UseSWR<
     //return the state and the data
     return {
         swr,
-        setParams
+        setParams,
+        params
     }
 }

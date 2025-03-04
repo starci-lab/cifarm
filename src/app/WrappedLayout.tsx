@@ -47,14 +47,22 @@ import {
     useApiUseFertilizerSwrMutation,
     useApiUpdateFollowXSwrMutation,
     useQueryFolloweesSwr,
-    useQueryNeighborsSwr
+    useQueryNeighborsSwr,
+    useQueryUserSwr
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
-import { Modals } from "./Modals"
 import { SWRConfig } from "swr"
+import { Toast } from "@/modules/toast"
+import dynamic from "next/dynamic"
+
+const Modals = dynamic(() => import("./Modals"), {
+    ssr: false,
+})
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
+    
+    
     const loaded = useAppSelector((state) => state.sessionReducer.loaded)
     return (
         <Suspense>
@@ -111,6 +119,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             QUERY_FOLLOWEES_SWR_MUTATION: useQueryFolloweesSwrMutation(),
                             QUERY_FOLLOWEES_SWR: useQueryFolloweesSwr(),
                             QUERY_NEIGHBORS_SWR: useQueryNeighborsSwr(),
+                            QUERY_USER_SWR: useQueryUserSwr(),
                             //io
                             GAMEPLAY_IO: useGameplayIo(),
                         }}
@@ -118,6 +127,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                         {loaded ? children : <LoadingScreen />}
                         <UseEffects />
                         <Modals />
+                        <Toast />
                     </SingletonHookProvider>
                 </SWRConfig>
             </NextThemesProvider>

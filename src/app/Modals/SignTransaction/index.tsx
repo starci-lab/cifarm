@@ -102,7 +102,7 @@ export const SignTransactionModal: FC = () => {
                     <Button
                         variant="light"
                         onPress={onClose}
-                        className="text-foreground-500"
+                        className="text-foreground-400"
                     >
             Cancel
                     </Button>
