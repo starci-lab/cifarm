@@ -64,6 +64,7 @@ export enum EventName {
 
     OpenReferralLinkModal = "open-referral-link-modal",
     OpenNeighborsModal = "open-neighbors-modal",
+    OpenQuestsModal = "open-quests-modal",
 
     // stand
     UpdateSelectProductModal = "update_select_product_modal",
@@ -244,6 +245,8 @@ export enum EventName {
     RequestUpdatePlacedItemLocal = "update_placed_item_local",
 
     RefreshPlaceItemsCacheKey = "refresh_place_items_cache_key",
+
+    UpdateVisitedNeighbor = "update_visited_neighbor",
 }
 
 export interface OpenTutorialMessage {
@@ -315,6 +318,7 @@ export interface ShowGameplayBackdropMessage {
 export interface ShowUIBackdropMessage {
     // depth of the backdrop
     depth: number
+    opacityLevel?: number
 }
 
 export interface UpdateUIBackdropMessage {
@@ -334,7 +338,7 @@ export enum ModalName {
   Shop = "shop",
   Inventory = "inventory",
   Daily = "daily",
-  Quest = "quest",
+  Quests = "quests",
   Stand = "stand",
   Neighbors = "neighbors",
   SelectProduct = "select-product",

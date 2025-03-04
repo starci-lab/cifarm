@@ -28,11 +28,12 @@ export const Game: FC = () => {
         }
     }, [authenticated])
 
-    const { socket, connected } = useGameplayIo()
+    const { socket, connect } = useGameplayIo()
 
     useEffect(() => {
-    //do nothing if not connected
-        if (!connected) return
+        // connect
+        connect()
+        console.log(connect, socket)
         //if socket is null do nothing
         if (!socket) return
         //listen for placed items synced
@@ -51,7 +52,7 @@ export const Game: FC = () => {
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
         }
-    }, [connected, socket, isSyncDelayed])
+    }, [socket, isSyncDelayed])
 
     useEffect(() => {
         EventBus.on(EventName.SyncDelayStarted, () => {

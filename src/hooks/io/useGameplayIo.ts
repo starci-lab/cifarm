@@ -7,18 +7,22 @@ import { UseIo } from "./types"
 
 export const useGameplayIo = (): UseIo => {
     const socket = useRef<Socket | null>(null)
-    const [connected, setConnected] = useState(false)
-
+    const [ , setSetup ] = useState(false)
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
 
+    const connect = () => {
+        socket.current?.connect()
+    }
+
     useEffect(() => {
+        console.log(authenticated)
         // do nothing if not authenticated
         if (!authenticated) return 
 
         const handleEffect = async () => {
-        // create a new socket manager
+            // create a new socket manager
             const manager = new Manager(envConfig().ioUrl, {
-                autoConnect: false,
+                autoConnect: false
             })
             const accessToken = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)
             if (!accessToken) {
@@ -29,8 +33,7 @@ export const useGameplayIo = (): UseIo => {
                     token: accessToken.value,
                 },
             })
-            socket.current.connect()
-            setConnected(true)
+            setSetup(true)
         }
         handleEffect()
 
@@ -40,13 +43,12 @@ export const useGameplayIo = (): UseIo => {
                 socket.current.removeAllListeners()
                 socket.current.disconnect()
                 socket.current = null
-                setConnected(false)
             }
         }
     }, [authenticated])
 
     return {
         socket: socket.current,
-        connected
+        connect
     }
 }

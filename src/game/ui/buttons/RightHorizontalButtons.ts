@@ -79,7 +79,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             text: "Quest",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
-                    modalName: ModalName.Quest
+                    modalName: ModalName.Quests
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
             },

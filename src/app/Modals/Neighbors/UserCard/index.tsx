@@ -2,11 +2,13 @@
 import {
     API_FOLLOW_SWR_MUTATION,
     API_UNFOLLOW_SWR_MUTATION,
+    API_VISIT_SWR_MUTATION,
     EXPERIENCE_IMAGE_URL,
     GOLD_IMAGE_URL,
     WARNING_DISCLOSURE,
 } from "@/app/constants"
-import { useApiFollowSwrMutation, useApiUnfollowSwrMutation } from "@/hooks"
+import { EventBus, EventName } from "@/game/event-bus"
+import { useApiFollowSwrMutation, useApiUnfollowSwrMutation, useApiVisitSwrMutation } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -25,16 +27,7 @@ export interface UserCardProps {
   followed?: boolean;
 }
 export const UserCard: FC<UserCardProps> = ({
-    user: {
-        avatarUrl,
-        id,
-        followed,
-        accountAddress,
-        username,
-        level,
-        golds,
-        chainKey,
-    },
+    user,
     onFollowCallback,
     onUnfollowCallback,
     followed: baseFollowed,
@@ -47,18 +40,22 @@ export const UserCard: FC<UserCardProps> = ({
     ReturnType<typeof useApiUnfollowSwrMutation>
   >(API_UNFOLLOW_SWR_MUTATION)
 
+    const { swrMutation: visitSwrMutation } = useSingletonHook<
+    ReturnType<typeof useApiVisitSwrMutation>
+  >(API_VISIT_SWR_MUTATION)
+
     const { onOpen: onWarningOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         WARNING_DISCLOSURE
     )
     const dispatch = useAppDispatch()
 
-    avatarUrl = avatarUrl ?? createJazziconBlobUrl(accountAddress)
+    const avatarUrl = user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
     return (
         <div className="p-3 flex justify-between items-center">
             <div className="flex gap-2 items-center">
                 <Avatar src={avatarUrl} className="min-w-10 w-10 h-10"/>
                 <div>
-                    <div>{username}</div>
+                    <div>{user.username}</div>
                     <Spacer y={1}/>
                     <div className="flex flex-wrap gap-2">
                         <Chip
@@ -77,7 +74,7 @@ export const UserCard: FC<UserCardProps> = ({
                             variant="flat"
                             color="primary"
                         >
-                            {level}
+                            {user.level}
                         </Chip>
                         <Chip
                             classNames={{
@@ -89,13 +86,13 @@ export const UserCard: FC<UserCardProps> = ({
                                     radius="none"
                                     className="w-5 h-5"
                                     removeWrapper
-                                    src={blockchainMap[chainKey].imageUrl}
+                                    src={blockchainMap[user.chainKey].imageUrl}
                                 />
                             }
                             variant="flat"
                             color="primary"
                         >
-                            {blockchainMap[chainKey].name}
+                            {blockchainMap[user.chainKey].name}
                         </Chip>
                         <Chip
                             classNames={{
@@ -113,13 +110,13 @@ export const UserCard: FC<UserCardProps> = ({
                             variant="flat"
                             color="primary"
                         >
-                            {golds}
+                            {user.golds}
                         </Chip>
                     </div>
                 </div>
             </div>
             <div className="flex gap-2">
-                {baseFollowed || followed ? (
+                {baseFollowed || user.followed ? (
                     <Button
                         onPress={() => {
                             dispatch(setWarningModal({
@@ -128,7 +125,7 @@ export const UserCard: FC<UserCardProps> = ({
                                     try {
                                         await unfollowSwrMutation.trigger({
                                             request: {
-                                                followeeUserId: id,
+                                                followeeUserId: user.id,
                                             },
                                         })
                                         await onUnfollowCallback?.()
@@ -154,11 +151,11 @@ export const UserCard: FC<UserCardProps> = ({
                             try {
                                 await followSwrMutation.trigger({
                                     request: {
-                                        followeeUserId: id,
+                                        followeeUserId: user.id,
                                     },
                                 })
                                 await onFollowCallback?.()
-                                toastSuccess("Unfollowed successfully")
+                                toastSuccess("Followed successfully")
                             } catch (error) {
                                 console.error(error)
                                 toastError("Failed to unfollow user")
@@ -172,7 +169,15 @@ export const UserCard: FC<UserCardProps> = ({
                         <UserPlus2 className="w-5 h-5" strokeWidth={3 / 2} />
                     </Button>
                 )}
-                <Button isIconOnly color="primary">
+                <Button onPress={async () => {
+                    // set visited user
+                    await visitSwrMutation.trigger({
+                        request: {
+                            neighborUserId: user.id,
+                        },
+                    })
+                    EventBus.emit(EventName.Visit, user)
+                }} isIconOnly color="primary">
                     <HomeIcon className="light text-background w-5 h-5" />
                 </Button>
             </div>

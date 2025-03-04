@@ -32,6 +32,7 @@ export const TUTORIAL_BACKDROP_DEPTH = calculateUiDepth({
     layer: UILayer.Tutorial,
 })
 
+const EXTERNAL_MODALS = [ModalName.Neighbors, ModalName.Quests]
 
 export class ModalManager extends ContainerLite {
     // the shop modal
@@ -149,7 +150,7 @@ export class ModalManager extends ContainerLite {
     }
  
     // show method, to show the modal
-    private showBackdrop({ showTutorialBackdrop = false, modalName }: ShowBackdropParams = {}) {
+    private showBackdrop({ showTutorialBackdrop = false, modalName, opacityLevel = 1 }: ShowBackdropParams = {}) {
         // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
         if (this.checkTutorialActive()) {
             if (showTutorialBackdrop) {
@@ -169,7 +170,8 @@ export class ModalManager extends ContainerLite {
             break
         }
         EventBus.emit(EventName.ShowUIBackdrop, {
-            depth
+            depth,
+            opacityLevel
         })
     }
 
@@ -218,7 +220,7 @@ export class ModalManager extends ContainerLite {
             }
             return this.dailyModal
         }
-        case ModalName.Quest: {
+        case ModalName.Quests: {
             if (!this.questModal) {
                 throw new Error("Quest modal not found")
             }
@@ -265,9 +267,14 @@ export class ModalManager extends ContainerLite {
     
     // open the modal
     private onOpen({ modalName, showTutorialBackdrop }: OpenModalMessage) {
-        this.showBackdrop({ modalName, showTutorialBackdrop })
+        this.showBackdrop({ modalName, showTutorialBackdrop, opacityLevel: EXTERNAL_MODALS.includes(modalName) ? 0.67 : undefined })
+
         if (modalName === ModalName.Neighbors) {
             EventBus.emit(EventName.OpenNeighborsModal)
+            return
+        }
+        if (modalName === ModalName.Quests) {
+            EventBus.emit(EventName.OpenQuestsModal)
             return
         }
         const modal = this.getModal(modalName)
@@ -297,6 +304,7 @@ export class ModalManager extends ContainerLite {
 interface ShowBackdropParams {
     showTutorialBackdrop?: boolean
     modalName?: ModalName
+    opacityLevel?: number
 }
 
 interface HideBackdropParams {

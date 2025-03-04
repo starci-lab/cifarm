@@ -4,8 +4,8 @@ import { Socket } from "socket.io-client"
 export interface UseIo {
     // the socket instance
     socket: Socket | null
-    // indicates if the socket is connected
-    connected: boolean
+    // connect method
+    connect: () => void
 }
 
 export interface PlacedItemsSyncedMessage {

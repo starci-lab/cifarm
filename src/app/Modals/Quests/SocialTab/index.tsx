@@ -1,10 +1,16 @@
 "use client"
-import { ScrollShadow, Card, Divider } from "@heroui/react"
+import { ScrollShadow, Card, Divider, useDisclosure } from "@heroui/react"
 import React, { FC } from "react"
 import { QuestCard } from "../QuestCard"
-import { TOKEN_IMAGE_URL } from "@/app/constants"
+import { API_UPDATE_FOLLOW_X_SWR_MUTATION, INVITE_USER_DISCLOSURE, QUERY_STATIC_SWR, QUERY_USER_SWR, TOKEN_IMAGE_URL } from "@/app/constants"
+import { useApiUpdateFollowXSwrMutation, useQueryStaticSwr, useQueryUserSwr } from "@/hooks"
+import { useSingletonHook } from "@/modules/singleton-hook"
 
 export const SocialTab: FC = () => {
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useQueryStaticSwr>>(QUERY_STATIC_SWR)
+    const { swr: userSwr } = useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
+    const { swrMutation: updateFollowXSwrMutation } = useSingletonHook<ReturnType<typeof useApiUpdateFollowXSwrMutation>>(API_UPDATE_FOLLOW_X_SWR_MUTATION)
+    const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(INVITE_USER_DISCLOSURE)
     return (
         <div className="relative">
             <ScrollShadow
@@ -19,9 +25,19 @@ export const SocialTab: FC = () => {
                             {
                                 key: "follow-x-1",
                                 imageUrl: TOKEN_IMAGE_URL,
-                                amount: 20,
+                                amount: staticSwr.data?.data.defaultInfo.followXRewardQuantity ?? 0,
                             },
                         ]}
+                        onPress={async () => {
+                            window.open(
+                                "https://x.com/intent/follow?screen_name=cifarmonsol",
+                                "_blank"
+                            )
+                            await updateFollowXSwrMutation.trigger({})
+                            await userSwr.mutate()
+                        }
+                        }
+                        completed={userSwr.data?.data.user.followXAwarded}
                     />
                     <Divider />
                     <QuestCard
@@ -31,9 +47,20 @@ export const SocialTab: FC = () => {
                             {
                                 key: "invite-user-1",
                                 imageUrl: TOKEN_IMAGE_URL,
-                                amount: 20,
+                                amount: staticSwr.data?.data.defaultInfo.referredRewardQuantity ?? 0,
                             },
                         ]}
+                        progress={
+                            {
+                                current: userSwr.data?.data.user.referredUserIds.length ?? 0,
+                                total: staticSwr.data?.data.defaultInfo.referredLimit ?? 0,
+                                postText: "users referred",
+                            }
+                        }
+                        onPress={() => {
+                            onOpen()
+                        }}
+                        completed={(userSwr.data?.data.user.referredUserIds.length ?? 0) >= (staticSwr.data?.data.defaultInfo.referredLimit ?? 0)}
                     />
                 </Card>
             </ScrollShadow>

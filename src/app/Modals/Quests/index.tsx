@@ -1,5 +1,5 @@
 "use client"
-import { NEIGHBORS_DISCLOSURE } from "@/app/constants"
+import { QUESTS_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     Modal,
@@ -20,7 +20,7 @@ import { SocialTab } from "./SocialTab"
 
 export const QuestsModal: FC = () => {
     const { onOpenChange, isOpen, onClose } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
+    useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
     
     const [selectedTab, setSelectedTab] = useState<QuestsTab>(
         QuestsTab.Game
@@ -40,7 +40,7 @@ export const QuestsModal: FC = () => {
         <Modal
             disableAnimation={true}
             placement="bottom"
-            isOpen={true}
+            isOpen={isOpen}
             onOpenChange={onOpenChange}
             onClose={async () => {
                 onClose()
@@ -50,7 +50,7 @@ export const QuestsModal: FC = () => {
             }}
         >
             <ModalContent>
-                <ModalHeader>Neighbors</ModalHeader>
+                <ModalHeader>Quests</ModalHeader>
                 <ModalBody>
                     <div>
                         <Tabs
