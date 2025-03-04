@@ -45,7 +45,9 @@ import {
     useApiCureAnimalSwrMutation,
     useApiUpdateReferralSwrMutation,
     useApiUseFertilizerSwrMutation,
-    useApiUpdateFollowXSwrMutation
+    useApiUpdateFollowXSwrMutation,
+    useQueryFolloweesSwr,
+    useQueryNeighborsSwr
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -66,6 +68,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             WARNING_DISCLOSURE: useDisclosure(),
                             SIGN_TRANSACTION_DISCLOSURE: useDisclosure(),
                             REFERRAL_LINK_DISCLOSURE: useDisclosure(),
+                            NEIGHBORS_DISCLOSURE: useDisclosure(),
                             //swr mutations
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
@@ -106,6 +109,8 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             QUERY_INVENTORIES_SWR_MUTATION: useQueryInventoriesSwrMutation(),
                             QUERY_NEIGHBORS_SWR_MUTATION: useQueryNeighborsSwrMutation(),
                             QUERY_FOLLOWEES_SWR_MUTATION: useQueryFolloweesSwrMutation(),
+                            QUERY_FOLLOWEES_SWR: useQueryFolloweesSwr(),
+                            QUERY_NEIGHBORS_SWR: useQueryNeighborsSwr(),
                             //io
                             GAMEPLAY_IO: useGameplayIo(),
                         }}

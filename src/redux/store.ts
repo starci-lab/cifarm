@@ -6,7 +6,6 @@ import {
     tabReducer,
     settingsReducer,
     modalReducer,
-    gameReducer
 } from "./slices"
 
 export const store = configureStore({
@@ -15,8 +14,7 @@ export const store = configureStore({
         hookDependencyReducer,
         tabReducer,
         settingsReducer,
-        modalReducer,
-        gameReducer
+        modalReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

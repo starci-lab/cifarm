@@ -4,6 +4,7 @@ import { PrivateKeyModal } from "./PrivateKey"
 import { WarningModal } from "./Warning"
 import { SignTransactionModal } from "./SignTransaction"
 import { ReferralLinkModal } from "./ReferralLinkModal"
+import { NeighborsModal } from "./Neighbors"
 
 export const Modals : FC = () => {
     return (
@@ -13,6 +14,7 @@ export const Modals : FC = () => {
             <WarningModal />
             <SignTransactionModal />
             <ReferralLinkModal />
+            <NeighborsModal />
         </div>
     )
 }

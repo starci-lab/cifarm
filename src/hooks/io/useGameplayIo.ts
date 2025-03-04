@@ -9,7 +9,7 @@ export const useGameplayIo = (): UseIo => {
     const socket = useRef<Socket | null>(null)
     const [connected, setConnected] = useState(false)
 
-    const authenticated = useAppSelector(state => state.gameReducer.authenticated)
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
 
     useEffect(() => {
         // do nothing if not authenticated

@@ -7,7 +7,7 @@ import {
     saveTokens,
     verifySignature,
 } from "@/modules/axios"
-import { useAppSelector } from "@/redux"
+import { setAuthenticated, useAppDispatch, useAppSelector } from "@/redux"
 import { v4 } from "uuid"
 import { WithAxiosOptions } from "./types"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
@@ -28,6 +28,7 @@ export const useApiAuthenticationSwrMutation = (): UseSWRMutation<
     const account = accounts.find((account) => account.id === currentId)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
+    const dispatch = useAppDispatch()
 
     const swrMutation = useSWRMutation(
         v4(),
@@ -50,6 +51,7 @@ export const useApiAuthenticationSwrMutation = (): UseSWRMutation<
                 )
                 //save the tokens
                 await saveTokens(data)
+                dispatch(setAuthenticated(true))
                 return
             }
 
@@ -83,6 +85,7 @@ export const useApiAuthenticationSwrMutation = (): UseSWRMutation<
 
             //save the tokens
             await saveTokens(verifySignatureResponse.data)
+            dispatch(setAuthenticated(true))
         }
     )
 

@@ -28,6 +28,7 @@ export interface SessionState {
   tokens: Tokens;
   retries: number;
   loaded: boolean;
+  authenticated: boolean;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -54,6 +55,7 @@ const initialState: SessionState = {
     }, {} as Tokens),
     retries: 0,
     loaded: false,
+    authenticated: false,
 }
 
 export const sessionSlice = createSlice({
@@ -93,7 +95,9 @@ export const sessionSlice = createSlice({
         setLoaded: (state, action: PayloadAction<boolean>) => {
             state.loaded = action.payload
         },
-        
+        setAuthenticated: (state, action: PayloadAction<boolean>) => {
+            state.authenticated = action.payload
+        } 
     },
 })
 
@@ -108,7 +112,8 @@ export const {
     switchToken,
     importTokens,
     setRetries,
-    setLoaded
+    setLoaded,
+    setAuthenticated
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

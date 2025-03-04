@@ -34,6 +34,7 @@ export const ReferralLinkModal: FC = () => {
             placement="bottom-center"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
+            
         >
             <ModalContent>
                 <ModalHeader>Referral Code</ModalHeader>

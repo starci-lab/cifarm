@@ -1,16 +1,9 @@
 "use client"
-
-import {
-    API_AUTHENTICATION_SWR_MUTATION,
-} from "@/app/constants"
 import {
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
-    useApiAuthenticationSwrMutation,
     useGameplayIo,
 } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { setAuthenticated, useAppDispatch } from "@/redux"
 import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
 import { startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
@@ -19,25 +12,7 @@ import { useEffects } from "./hooks"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
-    const dispatch = useAppDispatch()
     const [isSyncDelayed, setIsSyncDelayed] = React.useState(false)
-
-    //authentication useEffect
-    const { swrMutation: authenticationSwrMutation } = useSingletonHook<
-    ReturnType<typeof useApiAuthenticationSwrMutation>
-  >(API_AUTHENTICATION_SWR_MUTATION)
-
-    useEffect(() => {
-        EventBus.on(EventName.Authenticate, async () => {
-            await authenticationSwrMutation.trigger({})
-            EventBus.emit(EventName.Authenticated)
-            dispatch(setAuthenticated(true))
-        })
-
-        return () => {
-            EventBus.removeListener(EventName.Authenticate)
-        }
-    }, [])
 
     const { socket, connected } = useGameplayIo()
 
