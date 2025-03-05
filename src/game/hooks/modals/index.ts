@@ -1,1 +1,1 @@
-export * from "./useModals"
+export * from "./useModalsEffects"

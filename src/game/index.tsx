@@ -15,7 +15,6 @@ export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
     const [isSyncDelayed, setIsSyncDelayed] = React.useState(false)
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
-    
     useEffect(() => {
         EventBus.on(EventName.Authenticate, () => {
             if (!authenticated) {
@@ -33,7 +32,6 @@ export const Game: FC = () => {
     useEffect(() => {
         // connect
         connect()
-        console.log(connect, socket)
         //if socket is null do nothing
         if (!socket) return
         //listen for placed items synced
@@ -84,7 +82,7 @@ export const Game: FC = () => {
             }
         }
     }, [])
-
+    
     //useEffects
     useEffects()
 

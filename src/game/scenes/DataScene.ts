@@ -22,5 +22,9 @@ export class DataScene extends Scene {
                 this.cache.obj.add(CacheKey.Inventories, inventories)
             }
         )
+
+        EventBus.on(EventName.UpdateVisitedNeighbor, (user: UserSchema) => {
+            this.cache.obj.add(CacheKey.VisitedNeighbor, user)
+        })
     }
 }

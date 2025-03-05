@@ -7,9 +7,11 @@ import { CiBitcoin, CiGift } from "react-icons/ci"
 import { RiTwitterXLine } from "react-icons/ri"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
+import { useAppSelector } from "@/redux"
 
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     return (
         <div className="m-auto fixed top-auto bottom-0 border-t h-16 z-50 max-w-[500px] w-full">
             <HeroUiNavbar
@@ -34,7 +36,7 @@ export const BottomNavbar: FC = () => {
                 
                 </NavbarContent>
                 <NavbarContent justify="center">
-                    <Button size="lg" color="primary" className="light text-background" onPress={() => router.push(pathConstants.play) }>
+                    <Button isDisabled={!authenticated} size="lg" color="primary" className="light text-background" onPress={() => router.push(pathConstants.play) }>
           Play
                     </Button>
                 </NavbarContent>

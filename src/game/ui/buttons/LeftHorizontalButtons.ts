@@ -29,7 +29,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.nftMarketplaceButton = this.createButton({
-            iconKey: BaseAssetKey.IconNFTMarketplace,
+            iconKey: BaseAssetKey.UIIconNFTMarketplace,
             text: "NFT Marketplace",
             onPress: () => {
                 console.log("NFT")
@@ -39,7 +39,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add shop button
         this.shopButton = this.createButton({
-            iconKey: BaseAssetKey.IconShop,
+            iconKey: BaseAssetKey.UIIconShop,
             text: "Shop",
             onPress: () => {
                 EventBus.emit(EventName.RefreshPlaceItemsCacheKey)
@@ -64,7 +64,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add roadside stand button
         this.roadsideStandButton = this.createButton({
-            iconKey: BaseAssetKey.IconRoadsideStand,
+            iconKey: BaseAssetKey.UIIconRoadsideStand,
             text: "Roadside Stand",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -87,7 +87,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add neighbors button
         this.neighborsButton = this.createButton({
-            iconKey: BaseAssetKey.IconNeighbors,
+            iconKey: BaseAssetKey.UIIconNeighbors,
             text: "Neighbors",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -135,5 +135,17 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             }
             this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
+
+        EventBus.on(EventName.HideButtons, () => {
+            this.setVisible(false).setActive(false)
+        })
+        
+        EventBus.on(EventName.ShowButtons, () => {
+            this.setVisible(true).setActive(true)
+        })
+
+        if (this.scene.cache.obj.get(CacheKey.VisitedNeighbor)) {
+            this.setVisible(false).setActive(false)
+        }
     }
 }

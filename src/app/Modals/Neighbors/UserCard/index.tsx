@@ -5,16 +5,17 @@ import {
     API_VISIT_SWR_MUTATION,
     EXPERIENCE_IMAGE_URL,
     GOLD_IMAGE_URL,
+    NEIGHBORS_DISCLOSURE,
     WARNING_DISCLOSURE,
 } from "@/app/constants"
-import { EventBus, EventName } from "@/game/event-bus"
+import { EventBus, EventName, ModalName } from "@/game/event-bus"
 import { useApiFollowSwrMutation, useApiUnfollowSwrMutation, useApiVisitSwrMutation } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { toastError, toastSuccess } from "@/modules/toast"
-import { setWarningModal, useAppDispatch } from "@/redux"
+import { setVisitedUserId, setWarningModal, useAppDispatch, useAppSelector } from "@/redux"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import { Avatar, Button, Chip, Image, Spacer, useDisclosure } from "@heroui/react"
 import { UserMinus2, UserPlus2 } from "lucide-react"
@@ -44,10 +45,15 @@ export const UserCard: FC<UserCardProps> = ({
     ReturnType<typeof useApiVisitSwrMutation>
   >(API_VISIT_SWR_MUTATION)
 
+    const { onClose } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        NEIGHBORS_DISCLOSURE
+    )
+
     const { onOpen: onWarningOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         WARNING_DISCLOSURE
     )
     const dispatch = useAppDispatch()
+    const visitedUserId = useAppSelector((state) => state.gameReducer.visitedUserId)
 
     const avatarUrl = user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
     return (
@@ -171,13 +177,18 @@ export const UserCard: FC<UserCardProps> = ({
                 )}
                 <Button onPress={async () => {
                     // set visited user
+                    EventBus.emit(EventName.UpdateVisitedNeighbor, user)
                     await visitSwrMutation.trigger({
                         request: {
                             neighborUserId: user.id,
                         },
                     })
-                    EventBus.emit(EventName.Visit, user)
-                }} isIconOnly color="primary">
+                    onClose()
+                    EventBus.emit(EventName.CloseModal, {
+                        modalName: ModalName.Neighbors,
+                    })
+                    dispatch(setVisitedUserId(user.id))
+                }} isIconOnly color="primary" isDisabled={visitedUserId === user.id}>
                     <HomeIcon className="light text-background w-5 h-5" />
                 </Button>
             </div>

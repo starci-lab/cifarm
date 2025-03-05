@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux"
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
     const dispatch = useDispatch()
+
     return (
         <Container centerContent hasPadding>
             <div className="w-full">
@@ -102,7 +103,6 @@ const Page: FC = () => {
                                     dispatch(setMnemonic(mnemonic))
                                     //dispatch to all useEffects to update changes with key `loadAccountsKey`
                                     dispatch(triggerLoadAccounts())
-                                    router.push(pathConstants.home)
                                 }
                             }
                         }}

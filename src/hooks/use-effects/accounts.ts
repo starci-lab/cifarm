@@ -9,7 +9,7 @@ import {
     useAppDispatch,
     useAppSelector,
 } from "@/redux"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -20,11 +20,11 @@ export const useAccounts = () => {
     const loadAccountsKey = useAppSelector(
         (state) => state.hookDependencyReducer.loadAccountsKey
     )
-    const loaded = useAppSelector((state) => state.sessionReducer.loaded)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
     const pin = useAppSelector((state) => state.sessionReducer.pin)
+    const [accountsLoaded, setAccountsLoaded] = useState(false)
     const {
         swrMutation,
     } =
@@ -60,6 +60,7 @@ export const useAccounts = () => {
                     currentId: currentAccount.accountId,
                 })
             )
+            setAccountsLoaded(true)
             //move to next page
             router.push(pathConstants.home)
         }
@@ -93,10 +94,11 @@ export const useAccounts = () => {
     }, [])
 
     useEffect(() => {
-        if (!loaded) return
+        if (!accountsLoaded) return
         const handleEffect = async () => {
+            //trigger the swrMutation
             await swrMutation.trigger({})
         }
         handleEffect()
-    }, [loaded])
+    }, [accountsLoaded])
 }

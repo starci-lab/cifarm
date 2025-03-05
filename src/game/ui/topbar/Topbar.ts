@@ -38,11 +38,13 @@ export class Topbar extends BaseSizer {
             this.updateContent()
         })
 
-        EventBus.on(EventName.Visit, (user: UserSchema) => {
+        EventBus.on(EventName.Visit, () => {
+            const user = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
             this.visited = true
             this.neighbor = user
             this.updateContent()
             EventBus.emit(EventName.HideButtons)
+            EventBus.emit(EventName.ShowNeighborButtons)
         })
 
         EventBus.on(EventName.Return, () => {
@@ -50,6 +52,7 @@ export class Topbar extends BaseSizer {
             this.neighbor = undefined
             this.updateContent()
             EventBus.emit(EventName.ShowButtons)
+            EventBus.emit(EventName.HideNeighborButtons)
         })
 
         this.updateContent()

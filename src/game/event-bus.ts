@@ -84,6 +84,8 @@ export enum EventName {
     // hide the buttons
     HideButtons = "hide_buttons",
     ShowButtons = "show_buttons",
+    HideNeighborButtons = "hide_neighbor_buttons",
+    ShowNeighborButtons = "show_neighbor_buttons",
     
     // open inventory
     OpenInventory = "open_inventory",
