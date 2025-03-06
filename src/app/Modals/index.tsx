@@ -1,12 +1,14 @@
 import React, { FC } from "react"
-import { MnemonicModal } from "./Mnemonic"
-import { PrivateKeyModal } from "./PrivateKey"
-import { WarningModal } from "./Warning"
-import { SignTransactionModal } from "./SignTransaction"
+import { MnemonicModal } from "./MnemonicModal"
+import { PrivateKeyModal } from "./PrivateKeyModal"
+import { WarningModal } from "./WarningModal"
+import { SignTransactionModal } from "./SignTransactionModal"
 import { InviteUserModal } from "./InviteUserModal"
-import { NeighborsModal } from "./Neighbors"
-import { QuestsModal } from "./Quests"
+import { NeighborsModal } from "./NeighborsModal"
+import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
+import { TokensOffchainModal } from "./TokensOffchainModal"
+import { MintAmountModal } from "./MintAmountModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -17,9 +19,11 @@ const Modals : FC = () => {
             <WarningModal />
             <ProfileModal />
             <SignTransactionModal />
+            <MintAmountModal />
             <InviteUserModal />
             <NeighborsModal />
             <QuestsModal />
+            <TokensOffchainModal />
         </div>
     )
 }

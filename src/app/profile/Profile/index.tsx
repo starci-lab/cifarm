@@ -141,6 +141,5 @@ export const Profile : FC = () => {
                 </div>
             </div>
         </div>
-
     )
 }

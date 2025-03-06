@@ -6,9 +6,9 @@ import { Link, Spacer, Tab, Tabs } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
 import { Tokens } from "./Tokens"
-import { NFTs } from "./NFTs"
 import { AssetTab, setAssetTab, useAppDispatch, useAppSelector } from "@/redux"
 import { Profile } from "./Profile"
+import { GameAssets } from "./GameAssets"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
@@ -17,7 +17,7 @@ const Page: FC = () => {
     const renderContent = () => {
         const contentMap = {
             [AssetTab.Profile]: <Profile />,
-            [AssetTab.GameAssets]: <Tokens />,
+            [AssetTab.GameAssets]: <GameAssets />,
             [AssetTab.OnChainAssets]: <Tokens />,
         }
         return contentMap[assetTab]
