@@ -61,7 +61,7 @@ export const Game: FC = () => {
         }
         return () => {
             if (game.current) {
-                game.current.destroy(false, false)
+                game.current.destroy(true, false)
                 EventBus.removeAllListeners()
                 game.current = null
             }
