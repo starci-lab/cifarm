@@ -27,7 +27,7 @@ export enum UpgradeId {
 
 // Crop Enum
 export enum CropId {
-    Radish = "radish",
+    Turnip = "turnip",
     Carrot = "carrot",
     Potato = "potato",
     Pineapple = "pineapple",
@@ -83,8 +83,8 @@ export enum ProductId {
     EggQuality = "eggQuality",
     Milk = "milk",
     MilkQuality = "milkQuality",
-    Radish = "radish",
-    RadishQuality = "radishQuality",
+    Turnip = "turnip",
+    TurnipQuality = "turnipQuality",
     Carrot = "carrot",
     CarrotQuality = "carrotQuality",
     Potato = "potato",
@@ -115,7 +115,7 @@ export enum KeyValueStoreId {
 }
 
 export enum InventoryTypeId {
-    RadishSeed = "radishSeed",
+    TurnipSeed = "turnipSeed",
     CarrotSeed = "carrotSeed",
     PotatoSeed = "potatoSeed",
     PineappleSeed = "pineappleSeed",
@@ -129,8 +129,8 @@ export enum InventoryTypeId {
     EggQuality = "eggQuality",
     Milk = "milk",
     MilkQuality = "milkQuality",
-    Radish = "radish",
-    RadishQuality = "radishQuality",
+    Turnip = "turnip",
+    TurnipQuality = "turnipQuality",
     Carrot = "carrot",
     CarrotQuality = "carrotQuality",
     Potato = "potato",
@@ -174,7 +174,7 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(BuildingId.Home)]: BuildingId.Home,
 
     // crop ids
-    [createObjectId(CropId.Radish)]: CropId.Radish,
+    [createObjectId(CropId.Turnip)]: CropId.Turnip,
     [createObjectId(CropId.Carrot)]: CropId.Carrot,
     [createObjectId(CropId.Potato)]: CropId.Potato,
     [createObjectId(CropId.Pineapple)]: CropId.Pineapple,
@@ -193,7 +193,7 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(PlacedItemTypeId.BasicTile)]: PlacedItemTypeId.BasicTile,
 
     // inventory types
-    [createObjectId(InventoryTypeId.RadishSeed)]: InventoryTypeId.RadishSeed,
+    [createObjectId(InventoryTypeId.TurnipSeed)]: InventoryTypeId.TurnipSeed,
     [createObjectId(InventoryTypeId.CarrotSeed)]: InventoryTypeId.CarrotSeed,
     [createObjectId(InventoryTypeId.PotatoSeed)]: InventoryTypeId.PotatoSeed,
     [createObjectId(InventoryTypeId.PineappleSeed)]: InventoryTypeId.PineappleSeed,
