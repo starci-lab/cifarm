@@ -16,11 +16,13 @@ import {
     UsePesticideRequest,
     WaterRequest
 } from "@/modules/axios"
-import { sleep } from "@/modules/common"
+import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
+import { createObjectId, sleep } from "@/modules/common"
 import {
     Activities,
     AnimalId,
     BuildingId,
+    BuildingSchema,
     CropCurrentState,
     CropId,
     CropSchema,
@@ -28,6 +30,7 @@ import {
     InventoryType,
     InventoryTypeSchema,
     PlacedItemType,
+    PlacedItemTypeId,
     ProductSchema,
     SupplyId,
     SupplySchema,
@@ -49,13 +52,12 @@ import {
     TilesetConfig,
 } from "../assets"
 import { RED_TINT_COLOR, SYNC_DELAY_TIME, WHITE_TINT_COLOR } from "../constants"
-import { CreateFlyItemMessage, EventBus, EventName, PlacedInprogressMessage, Position } from "../event-bus"
+import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData, UpdatePlacedItemLocalParams } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
-import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -170,9 +172,7 @@ export class InputTilemap extends ItemTilemap {
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
-                // if (data.pressBlocked) {
-                //     return
-                // }
+
                 this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
@@ -182,12 +182,18 @@ export class InputTilemap extends ItemTilemap {
                     data,
                     data.object.currentPlacedItem?.id
                 )
+                //if max level
                 // eslint-disable-next-line no-case-declarations
-                // const eventMessage: OpenModalMessage = {
-                //     modalName: ModalName.AnimalHousing,
-                // }
+                const buildings = this.scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
+                // eslint-disable-next-line no-case-declarations
+                // const upgradeData = buildings.find(b => createObjectId(b.displayId) === buildingId)?.upgrades
+    
+                
 
-                // EventBus.emit(EventName.OpenModal, eventMessage)
+
+                if(data.placedItemType.displayId == PlacedItemTypeId.Home) return
+
+                this.handlePressOnBuilding(data)
                 break
             case PlacedItemType.Animal:
                 this.handlePressOnAnimal(data)
@@ -1173,6 +1179,82 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
+    private handlePressOnBuilding(data: PlacedItemObjectData) {
+        if (data.placedItemType.type !== PlacedItemType.Building) {
+            throw new Error("Invalid placed item type")
+        }
+
+        const selectedTool = this.scene.cache.obj.get(
+            CacheKey.SelectedTool
+        ) as ToolLike
+
+        // do nothing if selected tool is default
+        if (selectedTool.default) {
+            return
+        }
+
+        const inventoryType = this.inventoryTypes.find(
+            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
+        )
+        if (!inventoryType) {
+            throw new Error(
+                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+            )
+        }
+        const object = data.object
+        const currentPlacedItem = object.currentPlacedItem
+
+        const placedItemId = currentPlacedItem?.id
+        // do nothing if placed item id is not found
+        if (!placedItemId) {
+            return
+        }
+
+        switch (inventoryType.type) {
+        case InventoryType.Tool: {
+            const tools = this.scene.cache.obj.get(
+                CacheKey.Tools
+            ) as Array<ToolSchema>
+            if (!tools) {
+                throw new Error("Tools not found")
+            }
+            const tool = tools.find(
+                (tool) => tool.id === selectedTool.inventoryType?.id
+            )
+            if (!tool) {
+                throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
+            }
+            // check if tool id is water can
+            switch (tool.displayId) {
+            case ToolId.Hammer: {
+                EventBus.emit(EventName.SyncDelayStarted)
+
+                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
+                    placedItem: {
+                        ...currentPlacedItem,
+                        seedGrowthInfo: {
+                            ...currentPlacedItem.seedGrowthInfo,
+                            currentState: CropCurrentState.Normal,
+                        }
+                    },
+                    type: PlacedItemType.Building,
+                }
+
+                // update the placed item in client
+                // EventBus.emit(EventName.RequestUpgradeBuilding, updatePlacedItemLocal)
+
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.UpgradeBuilding
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
+
+                EventBus.emit(EventName.UpdateUpgadeBuildingModal, currentPlacedItem)
+            }
+            }
+        }
+        }
+    }
+
     private cancelPlacement() {
         console.log("Placement canceled")
         this.destroyTemporaryPlaceItemObject()
@@ -1191,6 +1273,8 @@ export class InputTilemap extends ItemTilemap {
         //temporaryPlaceItemData
         this.temporaryPlaceItemData = undefined
     }
+
+    
 }
 
 export interface PlayProductFlyAnimationParams {

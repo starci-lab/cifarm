@@ -1,4 +1,4 @@
-import { formatTime } from "@/modules/common"
+import { createObjectId, formatTime } from "@/modules/common"
 import {
     AnimalCurrentState,
     AnimalSchema,
@@ -6,6 +6,7 @@ import {
     CropSchema,
     PlacedItemSchema,
     PlacedItemType,
+    PlacedItemTypeId,
     ProductSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -15,6 +16,7 @@ import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
 import { BaseText } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
+import { GameObjects } from "phaser"
 
 export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     // list of extra sprites that are part of the placed item
@@ -24,6 +26,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private bubbleState: Label | undefined
     public currentPlacedItem: PlacedItemSchema | undefined
     private fertilizerParticle: Phaser.GameObjects.Sprite | undefined
+    private levelStar: Phaser.GameObjects.Sprite | undefined
     private timer: Phaser.GameObjects.Text | undefined
     private crops: Array<CropSchema> = []
     private products: Array<ProductSchema> = []
@@ -45,7 +48,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             break
         }
         case PlacedItemType.Building: {
-            // this.updateBuildingInfo(placedItem)
+            this.updateBuildingInfo(placedItem)
             break
         }
         case PlacedItemType.Animal: {
@@ -107,6 +110,45 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             this.updateAnimalInfoTimer(placedItem, container)
         }
     }
+    private updateBuildingInfo(placedItem: PlacedItemSchema) {
+        const container = this.getContainer()
+        if (!placedItem.buildingInfo) {
+            // remove everything in the container
+            container.clear(true)
+            this.setAllPropsToUndefined()
+        } else {
+            // Update the star based on level
+            this.updateBuildingInfoLevel(placedItem, container)
+
+        }
+    }
+
+    private updateBuildingInfoLevel(
+        placedItem: PlacedItemSchema,
+        container: ContainerLite
+    ) {
+        if (!placedItem.buildingInfo) {
+            throw new Error("Building info not found")
+        }
+
+        //if home not show star
+        if (placedItem.placedItemType === createObjectId(PlacedItemTypeId.Home)) {
+            return
+        }
+        
+        const stars = placedItem.buildingInfo.currentUpgrade || 0
+        const starKey = BaseAssetKey.UIModalStandPurpleStar
+
+        // Update the number of stars
+        for (let i = 0; i < stars; i++) {
+            const star = this.scene.add
+                .sprite(i * 40, 0, starKey)
+                .setDepth(this.depth + 1)
+                .setScale(0.5)
+                .setPosition(i * -40, - TILE_HEIGHT * 2 / 3)
+            container.addLocal(star)
+        }
+    }
 
     private setAllPropsToUndefined() {
         this.seedGrowthInfoSprite = undefined
@@ -162,6 +204,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             }
         }
     }
+
 
     private updateSeedGrowthInfoBubble(
         placedItem: PlacedItemSchema,

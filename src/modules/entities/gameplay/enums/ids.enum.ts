@@ -75,7 +75,6 @@ export enum ToolId {
     Herbicide = "herbicide",
     Pesticide = "pesticide",
     Hammer = "hammer",
-    Relocate = "relocate",
 }
 
 // Product Enum
@@ -150,7 +149,6 @@ export enum InventoryTypeId {
     Herbicide = "herbicide",
     Pesticide = "pesticide",
     Hammer = "hammer",
-    Relocate = "relocate",
 }
 
 export enum PlacedItemTypeId {
@@ -214,7 +212,6 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(InventoryTypeId.Herbicide)]: InventoryTypeId.Herbicide,
     [createObjectId(InventoryTypeId.Pesticide)]: InventoryTypeId.Pesticide,
     [createObjectId(InventoryTypeId.Hammer)]: InventoryTypeId.Hammer,
-    [createObjectId(InventoryTypeId.Relocate)]: InventoryTypeId.Relocate,
 
     // supply types
     [createObjectId(SupplyId.BasicFertilizer)]: SupplyId.BasicFertilizer,
@@ -232,7 +229,6 @@ const objectIdMap: Record<string, string> = {
     [createObjectId(ToolId.Herbicide)]: ToolId.Herbicide,
     [createObjectId(ToolId.Pesticide)]: ToolId.Pesticide,
     [createObjectId(ToolId.Hammer)]: ToolId.Hammer,
-    [createObjectId(ToolId.Relocate)]: ToolId.Relocate,
 }
 
 export const getId = <IdType extends string>(objectId: string): IdType => (objectIdMap[objectId]) as IdType

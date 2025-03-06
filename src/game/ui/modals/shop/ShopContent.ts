@@ -49,6 +49,7 @@ import {
     Background,
     BaseText,
     Button,
+    ButtonBackground,
     FlyItem,
     getBackgroundContainerSize,
     IconOffsets,
@@ -276,6 +277,10 @@ export class ShopContent extends BaseSizer {
         })
 
         EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
+            this.updateOwnership()
+        })
+
+        EventBus.on(EventName.UserRefreshed, () => {
             this.updateOwnership()
         })
     }
@@ -564,6 +569,13 @@ export class ShopContent extends BaseSizer {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
 
+        const canAfford = this.user.golds >= (price ?? 0)
+        const isAtMaxOwnership = maxOwnership !== 0 && currentOwnership >= maxOwnership
+        const isDisabled = !canAfford || isAtMaxOwnership
+
+        console.log("Creating item card", assetKey, isDisabled, canAfford, isAtMaxOwnership)
+        console.log("maxOwnership", maxOwnership, "currentOwnership", currentOwnership)
+
         // create the components
         const cardBackground = this.scene.add.image(
             0,
@@ -588,16 +600,23 @@ export class ShopContent extends BaseSizer {
             },
             options: {
                 text: `$${price ?? 0}`,
-                disableInteraction: false,
+                disableInteraction: isDisabled,
                 height: 100,
                 width: 200,
                 scale: 0.8,
                 syncTextScale: true,
+                background: ButtonBackground.Primary,
             },
         })
             .setPosition(0, 90)
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
+
+        if (isDisabled) {
+            buttonPrice.disable()
+        } else {
+            buttonPrice.enable()
+        }
 
         if (locked) {
             const off = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopOff)
