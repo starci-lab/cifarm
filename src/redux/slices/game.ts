@@ -1,22 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface GameSlice {
-  authenticated: boolean;
+    visitedUserId?: string
 }
 
 const initialState: GameSlice = {
-    authenticated: false,
 }
 
-export const authenticatedSlice = createSlice({
-    name: "authenticated",
+export const gameSlice = createSlice({
+    name: "game",
     initialState,
     reducers: {
-        setAuthenticated: (state, action) => {
-            state.authenticated = action.payload
+        setVisitedUserId: (state, action: PayloadAction<string|undefined>) => {
+            state.visitedUserId = action.payload
         },
     },
 })
 
-export const gameReducer = authenticatedSlice.reducer
-export const { setAuthenticated } = authenticatedSlice.actions
+export const gameReducer = gameSlice.reducer
+export const { setVisitedUserId } = gameSlice.actions

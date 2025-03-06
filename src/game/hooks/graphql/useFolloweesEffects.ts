@@ -13,7 +13,7 @@ export const useFolloweesEffects = () => {
         EventBus.on(EventName.LoadFollowees, async (params: QueryFolloweesParams) => {
             //load user data
             const { data } = await swrMutation.trigger(params)
-            EventBus.emit(EventName.FolloweesLoaded, data?.neighbors)
+            EventBus.emit(EventName.FolloweesLoaded, data?.followees)
         })
 
         return () => {
@@ -26,7 +26,7 @@ export const useFolloweesEffects = () => {
         EventBus.on(EventName.RefreshFollowees, async (params: QueryFolloweesParams) => {
             //load user data
             const { data } = await swrMutation.trigger(params)
-            EventBus.emit(EventName.FolloweesLoaded, data.neighbors)
+            EventBus.emit(EventName.FolloweesLoaded, data.followees)
         })
 
         return () => {

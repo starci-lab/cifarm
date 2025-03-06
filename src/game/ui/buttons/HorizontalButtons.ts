@@ -2,7 +2,6 @@ import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { ConstructorParams, ButtonsBaseConstructorParams } from "../../types"
 import { BaseText } from "../elements"
 import { onGameObjectPress } from "../utils"
-import { EventBus, EventName } from "@/game/event-bus"
 
 export interface CreateButtonParams {
     iconKey: string;
@@ -33,14 +32,6 @@ export abstract class HorizontalButtons extends Buttons {
                 item: space || 10,
             },
             ...config,
-        })
-
-        EventBus.on(EventName.HideButtons, () => {
-            this.setVisible(false).setActive(false)
-        })
-
-        EventBus.on(EventName.ShowButtons, () => {
-            this.setVisible(true).setActive(true)
         })
     }
 

@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux"
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
     const dispatch = useDispatch()
+
     return (
         <Container centerContent hasPadding>
             <div className="w-full">
@@ -27,7 +28,7 @@ const Page: FC = () => {
                 <Spacer y={4} />
                 <div className="text-center">
                     <div className="text-4xl font-bold">CiFarm</div>
-                    <div className="text-foreground-500 text-sm">
+                    <div className="text-foreground-400 text-sm">
             The leading play-to-earn farming game on Telegram
                     </div>
                 </div>
@@ -102,7 +103,6 @@ const Page: FC = () => {
                                     dispatch(setMnemonic(mnemonic))
                                     //dispatch to all useEffects to update changes with key `loadAccountsKey`
                                     dispatch(triggerLoadAccounts())
-                                    router.push(pathConstants.home)
                                 }
                             }
                         }}

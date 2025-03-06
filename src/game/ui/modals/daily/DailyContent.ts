@@ -33,7 +33,7 @@ const iconMap: Record<DailyRewardId, DailyRewardData> = {
     },
     // temporary use the same icon
     [DailyRewardId.Day5]: {
-        baseAssetKey: BaseAssetKey.IconDaily,
+        baseAssetKey: BaseAssetKey.UIIconDaily,
     }
 }
 export class DailyContent extends BaseSizer {

@@ -8,6 +8,7 @@ import {
     PlacedItemTypeId,
     PlacedItemTypeSchema,
     TileId,
+    UserSchema,
 } from "@/modules/entities"
 import { animalAssetMap, buildingAssetMap, tileAssetMap, TilesetConfig } from "../assets"
 import { EventBus, EventName, Position } from "../event-bus"
@@ -17,6 +18,8 @@ import { PlacedItemObject } from "./PlacedItemObject"
 import { ObjectLayerName } from "./types"
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
+import { sleep } from "@/modules/common"
+import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -29,6 +32,11 @@ export abstract class ItemTilemap extends GroundTilemap {
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
 
+    private user: UserSchema
+    private currentUserId: string
+
+    private cancelListen = false
+
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
 
@@ -39,16 +47,36 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.itemLayer = itemLayer
         this.createTilesets()
 
+        this.user = this.scene.cache.obj.get(CacheKey.User)
+        this.currentUserId = this.user.id
+
         EventBus.on(
             EventName.PlacedItemsSynced,
-            (data: PlacedItemsSyncedMessage) => {
+            async (data: PlacedItemsSyncedMessage) => {
+                if (this.cancelListen) {
+                    return
+                }
                 console.log(`Current: ${data.userId}`)
+                if (data.userId !== this.currentUserId) {
+                    this.cancelListen = true
+                    this.currentUserId = data.userId
+                    const visited = data.userId !== this.user.id
+                    EventBus.emit(EventName.FadeIn)
+                    await sleep(FADE_TIME)
+                    EventBus.emit(visited ? EventName.Visit : EventName.Return)
+                }
                 //store the placed items in the cache
                 this.scene.cache.obj.add(CacheKey.PlacedItems, data.placedItems)
                 // handle the placed items update
                 this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
                 // update the previous placed items
                 this.previousPlacedItems = data
+                if (data.userId !== this.currentUserId) {
+                    //show fade in animation
+                    await sleep(FADE_HOLD_TIME)
+                    EventBus.emit(EventName.FadeOut)
+                }
+                this.cancelListen = false
             }
         )
 

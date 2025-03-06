@@ -32,7 +32,7 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
                         />
                         <div>
                             <div className="text-sm">{token.name}</div>
-                            <div className="text-xs text-foreground-500">
+                            <div className="text-xs text-foreground-400">
                                 {token.symbol}
                             </div>
                         </div>

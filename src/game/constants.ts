@@ -26,7 +26,7 @@ export const GREEN_COLOR = 0x00ff00
 
 export const SCALE_TIME = 300 // 0.3 seconds
 export const FADE_TIME = 500 // 0.5 seconds
-export const FADE_HOLD_TIME = 500 // 0,5 second
+export const FADE_HOLD_TIME = 100 // 0,1 second
 export const SCALE_PEAK_VALUE = 1.1 // 10% increase
 
 export const GRAY_TINT_COLOR = new Phaser.Display.Color(192, 192, 192).color

@@ -4,6 +4,7 @@ import { ContainerLiteBaseConstructorParams } from "../../types"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 
+const DEFAULT_OPACITY_LEVEL = 0.75
 export class UIBackdrop extends ContainerLite {
     private backdrop: Phaser.GameObjects.Rectangle
 
@@ -19,17 +20,18 @@ export class UIBackdrop extends ContainerLite {
                 gameWidth,
                 gameHeight,
                 BLACK_COLOR,
-                0.75
+                DEFAULT_OPACITY_LEVEL
             )
             .setInteractive()
         this.add(this.backdrop)
 
-        EventBus.on(EventName.ShowUIBackdrop, ({ depth }: ShowUIBackdropMessage) => {
+        EventBus.on(EventName.ShowUIBackdrop, ({ depth, opacityLevel }: ShowUIBackdropMessage) => {
             this.show()
-            this.backdrop.setDepth(depth)
+            this.backdrop.setAlpha(opacityLevel).setDepth(depth)
         })
         
         EventBus.on(EventName.HideUIBackdrop, () => {
+            this.backdrop.setAlpha(DEFAULT_OPACITY_LEVEL)
             this.hide()
         })
 

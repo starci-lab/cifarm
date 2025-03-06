@@ -45,7 +45,7 @@ export const PrivateKeyModal: FC = () => {
                         {
                             isBlurred && (
                                 <div className="absolute z-50 w-full h-full -top-1.5 -left-1.5 grid place-items-center">
-                                    <EyeSlashSolidIcon className="w-10 h-10 text-foreground-500" />
+                                    <EyeSlashSolidIcon className="w-10 h-10 text-foreground-400" />
                                 </div>
                             )
                         }

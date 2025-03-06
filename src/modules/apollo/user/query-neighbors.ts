@@ -18,7 +18,10 @@ const query1 = gql`
         accountAddress
         followed
         username
+        chainKey
+        golds
       }
+      count
     }
   }
 `
@@ -35,7 +38,9 @@ const queryMap: Record<QueryNeighbors, DocumentNode> = {
     [QueryNeighbors.Query1]: query1,
 }
 
-export type QueryNeighborsArgs = QueryManyArgs;
+export interface QueryNeighborsArgs extends QueryManyArgs {
+   searchString?: string;
+}
 export type QueryNeighborsParams = QueryParams<QueryNeighbors, QueryNeighborsArgs>;
 export const queryNeighbors = async ({
     query = QueryNeighbors.Query1,

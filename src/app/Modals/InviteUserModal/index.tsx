@@ -1,8 +1,8 @@
 "use client"
-import { REFERRAL_LINK_DISCLOSURE } from "@/app/constants"
+import { INVITE_USER_DISCLOSURE, QUERY_USER_SWR } from "@/app/constants"
+import { useQueryUserSwr } from "@/hooks"
 import { REFERRAL_USER_ID } from "@/hooks/use-effects/referral"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useAppSelector } from "@/redux"
 import {
     Alert,
     Modal,
@@ -15,28 +15,30 @@ import {
 } from "@heroui/react"
 import React, { FC, useEffect, useState } from "react"
 
-export const ReferralLinkModal: FC = () => {
+export const InviteUserModal: FC = () => {
     const { isOpen, onOpenChange } = useSingletonHook<
     ReturnType<typeof useDisclosure>
-  >(REFERRAL_LINK_DISCLOSURE)
+  >(INVITE_USER_DISCLOSURE)
+
+    const { swr } = useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
 
     const [webUrl, setWebUrl] = useState("")
+
     useEffect(() => {
-        setWebUrl(`${window.location.href}?${REFERRAL_USER_ID}=${code}`)
+        setWebUrl(`${window.location.href}?${REFERRAL_USER_ID}=${swr.data?.data.user.id}`)
     }, [])
 
-    const { code } = useAppSelector(
-        (state) => state.modalReducer.referralLinkModal
-    )
-    const telegramUrl = `https://t.me/cifarm_bot?startapp=${code}`
+    const telegramUrl = `https://t.me/cifarm_bot?startapp=${swr.data?.data.user.id}`
     return (
         <Modal
-            placement="bottom-center"
+            size="sm"
+            disableAnimation={true}
+            placement="bottom"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
         >
             <ModalContent>
-                <ModalHeader>Referral Code</ModalHeader>
+                <ModalHeader>Invite User</ModalHeader>
                 <ModalBody>
                     <div>
                         <Alert color="success">

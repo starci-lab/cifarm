@@ -1,49 +1,37 @@
 "use client"
-
-import {
-    API_AUTHENTICATION_SWR_MUTATION,
-} from "@/app/constants"
 import {
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
-    useApiAuthenticationSwrMutation,
     useGameplayIo,
 } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { setAuthenticated, useAppDispatch } from "@/redux"
 import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
 import { startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
 import { EventBus, EventName } from "./event-bus"
 import { useEffects } from "./hooks"
+import { useAppSelector } from "@/redux"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
-    const dispatch = useAppDispatch()
     const [isSyncDelayed, setIsSyncDelayed] = React.useState(false)
-
-    //authentication useEffect
-    const { swrMutation: authenticationSwrMutation } = useSingletonHook<
-    ReturnType<typeof useApiAuthenticationSwrMutation>
-  >(API_AUTHENTICATION_SWR_MUTATION)
-
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     useEffect(() => {
-        EventBus.on(EventName.Authenticate, async () => {
-            await authenticationSwrMutation.trigger({})
+        EventBus.on(EventName.Authenticate, () => {
+            if (!authenticated) {
+                return
+            }
             EventBus.emit(EventName.Authenticated)
-            dispatch(setAuthenticated(true))
         })
-
         return () => {
             EventBus.removeListener(EventName.Authenticate)
         }
-    }, [])
+    }, [authenticated])
 
-    const { socket, connected } = useGameplayIo()
+    const { socket, connect } = useGameplayIo()
 
     useEffect(() => {
-    //do nothing if not connected
-        if (!connected) return
+        // connect
+        connect()
         //if socket is null do nothing
         if (!socket) return
         //listen for placed items synced
@@ -62,7 +50,7 @@ export const Game: FC = () => {
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
         }
-    }, [connected, socket, isSyncDelayed])
+    }, [socket, isSyncDelayed])
 
     useEffect(() => {
         EventBus.on(EventName.SyncDelayStarted, () => {
@@ -94,7 +82,7 @@ export const Game: FC = () => {
             }
         }
     }, [])
-
+    
     //useEffects
     useEffects()
 

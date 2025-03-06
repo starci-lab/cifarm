@@ -46,14 +46,25 @@ import {
     useApiUpdateReferralSwrMutation,
     useApiUseFertilizerSwrMutation,
     useApiUpdateFollowXSwrMutation,
-    useApiUpgradeBuildingSwrMutation
+    useApiUpgradeBuildingSwrMutation,
+    useQueryFolloweesSwr,
+    useQueryNeighborsSwr,
+    useQueryUserSwr,
+    useQueryStaticSwr
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
-import { Modals } from "./Modals"
 import { SWRConfig } from "swr"
+import { Toast } from "@/modules/toast"
+import dynamic from "next/dynamic"
+
+const Modals = dynamic(() => import("./Modals"), {
+    ssr: false,
+})
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
+    
+    
     const loaded = useAppSelector((state) => state.sessionReducer.loaded)
     return (
         <Suspense>
@@ -66,7 +77,9 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             MNEMONIC_DISCLOSURE: useDisclosure(),
                             WARNING_DISCLOSURE: useDisclosure(),
                             SIGN_TRANSACTION_DISCLOSURE: useDisclosure(),
-                            REFERRAL_LINK_DISCLOSURE: useDisclosure(),
+                            INVITE_USER_DISCLOSURE: useDisclosure(),
+                            NEIGHBORS_DISCLOSURE: useDisclosure(),
+                            QUESTS_DISCLOSURE: useDisclosure(),
                             //swr mutations
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
@@ -108,6 +121,10 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             QUERY_INVENTORIES_SWR_MUTATION: useQueryInventoriesSwrMutation(),
                             QUERY_NEIGHBORS_SWR_MUTATION: useQueryNeighborsSwrMutation(),
                             QUERY_FOLLOWEES_SWR_MUTATION: useQueryFolloweesSwrMutation(),
+                            QUERY_FOLLOWEES_SWR: useQueryFolloweesSwr(),
+                            QUERY_NEIGHBORS_SWR: useQueryNeighborsSwr(),
+                            QUERY_USER_SWR: useQueryUserSwr(),
+                            QUERY_STATIC_SWR: useQueryStaticSwr(),
                             //io
                             GAMEPLAY_IO: useGameplayIo(),
                         }}
@@ -115,6 +132,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                         {loaded ? children : <LoadingScreen />}
                         <UseEffects />
                         <Modals />
+                        <Toast />
                     </SingletonHookProvider>
                 </SWRConfig>
             </NextThemesProvider>

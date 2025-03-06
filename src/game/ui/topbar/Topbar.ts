@@ -1,15 +1,16 @@
 import { UserSchema } from "@/modules/entities"
 import { BaseAssetKey } from "../../assets"
 import { BaseText, TextColor } from "../elements"
-import { Label, OverlapSizer, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
 import { EventBus, EventName } from "@/game/event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
+import { truncateString } from "@/modules/common"
 
 export class Topbar extends BaseSizer {
     private background: Phaser.GameObjects.Image
     private user: UserSchema
-    private profileContainer: OverlapSizer | undefined
+    private profileContainer: Sizer | undefined
     private resourcesContainer: Sizer | undefined
     private energyLabel: Label | undefined
     private tokenLabel: Label | undefined
@@ -38,10 +39,12 @@ export class Topbar extends BaseSizer {
         })
 
         EventBus.on(EventName.Visit, () => {
+            const user = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
             this.visited = true
-            this.neighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
+            this.neighbor = user
             this.updateContent()
             EventBus.emit(EventName.HideButtons)
+            EventBus.emit(EventName.ShowNeighborButtons)
         })
 
         EventBus.on(EventName.Return, () => {
@@ -49,6 +52,7 @@ export class Topbar extends BaseSizer {
             this.neighbor = undefined
             this.updateContent()
             EventBus.emit(EventName.ShowButtons)
+            EventBus.emit(EventName.HideNeighborButtons)
         })
 
         this.updateContent()
@@ -73,7 +77,7 @@ export class Topbar extends BaseSizer {
                 scene: this.scene,
                 x: 0,
                 y: 0,
-                text: "ABCDE",
+                text: truncateString(user.username, 10, 0),
             },
             options: {
                 fontSize: 24,
@@ -139,19 +143,19 @@ export class Topbar extends BaseSizer {
             rightBottom: levelBoxLabel,
             center: avatarSizer,
         }).layout()
-        const profileContainer = this.scene.rexUI.add
+        this.profileContainer = this.scene.rexUI.add
             .sizer({
                 orientation: "x",
-                originX: 0,
+                originX: this.visited ? 0.5 : 0,
                 originY: 0,
-                x: - this.background.width / 2 + 20,
+                x: this.visited ? 0 : (- this.background.width / 2 + 20),
             }).add(avatar).add(name, {
                 align: "left-center",
                 offsetY: (this.background.height / 2 - avatarWrapperBackground.height / 2),
                 offsetX: -30,
             }).layout()
-        this.addLocal(profileContainer)
-        return profileContainer
+        this.addLocal(this.profileContainer)
+        return this.profileContainer
     }
 
     private updateResourcesContainer() {

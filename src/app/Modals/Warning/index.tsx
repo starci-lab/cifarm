@@ -23,19 +23,22 @@ export const WarningModal: FC = () => {
     const nextModalToken = useAppSelector(
         (state) => state.modalReducer.warningModal.nextModalToken
     )
+    const callback = useAppSelector(
+        (state) => state.modalReducer.warningModal.callback
+    )
+    if (nextModalToken && callback) {
+        throw new Error(
+            "WarningModal: nextModalToken and callback cannot be used together"
+        )
+    }
 
     // get the next modal disclosure
     const nextModalDisclosure =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(nextModalToken)
-
-    // if there is no next modal disclosure, return null
-    if (!nextModalDisclosure) {
-        return null
-    }
-
+    useSingletonHook<ReturnType<typeof useDisclosure>>(nextModalToken ?? "")
+ 
     return (
         <Modal
-            placement="bottom-center"
+            placement="bottom"
             isOpen={isOpen}
             onOpenChange={onOpenChange}
         >
@@ -45,7 +48,7 @@ export const WarningModal: FC = () => {
                     <Alert color="danger">{message}</Alert>
                 </ModalBody>
                 <ModalFooter>
-                    <Button variant="light" onPress={onClose} className="text-foreground-500">
+                    <Button variant="light" onPress={onClose} className="text-foreground-400">
                         Cancel
                     </Button>
                     <Button
@@ -56,7 +59,12 @@ export const WarningModal: FC = () => {
                                 //close the current modal
                                 onClose()
                                 //open the next modal
-                                nextModalDisclosure.onOpen()
+                                if (callback) {
+                                    callback()
+                                }
+                                if (nextModalDisclosure) {
+                                    nextModalDisclosure.onOpen()
+                                }
                             }
                         }
                     >

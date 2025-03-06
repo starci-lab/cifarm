@@ -29,7 +29,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add setting button
         this.settingButton = this.createButton({
-            iconKey: BaseAssetKey.IconSetting,
+            iconKey: BaseAssetKey.UIIconSetting,
             text: "Settings",
             onPress: () => {
                 console.log("Setting")
@@ -39,7 +39,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add inventory button
         this.inventoryButton = this.createButton({
-            iconKey: BaseAssetKey.IconInventory,
+            iconKey: BaseAssetKey.UIIconInventory,
             text: "Inventory",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -62,7 +62,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add daily button
         this.dailyButton = this.createButton({
-            iconKey: BaseAssetKey.IconDaily,
+            iconKey: BaseAssetKey.UIIconDaily,
             text: "Daily",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -75,11 +75,11 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add quest button
         this.questButton = this.createButton({
-            iconKey: BaseAssetKey.IconQuest,
+            iconKey: BaseAssetKey.UIIconQuests,
             text: "Quest",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
-                    modalName: ModalName.Quest
+                    modalName: ModalName.Quests
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
             },
@@ -99,5 +99,17 @@ export class RightHorizontalButtons extends HorizontalButtons {
             }
             this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
+
+        EventBus.on(EventName.HideButtons, () => {
+            this.setVisible(false).setActive(false)
+        })
+        
+        EventBus.on(EventName.ShowButtons, () => {
+            this.setVisible(true).setActive(true)
+        })
+
+        if (this.scene.cache.obj.get(CacheKey.VisitedNeighbor)) {
+            this.setVisible(false).setActive(false)
+        }
     }
 }

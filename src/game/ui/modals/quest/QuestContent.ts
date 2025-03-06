@@ -44,7 +44,7 @@ export class QuestContent extends ContainerLite {
                 title: "Quests",
                 onXButtonPress: () => {
                     EventBus.emit(EventName.CloseModal, {
-                        modalName: ModalName.Quest,
+                        modalName: ModalName.Quests,
                     })
                 },
                 container: {

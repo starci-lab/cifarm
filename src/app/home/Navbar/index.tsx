@@ -33,7 +33,7 @@ export const Navbar: FC = () => {
                                 <Avatar size="sm" src={imageUrl}/>
                                 <div>
                                     <div className="text-sm dark text-background font-bold">{truncateString(username, 8, 0)}</div>
-                                    <div className="text-xs dark text-foreground-500">{truncateString(address, 4)}</div>
+                                    <div className="text-xs dark text-foreground-400">{truncateString(address, 4)}</div>
                                 </div>
                             </div>
                         </CardBody>

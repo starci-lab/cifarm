@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface WarningModal {
     message: string
-    nextModalToken: string
+    nextModalToken?: string
+    callback?: () => void
 }
 
 export interface ReferralLinkModal {
@@ -25,7 +26,6 @@ export interface SignTransactionModal {
 export interface ModalSlice {
     warningModal: WarningModal
     signTransactionModal: SignTransactionModal
-    referralLinkModal: ReferralLinkModal
 }
 
 const initialState: ModalSlice = {
@@ -37,9 +37,6 @@ const initialState: ModalSlice = {
         serializedTx: "",
         transactionFrom: TransactionFrom.Base,
     },
-    referralLinkModal: {
-        code: ""
-    }
 }
 
 export const modalSlice = createSlice({
@@ -52,11 +49,8 @@ export const modalSlice = createSlice({
         setSignTransactionModal: (state, action: PayloadAction<SignTransactionModal>) => {
             state.signTransactionModal = action.payload
         },
-        setReferralLinkModal: (state, action: PayloadAction<ReferralLinkModal>) => {
-            state.referralLinkModal = action.payload
-        },
     }
 })
 
 export const modalReducer = modalSlice.reducer
-export const { setWarningModal, setSignTransactionModal, setReferralLinkModal } = modalSlice.actions
+export const { setWarningModal, setSignTransactionModal } = modalSlice.actions

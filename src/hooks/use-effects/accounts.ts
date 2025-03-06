@@ -9,9 +9,12 @@ import {
     useAppDispatch,
     useAppSelector,
 } from "@/redux"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { createJazziconBlobUrl } from "@/modules/jazz"
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { API_AUTHENTICATION_SWR_MUTATION } from "@/app/constants"
+import { useApiAuthenticationSwrMutation } from "../swr"
 
 export const useAccounts = () => {
     const loadAccountsKey = useAppSelector(
@@ -21,7 +24,13 @@ export const useAccounts = () => {
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
     const pin = useAppSelector((state) => state.sessionReducer.pin)
-
+    const [accountsLoaded, setAccountsLoaded] = useState(false)
+    const {
+        swrMutation,
+    } =
+        useSingletonHook<ReturnType<typeof useApiAuthenticationSwrMutation>>(
+            API_AUTHENTICATION_SWR_MUTATION
+        )
     useEffect(() => {
     //do nothing if loadAccountsKey is equal to 0
         if (!loadAccountsKey) return
@@ -51,6 +60,7 @@ export const useAccounts = () => {
                     currentId: currentAccount.accountId,
                 })
             )
+            setAccountsLoaded(true)
             //move to next page
             router.push(pathConstants.home)
         }
@@ -82,4 +92,13 @@ export const useAccounts = () => {
         }
         handleEffect()
     }, [])
+
+    useEffect(() => {
+        if (!accountsLoaded) return
+        const handleEffect = async () => {
+            //trigger the swrMutation
+            await swrMutation.trigger({})
+        }
+        handleEffect()
+    }, [accountsLoaded])
 }
