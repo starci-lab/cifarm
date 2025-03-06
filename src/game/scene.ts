@@ -5,4 +5,5 @@ export enum SceneName {
     UI = "ui",
     Tutorial = "tutorial",
     Data = "data",
+    Sound = "sound",
 }

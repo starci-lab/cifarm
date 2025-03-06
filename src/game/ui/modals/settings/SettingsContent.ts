@@ -1,8 +1,20 @@
 import { BaseSizerBaseConstructorParams } from "../../../types"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { Background, Slider, Text, getBackgroundContainerSize, ModalBackground, Size, SizeStyle, TextColor, XButton, Checkbox } from "../../elements"
+import {
+    Background,
+    Slider,
+    Text,
+    getBackgroundContainerSize,
+    ModalBackground,
+    Size,
+    SizeStyle,
+    TextColor,
+    XButton,
+    Checkbox,
+} from "../../elements"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
 import { onGameObjectPress } from "../../utils"
+import { DEFAULT_VOLUME } from "@/game/constants"
 
 export class SettingsContent extends BaseSizer {
     private background: ModalBackground
@@ -33,7 +45,7 @@ export class SettingsContent extends BaseSizer {
                         gameObject: button,
                         onPress: () => {
                             EventBus.emit(EventName.CloseModal, {
-                                modalName: ModalName.Settings
+                                modalName: ModalName.Settings,
                             })
                         },
                         scene: this.scene,
@@ -41,7 +53,7 @@ export class SettingsContent extends BaseSizer {
                 },
                 title: "Settings",
                 background: Background.Medium,
-            }
+            },
         })
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
@@ -53,7 +65,7 @@ export class SettingsContent extends BaseSizer {
         if (!this.size.width) {
             throw new Error("Size width is undefined")
         }
-        
+
         const soundText = new Text({
             baseParams: {
                 scene,
@@ -64,7 +76,7 @@ export class SettingsContent extends BaseSizer {
             options: {
                 fontSize: 48,
                 textColor: TextColor.Brown,
-            }
+            },
         })
         this.scene.add.existing(soundText)
         this.soundSlider = new Slider({
@@ -72,21 +84,27 @@ export class SettingsContent extends BaseSizer {
                 scene,
                 config: {
                     orientation: "x",
-                    value: 0.5,
+                    value: DEFAULT_VOLUME,
                     input: "drag",
                     valuechangeCallback: (value: number) => {
-                        console.log(value)
-                    }
-                }
+                        EventBus.emit(EventName.UpdateVolume, {
+                            volume: value,
+                        })
+                    },
+                },
             },
         })
         this.scene.add.existing(this.soundSlider)
-        const soundSizer = this.scene.rexUI.add.sizer({
-            orientation: "horizontal",
-            space: {
-                item: 40
-            },
-        }).add(soundText).add(this.soundSlider).layout()
+        const soundSizer = this.scene.rexUI.add
+            .sizer({
+                orientation: "horizontal",
+                space: {
+                    item: 40,
+                },
+            })
+            .add(soundText)
+            .add(this.soundSlider)
+            .layout()
 
         const musicText = new Text({
             baseParams: {
@@ -98,7 +116,7 @@ export class SettingsContent extends BaseSizer {
             options: {
                 fontSize: 48,
                 textColor: TextColor.Brown,
-            }
+            },
         })
         this.scene.add.existing(musicText)
         this.musicSlider = new Slider({
@@ -106,20 +124,26 @@ export class SettingsContent extends BaseSizer {
                 scene,
                 config: {
                     orientation: "x",
-                    value: 0.5,
+                    value: DEFAULT_VOLUME,
                     input: "drag",
                     valuechangeCallback: (value: number) => {
-                        console.log(value)
-                    }
-                }
+                        EventBus.emit(EventName.UpdateVolume, {
+                            volume: value,
+                        })
+                    },
+                },
             },
         })
-        const musicSizer = this.scene.rexUI.add.sizer({
-            orientation: "horizontal",
-            space: {
-                item: 40
-            },
-        }).add(musicText).add(this.musicSlider).layout()
+        const musicSizer = this.scene.rexUI.add
+            .sizer({
+                orientation: "horizontal",
+                space: {
+                    item: 40,
+                },
+            })
+            .add(musicText)
+            .add(this.musicSlider)
+            .layout()
 
         const ambientText = new Text({
             baseParams: {
@@ -131,7 +155,7 @@ export class SettingsContent extends BaseSizer {
             options: {
                 fontSize: 48,
                 textColor: TextColor.Brown,
-            }
+            },
         })
         this.scene.add.existing(ambientText)
         const ambientCheckbox = new Checkbox({
@@ -142,25 +166,34 @@ export class SettingsContent extends BaseSizer {
                 checked: true,
                 callback: (checked: boolean) => {
                     console.log(checked)
-                }
-            }
+                },
+            },
         })
         this.scene.add.existing(ambientCheckbox)
-        const ambientSizer = this.scene.rexUI.add.sizer({
-            orientation: "horizontal",
-            space: {
-                item: 40
-            },
-        }).add(ambientText).add(ambientCheckbox).layout()
+        const ambientSizer = this.scene.rexUI.add
+            .sizer({
+                orientation: "horizontal",
+                space: {
+                    item: 40,
+                },
+            })
+            .add(ambientText)
+            .add(ambientCheckbox)
+            .layout()
 
-        const sizer = this.scene.rexUI.add.sizer({
-            orientation: "vertical",
-            originY: 0,
-            y: 80,
-            space: {
-                item: 80
-            },
-        }).add(soundSizer).add(musicSizer).add(ambientSizer).layout()
+        const sizer = this.scene.rexUI.add
+            .sizer({
+                orientation: "vertical",
+                originY: 0,
+                y: 80,
+                space: {
+                    item: 80,
+                },
+            })
+            .add(soundSizer)
+            .add(musicSizer)
+            .add(ambientSizer)
+            .layout()
         if (!this.background.container) {
             throw new Error("Background container not found")
         }

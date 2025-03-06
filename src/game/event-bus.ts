@@ -254,6 +254,8 @@ export enum EventName {
     UpdateVisitedNeighbor = "update_visited_neighbor",
 
     UpdateConfirmModal = "update_warning_modal",
+
+    UpdateVolume = "update_volume",
 }
 
 export interface OpenTutorialMessage {
@@ -419,4 +421,8 @@ export interface CreateFlyItemMessage {
 export interface UpdateConfirmModalMessage {
     message: string
     callback?: () => void
+}
+
+export interface UpdateVolumeMessage {
+    volume: number
 }

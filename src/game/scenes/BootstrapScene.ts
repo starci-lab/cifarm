@@ -18,6 +18,7 @@ export class BootstrapScene extends Scene {
     }
 
     create() {
+        this.scene.launch(SceneName.Sound)
         //  Move to the next Scene
         this.scene.start(SceneName.Loading)
     }

@@ -37,3 +37,4 @@ export const BROWN_TINT_COLOR = new Phaser.Display.Color(85, 51, 32).color
 export const SYNC_DELAY_TIME = 5000
 
 export const AUDIO_GAME_MUSIC = "game-music"
+export const DEFAULT_VOLUME = 0.5
