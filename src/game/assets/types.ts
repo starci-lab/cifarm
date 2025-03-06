@@ -15,7 +15,12 @@ export interface TilesetConfig {
   extraOffsets?: ExtraOffsets;
   tileSizeWidth?: number;
   tileSizeHeight?: number;
-  //star
+  starsConfig?: StarsConfig; 
+}
+
+export interface StarsConfig {
+  isVisible?: boolean;
+  extraOffsets?: ExtraOffsets;
 }
 
 // interface for configuration of textures
