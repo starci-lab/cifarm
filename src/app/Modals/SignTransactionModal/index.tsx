@@ -15,11 +15,13 @@ import {
     ModalHeader,
     Spacer,
     useDisclosure,
+    addToast,
 } from "@heroui/react"
 import React, { FC } from "react"
 import { TxResponse } from "@/modules/honeycomb"
 import { ChainKey } from "@/modules/blockchain"
 import { useHoneycombSendTransactionSwrMutation } from "@/hooks"
+import { toastSuccess } from "@/modules/toast"
 
 interface ProviderInfo {
   name: string;
@@ -119,7 +121,14 @@ export const SignTransactionModal: FC = () => {
                                 if (!response) {
                                     console.error("Failed to send transaction")
                                 }
-                                console.log(response)
+                                if (!response) {
+                                    throw new Error("Failed to send transaction")
+                                }
+                                // addToast({
+                                //     title: "Tx Hash",
+                                //     description: truncateString(response.signature?.toString() || ""),
+                                // })
+                                toastSuccess(`Tx Hash: ${truncateString(response.signature?.toString() || "")}`)
                             }
                             // if (extraAction) {
                             //     await extraAction()

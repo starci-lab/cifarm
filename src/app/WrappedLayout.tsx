@@ -1,7 +1,7 @@
 "use client"
 
 import React, { PropsWithChildren, Suspense } from "react"
-import { HeroUIProvider } from "@heroui/react"
+import { HeroUIProvider, ToastProvider as ToastProvider } from "@heroui/react"
 import { Provider as ReduxProvider } from "react-redux"
 import { store } from "@/redux"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
@@ -31,6 +31,11 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             <UseEffects />
                             <Modals />
                             <Toast />
+                            <div className="z-100">
+                                <ToastProvider placement="bottom-center" toastProps={{
+                                    
+                                }} />
+                            </div>       
                         </SingletonHook2Provider>
                     </SingletonHookProvider>
                 </SWRConfig>
