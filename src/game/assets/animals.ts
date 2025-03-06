@@ -23,7 +23,10 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
         ages: {
             [AnimalAge.Baby]: {
                 textureConfig: { key: "animals-cow-baby", assetUrl: "animals/cow/baby.png" },
-                tilesetConfig: { gid: 10001, tilesetName: "animals-cow-baby" },
+                tilesetConfig: { gid: 10001, tilesetName: "animals-cow-baby",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
+                },
             },
             [AnimalAge.Adult]: {
                 textureConfig: { key: "animals-cow-adult", assetUrl: "animals/cow/adult.png" },
@@ -36,11 +39,16 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
         ages: {
             [AnimalAge.Baby]: {
                 textureConfig: { key: "animals-chicken-baby", assetUrl: "animals/chicken/baby.png" },
-                tilesetConfig: { gid: 10011, tilesetName: "animals-chicken-baby" },
+                tilesetConfig: { gid: 10011, tilesetName: "animals-chicken-baby",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
+                },
             },
             [AnimalAge.Adult]: {
                 textureConfig: { key: "animals-chicken-adult", assetUrl: "animals/chicken/adult.png" },
-                tilesetConfig: { gid: 10012, tilesetName: "animals-chicken-adult" },
+                tilesetConfig: { gid: 10012, tilesetName: "animals-chicken-adult",
+                    extraOffsets: { x: -20, y: -10 },
+                },
             },
         },
     },

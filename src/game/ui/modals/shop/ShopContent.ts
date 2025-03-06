@@ -274,13 +274,10 @@ export class ShopContent extends BaseSizer {
 
         EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
             this.user = user
-        })
-
-        EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
             this.updateOwnership()
         })
 
-        EventBus.on(EventName.UserRefreshed, () => {
+        EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
             this.updateOwnership()
         })
     }
