@@ -1,38 +1,43 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "../../constants"
-import { CloseModalMessage, EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import {
+    CloseModalMessage,
+    EventBus,
+    EventName,
+    ModalName,
+    OpenModalMessage,
+} from "../../event-bus"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { AnimalHousingModal } from "./animal-housing"
 import { DailyModal } from "./daily"
 import { InventoryModal } from "./inventory"
-import { NeighborsModal } from "./neighbors"
-import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
 import { ClaimModal } from "./claim"
+import { SettingsModal } from "./settings"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
 })
 export const MODAL_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
-    additionalDepth: 1
+    additionalDepth: 1,
 })
 export const MODAL_BACKDROP_DEPTH_2 = calculateUiDepth({
     layer: UILayer.Modal,
-    additionalDepth: 10
+    additionalDepth: 10,
 })
 export const MODAL_DEPTH_2 = calculateUiDepth({
     layer: UILayer.Modal,
-    additionalDepth: 11
+    additionalDepth: 11,
 })
 export const TUTORIAL_BACKDROP_DEPTH = calculateUiDepth({
     layer: UILayer.Tutorial,
 })
 
-const EXTERNAL_MODALS = [ModalName.Neighbors, ModalName.Quests]
+const EXTERNAL_MODAL_OPACITY_LEVEL = 0.67
 
 export class ModalManager extends ContainerLite {
     // the shop modal
@@ -41,8 +46,6 @@ export class ModalManager extends ContainerLite {
     private inventoryModal: InventoryModal | undefined
     // // daily modal
     private dailyModal: DailyModal | undefined
-    // // quest modal
-    private questModal: QuestModal | undefined
     // //stand modal
     private standModal: StandModal | undefined
     // // select product modal
@@ -51,13 +54,20 @@ export class ModalManager extends ContainerLite {
     private inputQuantityModal: InputQuantityModal | undefined
     // claim modal
     private claimModal: ClaimModal | undefined
-    //private inputQuantityModal: StandModal | undefined
-    // neighbors
-    private neighborsModal: NeighborsModal | undefined
-
+    // animal housing modal
+    private settingsModal: SettingsModal | undefined
     private animalHousingModal: AnimalHousingModal | undefined
+    
+    private externalModalNames = [ ModalName.Neighbors, ModalName.Quests, ModalName.Profile ]
 
-    constructor({ scene, x, y, width, height, children } : ContainerLiteBaseConstructorParams) {
+    constructor({
+        scene,
+        x,
+        y,
+        width,
+        height,
+        children,
+    }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
 
         const centerX = getScreenCenterX(this.scene)
@@ -67,7 +77,9 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).hide()
+        })
+            .setDepth(MODAL_DEPTH_1)
+            .hide()
         this.scene.add.existing(this.shopModal)
 
         // this.add(this.shopModal)
@@ -76,7 +88,9 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).hide()
+        })
+            .setDepth(MODAL_DEPTH_1)
+            .hide()
         this.scene.add.existing(this.inventoryModal)
 
         // create the daily modal
@@ -84,59 +98,65 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).hide()
+        })
+            .setDepth(MODAL_DEPTH_1)
+            .hide()
         this.scene.add.existing(this.dailyModal)
 
-        // create the quest modal
-        this.questModal = new QuestModal({
+        // create the settings modal
+        this.settingsModal = new SettingsModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).hide()
-        this.scene.add.existing(this.questModal)
+        })
+            .setDepth(MODAL_DEPTH_1)
+            .hide()
 
         // create the stand modal
         this.standModal = new StandModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).hide()
+        })
+            .setDepth(MODAL_DEPTH_1)
+            .hide()
         this.scene.add.existing(this.standModal)
 
-        this.neighborsModal = new NeighborsModal({
-            scene: this.scene,
-            x: centerX,
-            y: centerY,
-        }).setDepth(MODAL_DEPTH_1).hide()
-        this.scene.add.existing(this.neighborsModal)
-        
         //selected product is a chained modal, so that it stay in layer depth 2 + 9, default is for the modal
         this.selectProductModal = new SelectProductModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_2).hide()
+        })
+            .setDepth(MODAL_DEPTH_2)
+            .hide()
         this.scene.add.existing(this.selectProductModal)
         // create the input quantity modal
         this.inputQuantityModal = new InputQuantityModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_2).hide()
+        })
+            .setDepth(MODAL_DEPTH_2)
+            .hide()
         this.scene.add.existing(this.inputQuantityModal)
         // create the input quantity modal
         this.claimModal = new ClaimModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_2).hide()
+        })
+            .setDepth(MODAL_DEPTH_2)
+            .hide()
         this.scene.add.existing(this.inputQuantityModal)
 
         this.animalHousingModal = new AnimalHousingModal({
             scene: this.scene,
             x: centerX,
-            y: centerY
-        }).setDepth(MODAL_DEPTH_1).hide()
+            y: centerY,
+        })
+            .setDepth(MODAL_DEPTH_1)
+            .hide()
         this.scene.add.existing(this.animalHousingModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
@@ -148,14 +168,18 @@ export class ModalManager extends ContainerLite {
             this.onClose(message)
         })
     }
- 
+
     // show method, to show the modal
-    private showBackdrop({ showTutorialBackdrop = false, modalName, opacityLevel = 1 }: ShowBackdropParams = {}) {
-        // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
+    private showBackdrop({
+        showTutorialBackdrop = false,
+        modalName,
+        opacityLevel = 1,
+    }: ShowBackdropParams = {}) {
+    // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
         if (this.checkTutorialActive()) {
             if (showTutorialBackdrop) {
                 EventBus.emit(EventName.ShowUIBackdrop, {
-                    depth: TUTORIAL_BACKDROP_DEPTH
+                    depth: TUTORIAL_BACKDROP_DEPTH,
                 })
             }
             return
@@ -171,12 +195,15 @@ export class ModalManager extends ContainerLite {
         }
         EventBus.emit(EventName.ShowUIBackdrop, {
             depth,
-            opacityLevel
+            opacityLevel,
         })
     }
 
-    private hideBackdrop({ hideTutorialBackdrop = false, modalName }: HideBackdropParams) {
-        // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
+    private hideBackdrop({
+        hideTutorialBackdrop = false,
+        modalName,
+    }: HideBackdropParams) {
+    // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
         if (this.checkTutorialActive()) {
             if (hideTutorialBackdrop) {
                 EventBus.emit(EventName.HideUIBackdrop)
@@ -189,7 +216,7 @@ export class ModalManager extends ContainerLite {
         case ModalName.InputQuantity:
         case ModalName.Claim:
             EventBus.emit(EventName.UpdateUIBackdrop, {
-                depth: MODAL_BACKDROP_DEPTH_1
+                depth: MODAL_BACKDROP_DEPTH_1,
             })
             return
         }
@@ -220,12 +247,6 @@ export class ModalManager extends ContainerLite {
             }
             return this.dailyModal
         }
-        case ModalName.Quests: {
-            if (!this.questModal) {
-                throw new Error("Quest modal not found")
-            }
-            return this.questModal
-        }
         case ModalName.Stand: {
             if (!this.standModal) {
                 throw new Error("Stand modal not found")
@@ -244,12 +265,6 @@ export class ModalManager extends ContainerLite {
             }
             return this.inputQuantityModal
         }
-        case ModalName.Neighbors: {
-            if (!this.neighborsModal) {
-                throw new Error("Neighbors modal not found")
-            }
-            return this.neighborsModal
-        }
         case ModalName.AnimalHousing: {
             if (!this.animalHousingModal) {
                 throw new Error("Animal Housing modal not found")
@@ -262,22 +277,36 @@ export class ModalManager extends ContainerLite {
             }
             return this.claimModal
         }
+        case ModalName.Settings: {
+            if (!this.settingsModal) {
+                throw new Error("Settings modal not found")
+            }
+            return this.settingsModal
+        }
         }
     }
-    
+
     // open the modal
     private onOpen({ modalName, showTutorialBackdrop }: OpenModalMessage) {
-        this.showBackdrop({ modalName, showTutorialBackdrop, opacityLevel: EXTERNAL_MODALS.includes(modalName) ? 0.67 : undefined })
-
-        if (modalName === ModalName.Neighbors) {
-            EventBus.emit(EventName.OpenNeighborsModal)
-            return
-        }
-        if (modalName === ModalName.Quests) {
-            EventBus.emit(EventName.OpenQuestsModal)
+        if (this.externalModalNames.includes(modalName)) {
+            EventBus.emit(EventName.OpenExternalModal, {
+                modalName
+            })
+            this.showBackdrop({
+                modalName,
+                showTutorialBackdrop,
+                opacityLevel: EXTERNAL_MODAL_OPACITY_LEVEL,
+            })
             return
         }
         const modal = this.getModal(modalName)
+        if (!modal) {
+            throw new Error(`Modal ${modalName} not found`)
+        }
+        this.showBackdrop({
+            modalName,
+            showTutorialBackdrop,
+        })
         // disable modal input
         if (modal.input) {
             modal.input.enabled = false
@@ -294,20 +323,25 @@ export class ModalManager extends ContainerLite {
 
     // close the modal
     private onClose({ modalName, hideTutorialBackdrop }: CloseModalMessage) {
-        const modal = this.getModal(modalName)
-        // hide the modal
-        modal.hide()
+        if (!this.externalModalNames.includes(modalName)) {
+            const modal = this.getModal(modalName)
+            if (!modal) {
+                throw new Error(`Modal ${modalName} not found`)
+            }
+            // hide the modal
+            modal.hide()
+        }
         this.hideBackdrop({ modalName, hideTutorialBackdrop })
     }
 }
 
 interface ShowBackdropParams {
-    showTutorialBackdrop?: boolean
-    modalName?: ModalName
-    opacityLevel?: number
+  showTutorialBackdrop?: boolean;
+  modalName?: ModalName;
+  opacityLevel?: number;
 }
 
 interface HideBackdropParams {
-    hideTutorialBackdrop?: boolean
-    modalName?: ModalName
+  hideTutorialBackdrop?: boolean;
+  modalName?: ModalName;
 }

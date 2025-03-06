@@ -3,9 +3,12 @@ import { BaseAssetKey } from "../../assets"
 import { BaseText, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
-import { EventBus, EventName } from "@/game/event-bus"
+import { EventBus, EventName, ModalName } from "@/game/event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { truncateString } from "@/modules/common"
+import { loadImageAwait, loadSvgAwait } from "../utils"
+import { createJazziconBlobUrl } from "@/modules/jazz"
+import Button from "phaser3-rex-plugins/plugins/button"
 
 export class Topbar extends BaseSizer {
     private background: Phaser.GameObjects.Image
@@ -38,10 +41,10 @@ export class Topbar extends BaseSizer {
             this.updateContent()
         })
 
-        EventBus.on(EventName.Visit, () => {
-            const user = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
+        EventBus.on(EventName.Visit, async () => {
+            this.neighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
             this.visited = true
-            this.neighbor = user
+            await this.loadAvatar()
             this.updateContent()
             EventBus.emit(EventName.HideButtons)
             EventBus.emit(EventName.ShowNeighborButtons)
@@ -61,6 +64,27 @@ export class Topbar extends BaseSizer {
     private updateContent() {
         this.updateProfileContainer()
         this.updateResourcesContainer()
+    }
+
+    private async loadAvatar() {
+        const user = this.visited ? this.neighbor : this.user
+        if (!user) {
+            throw new Error("User not found")
+        }
+        if (user.avatarUrl) {
+            await loadImageAwait({
+                scene: this.scene,
+                key: user.id,
+                imageUrl: user.avatarUrl
+            })
+        } else {
+            await loadSvgAwait({
+                scene: this.scene,
+                key: user.id,
+                scale: 16,
+                svgUrl: createJazziconBlobUrl(user.accountAddress)
+            })
+        }
     }
 
     private updateProfileContainer() {
@@ -155,6 +179,15 @@ export class Topbar extends BaseSizer {
                 offsetX: -30,
             }).layout()
         this.addLocal(this.profileContainer)
+        // if not visited, allow to click on the avatar to open the profile modal
+        if (!this.visited) {
+            const button = new Button(this.profileContainer)
+            button.on("click", () => {
+                EventBus.emit(EventName.OpenExternalModal, {
+                    modalName: ModalName.Profile,
+                })
+            })
+        }
         return this.profileContainer
     }
 

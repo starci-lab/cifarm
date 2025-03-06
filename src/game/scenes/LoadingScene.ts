@@ -45,16 +45,10 @@ export class LoadingScene extends Scene {
     // data fetching
     private dataFetchingLoaded = 0
     private totalDataFetching = 5
-
-    init() {
-    // Listen to the shutdown event
+    
+    async init() {
+        // Listen to the shutdown event
         this.events.on("shutdown", this.shutdown, this)
-
-        //listen for authentication event
-        EventBus.once(EventName.Authenticated, async () => {
-            //authenticate the user
-            this.authenticated()
-        })
 
         //listen for static data loaded event
         EventBus.once(
@@ -157,7 +151,6 @@ export class LoadingScene extends Scene {
     }
 
     shutdown() {
-        EventBus.off(EventName.Authenticated)
         EventBus.off(EventName.StaticDataLoaded)
         EventBus.off(EventName.UserLoaded)
         EventBus.off(EventName.InventoriesLoaded)
@@ -165,7 +158,7 @@ export class LoadingScene extends Scene {
         EventBus.off(EventName.FolloweesLoaded)
     }
 
-    create() {
+    create() { 
         // get the width and height of the game
         const { width, height } = this.game.scale
 
@@ -196,8 +189,7 @@ export class LoadingScene extends Scene {
         // add the loading progress container to the scene
         this.add.existing(this.loadingProgressBar)
 
-        //emit the event to authenticate
-        EventBus.emit(EventName.Authenticate, this)
+        this.fetchData()
 
         // listen for the complete event
         this.load.on("progress", async (progress: number) => {
@@ -234,7 +226,7 @@ export class LoadingScene extends Scene {
         }
     }
 
-    async authenticated() {
+    async fetchData() {
         if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }

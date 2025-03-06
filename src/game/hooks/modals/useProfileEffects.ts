@@ -1,17 +1,17 @@
-import { QUESTS_DISCLOSURE } from "@/app/constants"
+import { PROFILE_DISCLOSURE } from "@/app/constants"
 import { EventBus, EventName, ModalName, OpenExternalModalMessage } from "@/game/event-bus"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "@heroui/react"
 import { useEffect } from "react"
 
-export const useQuestsEffects = () => {
+export const useProfileEffects = () => {
     const { onOpen } = useSingletonHook<
     ReturnType<typeof useDisclosure>
-  >(QUESTS_DISCLOSURE)
+  >(PROFILE_DISCLOSURE)
     // load user data
     useEffect(() => {
         EventBus.on(EventName.OpenExternalModal, async ({ modalName }: OpenExternalModalMessage) => {
-            if (modalName !== ModalName.Quests) {
+            if (modalName !== ModalName.Profile) {
                 return 
             }
             onOpen()

@@ -2,13 +2,13 @@
 
 import { Container } from "@/components"
 import { useRouterWithSearchParams } from "@/hooks"
-import { Link, Spacer } from "@heroui/react"
+import { Link, Spacer, Tab, Tabs } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
 import { Tokens } from "./Tokens"
 import { NFTs } from "./NFTs"
-import { AssetTab, useAppSelector } from "@/redux"
-import { BottomNavbar } from "./BottomNavbar"
+import { AssetTab, setAssetTab, useAppDispatch, useAppSelector } from "@/redux"
+import { Profile } from "./Profile"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
@@ -16,13 +16,13 @@ const Page: FC = () => {
 
     const renderContent = () => {
         const contentMap = {
-            [AssetTab.Tokens]: <Tokens />,
-            [AssetTab.NFTs]: <NFTs />,
-            [AssetTab.InGameItems]: <div>In-Game Items</div>,
+            [AssetTab.Profile]: <Profile />,
+            [AssetTab.GameAssets]: <Tokens />,
+            [AssetTab.OnChainAssets]: <Tokens />,
         }
         return contentMap[assetTab]
     }
-
+    const dispatch = useAppDispatch()
     return (
         <Container hasPadding>
             <div className="h-full">
@@ -31,17 +31,26 @@ const Page: FC = () => {
                         <Link as="button" onPress={() => router.back()} color="foreground">
                             <ArrowLeftIcon className="w-6 h-6" />
                         </Link>
-                        <div className="text-2xl font-bold">Assets</div>
+                        <div className="text-2xl font-bold">Profile</div>
                     </div>
                     <Spacer y={4} />
                     <div className="text-xs text-foreground-400">
-                        Manage your assets.
+                        Manage your profile, tokens, NFTs, and in-game items
                     </div>
+                    <Spacer y={6} />
+                    <Tabs size="lg" color="primary" classNames={{
+                        base: "w-full",
+                        tabList: "w-full",
+                        tabContent: "group-data-[selected=true]:light group-data-[selected=true]:text-background",
+                    }} selectedKey={assetTab} onSelectionChange={(assetTab) => dispatch(setAssetTab(assetTab))} aria-label="Options">
+                        <Tab key={AssetTab.Profile} title="Profile"/>
+                        <Tab key={AssetTab.GameAssets} title="Game Assets"/>
+                        <Tab key={AssetTab.OnChainAssets} title="On-chain Assets"/>
+                    </Tabs>    
                     <Spacer y={6} />
                     {renderContent()}
                     <Spacer y={12}/>
                 </div>
-                <BottomNavbar />
             </div>
         </Container>
     )

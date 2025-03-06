@@ -79,6 +79,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             INVITE_USER_DISCLOSURE: useDisclosure(),
                             NEIGHBORS_DISCLOSURE: useDisclosure(),
                             QUESTS_DISCLOSURE: useDisclosure(),
+                            PROFILE_DISCLOSURE: useDisclosure(),
                             //swr mutations
                             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
                             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),

@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 export enum AssetTab {
-    Tokens = "tokens",
-    NFTs = "nfts",
-    InGameItems = "inGameItems",
+    Profile = "profile",
+    OnChainAssets = "on-chain-assets",
+    GameAssets = "game-assets",
 }
 export interface TabSlice {
     assetTab: AssetTab
 }
 
 const initialState: TabSlice = {
-    assetTab: AssetTab.Tokens,
+    assetTab: AssetTab.Profile,
 }
 
 export const tabSlice = createSlice({

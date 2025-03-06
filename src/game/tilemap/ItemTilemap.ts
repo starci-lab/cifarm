@@ -211,7 +211,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // method to get the GID for a placed item type
-    protected getTilesetData(placedItemTypeId: PlacedItemTypeId): TilesetConfig {
+    protected getTilesetData(placedItemTypeId: string): TilesetConfig {
         const found = this.getPlacedItemType(placedItemTypeId)
         switch (found.type) {
         case PlacedItemType.Tile: {

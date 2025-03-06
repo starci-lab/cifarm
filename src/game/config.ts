@@ -6,6 +6,7 @@ import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscro
 import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
 import { DataScene } from "./scenes/DataScene"
 import CircleMaskImagePlugin from "phaser3-rex-plugins/plugins/circlemaskimage-plugin.js"
+import { UserSchema } from "@/modules/entities"
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -60,3 +61,9 @@ export const startGame = (parent?: string) => {
     }
     return new Game(config)
 }
+
+export interface GameState {
+    visitedUser?: UserSchema
+}
+
+export const gameState: GameState = {}

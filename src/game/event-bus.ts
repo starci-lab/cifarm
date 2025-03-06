@@ -7,6 +7,7 @@ export const EventBus = new Events.EventEmitter()
 
 // events
 export enum EventName {
+    CloseGame = "close_game",
     Dragging = "dragging",
     DragEnd = "dragend",
     // Between Phaser and React
@@ -63,8 +64,7 @@ export enum EventName {
     CloseTutorial = "close_tutorial",
 
     OpenReferralLinkModal = "open-referral-link-modal",
-    OpenNeighborsModal = "open-neighbors-modal",
-    OpenQuestsModal = "open-quests-modal",
+    OpenExternalModal = "open-external-modal",
 
     // stand
     UpdateSelectProductModal = "update_select_product_modal",
@@ -245,9 +245,7 @@ export enum EventName {
     SyncDelayEnded = "sync_delay_ended",
 
     RequestUpdatePlacedItemLocal = "update_placed_item_local",
-
     RefreshPlaceItemsCacheKey = "refresh_place_items_cache_key",
-
     UpdateVisitedNeighbor = "update_visited_neighbor",
 }
 
@@ -347,6 +345,8 @@ export enum ModalName {
   InputQuantity = "input-quantity",
   AnimalHousing = "animal-housing",
   Claim = "claim",
+  Settings = "settings",
+  Profile = "profile",
 }
 
 export interface OpenModalMessage {
@@ -354,6 +354,11 @@ export interface OpenModalMessage {
     modalName: ModalName
     // show tutorial backdrop
     showTutorialBackdrop?: boolean
+}
+
+export interface OpenExternalModalMessage {
+    // name of the modal to open
+    modalName: ModalName
 }
 
 export interface CloseModalMessage {

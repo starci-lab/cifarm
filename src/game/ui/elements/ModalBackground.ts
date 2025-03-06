@@ -89,7 +89,6 @@ const map: Record<Background, BackgroundData> = {
                 height: 920,
             },
         },
-    // containerAssetKey: BaseAssetKey.UIBackgroundXLargeContainer,
     },
     [Background.Small]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundSmall,
@@ -102,6 +101,7 @@ const map: Record<Background, BackgroundData> = {
                 width: BASE_WIDTH,
             },
         },
+        buttonOffsetY: -40,
     },
     [Background.XXLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXXLarge,

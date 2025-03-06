@@ -12,5 +12,5 @@ export const useGameStatesEffects = () => {
         return () => {
             EventBus.removeListener(EventName.Return)
         }
-    }, [])
+    }, [dispatch])
 }

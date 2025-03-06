@@ -27,12 +27,14 @@ export class RightHorizontalButtons extends HorizontalButtons {
             }
         })
 
-        // add setting button
         this.settingButton = this.createButton({
             iconKey: BaseAssetKey.UIIconSetting,
             text: "Settings",
             onPress: () => {
-                console.log("Setting")
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Settings
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.settingButton)

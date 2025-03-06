@@ -6,6 +6,7 @@ import { SignTransactionModal } from "./SignTransaction"
 import { InviteUserModal } from "./InviteUserModal"
 import { NeighborsModal } from "./Neighbors"
 import { QuestsModal } from "./Quests"
+import { ProfileModal } from "./ProfileModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -14,6 +15,7 @@ const Modals : FC = () => {
             <MnemonicModal />
             <PrivateKeyModal />
             <WarningModal />
+            <ProfileModal />
             <SignTransactionModal />
             <InviteUserModal />
             <NeighborsModal />
