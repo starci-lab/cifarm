@@ -45,7 +45,8 @@ import {
     useApiCureAnimalSwrMutation,
     useApiUpdateReferralSwrMutation,
     useApiUseFertilizerSwrMutation,
-    useApiUpdateFollowXSwrMutation
+    useApiUpdateFollowXSwrMutation,
+    useApiUpgradeBuildingSwrMutation
 } from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
@@ -88,6 +89,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             API_FOLLOW_SWR_MUTATION: useApiFollowSwrMutation(),
                             API_UNFOLLOW_SWR_MUTATION: useApiUnfollowSwrMutation(),
                             API_VISIT_SWR_MUTATION: useApiVisitSwrMutation(),
+                            API_UPGRADE_BUILDING_SWR_MUTATION: useApiUpgradeBuildingSwrMutation(),
                             API_RETURN_SWR_MUTATION: useApiReturnSwrMutation(),
                             API_HELP_USE_HERBICIDE_SWR_MUTATION: useApiHelpUseHerbicideSwrMutation(),
                             API_HELP_USE_PESTICIDE_SWR_MUTATION: useApiHelpUsePesticideSwrMutation(),

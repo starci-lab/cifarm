@@ -143,6 +143,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
+                console.log("this.getPlacedItemType(placedItem.placedItemType).type", this.getPlacedItemType(placedItem.placedItemType).type)
                 gameObject.update(
                     this.getPlacedItemType(placedItem.placedItemType).type,
                     placedItem
@@ -237,7 +238,6 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // reusable method to place a tile for a given placed item
     private placeTileForItem(placedItem: PlacedItemSchema) {
-        console.log("placedtileforItem new: ", placedItem)
         // get tileset data
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
             placedItem.placedItemType

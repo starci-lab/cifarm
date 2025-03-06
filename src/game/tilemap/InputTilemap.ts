@@ -16,11 +16,13 @@ import {
     UsePesticideRequest,
     WaterRequest
 } from "@/modules/axios"
-import { sleep } from "@/modules/common"
+import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
+import { createObjectId, sleep } from "@/modules/common"
 import {
     Activities,
     AnimalId,
     BuildingId,
+    BuildingSchema,
     CropCurrentState,
     CropId,
     CropSchema,
@@ -28,6 +30,7 @@ import {
     InventoryType,
     InventoryTypeSchema,
     PlacedItemType,
+    PlacedItemTypeId,
     ProductSchema,
     SupplyId,
     SupplySchema,
@@ -49,13 +52,12 @@ import {
     TilesetConfig,
 } from "../assets"
 import { RED_TINT_COLOR, SYNC_DELAY_TIME, WHITE_TINT_COLOR } from "../constants"
-import { CreateFlyItemMessage, EventBus, EventName, PlacedInprogressMessage, Position } from "../event-bus"
+import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData, UpdatePlacedItemLocalParams } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
-import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -170,9 +172,7 @@ export class InputTilemap extends ItemTilemap {
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
-                // if (data.pressBlocked) {
-                //     return
-                // }
+
                 this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
@@ -182,6 +182,17 @@ export class InputTilemap extends ItemTilemap {
                     data,
                     data.object.currentPlacedItem?.id
                 )
+                //if max level
+                // eslint-disable-next-line no-case-declarations
+                const buildings = this.scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
+                // eslint-disable-next-line no-case-declarations
+                // const upgradeData = buildings.find(b => createObjectId(b.displayId) === buildingId)?.upgrades
+    
+                
+
+
+                if(data.placedItemType.displayId == PlacedItemTypeId.Home) return
+
                 this.handlePressOnBuilding(data)
                 break
             case PlacedItemType.Animal:
@@ -1230,10 +1241,14 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 // update the placed item in client
-                EventBus.emit(EventName.RequestUpgradeBuilding, updatePlacedItemLocal)
+                // EventBus.emit(EventName.RequestUpgradeBuilding, updatePlacedItemLocal)
 
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.UpgradeBuilding
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
 
-
+                EventBus.emit(EventName.UpdateUpgadeBuildingModal, currentPlacedItem)
             }
             }
         }

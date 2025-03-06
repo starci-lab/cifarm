@@ -1,4 +1,4 @@
-import { InventorySchema, PlacedItemType, TutorialStep } from "@/modules/entities"
+import { InventorySchema, PlacedItemSchema, PlacedItemType, TutorialStep } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -246,6 +246,7 @@ export enum EventName {
     RequestUpdatePlacedItemLocal = "update_placed_item_local",
 
     RefreshPlaceItemsCacheKey = "refresh_place_items_cache_key",
+    UpdateUpgadeBuildingModal = "update_upgrade_building_modal",
 }
 
 export interface OpenTutorialMessage {
@@ -361,6 +362,10 @@ export interface CloseModalMessage {
 
 export interface UpdateInputQuantityModalMessage {
     inventory: InventorySchema
+}
+
+export interface UpdateUpgradeBuildingModalMessage {
+    placedItem: PlacedItemSchema
 }
 
 export interface ClaimItem {

@@ -116,7 +116,7 @@ export class ModalManager extends ContainerLite {
             scene: this.scene,
             x: centerX,
             y: centerY,
-        }).setDepth(MODAL_DEPTH_1).show()
+        }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.upgradeBuildingModal)
         
         //selected product is a chained modal, so that it stay in layer depth 2 + 9, default is for the modal

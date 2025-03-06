@@ -60,13 +60,6 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
             assetUrl: "tools/hammer.png",
         }
     },
-    [ToolId.Relocate]: {
-        name: "Relocate",
-        textureConfig: {
-            key: "relocate",
-            assetUrl: "tools/relocate.png",
-        }
-    },
 }
 
 // function to load the tools assets

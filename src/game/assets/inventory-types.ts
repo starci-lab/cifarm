@@ -155,10 +155,6 @@ export const inventoryTypeAssetMap: Record<
         name: "Hammer",
         textureConfig: { ...toolAssetMap[ToolId.Hammer].textureConfig, useExisting: true },
     },
-    [InventoryTypeId.Relocate]: {
-        name: "Relocate",
-        textureConfig: { ...toolAssetMap[ToolId.Relocate].textureConfig, useExisting: true },
-    },
 }
 
 // Function to load inventory assets in Phaser scene
