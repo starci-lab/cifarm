@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { use } from "react"
-import { SingletonHookContext } from "./Provider"
+import { SingletonHook2Context, SingletonHookContext } from "./Provider"
 
 export type HookReturnType = any;
 export type HookReturnMap = Record<string, HookReturnType>;
@@ -16,5 +16,12 @@ export const useSingletonHook = <HRT extends HookReturnType>(
     name: string
 ): HRT => {
     const { singletonHookRegistry } = use(SingletonHookContext)!
+    return singletonHookRegistry[name]
+}
+
+export const useSingletonHook2 = <HRT extends HookReturnType>(
+    name: string
+): HRT => {
+    const { singletonHookRegistry } = use(SingletonHook2Context)!
     return singletonHookRegistry[name]
 }

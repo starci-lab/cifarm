@@ -10,10 +10,11 @@ export interface MintOffchainTokensRequest {
 export type MintOffchainTokensResponse = TxResponse
 
 export const mintOffchainTokens = (
+    request: MintOffchainTokensRequest,
     { version = Version.V1 }: AxiosOptions = {}
 ) =>
     authAxios.post<
     MintOffchainTokensResponse,
     AxiosResponse<MintOffchainTokensResponse, MintOffchainTokensRequest>,
     MintOffchainTokensRequest
-  >(`${version}/gameplay/mint-offchain-tokens`)
+  >(`${version}/gameplay/mint-offchain-tokens`, request)

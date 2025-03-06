@@ -21,9 +21,9 @@ export const useApiMintOffchainTokensSwrMutation = (): UseSWRMutation<
             _: string,
             extraArgs: { arg: UseApiMintOffchainTokensSwrMutationArgs }
         ) => {
-            const { options } = { ...extraArgs.arg }
+            const { request, options } = { ...extraArgs.arg }
             // mint offchain tokens
-            return await mintOffchainTokens(options)
+            return await mintOffchainTokens(request, options)
         }
     )
 

@@ -16,16 +16,15 @@ export interface MintOffchainTokensRhfInputs {
 }
 
 const Schema: ZodType<MintOffchainTokensRhfInputs> = z.object({
-    amount: z
+    amount: z.coerce
         .number()
         .int()
-        .positive("Amount must be positive")
         .min(1, "Amount must be at least 1")
 })
 
 export const useMintOffchainTokensRhf = () => {
     const form = useForm<MintOffchainTokensRhfInputs>({
-        resolver: zodResolver(Schema),
+        resolver: zodResolver(Schema), 
     })
     const { swrMutation } = useSingletonHook<
             ReturnType<typeof useApiMintOffchainTokensSwrMutation>
@@ -35,6 +34,7 @@ export const useMintOffchainTokensRhf = () => {
     >(SIGN_TRANSACTION_DISCLOSURE)
 
     const onSubmit: SubmitHandler<MintOffchainTokensRhfInputs> = async (inputs) => {
+        console.log("zx")
         // check if transaction is exist
         let tx: TxResponse
         const transaction = await sessionDb.keyValueStore.get(SessionDbKey.HoneycombMintOffchainTokensTransaction)

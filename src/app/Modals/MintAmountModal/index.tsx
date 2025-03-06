@@ -1,7 +1,7 @@
 "use client"
-import { MINT_AMOUNT_DISCLOSURE } from "@/app/constants"
+import { MINT_AMOUNT_DISCLOSURE, MINT_OFFCHAIN_TOKENS_RHF } from "@/app/constants"
 import { useMintOffchainTokensRhf } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import {
     Modal,
     ModalBody,
@@ -25,7 +25,7 @@ export const MintAmountModal: FC = () => {
             control,
             formState: { isValid, isSubmitting },
         }, onSubmit
-    } = useMintOffchainTokensRhf()
+    } = useSingletonHook2<ReturnType<typeof useMintOffchainTokensRhf>>(MINT_OFFCHAIN_TOKENS_RHF)
     return (
         <Modal
             size="sm"
@@ -35,26 +35,28 @@ export const MintAmountModal: FC = () => {
             onOpenChange={onOpenChange}
         >
             <ModalContent>
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <ModalHeader><div className="text-xl font-bold">Mint Amount</div></ModalHeader>
-                    <ModalBody>
-                    
-                        <Controller
-                            control={control}
-                            name="amount"
-                            render={({ field }) => (
-                                <NumberInput
-                                    {...field}     
-                                />
-                            )}
-                        />
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="primary" type="submit" disabled={!isValid || isSubmitting}>Mint</Button>
-                    </ModalFooter>
-                </form>
+                <ModalHeader><div className="text-xl font-bold">Mint Amount</div></ModalHeader>
+                <ModalBody>
+                    <Controller
+                        control={control}
+                        name="amount"
+                        render={({ field, fieldState: { error } }) => (
+                            <NumberInput
+                                {...field}   
+                                errorMessage={error?.message}
+                                isInvalid={!!error?.message}
+                            />
+                        )}
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onPress={async () => 
+                    {
+                        await handleSubmit(onSubmit)()
+                    }} 
+                    isDisabled={!isValid} 
+                    isLoading={isSubmitting}>Mint</Button>
+                </ModalFooter>
             </ModalContent>
         </Modal>
     )
