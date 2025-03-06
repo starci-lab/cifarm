@@ -45,19 +45,19 @@ export const productAssetMap: Record<
             isQuality: true,
         },
     },
-    [ProductId.Radish]: {
-        name: "Radish",
+    [ProductId.Turnip]: {
+        name: "Turnip",
         textureConfig: {
-            assetUrl: "products/radish.png",
-            key: "radish",
+            assetUrl: "products/turnip.png",
+            key: "turnip",
             isQuality: false,
         },
     },
-    [ProductId.RadishQuality]: {
-        name: "Radish Quality",
+    [ProductId.TurnipQuality]: {
+        name: "Turnip Quality",
         textureConfig: {
-            assetUrl: "products/radish.png",
-            key: "radish",
+            assetUrl: "products/turnip.png",
+            key: "turnip",
             useExisting: true,
             isQuality: true,
         },

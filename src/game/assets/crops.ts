@@ -25,21 +25,25 @@ export interface CropAssetData {
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const cropAssetMap: Record<CropId, CropAssetData> = {
-    [CropId.Radish]: {
-        name: "Radish",
+    [CropId.Turnip]: {
+        name: "Turnip",
         stages: {
             0: {
-                textureConfig: { key: "crop-radish-1", assetUrl: "crops/radish/1.png" },
+                textureConfig: { key: "crop-turnip-1", assetUrl: "crops/turnip/1.png" },
                 tilesetConfig: {
                     gid: 1001,
-                    tilesetName: "crop-radish-0",
+                    tilesetName: "crop-turnip-1",
+                    extraOffsets: {
+                        x: 0,
+                        y: -10
+                    }
                 },
             },
             1: {
-                textureConfig: { key: "crop-radish-2", assetUrl: "crops/radish/2.png" },
+                textureConfig: { key: "crop-turnip-2", assetUrl: "crops/turnip/2.png" },
                 tilesetConfig: {
                     gid: 1002,
-                    tilesetName: "crop-radish-1",
+                    tilesetName: "crop-turnip-2",
                     extraOffsets: {
                         x: 0,
                         y: -20,
@@ -47,10 +51,10 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
             2: {
-                textureConfig: { key: "crop-radish-3", assetUrl: "crops/radish/3.png" },
+                textureConfig: { key: "crop-turnip-3", assetUrl: "crops/turnip/3.png" },
                 tilesetConfig: {
                     gid: 1003,
-                    tilesetName: "crop-radish-2",
+                    tilesetName: "crop-turnip-3",
                     extraOffsets: {
                         x: 0,
                         y: -30,
@@ -58,34 +62,34 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
             3: {
-                textureConfig: { key: "crop-radish-4", assetUrl: "crops/radish/4.png" },
+                textureConfig: { key: "crop-turnip-4", assetUrl: "crops/turnip/4.png" },
                 tilesetConfig: {
                     gid: 1004,
-                    tilesetName: "crop-radish-3",
+                    tilesetName: "crop-turnip-4",
                     extraOffsets: {
-                        x: 0,
-                        y: -35,
+                        x: -10,
+                        y: -45,
                     },
                 },
             },
             4: {
-                textureConfig: { key: "crop-radish-5", assetUrl: "crops/radish/5.png" },
+                textureConfig: { key: "crop-turnip-5", assetUrl: "crops/turnip/5.png" },
                 tilesetConfig: {
                     gid: 1005,
-                    tilesetName: "crop-radish-4",
+                    tilesetName: "crop-turnip-5",
                     scaleTextureHeight: 0.8,
                     scaleTextureWidth: 0.8,
                     extraOffsets: {
-                        x: -10,
-                        y: -50,
+                        x: -15,
+                        y: -65,
                     },
                 },
             },
         },
         seed: {
-            textureConfig: { key: "crop-radish-seed", assetUrl: "crops/radish/seed.png" },
+            textureConfig: { key: "crop-turnip-seed", assetUrl: "crops/turnip/seed.png" },
         },
-        textureConfig: { key: "crop-radish", assetUrl: "crops/radish/base.png" },
+        textureConfig: { key: "crop-turnip", assetUrl: "crops/turnip/base.png" },
     },
     [CropId.Carrot]: {
         name: "Carrot",
@@ -94,7 +98,11 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 textureConfig: { key: "crop-carrot-1", assetUrl: "crops/carrot/1.png" },
                 tilesetConfig: {
                     gid: 1001,
-                    tilesetName: "crop-carrot-0",
+                    tilesetName: "crop-carrot-1",
+                    extraOffsets: {
+                        x: 0,
+                        y: -10
+                    }
                 },
             },
             1: {
@@ -102,6 +110,10 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1002,
                     tilesetName: "crop-carrot-2",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30
+                    }
                 },
             },
             2: {
@@ -109,6 +121,12 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1003,
                     tilesetName: "crop-carrot-3",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
+                    extraOffsets: {
+                        x: 0,
+                        y: -40
+                    }
                 },
             },
             3: {
@@ -116,9 +134,11 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1004,
                     tilesetName: "crop-carrot-4",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
                     extraOffsets: {
-                        x: 0,
-                        y: -10,
+                        x: 10,
+                        y: -50,
                     }
                 },
             },
@@ -127,9 +147,11 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1005,
                     tilesetName: "crop-carrot-5",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
                     extraOffsets: {
-                        x: 0,
-                        y: -20,
+                        x: 10,
+                        y: -70,
                     }
                 },
             },
@@ -146,24 +168,17 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 textureConfig: { key: "crop-bell-pepper-1", assetUrl: "crops/bell-pepper/1.png" },
                 tilesetConfig: {
                     gid: 1011,
-                    tilesetName: "crop-bell-pepper-0",
-                },
-            },
-            1: {
-                textureConfig: { key: "crop-bell-pepper-1", assetUrl: "crops/bell-pepper/2.png" },
-                tilesetConfig: {
-                    gid: 1012,
                     tilesetName: "crop-bell-pepper-1",
                     extraOffsets: {
-                        x: 10,
-                        y: -15,
+                        x: 0,
+                        y: -10
                     }
                 },
             },
-            2: {
-                textureConfig: { key: "crop-bell-pepper-2", assetUrl: "crops/bell-pepper/3.png" },
+            1: {
+                textureConfig: { key: "crop-bell-pepper-2", assetUrl: "crops/bell-pepper/2.png" },
                 tilesetConfig: {
-                    gid: 1013,
+                    gid: 1012,
                     tilesetName: "crop-bell-pepper-2",
                     extraOffsets: {
                         x: 10,
@@ -171,25 +186,36 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     }
                 },
             },
-            3: {
-                textureConfig: { key: "crop-bell-pepper-3", assetUrl: "crops/bell-pepper/4.png" },
+            2: {
+                textureConfig: { key: "crop-bell-pepper-3", assetUrl: "crops/bell-pepper/3.png" },
                 tilesetConfig: {
-                    gid: 1014,
+                    gid: 1013,
                     tilesetName: "crop-bell-pepper-3",
                     extraOffsets: {
-                        x: 10,
-                        y: -15,
+                        x: 20,
+                        y: -20,
+                    }
+                },
+            },
+            3: {
+                textureConfig: { key: "crop-bell-pepper-4", assetUrl: "crops/bell-pepper/4.png" },
+                tilesetConfig: {
+                    gid: 1014,
+                    tilesetName: "crop-bell-pepper-4",
+                    extraOffsets: {
+                        x: 20,
+                        y: -25,
                     }
                 },
             },
             4: {
-                textureConfig: { key: "crop-bell-pepper-4", assetUrl: "crops/bell-pepper/5.png" },
+                textureConfig: { key: "crop-bell-pepper-5", assetUrl: "crops/bell-pepper/5.png" },
                 tilesetConfig: {
                     gid: 1015,
-                    tilesetName: "crop-bell-pepper-4",
+                    tilesetName: "crop-bell-pepper-5",
                     extraOffsets: {
-                        x: 10,
-                        y: -30,
+                        x: 15,
+                        y: -40,
                     }
                 },
             },
@@ -207,43 +233,51 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 textureConfig: { key: "crop-cucumber-1", assetUrl: "crops/cucumber/1.png" },
                 tilesetConfig: {
                     gid: 1021,
-                    tilesetName: "crop-cucumber-0",
+                    tilesetName: "crop-cucumber-1",
+                    extraOffsets: {
+                        x: 0,
+                        y: -10
+                    }
                 },
             },
             1: {
-                textureConfig: { key: "crop-cucumber-1", assetUrl: "crops/cucumber/2.png" },
+                textureConfig: { key: "crop-cucumber-2", assetUrl: "crops/cucumber/2.png" },
                 tilesetConfig: {
                     gid: 1022,
-                    tilesetName: "crop-cucumber-1",
-                },
-            },
-            2: {
-                textureConfig: { key: "crop-cucumber-2", assetUrl: "crops/cucumber/3.png" },
-                tilesetConfig: {
-                    gid: 1023,
                     tilesetName: "crop-cucumber-2",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -20
+                    }
+                },
+            },
+            2: {
+                textureConfig: { key: "crop-cucumber-3", assetUrl: "crops/cucumber/3.png" },
+                tilesetConfig: {
+                    gid: 1023,
+                    tilesetName: "crop-cucumber-3",
+                    extraOffsets: {
+                        x: 10,
+                        y: -40,
                     }
                 },
             },
             3: {
-                textureConfig: { key: "crop-cucumber-3", assetUrl: "crops/cucumber/4.png" },
+                textureConfig: { key: "crop-cucumber-4", assetUrl: "crops/cucumber/4.png" },
                 tilesetConfig: {
                     gid: 1024,
-                    tilesetName: "crop-cucumber-3",
+                    tilesetName: "crop-cucumber-4",
                     extraOffsets: {
-                        x: 10,
-                        y: -30,
+                        x: 5,
+                        y: -40,
                     }
                 },
             },
             4: {
-                textureConfig: { key: "crop-cucumber-4", assetUrl: "crops/cucumber/5.png" },
+                textureConfig: { key: "crop-cucumber-5", assetUrl: "crops/cucumber/5.png" },
                 tilesetConfig: {
                     gid: 1025,
-                    tilesetName: "crop-cucumber-4",
+                    tilesetName: "crop-cucumber-5",
                     extraOffsets: {
                         x: 0,
                         y: -40,
@@ -263,46 +297,62 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 textureConfig: { key: "crop-potato-1", assetUrl: "crops/potato/1.png" },
                 tilesetConfig: {
                     gid: 1031,
-                    tilesetName: "crop-potato-0",
+                    tilesetName: "crop-potato-1",
+                    extraOffsets: {
+                        x: 0,
+                        y: -10
+                    }
                 },
             },
             1: {
-                textureConfig: { key: "crop-potato-1", assetUrl: "crops/potato/2.png" },
+                textureConfig: { key: "crop-potato-2", assetUrl: "crops/potato/2.png" },
                 tilesetConfig: {
                     gid: 1032,
-                    tilesetName: "crop-potato-1",
+                    tilesetName: "crop-potato-2",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
+                    extraOffsets: {
+                        x: -10,
+                        y: -30,
+                    }
                 },
             },
             2: {
-                textureConfig: { key: "crop-potato-2", assetUrl: "crops/potato/3.png" },
+                textureConfig: { key: "crop-potato-3", assetUrl: "crops/potato/3.png" },
                 tilesetConfig: {
                     gid: 1033,
-                    tilesetName: "crop-potato-2",
+                    tilesetName: "crop-potato-3",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
                     extraOffsets: {
-                        x: 20,
-                        y: -20,
+                        x: 0,
+                        y: -30,
                     }
                 },
             },
             3: {
-                textureConfig: { key: "crop-potato-3", assetUrl: "crops/potato/4.png" },
+                textureConfig: { key: "crop-potato-4", assetUrl: "crops/potato/4.png" },
                 tilesetConfig: {
                     gid: 1034,
-                    tilesetName: "crop-potato-3",
+                    tilesetName: "crop-potato-4",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
                     extraOffsets: {
-                        x: 20,
-                        y: -20,
+                        x: 10,
+                        y: -30,
                     }
                 },
             },
             4: {
-                textureConfig: { key: "crop-potato-4", assetUrl: "crops/potato/5.png" },
+                textureConfig: { key: "crop-potato-5", assetUrl: "crops/potato/5.png" },
                 tilesetConfig: {
                     gid: 1035,
-                    tilesetName: "crop-potato-4",
+                    tilesetName: "crop-potato-5",
+                    scaleTextureHeight: 0.8,
+                    scaleTextureWidth: 0.8,
                     extraOffsets: {
-                        x: 10,
-                        y: -40,
+                        x: 5,
+                        y: -50,
                     }
                 },
             },
@@ -319,46 +369,62 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 textureConfig: { key: "crop-pineapple-1", assetUrl: "crops/pineapple/1.png" },
                 tilesetConfig: {
                     gid: 1041,
-                    tilesetName: "crop-pineapple-0",
+                    tilesetName: "crop-pineapple-1",
+                    extraOffsets: {
+                        x: 0,
+                        y: -10
+                    }
                 },
             },
             1: {
-                textureConfig: { key: "crop-pineapple-1", assetUrl: "crops/pineapple/2.png" },
+                textureConfig: { key: "crop-pineapple-2", assetUrl: "crops/pineapple/2.png" },
                 tilesetConfig: {
                     gid: 1042,
-                    tilesetName: "crop-pineapple-1",
-                    scaleTextureHeight: 0.7,
-                    scaleTextureWidth: 0.7,
+                    tilesetName: "crop-pineapple-2",
+                    scaleTextureHeight: 0.6,
+                    scaleTextureWidth: 0.6,
+                    extraOffsets: {
+                        x: -5,
+                        y: -10
+                    }
                 },
             },
             2: {
-                textureConfig: { key: "crop-pineapple-2", assetUrl: "crops/pineapple/3.png" },
+                textureConfig: { key: "crop-pineapple-3", assetUrl: "crops/pineapple/3.png" },
                 tilesetConfig: {
                     gid: 1043,
-                    tilesetName: "crop-pineapple-2",
-                    scaleTextureHeight: 0.7,
-                    scaleTextureWidth: 0.7,
+                    tilesetName: "crop-pineapple-3",
+                    scaleTextureHeight: 0.3,
+                    scaleTextureWidth: 0.3,
+                    extraOffsets: {
+                        x: 0,
+                        y: -10
+                    }
                 },
             },
             3: {
-                textureConfig: { key: "crop-pineapple-3", assetUrl: "crops/pineapple/4.png" },
+                textureConfig: { key: "crop-pineapple-4", assetUrl: "crops/pineapple/4.png" },
                 tilesetConfig: {
                     gid: 1044,
-                    tilesetName: "crop-pineapple-3",
-                    scaleTextureHeight: 0.7,
-                    scaleTextureWidth: 0.7,
+                    tilesetName: "crop-pineapple-4",
+                    scaleTextureHeight: 0.3,
+                    scaleTextureWidth: 0.3,
+                    extraOffsets: {
+                        x: -5,
+                        y: -10
+                    }
                 },
             },
             4: {
-                textureConfig: { key: "crop-pineapple-4", assetUrl: "crops/pineapple/5.png" },
+                textureConfig: { key: "crop-pineapple-5", assetUrl: "crops/pineapple/5.png" },
                 tilesetConfig: {
                     gid: 1045,
-                    tilesetName: "crop-pineapple-4",
-                    scaleTextureHeight: 0.7,
-                    scaleTextureWidth: 0.7,
+                    tilesetName: "crop-pineapple-5",
+                    scaleTextureHeight: 0.3,
+                    scaleTextureWidth: 0.3,
                     extraOffsets: {
                         x: 0,
-                        y: -40,
+                        y: -45,
                     }
                 },
             },
@@ -376,6 +442,10 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1051,
                     tilesetName: "crop-watermelon-0",
+                    extraOffsets: {
+                        x: 0,
+                        y: -10
+                    }
                 },
             },
             1: {
@@ -385,6 +455,10 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-watermelon-1",
                     scaleTextureHeight: 0.7,
                     scaleTextureWidth: 0.7,
+                    extraOffsets: {
+                        x: 5,
+                        y: -40
+                    }
                 },
             },
             2: {
@@ -395,8 +469,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureHeight: 0.7,
                     scaleTextureWidth: 0.7,
                     extraOffsets: {
-                        x: 0,
-                        y: -20,
+                        x: 5,
+                        y: -40,
                     }
                 },
             },
@@ -409,7 +483,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureWidth: 0.7,
                     extraOffsets: {
                         x: 0,
-                        y: -20,
+                        y: -30,
                     }
                 },
             },
@@ -422,7 +496,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureWidth: 0.7,
                     extraOffsets: {
                         x: 0,
-                        y: -20,
+                        y: -30,
                     }
                 },
             },

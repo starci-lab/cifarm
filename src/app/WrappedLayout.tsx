@@ -1,7 +1,7 @@
 "use client"
 
 import React, { PropsWithChildren, Suspense } from "react"
-import { HeroUIProvider, ToastProvider as ToastProvider } from "@heroui/react"
+import { HeroUIProvider, ToastProvider } from "@heroui/react"
 import { Provider as ReduxProvider } from "react-redux"
 import { store } from "@/redux"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
