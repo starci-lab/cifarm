@@ -253,7 +253,7 @@ export enum EventName {
 
     UpdateVisitedNeighbor = "update_visited_neighbor",
 
-    UpdateWarningModal = "update_warning_modal",
+    UpdateConfirmModal = "update_warning_modal",
 }
 
 export interface OpenTutorialMessage {
@@ -355,7 +355,7 @@ export enum ModalName {
   Settings = "settings",
   Profile = "profile",
   UpgradeBuilding = "upgrade-building",
-  Warning = "warning",
+  Confirm = "confirm",
 }
 
 export interface OpenModalMessage {
@@ -416,7 +416,7 @@ export interface CreateFlyItemMessage {
     assetKey: string
 }
 
-export interface UpdateWarningModalMessage {
+export interface UpdateConfirmModalMessage {
     message: string
     callback?: () => void
 }

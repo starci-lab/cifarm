@@ -22,6 +22,12 @@ export class SettingsContent extends BaseSizer {
                     showWrapperContainer: false,
                     showContainer: true,
                 },
+                mainButton: {
+                    text: "Quit",
+                    onPress: () => {
+                        EventBus.emit(EventName.CloseGame)
+                    },
+                },
                 onXButtonPress: (button: XButton) => {
                     onGameObjectPress({
                         gameObject: button,
@@ -134,6 +140,9 @@ export class SettingsContent extends BaseSizer {
             },
             options: {
                 checked: true,
+                callback: (checked: boolean) => {
+                    console.log(checked)
+                }
             }
         })
         this.scene.add.existing(ambientCheckbox)

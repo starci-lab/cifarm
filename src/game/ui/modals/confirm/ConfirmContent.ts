@@ -1,10 +1,10 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { BaseSizerBaseConstructorParams } from "../../../types"
 import { Background, BBCodeText, getBackgroundContainerSize, ModalBackground, Size, SizeStyle, TextColor } from "../../elements"
-import { EventBus, EventName, ModalName, UpdateWarningModalMessage } from "@/game/event-bus"
+import { EventBus, EventName, ModalName, UpdateConfirmModalMessage } from "@/game/event-bus"
 import { MODAL_DEPTH_2 } from "../ModalManager"
 
-export class WarningContent extends BaseSizer {
+export class ConfirmContent extends BaseSizer {
     private background: ModalBackground
     private bbCodeText: BBCodeText | undefined
     private size: Size
@@ -41,17 +41,17 @@ export class WarningContent extends BaseSizer {
                 },
                 align: "center",
                 background: Background.Small,
-                title: "Warning",
+                title: "Confirm",
                 onXButtonPress: () => {
                     EventBus.emit(EventName.CloseModal, {
-                        modalName: ModalName.Warning,
+                        modalName: ModalName.Confirm,
                     })
                 },
                 mainButton: {
                     text: "OK",
                     onPress:() => {   
                         EventBus.emit(EventName.CloseModal, {
-                            modalName: ModalName.Warning,
+                            modalName: ModalName.Confirm,
                         })
                         if (this.callback) {
                             this.callback()
@@ -68,7 +68,7 @@ export class WarningContent extends BaseSizer {
             background: Background.Small,
         })
 
-        this.scene.events.on(EventName.UpdateWarningModal, ({ message, callback }: UpdateWarningModalMessage) => {
+        this.scene.events.on(EventName.UpdateConfirmModal, ({ message, callback }: UpdateConfirmModalMessage) => {
             if (!this.size.width) {
                 throw new Error("Size width not found")
             }

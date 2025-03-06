@@ -18,7 +18,7 @@ import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
 import { ClaimModal } from "./claim"
 import { SettingsModal } from "./settings"
 import { UpgradeBuildingModal } from "./upgrade-building"
-import { WarningModal } from "./warning"
+import { ConfirmModal } from "./confirm"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
@@ -59,7 +59,7 @@ export class ModalManager extends ContainerLite {
     // animal housing modal
     private settingsModal: SettingsModal | undefined
     private animalHousingModal: AnimalHousingModal | undefined
-    private warningModal: WarningModal | undefined
+    private confirmModal: ConfirmModal | undefined
 
     private externalModalNames = [ ModalName.Neighbors, ModalName.Quests, ModalName.Profile ]
     private upgradeBuildingModal: UpgradeBuildingModal | undefined
@@ -165,14 +165,14 @@ export class ModalManager extends ContainerLite {
         this.scene.add.existing(this.animalHousingModal)
 
         // create the input quantity modal
-        this.warningModal = new WarningModal({
+        this.confirmModal = new ConfirmModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
         })
             .setDepth(MODAL_DEPTH_2)
             .hide()
-        this.scene.add.existing(this.warningModal)
+        this.scene.add.existing(this.confirmModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
             this.onOpen(message)
@@ -182,6 +182,18 @@ export class ModalManager extends ContainerLite {
         EventBus.on(EventName.CloseModal, (message: CloseModalMessage) => {
             this.onClose(message)
         })
+
+        // test for warning modal
+        this.scene.events.emit(EventName.UpdateConfirmModal, {
+            message: "This is a test message",
+            callback: () => {
+                console.log("callback")
+            }
+        })
+        EventBus.emit(EventName.OpenModal, {
+            modalName: ModalName.Confirm,
+        })
+
     }
 
     // show method, to show the modal
@@ -304,11 +316,11 @@ export class ModalManager extends ContainerLite {
             }
             return this.upgradeBuildingModal
         }
-        case ModalName.Warning: {
-            if (!this.warningModal) {
-                throw new Error("Warning modal not found")
+        case ModalName.Confirm: {
+            if (!this.confirmModal) {
+                throw new Error("Confirm modal not found")
             }
-            return this.warningModal
+            return this.confirmModal
         }
         case ModalName.Neighbors:
         case ModalName.Quests:

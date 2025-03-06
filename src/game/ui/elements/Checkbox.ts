@@ -1,9 +1,11 @@
 import { BaseAssetKey } from "@/game/assets"
 import { ConstructorParams, LabelBaseConstructorParams } from "../../types"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
+import Button from "phaser3-rex-plugins/plugins/button"
 
 export interface CheckboxOptions {
   checked?: boolean;
+  callback: (checked: boolean) => void;
 }
 export class Checkbox extends Label {
     private check: Phaser.GameObjects.Image
@@ -11,9 +13,21 @@ export class Checkbox extends Label {
         baseParams: { scene, config },
         options,
     }: ConstructorParams<LabelBaseConstructorParams, CheckboxOptions>) {
-        const { checked } = { ...options }
+        if (!options) {
+            throw new Error("Checkbox requires options")
+        }
+        const { checked, callback } = options
         const container = scene.add.image(0, 0, BaseAssetKey.UICommonCheckboxContainer)
         const check = scene.add.image(0, 0, BaseAssetKey.UICommonCheck)
+        const button = new Button(container)
+
+        button.on("click", () => {
+            const newChecked = !this.check.visible
+            this.setChecked(newChecked)
+            this.check.visible = newChecked
+            callback(newChecked)
+        })
+
         super(scene, {
             background: container,
             width: container.width,
