@@ -124,11 +124,11 @@ export const SignTransactionModal: FC = () => {
                                 if (!response) {
                                     throw new Error("Failed to send transaction")
                                 }
-                                // addToast({
-                                //     title: "Tx Hash",
-                                //     description: truncateString(response.signature?.toString() || ""),
-                                // })
-                                toastSuccess(`Tx Hash: ${truncateString(response.signature?.toString() || "")}`)
+                                addToast({
+                                    title: "Tx Hash",
+                                    description: truncateString(response.signature?.toString() || ""),
+                                })
+                                //toastSuccess(`Tx Hash: ${truncateString(response.signature?.toString() || "")}`)
                             }
                             // if (extraAction) {
                             //     await extraAction()
