@@ -12,6 +12,7 @@ import { QuestModal } from "./quest"
 import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
 import { ClaimModal } from "./claim"
+import { UpgradeBuildingModal } from "./upgrade-building"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
@@ -56,6 +57,8 @@ export class ModalManager extends ContainerLite {
     private neighborsModal: NeighborsModal | undefined
 
     private animalHousingModal: AnimalHousingModal | undefined
+
+    private upgradeBuildingModal: UpgradeBuildingModal | undefined
 
     constructor({ scene, x, y, width, height, children } : ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -109,6 +112,13 @@ export class ModalManager extends ContainerLite {
             y: centerY,
         }).setDepth(MODAL_DEPTH_1).hide()
         this.scene.add.existing(this.neighborsModal)
+
+        this.upgradeBuildingModal = new UpgradeBuildingModal({
+            scene: this.scene,
+            x: centerX,
+            y: centerY,
+        }).setDepth(MODAL_DEPTH_1).hide()
+        this.scene.add.existing(this.upgradeBuildingModal)
         
         //selected product is a chained modal, so that it stay in layer depth 2 + 9, default is for the modal
         this.selectProductModal = new SelectProductModal({
@@ -261,6 +271,12 @@ export class ModalManager extends ContainerLite {
                 throw new Error("Claim modal not found")
             }
             return this.claimModal
+        }
+        case ModalName.UpgradeBuilding: {
+            if (!this.upgradeBuildingModal) {
+                throw new Error("Upgrade Building modal not found")
+            }
+            return this.upgradeBuildingModal
         }
         }
     }
