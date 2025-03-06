@@ -15,6 +15,7 @@ export interface TilesetConfig {
   extraOffsets?: ExtraOffsets;
   tileSizeWidth?: number;
   tileSizeHeight?: number;
+  //star
 }
 
 // interface for configuration of textures
