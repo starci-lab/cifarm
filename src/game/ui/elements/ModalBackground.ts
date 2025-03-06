@@ -3,14 +3,15 @@ import {
     ContainerLiteBaseConstructorParams,
 } from "@/game/types"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { BaseText, TextColor } from "./BaseText"
+import { Text, TextColor } from "./Text"
 import { BaseAssetKey } from "@/game/assets"
 import { XButton } from "./XButton"
-import { BaseTabs, BaseTabsOptions } from "./BaseTabs"
+import { Tabs, TabsOptions } from "./Tabs"
 import { Button } from "./Button"
 
 const CONTAINER_OFFSET_Y = 150
 const BASE_WIDTH = 884
+const SMALLER_WIDTH = 546
 const TABS_WIDTH = 780
 export enum Background {
   Large = "large",
@@ -95,10 +96,8 @@ const map: Record<Background, BackgroundData> = {
         containerAssetKey: BaseAssetKey.UIBackgroundSmallContainer,
         sizeConfig: {
             container: {
-                width: BASE_WIDTH,
-            },
-            tabContainer: {
-                width: BASE_WIDTH,
+                width: SMALLER_WIDTH,
+                height: 389
             },
         },
         buttonOffsetY: -40,
@@ -130,7 +129,7 @@ export interface ModalBackgroundOptions {
   };
   align?: "center" | "top" | "bottom";
   tabs?: {
-    options: BaseTabsOptions;
+    options: TabsOptions;
     tabContainerOffsetY?: number;
   };
   mainButton?: {
@@ -156,14 +155,14 @@ export const getBackgroundContainerSize = ({
 
 export class ModalBackground extends ContainerLite {
     public xButton: XButton
-    private titleText: BaseText
+    private titleText: Text
     public backgroundImage: Phaser.GameObjects.Image
     public uiContainer: ContainerLite
     public container: ContainerLite | undefined
     public containerImage: Phaser.GameObjects.Image | undefined
     public wrapperContainer: ContainerLite | undefined
     public wrapperContainerImage: Phaser.GameObjects.Image | undefined
-    public tabs: BaseTabs | undefined
+    public tabs: Tabs | undefined
     public tabContainerImage: Phaser.GameObjects.Image | undefined
     public wrapperContainerOffsetY: number
     public mainButton: Button | undefined
@@ -181,7 +180,7 @@ export class ModalBackground extends ContainerLite {
             background,
             title,
             onXButtonPress,
-            titleFontSize = 64,
+            titleFontSize = 56,
             container: containerConfig,
             mainButton,
             tabs: tabsConfig,
@@ -209,7 +208,7 @@ export class ModalBackground extends ContainerLite {
         )
         if (tabsConfig) {
             const { options } = tabsConfig
-            this.tabs = new BaseTabs({
+            this.tabs = new Tabs({
                 baseParams: {
                     scene,
                     width: TABS_WIDTH,
@@ -276,7 +275,7 @@ export class ModalBackground extends ContainerLite {
             this.uiContainer.bringChildToTop(this.tabs)
         }
 
-        this.titleText = new BaseText({
+        this.titleText = new Text({
             baseParams: {
                 scene,
                 text: title,

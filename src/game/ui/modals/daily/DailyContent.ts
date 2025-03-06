@@ -1,7 +1,7 @@
 import { BaseAssetKey } from "@/game/assets"
 import { DailyRewardId, DailyRewardInfo, UserSchema } from "@/modules/entities"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
-import { Background, BaseText, ModalBackground, XButton } from "../../elements"
+import { Background, Text, ModalBackground, XButton } from "../../elements"
 import { onGameObjectPress } from "../../utils"
 import { ClaimItem, EventBus, EventName, ModalName, UpdateClaimModalMessage } from "@/game/event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
@@ -206,7 +206,7 @@ export class DailyContent extends BaseSizer {
 
         // add the day label
         const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
-        const dayText = new BaseText({
+        const dayText = new Text({
             baseParams: {
                 scene: this.scene,
                 x: 0,
@@ -228,7 +228,7 @@ export class DailyContent extends BaseSizer {
 
         const { baseAssetKey } = iconMap[id]
         const icon = this.scene.add.image(0, 0, baseAssetKey)
-        const quantityText = new BaseText({
+        const quantityText = new Text({
             baseParams: {
                 scene: this.scene,
                 x: 0,
@@ -300,7 +300,7 @@ export class DailyContent extends BaseSizer {
         )
         // add the day label
         const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
-        const dayText = new BaseText({
+        const dayText = new Text({
             baseParams: {
                 scene: this.scene,
                 x: 0,

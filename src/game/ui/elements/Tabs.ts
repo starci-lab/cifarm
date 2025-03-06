@@ -21,7 +21,7 @@ export interface BaseTab {
   scale?: number;
 }
 
-export interface BaseTabsOptions {
+export interface TabsOptions {
   name: string;
   tabs: Array<BaseTab>;
   defaultTab: string;
@@ -42,7 +42,7 @@ export interface TabData {
 const SCALE_DOWN_VALUE = 0.8
 const SCALE_PEAK_VALUE = 1
 
-export class BaseTabs extends ContainerLite {
+export class Tabs extends ContainerLite {
     private tabSizer: Sizer
     private selectedTab: string
     private tabMap: Record<string, ContainerLite> = {}
@@ -54,7 +54,7 @@ export class BaseTabs extends ContainerLite {
     constructor({
         baseParams: { scene, x, y, width, height, children },
         options,
-    }: ConstructorParams<ContainerLiteBaseConstructorParams, BaseTabsOptions>) {
+    }: ConstructorParams<ContainerLiteBaseConstructorParams, TabsOptions>) {
         const tabSourceImage = scene.textures
             .get(BaseAssetKey.UITabFrame)
             .getSourceImage() as HTMLImageElement

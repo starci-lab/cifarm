@@ -1,5 +1,5 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { Background, BaseGridTable, BaseGridTableFrame, CellSize, getCellSize, ItemQuantity, ModalBackground } from "../../elements"
+import { Background, GridTable, GridTableFrame, CellSize, getCellSize, ItemQuantity, ModalBackground } from "../../elements"
 import { BaseSizerBaseConstructorParams } from "../../../types"
 import { ClaimData, ClaimItem, EventBus, EventName, ModalName, UpdateClaimModalMessage } from "../../../event-bus"
 import { MODAL_DEPTH_2 } from "../ModalManager"
@@ -7,7 +7,7 @@ import { CELL_SELECT_PRODUCT_DATA_KEY } from "../stand/select-product-modal/cons
 
 export class ClaimContent extends BaseSizer {
     private background: ModalBackground
-    private gridTable: BaseGridTable<ClaimItem> | undefined
+    private gridTable: GridTable<ClaimItem> | undefined
     private cellSize: CellSize
     constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
@@ -64,7 +64,7 @@ export class ClaimContent extends BaseSizer {
         if (!this.background.containerImage) {
             throw new Error("Background container image not found")
         }
-        this.gridTable = new BaseGridTable<ClaimItem>({
+        this.gridTable = new GridTable<ClaimItem>({
             baseParams: {
                 scene: this.scene,
                 config: {
@@ -76,7 +76,7 @@ export class ClaimContent extends BaseSizer {
             options: {
                 columns: 3,
                 createCellContainerCallback: (cell, cellContainer) => {
-                    const background = new BaseGridTableFrame({
+                    const background = new GridTableFrame({
                         scene: this.scene,
                         x: 0,
                         y: 0,

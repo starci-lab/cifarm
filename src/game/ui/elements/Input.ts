@@ -2,11 +2,11 @@ import {
     Label,
     TextEdit,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { TextColor } from "./BaseText"
+import { TextColor } from "./Text"
 import { ConstructorParams, LabelBaseConstructorParams } from "@/game/types"
 import { BaseAssetKey } from "@/game/assets"
 import { NinePatch3x3 } from "./NinePatch3x3"
-import { BaseBBCodeText } from "./BaseBBCodeText"
+import { BBCodeText } from "./BBCodeText"
 
 export enum InputIcon {
   MagnifyingGlass = "magnifying-glass",
@@ -23,7 +23,7 @@ export interface InputOptions {
 }
 
 export class Input extends Label {
-    private bbText: BaseBBCodeText
+    private bbText: BBCodeText
     constructor({
         baseParams: { scene, config },
         options,
@@ -59,7 +59,7 @@ export class Input extends Label {
 
         const iconKey = icon ? map[icon] : undefined
         const iconImage = iconKey ? scene.add.image(0, 0, iconKey) : undefined
-        const text = new BaseBBCodeText({
+        const text = new BBCodeText({
             baseParams: {
                 scene,
                 text: "",

@@ -3,7 +3,7 @@ import {
     BadgeLabelBaseConstructorParams,
 } from "@/game/types"
 import { BadgeLabel } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseText } from "./BaseText"
+import { Text } from "./Text"
 
 export interface ItemQuantityOptions {
   assetKey: string;
@@ -47,9 +47,9 @@ export class ItemQuantity extends BadgeLabel {
             })
             .layout()
         iconContainer.addLocal(icon)
-        let rightBottomText: BaseText | undefined
+        let rightBottomText: Text | undefined
         if (showBadge) {
-            rightBottomText = new BaseText({
+            rightBottomText = new Text({
                 baseParams: {
                     scene,
                     text: quantity.toString(),

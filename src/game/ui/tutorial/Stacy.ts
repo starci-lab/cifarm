@@ -7,7 +7,7 @@ import {
 import { tutorialStepMap } from "./config"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, stacyAssetMap } from "@/game/assets"
-import { BaseText, NinePatch3x3, TextColor } from "../elements"
+import { Text, NinePatch3x3, TextColor } from "../elements"
 import { sleep } from "@/modules/common"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
@@ -39,7 +39,7 @@ export class Stacy extends ContainerLite {
     }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
 
-        this.pressToContinueText = new BaseText({
+        this.pressToContinueText = new Text({
             baseParams: {
                 scene: this.scene,
                 text: "Press to continue",
@@ -92,7 +92,7 @@ export class Stacy extends ContainerLite {
             },
         })
         this.scene.add.existing(bubbleNinePatch)
-        const text = new BaseText({
+        const text = new Text({
             baseParams: {
                 scene: this.scene,
                 text: "",
@@ -129,7 +129,7 @@ export class Stacy extends ContainerLite {
             .layout()
         this.add(this.stacyBubble)
 
-        const helperText = new BaseText({
+        const helperText = new Text({
             baseParams: {
                 scene: this.scene,
                 text: "",

@@ -1,6 +1,6 @@
 import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { ConstructorParams, ButtonsBaseConstructorParams } from "../../types"
-import { BaseText } from "../elements"
+import { Text } from "../elements"
 import { onGameObjectPress } from "../utils"
 
 export interface CreateButtonParams {
@@ -47,7 +47,7 @@ export abstract class HorizontalButtons extends Buttons {
         const image = this.scene.add
             .image(0, 0, iconKey)
             .setDisplaySize(width, height)
-        const textObj = new BaseText({
+        const textObj = new Text({
             baseParams: {
                 scene: this.scene,
                 x: 0,

@@ -31,7 +31,7 @@ export enum StrokeColor {
   Chestnut = "#59312C"
 }
 
-export class BaseText extends Phaser.GameObjects.Text {
+export class Text extends Phaser.GameObjects.Text {
     constructor({
         baseParams: { scene, x, y, text, style },
         options,

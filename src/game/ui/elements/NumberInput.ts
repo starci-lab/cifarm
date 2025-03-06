@@ -2,9 +2,9 @@ import { BaseAssetKey } from "@/game/assets"
 import { ConstructorParams, SizerBaseConstructorParams } from "../../types"
 import { Label, Sizer, TextEdit } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { NinePatch3x3 } from "./NinePatch3x3"
-import { TextColor } from "./BaseText"
+import { TextColor } from "./Text"
 import { onGameObjectPress } from "../utils"
-import { BaseBBCodeText } from "./BaseBBCodeText"
+import { BBCodeText } from "./BBCodeText"
 import { UpdateValueParams, SetBoundsParams } from "./types"
 
 export interface NumberInputOptions {
@@ -28,7 +28,7 @@ export class NumberInput extends Sizer {
     private leftArrow: Label | undefined
     private rightArrow: Label | undefined
     private inputText: Label  
-    private bbCodeText: BaseBBCodeText  
+    private bbCodeText: BBCodeText  
     private min: number
     private max: number
 
@@ -60,17 +60,15 @@ export class NumberInput extends Sizer {
         })
         scene.add.existing(inputBackground)
 
-        this.bbCodeText = new BaseBBCodeText({
+        this.bbCodeText = new BBCodeText({
             baseParams: {
                 scene: this.scene,
                 text: defaultValue.toString(),
-                style: {
-                    fixedWidth: width,
-                }
             },
             options: {
                 fontSize,
                 textColor,
+                width,
             }
         })
         this.scene.add.existing(this.bbCodeText)

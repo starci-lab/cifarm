@@ -8,7 +8,7 @@ import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMes
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "@/game/queries"
 import { MODAL_DEPTH_1 } from "../ModalManager"
-import { BaseText, XButton } from "../../elements"
+import { Text, XButton } from "../../elements"
 import { RetainProductRequest } from "@/modules/axios"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "@/game/constants"
@@ -135,9 +135,9 @@ export class StandContent extends BaseSizer {
                     }
                     const tagBackground = scene.add.image(0, 0, BaseAssetKey.UIModalStandTag)
                     
-                    let tagText: BaseText | undefined
+                    let tagText: Text | undefined
                     if (item) {
-                        tagText = new BaseText({
+                        tagText = new Text({
                             baseParams: {
                                 scene: this.scene,
                                 x: 0,

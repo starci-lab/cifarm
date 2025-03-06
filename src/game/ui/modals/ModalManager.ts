@@ -18,6 +18,7 @@ import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
 import { ClaimModal } from "./claim"
 import { SettingsModal } from "./settings"
 import { UpgradeBuildingModal } from "./upgrade-building"
+import { WarningModal } from "./warning"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
@@ -58,7 +59,8 @@ export class ModalManager extends ContainerLite {
     // animal housing modal
     private settingsModal: SettingsModal | undefined
     private animalHousingModal: AnimalHousingModal | undefined
-    
+    private warningModal: WarningModal | undefined
+
     private externalModalNames = [ ModalName.Neighbors, ModalName.Quests, ModalName.Profile ]
     private upgradeBuildingModal: UpgradeBuildingModal | undefined
 
@@ -106,6 +108,7 @@ export class ModalManager extends ContainerLite {
         })
             .setDepth(MODAL_DEPTH_1)
             .hide()
+        this.scene.add.existing(this.settingsModal)
 
         // create the stand modal
         this.standModal = new StandModal({
@@ -160,6 +163,16 @@ export class ModalManager extends ContainerLite {
             .setDepth(MODAL_DEPTH_1)
             .hide()
         this.scene.add.existing(this.animalHousingModal)
+
+        // create the input quantity modal
+        this.warningModal = new WarningModal({
+            scene: this.scene,
+            x: centerX,
+            y: centerY,
+        })
+            .setDepth(MODAL_DEPTH_2)
+            .hide()
+        this.scene.add.existing(this.warningModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
             this.onOpen(message)
@@ -291,6 +304,16 @@ export class ModalManager extends ContainerLite {
             }
             return this.upgradeBuildingModal
         }
+        case ModalName.Warning: {
+            if (!this.warningModal) {
+                throw new Error("Warning modal not found")
+            }
+            return this.warningModal
+        }
+        case ModalName.Neighbors:
+        case ModalName.Quests:
+        case ModalName.Profile:
+            throw new Error("External modals should not be opened directly")
         }
     }
 
@@ -308,9 +331,6 @@ export class ModalManager extends ContainerLite {
             return
         }
         const modal = this.getModal(modalName)
-        if (!modal) {
-            throw new Error(`Modal ${modalName} not found`)
-        }
         this.showBackdrop({
             modalName,
             showTutorialBackdrop,
@@ -333,9 +353,6 @@ export class ModalManager extends ContainerLite {
     private onClose({ modalName, hideTutorialBackdrop }: CloseModalMessage) {
         if (!this.externalModalNames.includes(modalName)) {
             const modal = this.getModal(modalName)
-            if (!modal) {
-                throw new Error(`Modal ${modalName} not found`)
-            }
             // hide the modal
             modal.hide()
         }

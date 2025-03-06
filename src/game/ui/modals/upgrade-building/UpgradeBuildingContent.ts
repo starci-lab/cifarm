@@ -5,15 +5,15 @@ import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../../assets"
 import { EventBus, EventName, ModalName } from "../../../event-bus"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
-import { Background, BaseText, Button, ModalBackground, TextColor } from "../../elements"
+import { Background, Text, Button, ModalBackground, TextColor } from "../../elements"
 import { createObjectId } from "@/modules/common"
 
 export class UpgradeBuildingContent extends BaseSizer {
     private background: ModalBackground
     private mainContainer: Sizer
     private goldLabel: Label
-    private levelText: BaseText
-    private amountText: BaseText
+    private levelText: Text
+    private amountText: Text
     private buildings: Array<BuildingSchema>
     private currentUser: UserSchema
     private currentPlacedItemId: string = ""
@@ -60,7 +60,7 @@ export class UpgradeBuildingContent extends BaseSizer {
             originY: 0.5,
         })
 
-        this.levelText = new BaseText({
+        this.levelText = new Text({
             baseParams: { scene, text: "Current Level: 0", x: 0, y: 0 },
             options: { fontSize: 30, textColor: TextColor.Brown }
         }).setOrigin(0.5, 0)
@@ -123,7 +123,7 @@ export class UpgradeBuildingContent extends BaseSizer {
         const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)
         iconContainer.add(icon)
 
-        this.amountText = new BaseText({
+        this.amountText = new Text({
             baseParams: { scene: this.scene, x: 0, y: 0, text: amount.toString() },
             options: { fontSize: 28, textColor: TextColor.White }
         })

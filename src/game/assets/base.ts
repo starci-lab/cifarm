@@ -10,7 +10,7 @@ export enum BootstrapAssetKey {
 export enum BaseAssetKey {
     Grass = "grass",
     FlowerGrass = "flower-grass",
-
+    
     // Icons
     UIIconShop = "ui-icon-shop",
     UIIconRoadsideStand = "ui-icon-roadside-stand",
@@ -125,6 +125,12 @@ export enum BaseAssetKey {
     UICommonCheck = "ui-common-check",
     UICommonX2 = "ui-common-x2",
     UICommonExperience = "ui-common-experience",
+    // Slider
+    UICommonSliderThumb = "ui-common-slider-thumb",
+    UICommonSliderTrack = "ui-common-slider-track",
+    UICommonSliderIndicator = "ui-common-slider-indicator",
+    UICommonSliderBackground = "ui-common-slider-background",
+    UICommonCheckboxContainer = "ui-common-checkbox-container",
 
     //Topbar
     UITopbarHeader = "ui-topbar-header",
@@ -163,6 +169,7 @@ export const bootstrapAssetMap: Record<BootstrapAssetKey, string> = {
 export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.Grass]: "grass.png",
     [BaseAssetKey.FlowerGrass]: "flower-grass.png",
+
     // icons
     [BaseAssetKey.UIIconShop]: "ui/icons/shop.png",
     [BaseAssetKey.UIIconRoadsideStand]: "ui/icons/roadside-stand.png",
@@ -290,6 +297,11 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonIconCarrot]: "ui/common/icon-carrot.png",
     [BaseAssetKey.UICommonCheck]: "ui/common/check.png",
     [BaseAssetKey.UICommonExperience]: "ui/common/experience.png",
+    [BaseAssetKey.UICommonSliderThumb]: "ui/common/slider-thumb.png",
+    [BaseAssetKey.UICommonSliderTrack]: "ui/common/slider-track.png",
+    [BaseAssetKey.UICommonSliderIndicator]: "ui/common/slider-indicator.png",
+    [BaseAssetKey.UICommonSliderBackground]: "ui/common/slider-background.png",
+    [BaseAssetKey.UICommonCheckboxContainer]: "ui/common/checkbox-container.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",

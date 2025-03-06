@@ -1,9 +1,9 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { CacheKey, BaseSizerBaseConstructorParams } from "../../../../types"
 import {
-    BaseGridTable,
+    GridTable,
     ItemQuantity,
-    BaseGridTableFrame,
+    GridTableFrame,
     ModalBackground,
     Background,
     XButton,
@@ -28,7 +28,7 @@ import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 export class SelectProductContent extends BaseSizer {
     private background: ModalBackground
     private inventoryTypes: Array<InventoryTypeSchema> = []
-    private gridTable: BaseGridTable<InventorySchema> | undefined
+    private gridTable: GridTable<InventorySchema> | undefined
     private gridMap: Record<number, ItemQuantity> = {}
     private inventories: Array<InventorySchema> = []
     private cellSize: CellSize
@@ -141,7 +141,7 @@ export class SelectProductContent extends BaseSizer {
         if (!this.background.containerImage) {
             throw new Error("Background container image not found")
         }
-        this.gridTable = new BaseGridTable<InventorySchema>({
+        this.gridTable = new GridTable<InventorySchema>({
             baseParams: {
                 scene: this.scene,
                 config: {
@@ -153,7 +153,7 @@ export class SelectProductContent extends BaseSizer {
             options: {
                 columns: 3,
                 createCellContainerCallback: (cell, cellContainer) => {
-                    const background = new BaseGridTableFrame({
+                    const background = new GridTableFrame({
                         scene: this.scene,
                         x: 0,
                         y: 0,

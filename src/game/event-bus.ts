@@ -252,6 +252,8 @@ export enum EventName {
     UpdateUpgadeBuildingModal = "update_upgrade_building_modal",
 
     UpdateVisitedNeighbor = "update_visited_neighbor",
+
+    UpdateWarningModal = "update_warning_modal",
 }
 
 export interface OpenTutorialMessage {
@@ -353,6 +355,7 @@ export enum ModalName {
   Settings = "settings",
   Profile = "profile",
   UpgradeBuilding = "upgrade-building",
+  Warning = "warning",
 }
 
 export interface OpenModalMessage {
@@ -411,4 +414,9 @@ export interface CreateFlyItemMessage {
     position: Position
     quantity: number
     assetKey: string
+}
+
+export interface UpdateWarningModalMessage {
+    message: string
+    callback?: () => void
 }

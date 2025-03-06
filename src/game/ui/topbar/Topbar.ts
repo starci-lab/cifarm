@@ -1,6 +1,6 @@
 import { UserSchema } from "@/modules/entities"
 import { BaseAssetKey } from "../../assets"
-import { BaseText, TextColor } from "../elements"
+import { Text, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
@@ -96,7 +96,7 @@ export class Topbar extends BaseSizer {
             throw new Error("User not found")
         }
         const nameBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarName)
-        const nameText = new BaseText({
+        const nameText = new Text({
             baseParams: {
                 scene: this.scene,
                 x: 0,
@@ -140,7 +140,7 @@ export class Topbar extends BaseSizer {
             expand: false
         }).layout()
         const levelBoxImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarLevelBox)
-        const levelText = new BaseText({
+        const levelText = new Text({
             baseParams: {
                 scene: this.scene,
                 x: 0,
@@ -262,7 +262,7 @@ export class Topbar extends BaseSizer {
         const iconContainer = this.scene.add.container(0, 0)
         const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)
         iconContainer.add(icon)
-        const amountText = new BaseText({
+        const amountText = new Text({
             baseParams: {
                 scene: this.scene,
                 x: 0,

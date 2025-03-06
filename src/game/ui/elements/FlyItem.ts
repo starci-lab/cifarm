@@ -1,6 +1,6 @@
 import { ConstructorParams, SizerBaseConstructorParams } from "@/game/types"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseText } from "./BaseText"
+import { Text } from "./Text"
 
 export interface FlyItemOptions {
   scale?: number;
@@ -34,7 +34,7 @@ export class FlyItem extends Sizer {
             y,
             flyHeight = 200,
         } = options
-        const text = new BaseText({
+        const text = new Text({
             baseParams: {
                 scene,
                 text: `+${quantity}`,

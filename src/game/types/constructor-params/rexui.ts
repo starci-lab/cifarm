@@ -4,11 +4,13 @@ import {
     NinePatch2,
     OverlapSizer,
     Pinch,
+    Checkbox,
     ScrollablePanel,
     Sizer,
     GridTable,
     BadgeLabel,
-    BBCodeText
+    BBCodeText,
+    Slider,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 // base constructor params for NinePatch2
@@ -49,11 +51,21 @@ export interface ConstructorParams<TBaseConstructorParams, TOptions> {
 }
 
 export interface BBCodeTextBaseConstructorParams {
-  scene: Phaser.Scene, 
-  x?: number, 
-  y?: number,
-  text?: string, 
-  style?: BBCodeText.TextStyle
+  scene: Phaser.Scene;
+  x?: number;
+  y?: number;
+  text?: string;
+  style?: BBCodeText.TextStyle;
+}
+
+export interface CheckboxBaseConstructorParams {
+  scene: Phaser.Scene;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  color?: number;
+  config?: Partial<Checkbox.IConfig>;
 }
 
 // base constructor params for Buttons
@@ -76,6 +88,11 @@ export interface ScrollablePanelBaseConstructorParams {
 export interface GridTableBaseConstructorParams {
   scene: Phaser.Scene;
   config?: Partial<GridTable.IConfig>;
+}
+
+export interface SliderBaseConstructorParams {
+  scene: Phaser.Scene;
+  config?: Partial<Slider.IConfig>;
 }
 
 export interface ContainerLiteBaseConstructorParams {

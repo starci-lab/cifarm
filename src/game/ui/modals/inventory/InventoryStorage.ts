@@ -11,9 +11,9 @@ import {
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { getFirstSeedInventory, getStorageInventories } from "@/game/queries"
 import {
-    BaseGridTable,
+    GridTable,
     ItemQuantity,
-    BaseGridTableFrame,
+    GridTableFrame,
     ModalBackground,
     Background,
     XButton,
@@ -42,7 +42,7 @@ import { getDepth } from "./utils"
 export class InventoryStorage extends BaseSizer {
     private background: ModalBackground
     // grid storage & toolbar
-    private gridTable: BaseGridTable<InventorySchema | null> | undefined
+    private gridTable: GridTable<InventorySchema | null> | undefined
     // items
     private items: Record<string, ItemQuantity> = {}
 
@@ -207,7 +207,7 @@ export class InventoryStorage extends BaseSizer {
         if (!this.background.containerImage) {
             throw new Error("Background container image not found")
         }
-        this.gridTable = new BaseGridTable<InventorySchema | null>({
+        this.gridTable = new GridTable<InventorySchema | null>({
             baseParams: {
                 scene: this.scene,
                 config: {
@@ -219,7 +219,7 @@ export class InventoryStorage extends BaseSizer {
             },
             options: {
                 createCellContainerCallback: (cell, cellContainer) => {
-                    const background = new BaseGridTableFrame({
+                    const background = new GridTableFrame({
                         scene: this.scene,
                         x: 0,
                         y: 0,

@@ -1,7 +1,7 @@
 import { BaseAssetKey } from "@/game/assets"
 import { ConstructorParams, LabelBaseConstructorParams } from "../../types"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseText } from "./BaseText"
+import { Text } from "./Text"
 import { onGameObjectPress } from "../utils"
 import { NinePatch3x3 } from "./NinePatch3x3"
 import { GRAY_TINT_COLOR } from "@/game/constants"
@@ -24,7 +24,7 @@ export interface ButtonOptions {
     syncTextScale?: boolean
 }
 export class Button extends Label {
-    private textObj: BaseText
+    private textObj: Text
     private background: NinePatch3x3
     private disabled = false
     constructor({ baseParams: { scene, config }, options }: ConstructorParams<LabelBaseConstructorParams, ButtonOptions>) {
@@ -49,7 +49,7 @@ export class Button extends Label {
         })
         scene.add.existing(buttonBackground)
 
-        const textObj = new BaseText({
+        const textObj = new Text({
             baseParams: {
                 scene,
                 text,

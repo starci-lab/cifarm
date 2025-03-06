@@ -47,7 +47,7 @@ import { getFirstSeedInventory } from "../../../queries"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import {
     Background,
-    BaseText,
+    Text,
     Button,
     ButtonBackground,
     FlyItem,
@@ -627,7 +627,7 @@ export class ShopContent extends BaseSizer {
             const lock = this.scene.add
                 .image(0, 0, BaseAssetKey.UIModalShopLock)
                 .setOrigin(0, 0)
-            const lockText = new BaseText({
+            const lockText = new Text({
                 baseParams: {
                     scene: this.scene,
                     text: `Lv. ${unlockLevel}`,
@@ -664,7 +664,7 @@ export class ShopContent extends BaseSizer {
                 ? `${currentOwnership}/${maxOwnership}`
                 : ""
 
-            const ownershipLabel = new BaseText({
+            const ownershipLabel = new Text({
                 baseParams: {
                     scene: this.scene,
                     text: ownershipText,

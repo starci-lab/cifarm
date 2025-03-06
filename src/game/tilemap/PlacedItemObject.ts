@@ -14,7 +14,7 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { AnimalAge, animalAssetMap, BaseAssetKey, cropAssetMap, productAssetMap } from "../assets"
 import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
-import { BaseText } from "../ui"
+import { Text } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { GameObjects } from "phaser"
 
@@ -322,7 +322,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         this.currentPlacedItem?.seedGrowthInfo?.currentStageTimeElapsed
             ) {
                 if (!this.timer) {
-                    const text = new BaseText({
+                    const text = new Text({
                         baseParams: {
                             scene: this.scene,
                             x: 0,
@@ -487,7 +487,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         this.currentPlacedItem?.animalInfo?.currentGrowthTime
             ) {
                 if (!this.timer) {
-                    const text = new BaseText({
+                    const text = new Text({
                         baseParams: {
                             scene: this.scene,
                             x: 0,

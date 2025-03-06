@@ -4,14 +4,14 @@ import {
     GridTableBaseConstructorParams,
     ImageBaseConstructorParams,
 } from "../../types"
-import { GridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { GridTable as RexGridTable } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 const MARGIN = 15
 const STORAGE_COLUMN_COUNT = 4
 
-export interface BaseGridTableOptions<TItem> {
+export interface GridTableOptions<TItem> {
   createCellContainerCallback: (
-    cell: GridTable.CellType,
+    cell: RexGridTable.CellType,
     cellContainer: Phaser.GameObjects.GameObject | null
   ) => Phaser.GameObjects.GameObject;
   // additional methods for the
@@ -19,7 +19,7 @@ export interface BaseGridTableOptions<TItem> {
   columns?: number;
 }
 
-export class BaseGridTableFrame extends Phaser.GameObjects.Image {
+export class GridTableFrame extends Phaser.GameObjects.Image {
     constructor({ scene, x, y }: ImageBaseConstructorParams) {
         super(scene, x, y, BaseAssetKey.UIModalCommonFrame)
     }
@@ -40,16 +40,16 @@ export const getCellSize = (scene: Phaser.Scene): CellSize => {
     }
 }
 
-export class BaseGridTable<TItem> extends GridTable {
+export class GridTable<TItem> extends RexGridTable {
     constructor({
         baseParams: { scene, config },
         options,
     }: ConstructorParams<
     GridTableBaseConstructorParams,
-    BaseGridTableOptions<TItem>
+    GridTableOptions<TItem>
   >) {
         if (!options) {
-            throw new Error("BaseGridTable requires options")
+            throw new Error("GridTable requires options")
         }
 
         const frameSourceImage = scene.textures
