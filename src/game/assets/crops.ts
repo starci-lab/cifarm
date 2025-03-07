@@ -77,8 +77,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1005,
                     tilesetName: "crop-turnip-5",
-                    scaleTextureHeight: 0.8,
-                    scaleTextureWidth: 0.8,
+                    scaleTextureHeight: 0.55,
+                    scaleTextureWidth: 0.55,
                     extraOffsets: {
                         x: -15,
                         y: -55,
@@ -134,8 +134,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1004,
                     tilesetName: "crop-carrot-4",
-                    scaleTextureHeight: 0.8,
-                    scaleTextureWidth: 0.8,
+                    scaleTextureHeight: 0.7,
+                    scaleTextureWidth: 0.7,
                     extraOffsets: {
                         x: 10,
                         y: -50,
@@ -147,8 +147,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1005,
                     tilesetName: "crop-carrot-5",
-                    scaleTextureHeight: 0.8,
-                    scaleTextureWidth: 0.8,
+                    scaleTextureHeight: 0.55,
+                    scaleTextureWidth: 0.55,
                     extraOffsets: {
                         x: 10,
                         y: -70,
