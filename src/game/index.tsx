@@ -3,9 +3,10 @@ import {
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
     useGameplayIo,
+    useQueryUserSwr,
 } from "@/hooks"
 import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
-import { startGame } from "./config"
+import { gameState, startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
 import { EventBus, EventName } from "./event-bus"
 import { useEffects } from "./hooks"
@@ -15,6 +16,9 @@ export const Game: FC = () => {
     const [isSyncDelayed, setIsSyncDelayed] = React.useState(false)
 
     const { socket, connect } = useGameplayIo()
+
+    const { swr: { data } } = useQueryUserSwr()
+    const userIdRef = useRef<string | undefined>(data?.data.user.id)
 
     useEffect(() => {
         // connect
@@ -31,6 +35,15 @@ export const Game: FC = () => {
     
             if (!isSyncDelayed || !data.isSecondarySync) {
                 EventBus.emit(EventName.PlacedItemsSynced, data)
+            }
+
+            // console.log(data.userId, userRef.current?.id)
+            if (data.userId !== userIdRef.current) {
+                if (!userIdRef.current) {
+                    throw new Error("User id is undefined")
+                }
+                EventBus.emit(EventName.WatchUserChanged, data.userId)
+                userIdRef.current = data.userId
             }
         })
 
@@ -64,6 +77,7 @@ export const Game: FC = () => {
                 game.current.destroy(true, false)
                 EventBus.removeAllListeners()
                 game.current = null
+                gameState.data = undefined
             }
         }
     }, [])

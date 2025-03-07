@@ -63,8 +63,12 @@ export const startGame = (parent?: string) => {
     return new Game(config)
 }
 
-export interface GameState {
+export interface GameData {
     visitedUser?: UserSchema
+    preventFirstSync?: boolean
+}
+export interface GameState {
+    data?: GameData
 }
 
 export const gameState: GameState = {}

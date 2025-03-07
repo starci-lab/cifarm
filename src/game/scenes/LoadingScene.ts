@@ -22,6 +22,7 @@ import { sleep } from "@/modules/common"
 import { loadAnimalStateAssets, loadCropStateAssets } from "../assets/states"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { createJazziconBlobUrl } from "@/modules/jazz"
+import { VisitRequest } from "@/modules/axios"
 
 export enum LoadingPhase {
     DataFetching = "dataFetching",
@@ -108,9 +109,35 @@ export class LoadingScene extends Scene {
                     })
                 }
                 // load the image
-                
-                // create the image by the url
-                this.handleFetchData("Loading user...")
+                const visitedUser = this.cache.obj.get(CacheKey.VisitedNeighbor)
+                if (visitedUser) {
+                    if (visitedUser.avatarUrl) {
+                        await loadImageAwait({
+                            key: visitedUser.id,
+                            imageUrl: visitedUser.avatarUrl,
+                            scene: this,
+                        })
+                    } else {
+                        // create jazzicon blob url
+                        const imageUrl = createJazziconBlobUrl(visitedUser.id)
+                        await loadSvgAwait({
+                            key: visitedUser.id,
+                            svgUrl: imageUrl,
+                            scene: this,
+                            scale: 16
+                        })
+                    }
+                    EventBus.once(EventName.WatchUserChanged, () => {
+                        this.handleFetchData("Loading user...")
+                    })
+                    const visitMessage: VisitRequest = {
+                        neighborUserId: visitedUser.id
+                    }
+                    EventBus.emit(EventName.RequestVisit, visitMessage)
+                } else {
+                    // create the image by the url
+                    this.handleFetchData("Loading user...")
+                }        
             })
 
         //listen for load inventory event

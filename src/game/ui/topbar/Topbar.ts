@@ -58,6 +58,13 @@ export class Topbar extends BaseSizer {
             EventBus.emit(EventName.HideNeighborButtons)
         })
 
+        const visitedNeighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
+        if (visitedNeighbor) {
+            this.visited = true
+            this.neighbor = visitedNeighbor
+            this.updateContent()
+        }
+
         this.updateContent()
     }
 

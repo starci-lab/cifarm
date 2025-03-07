@@ -8,8 +8,10 @@ import {
     NEIGHBORS_DISCLOSURE,
     WARNING_DISCLOSURE,
 } from "@/app/constants"
+import { pathConstants } from "@/constants"
+import { gameState } from "@/game/config"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
-import { useApiFollowSwrMutation, useApiUnfollowSwrMutation, useApiVisitSwrMutation } from "@/hooks"
+import { useApiFollowSwrMutation, useApiUnfollowSwrMutation, useApiVisitSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -19,6 +21,7 @@ import { setVisitedUserId, setWarningModal, useAppDispatch, useAppSelector } fro
 import { HomeIcon } from "@heroicons/react/24/outline"
 import { Avatar, Button, Chip, Image, Spacer, useDisclosure } from "@heroui/react"
 import { UserMinus2, UserPlus2 } from "lucide-react"
+import { usePathname } from "next/navigation"
 import React, { FC } from "react"
 
 export interface UserCardProps {
@@ -56,6 +59,9 @@ export const UserCard: FC<UserCardProps> = ({
     const visitedUserId = useAppSelector((state) => state.gameReducer.visitedUserId)
 
     const avatarUrl = user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
+    const pathname = usePathname()
+    const router = useRouterWithSearchParams()
+
     return (
         <div className="p-3 flex justify-between items-center">
             <div className="flex gap-2 items-center">
@@ -148,7 +154,7 @@ export const UserCard: FC<UserCardProps> = ({
                         isIconOnly
                         variant="light"
                         color="danger"
-                    >
+                    >   
                         <UserMinus2 className="w-5 h-5" strokeWidth={3 / 2} />
                     </Button>
                 ) : (
@@ -167,7 +173,7 @@ export const UserCard: FC<UserCardProps> = ({
                                 toastError("Failed to unfollow user")
                             }
                         }
-                        }
+                        }   
                         isIconOnly
                         variant="light"
                         color="primary"
@@ -176,18 +182,26 @@ export const UserCard: FC<UserCardProps> = ({
                     </Button>
                 )}
                 <Button onPress={async () => {
-                    // set visited user
-                    EventBus.emit(EventName.UpdateVisitedNeighbor, user)
-                    await visitSwrMutation.trigger({
-                        request: {
-                            neighborUserId: user.id,
-                        },
-                    })
-                    onClose()
-                    EventBus.emit(EventName.CloseModal, {
-                        modalName: ModalName.Neighbors,
-                    })
+                    if (pathname !== pathConstants.play) {
+                        router.push(pathConstants.play)
+                        gameState.data = {
+                            preventFirstSync: true,
+                            visitedUser: user,
+                        }       
+                    } else {
+                        // set visited user
+                        EventBus.emit(EventName.UpdateVisitedNeighbor, user)
+                        await visitSwrMutation.trigger({
+                            request: {
+                                neighborUserId: user.id,
+                            },
+                        })
+                        EventBus.emit(EventName.CloseModal, {
+                            modalName: ModalName.Neighbors,
+                        })
+                    }
                     dispatch(setVisitedUserId(user.id))
+                    onClose()
                 }} isIconOnly color="primary" isDisabled={visitedUserId === user.id}>
                     <HomeIcon className="light text-background w-5 h-5" />
                 </Button>
