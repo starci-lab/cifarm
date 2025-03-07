@@ -17,7 +17,7 @@ import {
     WaterRequest
 } from "@/modules/axios"
 import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
-import { createObjectId, sleep } from "@/modules/common"
+import { sleep } from "@/modules/common"
 import {
     Activities,
     AnimalId,
@@ -1274,6 +1274,24 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemData = undefined
     }
 
+    private checkIfHaveEnergyForAction(actionEnergy: number): boolean {
+        //get user
+        const user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
+        if (!user) {
+            throw new Error("User not found")
+        }
+
+        if(user.energy < actionEnergy){
+            this.scene.events.emit(EventName.UpdateConfirmModal, {
+                message: "Not enough energy to perform this action (Need " + actionEnergy + " energy)",
+                callback: () => {
+                }
+            })
+            return false
+        }
+
+        return true
+    }
     
 }
 

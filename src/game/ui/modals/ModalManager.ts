@@ -194,12 +194,12 @@ export class ModalManager extends ContainerLite {
         })
 
         // test for warning modal
-        this.scene.events.emit(EventName.UpdateConfirmModal, {
-            message: "This is a test message",
-            callback: () => {
-                console.log("callback")
-            }
-        })
+        // this.scene.events.emit(EventName.UpdateConfirmModal, {
+        //     message: "This is a test message",
+        //     callback: () => {
+        //         console.log("callback")
+        //     }
+        // })
         EventBus.emit(EventName.OpenModal, {
             modalName: ModalName.Confirm,
         })
