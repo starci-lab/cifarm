@@ -193,13 +193,19 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             } = assetData
             const { x = 0, y = 0 } = { ...offsets }
 
-            if (!this.seedGrowthInfoSprite) {
+            if(!this.seedGrowthInfoSprite) {
                 this.seedGrowthInfoSprite = this.scene.add
                     .sprite(x, y, key)
                     .setDepth(this.depth + 1)
                 container.addLocal(this.seedGrowthInfoSprite)
-            } else {
-                this.seedGrowthInfoSprite.setTexture(key)
+            }
+            else {
+                this.seedGrowthInfoSprite
+                    .setTexture(key)
+                    .setPosition(x, y)
+                    .setDepth(this.depth + 1)
+                    .setScale(1)
+                container.addLocal(this.seedGrowthInfoSprite)
             }
         }
     }
