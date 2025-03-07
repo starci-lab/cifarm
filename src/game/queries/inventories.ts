@@ -174,7 +174,7 @@ export interface GetStorageInventoriesParams {
 
 export const getProductInventories = ({
     scene,
-    inventories,
+    inventories
 }: GetProductInventoriesParams) => {
     // if inventories is not provided, get from cache
     if (!inventories) {
@@ -184,6 +184,7 @@ export const getProductInventories = ({
     }
     const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
     const result: Array<InventorySchema> = []
+    
     for (const type of inventoryTypes) {
         if (type.type === InventoryType.Product) {
             for (const inventory of inventories) {
@@ -202,6 +203,8 @@ export interface GetProductInventoriesParams {
     scene: Scene;
     // the inventories to check, if not specified, will try to get from cache
     inventories?: Array<InventorySchema>;
+    // inventory type
+    inventoryTypeId?: string;
 }
 
 export const getDeliveryInventories = ({

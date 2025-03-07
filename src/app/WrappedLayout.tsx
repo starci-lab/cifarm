@@ -32,9 +32,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             <Modals />
                             <Toast />
                             <div className="z-100">
-                                <ToastProvider placement="bottom-center" toastProps={{
-                                    
-                                }} />
+                                <ToastProvider placement="bottom-center"/>
                             </div>       
                         </SingletonHook2Provider>
                     </SingletonHookProvider>

@@ -17,7 +17,7 @@ import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { toastError, toastSuccess } from "@/modules/toast"
-import { setVisitedUserId, setWarningModal, useAppDispatch, useAppSelector } from "@/redux"
+import { setWarningModal, useAppDispatch } from "@/redux"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import { Avatar, Button, Chip, Image, Spacer, useDisclosure } from "@heroui/react"
 import { UserMinus2, UserPlus2 } from "lucide-react"
@@ -56,7 +56,6 @@ export const UserCard: FC<UserCardProps> = ({
         WARNING_DISCLOSURE
     )
     const dispatch = useAppDispatch()
-    const visitedUserId = useAppSelector((state) => state.gameReducer.visitedUserId)
 
     const avatarUrl = user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
     const pathname = usePathname()
@@ -200,9 +199,8 @@ export const UserCard: FC<UserCardProps> = ({
                             modalName: ModalName.Neighbors,
                         })
                     }
-                    dispatch(setVisitedUserId(user.id))
                     onClose()
-                }} isIconOnly color="primary" isDisabled={visitedUserId === user.id}>
+                }} isIconOnly color="primary">
                     <HomeIcon className="light text-background w-5 h-5" />
                 </Button>
             </div>

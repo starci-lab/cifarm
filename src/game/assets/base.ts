@@ -98,7 +98,6 @@ export enum BaseAssetKey {
     UIModalStandWhiteStar = "ui-modal-stand-white-star",
     UIModalStandPurpleStar = "ui-modal-stand-purple-star",
     UIModalStandShadow = "ui-modal-stand-shadow",
-    UIModalStandAddButton = "ui-modal-stand-add-button",
 
     //Neighbors
     UIModalNeighborsQuestion = "ui-modal-neighbors-button-icon-question",
@@ -262,7 +261,6 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalStandWhiteStar]: "ui/modals/stand/star-white.png",
     [BaseAssetKey.UIModalStandPurpleStar]: "ui/modals/stand/star-purple.png",
     [BaseAssetKey.UIModalStandShadow]: "ui/modals/stand/shadow.png",
-    [BaseAssetKey.UIModalStandAddButton]: "ui/modals/stand/add-button.png",
     //Neighbors
     [BaseAssetKey.UIModalNeighborsIconRandom]: "ui/modals/neighbors/icon-random.png",
     [BaseAssetKey.UIModalNeighborsIconHome]: "ui/modals/neighbors/icon-home.png",

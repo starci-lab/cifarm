@@ -64,6 +64,9 @@ export class NumberInput extends Sizer {
             baseParams: {
                 scene: this.scene,
                 text: defaultValue.toString(),
+                style: {
+                    align: "center",
+                }
             },
             options: {
                 fontSize,

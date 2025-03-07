@@ -188,6 +188,9 @@ export enum EventName {
     RequestDeliverProduct = "request_deliver_product",
     DeliverProductCompleted = "deliver_product_completed",
 
+    RequestDeliverMoreProduct = "request_deliver_more_product",
+    DeliverMoreProductCompleted = "deliver_more_product_completed",
+
     RequestRetainProduct = "request_retain_product",
     RetainProductCompleted = "retain_product_completed",
 
