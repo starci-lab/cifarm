@@ -1,52 +1,78 @@
 import { BaseAssetKey } from "@/game/assets"
-import { ConstructorParams, SliderBaseConstructorParams } from "@/game/types"
-import { Slider as RexSlider } from "phaser3-rex-plugins/templates/ui/ui-components"
+import {
+    ConstructorParams,
+    OverlapSizerBaseConstructorParams,
+} from "@/game/types"
+import {
+    Slider as RexSlider,
+    OverlapSizer,
+} from "phaser3-rex-plugins/templates/ui/ui-components"
 
 export interface SliderOptions {
-    defaultValue?: number
-    scale?: number
+  defaultValue?: number;
+  scale?: number;
+  valuechangeCallback: (
+    newValue: number,
+    oldValue: number,
+    slider: RexSlider
+  ) => void;
 }
-export class Slider extends RexSlider {
+export class Slider extends OverlapSizer {
+    private slider: RexSlider
+    private thumb: Phaser.GameObjects.Image
     constructor({
         baseParams: { scene, config },
         options,
-    }: ConstructorParams<SliderBaseConstructorParams, SliderOptions>) {
-        const { defaultValue = 0.5, scale = 1.5 } = { ...options }
-        const valuechangeCallback = config?.valuechangeCallback
-        if (!valuechangeCallback) {
-            throw new Error("Slider requires valuechangeCallback")
+    }: ConstructorParams<OverlapSizerBaseConstructorParams, SliderOptions>) {
+        if (!options) {
+            throw new Error("Slider requires config")
         }
-        const background = scene.add.image(0, 0, BaseAssetKey.UICommonSliderBackground)
-        const indicator = getIndicator(scene).setScale(scale)
-        const thumb = scene.add.image(0, 0, BaseAssetKey.UICommonSliderThumb)
+        const { defaultValue = 0.5, scale = 1.5, valuechangeCallback } = options
+        const background = scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UICommonSliderBackground
+        )
         super(scene, {
             width: background.width * scale,
             height: background.height * scale,
-            track: background,
-            valuechangeCallback,
-            indicator,
-            thumb,
-            background,
-            value: defaultValue,
             ...config,
         })
 
+        const indicator = scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UICommonSliderIndicator
+        ) as Phaser.GameObjects.Image & {
+      resize: (width: number, height: number) => Phaser.GameObjects.Image;
+    }
+        this.thumb = scene.add.image(0, 0, BaseAssetKey.UICommonSliderThumb)
+        indicator.resize = (width: number, height: number) => {
+            indicator.setCrop(0, 0, width - this.thumb.width / 2, height)
+            return indicator
+        }
+        indicator.setScale(scale)   
+        this.slider = scene.rexUI.add
+            .slider({
+                width: indicator.width * scale,
+                height: indicator.height * scale,
+                orientation: "x",
+                input: "drag",
+                valuechangeCallback,
+                indicator,
+                thumbOffsetX: this.thumb.width / 2,
+                space: {
+                    left: -this.thumb.width / 2,
+                },
+                thumb: this.thumb,
+                value: defaultValue,
+                ...config,
+            })
+            .layout()
+
+        this.addBackground(background)
+        this.addLocal(this.slider)
+
         this.layout()
     }
-}
-
-const getIndicator = (scene: Phaser.Scene) => {
-    const indicator = scene.add.image(
-        0,
-        0,
-        BaseAssetKey.UICommonSliderIndicator
-    ) as Phaser.GameObjects.Image & {
-    resize: (width: number, height: number) => Phaser.GameObjects.Image;
-  }
-  // ignore the type error
-    indicator.resize = (width: number, height: number) => {
-        indicator.setCrop(0, 0, width, height)
-        return indicator
-    }
-    return indicator
 }

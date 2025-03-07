@@ -35,7 +35,7 @@ export interface SizerBaseConstructorParams {
 }
 
 // overlap sizer base constructor params
-export interface OverlapBaseSizerBaseConstructorParams {
+export interface OverlapSizerBaseConstructorParams {
   scene: Phaser.Scene;
   x?: number;
   y?: number;

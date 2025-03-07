@@ -71,7 +71,7 @@ const map: Record<Background, BackgroundData> = {
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
         buttonScale: 1.4,
-        buttonOffsetY: -80,
+        buttonOffsetY: -70,
         sizeConfig: {
             container: {
                 width: BASE_WIDTH,

@@ -1,6 +1,6 @@
 import { v4 } from "uuid"
 import { BootstrapAssetKey } from "../../assets"
-import { ConstructorParams, OverlapBaseSizerBaseConstructorParams } from "../../types"
+import { ConstructorParams, OverlapSizerBaseConstructorParams } from "../../types"
 import { OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 export class ProgressBar extends OverlapSizer {
@@ -8,7 +8,7 @@ export class ProgressBar extends OverlapSizer {
     private loadingBar: Phaser.GameObjects.Image
     private loadingFill: Phaser.GameObjects.Image | undefined
     // constructor
-    constructor({ baseParams: { scene, config }, options }: ConstructorParams<OverlapBaseSizerBaseConstructorParams, ProgressBarOptions>) {
+    constructor({ baseParams: { scene, config }, options }: ConstructorParams<OverlapSizerBaseConstructorParams, ProgressBarOptions>) {
         //add loading bar
         const loadingBar = scene.add
             .image(0, 0, BootstrapAssetKey.LoadingBar)

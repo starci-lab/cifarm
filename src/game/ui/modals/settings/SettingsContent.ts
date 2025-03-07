@@ -14,7 +14,6 @@ import {
 } from "../../elements"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
 import { onGameObjectPress } from "../../utils"
-import { DEFAULT_VOLUME } from "@/game/constants"
 
 export class SettingsContent extends BaseSizer {
     private background: ModalBackground
@@ -82,17 +81,14 @@ export class SettingsContent extends BaseSizer {
         this.soundSlider = new Slider({
             baseParams: {
                 scene,
-                config: {
-                    orientation: "x",
-                    value: DEFAULT_VOLUME,
-                    input: "drag",
-                    valuechangeCallback: (value: number) => {
-                        EventBus.emit(EventName.UpdateVolume, {
-                            volume: value,
-                        })
-                    },
-                },
             },
+            options: {
+                valuechangeCallback: (value: number) => {
+                    EventBus.emit(EventName.UpdateVolume, {
+                        volume: value,
+                    })
+                },
+            }
         })
         this.scene.add.existing(this.soundSlider)
         const soundSizer = this.scene.rexUI.add
@@ -122,17 +118,14 @@ export class SettingsContent extends BaseSizer {
         this.musicSlider = new Slider({
             baseParams: {
                 scene,
-                config: {
-                    orientation: "x",
-                    value: DEFAULT_VOLUME,
-                    input: "drag",
-                    valuechangeCallback: (value: number) => {
-                        EventBus.emit(EventName.UpdateVolume, {
-                            volume: value,
-                        })
-                    },
-                },
             },
+            options: {
+                valuechangeCallback: (value: number) => {
+                    EventBus.emit(EventName.UpdateVolume, {
+                        volume: value,
+                    })
+                },
+            }
         })
         const musicSizer = this.scene.rexUI.add
             .sizer({
@@ -174,7 +167,7 @@ export class SettingsContent extends BaseSizer {
             .sizer({
                 orientation: "horizontal",
                 space: {
-                    item: 40,
+                    item: 30,
                 },
             })
             .add(ambientText)
@@ -185,9 +178,9 @@ export class SettingsContent extends BaseSizer {
             .sizer({
                 orientation: "vertical",
                 originY: 0,
-                y: 80,
+                y: 60,
                 space: {
-                    item: 80,
+                    item: 60,
                 },
             })
             .add(soundSizer)
