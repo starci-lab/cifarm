@@ -19,6 +19,7 @@ import { ClaimModal } from "./claim"
 import { SettingsModal } from "./settings"
 import { UpgradeBuildingModal } from "./upgrade-building"
 import { ConfirmModal } from "./confirm"
+import { SpinModal } from "./spin"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
@@ -63,6 +64,7 @@ export class ModalManager extends ContainerLite {
 
     private externalModalNames = [ ModalName.Neighbors, ModalName.Quests, ModalName.Profile ]
     private upgradeBuildingModal: UpgradeBuildingModal | undefined
+    private spinModal: SpinModal | undefined
 
     constructor({ scene, x, y, width, height, children } : ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
@@ -173,6 +175,14 @@ export class ModalManager extends ContainerLite {
             .setDepth(MODAL_DEPTH_2)
             .hide()
         this.scene.add.existing(this.confirmModal)
+
+        this.spinModal = new SpinModal({
+            scene: this.scene,
+            x: centerX,
+            y: centerY,
+        })
+            .setDepth(MODAL_DEPTH_1)
+            .hide()
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
             this.onOpen(message)
@@ -321,6 +331,12 @@ export class ModalManager extends ContainerLite {
                 throw new Error("Confirm modal not found")
             }
             return this.confirmModal
+        }
+        case ModalName.Spin: {
+            if (!this.spinModal) {
+                throw new Error("Spin modal not found")
+            }
+            return this.spinModal
         }
         case ModalName.Neighbors:
         case ModalName.Quests:

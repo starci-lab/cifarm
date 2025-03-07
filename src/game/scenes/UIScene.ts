@@ -85,22 +85,5 @@ export class UIScene extends Scene {
             scene: this,
         })
         this.add.existing(fade)
-
-        // create pinch gesture
-        // const pinch = new Pinch(this, {
-        //     enable: true,
-        // })
-        
-        // // add event listener for pinch gesture
-        // pinch.on("dragstart", (dragScale: Pinch) => {
-        //     console.log("drag start")
-        //     this.events.emit(EventName.Dragging, dragScale)
-        // })
-
-        // // add event listener for pinch gesture
-        // pinch.on("dragend", (dragScale: Pinch) => {
-        //     console.log("drag end")
-        //     this.events.emit(EventName.DragEnd, dragScale)
-        // })
     }
 }

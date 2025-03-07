@@ -10,6 +10,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
     private inventoryButton: Sizer
     private dailyButton: Sizer
     private questButton: Sizer
+    private spinButton: Sizer
 
     constructor(baseParams: ButtonsBaseConstructorParams) {
         super({
@@ -87,6 +88,19 @@ export class RightHorizontalButtons extends HorizontalButtons {
             },
         })
         this.addButton(this.questButton)
+
+        // add spin button
+        this.spinButton = this.createButton({
+            iconKey: BaseAssetKey.UIIconSpin,
+            text: "Spin",
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Spin
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
+            },
+        })
+        this.addButton(this.spinButton)
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenInventory, () => {

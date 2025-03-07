@@ -4,20 +4,30 @@ import { onGameObjectPress } from "../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import Button from "phaser3-rex-plugins/plugins/button.js"
 
+export enum XButtonColor {
+    Brown = "brown",
+    White = "white",
+}
+
 export interface XButtonOptions {
     onPress: () => void
     disableInteraction?: boolean
     width?: number
     height?: number
+    color?: XButtonColor
 }
 export class XButton extends Label {
     constructor({ baseParams: { scene, config }, options }: ConstructorParams<LabelBaseConstructorParams, XButtonOptions>) {
         if (!options) {
             throw new Error("Button requires options")
         }
-        const { onPress, disableInteraction = true, height, width } = options
+        const { onPress, disableInteraction = true, height, width, color = XButtonColor.Brown } = options
 
-        const icon = scene.add.image(0, 0, BaseAssetKey.UICommonX)
+        const map: Record<XButtonColor, number> = {
+            [XButtonColor.Brown]: 0x522D28,
+            [XButtonColor.White]: 0xffffff,
+        }
+        const icon = scene.add.image(0, 0, BaseAssetKey.UICommonX).setTint(map[color])
         super(scene, {
             width: width ?? icon.width,
             height: height ?? icon.height,
@@ -33,5 +43,7 @@ export class XButton extends Label {
                 disableInteraction
             })
         })
+
+        this.layout()
     }
 }

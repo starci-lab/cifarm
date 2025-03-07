@@ -358,6 +358,7 @@ export enum ModalName {
   Profile = "profile",
   UpgradeBuilding = "upgrade-building",
   Confirm = "confirm",
+  Spin = "spin",
 }
 
 export interface OpenModalMessage {

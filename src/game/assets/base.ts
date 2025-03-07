@@ -22,6 +22,7 @@ export enum BaseAssetKey {
     UIIconSetting = "ui-icon-setting",
     UIIconReturn = "ui-icon-return",
     UIIconNext = "ui-icon-next",
+    UIIconSpin = "ui-icon-spin",
 
     // UI Backgrounds
     UIBackgroundLarge = "ui-background-large",
@@ -69,6 +70,13 @@ export enum BaseAssetKey {
     UIModalDailyCoin2 = "ui-modal-daily-coin2",
     UIModalDailyCoin3 = "ui-modal-daily-coin3",
     UIModalDailyDay = "ui-modal-daily-day",
+
+    // Spin ui-modal
+    UIModalSpinBackground = "ui-modal-spin-background",
+    UIModalSpinCenter = "ui-modal-spin-center",
+    UIModalSpinLight = "ui-modal-spin-light",
+    UIModalSpinPointer = "ui-modal-spin-pointer",
+    UIModalSpinSegments = "ui-modal-spin-segments",
 
     // Quest ui-modal
     UIModalQuestCardTitle = "ui-modal-quest-card-title",
@@ -125,11 +133,10 @@ export enum BaseAssetKey {
     UICommonCheck = "ui-common-check",
     UICommonX2 = "ui-common-x2",
     UICommonExperience = "ui-common-experience",
+
     // Slider
     UICommonSliderThumb = "ui-common-slider-thumb",
     UICommonSliderTrack = "ui-common-slider-track",
-    UICommonSliderIndicator = "ui-common-slider-indicator",
-    UICommonSliderBackground = "ui-common-slider-background",
     UICommonCheckboxContainer = "ui-common-checkbox-container",
 
     //Topbar
@@ -181,6 +188,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIIconSetting]: "ui/icons/setting.png",
     [BaseAssetKey.UIIconReturn]: "ui/icons/quests.png",
     [BaseAssetKey.UIIconNext]: "ui/icons/quests.png",
+    [BaseAssetKey.UIIconSpin]: "ui/icons/spin.png",
 
     // backgrounds
     [BaseAssetKey.UIBackgroundLarge]: "ui/backgrounds/large.png",
@@ -210,6 +218,13 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalShopTileTab]: "ui/modals/shop/tile-tab.png",
     [BaseAssetKey.UIModalShopSeedTab]: "ui/modals/shop/seed-tab.png",
     [BaseAssetKey.UIModalShopSupplyTab]: "ui/modals/shop/supply-tab.png",
+
+    // Spin UIModals
+    [BaseAssetKey.UIModalSpinBackground]: "ui/modals/spin/background.png",
+    [BaseAssetKey.UIModalSpinCenter]: "ui/modals/spin/center.png",
+    [BaseAssetKey.UIModalSpinLight]: "ui/modals/spin/light.png",
+    [BaseAssetKey.UIModalSpinPointer]: "ui/modals/spin/pointer.png",
+    [BaseAssetKey.UIModalSpinSegments]: "ui/modals/spin/segments.png",
 
     // Inventory UIModals
     [BaseAssetKey.UIModalInventoryChain]: "ui/modals/inventory/chain.png",
@@ -299,8 +314,6 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonExperience]: "ui/common/experience.png",
     [BaseAssetKey.UICommonSliderThumb]: "ui/common/slider-thumb.png",
     [BaseAssetKey.UICommonSliderTrack]: "ui/common/slider-track.png",
-    [BaseAssetKey.UICommonSliderIndicator]: "ui/common/slider-indicator.png",
-    [BaseAssetKey.UICommonSliderBackground]: "ui/common/slider-background.png",
     [BaseAssetKey.UICommonCheckboxContainer]: "ui/common/checkbox-container.png",
 
     //State

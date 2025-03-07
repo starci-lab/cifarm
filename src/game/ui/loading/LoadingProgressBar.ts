@@ -110,7 +110,7 @@ export class LoadingProgressBar extends Phaser.GameObjects.Container {
                 options: {
                     progress,
                 },
-            }).setScale(4, 3)
+            }).setScale(1.5, 1.5)
             this.scene.add.existing(this.progressBar)
             this.add(this.progressBar)
         } else {

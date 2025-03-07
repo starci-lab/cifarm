@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, BootstrapAssetKey } from "@/game/assets"
 import {
     ConstructorParams,
     OverlapSizerBaseConstructorParams,
@@ -11,6 +11,7 @@ import {
 export interface SliderOptions {
   defaultValue?: number;
   scale?: number;
+  thumbScale?: number;
   valuechangeCallback: (
     newValue: number,
     oldValue: number,
@@ -27,11 +28,11 @@ export class Slider extends OverlapSizer {
         if (!options) {
             throw new Error("Slider requires config")
         }
-        const { defaultValue = 0.5, scale = 1.5, valuechangeCallback } = options
+        const { defaultValue = 0.5, scale = 1.5, thumbScale = 1.2, valuechangeCallback } = options
         const background = scene.add.image(
             0,
             0,
-            BaseAssetKey.UICommonSliderBackground
+            BootstrapAssetKey.LoadingBar
         )
         super(scene, {
             width: background.width * scale,
@@ -42,16 +43,16 @@ export class Slider extends OverlapSizer {
         const indicator = scene.add.image(
             0,
             0,
-            BaseAssetKey.UICommonSliderIndicator
+            BootstrapAssetKey.LoadingFill
         ) as Phaser.GameObjects.Image & {
       resize: (width: number, height: number) => Phaser.GameObjects.Image;
     }
-        this.thumb = scene.add.image(0, 0, BaseAssetKey.UICommonSliderThumb)
+        this.thumb = scene.add.image(0, 0, BaseAssetKey.UICommonSliderThumb).setScale(thumbScale)
         indicator.resize = (width: number, height: number) => {
             indicator.setCrop(0, 0, width - this.thumb.width / 2, height)
             return indicator
         }
-        indicator.setScale(scale)   
+        indicator.setDisplaySize(indicator.width, indicator.height).setScale(scale)   
         this.slider = scene.rexUI.add
             .slider({
                 width: indicator.width * scale,

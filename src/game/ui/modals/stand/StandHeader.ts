@@ -2,7 +2,7 @@ import { BaseAssetKey } from "../../../assets"
 import { CloseModalMessage, EventBus, EventName, ModalName, ShowPressHereArrowMessage } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../../types"
-import { getScreenRightX, getScreenTopY, onGameObjectPress } from "../../utils"
+import { getScreenRightX, onGameObjectPress } from "../../utils"
 import { XButton } from "../../elements"
 import { setTutorialDepth } from "../../tutorial"
 
@@ -45,10 +45,9 @@ export class StandHeader extends ContainerLite {
                 }
             }
         })
-            .layout()
             .setPosition(
                 getScreenRightX(this.scene) - this.header.width / 2 - 60,
-                getScreenTopY(this.scene) + this.header.height / 2 - 20
+                this.header.height / 2 - 20
             )
         this.scene.add.existing(this.closeButton)
         this.addLocal(this.closeButton)

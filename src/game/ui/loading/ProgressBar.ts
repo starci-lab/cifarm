@@ -1,4 +1,3 @@
-import { v4 } from "uuid"
 import { BootstrapAssetKey } from "../../assets"
 import { ConstructorParams, OverlapSizerBaseConstructorParams } from "../../types"
 import { OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -35,47 +34,27 @@ export class ProgressBar extends OverlapSizer {
         if (!this.loadingBar) {
             throw new Error("Loading bar not found")
         }
-        // declare a unique frame name
-        const frameName = v4()
-        // get the original texture
+        // // declare a unique frame name
         const originTexture = this.scene.textures.get(
             BootstrapAssetKey.LoadingFill
         )
         // add the new frame to the texture
-        const sourceImage = originTexture.getSourceImage()
-        // add the new frame to the texture
-       
-        const texture = originTexture.add(
-            frameName,
-            0,
-            0,
-            0,
-            (sourceImage.width) * progress,
-            sourceImage.height
-        )?.texture
-        // if the texture is not found, throw an error
-        if (!texture) {
-            throw new Error("Cut texture not found")
-        }
-        // if loaderFill is not found, try add one
+        const sourceImage = originTexture.getSourceImage() as HTMLImageElement
+        const width = sourceImage.width * progress
+        const height = sourceImage.height
+        // // add the new frame to the texture
         if (!this.loadingFill) {
-            this.loadingFill = this.scene.add
-                .image(0, 0, texture, frameName)
-                .setOrigin(0, 0.5)
-            if (!this) {
-                throw new Error("Container not found")
-            }
+            this.loadingFill = this.scene.add.image(0, 0, BootstrapAssetKey.LoadingFill).setCrop(0, 0, width, height)
             this.add(this.loadingFill, {
-                align: "left-center",
+                align: "center",
                 expand: false
             })
         } else {
             // if loaderFill is found, update the frame
             this.loadingFill
-                .setFrame(frameName)
+                .setCrop(0, 0, width, height)
         }
         // destroy the old frame
-        this.scene.textures.getFrame(frameName)?.destroy()
         this.layout()
     }
 

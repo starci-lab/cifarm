@@ -16,8 +16,6 @@ export class StandModal extends BaseSizer {
             scene: this.scene,
             x: getScreenCenterX(this.scene),
             y: getScreenTopY(this.scene),
-            width,
-            height
         })
         this.scene.add.existing(this.standHeader)
         this.add(this.standHeader)

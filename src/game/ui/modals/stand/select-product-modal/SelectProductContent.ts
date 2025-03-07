@@ -170,8 +170,8 @@ export class SelectProductContent extends BaseSizer {
                             baseParams: {
                                 scene: this.scene,
                                 config: {
-                                    x: 0,
-                                    y: 0,
+                                    width: this.cellSize.width,
+                                    height: this.cellSize.height,
                                 },
                             },
                             options: {
