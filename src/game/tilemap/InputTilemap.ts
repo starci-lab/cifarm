@@ -70,6 +70,7 @@ export interface TemporaryPlaceItemData {
 // key for experience
 const DELAY_TIME = 300
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
+const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
 // tilemap for handling input events
 export class InputTilemap extends ItemTilemap {
     // pinch instance
@@ -211,7 +212,7 @@ export class InputTilemap extends ItemTilemap {
 
         this.scene.events.on(
             EventName.CreateFlyItem,
-            ({ assetKey, position, quantity }: CreateFlyItemMessage) => {
+            ({ assetKey, position, quantity, text }: CreateFlyItemMessage) => {
                 const flyItem = new FlyItem({
                     baseParams: {
                         scene: this.scene,
@@ -224,6 +225,7 @@ export class InputTilemap extends ItemTilemap {
                         depth: calculateGameplayDepth({
                             layer: GameplayLayer.Effects,
                         }),
+                        text
                     },
                 })
                 this.scene.add.existing(flyItem)
@@ -280,6 +282,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             if(!this.canPerformAction({
+                data,
                 actionEnergy: this.activities.plantSeed.energyConsume,
             })){
                 return
@@ -379,6 +382,13 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
+                if(!this.canPerformAction({
+                    data,
+                    actionEnergy: this.activities.water.energyConsume,
+                })){
+                    return
+                }
+
                 EventBus.emit(EventName.SyncDelayStarted)
 
                 const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
@@ -456,6 +466,13 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
+                if(!this.canPerformAction({
+                    data,
+                    actionEnergy: this.activities.usePesticide.energyConsume,
+                })){
+                    return
+                }
+
                 EventBus.emit(EventName.SyncDelayStarted)
 
                 const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
@@ -530,6 +547,13 @@ export class InputTilemap extends ItemTilemap {
                     currentPlacedItem.seedGrowthInfo?.currentState !==
               CropCurrentState.IsWeedy
                 ) {
+                    return
+                }
+
+                if(!this.canPerformAction({
+                    data,
+                    actionEnergy: this.activities.useHerbicide.energyConsume,
+                })){
                     return
                 }
 
@@ -746,6 +770,13 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
+                if(!this.canPerformAction({
+                    data,
+                    actionEnergy: this.activities.useFertilizer.energyConsume,
+                })){
+                    return
+                }
+
                 EventBus.emit(EventName.SyncDelayStarted)
 
                 const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
@@ -867,6 +898,14 @@ export class InputTilemap extends ItemTilemap {
                 if (visitedNeighbor) {
                     return
                 }
+
+                if(!this.canPerformAction({
+                    data,
+                    actionEnergy: this.activities.feedAnimal.energyConsume,
+                })){
+                    return
+                }
+
                 EventBus.once(EventName.FeedAnimalCompleted, () => {
                     EventBus.emit(EventName.RefreshUser)
                     EventBus.emit(EventName.RefreshInventories)
@@ -889,6 +928,14 @@ export class InputTilemap extends ItemTilemap {
                 if (visitedNeighbor) {
                     return
                 }
+
+                if(!this.canPerformAction({
+                    data,
+                    actionEnergy: this.activities.cureAnimal.energyConsume,
+                })){
+                    return
+                }
+
                 EventBus.once(EventName.CureAnimalCompleted, () => {
                     EventBus.emit(EventName.RefreshUser)
                     EventBus.emit(EventName.RefreshInventories)
@@ -1290,6 +1337,7 @@ export class InputTilemap extends ItemTilemap {
     }
 
     private canPerformAction({
+        data,
         actionEnergy = 0
     }: ICanPerformActionParams): boolean {
         const user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
@@ -1300,13 +1348,13 @@ export class InputTilemap extends ItemTilemap {
         console.log("GEGE", user.energy, actionEnergy)
     
         if (user.energy < actionEnergy) {
-            EventBus.emit(EventName.UpdateConfirmModal, {
-                message: `Not enough energy to perform (Need ${actionEnergy} energy)`,
-                callback: () => {}
+            this.scene.events.emit(EventName.CreateFlyItem, {
+                assetKey: ENERGY_KEY,
+                position: data.object.getCenter(),
+                quantity: 0,
+                text: "You need more energy(" + actionEnergy + ")"
             })
-            EventBus.emit(EventName.OpenModal, {
-                modalName: ModalName.Confirm,
-            })
+            
             return false
         }
     
@@ -1315,6 +1363,7 @@ export class InputTilemap extends ItemTilemap {
 }
 
 export interface ICanPerformActionParams {
+  data: PlacedItemObjectData
   actionEnergy: number
 }
 

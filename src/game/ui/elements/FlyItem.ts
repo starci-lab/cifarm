@@ -6,6 +6,7 @@ export interface FlyItemOptions {
   scale?: number;
   assetKey: string;
   quantity: number;
+  text?: string;
   duration?: number;
   depth?: number;
   x: number;
@@ -32,22 +33,23 @@ export class FlyItem extends Sizer {
             depth = 1,
             x,
             y,
+            text = "",
             flyHeight = 200,
         } = options
-        const text = new Text({
+        const flyItemText = new Text({
             baseParams: {
                 scene,
-                text: `+${quantity}`,
+                text: `${text.length > 0 ? `${text} ` : ""} ${quantity != 0 ? `+${quantity}` : ""}`,
                 x: 0,
                 y: 0,
             },
             options: {
                 enableStroke: true,
-                fontSize: 48,
+                fontSize: +`${text.length > 0 ? 32 : 48}`,
             },
         })
-        scene.add.existing(text)
-        this.add(text, {
+        scene.add.existing(flyItemText)
+        this.add(flyItemText, {
             align: "center",
         })
         const productImage = scene.add.image(0, 0, assetKey)

@@ -417,6 +417,7 @@ export interface CreateFlyItemMessage {
     position: Position
     quantity: number
     assetKey: string
+    text: string
 }
 
 export interface UpdateConfirmModalMessage {
