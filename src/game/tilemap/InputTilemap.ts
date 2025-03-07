@@ -269,20 +269,29 @@ export class InputTilemap extends ItemTilemap {
 
         switch (inventoryType.type) {
         case InventoryType.Seed: {
+            // return if seed growth info is found
+            if (currentPlacedItem?.seedGrowthInfo) {
+                return
+            }
+            
+            // do nothing if neighbor user id is found
+            if (visitedNeighbor) {
+                return
+            }
+
+            if(!this.canPerformAction({
+                actionEnergy: this.activities.plantSeed.energyConsume,
+            })){
+                return
+            }
+
             EventBus.emit(EventName.SyncDelayStarted)
 
             setTimeout(() => {
                 EventBus.emit(EventName.SyncDelayEnded)
             }, SYNC_DELAY_TIME)
 
-            // return if seed growth info is found
-            if (currentPlacedItem?.seedGrowthInfo) {
-                return
-            }
-            // do nothing if neighbor user id is found
-            if (visitedNeighbor) {
-                return
-            }
+            
 
             const { data: inventories } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
             const inventory = inventories.find(
@@ -320,6 +329,7 @@ export class InputTilemap extends ItemTilemap {
             EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
             EventBus.once(EventName.PlantSeedCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialSeedPlanted)
@@ -858,6 +868,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
                 EventBus.once(EventName.FeedAnimalCompleted, () => {
+                    EventBus.emit(EventName.RefreshUser)
                     EventBus.emit(EventName.RefreshInventories)
                     data.pressBlocked = false
                 })
@@ -879,6 +890,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
                 EventBus.once(EventName.CureAnimalCompleted, () => {
+                    EventBus.emit(EventName.RefreshUser)
                     EventBus.emit(EventName.RefreshInventories)
                     data.pressBlocked = false
                 })
@@ -1117,6 +1129,7 @@ export class InputTilemap extends ItemTilemap {
             EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
 
             EventBus.once(EventName.ConstructBuildingCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
                 this.cancelPlacement()
             })
             break
@@ -1141,6 +1154,7 @@ export class InputTilemap extends ItemTilemap {
             EventBus.emit(EventName.RequestBuyTile, eventMessage)
 
             EventBus.once(EventName.BuyTileCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
                 this.cancelPlacement()
             })
             break
@@ -1170,6 +1184,7 @@ export class InputTilemap extends ItemTilemap {
             EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
 
             EventBus.once(EventName.BuyAnimalCompleted, () => {
+                EventBus.emit(EventName.RefreshUser)
                 this.cancelPlacement()
             })
             break
@@ -1274,26 +1289,35 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemData = undefined
     }
 
-    private checkIfHaveEnergyForAction(actionEnergy: number): boolean {
-        //get user
+    private canPerformAction({
+        actionEnergy = 0
+    }: ICanPerformActionParams): boolean {
         const user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
         if (!user) {
             throw new Error("User not found")
         }
 
-        if(user.energy < actionEnergy){
-            this.scene.events.emit(EventName.UpdateConfirmModal, {
-                message: "Not enough energy to perform this action (Need " + actionEnergy + " energy)",
-                callback: () => {
-                }
+        console.log("GEGE", user.energy, actionEnergy)
+    
+        if (user.energy < actionEnergy) {
+            EventBus.emit(EventName.UpdateConfirmModal, {
+                message: `Not enough energy to perform (Need ${actionEnergy} energy)`,
+                callback: () => {}
+            })
+            EventBus.emit(EventName.OpenModal, {
+                modalName: ModalName.Confirm,
             })
             return false
         }
-
+    
         return true
     }
-    
 }
+
+export interface ICanPerformActionParams {
+  actionEnergy: number
+}
+
 
 export interface PlayProductFlyAnimationParams {
   position: Position;

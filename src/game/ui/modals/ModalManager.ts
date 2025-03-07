@@ -192,18 +192,6 @@ export class ModalManager extends ContainerLite {
         EventBus.on(EventName.CloseModal, (message: CloseModalMessage) => {
             this.onClose(message)
         })
-
-        // test for warning modal
-        // this.scene.events.emit(EventName.UpdateConfirmModal, {
-        //     message: "This is a test message",
-        //     callback: () => {
-        //         console.log("callback")
-        //     }
-        // })
-        EventBus.emit(EventName.OpenModal, {
-            modalName: ModalName.Confirm,
-        })
-
     }
 
     // show method, to show the modal

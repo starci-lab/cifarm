@@ -68,7 +68,9 @@ export class ConfirmContent extends BaseSizer {
             background: Background.Small,
         })
 
-        this.scene.events.on(EventName.UpdateConfirmModal, ({ message, callback }: UpdateConfirmModalMessage) => {
+        EventBus.on(EventName.UpdateConfirmModal, ({ message, callback }: UpdateConfirmModalMessage) => {
+            console.log("UpdateConfirmModal", message)
+
             if (!this.size.width) {
                 throw new Error("Size width not found")
             }
