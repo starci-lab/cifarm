@@ -14,7 +14,7 @@ import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { AnimalAge, animalAssetMap, BaseAssetKey, cropAssetMap, productAssetMap } from "../assets"
 import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
-import { Text } from "../ui"
+import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 
 export class PlacedItemObject extends Phaser.GameObjects.Sprite {
@@ -267,12 +267,33 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     if (!product) {
                         throw new Error("Product not found")
                     }
-                    stateKey = productAssetMap[product.displayId].textureConfig.key
+
+                    const text = `${placedItem.seedGrowthInfo.harvestQuantityRemaining || 0}/${crop.maxHarvestQuantity || 0}`
+                    const label = new Text({
+                        baseParams: {
+                            scene: this.scene,
+                            text: text,
+                            x: 0,
+                            y: 0
+                        },
+                        options: {
+                            fontSize: 28,
+                            textColor: TextColor.Brown
+                        }
+                    }).setDepth(this.depth + 3)
+        
+                    this.scene.add.existing(label)
+                    this.bubbleState.addLocal(label)
+
+                    stateKey = undefined
                 }
-                if (!stateKey) {
-                    throw new Error("State key not found")
+                if(stateKey) {
+                    this.bubbleState.setIconTexture(stateKey).layout()
+                }else{
+                    this.bubbleState.resetDisplayContent({
+                        icon: false
+                    })
                 }
-                this.bubbleState.setIconTexture(stateKey).layout()
             }
         } else {
             // if bubble state is present, remove it
@@ -321,7 +342,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (
             placedItem.seedGrowthInfo.currentState != CropCurrentState.FullyMatured
         ) {
-            console.log("placedItem.seedGrowthInfo.currentStageTimeElapsed", placedItem.seedGrowthInfo.currentStageTimeElapsed)
             if (
                 placedItem.seedGrowthInfo.currentStageTimeElapsed !==
         this.currentPlacedItem?.seedGrowthInfo?.currentStageTimeElapsed
@@ -470,10 +490,13 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     }
                     stateKey = productAssetMap[product.displayId].textureConfig.key
                 }
-                if (!stateKey) {
-                    throw new Error("State key not found")
+                if(stateKey) {
+                    this.bubbleState.setIconTexture(stateKey).layout()
+                }else{
+                    this.bubbleState.resetDisplayContent({
+                        icon: false
+                    })
                 }
-                this.bubbleState.setIconTexture(stateKey).layout()
             }
         } else {
             // if bubble state is present, remove it

@@ -624,9 +624,6 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                // update the placed item in client
-                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
-
                 EventBus.once(EventName.UseFertilizerCompleted, () => {
                     EventBus.emit(EventName.RefreshUser)
 
