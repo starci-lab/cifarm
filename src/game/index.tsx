@@ -23,8 +23,6 @@ export const Game: FC = () => {
         if (!socket) return
         //listen for placed items synced
         socket.on(PLACED_ITEMS_SYNCED_EVENT, (data: PlacedItemsSyncedMessage) => {
-            console.log("[DATA]", data.placedItems)
-
             if (!data.isSecondarySync) {
                 EventBus.emit(EventName.SyncDelayEnded)
             }

@@ -56,7 +56,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                 if (this.cancelListen) {
                     return
                 }
-                console.log(`Current: ${data.userId}`)
                 if (data.userId !== this.currentUserId) {
                     this.cancelListen = true
                     this.currentUserId = data.userId
@@ -160,8 +159,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 (item) => item.id === placedItem.id
             )
             if (!found) {
-                // place the item using the shared tile placing logic
-                console.log("placedItem: 111111111111111", placedItem)
+                // place the item using the shared tile placing 
                 this.placeTileForItem(placedItem)
             } else {
                 // if the placed item is in the previous placed items, update the item
@@ -171,7 +169,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
-                console.log("this.getPlacedItemType(placedItem.placedItemType).type", this.getPlacedItemType(placedItem.placedItemType).type)
                 gameObject.update(
                     this.getPlacedItemType(placedItem.placedItemType).type,
                     placedItem

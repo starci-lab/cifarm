@@ -188,10 +188,6 @@ export class InputTilemap extends ItemTilemap {
                 const buildings = this.scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
                 // eslint-disable-next-line no-case-declarations
                 // const upgradeData = buildings.find(b => createObjectId(b.displayId) === buildingId)?.upgrades
-    
-                
-
-
                 if(data.placedItemType.displayId == PlacedItemTypeId.Home) return
 
                 this.handlePressOnBuilding(data)
@@ -212,8 +208,8 @@ export class InputTilemap extends ItemTilemap {
 
         this.scene.events.on(
             EventName.CreateFlyItem,
-            ({ assetKey, position, quantity, text }: CreateFlyItemMessage) => {
-                const flyItem = new FlyItem({
+            ({ assetKey, position, quantity, text, isShowIcon }: CreateFlyItemMessage) => {
+                const flyItems = new FlyItem({
                     baseParams: {
                         scene: this.scene,
                     },
@@ -225,10 +221,11 @@ export class InputTilemap extends ItemTilemap {
                         depth: calculateGameplayDepth({
                             layer: GameplayLayer.Effects,
                         }),
-                        text
+                        text,
+                        isShowIcon 
                     },
                 })
-                this.scene.add.existing(flyItem)
+                this.scene.add.existing(flyItems)
             }
         )
     }
@@ -411,11 +408,13 @@ export class InputTilemap extends ItemTilemap {
                         EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
-                            this.scene.events.emit(EventName.CreateFlyItem, {
-                                assetKey: EXPERIENCE_KEY,
-                                position: object.getCenter(),
-                                quantity: this.activities.helpWater.experiencesGain,
-                            })
+                            this.scene.events.emit(EventName.CreateFlyItem,
+                                {
+                                    assetKey: EXPERIENCE_KEY,
+                                    position: object.getCenter(),
+                                    quantity: this.activities.helpWater.experiencesGain,
+                                }
+                            )
                         }
                         // reset the isPressed flag
                         data.pressBlocked = true
@@ -435,11 +434,13 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
                         }
-                        this.scene.events.emit(EventName.CreateFlyItem, {
-                            assetKey: EXPERIENCE_KEY,
-                            position: object.getCenter(),
-                            quantity: this.activities.water.experiencesGain,
-                        })
+                        this.scene.events.emit(EventName.CreateFlyItem, 
+                            {
+                                assetKey: EXPERIENCE_KEY,
+                                position: object.getCenter(),
+                                quantity: this.activities.water.experiencesGain,
+                            }
+                        )
                         // reset the isPressed flag
                         data.pressBlocked = false
 
@@ -857,9 +858,6 @@ export class InputTilemap extends ItemTilemap {
         const object = data.object
         const currentPlacedItem = object.currentPlacedItem
 
-
-        console.log("currentPlacedItem", currentPlacedItem, "currentPlacedItem?.id", currentPlacedItem?.id, "inventoryType", inventoryType)
-
         const placedItemId = currentPlacedItem?.id
         // do nothing if placed item id is not found
         if (!placedItemId) {
@@ -1131,10 +1129,6 @@ export class InputTilemap extends ItemTilemap {
             console.error("No tile found for temporary place item object")
             return
         }
-        console.log(
-            "getActualTileCoordinates",
-            this.getActualTileCoordinates(tileWorld.x, tileWorld.y)
-        )
 
         this.placeItemOnTile(
             this.getActualTileCoordinates(tileWorld.x, tileWorld.y)
@@ -1171,8 +1165,6 @@ export class InputTilemap extends ItemTilemap {
                 },
             }
 
-            console.log("Requesting to buy building:", eventMessage)
-
             EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
 
             EventBus.once(EventName.ConstructBuildingCompleted, () => {
@@ -1195,8 +1187,6 @@ export class InputTilemap extends ItemTilemap {
                     y: position.y,
                 },
             }
-
-            console.log("Requesting to buy tile:", eventMessage)
 
             EventBus.emit(EventName.RequestBuyTile, eventMessage)
 
@@ -1225,8 +1215,6 @@ export class InputTilemap extends ItemTilemap {
                 },
                 animalId,
             }
-
-            console.log("Requesting to buy animal:", eventMessage)
 
             EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
 
@@ -1318,7 +1306,6 @@ export class InputTilemap extends ItemTilemap {
     }
 
     private cancelPlacement() {
-        console.log("Placement canceled")
         this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
         this.removePlacmentPopupUI()
@@ -1344,15 +1331,12 @@ export class InputTilemap extends ItemTilemap {
         if (!user) {
             throw new Error("User not found")
         }
-
-        console.log("GEGE", user.energy, actionEnergy)
     
         if (user.energy < actionEnergy) {
             this.scene.events.emit(EventName.CreateFlyItem, {
                 assetKey: ENERGY_KEY,
                 position: data.object.getCenter(),
-                quantity: 0,
-                text: "You need more energy(" + actionEnergy + ")"
+                text: "Not enough",
             })
             
             return false

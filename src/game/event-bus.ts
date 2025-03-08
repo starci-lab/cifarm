@@ -418,6 +418,7 @@ export interface CreateFlyItemMessage {
     quantity: number
     assetKey: string
     text: string
+    isShowIcon?: boolean
 }
 
 export interface UpdateConfirmModalMessage {

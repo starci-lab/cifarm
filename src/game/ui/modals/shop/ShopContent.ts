@@ -50,7 +50,7 @@ import {
     Text,
     Button,
     ButtonBackground,
-    FlyItem,
+    FlyItems,
     getBackgroundContainerSize,
     IconOffsets,
     ModalBackground,
@@ -707,7 +707,7 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
-        const flyItem = new FlyItem({
+        const flyItems = new FlyItems({
             baseParams: {
                 scene: this.scene,
             },
@@ -722,7 +722,7 @@ export class ShopContent extends BaseSizer {
                 }),
             },
         })
-        this.scene.add.existing(flyItem)
+        this.scene.add.existing(flyItems)
     }
 
     //onBuySupplyPress
@@ -731,7 +731,7 @@ export class ShopContent extends BaseSizer {
             // refresh user & inventories
             EventBus.emit(EventName.RefreshUser)
             EventBus.emit(EventName.RefreshInventories)
-            const flyItem = new FlyItem({
+            const flyItems = new FlyItems({
                 baseParams: {
                     scene: this.scene,
                 },
@@ -746,7 +746,7 @@ export class ShopContent extends BaseSizer {
                     }),
                 },
             })
-            this.scene.add.existing(flyItem)
+            this.scene.add.existing(flyItems)
         })
         const eventMessage: BuySuppliesRequest = {
             supplyId: displayId,
