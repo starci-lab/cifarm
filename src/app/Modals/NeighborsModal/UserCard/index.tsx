@@ -181,25 +181,24 @@ export const UserCard: FC<UserCardProps> = ({
                     </Button>
                 )}
                 <Button onPress={async () => {
+                    onClose()
                     if (pathname !== pathConstants.play) {
                         router.push(pathConstants.play)
                         gameState.data = {
-                            preventFirstSync: true,
                             visitedUser: user,
                         }       
                     } else {
                         // set visited user
                         EventBus.emit(EventName.UpdateVisitedNeighbor, user)
+                        EventBus.emit(EventName.CloseModal, {
+                            modalName: ModalName.Neighbors,
+                        })
                         await visitSwrMutation.trigger({
                             request: {
                                 neighborUserId: user.id,
                             },
                         })
-                        EventBus.emit(EventName.CloseModal, {
-                            modalName: ModalName.Neighbors,
-                        })
                     }
-                    onClose()
                 }} isIconOnly color="primary">
                     <HomeIcon className="light text-background w-5 h-5" />
                 </Button>

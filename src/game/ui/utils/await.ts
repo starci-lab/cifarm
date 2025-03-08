@@ -51,3 +51,14 @@ export interface LoadImageAwaitParams {
   imageUrl: string;
   scene: Phaser.Scene;
 }
+
+export const waitUtil = async (condition: () => boolean): Promise<void> => {
+    return new Promise((resolve) => {
+        const interval = setInterval(() => {
+            if (condition()) {
+                clearInterval(interval)
+                resolve()
+            }
+        }, 20)
+    })
+}
