@@ -64,6 +64,7 @@ import { onGameObjectPress } from "../../utils"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { ITEM_DATA_KEY, tabsConfig } from "./constants"
 import { ShopTab } from "./types"
+import { PlacedItemsSyncedMessage } from "@/hooks"
 
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
@@ -191,8 +192,9 @@ export class ShopContent extends BaseSizer {
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
-        this.placedItems = this.scene.cache.obj.get(CacheKey.PlacedItems)
-
+        const { placedItems} = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
+        this.placedItems = placedItems
+        
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
             this.updateGridTable(shopTab)

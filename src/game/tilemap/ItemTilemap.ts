@@ -1,4 +1,8 @@
-import { ActionEmittedMessage, ActionName, PlacedItemsSyncedMessage } from "@/hooks"
+import {
+    ActionEmittedMessage,
+    ActionName,
+    PlacedItemsSyncedMessage,
+} from "@/hooks"
 import {
     Activities,
     AnimalId,
@@ -46,7 +50,6 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected activities: Activities
 
     private user: UserSchema
-    private currentUserId: string
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -59,26 +62,8 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.createTilesets()
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
-        this.currentUserId = this.user.id
 
         this.activities = this.scene.cache.obj.get(CacheKey.Activities)
-
-        EventBus.on(
-            EventName.PlacedItemsSynced,
-            async (data: PlacedItemsSyncedMessage) => {
-                //store the placed items in the cache
-                this.scene.cache.obj.add(CacheKey.PlacedItems, data.placedItems)
-                if (this.isWaiting) {
-                    return
-                }
-                await waitUtil(() => !this.fading)
-                this.isWaiting = true
-                // handle the placed items update
-                this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
-                // update the previous placed items
-                this.previousPlacedItems = data
-            }
-        )
 
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
             this.fading = true
@@ -89,20 +74,52 @@ export abstract class ItemTilemap extends GroundTilemap {
             this.fading = false
             await sleep(FADE_HOLD_TIME)
             EventBus.emit(EventName.FadeOut)
-            
         })
+
+        EventBus.on(EventName.UpdatePlacedItems, async () => {
+            let data = this.scene.cache.obj.get(
+                CacheKey.PlacedItems
+            ) as PlacedItemsSyncedMessage
+            
+            if (this.isWaiting) {
+                data = this.scene.cache.obj.get(
+                    CacheKey.PlacedItems
+                ) as PlacedItemsSyncedMessage
+            }
+            if (this.fading) {
+                this.isWaiting = true
+                await waitUtil(() => !this.fading)
+            }
+            // handle the placed items update
+            this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
+            // update the previous placed items
+            this.previousPlacedItems = data
+            if (this.isWaiting) {
+                this.isWaiting = false
+            }
+        })
+
+        const data = this.scene.cache.obj.get(
+            CacheKey.PlacedItems
+        ) as PlacedItemsSyncedMessage
+        if (data) {
+        // handle the placed items update
+            this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
+            // update the previous placed items
+            this.previousPlacedItems = data
+        }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
             const object = this.placedItemObjectMap[data.placedItemId]?.object
 
             switch (data.action) {
             case ActionName.Water:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.water.energyConsume
+                            quantity: -this.activities.water.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -110,7 +127,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.water.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.Water,
@@ -119,12 +136,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
 
             case ActionName.PlantSeed:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.plantSeed.energyConsume
+                            quantity: -this.activities.plantSeed.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -132,7 +149,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.plantSeed.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.PlantSeed,
@@ -141,12 +158,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
 
             case ActionName.UsePesticide:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.usePesticide.energyConsume
+                            quantity: -this.activities.usePesticide.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -154,7 +171,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.usePesticide.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.UsePesticide,
@@ -162,12 +179,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.HelpUsePesticide:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.helpUsePesticide.energyConsume
+                            quantity: -this.activities.helpUsePesticide.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -175,7 +192,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.helpUsePesticide.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.HelpUsePesticide,
@@ -183,12 +200,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.UseHerbicide:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.useHerbicide.energyConsume
+                            quantity: -this.activities.useHerbicide.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -196,28 +213,28 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.useHerbicide.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
-                        text: "Failed to " + ActionName.UseHerbicide
+                        text: "Failed to " + ActionName.UseHerbicide,
                     })
                 }
                 break
             case ActionName.HelpUseHerbicide:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.helpUseHerbicide.energyConsume
+                            quantity: -this.activities.helpUseHerbicide.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position: object.getCenter(),
-                            quantity: this.activities.helpUseHerbicide.experiencesGain
+                            quantity: this.activities.helpUseHerbicide.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.UseFertilizer,
@@ -225,12 +242,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.UseFertilizer:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.useFertilizer.energyConsume
+                            quantity: -this.activities.useFertilizer.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -238,7 +255,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.useFertilizer.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.UseFertilizer,
@@ -246,12 +263,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.HarvestCrop:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.harvestCrop.energyConsume
+                            quantity: -this.activities.harvestCrop.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -259,7 +276,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.harvestCrop.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.HarvestCrop,
@@ -267,12 +284,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.ThiefCrop:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.thiefCrop.energyConsume
+                            quantity: -this.activities.thiefCrop.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -280,7 +297,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.thiefCrop.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.ThiefCrop,
@@ -288,12 +305,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.CureAnimal:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.cureAnimal.energyConsume
+                            quantity: -this.activities.cureAnimal.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -301,7 +318,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.cureAnimal.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.CureAnimal,
@@ -309,12 +326,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.FeedAnimal:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.feedAnimal.energyConsume
+                            quantity: -this.activities.feedAnimal.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -322,7 +339,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.feedAnimal.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.FeedAnimal,
@@ -330,12 +347,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.CollectAnimalProduct:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.collectAnimalProduct.energyConsume
+                            quantity: -this.activities.collectAnimalProduct.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -343,7 +360,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.collectAnimalProduct.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.CollectAnimalProduct,
@@ -351,12 +368,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.ThiefAnimalProduct:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.thiefAnimalProduct.energyConsume
+                            quantity: -this.activities.thiefAnimalProduct.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -364,7 +381,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.thiefAnimalProduct.experiencesGain,
                         },
                     ])
-                } else{
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.ThiefAnimalProduct,
@@ -372,12 +389,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.HelpCureAnimal:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.helpCureAnimal.energyConsume
+                            quantity: -this.activities.helpCureAnimal.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -385,9 +402,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.helpCureAnimal.experiencesGain,
                         },
                     ])
-                }
-                else
-                {
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.HelpCureAnimal,
@@ -395,12 +410,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 break
             case ActionName.HelpWater:
-                if(data.success){
+                if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position: object.getCenter(),
-                            quantity: -this.activities.helpWater.energyConsume
+                            quantity: -this.activities.helpWater.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
@@ -408,9 +423,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             quantity: this.activities.helpWater.experiencesGain,
                         },
                     ])
-                }
-                else
-                {
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.HelpWater,
@@ -441,7 +454,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                 key: value.textureConfig.key,
                 ...value.tilesetConfig,
             })
-
         }
         // create tilesets for all building assets
         for (const [, value] of Object.entries(buildingAssetMap)) {
@@ -458,7 +470,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     key: ageValue.textureConfig.key,
                     ...ageValue.tilesetConfig,
                 })
-
             }
         }
     }
