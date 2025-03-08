@@ -232,7 +232,8 @@ export enum EventName {
     RequestUpgradeBuilding = "request_upgrade_building",
     UpgradeBuildingCompleted = "upgrade_building_completed",
 
-    CreateFlyItem = "item_flown",
+    CreateFlyItem = "create_fly_item",
+    CreateFlyItems = "create_fly_items",
 
     FadeIn = "fade_in",
     FadeOut = "fade_out",

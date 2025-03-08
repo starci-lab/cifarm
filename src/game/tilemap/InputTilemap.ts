@@ -55,7 +55,7 @@ import { RED_TINT_COLOR, SYNC_DELAY_TIME, WHITE_TINT_COLOR } from "../constants"
 import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { FlyItem, PlacementPopup, ToolLike } from "../ui"
+import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData, UpdatePlacedItemLocalParams } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 
@@ -226,6 +226,29 @@ export class InputTilemap extends ItemTilemap {
                     },
                 })
                 this.scene.add.existing(flyItem)
+            }
+        )
+
+        this.scene.events.on(
+            EventName.CreateFlyItems,
+            (items: Array<CreateFlyItemMessage>) => {
+                const flyItems = new FlyItems({
+                    baseParams: {
+                        scene: this.scene,
+                    },
+                    options: {
+                        items: items.map((item) => ({
+                            ...item,
+                            x: item.position.x,
+                            y: item.position.y,
+                            depth: calculateGameplayDepth({
+                                layer: GameplayLayer.Effects,
+                            }),
+                        })),
+                        delay: 500
+                    },
+                })
+                this.scene.add.existing(flyItems)
             }
         )
     }
@@ -1333,11 +1356,13 @@ export class InputTilemap extends ItemTilemap {
         }
     
         if (user.energy < actionEnergy) {
-            this.scene.events.emit(EventName.CreateFlyItem, {
-                assetKey: ENERGY_KEY,
-                position: data.object.getCenter(),
-                text: "Not enough",
-            })
+            this.scene.events.emit(EventName.CreateFlyItems, [
+                {
+                    assetKey: ENERGY_KEY,
+                    position: data.object.getCenter(),
+                    text: "Not enough",
+                },
+            ])
             
             return false
         }
