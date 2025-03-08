@@ -444,7 +444,7 @@ export class InputTilemap extends ItemTilemap {
                 })){
                     return
                 }
-                
+
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
@@ -513,7 +513,7 @@ export class InputTilemap extends ItemTilemap {
                     // emit the event to water the plant
                     EventBus.once(
                         EventName.ThiefCropCompleted,
-                        async (message: HarvestCropResponse) => {
+                        async () => {
                             EventBus.emit(EventName.RefreshUser)
                             EventBus.emit(EventName.RefreshInventories)
                             await sleep(DELAY_TIME)
