@@ -21,7 +21,7 @@ export class FlyItem extends Sizer {
         options
     }: ConstructorParams<SizerBaseConstructorParams, FlyItemOptions>) {
         if (!options) {
-            throw new Error("FlyItems requires options")
+            throw new Error("FlyItem requires options")
         }
         super(scene, {
             originY: 1,

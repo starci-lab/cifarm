@@ -209,7 +209,7 @@ export class InputTilemap extends ItemTilemap {
         this.scene.events.on(
             EventName.CreateFlyItem,
             ({ assetKey, position, quantity, text, isShowIcon }: CreateFlyItemMessage) => {
-                const flyItems = new FlyItem({
+                const flyItem = new FlyItem({
                     baseParams: {
                         scene: this.scene,
                     },
@@ -225,7 +225,7 @@ export class InputTilemap extends ItemTilemap {
                         isShowIcon 
                     },
                 })
-                this.scene.add.existing(flyItems)
+                this.scene.add.existing(flyItem)
             }
         )
     }
