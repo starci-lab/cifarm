@@ -11,7 +11,13 @@ import {
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { AnimalAge, animalAssetMap, BaseAssetKey, cropAssetMap, productAssetMap } from "../assets"
+import {
+    AnimalAge,
+    animalAssetMap,
+    BaseAssetKey,
+    cropAssetMap,
+    productAssetMap,
+} from "../assets"
 import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
@@ -38,7 +44,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         this.crops = scene.cache.obj.get(CacheKey.Crops)
         this.products = scene.cache.obj.get(CacheKey.Products)
         this.animals = scene.cache.obj.get(CacheKey.Animals)
-
     }
 
     public update(type: PlacedItemType, placedItem: PlacedItemSchema) {
@@ -119,7 +124,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         } else {
             // Update the star based on level
             this.updateBuildingInfoLevel(placedItem, container)
-
         }
     }
 
@@ -135,7 +139,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (placedItem.placedItemType === createObjectId(PlacedItemTypeId.Home)) {
             return
         }
-        
+
         const stars = placedItem.buildingInfo.currentUpgrade || 0
         const starKey = BaseAssetKey.UIModalStandPurpleStar
 
@@ -145,7 +149,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 .sprite(i * 40, 0, starKey)
                 .setDepth(this.depth + 1)
                 .setScale(0.5)
-                .setPosition(i * -40, - TILE_HEIGHT * 2 / 3)
+                .setPosition(i * -40, (-TILE_HEIGHT * 2) / 3)
             container.addLocal(star)
         }
     }
@@ -160,7 +164,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         this.container?.clear(true)
         this.setAllPropsToUndefined()
     }
-    
+
     private updateSeedGrowthInfoTexture(
         placedItem: PlacedItemSchema,
         container: ContainerLite
@@ -194,13 +198,12 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             } = assetData
             const { x = 0, y = 0 } = { ...offsets }
 
-            if(!this.seedGrowthInfoSprite) {
+            if (!this.seedGrowthInfoSprite) {
                 this.seedGrowthInfoSprite = this.scene.add
                     .sprite(x, y, key)
                     .setDepth(this.depth + 1)
                 container.addLocal(this.seedGrowthInfoSprite)
-            }
-            else {
+            } else {
                 this.seedGrowthInfoSprite
                     .setTexture(key)
                     .setPosition(x, y)
@@ -210,7 +213,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             }
         }
     }
-
 
     private updateSeedGrowthInfoBubble(
         placedItem: PlacedItemSchema,
@@ -250,10 +252,13 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 let stateKey: string | undefined
                 // update the icon
                 // for state 0-3, use the icon in the crop asset map
-                if (placedItem.seedGrowthInfo.currentState !== CropCurrentState.FullyMatured) {
+                if (
+                    placedItem.seedGrowthInfo.currentState !==
+          CropCurrentState.FullyMatured
+                ) {
                     stateKey =
-          cropStateAssetMap[placedItem.seedGrowthInfo.currentState]
-              ?.textureConfig.key
+            cropStateAssetMap[placedItem.seedGrowthInfo.currentState]
+                ?.textureConfig.key
                 } else {
                     // use the product icon
                     const crop = this.crops.find(
@@ -269,33 +274,49 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         throw new Error("Product not found")
                     }
 
-                    const text = `${placedItem.seedGrowthInfo.harvestQuantityRemaining || 0}/${crop.maxHarvestQuantity || 0}`
+                    const text = `${
+                        placedItem.seedGrowthInfo.harvestQuantityRemaining || 0
+                    }/${crop.maxHarvestQuantity || 0}`
 
                     this.quantityText = new Text({
                         baseParams: {
                             scene: this.scene,
-                            text: text,
+                            text,
                             x: 0,
-                            y: 0
+                            y: 0,
                         },
                         options: {
                             fontSize: 28,
-                            textColor: TextColor.Brown
-                        }
+                            textColor: TextColor.Brown,
+                        },
                     }).setDepth(this.depth + 10001)
-        
+
                     this.scene.add.existing(this.quantityText)
                     this.bubbleState.addLocal(this.quantityText)
 
                     stateKey = undefined
                 }
-                if(stateKey) {
+                if (stateKey) {
                     this.bubbleState.setIconTexture(stateKey).layout()
-                }else{
+                } else {
                     this.bubbleState.resetDisplayContent({
-                        icon: false
+                        icon: false,
                     })
                 }
+            } else if (
+                this.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining !==
+        undefined &&
+      this.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining !==
+        placedItem.seedGrowthInfo?.harvestQuantityRemaining
+            ) {
+                if (!this.quantityText) {
+                    throw new Error("Quantity text not found")
+                }
+                this.quantityText.setText(
+                    `${placedItem?.seedGrowthInfo?.harvestQuantityRemaining || 0}/${
+                        this.currentPlacedItem?.seedGrowthInfo?.harvestCount || 0
+                    }`
+                )
             }
         } else {
             // if bubble state is present, remove it
@@ -304,6 +325,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 this.bubbleState = undefined
             }
         }
+
     }
 
     private updateSeedGrowthInfoFertilizer(
@@ -313,7 +335,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
-    
+
         if (placedItem.seedGrowthInfo.isFertilized) {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
@@ -333,7 +355,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             }
         }
     }
-    
+
     private updateSeedGrowthInfoTimer(
         placedItem: PlacedItemSchema,
         container: ContainerLite
@@ -379,7 +401,10 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 }
 
                 const formattedTime = formatTime(
-                    Math.round(crop.growthStageDuration - placedItem.seedGrowthInfo.currentStageTimeElapsed)
+                    Math.round(
+                        crop.growthStageDuration -
+              placedItem.seedGrowthInfo.currentStageTimeElapsed
+                    )
                 )
                 this.timer.setText(formattedTime)
             }
@@ -411,9 +436,10 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 throw new Error("Animal not found")
             }
 
-            const data = animalAssetMap[animal.displayId].ages[placedItem.animalInfo.isAdult ? 
-                AnimalAge.Adult : AnimalAge.Baby
-            ]
+            const data =
+        animalAssetMap[animal.displayId].ages[
+            placedItem.animalInfo.isAdult ? AnimalAge.Adult : AnimalAge.Baby
+        ]
             if (!data) {
                 throw new Error("Animal data not found")
             }
@@ -474,8 +500,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 // for state 0-3, use the icon in the crop asset map
                 if (placedItem.animalInfo.currentState !== AnimalCurrentState.Yield) {
                     stateKey =
-          animalStateAssetMap[placedItem.animalInfo.currentState]
-              ?.textureConfig.key
+            animalStateAssetMap[placedItem.animalInfo.currentState]
+                ?.textureConfig.key
                 } else {
                     // use the product icon
                     const animal = this.animals.find(
@@ -492,11 +518,11 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     }
                     stateKey = productAssetMap[product.displayId].textureConfig.key
                 }
-                if(stateKey) {
+                if (stateKey) {
                     this.bubbleState.setIconTexture(stateKey).layout()
-                }else{
+                } else {
                     this.bubbleState.resetDisplayContent({
-                        icon: false
+                        icon: false,
                     })
                 }
             }
@@ -516,10 +542,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!placedItem.animalInfo) {
             throw new Error("Animal info not found")
         }
-        
-        if (
-            placedItem.animalInfo.currentState != AnimalCurrentState.Yield
-        ) {
+
+        if (placedItem.animalInfo.currentState != AnimalCurrentState.Yield) {
             if (
                 placedItem.animalInfo.currentGrowthTime !==
         this.currentPlacedItem?.animalInfo?.currentGrowthTime
@@ -555,7 +579,9 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 }
 
                 const formattedTime = formatTime(
-                    Math.round(animal.growthTime - placedItem.animalInfo.currentGrowthTime)
+                    Math.round(
+                        animal.growthTime - placedItem.animalInfo.currentGrowthTime
+                    )
                 )
                 this.timer.setText(formattedTime)
             }

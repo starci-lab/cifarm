@@ -348,33 +348,36 @@ export class InputTilemap extends ItemTilemap {
               CropCurrentState.NeedWater
                 ) {
                     return
-                }
-
-                if(!this.energyNotEnough({
-                    data,
-                    actionEnergy: this.activities.water.energyConsume,
-                })){
-                    return
-                }
+                } 
 
                 if (visitedNeighbor) {
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.helpWater.energyConsume,
+                    })){
+                        return
+                    }
                     // emit the event to water the plant
-                    EventBus.once(EventName.HelpWaterCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropWatered)
-                        }
-                        // reset the isPressed flag
-                        data.pressBlocked = true
-
-                        EventBus.emit(EventName.SyncDelayEnded)
-                    })
+                    // EventBus.once(EventName.HelpWaterCompleted, () => {
+                    //     EventBus.emit(EventName.RefreshUser)
+                    //     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    //         EventBus.emit(EventName.TutorialCropWatered)
+                    //     }
+                    //     // reset the isPressed flag
+                    //     data.pressBlocked = true
+                    // })
                     // emit the event to plant seed
                     const eventMessage: HelpWaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpWater, eventMessage)
                 } else {
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.water.energyConsume,
+                    })){
+                        return
+                    }
                     // emit the event to plant seed
                     const eventMessage: WaterRequest = {
                         placedItemTileId: placedItemId,
@@ -441,6 +444,7 @@ export class InputTilemap extends ItemTilemap {
                 })){
                     return
                 }
+                
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
@@ -500,25 +504,19 @@ export class InputTilemap extends ItemTilemap {
 
                 const center = object.getCenter()
                 if (visitedNeighbor) {
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.thiefCrop.energyConsume,
+                    })){
+                        return
+                    }
                     // emit the event to water the plant
                     EventBus.once(
                         EventName.ThiefCropCompleted,
                         async (message: HarvestCropResponse) => {
                             EventBus.emit(EventName.RefreshUser)
                             EventBus.emit(EventName.RefreshInventories)
-                
-                            this.scene.events.emit(EventName.CreateFlyItem, {
-                                assetKey:
-                      productAssetMap[product.displayId].textureConfig.key,
-                                position: center,
-                                quantity: message.quantity,
-                            })
                             await sleep(DELAY_TIME)
-                            this.scene.events.emit(EventName.CreateFlyItem, {
-                                assetKey: EXPERIENCE_KEY,
-                                position: center,
-                                quantity: this.activities.thiefCrop.experiencesGain,
-                            })
                             data.pressBlocked = false
 
                             EventBus.emit(EventName.SyncDelayEnded)
@@ -532,6 +530,13 @@ export class InputTilemap extends ItemTilemap {
                     data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.harvestCrop.energyConsume,
+                    })){
+                        return
+                    }
+
                     EventBus.once(
                         EventName.HarvestCropCompleted,
                         async (message: HarvestCropResponse) => {
@@ -628,14 +633,8 @@ export class InputTilemap extends ItemTilemap {
                 }
                 EventBus.emit(EventName.RequestUseFertilizer, eventMessage)
                 data.pressBlocked = true
-
-                setTimeout(() => {
-                    EventBus.emit(EventName.SyncDelayEnded)
-                }, SYNC_DELAY_TIME)
-
                 break
             }
-                break
             }
         }
         }
