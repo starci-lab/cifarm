@@ -17,6 +17,7 @@ export enum EventName {
     Authenticated = "authenticated",
     // placed items to sync in-game
     PlacedItemsSynced = "placed_items_synced",
+    UpdatePlacedItems = "update_placed_items",
     // action emitted in-game
     ActionEmitted = "action_emitted",
     // show fade in/out

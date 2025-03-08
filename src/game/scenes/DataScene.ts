@@ -4,6 +4,7 @@ import { InventorySchema, UserSchema } from "@/modules/entities"
 import { CacheKey } from "../types"
 import { SceneName } from "../scene"
 import { IPaginatedResponse } from "@/modules/apollo"
+import { PlacedItemsSyncedMessage } from "@/hooks"
 //import { EventName } from "../event-bus"
 
 export class DataScene extends Scene {
@@ -26,5 +27,14 @@ export class DataScene extends Scene {
         EventBus.on(EventName.UpdateVisitedNeighbor, (user: UserSchema) => {
             this.cache.obj.add(CacheKey.VisitedNeighbor, user)
         })
+
+        EventBus.on(
+            EventName.PlacedItemsSynced,
+            async (data: PlacedItemsSyncedMessage) => {
+                //store the placed items in the cache
+                this.cache.obj.add(CacheKey.PlacedItems, data)
+                EventBus.emit(EventName.UpdatePlacedItems)
+            }
+        )
     }
 }
