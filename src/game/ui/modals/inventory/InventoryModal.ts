@@ -4,7 +4,7 @@ import { getScreenBottomY, getScreenCenterX } from "../../utils"
 import { InventoryToolbar } from "./InventoryToolbar"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { InventoryStorage } from "./InventoryStorage"
-import { DefaultInfo, InventoryKind, InventorySchema, InventoryTypeSchema, UserSchema } from "@/modules/entities"
+import { DefaultInfo, InventoryKind, InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { MoveInventoryRequest } from "@/modules/axios"
 import { EventBus, EventName } from "@/game/event-bus"
@@ -80,23 +80,27 @@ export class InventoryModal extends BaseSizer {
                 // If it's the same inventory, no changes
                     return
                 }
-                console.log(foundInventory, inventoryType)
                 // If inventories are of the same type, update quantity or perform actions
                 if (foundInventory.inventoryType === inventoryType.id) {
-                // Merge quantities or handle inventory item addition
-                    foundInventory.quantity += inventory.quantity
-
-                    // Remove the old inventory
-                    inventories = inventories.filter(inv => inv.id !== inventory.id)
+                    // if it react the max stack size, thus we create a new inventory
+                    if (foundInventory.quantity + inventory.quantity <= inventoryType.maxStack) {
+                        // Remove the old inventory
+                        inventories = inventories.filter(inv => inv.id !== inventory.id)
+                        // Update the quantity of the found inventory
+                        foundInventory.quantity += inventory.quantity
+                    } else {
+                        // reduce the quantity of the inventory
+                        inventory.quantity -= inventoryType.maxStack - foundInventory.quantity
+                        foundInventory.quantity = inventoryType.maxStack
+                    }
                 } else {
                 // Swap inventories
-                    const tempIndex = foundInventory.index
-                    const tempKind = foundInventory.kind
+                    const { index: foundIndex, kind: foundKind } = foundInventory
                     // Swap index and kind between the two inventories
                     foundInventory.index = inventory.index
                     foundInventory.kind = inventory.kind
-                    inventory.index = tempIndex
-                    inventory.kind = tempKind
+                    inventory.index = foundIndex
+                    inventory.kind = foundKind
                 }
             } else {
                 // If no inventory exists at the target index, just update the index and kind
