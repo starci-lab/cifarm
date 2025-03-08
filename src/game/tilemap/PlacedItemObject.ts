@@ -23,6 +23,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
     private animalInfoSprite: Phaser.GameObjects.Sprite | undefined
     private bubbleState: Label | undefined
+    private quantityText: Text | undefined
     public currentPlacedItem: PlacedItemSchema | undefined
     private fertilizerParticle: Phaser.GameObjects.Sprite | undefined
     private levelStar: Phaser.GameObjects.Sprite | undefined
@@ -269,7 +270,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     }
 
                     const text = `${placedItem.seedGrowthInfo.harvestQuantityRemaining || 0}/${crop.maxHarvestQuantity || 0}`
-                    const label = new Text({
+
+                    this.quantityText = new Text({
                         baseParams: {
                             scene: this.scene,
                             text: text,
@@ -282,8 +284,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         }
                     }).setDepth(this.depth + 10001)
         
-                    this.scene.add.existing(label)
-                    this.bubbleState.addLocal(label)
+                    this.scene.add.existing(this.quantityText)
+                    this.bubbleState.addLocal(this.quantityText)
 
                     stateKey = undefined
                 }
@@ -514,6 +516,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!placedItem.animalInfo) {
             throw new Error("Animal info not found")
         }
+        
         if (
             placedItem.animalInfo.currentState != AnimalCurrentState.Yield
         ) {
