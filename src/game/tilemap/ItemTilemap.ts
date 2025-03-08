@@ -27,13 +27,15 @@ import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
 import { sleep } from "@/modules/common"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
-import { gameState } from "../config"
+import { waitUtil } from "../ui"
 
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
     private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
+    private fading = false
+    private isWaiting = false
     // item layer
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
@@ -41,7 +43,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
-    private activities: Activities
+    protected activities: Activities
 
     private user: UserSchema
     private currentUserId: string
@@ -66,17 +68,29 @@ export abstract class ItemTilemap extends GroundTilemap {
             async (data: PlacedItemsSyncedMessage) => {
                 //store the placed items in the cache
                 this.scene.cache.obj.add(CacheKey.PlacedItems, data.placedItems)
+                if (this.isWaiting) {
+                    return
+                }
+                await waitUtil(() => !this.fading)
+                this.isWaiting = true
                 // handle the placed items update
                 this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
                 // update the previous placed items
                 this.previousPlacedItems = data
-                if (data.userId !== this.currentUserId) {
-                    //show fade in animation
-                    await sleep(FADE_HOLD_TIME)
-                    EventBus.emit(EventName.FadeOut)
-                }
             }
         )
+
+        EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
+            this.fading = true
+            // console.log(toNeighbor)
+            EventBus.emit(EventName.FadeIn)
+            await sleep(FADE_TIME)
+            EventBus.emit(toNeighbor ? EventName.Visit : EventName.Return)
+            this.fading = false
+            await sleep(FADE_HOLD_TIME)
+            EventBus.emit(EventName.FadeOut)
+            
+        })
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
             const object = this.placedItemObjectMap[data.placedItemId]?.object
@@ -101,20 +115,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.Water,
                     })
-                    // switch(data.reasonCode){
-                    // case 1:
-                    // this.scene.events.emit(EventName.CreateFlyItem, {
-                    //     position: object.getCenter(),
-                    //     text: "Failed to " + ActionName.Water,
-                    // })
-                    //     break
-                    // case 2:
-                    //     this.scene.events.emit(EventName.CreateFlyItem, {
-                    //         position: object.getCenter(),
-                    //         text: "Failed",
-                    //     })
-                    //     break
-                    // }
                 }
                 break
 
@@ -453,7 +453,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // create tilesets for all animal assets
         for (const [, value] of Object.entries(animalAssetMap)) {
-            for (const [age, ageValue] of Object.entries(value.ages)) {
+            for (const [, ageValue] of Object.entries(value.ages)) {
                 this.createSingleTileTileset({
                     key: ageValue.textureConfig.key,
                     ...ageValue.tilesetConfig,

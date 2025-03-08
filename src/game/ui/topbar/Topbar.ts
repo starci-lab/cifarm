@@ -51,8 +51,9 @@ export class Topbar extends BaseSizer {
         })
 
         EventBus.on(EventName.Return, () => {
-            this.visited = false
             this.neighbor = undefined
+            this.visited = false
+            this.scene.cache.obj.add(CacheKey.VisitedNeighbor, undefined)
             this.updateContent()
             EventBus.emit(EventName.ShowButtons)
             EventBus.emit(EventName.HideNeighborButtons)
@@ -74,9 +75,14 @@ export class Topbar extends BaseSizer {
     }
 
     private async loadAvatar() {
+        
         const user = this.visited ? this.neighbor : this.user
         if (!user) {
             throw new Error("User not found")
+        }
+        //check if image id is already loaded
+        if (this.scene.textures.exists(user.id)) {
+            return
         }
         if (user.avatarUrl) {
             await loadImageAwait({

@@ -19,12 +19,9 @@ import {
 import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
 import { sleep } from "@/modules/common"
 import {
-    Activities,
     AnimalId,
     BuildingId,
-    BuildingSchema,
     CropCurrentState,
-    CropId,
     CropSchema,
     InventorySchema,
     InventoryType,
@@ -56,7 +53,7 @@ import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage,
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
-import { ItemTilemap, PlacedItemObjectData, UpdatePlacedItemLocalParams } from "./ItemTilemap"
+import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 
 export const POPUP_SCALE = 0.7
@@ -86,7 +83,6 @@ export class InputTilemap extends ItemTilemap {
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private crops: Array<CropSchema> = []
     private products: Array<ProductSchema> = []
-    private activities: Activities 
     private placementPopup: PlacementPopup | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
@@ -150,7 +146,6 @@ export class InputTilemap extends ItemTilemap {
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.crops = this.scene.cache.obj.get(CacheKey.Crops)
         this.products = this.scene.cache.obj.get(CacheKey.Products)
-        this.activities = this.scene.cache.obj.get(CacheKey.Activities)
 
         // click on empty tile to plant seed
         this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -183,11 +178,6 @@ export class InputTilemap extends ItemTilemap {
                     data,
                     data.object.currentPlacedItem?.id
                 )
-                //if max level
-                // eslint-disable-next-line no-case-declarations
-                const buildings = this.scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
-                // eslint-disable-next-line no-case-declarations
-                // const upgradeData = buildings.find(b => createObjectId(b.displayId) === buildingId)?.upgrades
     
                 if(data.placedItemType.displayId == PlacedItemTypeId.Home) return
 
@@ -302,7 +292,7 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            if(!this.canPerformAction({
+            if(!this.energyNotEnough({
                 data,
                 actionEnergy: this.activities.plantSeed.energyConsume,
             })){
@@ -360,7 +350,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if(!this.canPerformAction({
+                if(!this.energyNotEnough({
                     data,
                     actionEnergy: this.activities.water.energyConsume,
                 })){
@@ -402,7 +392,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if(!this.canPerformAction({
+                if(!this.energyNotEnough({
                     data,
                     actionEnergy: this.activities.usePesticide.energyConsume,
                 })){
@@ -445,7 +435,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if(!this.canPerformAction({
+                if(!this.energyNotEnough({
                     data,
                     actionEnergy: this.activities.useHerbicide.energyConsume,
                 })){
@@ -617,7 +607,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if(!this.canPerformAction({
+                if(!this.energyNotEnough({
                     data,
                     actionEnergy: this.activities.useFertilizer.energyConsume,
                 })){
@@ -716,7 +706,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if(!this.canPerformAction({
+                if(!this.energyNotEnough({
                     data,
                     actionEnergy: this.activities.feedAnimal.energyConsume,
                 })){
@@ -746,7 +736,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if(!this.canPerformAction({
+                if(!this.energyNotEnough({
                     data,
                     actionEnergy: this.activities.cureAnimal.energyConsume,
                 })){
@@ -1097,18 +1087,6 @@ export class InputTilemap extends ItemTilemap {
             switch (tool.displayId) {
             case ToolId.Hammer: {
                 EventBus.emit(EventName.SyncDelayStarted)
-
-                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                    placedItem: {
-                        ...currentPlacedItem,
-                        seedGrowthInfo: {
-                            ...currentPlacedItem.seedGrowthInfo,
-                            currentState: CropCurrentState.Normal,
-                        }
-                    },
-                    type: PlacedItemType.Building,
-                }
-
                 // update the placed item in client
                 // EventBus.emit(EventName.RequestUpgradeBuilding, updatePlacedItemLocal)
 
@@ -1142,7 +1120,7 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemData = undefined
     }
 
-    private canPerformAction({
+    private energyNotEnough({
         data,
         actionEnergy = 0
     }: ICanPerformActionParams): boolean {
