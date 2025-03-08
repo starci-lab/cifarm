@@ -781,16 +781,11 @@ export class ShopContent extends BaseSizer {
             throw new Error("[getAnimalMaxOwnership] Related building not found.")
         }
     
-        console.log("Calculating max ownership for:", displayId, relatedBuilding.upgrades)
-    
         if (!this.placedItems){
             return 0
         }
     
         const userBuildings = this.placedItems.filter(item => item.placedItemType === createObjectId(relatedBuilding.displayId))
-
-        console.log("[getAnimalMaxOwnership] userBuildings", userBuildings)
-    
         let maxCapacity = 0
         for (const building of userBuildings) {
             console.log("[getAnimalMaxOwnership] building", building)
