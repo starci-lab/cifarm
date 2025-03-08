@@ -1,5 +1,5 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { CacheKey, BaseSizerBaseConstructorParams } from "../../../../types"
+import { CacheKey, BaseSizerBaseConstructorParams, DeliveryData } from "../../../../types"
 import { CloseModalMessage, EventBus, EventName, ModalName, UpdateInputQuantityModalMessage } from "../../../../event-bus"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
@@ -7,7 +7,7 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Background, Button, ModalBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
-import { DeliverProductRequest } from "@/modules/axios"
+import { DeliverMoreProductRequest, DeliverProductRequest } from "@/modules/axios"
 import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 
 export class InputQuantityContent extends BaseSizer {
@@ -52,21 +52,39 @@ export class InputQuantityContent extends BaseSizer {
                         EventBus.on(EventName.DeliverProductCompleted, () => {
                             this.scene.events.emit(EventName.CloseModal)
                         })
-                        const index = this.scene.cache.obj.get(CacheKey.DeliveryIndex)
-                        const eventName: DeliverProductRequest = {
-                            quantity: this.quantity,
-                            inventoryId: this.inventory.id,
-                            index
+                        const { index, isMore } = this.scene.cache.obj.get(CacheKey.DeliveryData) as DeliveryData
+                        if (!isMore) {
+                            const eventName: DeliverProductRequest = {
+                                quantity: this.quantity,
+                                inventoryId: this.inventory.id,
+                                index
+                            }
+
+                            EventBus.once(EventName.DeliverProductCompleted, () => {
+                                EventBus.emit(EventName.RefreshInventories)
+                                const eventMessage: CloseModalMessage = { 
+                                    modalName: ModalName.InputQuantity
+                                }
+                                EventBus.emit(EventName.CloseModal, eventMessage)
+                            })
+                            EventBus.emit(EventName.RequestDeliverProduct, eventName)
+                        } else {
+                            const eventName: DeliverMoreProductRequest = {
+                                quantity: this.quantity,
+                                inventoryId: this.inventory.id,
+                                index,
+                            }
+
+                            EventBus.once(EventName.DeliverMoreProductCompleted, () => {
+                                EventBus.emit(EventName.RefreshInventories)
+                                const eventMessage: CloseModalMessage = { 
+                                    modalName: ModalName.InputQuantity
+                                }
+                                EventBus.emit(EventName.CloseModal, eventMessage)
+                            })
+                            EventBus.emit(EventName.RequestDeliverMoreProduct, eventName)
                         }
 
-                        EventBus.once(EventName.DeliverProductCompleted, () => {
-                            EventBus.emit(EventName.RefreshInventories)
-                            const eventMessage: CloseModalMessage = { 
-                                modalName: ModalName.InputQuantity
-                            }
-                            EventBus.emit(EventName.CloseModal, eventMessage)
-                        })
-                        EventBus.emit(EventName.RequestDeliverProduct, eventName)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             restoreTutorialDepth({
                                 gameObject: button,

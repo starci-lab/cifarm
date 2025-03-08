@@ -20,6 +20,7 @@ import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
 import { sleep } from "@/modules/common"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
+import { gameState } from "../config"
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -56,14 +57,20 @@ export abstract class ItemTilemap extends GroundTilemap {
                 if (this.cancelListen) {
                     return
                 }
-                if (data.userId !== this.currentUserId) {
-                    this.cancelListen = true
+                if (!gameState.data?.preventFirstSync) {
+                    if (data.userId !== this.currentUserId) {
+                        this.cancelListen = true
+                        this.currentUserId = data.userId
+                        const visited = data.userId !== this.user.id
+                        EventBus.emit(EventName.FadeIn)
+                        await sleep(FADE_TIME)
+                        EventBus.emit(visited ? EventName.Visit : EventName.Return)
+                    }
+                } else {
+                    gameState.data.preventFirstSync = false
                     this.currentUserId = data.userId
-                    const visited = data.userId !== this.user.id
-                    EventBus.emit(EventName.FadeIn)
-                    await sleep(FADE_TIME)
-                    EventBus.emit(visited ? EventName.Visit : EventName.Return)
                 }
+
                 //store the placed items in the cache
                 this.scene.cache.obj.add(CacheKey.PlacedItems, data.placedItems)
                 // handle the placed items update

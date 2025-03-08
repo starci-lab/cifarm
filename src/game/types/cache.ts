@@ -22,7 +22,12 @@ export enum CacheKey {
     SelectedTileType = "selected-tile-type",
     SelectedTool = "selected-tool",
     DefaultInfo = "default-info",
-    DeliveryIndex = "delivery-index",
+    DeliveryData = "delivery-data",
     TutorialDepth = "tutorial-depth",
     VisitedNeighbor = "visited-neighbor",
+}
+
+export interface DeliveryData {
+    index: number;
+    isMore: boolean;
 }

@@ -9,6 +9,7 @@ import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
 import { useConstructBuildingEffects } from "./useConstructBuilding"
 import { useCureAnimalEffects } from "./useCureAnimalEffects"
+import { useDeliverMoreProductEffects } from "./useDeliverMoreProductEffects"
 import { useDeliverProductEffects } from "./useDeliverProductEffects"
 import { useFeedAnimalEffects } from "./useFeedAnimalEffects"
 import { useFollowEffects } from "./useFollowEffects"
@@ -56,4 +57,5 @@ export const useApiEffects = () => {
     useUseFertilizerEffects()
     useUpdateFollowXEffects()
     useUpgradeBuildingEffects()
+    useDeliverMoreProductEffects()
 }

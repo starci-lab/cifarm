@@ -1,4 +1,4 @@
-import { InventorySchema, PlacedItemSchema, PlacedItemType, TutorialStep } from "@/modules/entities"
+import { InventorySchema, PlacedItemSchema, PlacedItemType, TutorialStep, UserSchema } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -48,7 +48,7 @@ export enum EventName {
     NeighborsRefreshed = "neighbors_refreshed",
     RefreshFollowees = "refresh_followees",
     FolloweesRefreshed = "followees_refreshed",
-    
+
     // open shop
     OpenShop = "open_shop",
     CloseShop = "close_shop",
@@ -188,6 +188,9 @@ export enum EventName {
     RequestDeliverProduct = "request_deliver_product",
     DeliverProductCompleted = "deliver_product_completed",
 
+    RequestDeliverMoreProduct = "request_deliver_more_product",
+    DeliverMoreProductCompleted = "deliver_more_product_completed",
+
     RequestRetainProduct = "request_retain_product",
     RetainProductCompleted = "retain_product_completed",
 
@@ -257,11 +260,18 @@ export enum EventName {
     UpdateConfirmModal = "update_warning_modal",
 
     UpdateVolume = "update_volume",
+
+    WatchUserChanged = "watch_user_changed",
 }
 
 export interface OpenTutorialMessage {
     // name of the tutorial to open
     tutorialStep: TutorialStep,
+}
+
+export interface WatchUserChangedMessage {
+    prevUser: UserSchema
+    currentUser: UserSchema
 }
 
 export interface CloseTutorialMessage {

@@ -16,7 +16,6 @@ import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
-import { GameObjects } from "phaser"
 
 export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     // list of extra sprites that are part of the placed item

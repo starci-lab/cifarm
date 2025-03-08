@@ -1,5 +1,5 @@
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../assets"
-import { CacheKey, BaseSizerBaseConstructorParams } from "../../../types"
+import { CacheKey, BaseSizerBaseConstructorParams, DeliveryData } from "../../../types"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -8,7 +8,7 @@ import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMes
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "@/game/queries"
 import { MODAL_DEPTH_1 } from "../ModalManager"
-import { Text, XButton } from "../../elements"
+import { Text, XButton, XButtonColor } from "../../elements"
 import { RetainProductRequest } from "@/modules/axios"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { SCALE_TIME } from "@/game/constants"
@@ -182,7 +182,11 @@ export class StandContent extends BaseSizer {
     private createAddButton(index: number) {
         const addButton = this.createAddButtonLabel({
             onPress: () => {
-                this.scene.cache.obj.add(CacheKey.DeliveryIndex, index)
+                const data: DeliveryData = {
+                    index,
+                    isMore: false,
+                }
+                this.scene.cache.obj.add(CacheKey.DeliveryData, data)
                 this.scene.events.emit(EventName.UpdateSelectProductModal)
                 // open the select product modal
                 const eventMessage: OpenModalMessage = {
@@ -230,6 +234,7 @@ export class StandContent extends BaseSizer {
                 }
             },
             options: {
+                color: XButtonColor.White,
                 onPress: () => {
                     console.log("XButton pressed!")
                     // call retain method
@@ -248,7 +253,29 @@ export class StandContent extends BaseSizer {
 
         const addButton = this.createAddButtonLabel({
             onPress: () => {
-                // call release method
+                const data: DeliveryData = {
+                    index: inventory.index,
+                    isMore: true,
+                }
+                this.scene.cache.obj.add(CacheKey.DeliveryData, data)
+                this.scene.events.emit(EventName.UpdateSelectProductModal)
+                // open the select product modal
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.SelectProduct,
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
+                // close the arrow
+                this.scene.events.emit(EventName.HidePressHereArrow)
+                // remove the highlight
+                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    const emptyCell = this.containerMap[inventory.index]
+                    if (!emptyCell) {
+                        throw new Error("No empty cell found")
+                    }
+                    restoreTutorialDepth({
+                        gameObject: emptyCell.container,
+                    })
+                }
             },
             percentHeight: ADD_BUTTON_SCALE,
             percentWidth: ADD_BUTTON_SCALE
@@ -256,8 +283,8 @@ export class StandContent extends BaseSizer {
         const addButtonContainer = this.scene.rexUI.add.container(0, 0).addLocal(addButton.setPosition(-5, 0))
         this.scene.add.existing(addButtonContainer)
         const badgeLabel = this.scene.rexUI.add.badgeLabel({
-            width: image.width,
-            height: image.height,
+            width: image.width * 1.5,
+            height: image.height * 1.5,
             background: image,
             center: image,
             rightTop: xButtonContainer,
@@ -269,7 +296,7 @@ export class StandContent extends BaseSizer {
 
     private createAddButtonLabel({ onPress, percentHeight = 1, percentWidth = 1 }: CreateAddButtonLabelParams) {
         //create a texture
-        const background = this.scene.add.image(0, 0, BaseAssetKey.UIModalStandAddButton)
+        const background = this.scene.add.image(0, 0, BaseAssetKey.UICommonPlus)
         const label = this.scene.rexUI.add.label({
             width: background.width * percentWidth,
             height: background.height * percentHeight,

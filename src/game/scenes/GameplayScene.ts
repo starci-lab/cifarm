@@ -5,7 +5,7 @@ import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
 
 export class GameplayScene extends Scene
 {
-    private tileMap: Tilemap | undefined
+    private tilemap: Tilemap | undefined
     constructor ()
     {
         super(SceneName.Gameplay)
@@ -19,14 +19,13 @@ export class GameplayScene extends Scene
     // shutdown method
     shutdown() {
         // call all shutdown methods of game objects
-        this.tileMap?.shutdown()
+        this.tilemap?.shutdown()
     }
 
     create ()
     {   
         // launch the UI scene parallel to the gameplay scene
         this.scene.launch(SceneName.UI)
-        this.scene.launch(SceneName.Data)
 
         // set the camera to the center of the tilemap
         const x = TILE_WIDTH
@@ -34,7 +33,7 @@ export class GameplayScene extends Scene
         this.cameras.main.centerOn(x, y)
 
         // create the tilemap
-        this.tileMap = new Tilemap({
+        this.tilemap = new Tilemap({
             scene: this
         })
     }
@@ -42,6 +41,6 @@ export class GameplayScene extends Scene
     // update method
     update ()
     {
-        this.tileMap?.update()
+        this.tilemap?.update()
     }
 }
