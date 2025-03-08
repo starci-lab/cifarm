@@ -13,8 +13,6 @@ import { useEffects } from "./hooks"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
-    const [isSyncDelayed, setIsSyncDelayed] = React.useState(false)
-
     const { socket, connect } = useGameplayIo()
 
     const { swr: { data } } = useQueryUserSwr()
@@ -27,15 +25,9 @@ export const Game: FC = () => {
         if (!socket) return
         //listen for placed items synced
         socket.on(PLACED_ITEMS_SYNCED_EVENT, (data: PlacedItemsSyncedMessage) => {
-            if (!data.isSecondarySync) {
-                EventBus.emit(EventName.SyncDelayEnded)
-            }
-    
-            if (!isSyncDelayed || !data.isSecondarySync) {
-                EventBus.emit(EventName.PlacedItemsSynced, data)
-            }
+            // console current ms
+            console.log("PlacedItemsSynced", Date.now())
 
-            // console.log(data.userId, userRef.current?.id)
             if (data.userId !== userIdRef.current) {
                 if (!userIdRef.current) {
                     throw new Error("User id is undefined")
@@ -43,27 +35,14 @@ export const Game: FC = () => {
                 EventBus.emit(EventName.WatchUserChanged, data.userId)
                 userIdRef.current = data.userId
             }
+
+            EventBus.emit(EventName.PlacedItemsSynced, data)
         })
 
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
         }
-    }, [socket, isSyncDelayed])
-
-    useEffect(() => {
-        EventBus.on(EventName.SyncDelayStarted, () => {
-            setIsSyncDelayed(true)
-        })
-    
-        EventBus.on(EventName.SyncDelayEnded, () => {
-            setIsSyncDelayed(false)
-        })
-    
-        return () => {
-            EventBus.removeListener(EventName.SyncDelayStarted)
-            EventBus.removeListener(EventName.SyncDelayEnded)
-        }
-    }, [])
+    }, [socket])
 
     //ensure all swr queries are done
     useLayoutEffect(() => {

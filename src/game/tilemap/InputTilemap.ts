@@ -188,6 +188,7 @@ export class InputTilemap extends ItemTilemap {
                 const buildings = this.scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
                 // eslint-disable-next-line no-case-declarations
                 // const upgradeData = buildings.find(b => createObjectId(b.displayId) === buildingId)?.upgrades
+    
                 if(data.placedItemType.displayId == PlacedItemTypeId.Home) return
 
                 this.handlePressOnBuilding(data)
@@ -409,76 +410,72 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                EventBus.emit(EventName.SyncDelayStarted)
+                //EventBus.emit(EventName.SyncDelayStarted)
 
-                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                    placedItem: {
-                        ...currentPlacedItem,
-                        seedGrowthInfo: {
-                            ...currentPlacedItem.seedGrowthInfo,
-                            currentState: CropCurrentState.Normal,
-                        }
-                    },
-                    type: PlacedItemType.Tile,
-                }
+                // const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
+                //     placedItem: {
+                //         ...currentPlacedItem,
+                //         seedGrowthInfo: {
+                //             ...currentPlacedItem.seedGrowthInfo,
+                //             currentState: CropCurrentState.Normal,
+                //         }
+                //     },
+                //     type: PlacedItemType.Tile,
+                // }
 
-                // update the placed item in client
-                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
+                // // update the placed item in client
+                // EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
                 if (visitedNeighbor) {
                     // emit the event to water the plant
-                    EventBus.once(EventName.HelpWaterCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropWatered)
-                            this.scene.events.emit(EventName.CreateFlyItem,
-                                {
-                                    assetKey: EXPERIENCE_KEY,
-                                    position: object.getCenter(),
-                                    quantity: this.activities.helpWater.experiencesGain,
-                                }
-                            )
-                        }
-                        // reset the isPressed flag
-                        data.pressBlocked = true
+                    // EventBus.once(EventName.HelpWaterCompleted, () => {
+                    //     EventBus.emit(EventName.RefreshUser)
+                    //     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    //         EventBus.emit(EventName.TutorialCropWatered)
+                    //         this.scene.events.emit(EventName.CreateFlyItem, {
+                    //             assetKey: EXPERIENCE_KEY,
+                    //             position: object.getCenter(),
+                    //             quantity: this.activities.helpWater.experiencesGain,
+                    //         })
+                    //     }
+                    //     // reset the isPressed flag
+                    //     data.pressBlocked = true
 
-                        EventBus.emit(EventName.SyncDelayEnded)
-                    })
+                    //     EventBus.emit(EventName.SyncDelayEnded)
+                    // })
                     // emit the event to plant seed
                     const eventMessage: HelpWaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpWater, eventMessage)
-                    data.pressBlocked = true
+                    //data.pressBlocked = true
                 } else {
-                    // emit the event to water the plant
-                    EventBus.once(EventName.WaterCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropWatered)
-                        }
-                        this.scene.events.emit(EventName.CreateFlyItem, 
-                            {
-                                assetKey: EXPERIENCE_KEY,
-                                position: object.getCenter(),
-                                quantity: this.activities.water.experiencesGain,
-                            }
-                        )
-                        // reset the isPressed flag
-                        data.pressBlocked = false
+                    // // emit the event to water the plant
+                    // EventBus.once(EventName.WaterCompleted, () => {
+                    //     EventBus.emit(EventName.RefreshUser)
+                    //     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                    //         EventBus.emit(EventName.TutorialCropWatered)
+                    //     }
+                    //     this.scene.events.emit(EventName.CreateFlyItem, {
+                    //         assetKey: EXPERIENCE_KEY,
+                    //         position: object.getCenter(),
+                    //         quantity: this.activities.water.experiencesGain,
+                    //     })
+                    //     // reset the isPressed flag
+                    //     data.pressBlocked = false
 
-                        EventBus.emit(EventName.SyncDelayEnded)
-                    })
+                    //     EventBus.emit(EventName.SyncDelayEnded)
+                    // })
                     // emit the event to plant seed
                     const eventMessage: WaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestWater, eventMessage)
-                    data.pressBlocked = true
+                    //data.pressBlocked = true
                 }
-                setTimeout(() => {
-                    EventBus.emit(EventName.SyncDelayEnded)
-                }, SYNC_DELAY_TIME)
+                // setTimeout(() => {
+                //     EventBus.emit(EventName.SyncDelayEnded)
+                // }, SYNC_DELAY_TIME)
                 break
             }
             case ToolId.Pesticide: {

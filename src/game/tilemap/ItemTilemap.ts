@@ -36,8 +36,6 @@ export abstract class ItemTilemap extends GroundTilemap {
     private user: UserSchema
     private currentUserId: string
 
-    private cancelListen = false
-
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
 
@@ -54,12 +52,8 @@ export abstract class ItemTilemap extends GroundTilemap {
         EventBus.on(
             EventName.PlacedItemsSynced,
             async (data: PlacedItemsSyncedMessage) => {
-                if (this.cancelListen) {
-                    return
-                }
                 if (!gameState.data?.preventFirstSync) {
                     if (data.userId !== this.currentUserId) {
-                        this.cancelListen = true
                         this.currentUserId = data.userId
                         const visited = data.userId !== this.user.id
                         EventBus.emit(EventName.FadeIn)
@@ -82,7 +76,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     await sleep(FADE_HOLD_TIME)
                     EventBus.emit(EventName.FadeOut)
                 }
-                this.cancelListen = false
             }
         )
 
