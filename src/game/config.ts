@@ -65,7 +65,6 @@ export const startGame = (parent?: string) => {
 
 export interface GameData {
     visitedUser?: UserSchema
-    preventFirstSync?: boolean
 }
 export interface GameState {
     data?: GameData

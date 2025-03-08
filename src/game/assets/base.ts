@@ -184,9 +184,9 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIIconInventory]: "ui/icons/inventory.png",
     [BaseAssetKey.UIIconDaily]: "ui/icons/daily.png",
     [BaseAssetKey.UIIconQuests]: "ui/icons/quests.png",
-    [BaseAssetKey.UIIconSetting]: "ui/icons/setting.png",
-    [BaseAssetKey.UIIconReturn]: "ui/icons/quests.png",
-    [BaseAssetKey.UIIconNext]: "ui/icons/quests.png",
+    [BaseAssetKey.UIIconSetting]: "ui/icons/settings.png",
+    [BaseAssetKey.UIIconReturn]: "ui/icons/return.png",
+    [BaseAssetKey.UIIconNext]: "ui/icons/next.png",
     [BaseAssetKey.UIIconSpin]: "ui/icons/spin.png",
 
     // backgrounds

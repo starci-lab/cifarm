@@ -15,7 +15,6 @@ export const useGameplayIo = (): UseIo => {
     }
 
     useEffect(() => {
-        console.log(authenticated)
         // do nothing if not authenticated
         if (!authenticated) return 
 

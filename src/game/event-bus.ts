@@ -19,6 +19,8 @@ export enum EventName {
     PlacedItemsSynced = "placed_items_synced",
     // action emitted in-game
     ActionEmitted = "action_emitted",
+    // show fade in/out
+    ShowFade = "show_fade",
     // request to load static data, from Phaser to React
     LoadStaticData = "load_static_data",
     // static data loaded, from React to Phaser

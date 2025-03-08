@@ -4,6 +4,7 @@ import { ContainerLiteBaseConstructorParams } from "../../types"
 import { BLACK_COLOR, FADE_HOLD_TIME, FADE_TIME } from "../../constants"
 import { calculateUiDepth, UILayer } from "../../layers"
 import { EventBus, EventName } from "@/game/event-bus"
+import { sleep } from "@/modules/common"
 
 export class Fade extends ContainerLite {
     private fade: Phaser.GameObjects.Rectangle
@@ -50,6 +51,14 @@ export class Fade extends ContainerLite {
 
         EventBus.on(EventName.FadeAll, () => {
             this.fadeAll()
+        })
+        
+        EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
+            this.fadeIn()
+            await sleep(FADE_TIME)
+            EventBus.emit(toNeighbor ? EventName.Visit : EventName.Return)
+            await sleep(FADE_HOLD_TIME)
+            this.fadeOut()
         })
     }
 

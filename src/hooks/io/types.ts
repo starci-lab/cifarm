@@ -29,3 +29,7 @@ export type ActionEmittedMessage<TData = undefined> = Omit<EmitActionPayload<TDa
 export enum ActionName {
     Water = "Water",
 }
+
+export interface ShowFadeMessage {
+    toNeighbor: boolean
+}
