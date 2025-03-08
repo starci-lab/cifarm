@@ -29,6 +29,7 @@ export const getFirstSeedInventory = ({
     if (!inventoryType) {
         throw new Error(`Inventory type not found for cropId: ${cropId}`)
     }
+    console.log("crop", crop, "inventoryType", inventoryType, "inventories", inventories)
     // get the inventory entity
     return inventories.find((inventory) => inventory.inventoryType === inventoryType.id && inventory.kind === kind)
 }

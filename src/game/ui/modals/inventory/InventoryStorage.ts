@@ -2,6 +2,7 @@ import { inventoryTypeAssetMap } from "@/game/assets"
 import { CacheKey, BaseSizerBaseConstructorParams } from "@/game/types"
 import {
     DefaultInfo,
+    InventoryKind,
     InventorySchema,
     InventoryTypeSchema,
 } from "@/modules/entities"
@@ -137,10 +138,6 @@ export class InventoryStorage extends BaseSizer {
             }
             scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
-    }
-
-    private updateInventories() {
-
     }
 
     private highlight() {
@@ -337,9 +334,9 @@ export class InventoryStorage extends BaseSizer {
 
     private updateGridTable() {
         const gridTable = this._updateGridTable()
-        if (this.tutorialEnabled) {
-            this.highlight()
-        }
+        // if (this.tutorialEnabled) {
+        //     this.highlight()
+        // }
         gridTable.setDepth(getDepth({
             scene: this.scene,
             tutorialEnabled: this.tutorialEnabled,
