@@ -44,3 +44,7 @@ export enum ActionName {
     ThiefAnimalProduct = "ThiefAnimalProduct",
     ThiefCrop = "ThiefCrop",
 }
+
+export interface ShowFadeMessage {
+    toNeighbor: boolean
+}

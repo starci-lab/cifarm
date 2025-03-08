@@ -64,19 +64,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         EventBus.on(
             EventName.PlacedItemsSynced,
             async (data: PlacedItemsSyncedMessage) => {
-                if (!gameState.data?.preventFirstSync) {
-                    if (data.userId !== this.currentUserId) {
-                        this.currentUserId = data.userId
-                        const visited = data.userId !== this.user.id
-                        EventBus.emit(EventName.FadeIn)
-                        await sleep(FADE_TIME)
-                        EventBus.emit(visited ? EventName.Visit : EventName.Return)
-                    }
-                } else {
-                    gameState.data.preventFirstSync = false
-                    this.currentUserId = data.userId
-                }
-
                 //store the placed items in the cache
                 this.scene.cache.obj.add(CacheKey.PlacedItems, data.placedItems)
                 // handle the placed items update

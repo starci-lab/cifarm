@@ -4,6 +4,8 @@ import {
     ActionEmittedMessage,
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
+    SHOW_FADE_EVENT,
+    ShowFadeMessage,
     useGameplayIo,
     useQueryUserSwr,
 } from "@/hooks"
@@ -41,6 +43,11 @@ export const Game: FC = () => {
         //listen for placed items synced
         socket.on(ACTION_EMITTED_EVENT, (data: ActionEmittedMessage) => {
             EventBus.emit(EventName.ActionEmitted, data)
+        })
+
+        //listen for show fade event
+        socket.on(SHOW_FADE_EVENT, ({ toNeighbor }: ShowFadeMessage) => {
+            EventBus.emit(EventName.ShowFade, toNeighbor)
         })
 
         return () => {
