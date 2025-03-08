@@ -280,7 +280,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                             fontSize: 28,
                             textColor: TextColor.Brown
                         }
-                    }).setDepth(this.depth + 3)
+                    }).setDepth(this.depth + 10001)
         
                     this.scene.add.existing(label)
                     this.bubbleState.addLocal(label)
