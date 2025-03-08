@@ -241,7 +241,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                             },
                         })
                         .setScale(0.5)
-                        .setDepth(this.depth + 2)
+                        .setDepth(this.depth + 10000)
                         .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
                     container.addLocal(this.bubbleState)
                 }
