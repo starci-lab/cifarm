@@ -26,6 +26,21 @@ export interface EmitActionPayload<TData = undefined> {
 
 export type ActionEmittedMessage<TData = undefined> = Omit<EmitActionPayload<TData>, "userId">
 
+
 export enum ActionName {
     Water = "Water",
+    UsePesticide = "UsePesticide",
+    UseHerbicide = "UseHerbicide",
+    UseFertilizer = "UseFertilizer",
+    HarvestCrop = "HarvestCrop",
+    PlantSeed = "PlantSeed",
+    CureAnimal = "CureAnimal",
+    FeedAnimal = "FeedAnimal",
+    CollectAnimalProduct = "CollectAnimalProduct",
+    HelpCureAnimal = "HelpCureAnimal",
+    HelpUseHerbicide = "HelpUseHerbicide",
+    HelpUsePesticide = "HelpUsePesticide",
+    HelpWater = "HelpWater",
+    ThiefAnimalProduct = "ThiefAnimalProduct",
+    ThiefCrop = "ThiefCrop",
 }

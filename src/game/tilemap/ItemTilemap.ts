@@ -1,5 +1,6 @@
-import { ActionEmittedMessage, PlacedItemsSyncedMessage } from "@/hooks"
+import { ActionEmittedMessage, ActionName, PlacedItemsSyncedMessage } from "@/hooks"
 import {
+    Activities,
     AnimalId,
     BuildingId,
     getId,
@@ -12,6 +13,7 @@ import {
 } from "@/modules/entities"
 import {
     animalAssetMap,
+    BaseAssetKey,
     buildingAssetMap,
     tileAssetMap,
     TilesetConfig,
@@ -27,6 +29,8 @@ import { sleep } from "@/modules/common"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { gameState } from "../config"
 
+const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
+const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
     private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
@@ -37,6 +41,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
+    private activities: Activities
 
     private user: UserSchema
     private currentUserId: string
@@ -53,6 +58,8 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.currentUserId = this.user.id
+
+        this.activities = this.scene.cache.obj.get(CacheKey.Activities)
 
         EventBus.on(
             EventName.PlacedItemsSynced,
@@ -85,7 +92,345 @@ export abstract class ItemTilemap extends GroundTilemap {
         )
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
-            console.log(data)
+            const object = this.placedItemObjectMap[data.placedItemId]?.object
+
+            switch (data.action) {
+            case ActionName.Water:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.water.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.water.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.Water,
+                    })
+                    // switch(data.reasonCode){
+                    // case 1:
+                    // this.scene.events.emit(EventName.CreateFlyItem, {
+                    //     position: object.getCenter(),
+                    //     text: "Failed to " + ActionName.Water,
+                    // })
+                    //     break
+                    // case 2:
+                    //     this.scene.events.emit(EventName.CreateFlyItem, {
+                    //         position: object.getCenter(),
+                    //         text: "Failed",
+                    //     })
+                    //     break
+                    // }
+                }
+                break
+
+            case ActionName.PlantSeed:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.plantSeed.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.plantSeed.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.PlantSeed,
+                    })
+                }
+                break
+
+            case ActionName.UsePesticide:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.usePesticide.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.usePesticide.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.UsePesticide,
+                    })
+                }
+                break
+            case ActionName.HelpUsePesticide:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.helpUsePesticide.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.helpUsePesticide.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.HelpUsePesticide,
+                    })
+                }
+                break
+            case ActionName.UseHerbicide:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.useHerbicide.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.useHerbicide.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.UseHerbicide
+                    })
+                }
+                break
+            case ActionName.HelpUseHerbicide:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.helpUseHerbicide.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.helpUseHerbicide.experiencesGain
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.UseFertilizer,
+                    })
+                }
+                break
+            case ActionName.UseFertilizer:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.useFertilizer.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.useFertilizer.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.UseFertilizer,
+                    })
+                }
+                break
+            case ActionName.HarvestCrop:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.harvestCrop.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.harvestCrop.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.HarvestCrop,
+                    })
+                }
+                break
+            case ActionName.ThiefCrop:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.thiefCrop.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.thiefCrop.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.ThiefCrop,
+                    })
+                }
+                break
+            case ActionName.CureAnimal:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.cureAnimal.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.cureAnimal.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.CureAnimal,
+                    })
+                }
+                break
+            case ActionName.FeedAnimal:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.feedAnimal.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.feedAnimal.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.FeedAnimal,
+                    })
+                }
+                break
+            case ActionName.CollectAnimalProduct:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.collectAnimalProduct.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.collectAnimalProduct.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.CollectAnimalProduct,
+                    })
+                }
+                break
+            case ActionName.ThiefAnimalProduct:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.thiefAnimalProduct.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.thiefAnimalProduct.experiencesGain,
+                        },
+                    ])
+                } else{
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.ThiefAnimalProduct,
+                    })
+                }
+                break
+            case ActionName.HelpCureAnimal:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.helpCureAnimal.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.helpCureAnimal.experiencesGain,
+                        },
+                    ])
+                }
+                else
+                {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.HelpCureAnimal,
+                    })
+                }
+                break
+            case ActionName.HelpWater:
+                if(data.success){
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position: object.getCenter(),
+                            quantity: -this.activities.helpWater.energyConsume
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position: object.getCenter(),
+                            quantity: this.activities.helpWater.experiencesGain,
+                        },
+                    ])
+                }
+                else
+                {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.HelpWater,
+                    })
+                }
+                break
+            }
         })
 
         EventBus.on(
@@ -109,18 +454,11 @@ export abstract class ItemTilemap extends GroundTilemap {
                 key: value.textureConfig.key,
                 ...value.tilesetConfig,
             })
-            console.log({
-                key: value.textureConfig.key,
-                ...value.tilesetConfig,
-            })
+
         }
         // create tilesets for all building assets
         for (const [, value] of Object.entries(buildingAssetMap)) {
             this.createSingleTileTileset({
-                key: value.textureConfig.key,
-                ...value.tilesetConfig,
-            })
-            console.log({
                 key: value.textureConfig.key,
                 ...value.tilesetConfig,
             })
@@ -134,11 +472,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     ...ageValue.tilesetConfig,
                 })
 
-                console.log({
-                    age: age,
-                    key: ageValue.textureConfig.key,
-                    ...ageValue.tilesetConfig,
-                })
             }
         }
     }
@@ -278,7 +611,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
             placedItem.placedItemType
         )
-        console.log(gid, extraOffsets, tilesetName)
         // get the tileset
         const tileset = this.getTileset(tilesetName)
         if (!tileset) {
@@ -297,10 +629,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             tileY: placedItem.y,
             layer: this.groundLayer,
         })
-        console.log("uytest: ", placedItem.x, placedItem.y, tile, placedItem)
 
         if (!tile) {
-            console.log("placedItem", placedItem)
             throw new Error("Tile not found")
         }
 
@@ -425,8 +755,6 @@ export abstract class ItemTilemap extends GroundTilemap {
     ): PlacedItemObjectData | null {
         for (const placedItem of Object.values(this.placedItemObjectMap)) {
             const { tileX, tileY, placedItemType } = placedItem
-
-            console.log("placedItemType.id", placedItemType.id)
 
             const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(
         placedItemType.id as PlacedItemTypeId

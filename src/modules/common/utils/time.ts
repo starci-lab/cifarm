@@ -5,6 +5,9 @@ dayjs.extend(duration)
 dayjs.extend(utc)
 
 export const formatTime = (time: number) => {
+    if (time < 0) {
+        return "00:00:00"
+    }
     return dayjs.duration(time, "seconds").format("HH:mm:ss")
 }
 

@@ -28,6 +28,7 @@ export const useGameplayIo = (): UseIo => {
             if (!accessToken) {
                 throw new Error("No access token found")
             }
+
             socket.current = manager.socket("/gameplay", {
                 auth: {
                     token: accessToken.value,

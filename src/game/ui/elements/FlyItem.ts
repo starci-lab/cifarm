@@ -12,7 +12,7 @@ export interface FlyItemOptions {
   x: number;
   y: number;
   flyHeight?: number;
-  isShowIcon?: boolean;
+  showIcon?: boolean;
 }
 
 export class FlyItem extends Sizer {
@@ -37,13 +37,13 @@ export class FlyItem extends Sizer {
             y,
             text = "",
             flyHeight = 200,
-            isShowIcon = true,
+            showIcon = true,
         } = options
         
         const flyItemText = new Text({
             baseParams: {
                 scene,
-                text: `${text.length > 0 ? `${text} ` : ""}${quantity != 0 ? `+${quantity}` : ""}`,
+                text: `${text.length > 0 ? `${text} ` : ""}${quantity != 0 ? `${quantity > 0 ? "+" + quantity : quantity}` : ""}`,
                 x: 0,
                 y: 0,
             },
@@ -57,7 +57,7 @@ export class FlyItem extends Sizer {
         this.add(flyItemText, {
             align: "center",
         })
-        if(isShowIcon) {
+        if(showIcon) {
             const productImage = scene.add.image(0, 0, assetKey)
             this.add(productImage, {
                 align: "center",

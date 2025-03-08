@@ -569,10 +569,6 @@ export class ShopContent extends BaseSizer {
         const canAfford = this.user.golds >= (price ?? 0)
         const isAtMaxOwnership = maxOwnership !== 0 && currentOwnership >= maxOwnership
         const isDisabled = !canAfford || isAtMaxOwnership
-
-        console.log("Creating item card", assetKey, isDisabled, canAfford, isAtMaxOwnership)
-        console.log("maxOwnership", maxOwnership, "currentOwnership", currentOwnership)
-
         // create the components
         const cardBackground = this.scene.add.image(
             0,

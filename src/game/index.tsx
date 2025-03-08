@@ -40,7 +40,6 @@ export const Game: FC = () => {
 
         //listen for placed items synced
         socket.on(ACTION_EMITTED_EVENT, (data: ActionEmittedMessage) => {
-            console.log(data)
             EventBus.emit(EventName.ActionEmitted, data)
         })
 

@@ -209,7 +209,7 @@ export class InputTilemap extends ItemTilemap {
 
         this.scene.events.on(
             EventName.CreateFlyItem,
-            ({ assetKey, position, quantity, text, isShowIcon }: CreateFlyItemMessage) => {
+            ({ assetKey, position, quantity, text, showIcon }: CreateFlyItemMessage) => {
                 const flyItem = new FlyItem({
                     baseParams: {
                         scene: this.scene,
@@ -223,7 +223,7 @@ export class InputTilemap extends ItemTilemap {
                             layer: GameplayLayer.Effects,
                         }),
                         text,
-                        isShowIcon 
+                        showIcon,
                     },
                 })
                 this.scene.add.existing(flyItem)
@@ -309,14 +309,6 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            EventBus.emit(EventName.SyncDelayStarted)
-
-            setTimeout(() => {
-                EventBus.emit(EventName.SyncDelayEnded)
-            }, SYNC_DELAY_TIME)
-
-            
-
             const { data: inventories } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
             const inventory = inventories.find(
                 (inventory) => inventory.id === selectedTool.id
@@ -326,48 +318,13 @@ export class InputTilemap extends ItemTilemap {
                 throw new Error(`Inventory not found for inventory id: ${selectedTool.id}`)
             }
 
-            const inventoryType = this.inventoryTypes.find(
-                (inventoryType) => inventoryType.id === inventory.inventoryType
-            )
-
-            const cropId = inventoryType?.crop as CropId
-
-            
-
-            const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                placedItem: {
-                    ...currentPlacedItem,
-                    seedGrowthInfo: {
-                        crop: cropId,
-                        currentStage: 0,
-                        currentStageTimeElapsed: 0,
-                        isQuality: false,
-                        currentState: CropCurrentState.Normal,
-                        isFertilized: false,
-                    }
-                },
-                type: PlacedItemType.Tile,
-            }
-
-            // update the placed item in client
-            EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
-
             EventBus.once(EventName.PlantSeedCompleted, () => {
                 EventBus.emit(EventName.RefreshUser)
                 EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialSeedPlanted)
                 }
-
-                this.scene.events.emit(EventName.CreateFlyItem, {
-                    assetKey: EXPERIENCE_KEY,
-                    position: object.getCenter(),
-                    quantity: this.activities.plantSeed.experiencesGain,
-                })
-
                 data.pressBlocked = false
-
-                EventBus.emit(EventName.SyncDelayEnded)
             })
             // emit the event to plant seed
             const eventMessage: PlantSeedRequest = {
@@ -410,72 +367,30 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                //EventBus.emit(EventName.SyncDelayStarted)
-
-                // const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                //     placedItem: {
-                //         ...currentPlacedItem,
-                //         seedGrowthInfo: {
-                //             ...currentPlacedItem.seedGrowthInfo,
-                //             currentState: CropCurrentState.Normal,
-                //         }
-                //     },
-                //     type: PlacedItemType.Tile,
-                // }
-
-                // // update the placed item in client
-                // EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
-
                 if (visitedNeighbor) {
                     // emit the event to water the plant
-                    // EventBus.once(EventName.HelpWaterCompleted, () => {
-                    //     EventBus.emit(EventName.RefreshUser)
-                    //     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                    //         EventBus.emit(EventName.TutorialCropWatered)
-                    //         this.scene.events.emit(EventName.CreateFlyItem, {
-                    //             assetKey: EXPERIENCE_KEY,
-                    //             position: object.getCenter(),
-                    //             quantity: this.activities.helpWater.experiencesGain,
-                    //         })
-                    //     }
-                    //     // reset the isPressed flag
-                    //     data.pressBlocked = true
+                    EventBus.once(EventName.HelpWaterCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                            EventBus.emit(EventName.TutorialCropWatered)
+                        }
+                        // reset the isPressed flag
+                        data.pressBlocked = true
 
-                    //     EventBus.emit(EventName.SyncDelayEnded)
-                    // })
+                        EventBus.emit(EventName.SyncDelayEnded)
+                    })
                     // emit the event to plant seed
                     const eventMessage: HelpWaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpWater, eventMessage)
-                    //data.pressBlocked = true
                 } else {
-                    // // emit the event to water the plant
-                    // EventBus.once(EventName.WaterCompleted, () => {
-                    //     EventBus.emit(EventName.RefreshUser)
-                    //     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                    //         EventBus.emit(EventName.TutorialCropWatered)
-                    //     }
-                    //     this.scene.events.emit(EventName.CreateFlyItem, {
-                    //         assetKey: EXPERIENCE_KEY,
-                    //         position: object.getCenter(),
-                    //         quantity: this.activities.water.experiencesGain,
-                    //     })
-                    //     // reset the isPressed flag
-                    //     data.pressBlocked = false
-
-                    //     EventBus.emit(EventName.SyncDelayEnded)
-                    // })
                     // emit the event to plant seed
                     const eventMessage: WaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestWater, eventMessage)
-                    //data.pressBlocked = true
                 }
-                // setTimeout(() => {
-                //     EventBus.emit(EventName.SyncDelayEnded)
-                // }, SYNC_DELAY_TIME)
                 break
             }
             case ToolId.Pesticide: {
@@ -494,36 +409,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                EventBus.emit(EventName.SyncDelayStarted)
-
-                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                    placedItem: {
-                        ...currentPlacedItem,
-                        seedGrowthInfo: {
-                            ...currentPlacedItem.seedGrowthInfo,
-                            currentState: CropCurrentState.Normal,
-                        }
-                    },
-                    type: PlacedItemType.Tile,
-                }
-
-                // update the placed item in client
-                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
-
                 if (visitedNeighbor) {
-                    // emit the event to use pesticide
-                    EventBus.once(EventName.HelpUsePesticideCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        this.scene.events.emit(EventName.CreateFlyItem, {
-                            assetKey: EXPERIENCE_KEY,
-                            position: object.getCenter(),
-                            quantity: this.activities.helpUsePesticide.experiencesGain,
-                        })
-                        // reset the isPressed flag
-                        data.pressBlocked = false
-
-                        EventBus.emit(EventName.SyncDelayEnded)
-                    })
                     // emit the event to help use pesticide
                     const eventMessage: HelpUsePesticideRequest = {
                         placedItemTileId: placedItemId,
@@ -537,15 +423,8 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropPesticideUsed)
                         }
-                        this.scene.events.emit(EventName.CreateFlyItem, {
-                            assetKey: EXPERIENCE_KEY,
-                            position: object.getCenter(),
-                            quantity: this.activities.usePesticide.experiencesGain,
-                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
-
-                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: UsePesticideRequest = {
@@ -554,11 +433,6 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestUsePesticide, eventMessage)
                     data.pressBlocked = true
                 }
-                
-
-                setTimeout(() => {
-                    EventBus.emit(EventName.SyncDelayEnded)
-                }, SYNC_DELAY_TIME)
 
                 break
             }
@@ -577,36 +451,12 @@ export class InputTilemap extends ItemTilemap {
                 })){
                     return
                 }
-
-                EventBus.emit(EventName.SyncDelayStarted)
-
-                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                    placedItem: {
-                        ...currentPlacedItem,
-                        seedGrowthInfo: {
-                            ...currentPlacedItem.seedGrowthInfo,
-                            currentState: CropCurrentState.Normal,
-                        }
-                    },
-                    type: PlacedItemType.Tile,
-                }
-
-                // update the placed item in client
-                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
-
                 if (visitedNeighbor) {
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
-                        this.scene.events.emit(EventName.CreateFlyItem, {
-                            assetKey: EXPERIENCE_KEY,
-                            position: object.getCenter(),
-                            quantity: this.activities.helpUseHerbicide.experiencesGain,
-                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
-
-                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: HelpUseHerbicideRequest = {
@@ -621,15 +471,8 @@ export class InputTilemap extends ItemTilemap {
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHerbicideUsed)
                         }
-                        this.scene.events.emit(EventName.CreateFlyItem, {
-                            assetKey: EXPERIENCE_KEY,
-                            position: object.getCenter(),
-                            quantity: this.activities.useHerbicide.experiencesGain,
-                        })
                         // reset the isPressed flag
                         data.pressBlocked = false
-
-                        EventBus.emit(EventName.SyncDelayEnded)
                     })
                     // emit the event to plant seed
                     const eventMessage: UseHerbicideRequest = {
@@ -637,10 +480,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestUseHerbicide, eventMessage)
                     data.pressBlocked = true
-
-                    setTimeout(() => {
-                        EventBus.emit(EventName.SyncDelayEnded)
-                    }, SYNC_DELAY_TIME)
                 }
                 break
             }
@@ -668,19 +507,6 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
-
-                EventBus.emit(EventName.SyncDelayStarted)
-
-                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                    placedItem: {
-                        ...currentPlacedItem,
-                        seedGrowthInfo: undefined
-                    },
-                    type: PlacedItemType.Tile,
-                }
-
-                // update the placed item in client
-                EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
                 const center = object.getCenter()
                 if (visitedNeighbor) {
@@ -798,34 +624,14 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                EventBus.emit(EventName.SyncDelayStarted)
-
-                const updatePlacedItemLocal: UpdatePlacedItemLocalParams = {
-                    placedItem: {
-                        ...currentPlacedItem,
-                        seedGrowthInfo: {
-                            ...currentPlacedItem.seedGrowthInfo,
-                            isFertilized: true,
-                        }
-                    },
-                    type: PlacedItemType.Tile,
-                }
-
                 // update the placed item in client
                 EventBus.emit(EventName.RequestUpdatePlacedItemLocal, updatePlacedItemLocal)
 
                 EventBus.once(EventName.UseFertilizerCompleted, () => {
                     EventBus.emit(EventName.RefreshUser)
 
-                    this.scene.events.emit(EventName.CreateFlyItem, {
-                        assetKey: EXPERIENCE_KEY,
-                        position: object.getCenter(),
-                        quantity: this.activities.usePesticide.experiencesGain,
-                    })
                     // reset the isPressed flag
                     data.pressBlocked = false
-
-                    EventBus.emit(EventName.SyncDelayEnded)
                 })
 
                 // emit the event to plant seed
@@ -850,7 +656,6 @@ export class InputTilemap extends ItemTilemap {
 
     //handlePressOnAnimal
     private async handlePressOnAnimal(data: PlacedItemObjectData) {
-        console.log("[DATAAAAA - Press on animal]", data)
         if (data.placedItemType.type !== PlacedItemType.Animal) {
             throw new Error("Invalid placed item type")
         }
@@ -893,9 +698,6 @@ export class InputTilemap extends ItemTilemap {
             if (!supplies) {
                 throw new Error("Supplies not found")
             }
-
-            console.log("selectedTool", selectedTool)
-            
 
             const supply = supplies.find(
                 (supply) => supply.id === selectedTool.inventoryType?.id

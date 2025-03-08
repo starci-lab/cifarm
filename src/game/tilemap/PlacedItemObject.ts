@@ -272,7 +272,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 if (!stateKey) {
                     throw new Error("State key not found")
                 }
-                console.log(stateKey)
                 this.bubbleState.setIconTexture(stateKey).layout()
             }
         } else {
@@ -322,6 +321,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (
             placedItem.seedGrowthInfo.currentState != CropCurrentState.FullyMatured
         ) {
+            console.log("placedItem.seedGrowthInfo.currentStageTimeElapsed", placedItem.seedGrowthInfo.currentStageTimeElapsed)
             if (
                 placedItem.seedGrowthInfo.currentStageTimeElapsed !==
         this.currentPlacedItem?.seedGrowthInfo?.currentStageTimeElapsed
@@ -473,7 +473,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 if (!stateKey) {
                     throw new Error("State key not found")
                 }
-                console.log(stateKey)
                 this.bubbleState.setIconTexture(stateKey).layout()
             }
         } else {
