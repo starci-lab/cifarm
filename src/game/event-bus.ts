@@ -17,6 +17,8 @@ export enum EventName {
     Authenticated = "authenticated",
     // placed items to sync in-game
     PlacedItemsSynced = "placed_items_synced",
+    // action emitted in-game
+    ActionEmitted = "action_emitted",
     // request to load static data, from Phaser to React
     LoadStaticData = "load_static_data",
     // static data loaded, from React to Phaser
@@ -235,7 +237,8 @@ export enum EventName {
     RequestUpgradeBuilding = "request_upgrade_building",
     UpgradeBuildingCompleted = "upgrade_building_completed",
 
-    CreateFlyItem = "item_flown",
+    CreateFlyItem = "create_fly_item",
+    CreateFlyItems = "create_fly_items",
 
     FadeIn = "fade_in",
     FadeOut = "fade_out",
@@ -428,6 +431,7 @@ export interface CreateFlyItemMessage {
     quantity: number
     assetKey: string
     text: string
+    isShowIcon?: boolean
 }
 
 export interface UpdateConfirmModalMessage {

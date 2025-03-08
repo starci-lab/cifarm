@@ -348,8 +348,16 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     })
                 }
 
+                const crop = this.crops.find(
+                    (crop) => crop.id === placedItem.seedGrowthInfo?.crop
+                )
+
+                if (crop?.growthStageDuration == undefined) {
+                    throw new Error("Crop growth stage duration not found")
+                }
+
                 const formattedTime = formatTime(
-                    Math.round(placedItem.seedGrowthInfo.currentStageTimeElapsed)
+                    Math.round(crop.growthStageDuration - placedItem.seedGrowthInfo.currentStageTimeElapsed)
                 )
                 this.timer.setText(formattedTime)
             }
@@ -513,8 +521,16 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     })
                 }
 
+                const animal = this.animals.find(
+                    (animal) => animal.id === placedItem.animalInfo?.animal
+                )
+
+                if (animal?.growthTime == undefined) {
+                    throw new Error("Animal growth time not found")
+                }
+
                 const formattedTime = formatTime(
-                    Math.round(placedItem.animalInfo.currentGrowthTime)
+                    Math.round(animal.growthTime - placedItem.animalInfo.currentGrowthTime)
                 )
                 this.timer.setText(formattedTime)
             }

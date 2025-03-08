@@ -34,7 +34,6 @@ export const useMintOffchainTokensRhf = () => {
     >(SIGN_TRANSACTION_DISCLOSURE)
 
     const onSubmit: SubmitHandler<MintOffchainTokensRhfInputs> = async (inputs) => {
-        console.log("zx")
         // check if transaction is exist
         let tx: TxResponse
         const transaction = await sessionDb.keyValueStore.get(SessionDbKey.HoneycombMintOffchainTokensTransaction)

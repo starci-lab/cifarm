@@ -1,5 +1,7 @@
 "use client"
 import {
+    ACTION_EMITTED_EVENT,
+    ActionEmittedMessage,
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
     useGameplayIo,
@@ -25,9 +27,6 @@ export const Game: FC = () => {
         if (!socket) return
         //listen for placed items synced
         socket.on(PLACED_ITEMS_SYNCED_EVENT, (data: PlacedItemsSyncedMessage) => {
-            // console current ms
-            console.log("PlacedItemsSynced", Date.now())
-
             if (data.userId !== userIdRef.current) {
                 if (!userIdRef.current) {
                     throw new Error("User id is undefined")
@@ -39,8 +38,15 @@ export const Game: FC = () => {
             EventBus.emit(EventName.PlacedItemsSynced, data)
         })
 
+        //listen for placed items synced
+        socket.on(ACTION_EMITTED_EVENT, (data: ActionEmittedMessage) => {
+            console.log(data)
+            EventBus.emit(EventName.ActionEmitted, data)
+        })
+
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
+            socket.off(ACTION_EMITTED_EVENT)
         }
     }, [socket])
 
