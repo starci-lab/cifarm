@@ -194,7 +194,7 @@ export class ShopContent extends BaseSizer {
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
         const { placedItems} = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
         this.placedItems = placedItems
-        
+
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
             this.updateGridTable(shopTab)
@@ -806,9 +806,8 @@ export class ShopContent extends BaseSizer {
     
 
     private updateOwnership() {
-        console.log("Updating ownership data...")
-        
-        this.placedItems = this.scene.cache.obj.get(CacheKey.PlacedItems) as Array<PlacedItemSchema>
+        const { placedItems } = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
+        this.placedItems = placedItems
         if (!this.placedItems) {
             console.warn("No placed items found.")
             return

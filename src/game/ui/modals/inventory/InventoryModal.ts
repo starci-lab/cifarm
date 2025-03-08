@@ -37,9 +37,6 @@ export class InventoryModal extends BaseSizer {
         })
     }
 
-    private updateInvetories() {
-        
-    }
     // client-process logic
     private async moveInventoryLocal({
         isTool,
@@ -52,7 +49,6 @@ export class InventoryModal extends BaseSizer {
 
         const updateInventories = () => {
             const inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
-            const user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
             const { storageCapacity, toolCapacity } = this.scene.cache.obj.get(CacheKey.DefaultInfo) as DefaultInfo
             const capacity = isTool ? toolCapacity : storageCapacity
@@ -76,16 +72,17 @@ export class InventoryModal extends BaseSizer {
             }
 
             // Check if there is already an inventory at the target index
-            const foundInventory = inventories.find((inventory) => inventory.kind === kind && inventory.index === index && user.id === inventory.user)
+            const foundInventory = inventories.find((inventory) => inventory.kind === kind && inventory.index === index)
         
             if (foundInventory) {
-            // If found inventory exists, perform logic based on inventory type
+                // If found inventory exists, perform logic based on inventory type
                 if (foundInventory.id === inventoryId) {
                 // If it's the same inventory, no changes
                     return
                 }
+                console.log(foundInventory, inventoryType)
                 // If inventories are of the same type, update quantity or perform actions
-                if (foundInventory.inventoryType.toString() === inventoryType.id) {
+                if (foundInventory.inventoryType === inventoryType.id) {
                 // Merge quantities or handle inventory item addition
                     foundInventory.quantity += inventory.quantity
 
@@ -95,7 +92,6 @@ export class InventoryModal extends BaseSizer {
                 // Swap inventories
                     const tempIndex = foundInventory.index
                     const tempKind = foundInventory.kind
-
                     // Swap index and kind between the two inventories
                     foundInventory.index = inventory.index
                     foundInventory.kind = inventory.kind
@@ -103,7 +99,7 @@ export class InventoryModal extends BaseSizer {
                     inventory.kind = tempKind
                 }
             } else {
-            // If no inventory exists at the target index, just update the index and kind
+                // If no inventory exists at the target index, just update the index and kind
                 inventory.index = index
                 inventory.kind = kind
             }
