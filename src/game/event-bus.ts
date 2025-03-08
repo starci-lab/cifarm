@@ -17,6 +17,8 @@ export enum EventName {
     Authenticated = "authenticated",
     // placed items to sync in-game
     PlacedItemsSynced = "placed_items_synced",
+    // action emitted in-game
+    ActionEmitted = "action_emitted",
     // request to load static data, from Phaser to React
     LoadStaticData = "load_static_data",
     // static data loaded, from React to Phaser
