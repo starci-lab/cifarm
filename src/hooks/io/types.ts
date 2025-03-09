@@ -15,17 +15,26 @@ export interface PlacedItemsSyncedMessage {
     userId: string
 }
 
-export interface EmitActionPayload<TData = undefined> {
+export interface EmitActionPayload {
     userId: string
     placedItemId: string
     action?: ActionName
     success?: boolean
-    data?: TData
+    data?: unknown
     reasonCode?: number
 }
 
-export type ActionEmittedMessage<TData = undefined> = Omit<EmitActionPayload<TData>, "userId">
+export type ActionEmittedMessage = Omit<EmitActionPayload, "userId">
 
+export interface ThiefCropData {
+    quantity: number
+    cropId: string
+}
+
+export interface HarvestCropData {
+    quantity: number
+    cropId: string
+}
 
 export enum ActionName {
     Water = "Water",

@@ -22,6 +22,7 @@ import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
+import { calculateGameplayDepth, GameplayLayer } from "../layers"
 
 export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     // list of extra sprites that are part of the placed item
@@ -222,6 +223,20 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             throw new Error("Seed growth info not found")
         }
         if (placedItem.seedGrowthInfo.currentState !== CropCurrentState.Normal) {
+            // use the product icon
+            const crop = this.crops.find(
+                (crop) => crop.id === placedItem.seedGrowthInfo?.crop
+            )
+            if (!crop) {
+                throw new Error("Crop not found")
+            }
+            const product = this.products.find(
+                (product) => product.crop === crop.id
+            )
+            if (!product) {
+                throw new Error("Product not found")
+            }
+            
             if (
                 this.currentPlacedItem?.seedGrowthInfo?.currentState !==
         placedItem.seedGrowthInfo.currentState
@@ -244,7 +259,9 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                             },
                         })
                         .setScale(0.5)
-                        .setDepth(this.depth + 10000)
+                        .setDepth(calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        }))
                         .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
                     container.addLocal(this.bubbleState)
                 }
@@ -260,20 +277,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             cropStateAssetMap[placedItem.seedGrowthInfo.currentState]
                 ?.textureConfig.key
                 } else {
-                    // use the product icon
-                    const crop = this.crops.find(
-                        (crop) => crop.id === placedItem.seedGrowthInfo?.crop
-                    )
-                    if (!crop) {
-                        throw new Error("Crop not found")
-                    }
-                    const product = this.products.find(
-                        (product) => product.crop === crop.id
-                    )
-                    if (!product) {
-                        throw new Error("Product not found")
-                    }
-
                     const text = `${
                         placedItem.seedGrowthInfo.harvestQuantityRemaining || 0
                     }/${crop.maxHarvestQuantity || 0}`
@@ -289,7 +292,9 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                             fontSize: 28,
                             textColor: TextColor.Brown,
                         },
-                    }).setDepth(this.depth + 10001)
+                    }).setDepth(calculateGameplayDepth({
+                        layer: GameplayLayer.Effects,
+                    }))
 
                     this.scene.add.existing(this.quantityText)
                     this.bubbleState.addLocal(this.quantityText)
@@ -314,7 +319,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 }
                 this.quantityText.setText(
                     `${placedItem?.seedGrowthInfo?.harvestQuantityRemaining || 0}/${
-                        this.currentPlacedItem?.seedGrowthInfo?.harvestCount || 0
+                        crop.maxHarvestQuantity || 0
                     }`
                 )
             }

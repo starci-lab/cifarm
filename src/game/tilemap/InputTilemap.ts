@@ -6,7 +6,6 @@ import {
     CureAnimalRequest,
     FeedAnimalRequest,
     HarvestCropRequest,
-    HarvestCropResponse,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
     HelpWaterRequest,
@@ -17,18 +16,15 @@ import {
     WaterRequest
 } from "@/modules/axios"
 import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
-import { sleep } from "@/modules/common"
 import {
     AnimalId,
     BuildingId,
     CropCurrentState,
-    CropSchema,
     InventorySchema,
     InventoryType,
     InventoryTypeSchema,
     PlacedItemType,
     PlacedItemTypeId,
-    ProductSchema,
     SupplyId,
     SupplySchema,
     TileId,
@@ -43,12 +39,11 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     getAnimalIdFromKey,
-    productAssetMap,
     TextureConfig,
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { RED_TINT_COLOR, SYNC_DELAY_TIME, WHITE_TINT_COLOR } from "../constants"
+import { RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
 import { CreateFlyItemMessage, EventBus, EventName, ModalName, OpenModalMessage, PlacedInprogressMessage, Position } from "../event-bus"
 import { calculateGameplayDepth, calculateUiDepth, GameplayLayer, UILayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
@@ -65,8 +60,6 @@ export interface TemporaryPlaceItemData {
   type?: PlacedItemType;
 }
 // key for experience
-const DELAY_TIME = 300
-const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
 // tilemap for handling input events
 export class InputTilemap extends ItemTilemap {
@@ -81,8 +74,6 @@ export class InputTilemap extends ItemTilemap {
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
     private inventoryTypes: Array<InventoryTypeSchema> = []
-    private crops: Array<CropSchema> = []
-    private products: Array<ProductSchema> = []
     private placementPopup: PlacementPopup | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
@@ -142,10 +133,7 @@ export class InputTilemap extends ItemTilemap {
             this.destroyTemporaryPlaceItemObject()
             this.handlePlaceInProgress(data)
         })
-
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
-        this.crops = this.scene.cache.obj.get(CacheKey.Crops)
-        this.products = this.scene.cache.obj.get(CacheKey.Products)
 
         // click on empty tile to plant seed
         this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -211,7 +199,7 @@ export class InputTilemap extends ItemTilemap {
                         y: position.y,
                         depth: calculateGameplayDepth({
                             layer: GameplayLayer.Effects,
-                            additionalDepth: 10000
+                            layerDepth: 1
                         }),
                         text,
                         showIcon,
@@ -358,15 +346,13 @@ export class InputTilemap extends ItemTilemap {
                     })){
                         return
                     }
-                    // emit the event to water the plant
-                    // EventBus.once(EventName.HelpWaterCompleted, () => {
-                    //     EventBus.emit(EventName.RefreshUser)
-                    //     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                    //         EventBus.emit(EventName.TutorialCropWatered)
-                    //     }
-                    //     // reset the isPressed flag
-                    //     data.pressBlocked = true
-                    // })
+
+                    //emit the event to water the plant
+                    EventBus.once(EventName.HelpWaterCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        data.pressBlocked = true
+                    })
+
                     // emit the event to plant seed
                     const eventMessage: HelpWaterRequest = {
                         placedItemTileId: placedItemId,
@@ -379,11 +365,20 @@ export class InputTilemap extends ItemTilemap {
                     })){
                         return
                     }
+                    //emit the event to water the plant
+                    EventBus.once(EventName.WaterCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
+                            EventBus.emit(EventName.TutorialCropWatered)
+                        }
+                        data.pressBlocked = true
+                    })
                     // emit the event to plant seed
                     const eventMessage: WaterRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestWater, eventMessage)
+                    data.pressBlocked = true
                 }
                 break
             }
@@ -395,15 +390,18 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     return
                 }
-
-                if(!this.energyNotEnough({
-                    data,
-                    actionEnergy: this.activities.usePesticide.energyConsume,
-                })){
-                    return
-                }
-
                 if (visitedNeighbor) {
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.helpUsePesticide.energyConsume,
+                    })){
+                        return
+                    }
+                    EventBus.once(EventName.HelpUsePesticideCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        data.pressBlocked = false
+                    })
+
                     // emit the event to help use pesticide
                     const eventMessage: HelpUsePesticideRequest = {
                         placedItemTileId: placedItemId,
@@ -411,6 +409,13 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
                     data.pressBlocked = true
                 } else {
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.usePesticide.energyConsume,
+                    })){
+                        return
+                    }
+
                     // emit the event to water the plant
                     EventBus.once(EventName.UsePesticideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
@@ -427,7 +432,6 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestUsePesticide, eventMessage)
                     data.pressBlocked = true
                 }
-
                 break
             }
             case ToolId.Herbicide: {
@@ -439,14 +443,13 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if(!this.energyNotEnough({
-                    data,
-                    actionEnergy: this.activities.useHerbicide.energyConsume,
-                })){
-                    return
-                }
-
                 if (visitedNeighbor) {
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.helpUseHerbicide.energyConsume,
+                    })){
+                        return
+                    }
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
@@ -460,6 +463,12 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
                     data.pressBlocked = true
                 } else {
+                    if(!this.energyNotEnough({
+                        data,
+                        actionEnergy: this.activities.useHerbicide.energyConsume,
+                    })){
+                        return
+                    }
                     // emit the event to water the plant
                     EventBus.once(EventName.UseHerbicideCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
@@ -502,8 +511,6 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
-
-                const center = object.getCenter()
                 if (visitedNeighbor) {
                     if(!this.energyNotEnough({
                         data,
@@ -517,10 +524,7 @@ export class InputTilemap extends ItemTilemap {
                         async () => {
                             EventBus.emit(EventName.RefreshUser)
                             EventBus.emit(EventName.RefreshInventories)
-                            await sleep(DELAY_TIME)
                             data.pressBlocked = false
-
-                            EventBus.emit(EventName.SyncDelayEnded)
                         }
                     )
                     // emit the event to plant seed
@@ -537,33 +541,15 @@ export class InputTilemap extends ItemTilemap {
                     })){
                         return
                     }
-
                     EventBus.once(
                         EventName.HarvestCropCompleted,
-                        async (message: HarvestCropResponse) => {
+                        async () => {
                             EventBus.emit(EventName.RefreshUser)
                             EventBus.emit(EventName.RefreshInventories)
                             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                                 EventBus.emit(EventName.TutorialCropHarvested)
                             }
-                            
-                            this.scene.events.emit(EventName.CreateFlyItem, {
-                                assetKey:
-                      productAssetMap[product.displayId].textureConfig.key,
-                                position: center,
-                                quantity: message.quantity,
-                            })
-                            await sleep(DELAY_TIME)
-                            this.scene.events.emit(EventName.CreateFlyItem, {
-                                assetKey: EXPERIENCE_KEY,
-                                position: center,
-                                quantity: placedItem.seedGrowthInfo?.isQuality
-                                    ? crop.qualityHarvestExperiences
-                                    : crop.basicHarvestExperiences,
-                            })
                             data.pressBlocked = false
-
-                            EventBus.emit(EventName.SyncDelayEnded)
                         }
                     )
                     // emit the event to plant seed
@@ -572,10 +558,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestHarvestCrop, eventMessage)
                     data.pressBlocked = true
-
-                    setTimeout(() => {
-                        EventBus.emit(EventName.SyncDelayEnded)
-                    }, SYNC_DELAY_TIME)
                 }
                 break
             }
@@ -602,7 +584,6 @@ export class InputTilemap extends ItemTilemap {
             switch (supply.displayId) {
             case SupplyId.BasicFertilizer: {
                 // return if seed growth info is not need water
-
                 if(currentPlacedItem.seedGrowthInfo == null){
                     return
                 }
@@ -689,8 +670,6 @@ export class InputTilemap extends ItemTilemap {
             const supply = supplies.find(
                 (supply) => supply.id === selectedTool.inventoryType?.id
             )
-
-            console.log("supply", supply)
 
             if (!supply) {
                 throw new Error(`Supply not found for supply id: ${selectedTool.id}`)

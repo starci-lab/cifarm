@@ -1,17 +1,21 @@
 import {
     ActionEmittedMessage,
     ActionName,
+    HarvestCropData,
     PlacedItemsSyncedMessage,
+    ThiefCropData,
 } from "@/hooks"
 import {
     Activities,
     AnimalId,
     BuildingId,
+    CropSchema,
     getId,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
     PlacedItemTypeSchema,
+    ProductSchema,
     TileId,
     UserSchema,
 } from "@/modules/entities"
@@ -19,6 +23,7 @@ import {
     animalAssetMap,
     BaseAssetKey,
     buildingAssetMap,
+    productAssetMap,
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
@@ -48,8 +53,9 @@ export abstract class ItemTilemap extends GroundTilemap {
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
     protected activities: Activities
-
-    private user: UserSchema
+    protected crops: Array<CropSchema>
+    protected products: Array<ProductSchema>
+    protected user: UserSchema
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -62,8 +68,9 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.createTilesets()
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
-
         this.activities = this.scene.cache.obj.get(CacheKey.Activities)
+        this.crops = this.scene.cache.obj.get(CacheKey.Crops)
+        this.products = this.scene.cache.obj.get(CacheKey.Products)
 
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
             this.fading = true
@@ -264,6 +271,16 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             case ActionName.HarvestCrop:
                 if (data.success) {
+                    const { quantity, cropId } = data.data as HarvestCropData
+                    const crop = this.crops.find((crop) => crop.id === cropId)
+                    if (!crop) {
+                        throw new Error("Crop not found")
+                    }
+                    const product = this.products.find((product) => product.crop === crop.id)
+                    if (!product) {
+                        throw new Error("Product not found")
+                    }
+                    const assetKey = productAssetMap[product.displayId].textureConfig.key
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -275,6 +292,11 @@ export abstract class ItemTilemap extends GroundTilemap {
                             position: object.getCenter(),
                             quantity: this.activities.harvestCrop.experiencesGain,
                         },
+                        {
+                            assetKey,
+                            position: object.getCenter(),
+                            quantity,
+                        },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
@@ -285,6 +307,16 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             case ActionName.ThiefCrop:
                 if (data.success) {
+                    const { quantity, cropId } = data.data as ThiefCropData
+                    const crop = this.crops.find((crop) => crop.id === cropId)
+                    if (!crop) {
+                        throw new Error("Crop not found")
+                    }
+                    const product = this.products.find((product) => product.crop === crop.id)
+                    if (!product) {
+                        throw new Error("Product not found")
+                    }
+                    const assetKey = productAssetMap[product.displayId].textureConfig.key
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -295,6 +327,11 @@ export abstract class ItemTilemap extends GroundTilemap {
                             assetKey: EXPERIENCE_KEY,
                             position: object.getCenter(),
                             quantity: this.activities.thiefCrop.experiencesGain,
+                        },
+                        {
+                            assetKey,
+                            position: object.getCenter(),
+                            quantity,
                         },
                     ])
                 } else {
