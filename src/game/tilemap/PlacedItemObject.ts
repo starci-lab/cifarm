@@ -10,7 +10,7 @@ import {
     ProductSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { Label, OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
     AnimalAge,
     animalAssetMap,
@@ -236,10 +236,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 throw new Error("Product not found")
             }
             
-            if (placedItem.id === "67cd42d823f3f1e70e3f50d6") {
-                console.log(this.currentPlacedItem?.seedGrowthInfo?.currentState)
-                console.log(placedItem.seedGrowthInfo.currentState)
-            }
             // if the current state is different from the previous state
             if (
                 this.currentPlacedItem?.seedGrowthInfo?.currentState !==
@@ -572,7 +568,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         },
                     })
                     this.scene.add.existing(text)
-                    text.setOrigin(0.5, 1).setDepth(this.depth + 3)
+                    text.setOrigin(0.5, 1).setDepth(this.depth)
                     this.timer = text
                     container.pinLocal(this.timer, {
                         syncScale: false,

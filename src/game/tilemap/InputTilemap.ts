@@ -43,7 +43,7 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
+// import { RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
     EventBus,
@@ -825,16 +825,13 @@ export class InputTilemap extends ItemTilemap {
     public update() {
     //check current mouse position is in which tile
         if (this.placingInProgress) {
-            const { worldX, worldY } = this.scene.input.activePointer
-
-            console.log("worldX", worldX, "worldY", worldY)
-            const tile = this.getTileAtWorldXY(worldX, worldY)
-            console.log("tile", tile)
+            const camera = this.scene.cameras.main
+            const { x, y } = this.scene.input.activePointer.positionToCamera(camera) as Phaser.Math.Vector2
+            const tile = this.getTileAtWorldXY(x, y)
             // do nothing if tile is not found
             if (!tile) {
                 return
             }
-
             // place the item temporarily on the tile
             this.temporaryPlaceItemOnTile(tile)
         }
