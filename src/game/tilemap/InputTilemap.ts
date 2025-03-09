@@ -63,6 +63,7 @@ import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
+import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -941,9 +942,13 @@ export class InputTilemap extends ItemTilemap {
         this.placementPopup = new PlacementPopup({
             scene: this.scene,
             onCancel: () => {
+                EventBus.emit(EventName.ShowButtons)
                 this.cancelPlacement()
             },
-            onConfirm: () => this.handlePlaced(),
+            onConfirm: () => {
+                EventBus.emit(EventName.ShowButtons)
+                this.handlePlaced()
+            },
         })
             .setPosition(620, 900)
             .setDepth(
