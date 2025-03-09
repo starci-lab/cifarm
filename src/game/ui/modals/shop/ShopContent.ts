@@ -192,7 +192,7 @@ export class ShopContent extends BaseSizer {
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
-        const { placedItems } = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
+        const { placedItems} = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
         this.placedItems = placedItems
 
         // create the scrollable panel
@@ -358,10 +358,36 @@ export class ShopContent extends BaseSizer {
                 _: number,
                 pointer: Phaser.Input.Pointer
             ) => {
-                const { onPress, locked } = cellContainer.getData(ITEM_DATA_KEY) as ExtendedCreateItemCardParams
+                const { onPress, locked, maxOwnership = 0, currentOwnership = 0, price } = cellContainer.getData(ITEM_DATA_KEY) as ExtendedCreateItemCardParams
                 const button = (
           cellContainer.getChildren()[0] as ContainerLite
         ).getChildren()[2] as Button
+
+                const {
+                    isAtMaxOwnership,
+                    isPurchasable,
+                } = this.canBuyItem({
+                    price: price ?? 0,
+                    maxOwnership,
+                    currentOwnership
+                })
+
+                if (!isPurchasable) {
+                    //fly item text
+                    if(isAtMaxOwnership){
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            position: pointer.position,
+                            text: "Max ownership reached.",
+                        })
+                    }else{
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            position: pointer.position,
+                            text: "Insufficient gold.",
+                        })
+                    }
+                    return
+                }
+
                 // check if clicked on the button
                 if (!locked && button.getBounds().contains(pointer.x, pointer.y)) {
                     onGameObjectPress({
@@ -370,6 +396,10 @@ export class ShopContent extends BaseSizer {
                             onPress(pointer)
                         },
                         scene: this.scene,
+                    })
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: pointer.position,
+                        text: "Max ownership reached.11",
                     })
                 }
             }
@@ -568,9 +598,14 @@ export class ShopContent extends BaseSizer {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
 
-        const canAfford = this.user.golds >= (price ?? 0)
-        const isAtMaxOwnership = maxOwnership !== 0 && currentOwnership >= maxOwnership
-        const isDisabled = !canAfford || isAtMaxOwnership
+        const {
+            isPurchasable,
+        } = this.canBuyItem({
+            price: price ?? 0,
+            maxOwnership,
+            currentOwnership
+        })
+        
         // create the components
         const cardBackground = this.scene.add.image(
             0,
@@ -595,7 +630,7 @@ export class ShopContent extends BaseSizer {
             },
             options: {
                 text: `$${price ?? 0}`,
-                disableInteraction: isDisabled,
+                disableInteraction: !isPurchasable,
                 height: 100,
                 width: 200,
                 scale: 0.8,
@@ -607,7 +642,7 @@ export class ShopContent extends BaseSizer {
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
 
-        if (isDisabled) {
+        if (!isPurchasable) {
             buttonPrice.disable()
         } else {
             buttonPrice.enable()
@@ -804,6 +839,16 @@ export class ShopContent extends BaseSizer {
         return maxCapacity
     }
     
+    private canBuyItem({ price, maxOwnership = 0, currentOwnership = 0 }: CanBuyItemParams) {
+        const canAfford = this.user.golds >= (price ?? 0)
+        const isAtMaxOwnership = maxOwnership !== 0 && currentOwnership >= maxOwnership
+        return {
+            canAfford,
+            isAtMaxOwnership,
+            isPurchasable: canAfford && !isAtMaxOwnership
+        }
+    }
+    
 
     private updateOwnership() {
         const { placedItems } = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
@@ -862,4 +907,11 @@ export interface CreateItemCardParams {
 
 export interface ExtendedCreateItemCardParams extends CreateItemCardParams {
   onPress: (pointer: Phaser.Input.Pointer) => void;
+}
+
+
+export interface CanBuyItemParams {
+    price: number;
+    maxOwnership: number;
+    currentOwnership: number;
 }

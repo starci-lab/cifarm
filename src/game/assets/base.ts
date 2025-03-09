@@ -23,6 +23,7 @@ export enum BaseAssetKey {
     UIIconReturn = "ui-icon-return",
     UIIconNext = "ui-icon-next",
     UIIconSpin = "ui-icon-spin",
+    UIIconMove = "ui-icon-move",
 
     // UI Backgrounds
     UIBackgroundLarge = "ui-background-large",
@@ -132,6 +133,8 @@ export enum BaseAssetKey {
     UICommonCheck = "ui-common-check",
     UICommonX2 = "ui-common-x2",
     UICommonExperience = "ui-common-experience",
+    UICommonCheckRound = "ui-common-check-round",
+    UICommonXRound = "ui-common-x-round",
 
     // Slider
     UICommonSliderThumb = "ui-common-slider-thumb",
@@ -188,6 +191,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIIconReturn]: "ui/icons/return.png",
     [BaseAssetKey.UIIconNext]: "ui/icons/next.png",
     [BaseAssetKey.UIIconSpin]: "ui/icons/spin.png",
+    [BaseAssetKey.UIIconMove]: "ui/icons/move.png",
 
     // backgrounds
     [BaseAssetKey.UIBackgroundLarge]: "ui/backgrounds/large.png",
@@ -313,6 +317,8 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UICommonSliderThumb]: "ui/common/slider-thumb.png",
     [BaseAssetKey.UICommonSliderTrack]: "ui/common/slider-track.png",
     [BaseAssetKey.UICommonCheckboxContainer]: "ui/common/checkbox-container.png",
+    [BaseAssetKey.UICommonCheckRound]: "ui/common/check-round.png",
+    [BaseAssetKey.UICommonXRound]: "ui/common/x-round.png",
 
     //State
     [BaseAssetKey.BubbleState]: "bubble-state.png",

@@ -10,7 +10,8 @@ export class LeftHorizontalButtons extends HorizontalButtons {
     private shopButton : Sizer
     private roadsideStandButton : Sizer
     private neighborsButton : Sizer
-
+    private spinButton: Sizer
+    
     constructor(baseParams: ButtonsBaseConstructorParams) {
         super({
             baseParams: {
@@ -61,6 +62,19 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             },
         })
         this.addButton(this.shopButton)
+
+        // add spin button
+        this.spinButton = this.createButton({
+            iconKey: BaseAssetKey.UIIconSpin,
+            text: "Spin",
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Spin
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
+            },
+        })
+        this.addButton(this.spinButton)
 
         // add roadside stand button
         this.roadsideStandButton = this.createButton({

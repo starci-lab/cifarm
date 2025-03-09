@@ -27,9 +27,9 @@ export class PlacementPopup extends ContainerLite {
         })
 
         this.yesButton = scene.add
-            .image(-100, 30, BaseAssetKey.UICommonPlus)
+            .image(-100, 30, BaseAssetKey.UICommonCheckRound)
             .setInteractive({ useHandCursor: true })
-            .setScale(buttonScale * 108.0/57.0)
+            .setScale(buttonScale)
             .on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 pointer.event.stopPropagation()
                 pointer.event.preventDefault()
@@ -38,7 +38,7 @@ export class PlacementPopup extends ContainerLite {
             })
 
         this.noButton = scene.add
-            .image(100, 30, BaseAssetKey.UICommonMinus)
+            .image(100, 30, BaseAssetKey.UICommonXRound)
             .setInteractive({ useHandCursor: true })
             .setScale(buttonScale)
             .on("pointerdown", (pointer: Phaser.Input.Pointer) => {
