@@ -2,6 +2,7 @@
 import {
     ACTION_EMITTED_EVENT,
     ActionEmittedMessage,
+    ENERGY_SYNCED_EVENT,
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
     SHOW_FADE_EVENT,
@@ -40,9 +41,15 @@ export const Game: FC = () => {
             EventBus.emit(EventName.PlacedItemsSynced, data)
         })
 
-        //listen for placed items synced
+        // listen for action emitted
         socket.on(ACTION_EMITTED_EVENT, (data: ActionEmittedMessage) => {
             EventBus.emit(EventName.ActionEmitted, data)
+        })
+
+        // listen for energy synced
+        socket.on(ENERGY_SYNCED_EVENT, (energy: number) => {
+            console.log(ENERGY_SYNCED_EVENT)
+            EventBus.emit(EventName.EnergySynced, energy)
         })
 
         //listen for show fade event

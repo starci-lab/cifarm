@@ -41,6 +41,11 @@ export class Topbar extends BaseSizer {
             this.updateContent()
         })
 
+        EventBus.on(EventName.EnergySynced, (energy: number) => {
+            this.user.energy = energy
+            this.updateContent()
+        })
+
         EventBus.on(EventName.Visit, async () => {
             this.neighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
             this.visited = true
