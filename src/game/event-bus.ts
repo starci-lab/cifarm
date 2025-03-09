@@ -42,6 +42,8 @@ export enum EventName {
     LoadFollowees = "request_followees",
     // followees loaded, from React to Phaser
     FolloweesLoaded = "followees_loaded",
+    // energy synced, from React to Phaser
+    EnergySynced = "energy_synced",
     // refresh
     RefreshUser = "refresh_user",
     UserRefreshed = "user_refreshed",

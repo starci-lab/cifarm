@@ -34,7 +34,6 @@ export class DataScene extends Scene {
                 //store the placed items in the cache
                 this.cache.obj.add(CacheKey.PlacedItems, data)
                 EventBus.emit(EventName.UpdatePlacedItems)
-                console.log("Placed items synced")
             }
         )
     }
