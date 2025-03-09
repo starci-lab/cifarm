@@ -192,7 +192,7 @@ export class ShopContent extends BaseSizer {
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
-        const { placedItems} = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
+        const { placedItems } = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
         this.placedItems = placedItems
 
         // create the scrollable panel

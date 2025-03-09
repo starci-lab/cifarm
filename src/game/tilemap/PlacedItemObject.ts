@@ -10,7 +10,7 @@ import {
     ProductSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Label, OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
     AnimalAge,
     animalAssetMap,
@@ -29,7 +29,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private container: ContainerLite | undefined
     private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
     private animalInfoSprite: Phaser.GameObjects.Sprite | undefined
-    private bubbleState: Label | undefined
+    private bubbleState: OverlapSizer | undefined
     private quantityText: Text | undefined
     public currentPlacedItem: PlacedItemSchema | undefined
     private fertilizerParticle: Phaser.GameObjects.Sprite | undefined
@@ -173,7 +173,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!placedItem.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
-
         if (
             this.currentPlacedItem?.seedGrowthInfo?.currentStage !==
       placedItem.seedGrowthInfo.currentStage
@@ -237,6 +236,11 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 throw new Error("Product not found")
             }
             
+            if (placedItem.id === "67cd42d823f3f1e70e3f50d6") {
+                console.log(this.currentPlacedItem?.seedGrowthInfo?.currentState)
+                console.log(placedItem.seedGrowthInfo.currentState)
+            }
+            // if the current state is different from the previous state
             if (
                 this.currentPlacedItem?.seedGrowthInfo?.currentState !==
         placedItem.seedGrowthInfo.currentState
@@ -248,34 +252,39 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         BaseAssetKey.BubbleState
                     )
                     this.bubbleState = this.scene.rexUI.add
-                        .label({
-                            background,
-                            icon: this.scene.add.image(0, 0, ""),
+                        .overlapSizer({
                             width: background.width,
                             height: background.height,
-                            align: "center",
-                            space: {
-                                bottom: 10,
-                            },
-                        })
+                        }).addBackground(background)
                         .setScale(0.5)
                         .setDepth(calculateGameplayDepth({
                             layer: GameplayLayer.Effects,
                         }))
                         .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
                     container.addLocal(this.bubbleState)
+                } else {
+                    this.bubbleState.removeAll(true)
                 }
-
-                let stateKey: string | undefined
                 // update the icon
                 // for state 0-3, use the icon in the crop asset map
                 if (
                     placedItem.seedGrowthInfo.currentState !==
           CropCurrentState.FullyMatured
                 ) {
-                    stateKey =
+                    const stateKey =
             cropStateAssetMap[placedItem.seedGrowthInfo.currentState]
                 ?.textureConfig.key
+                    if (!stateKey) {
+                        throw new Error("State key not found")
+                    }
+                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(calculateGameplayDepth({
+                        layer: GameplayLayer.Effects,
+                    }))
+                    this.bubbleState.add(icon, {
+                        align: "center",
+                        expand: false,
+                        offsetY: -10
+                    }).layout()
                 } else {
                     const text = `${
                         placedItem.seedGrowthInfo.harvestQuantityRemaining || 0
@@ -297,20 +306,15 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     }))
 
                     this.scene.add.existing(this.quantityText)
-                    this.bubbleState.addLocal(this.quantityText)
-
-                    stateKey = undefined
-                }
-                if (stateKey) {
-                    this.bubbleState.setIconTexture(stateKey).layout()
-                } else {
-                    this.bubbleState.resetDisplayContent({
-                        icon: false,
-                    })
+                    this.bubbleState.add(this.quantityText, {
+                        align: "center",
+                        expand: false,
+                        offsetY: -10
+                    }).layout()
                 }
             } else if (
-                this.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining !==
-        undefined &&
+                // for fully matured state, update the quantity text if the crop is thiefed
+                this.currentPlacedItem?.seedGrowthInfo?.currentState === CropCurrentState.FullyMatured &&
       this.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining !==
         placedItem.seedGrowthInfo?.harvestQuantityRemaining
             ) {
@@ -326,6 +330,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         } else {
             // if bubble state is present, remove it
             if (this.bubbleState) {
+                this.bubbleState.removeAll(true)
                 this.bubbleState.destroy()
                 this.bubbleState = undefined
             }

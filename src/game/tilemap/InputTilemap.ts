@@ -493,7 +493,7 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpUseHerbicideRequest = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
+                    EventBus.emit(EventName.RequestHelpUseHerbicide, eventMessage)
                     data.pressBlocked = true
                 } else {
                     if (
@@ -547,6 +547,13 @@ export class InputTilemap extends ItemTilemap {
                     throw new Error("Product not found")
                 }
                 if (visitedNeighbor) {
+                    if (
+                        !this.thiefQuantityReactMinimun({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
                     if (
                         !this.hasThievedCrop({
                             data,
@@ -1163,6 +1170,35 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
+    private thiefQuantityReactMinimun({
+        data,
+    }: ThiefQuantityReactMinimunParams): boolean {
+        const crop = this.crops.find(
+            (crop) => crop.id === data.object.currentPlacedItem?.seedGrowthInfo?.crop
+        )
+        if (!crop) {
+            throw new Error("Crop not found")
+        }
+        if (
+            !data.object.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining
+        ) {
+            throw new Error("Harvest quantity remaining not found")
+        }
+        if (
+            crop.minHarvestQuantity >=
+      data.object.currentPlacedItem.seedGrowthInfo.harvestQuantityRemaining
+        ) {
+            this.scene.events.emit(EventName.CreateFlyItems, [
+                {
+                    position: data.object.getCenter(),
+                    text: "Minimum quantity reached",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+
     private energyNotEnough({
         data,
         actionEnergy = 0,
@@ -1182,6 +1218,10 @@ export class InputTilemap extends ItemTilemap {
 }
 
 export interface HasThievedCropParams {
+  data: PlacedItemObjectData;
+}
+
+export interface ThiefQuantityReactMinimunParams {
   data: PlacedItemObjectData;
 }
 

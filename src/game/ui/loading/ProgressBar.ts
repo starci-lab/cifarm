@@ -34,17 +34,10 @@ export class ProgressBar extends OverlapSizer {
         if (!this.loadingBar) {
             throw new Error("Loading bar not found")
         }
-        // // declare a unique frame name
-        const originTexture = this.scene.textures.get(
-            BootstrapAssetKey.LoadingFill
-        )
-        // add the new frame to the texture
-        const sourceImage = originTexture.getSourceImage() as HTMLImageElement
-        const width = sourceImage.width * progress
-        const height = sourceImage.height
         // // add the new frame to the texture
         if (!this.loadingFill) {
-            this.loadingFill = this.scene.add.image(0, 0, BootstrapAssetKey.LoadingFill).setCrop(0, 0, width, height)
+            this.loadingFill = this.scene.add.image(0, 0, BootstrapAssetKey.LoadingFill)
+            this.loadingFill.setCrop(0, 0, this.loadingFill.width * progress, this.loadingFill.height)
             this.add(this.loadingFill, {
                 align: "center",
                 expand: false
@@ -52,7 +45,7 @@ export class ProgressBar extends OverlapSizer {
         } else {
             // if loaderFill is found, update the frame
             this.loadingFill
-                .setCrop(0, 0, width, height)
+                .setCrop(0, 0, this.loadingFill.width * progress, this.loadingFill.height)
         }
         // destroy the old frame
         this.layout()
