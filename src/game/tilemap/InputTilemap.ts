@@ -211,6 +211,7 @@ export class InputTilemap extends ItemTilemap {
                         y: position.y,
                         depth: calculateGameplayDepth({
                             layer: GameplayLayer.Effects,
+                            additionalDepth: 10000
                         }),
                         text,
                         showIcon,

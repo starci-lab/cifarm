@@ -298,10 +298,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         },
                     ])
                 } else {
-                    this.scene.events.emit(EventName.CreateFlyItem, {
-                        position: object.getCenter(),
-                        text: "Failed to " + ActionName.ThiefCrop,
-                    })
+                    switch (data.reasonCode) {
+                    case 1:
+                        this.scene.events.emit(EventName.CreateFlyItem, {
+                            position: object.getCenter(),
+                            text: "You are already stealing",
+                        })
+                        break
+                    }
                 }
                 break
             case ActionName.CureAnimal:
