@@ -38,7 +38,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private crops: Array<CropSchema> = []
     private products: Array<ProductSchema> = []
     private animals: Array<AnimalSchema> = []
-
+    
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture)
 
@@ -380,7 +380,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: TILE_HEIGHT / 2 - 10,
+                            y: TILE_HEIGHT / 2 - 20,
                             text: "",
                         },
                         options: {
