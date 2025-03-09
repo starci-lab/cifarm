@@ -1162,7 +1162,7 @@ export class InputTilemap extends ItemTilemap {
             this.scene.events.emit(EventName.CreateFlyItems, [
                 {
                     position: data.object.getCenter(),
-                    text: "You are already stealing",
+                    text: "You are already thieved",
                 },
             ])
             return false

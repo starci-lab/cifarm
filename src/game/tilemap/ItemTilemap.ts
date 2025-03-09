@@ -339,7 +339,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     case 1:
                         this.scene.events.emit(EventName.CreateFlyItem, {
                             position: object.getCenter(),
-                            text: "You are already stealing",
+                            text: "You are already thieved",
                         })
                         break
                     }
