@@ -117,6 +117,10 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         })
 
+        EventBus.on(EventName.HandlePlacedItemUpdatePosition, (data: HandlePlacedItemUpdatePositionParams) => {
+            this.handlePlacedItemUpdatePosition(data)
+        })
+
         const data = this.scene.cache.obj.get(
             CacheKey.PlacedItems
         ) as PlacedItemsSyncedMessage
@@ -580,6 +584,31 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
     }
 
+    private handlePlacedItemUpdatePosition({
+        placedItemId,
+        position
+    }: HandlePlacedItemUpdatePositionParams) {
+        const placedItem = this.previousPlacedItems?.placedItems.find(
+            (item) => item.id === placedItemId
+        )
+        if (!placedItem) {
+            throw new Error("Placed item not found")
+        }
+
+        //remove old object
+        this.itemLayer.objects = this.itemLayer.objects.filter(
+            (object) => object.name !== placedItemId
+        )
+        this.placedItemObjectMap[placedItemId]?.object.destroy()
+
+        // Place the item again at the new position
+        this.placeTileForItem({
+            ...placedItem,
+            x: position.x,
+            y: position.y,
+        })
+    }
+
     // method to create all placed items when user IDs differ
     private createAllPlacedItems(placedItems: Array<PlacedItemSchema>) {
         for (const placedItem of placedItems) {
@@ -847,4 +876,9 @@ export interface CanPlaceItemAtTileParams {
   tileY: number;
   tileSizeWidth: number;
   tileSizeHeight: number;
+}
+
+export interface HandlePlacedItemUpdatePositionParams {
+  placedItemId: string;
+  position: Position;
 }

@@ -276,6 +276,8 @@ export enum EventName {
 
     RequestMove = "request_move",
     MoveCompleted = "move_completed",
+
+    HandlePlacedItemUpdatePosition = "handle_placed_item_update_position",
 }
 
 export interface OpenTutorialMessage {

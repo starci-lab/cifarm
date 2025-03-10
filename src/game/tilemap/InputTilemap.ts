@@ -24,6 +24,7 @@ import {
     InventorySchema,
     InventoryType,
     InventoryTypeSchema,
+    PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
     SupplyId,
@@ -86,6 +87,7 @@ export class InputTilemap extends ItemTilemap {
     // is placement mode
     private placementMode: boolean = false
     private movingPlacedItemId: string | undefined
+    private storedPlacedItem: PlacedItemSchema | undefined
 
     // place item data
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
@@ -184,15 +186,12 @@ export class InputTilemap extends ItemTilemap {
                 const placedItemId = data.object.currentPlacedItem?.id
                 this.movingPlacedItemId = placedItemId
                 if (placedItemId) {
+                    this.storedPlacedItem = data.object.currentPlacedItem
+
                     this.placedItemObjectMap[placedItemId]?.object.destroy()
                     delete this.placedItemObjectMap[placedItemId]
                 }
-                // find object data and destroy it
-                // this.itemLayer.objects = this.itemLayer.objects.filter(
-                //     (object) => object.name !== placedItem.id
-                // )
-                // // remove the object from the tilemap
-                // this.placedItemObjectMap[placedItem.id]?.object.destroy()
+
                 console.log("Placing mode is on", data.placedItemType)
                 
                 const message: PlacedInprogressMessage = {
@@ -202,10 +201,6 @@ export class InputTilemap extends ItemTilemap {
                 EventBus.emit(EventName.PlaceInprogress, message)
                 return
             }
-
-           
-            
-            
 
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
@@ -988,11 +983,17 @@ export class InputTilemap extends ItemTilemap {
             scene: this.scene,
             onCancel: () => {
                 EventBus.emit(EventName.ShowButtons)
+                if(this.placementMode){
+                    if (this.storedPlacedItem) {
+                        this.placeTileForItem(this.storedPlacedItem)
+                    }
+                }
                 this.cancelPlacement()
             },
             onConfirm: () => {
                 EventBus.emit(EventName.ShowButtons)
                 this.handlePlaced()
+                this.cancelPlacement()
             },
         })
             .setPosition(620, 900)
@@ -1011,9 +1012,12 @@ export class InputTilemap extends ItemTilemap {
             return
         }
 
-        const { worldX, worldY } = this.scene.input.activePointer
+        const camera = this.scene.cameras.main
+        const { x, y } = this.scene.input.activePointer.positionToCamera(
+            camera
+        ) as Phaser.Math.Vector2
 
-        const tileWorld = this.getTileAtWorldXY(worldX, worldY)
+        const tileWorld = this.getTileAtWorldXY(x, y)
         if (!tileWorld) {
             console.error("No tile found for temporary place item object")
             return
@@ -1050,18 +1054,15 @@ export class InputTilemap extends ItemTilemap {
                     y: position.y,
                 },
             }
-            this.previousPlacedItems
 
-            // this.placeTileForItem(placedItem)
-
+            EventBus.emit(EventName.HandlePlacedItemUpdatePosition, eventMessage)
             EventBus.emit(EventName.RequestMove, eventMessage)
 
             EventBus.once(EventName.MoveCompleted, () => {
-                EventBus.emit(EventName.RefreshUser)
                 this.cancelPlacement()
+                EventBus.emit(EventName.RefreshUser)
             })
 
-            this.cancelPlacement()
             return 
         }
 
