@@ -826,10 +826,8 @@ export class ShopContent extends BaseSizer {
         const userBuildings = this.placedItems.filter(item => item.placedItemType === createObjectId(relatedBuilding.displayId))
         let maxCapacity = 0
         for (const building of userBuildings) {
-            console.log("[getAnimalMaxOwnership] building", building)
             const upgradeLevel = building.buildingInfo?.currentUpgrade || 0
             if (relatedBuilding.upgrades) {
-                console.log("[getAnimalMaxOwnership] upgradeLevel", upgradeLevel)
                 const upgrade = relatedBuilding.upgrades.find(upgrade => upgrade.upgradeLevel === upgradeLevel)
                 if (upgrade){
                     maxCapacity += upgrade.capacity

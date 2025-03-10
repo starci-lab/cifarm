@@ -15,6 +15,7 @@ import { useFeedAnimalEffects } from "./useFeedAnimalEffects"
 import { useFollowEffects } from "./useFollowEffects"
 import { useHarvestCropEffects } from "./useHarvestCropEffects"
 import { useUseHerbicideEffects } from "./useHerbicideEffects"
+import { useMoveEffects } from "./useMoveEffects"
 import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
 import { useUsePesticideEffects } from "./usePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
@@ -58,4 +59,5 @@ export const useApiEffects = () => {
     useUpdateFollowXEffects()
     useUpgradeBuildingEffects()
     useDeliverMoreProductEffects()
+    useMoveEffects()
 }
