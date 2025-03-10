@@ -711,22 +711,12 @@ export class InputTilemap extends ItemTilemap {
 
         switch (inventoryType.type) {
         case InventoryType.Supply: {
-            const supplies = this.scene.cache.obj.get(
-                CacheKey.Supplies
-            ) as Array<SupplySchema>
-
-            if (!supplies) {
-                throw new Error("Supplies not found")
-            }
-
-            const supply = supplies.find(
+            const supply = this.supplies.find(
                 (supply) => supply.id === selectedTool.inventoryType?.id
             )
-
             if (!supply) {
                 throw new Error(`Supply not found for supply id: ${selectedTool.id}`)
             }
-
             switch (supply.displayId) {
             case SupplyId.AnimalFeed: {
                 if (!currentPlacedItem?.animalInfo) {
@@ -760,7 +750,18 @@ export class InputTilemap extends ItemTilemap {
                 data.pressBlocked = true
                 break
             }
-            case SupplyId.AnimalPill: {
+            }
+            break
+        }
+        case InventoryType.Tool: {
+            const tool = this.tools.find(
+                (tool) => tool.id === selectedTool.inventoryType?.id
+            )
+            if (!tool) {
+                throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
+            }
+            switch (tool.displayId) {
+            case ToolId.AnimalMedicine: {
                 if (!currentPlacedItem?.animalInfo) {
                     return
                 }
@@ -793,6 +794,7 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
             }
+            break
         }
         }
     }

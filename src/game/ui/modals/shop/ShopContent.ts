@@ -9,12 +9,14 @@ import {
     CropSchema,
     DefaultInfo,
     InventorySchema,
+    PetSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeSchema,
     SupplyId,
     SupplySchema,
     TileSchema,
+    ToolSchema,
     UserSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -30,8 +32,10 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    petAssetMap,
     supplyAssetMap,
     tileAssetMap,
+    toolAssetMap,
 } from "../../../assets"
 import { SCALE_TIME } from "../../../constants"
 import {
@@ -74,12 +78,14 @@ export class ShopContent extends BaseSizer {
     // list of items
     private gridTableMap: Partial<Record<ShopTab, GridTable>> = {}
     // data
-    private animals: Array<AnimalSchema> = []
-    private crops: Array<CropSchema> = []
-    private buildings: Array<BuildingSchema> = []
-    private tiles: Array<TileSchema> = []
-    private supplies: Array<SupplySchema> = []
+    private animals: Array<AnimalSchema>
+    private crops: Array<CropSchema>
+    private buildings: Array<BuildingSchema>
+    private tiles: Array<TileSchema>
+    private supplies: Array<SupplySchema>
     private placedItems: Array<PlacedItemSchema> = []
+    private pets: Array<PetSchema>
+    private tools: Array<ToolSchema>
     //default
     private defaultItemCard: ContainerLite | undefined
     private defaultSeedButton: Label | undefined
@@ -176,6 +182,18 @@ export class ShopContent extends BaseSizer {
             (building) => building.availableInShop
         )
 
+        // load supplies
+        this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
+        this.supplies = this.supplies.filter((supply) => supply.availableInShop)
+
+        // load tools
+        this.tools = this.scene.cache.obj.get(CacheKey.Tools)
+        this.tools = this.tools.filter((tool) => tool.availableInShop)
+
+        // load pets
+        this.pets = this.scene.cache.obj.get(CacheKey.Pets)
+        this.pets = this.pets.filter((pet) => pet.availableInShop)
+
         const { data } = this.scene.cache.obj.get(
             CacheKey.Inventories
         ) as IPaginatedResponse<InventorySchema>
@@ -183,8 +201,6 @@ export class ShopContent extends BaseSizer {
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
-
-        this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
 
         EventBus.on(
             EventName.PlacedItemsSynced,
@@ -454,18 +470,13 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Animals: {
-            for (const { displayId, price } of this.animals) {
+            for (const { displayId, price, unlockLevel } of this.animals) {
                 // get the image
                 items.push({
                     assetKey:
               animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
-                    locked: !this.checkUnlock(
-                        this.animals.find((animal) => animal.displayId === displayId)
-                            ?.unlockLevel
-                    ),
-                    unlockLevel: this.animals.find(
-                        (animal) => animal.displayId === displayId
-                    )?.unlockLevel,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -494,18 +505,12 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Buildings: {
-            for (const { displayId, price } of this.buildings) {
+            for (const { displayId, price, unlockLevel } of this.buildings) {
                 // get the image
                 items.push({
                     assetKey: buildingAssetMap[displayId].textureConfig.key,
-                    locked: !this.checkUnlock(
-                        this.buildings.find(
-                            (building) => building.displayId === displayId
-                        )?.unlockLevel
-                    ),
-                    unlockLevel: this.buildings.find(
-                        (building) => building.displayId === displayId
-                    )?.unlockLevel,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -535,10 +540,13 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Tiles:
-            for (const { displayId, price } of this.tiles) {
+        {
+            for (const { displayId, price, unlockLevel } of this.tiles) {
                 // get the image
                 items.push({
                     assetKey: tileAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -565,13 +573,15 @@ export class ShopContent extends BaseSizer {
                 // add the item card to the scrollable panel
             }
             break
-        case ShopTab.Supply:
-            for (const { displayId, price } of this.supplies) {
+        }
+        case ShopTab.Supply: 
+        {
+            for (const { displayId, price, unlockLevel } of this.supplies) {
                 // get the image
                 items.push({
                     assetKey: supplyAssetMap[displayId].textureConfig.key,
-                    locked: false,
-                    unlockLevel: 0,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
                         this.onBuySupplyPress(displayId, pointer)
                     },
@@ -580,6 +590,42 @@ export class ShopContent extends BaseSizer {
                 })
             }
             break
+        }
+        case ShopTab.Pets: 
+        {
+            for (const { displayId, price, unlockLevel } of this.pets) {
+                // get the image
+                items.push({
+                    assetKey: petAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
+                    onPress: (pointer: Phaser.Input.Pointer) => {
+                        // this.onBuySupplyPress(displayId, pointer)
+                        console.log(pointer)
+                    },
+                    prepareCloseShop: true,
+                    price,
+                })
+            }
+            break
+        }
+        case ShopTab.Tools: {
+            for (const { displayId, price, unlockLevel } of this.tools) {
+                // get the image
+                items.push({
+                    assetKey: toolAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
+                    onPress: (pointer: Phaser.Input.Pointer) => {
+                        // this.onBuySupplyPress(displayId, pointer)
+                        console.log(pointer)
+                    },
+                    prepareCloseShop: true,
+                    price,
+                })
+            }
+            break
+        }
         case ShopTab.Decorations:
             for (const { displayId, price } of this.buildings) {
                 // get the image

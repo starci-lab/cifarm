@@ -7,11 +7,12 @@ import {
     loadBuildingAssets,
     loadCropAssets,
     loadInventoryTypesAssets,
+    loadPetAssets,
     loadProductAssets,
     loadStacyAssets,
     loadSupplyAssets,
     loadTileAssets,
-    loadToolsAssets
+    loadToolsAssets,
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
@@ -235,8 +236,9 @@ export class LoadingScene extends Scene {
         loadSupplyAssets(this)
         loadProductAssets(this)
         loadTileAssets(this)
-        loadToolsAssets(this)
+        loadPetAssets(this)
         loadStacyAssets(this)
+        loadToolsAssets(this)
         loadInventoryTypesAssets(this)
         loadCropStateAssets(this)
         loadAnimalStateAssets(this)

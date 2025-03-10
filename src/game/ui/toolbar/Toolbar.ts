@@ -5,7 +5,6 @@ import {
 import {
     InventorySchema,
     InventoryTypeSchema,
-    InventoryTypeId,
     DefaultInfo,
     ToolId,
     ToolSchema,

@@ -15,7 +15,9 @@ import {
     PlacedItemTypeId,
     PlacedItemTypeSchema,
     ProductSchema,
+    SupplySchema,
     TileSchema,
+    ToolSchema,
     UserSchema,
 } from "@/modules/entities"
 import {
@@ -58,6 +60,8 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected animals: Array<AnimalSchema>
     protected buildings: Array<BuildingSchema>
     protected _tiles: Array<TileSchema>
+    protected supplies: Array<SupplySchema>
+    protected tools: Array<ToolSchema>
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -76,8 +80,9 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
         this.animals = this.scene.cache.obj.get(CacheKey.Animals)
         this._tiles = this.scene.cache.obj.get(CacheKey.Tiles)
-        console.log(this._tiles)
-
+        this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
+        this.tools = this.scene.cache.obj.get(CacheKey.Tools)
+        
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
             this.fading = true
             // console.log(toNeighbor)

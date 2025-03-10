@@ -56,7 +56,6 @@ export enum DailyRewardPossibilityId {
 export enum SupplyId {
     BasicFertilizer = "basicFertilizer",
     AnimalFeed = "animalFeed",
-    AnimalPill = "animalPill",
 }
 
 // Tile Enum
@@ -68,11 +67,11 @@ export enum TileId {
 export enum ToolId {
     Hand = "hand",
     Crate = "crate",
-    ThiefHand = "thiefHand",
     WateringCan = "wateringCan",
     Herbicide = "herbicide",
     Pesticide = "pesticide",
     Hammer = "hammer",
+    AnimalMedicine = "animalMedicine",
 }
 
 // Product Enum
