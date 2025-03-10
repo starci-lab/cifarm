@@ -473,13 +473,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             }
         })
-
-        EventBus.on(
-            EventName.RequestUpdatePlacedItemLocal,
-            (params: UpdatePlacedItemLocalParams) => {
-                this.updatePlacedItemLocal(params)
-            }
-        )
     }
 
     public shutdown() {
@@ -809,22 +802,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         }
         return null
-    }
-
-    private updatePlacedItemLocal({
-        placedItem,
-        type,
-    }: UpdatePlacedItemLocalParams) {
-        if (!placedItem.id || !placedItem) {
-            throw new Error("Placed item id not found")
-        }
-
-        const placedItemUpdated: PlacedItemSchema = {
-            ...placedItem,
-        } as PlacedItemSchema
-
-        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
-        gameObject.update(type, placedItemUpdated)
     }
 }
 

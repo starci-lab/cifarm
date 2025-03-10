@@ -1,6 +1,7 @@
 import { PlacedItemSchema } from "@/modules/entities"
 import { Scene } from "phaser"
 import { CacheKey } from "../types"
+import { PlacedItemsSyncedMessage } from "@/hooks"
 
 export const getPlacedItemsWithSeedGrowthInfo = ({
     scene,
@@ -9,7 +10,8 @@ export const getPlacedItemsWithSeedGrowthInfo = ({
     // if placedItems is not provided, get from cache
     if (!placedItems) {
         // get the placedItems from cache
-        placedItems = scene.cache.obj.get(CacheKey.PlacedItems) as Array<PlacedItemSchema>
+        const { placedItems: _placedItems  } = scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
+        placedItems = _placedItems
     }
     // get the first two planted placed items
     return placedItems.filter((placedItem) => placedItem.seedGrowthInfo)
