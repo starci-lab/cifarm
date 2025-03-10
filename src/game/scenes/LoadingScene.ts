@@ -7,11 +7,12 @@ import {
     loadBuildingAssets,
     loadCropAssets,
     loadInventoryTypesAssets,
+    loadPetAssets,
     loadProductAssets,
     loadStacyAssets,
     loadSupplyAssets,
     loadTileAssets,
-    loadToolsAssets
+    loadToolsAssets,
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
@@ -66,7 +67,8 @@ export class LoadingScene extends Scene {
                 defaultInfo,
                 products,
                 activities,
-                supplies
+                supplies,
+                pets
             }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItemTypes, placedItemTypes)
@@ -81,6 +83,7 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.DefaultInfo, defaultInfo)
                 this.cache.obj.add(CacheKey.Products, products)
                 this.cache.obj.add(CacheKey.Supplies, supplies)
+                this.cache.obj.add(CacheKey.Pets, pets)
                 //load the static data
                 this.handleFetchData("Loading static data...")
             }
@@ -233,8 +236,9 @@ export class LoadingScene extends Scene {
         loadSupplyAssets(this)
         loadProductAssets(this)
         loadTileAssets(this)
-        loadToolsAssets(this)
+        loadPetAssets(this)
         loadStacyAssets(this)
+        loadToolsAssets(this)
         loadInventoryTypesAssets(this)
         loadCropStateAssets(this)
         loadAnimalStateAssets(this)
@@ -248,6 +252,7 @@ export class LoadingScene extends Scene {
             // check if the queue is empty
             if (this.waitForQueueEmpty && this.loadingProgressBar.queueEmpty()) {
                 // emit the event that the loading is done
+                await sleep(100)
                 this.events.emit(EventName.LoadCompleted)
             }
         }

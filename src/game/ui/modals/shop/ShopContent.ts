@@ -1,21 +1,24 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { BuySeedsRequest, BuySuppliesRequest } from "@/modules/axios"
-import { createObjectId, sleep } from "@/modules/common"
+import { sleep } from "@/modules/common"
 import {
+    AnimalId,
     AnimalSchema,
     BuildingSchema,
     CropId,
     CropSchema,
     DefaultInfo,
     InventorySchema,
+    PetSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeSchema,
     SupplyId,
     SupplySchema,
     TileSchema,
-    UserSchema
+    ToolSchema,
+    UserSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
@@ -30,8 +33,10 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    petAssetMap,
     supplyAssetMap,
     tileAssetMap,
+    toolAssetMap,
 } from "../../../assets"
 import { SCALE_TIME } from "../../../constants"
 import {
@@ -56,7 +61,6 @@ import {
     ModalBackground,
     Size,
     SizeStyle,
-    TextColor,
     XButton,
 } from "../../elements"
 import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
@@ -74,12 +78,15 @@ export class ShopContent extends BaseSizer {
     // list of items
     private gridTableMap: Partial<Record<ShopTab, GridTable>> = {}
     // data
-    private animals: Array<AnimalSchema> = []
-    private crops: Array<CropSchema> = []
-    private buildings: Array<BuildingSchema> = []
-    private tiles: Array<TileSchema> = []
-    private supplies: Array<SupplySchema> = []
+    private animals: Array<AnimalSchema>
+    private crops: Array<CropSchema>
+    private buildings: Array<BuildingSchema>
+    private tiles: Array<TileSchema>
+    private supplies: Array<SupplySchema>
     private placedItems: Array<PlacedItemSchema> = []
+    private placedItemTypes: Array<PlacedItemTypeSchema>
+    private pets: Array<PetSchema>
+    private tools: Array<ToolSchema>
     //default
     private defaultItemCard: ContainerLite | undefined
     private defaultSeedButton: Label | undefined
@@ -100,14 +107,7 @@ export class ShopContent extends BaseSizer {
         y,
         config,
     }: BaseSizerBaseConstructorParams) {
-        super(
-            scene,
-            x,
-            y,
-            width,
-            height,
-            config
-        )
+        super(scene, x, y, width, height, config)
 
         const cellSourceImage = this.scene.textures
             .get(BaseAssetKey.UIModalShopCard)
@@ -128,7 +128,7 @@ export class ShopContent extends BaseSizer {
                 background: Background.XLarge,
                 onXButtonPress: (xButton: XButton) => {
                     EventBus.emit(EventName.CloseModal, {
-                        modalName: ModalName.Shop
+                        modalName: ModalName.Shop,
                     })
                     // emit the events related to the tutorial
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -157,8 +157,8 @@ export class ShopContent extends BaseSizer {
                 container: {
                     showWrapperContainer: true,
                     showContainer: false,
-                }
-            }
+                },
+            },
         })
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
@@ -177,11 +177,27 @@ export class ShopContent extends BaseSizer {
         this.crops = this.scene.cache.obj.get(CacheKey.Crops)
         this.crops = this.crops.filter((crop) => crop.availableInShop)
 
+        this.placedItemTypes = this.scene.cache.obj.get(
+            CacheKey.PlacedItemTypes
+        )
+
         // load buildings
         this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
         this.buildings = this.buildings.filter(
             (building) => building.availableInShop
         )
+
+        // load supplies
+        this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
+        this.supplies = this.supplies.filter((supply) => supply.availableInShop)
+
+        // load tools
+        this.tools = this.scene.cache.obj.get(CacheKey.Tools)
+        this.tools = this.tools.filter((tool) => tool.availableInShop)
+
+        // load pets
+        this.pets = this.scene.cache.obj.get(CacheKey.Pets)
+        this.pets = this.pets.filter((pet) => pet.availableInShop)
 
         const { data } = this.scene.cache.obj.get(
             CacheKey.Inventories
@@ -191,9 +207,13 @@ export class ShopContent extends BaseSizer {
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
-        this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
-        const { placedItems} = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
-        this.placedItems = placedItems
+        EventBus.on(
+            EventName.PlacedItemsSynced,
+            ({ placedItems }: PlacedItemsSyncedMessage) => {
+                this.placedItems = placedItems
+                this.updateOwnership()
+            }
+        )
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -258,7 +278,7 @@ export class ShopContent extends BaseSizer {
             setTutorialDepth({
                 gameObject: gridTable,
             })
-            
+
             const eventMessage: ShowPressHereArrowMessage = {
                 originPosition: {
                     x: this.defaultSeedButton.x + 60,
@@ -358,38 +378,18 @@ export class ShopContent extends BaseSizer {
                 _: number,
                 pointer: Phaser.Input.Pointer
             ) => {
-                const { onPress, locked, maxOwnership = 0, currentOwnership = 0, price } = cellContainer.getData(ITEM_DATA_KEY) as ExtendedCreateItemCardParams
+                const {
+                    onPress,
+                    locked,
+                    disabled,
+                } = cellContainer.getData(
+                    ITEM_DATA_KEY
+                ) as ExtendedCreateItemCardParams
                 const button = (
           cellContainer.getChildren()[0] as ContainerLite
         ).getChildren()[2] as Button
-
-                const {
-                    isAtMaxOwnership,
-                    isPurchasable,
-                } = this.canBuyItem({
-                    price: price ?? 0,
-                    maxOwnership,
-                    currentOwnership
-                })
-
-                if (!isPurchasable) {
-                    //fly item text
-                    if(isAtMaxOwnership){
-                        this.scene.events.emit(EventName.CreateFlyItem, {
-                            position: pointer.position,
-                            text: "Max ownership reached.",
-                        })
-                    }else{
-                        this.scene.events.emit(EventName.CreateFlyItem, {
-                            position: pointer.position,
-                            text: "Insufficient gold.",
-                        })
-                    }
-                    return
-                }
-
                 // check if clicked on the button
-                if (!locked && button.getBounds().contains(pointer.x, pointer.y)) {
+                if (!disabled && !locked && button.getBounds().contains(pointer.x, pointer.y)) {
                     onGameObjectPress({
                         gameObject: button,
                         onPress: () => {
@@ -429,16 +429,15 @@ export class ShopContent extends BaseSizer {
         const items: Array<ExtendedCreateItemCardParams> = []
         switch (shopTab) {
         case ShopTab.Seeds: {
-            for (const { displayId, price } of this.crops) {
+            for (const { displayId, price, unlockLevel } of this.crops) {
                 // get the image
                 items.push({
                     assetKey: cropAssetMap[displayId].seed.textureConfig.key,
                     locked: !this.checkUnlock(
-                        this.crops.find((crop) => crop.displayId === displayId)
-                            ?.unlockLevel
+                        unlockLevel
                     ),
-                    unlockLevel: this.crops.find((crop) => crop.displayId === displayId)
-                        ?.unlockLevel,
+                    disabled: this.user.golds < price,
+                    unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
                         this.onBuySeedPress(displayId, pointer)
                     },
@@ -450,17 +449,28 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Animals: {
-            for (const { displayId, price } of this.animals) {
+            for (const { displayId, price, unlockLevel } of this.animals) {
+                if (!price) {
+                    throw new Error("Price is not found.")
+                }
+                const goldsEnough = this.user.golds >= price
+                const maxOwnership = this.getAnimalMaxOwnership({
+                    displayId,
+                })
+                const currentOwnership = this.getCurrentOwnership({
+                    displayId,
+                    type: PlacedItemType.Animal,
+                })
+                const ownershipSastified = currentOwnership < maxOwnership
+                const disabled = !(goldsEnough && ownershipSastified)
                 // get the image
                 items.push({
                     assetKey:
-                    animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
-                    locked: !this.checkUnlock(
-                        this.animals.find((animal) => animal.displayId === displayId)
-                            ?.unlockLevel
-                    ),
-                    unlockLevel: this.animals.find((animal) => animal.displayId === displayId)
-                        ?.unlockLevel,
+              animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
+                    disabled,
+                    showOwnership: true,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -476,29 +486,37 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
-                    maxOwnership: this.getAnimalMaxOwnership({
-                        displayId
-                    }),
-                    currentOwnership: this.getCurrentOwnership({
-                        type: PlacedItemType.Animal,
-                        displayId
-                    })
+                    maxOwnership,
+                    currentOwnership,
                 })
                 // add the item card to the scrollable panel
             }
             break
         }
         case ShopTab.Buildings: {
-            for (const { displayId, price } of this.buildings) {
+            for (const { displayId, price, unlockLevel } of this.buildings) {
+                if (!price) {
+                    throw new Error("Price is not found.")
+                }
+                const goldsEnough = this.user.golds >= price
+                const currentOwnership = this.getCurrentOwnership({
+                    displayId,
+                    type: PlacedItemType.Animal,
+                })
+                const maxOwnership = this.buildings.find(
+                    (building) => building.displayId === displayId
+                )?.maxOwnership
+                if (!maxOwnership) {
+                    throw new Error("Max ownership is not found.")
+                }
+                const ownershipSastified = currentOwnership < maxOwnership
+                const disabled = !(goldsEnough && ownershipSastified)
                 // get the image
                 items.push({
                     assetKey: buildingAssetMap[displayId].textureConfig.key,
-                    locked: !this.checkUnlock(
-                        this.buildings.find((building) => building.displayId === displayId)
-                            ?.unlockLevel
-                    ),
-                    unlockLevel: this.buildings.find((building) => building.displayId === displayId)
-                        ?.unlockLevel,
+                    locked: !this.checkUnlock(unlockLevel),
+                    disabled,
+                    unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -516,20 +534,38 @@ export class ShopContent extends BaseSizer {
                     price,
                     scaleX: 0.5,
                     scaleY: 0.5,
-                    maxOwnership: this.buildings.find((building) => building.displayId === displayId)?.maxOwnership,
-                    currentOwnership: this.getCurrentOwnership({
-                        type: PlacedItemType.Building,
-                        displayId
-                    })
+                    showOwnership: true,
+                    maxOwnership,
+                    currentOwnership
                 })
             }
             break
         }
         case ShopTab.Tiles:
-            for (const { displayId, price } of this.tiles) {
+        {
+            for (const { displayId, price, unlockLevel } of this.tiles) {
+                if (!price) {
+                    throw new Error("Price is not found.")
+                }
+                const goldsEnough = this.user.golds >= price
+                const currentOwnership = this.getCurrentOwnership({
+                    displayId,
+                    type: PlacedItemType.Tile,
+                })
+                const maxOwnership = this.tiles.find(
+                    (tile) => tile.displayId === displayId
+                )?.maxOwnership
+                if (!maxOwnership) {
+                    throw new Error("Max ownership is not found.")
+                }
+                const ownershipSastified = currentOwnership < maxOwnership
+                const disabled = !(goldsEnough && ownershipSastified)
                 // get the image
                 items.push({
                     assetKey: tileAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    disabled,
+                    unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -545,22 +581,27 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
-                    maxOwnership: this.tiles.find((tile) => tile.displayId === displayId)?.maxOwnership,
+                    showOwnership: true,
+                    maxOwnership: this.tiles.find(
+                        (tile) => tile.displayId === displayId
+                    )?.maxOwnership,
                     currentOwnership: this.getCurrentOwnership({
                         type: PlacedItemType.Tile,
-                        displayId
-                    })
+                        displayId,
+                    }),
                 })
                 // add the item card to the scrollable panel
             }
             break
-        case ShopTab.Supply:
-            for (const { displayId, price } of this.supplies) {
+        }
+        case ShopTab.Supply: 
+        {
+            for (const { displayId, price, unlockLevel } of this.supplies) {
                 // get the image
                 items.push({
                     assetKey: supplyAssetMap[displayId].textureConfig.key,
-                    locked: false,
-                    unlockLevel: 0,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
                         this.onBuySupplyPress(displayId, pointer)
                     },
@@ -569,6 +610,42 @@ export class ShopContent extends BaseSizer {
                 })
             }
             break
+        }
+        case ShopTab.Pets: 
+        {
+            for (const { displayId, price, unlockLevel } of this.pets) {
+                // get the image
+                items.push({
+                    assetKey: petAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
+                    onPress: (pointer: Phaser.Input.Pointer) => {
+                        // this.onBuySupplyPress(displayId, pointer)
+                        console.log(pointer)
+                    },
+                    prepareCloseShop: true,
+                    price,
+                })
+            }
+            break
+        }
+        case ShopTab.Tools: {
+            for (const { displayId, price, unlockLevel } of this.tools) {
+                // get the image
+                items.push({
+                    assetKey: toolAssetMap[displayId].textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
+                    onPress: (pointer: Phaser.Input.Pointer) => {
+                        // this.onBuySupplyPress(displayId, pointer)
+                        console.log(pointer)
+                    },
+                    prepareCloseShop: true,
+                    price,
+                })
+            }
+            break
+        }
         case ShopTab.Decorations:
             for (const { displayId, price } of this.buildings) {
                 // get the image
@@ -595,20 +672,13 @@ export class ShopContent extends BaseSizer {
         scaleY = 1,
         unlockLevel,
         locked = false,
+        showOwnership = false,
         currentOwnership = 0,
         maxOwnership = 0,
     }: CreateItemCardParams) {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
 
-        const {
-            isPurchasable,
-        } = this.canBuyItem({
-            price: price ?? 0,
-            maxOwnership,
-            currentOwnership
-        })
-        
         // create the components
         const cardBackground = this.scene.add.image(
             0,
@@ -633,24 +703,32 @@ export class ShopContent extends BaseSizer {
             },
             options: {
                 text: `$${price ?? 0}`,
-                disableInteraction: !isPurchasable,
                 height: 100,
                 width: 200,
                 scale: 0.8,
                 syncTextScale: true,
                 background: ButtonBackground.Primary,
             },
-        })
-            .setPosition(0, 90)
+        }).setPosition(0, 90)
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
 
-        if (!isPurchasable) {
-            buttonPrice.disable()
-        } else {
-            buttonPrice.enable()
+        if (showOwnership) {
+            const ownership = new Text({
+                baseParams: {
+                    scene: this.scene,
+                    text: `${currentOwnership}/${maxOwnership}`,
+                    x: cardBackground.width/2 - 10,
+                    y: -cardBackground.height/2 + 10,
+                },
+                options: {
+                    fontSize: 32,
+                    enableStroke: true
+                },
+            }).setOrigin(1, 0)
+            this.scene.add.existing(ownership)
+            container.addLocal(ownership)
         }
-
         if (locked) {
             const off = this.scene.add.image(0, 0, BaseAssetKey.UIModalShopOff)
             const lockContainer = this.scene.rexUI.add.container(
@@ -693,29 +771,8 @@ export class ShopContent extends BaseSizer {
             if (buttonPrice.input) {
                 buttonPrice.input.enabled = false
             }
-        }else{
-            if(maxOwnership == 0) return container
-
-            const ownershipText = maxOwnership !== undefined 
-                ? `${currentOwnership}/${maxOwnership}`
-                : ""
-
-            const ownershipLabel = new Text({
-                baseParams: {
-                    scene: this.scene,
-                    text: ownershipText,
-                    x: cardBackground.width / 2 - 10,
-                    y: -cardBackground.height / 2 + 10
-                },
-                options: {
-                    fontSize: 28,
-                    textColor: TextColor.Brown
-                }
-            }).setOrigin(1, 0)
-
-            this.scene.add.existing(ownershipLabel)
-            container.addLocal(ownershipLabel)
-        }
+        } 
+        
         return container
     }
 
@@ -732,7 +789,7 @@ export class ShopContent extends BaseSizer {
                 }
                 restoreTutorialDepth({
                     gameObject: gridTable,
-                    plusOne: true
+                    plusOne: true,
                 })
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
             }
@@ -792,93 +849,89 @@ export class ShopContent extends BaseSizer {
         EventBus.emit(EventName.RequestBuySupplies, eventMessage)
     }
 
-    private getCurrentOwnership({ type, displayId }: GetCurrentOwnershipParams): number {
-        if(!this.placedItems) return 0
-
-        //all placed item types
-        const placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes) as Array<PlacedItemTypeSchema>
-
+    private getCurrentOwnership({
+        type,
+        displayId,
+    }: GetCurrentOwnershipParams): number {
         //get the placed item type
-        const placedItemType = placedItemTypes.find(item => item.displayId === displayId && item.type === type)
-        if (!placedItemType){
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.displayId === displayId && placedItemType.type === type
+        )
+        if (!placedItemType) {
             throw new Error("Placed item type not found.")
         }
 
-        return this.placedItems.filter(item => item.placedItemType === createObjectId(displayId)).length
+        return this.placedItems.filter(
+            (item) => item.placedItemType === placedItemType.id
+        ).length
     }
-    
 
-    private getAnimalMaxOwnership({ displayId }: GetAnimalMaxOwnershipParams): number {
-        const animal = this.animals.find(animal => animal.displayId === displayId)
-        if (!animal){
-            throw new Error("[getAnimalMaxOwnership] Animal not found.")
+    private getAnimalMaxOwnership({
+        displayId,
+    }: GetAnimalMaxOwnershipParams): number {
+        const animal = this.animals.find(
+            (animal) => animal.displayId === displayId
+        )
+        if (!animal) {
+            throw new Error("Animal not found.")
         }
-    
-        const relatedBuilding = this.buildings.find(building => building.type === animal.type)
-        if (!relatedBuilding){
-            throw new Error("[getAnimalMaxOwnership] Related building not found.")
+
+        const building = this.buildings.find(
+            (building) => building.type === animal.type
+        )
+        if (!building) {
+            throw new Error("Building not found.")
         }
-    
-        if (!this.placedItems){
-            return 0
+        const placedItemType = this.placedItemTypes.find(
+            placedItemType => placedItemType.building === building.id
+        )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found.")
         }
-    
-        const userBuildings = this.placedItems.filter(item => item.placedItemType === createObjectId(relatedBuilding.displayId))
+        const placedItemBuildings = this.placedItems.filter(
+            (placedItemBuilding) => {
+                console.log(placedItemBuilding.placedItemType, placedItemType.id)
+                return placedItemBuilding.placedItemType === placedItemType.id
+            }           
+        )
         let maxCapacity = 0
-        for (const building of userBuildings) {
-            const upgradeLevel = building.buildingInfo?.currentUpgrade || 0
-            if (relatedBuilding.upgrades) {
-                const upgrade = relatedBuilding.upgrades.find(upgrade => upgrade.upgradeLevel === upgradeLevel)
-                if (upgrade){
-                    maxCapacity += upgrade.capacity
-                }else{
+        for (const placedItemBuilding of placedItemBuildings) {
+            const upgradeLevel = placedItemBuilding.buildingInfo?.currentUpgrade
+            if (!upgradeLevel) {
+                throw new Error("Upgrade level not found.")
+            }
+            if (building.upgrades) {
+                const upgrade = building.upgrades.find(
+                    (upgrade) => upgrade.upgradeLevel === upgradeLevel
+                )
+                if (!upgrade) {
                     throw new Error("[getAnimalMaxOwnership] Upgrade not found.")
                 }
+                maxCapacity += upgrade.capacity
             }
         }
-    
         return maxCapacity
     }
-    
-    private canBuyItem({ price, maxOwnership = 0, currentOwnership = 0 }: CanBuyItemParams) {
-        const canAfford = this.user.golds >= (price ?? 0)
-        const isAtMaxOwnership = maxOwnership !== 0 && currentOwnership >= maxOwnership
-        return {
-            canAfford,
-            isAtMaxOwnership,
-            isPurchasable: canAfford && !isAtMaxOwnership
-        }
-    }
-    
 
     private updateOwnership() {
-        const { placedItems } = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
-        this.placedItems = placedItems
-        if (!this.placedItems) {
-            console.warn("No placed items found.")
-            return
+        for (const shop of Object.values(ShopTab)) {
+            if (!this.gridTableMap[shop]) {
+                throw new Error("Grid table is not found")
+            }
+            const items = this.createItems(shop)
+            this.gridTableMap[shop].setItems(items)
+            this.gridTableMap[shop].layout()
         }
-    
-        Object.values(ShopTab).forEach((shopTab) => {
-            if (!this.gridTableMap[shopTab]) return
-            
-            const items = this.createItems(shopTab)
-            this.gridTableMap[shopTab].setItems(items)
-            this.gridTableMap[shopTab].layout()
-        })
-    
-        console.log("Ownership update complete.")
     }
 }
-        
 
 export interface GetCurrentOwnershipParams {
-    type: PlacedItemType;
-    displayId: string;
+  type: PlacedItemType;
+  displayId: string;
 }
 
 export interface GetAnimalMaxOwnershipParams {
-    displayId: string;
+  displayId: AnimalId;
 }
 
 export interface CreateItemCardParams {
@@ -904,15 +957,12 @@ export interface CreateItemCardParams {
   maxOwnership?: number;
   // Current ownership count
   currentOwnership?: number;
+  // show ownership
+  showOwnership?: boolean;
+  // disabled
+  disabled?: boolean;
 }
 
 export interface ExtendedCreateItemCardParams extends CreateItemCardParams {
   onPress: (pointer: Phaser.Input.Pointer) => void;
-}
-
-
-export interface CanBuyItemParams {
-    price: number;
-    maxOwnership: number;
-    currentOwnership: number;
 }

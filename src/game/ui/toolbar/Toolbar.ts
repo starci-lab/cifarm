@@ -5,10 +5,8 @@ import {
 import {
     InventorySchema,
     InventoryTypeSchema,
-    InventoryTypeId,
     DefaultInfo,
     ToolId,
-    getId,
     ToolSchema,
     InventoryType,
     InventoryKind,
@@ -526,7 +524,7 @@ export class Toolbar extends ContainerLite {
             const {
                 name,
                 textureConfig: { key: assetKey },
-            } = inventoryTypeAssetMap[getId<InventoryTypeId>(inventoryType.id)]
+            } = inventoryTypeAssetMap[inventoryType.displayId]
             return {
                 assetKey,
                 id: inventory.id,
@@ -547,7 +545,7 @@ export class Toolbar extends ContainerLite {
             const {
                 name,
                 textureConfig: { key: assetKey },
-            } = toolAssetMap[getId<ToolId>(tool.id)]
+            } = toolAssetMap[tool.displayId]
             return {
                 assetKey,
                 id: tool.id,

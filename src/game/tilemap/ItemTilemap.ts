@@ -7,16 +7,17 @@ import {
 } from "@/hooks"
 import {
     Activities,
-    AnimalId,
-    BuildingId,
+    AnimalSchema,
+    BuildingSchema,
     CropSchema,
-    getId,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
     PlacedItemTypeSchema,
     ProductSchema,
-    TileId,
+    SupplySchema,
+    TileSchema,
+    ToolSchema,
     UserSchema,
 } from "@/modules/entities"
 import {
@@ -56,6 +57,11 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected crops: Array<CropSchema>
     protected products: Array<ProductSchema>
     protected user: UserSchema
+    protected animals: Array<AnimalSchema>
+    protected buildings: Array<BuildingSchema>
+    protected _tiles: Array<TileSchema>
+    protected supplies: Array<SupplySchema>
+    protected tools: Array<ToolSchema>
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -71,7 +77,12 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.activities = this.scene.cache.obj.get(CacheKey.Activities)
         this.crops = this.scene.cache.obj.get(CacheKey.Crops)
         this.products = this.scene.cache.obj.get(CacheKey.Products)
-
+        this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
+        this.animals = this.scene.cache.obj.get(CacheKey.Animals)
+        this._tiles = this.scene.cache.obj.get(CacheKey.Tiles)
+        this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
+        this.tools = this.scene.cache.obj.get(CacheKey.Tools)
+        
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
             this.fading = true
             // console.log(toNeighbor)
@@ -473,13 +484,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             }
         })
-
-        EventBus.on(
-            EventName.RequestUpdatePlacedItemLocal,
-            (params: UpdatePlacedItemLocalParams) => {
-                this.updatePlacedItemLocal(params)
-            }
-        )
     }
 
     public shutdown() {
@@ -599,8 +603,12 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (!found.tile) {
                 throw new Error("Tile ID not found")
             }
+            const tile = this._tiles.find((tile) => tile.id === found.tile)
+            if (!tile) {
+                throw new Error("Tile not found")
+            }
             const tilesetConfig =
-          tileAssetMap[getId<TileId>(found.tile)].tilesetConfig
+          tileAssetMap[tile.displayId].tilesetConfig
             if (!tilesetConfig) {
                 throw new Error("Tileset config not found")
             }
@@ -610,8 +618,12 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (!found.building) {
                 throw new Error("Building ID not found")
             }
+            const building = this.buildings.find((building) => building.id === found.building)
+            if (!building) {
+                throw new Error("Building not found")
+            }
             const tilesetConfig =
-          buildingAssetMap[getId<BuildingId>(found.building)].tilesetConfig
+          buildingAssetMap[building.displayId].tilesetConfig
             if (!tilesetConfig) {
                 throw new Error("Tileset config not found")
             }
@@ -619,8 +631,12 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         case PlacedItemType.Animal: {
             if (!found.animal) throw new Error("Animal ID not found")
+            const animal = this.animals.find((animal) => animal.id === found.animal)
+            if (!animal) {
+                throw new Error("Animal not found")
+            }
             const tilesetConfig =
-          animalAssetMap[getId<AnimalId>(found.animal)].ages.baby.tilesetConfig
+          animalAssetMap[animal.displayId].ages.baby.tilesetConfig
             if (!tilesetConfig) {
                 throw new Error("Tileset config not found")
             }
@@ -809,22 +825,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         }
         return null
-    }
-
-    private updatePlacedItemLocal({
-        placedItem,
-        type,
-    }: UpdatePlacedItemLocalParams) {
-        if (!placedItem.id || !placedItem) {
-            throw new Error("Placed item id not found")
-        }
-
-        const placedItemUpdated: PlacedItemSchema = {
-            ...placedItem,
-        } as PlacedItemSchema
-
-        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
-        gameObject.update(type, placedItemUpdated)
     }
 }
 

@@ -163,6 +163,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
     public destroyAll() {
         this.container?.clear(true)
+        this.destroy()
         this.setAllPropsToUndefined()
     }
 
