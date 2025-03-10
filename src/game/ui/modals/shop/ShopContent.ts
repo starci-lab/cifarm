@@ -472,6 +472,7 @@ export class ShopContent extends BaseSizer {
                             id: displayId,
                             type: PlacedItemType.Animal,
                         }
+                        EventBus.emit(EventName.HideButtons)
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
@@ -509,6 +510,7 @@ export class ShopContent extends BaseSizer {
                             id: displayId,
                             type: PlacedItemType.Building,
                         }
+                        EventBus.emit(EventName.HideButtons)
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
@@ -539,6 +541,7 @@ export class ShopContent extends BaseSizer {
                             id: displayId,
                             type: PlacedItemType.Tile,
                         }
+                        EventBus.emit(EventName.HideButtons)
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,

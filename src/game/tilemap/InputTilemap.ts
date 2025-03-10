@@ -63,6 +63,7 @@ import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
+import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -857,14 +858,14 @@ export class InputTilemap extends ItemTilemap {
 
         const { tileSizeWidth = 1, tileSizeHeight = 1 } = tilesetConfig
 
-        // const position = this.getActualTileCoordinates(tile.x, tile.y)
+        const position = this.getActualTileCoordinates(tile.x, tile.y)
 
-        // const isPlacementValid = this.canPlaceItemAtTile({
-        //     tileX: position.x,
-        //     tileY: position.y,
-        //     tileSizeWidth,
-        //     tileSizeHeight,
-        // })
+        const isPlacementValid = this.canPlaceItemAtTile({
+            tileX: position.x,
+            tileY: position.y,
+            tileSizeWidth,
+            tileSizeHeight,
+        })
 
         // if temporary place item object is already created
         if (this.temporaryPlaceItemObject) {
@@ -875,20 +876,18 @@ export class InputTilemap extends ItemTilemap {
             }
             const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
             // we need to set the position of the temporary place item object and set the origin
-            // console.log("position", position, tile)
-            // console.log("this.tileHeight", position.x + x, position.y + this.tileHeight + y)
             this.temporaryPlaceItemObject
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
                 .setOrigin(0.5, 1)
 
             // set tint based on can place
-            // this.temporaryPlaceItemObject.setTint(
-            //     isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
-            // )
+            this.temporaryPlaceItemObject.setTint(
+                isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
+            )
 
             this.showPlacmentPopupUI(tile)
 
-            // this.placementPopup?.setYesButtonVisible(isPlacementValid)
+            this.placementPopup?.setYesButtonVisible(isPlacementValid)
 
             return
         }
@@ -943,9 +942,13 @@ export class InputTilemap extends ItemTilemap {
         this.placementPopup = new PlacementPopup({
             scene: this.scene,
             onCancel: () => {
+                EventBus.emit(EventName.ShowButtons)
                 this.cancelPlacement()
             },
-            onConfirm: () => this.handlePlaced(),
+            onConfirm: () => {
+                EventBus.emit(EventName.ShowButtons)
+                this.handlePlaced()
+            },
         })
             .setPosition(620, 900)
             .setDepth(
