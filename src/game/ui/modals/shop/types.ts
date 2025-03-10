@@ -4,7 +4,7 @@ export enum ShopTab {
     Buildings = "Buildings",
     Tiles = "Tiles",
     Supply = "Supply",
-    //Trees = "Trees",
+    Tools = "Tools",
+    Pets = "Pets",
     Decorations = "Decorations",
-    //Others = "Others",
 }

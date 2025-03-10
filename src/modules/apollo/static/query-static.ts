@@ -17,6 +17,7 @@ import {
     TileSchema,
     DailyRewardInfo,
     SupplySchema,
+    PetSchema
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -194,6 +195,8 @@ const query = gql`
       }
     }
     tiles {
+      displayId
+      id
       qualityProductChanceStack
       qualityProductChanceLimit
       price
@@ -208,6 +211,10 @@ const query = gql`
       displayId
       sort
       default
+      givenAsDefault
+      availableInShop
+      price
+      unlockLevel
     }
     inventoryTypes {
       id
@@ -223,6 +230,13 @@ const query = gql`
       product
       stackable
       tool
+    }
+    pets {
+      id
+      displayId
+      availableInShop
+      price
+      unlockLevel
     }
     products {
       id
@@ -242,6 +256,7 @@ const query = gql`
       availableInShop
       price
       type
+      unlockLevel
     }
     dailyRewardInfo {
       day1 {
@@ -284,6 +299,7 @@ export interface QueryStaticResponse {
   animalRandomness: AnimalRandomness;
   defaultInfo: DefaultInfo;
   spinInfo: SpinInfo;
+  pets: Array<PetSchema>;
   energyRegen: EnergyRegen;
   placedItemTypes: Array<PlacedItemTypeSchema>;
   crops: Array<CropSchema>;

@@ -1,5 +1,3 @@
-import { createObjectId } from "@/modules/common"
-
 // Animal Enum
 export enum AnimalId {
     Chicken = "chicken",
@@ -162,73 +160,8 @@ export enum PlacedItemTypeId {
     BasicTile = "basicTile",
 }
 
-const objectIdMap: Record<string, string> = {
-    [createObjectId(AnimalId.Chicken)]: AnimalId.Chicken,
-    [createObjectId(AnimalId.Cow)]: AnimalId.Cow,
-    [createObjectId(AnimalId.Pig)]: AnimalId.Pig,
-    [createObjectId(AnimalId.Sheep)]: AnimalId.Sheep,
-
-    // building ids
-    [createObjectId(BuildingId.Coop)]: BuildingId.Coop,
-    [createObjectId(BuildingId.Barn)]: BuildingId.Barn,
-    [createObjectId(BuildingId.Home)]: BuildingId.Home,
-
-    // crop ids
-    [createObjectId(CropId.Turnip)]: CropId.Turnip,
-    [createObjectId(CropId.Carrot)]: CropId.Carrot,
-    [createObjectId(CropId.Potato)]: CropId.Potato,
-    [createObjectId(CropId.Pineapple)]: CropId.Pineapple,
-    [createObjectId(CropId.Watermelon)]: CropId.Watermelon,
-    [createObjectId(CropId.Cucumber)]: CropId.Cucumber,
-    [createObjectId(CropId.BellPepper)]: CropId.BellPepper,
-
-    // placed item types
-    [createObjectId(PlacedItemTypeId.Chicken)]: PlacedItemTypeId.Chicken,
-    [createObjectId(PlacedItemTypeId.Cow)]: PlacedItemTypeId.Cow,
-    [createObjectId(PlacedItemTypeId.Pig)]: PlacedItemTypeId.Pig,
-    [createObjectId(PlacedItemTypeId.Sheep)]: PlacedItemTypeId.Sheep,
-    [createObjectId(PlacedItemTypeId.Coop)]: PlacedItemTypeId.Coop,
-    [createObjectId(PlacedItemTypeId.Barn)]: PlacedItemTypeId.Barn,
-    [createObjectId(PlacedItemTypeId.Home)]: PlacedItemTypeId.Home,
-    [createObjectId(PlacedItemTypeId.BasicTile)]: PlacedItemTypeId.BasicTile,
-
-    // inventory types
-    [createObjectId(InventoryTypeId.TurnipSeed)]: InventoryTypeId.TurnipSeed,
-    [createObjectId(InventoryTypeId.CarrotSeed)]: InventoryTypeId.CarrotSeed,
-    [createObjectId(InventoryTypeId.PotatoSeed)]: InventoryTypeId.PotatoSeed,
-    [createObjectId(InventoryTypeId.PineappleSeed)]: InventoryTypeId.PineappleSeed,
-    [createObjectId(InventoryTypeId.WatermelonSeed)]: InventoryTypeId.WatermelonSeed,
-    [createObjectId(InventoryTypeId.CucumberSeed)]: InventoryTypeId.CucumberSeed,
-    [createObjectId(InventoryTypeId.BellPepperSeed)]: InventoryTypeId.BellPepperSeed,
-    [createObjectId(InventoryTypeId.BasicFertilizer)]: InventoryTypeId.BasicFertilizer,
-    [createObjectId(InventoryTypeId.AnimalFeed)]: InventoryTypeId.AnimalFeed,
-    [createObjectId(InventoryTypeId.Egg)]: InventoryTypeId.Egg,
-    [createObjectId(InventoryTypeId.EggQuality)]: InventoryTypeId.EggQuality,
-    [createObjectId(InventoryTypeId.Milk)]: InventoryTypeId.Milk,
-    [createObjectId(InventoryTypeId.MilkQuality)]: InventoryTypeId.MilkQuality,
-    [createObjectId(InventoryTypeId.Hand)]: InventoryTypeId.Hand,
-    [createObjectId(InventoryTypeId.Crate)]: InventoryTypeId.Crate,
-    [createObjectId(InventoryTypeId.WateringCan)]: InventoryTypeId.WateringCan,
-    [createObjectId(InventoryTypeId.Herbicide)]: InventoryTypeId.Herbicide,
-    [createObjectId(InventoryTypeId.Pesticide)]: InventoryTypeId.Pesticide,
-    [createObjectId(InventoryTypeId.Hammer)]: InventoryTypeId.Hammer,
-
-    // supply types
-    [createObjectId(SupplyId.BasicFertilizer)]: SupplyId.BasicFertilizer,
-    [createObjectId(SupplyId.AnimalFeed)]: SupplyId.AnimalFeed,
-    [createObjectId(SupplyId.AnimalPill)]: SupplyId.AnimalPill,
-
-    // tile types
-    [createObjectId(TileId.BasicTile)]: TileId.BasicTile,
-
-    // tool types
-    [createObjectId(ToolId.Hand)]: ToolId.Hand,
-    [createObjectId(ToolId.Crate)]: ToolId.Crate,
-    [createObjectId(ToolId.ThiefHand)]: ToolId.ThiefHand,
-    [createObjectId(ToolId.WateringCan)]: ToolId.WateringCan,
-    [createObjectId(ToolId.Herbicide)]: ToolId.Herbicide,
-    [createObjectId(ToolId.Pesticide)]: ToolId.Pesticide,
-    [createObjectId(ToolId.Hammer)]: ToolId.Hammer,
+// Pet Enum
+export enum PetId {
+    Dog = "dog",
+    Cat = "cat",
 }
-
-export const getId = <IdType extends string>(objectId: string): IdType => (objectIdMap[objectId]) as IdType

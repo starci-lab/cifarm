@@ -8,7 +8,6 @@ import {
     SHOW_FADE_EVENT,
     ShowFadeMessage,
     useGameplayIo,
-    useQueryUserSwr,
 } from "@/hooks"
 import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
 import { gameState, startGame } from "./config"
@@ -20,9 +19,6 @@ export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
     const { socket, connect } = useGameplayIo()
 
-    const { swr: { data } } = useQueryUserSwr()
-    const userIdRef = useRef<string | undefined>(data?.data.user.id)
-
     useEffect(() => {
         // connect
         connect()
@@ -30,14 +26,6 @@ export const Game: FC = () => {
         if (!socket) return
         //listen for placed items synced
         socket.on(PLACED_ITEMS_SYNCED_EVENT, (data: PlacedItemsSyncedMessage) => {
-            if (data.userId !== userIdRef.current) {
-                if (!userIdRef.current) {
-                    throw new Error("User id is undefined")
-                }
-                EventBus.emit(EventName.WatchUserChanged, data.userId)
-                userIdRef.current = data.userId
-            }
-
             EventBus.emit(EventName.PlacedItemsSynced, data)
         })
 
@@ -48,7 +36,6 @@ export const Game: FC = () => {
 
         // listen for energy synced
         socket.on(ENERGY_SYNCED_EVENT, (energy: number) => {
-            console.log(ENERGY_SYNCED_EVENT)
             EventBus.emit(EventName.EnergySynced, energy)
         })
 
@@ -60,6 +47,8 @@ export const Game: FC = () => {
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
             socket.off(ACTION_EMITTED_EVENT)
+            socket.off(ENERGY_SYNCED_EVENT)
+            socket.off(SHOW_FADE_EVENT)
         }
     }, [socket])
 

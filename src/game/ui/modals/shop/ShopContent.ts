@@ -15,7 +15,7 @@ import {
     SupplyId,
     SupplySchema,
     TileSchema,
-    UserSchema
+    UserSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
@@ -100,14 +100,7 @@ export class ShopContent extends BaseSizer {
         y,
         config,
     }: BaseSizerBaseConstructorParams) {
-        super(
-            scene,
-            x,
-            y,
-            width,
-            height,
-            config
-        )
+        super(scene, x, y, width, height, config)
 
         const cellSourceImage = this.scene.textures
             .get(BaseAssetKey.UIModalShopCard)
@@ -128,7 +121,7 @@ export class ShopContent extends BaseSizer {
                 background: Background.XLarge,
                 onXButtonPress: (xButton: XButton) => {
                     EventBus.emit(EventName.CloseModal, {
-                        modalName: ModalName.Shop
+                        modalName: ModalName.Shop,
                     })
                     // emit the events related to the tutorial
                     if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
@@ -157,8 +150,8 @@ export class ShopContent extends BaseSizer {
                 container: {
                     showWrapperContainer: true,
                     showContainer: false,
-                }
-            }
+                },
+            },
         })
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
@@ -192,8 +185,14 @@ export class ShopContent extends BaseSizer {
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
-        const { placedItems} = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
-        this.placedItems = placedItems
+
+        EventBus.on(
+            EventName.PlacedItemsSynced,
+            ({ placedItems }: PlacedItemsSyncedMessage) => {
+                this.placedItems = placedItems
+                this.updateOwnership()
+            }
+        )
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -258,7 +257,7 @@ export class ShopContent extends BaseSizer {
             setTutorialDepth({
                 gameObject: gridTable,
             })
-            
+
             const eventMessage: ShowPressHereArrowMessage = {
                 originPosition: {
                     x: this.defaultSeedButton.x + 60,
@@ -358,28 +357,33 @@ export class ShopContent extends BaseSizer {
                 _: number,
                 pointer: Phaser.Input.Pointer
             ) => {
-                const { onPress, locked, maxOwnership = 0, currentOwnership = 0, price } = cellContainer.getData(ITEM_DATA_KEY) as ExtendedCreateItemCardParams
+                const {
+                    onPress,
+                    locked,
+                    maxOwnership = 0,
+                    currentOwnership = 0,
+                    price,
+                } = cellContainer.getData(
+                    ITEM_DATA_KEY
+                ) as ExtendedCreateItemCardParams
                 const button = (
           cellContainer.getChildren()[0] as ContainerLite
         ).getChildren()[2] as Button
 
-                const {
-                    isAtMaxOwnership,
-                    isPurchasable,
-                } = this.canBuyItem({
+                const { isAtMaxOwnership, isPurchasable } = this.canBuyItem({
                     price: price ?? 0,
                     maxOwnership,
-                    currentOwnership
+                    currentOwnership,
                 })
 
                 if (!isPurchasable) {
                     //fly item text
-                    if(isAtMaxOwnership){
+                    if (isAtMaxOwnership) {
                         this.scene.events.emit(EventName.CreateFlyItem, {
                             position: pointer.position,
                             text: "Max ownership reached.",
                         })
-                    }else{
+                    } else {
                         this.scene.events.emit(EventName.CreateFlyItem, {
                             position: pointer.position,
                             text: "Insufficient gold.",
@@ -454,13 +458,14 @@ export class ShopContent extends BaseSizer {
                 // get the image
                 items.push({
                     assetKey:
-                    animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+              animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
                     locked: !this.checkUnlock(
                         this.animals.find((animal) => animal.displayId === displayId)
                             ?.unlockLevel
                     ),
-                    unlockLevel: this.animals.find((animal) => animal.displayId === displayId)
-                        ?.unlockLevel,
+                    unlockLevel: this.animals.find(
+                        (animal) => animal.displayId === displayId
+                    )?.unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -477,12 +482,12 @@ export class ShopContent extends BaseSizer {
                     },
                     price,
                     maxOwnership: this.getAnimalMaxOwnership({
-                        displayId
+                        displayId,
                     }),
                     currentOwnership: this.getCurrentOwnership({
                         type: PlacedItemType.Animal,
-                        displayId
-                    })
+                        displayId,
+                    }),
                 })
                 // add the item card to the scrollable panel
             }
@@ -494,11 +499,13 @@ export class ShopContent extends BaseSizer {
                 items.push({
                     assetKey: buildingAssetMap[displayId].textureConfig.key,
                     locked: !this.checkUnlock(
-                        this.buildings.find((building) => building.displayId === displayId)
-                            ?.unlockLevel
+                        this.buildings.find(
+                            (building) => building.displayId === displayId
+                        )?.unlockLevel
                     ),
-                    unlockLevel: this.buildings.find((building) => building.displayId === displayId)
-                        ?.unlockLevel,
+                    unlockLevel: this.buildings.find(
+                        (building) => building.displayId === displayId
+                    )?.unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -516,11 +523,13 @@ export class ShopContent extends BaseSizer {
                     price,
                     scaleX: 0.5,
                     scaleY: 0.5,
-                    maxOwnership: this.buildings.find((building) => building.displayId === displayId)?.maxOwnership,
+                    maxOwnership: this.buildings.find(
+                        (building) => building.displayId === displayId
+                    )?.maxOwnership,
                     currentOwnership: this.getCurrentOwnership({
                         type: PlacedItemType.Building,
-                        displayId
-                    })
+                        displayId,
+                    }),
                 })
             }
             break
@@ -545,11 +554,13 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
-                    maxOwnership: this.tiles.find((tile) => tile.displayId === displayId)?.maxOwnership,
+                    maxOwnership: this.tiles.find(
+                        (tile) => tile.displayId === displayId
+                    )?.maxOwnership,
                     currentOwnership: this.getCurrentOwnership({
                         type: PlacedItemType.Tile,
-                        displayId
-                    })
+                        displayId,
+                    }),
                 })
                 // add the item card to the scrollable panel
             }
@@ -601,14 +612,12 @@ export class ShopContent extends BaseSizer {
     // get the icon offset
         const { x = 0, y = 0 } = iconOffset || {}
 
-        const {
-            isPurchasable,
-        } = this.canBuyItem({
+        const { isPurchasable } = this.canBuyItem({
             price: price ?? 0,
             maxOwnership,
-            currentOwnership
+            currentOwnership,
         })
-        
+
         // create the components
         const cardBackground = this.scene.add.image(
             0,
@@ -640,8 +649,7 @@ export class ShopContent extends BaseSizer {
                 syncTextScale: true,
                 background: ButtonBackground.Primary,
             },
-        })
-            .setPosition(0, 90)
+        }).setPosition(0, 90)
         this.scene.add.existing(buttonPrice)
         container.addLocal(buttonPrice)
 
@@ -693,24 +701,23 @@ export class ShopContent extends BaseSizer {
             if (buttonPrice.input) {
                 buttonPrice.input.enabled = false
             }
-        }else{
-            if(maxOwnership == 0) return container
+        } else {
+            if (maxOwnership == 0) return container
 
-            const ownershipText = maxOwnership !== undefined 
-                ? `${currentOwnership}/${maxOwnership}`
-                : ""
+            const ownershipText =
+        maxOwnership !== undefined ? `${currentOwnership}/${maxOwnership}` : ""
 
             const ownershipLabel = new Text({
                 baseParams: {
                     scene: this.scene,
                     text: ownershipText,
                     x: cardBackground.width / 2 - 10,
-                    y: -cardBackground.height / 2 + 10
+                    y: -cardBackground.height / 2 + 10,
                 },
                 options: {
                     fontSize: 28,
-                    textColor: TextColor.Brown
-                }
+                    textColor: TextColor.Brown,
+                },
             }).setOrigin(1, 0)
 
             this.scene.add.existing(ownershipLabel)
@@ -732,7 +739,7 @@ export class ShopContent extends BaseSizer {
                 }
                 restoreTutorialDepth({
                     gameObject: gridTable,
-                    plusOne: true
+                    plusOne: true,
                 })
                 this.scene.events.emit(EventName.TutorialPrepareCloseShop)
             }
@@ -792,95 +799,119 @@ export class ShopContent extends BaseSizer {
         EventBus.emit(EventName.RequestBuySupplies, eventMessage)
     }
 
-    private getCurrentOwnership({ type, displayId }: GetCurrentOwnershipParams): number {
-        if(!this.placedItems) return 0
+    private getCurrentOwnership({
+        type,
+        displayId,
+    }: GetCurrentOwnershipParams): number {
+        if (!this.placedItems) return 0
 
         //all placed item types
-        const placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes) as Array<PlacedItemTypeSchema>
+        const placedItemTypes = this.scene.cache.obj.get(
+            CacheKey.PlacedItemTypes
+        ) as Array<PlacedItemTypeSchema>
 
         //get the placed item type
-        const placedItemType = placedItemTypes.find(item => item.displayId === displayId && item.type === type)
-        if (!placedItemType){
+        const placedItemType = placedItemTypes.find(
+            (item) => item.displayId === displayId && item.type === type
+        )
+        if (!placedItemType) {
             throw new Error("Placed item type not found.")
         }
 
-        return this.placedItems.filter(item => item.placedItemType === createObjectId(displayId)).length
+        return this.placedItems.filter(
+            (item) => item.placedItemType === createObjectId(displayId)
+        ).length
     }
-    
 
-    private getAnimalMaxOwnership({ displayId }: GetAnimalMaxOwnershipParams): number {
-        const animal = this.animals.find(animal => animal.displayId === displayId)
-        if (!animal){
+    private getAnimalMaxOwnership({
+        displayId,
+    }: GetAnimalMaxOwnershipParams): number {
+        const animal = this.animals.find(
+            (animal) => animal.displayId === displayId
+        )
+        if (!animal) {
             throw new Error("[getAnimalMaxOwnership] Animal not found.")
         }
-    
-        const relatedBuilding = this.buildings.find(building => building.type === animal.type)
-        if (!relatedBuilding){
+
+        const relatedBuilding = this.buildings.find(
+            (building) => building.type === animal.type
+        )
+        if (!relatedBuilding) {
             throw new Error("[getAnimalMaxOwnership] Related building not found.")
         }
-    
-        if (!this.placedItems){
+
+        if (!this.placedItems) {
             return 0
         }
-    
-        const userBuildings = this.placedItems.filter(item => item.placedItemType === createObjectId(relatedBuilding.displayId))
+
+        const userBuildings = this.placedItems.filter(
+            (item) =>
+                item.placedItemType === createObjectId(relatedBuilding.displayId)
+        )
         let maxCapacity = 0
         for (const building of userBuildings) {
             console.log("[getAnimalMaxOwnership] building", building)
             const upgradeLevel = building.buildingInfo?.currentUpgrade || 0
             if (relatedBuilding.upgrades) {
                 console.log("[getAnimalMaxOwnership] upgradeLevel", upgradeLevel)
-                const upgrade = relatedBuilding.upgrades.find(upgrade => upgrade.upgradeLevel === upgradeLevel)
-                if (upgrade){
+                const upgrade = relatedBuilding.upgrades.find(
+                    (upgrade) => upgrade.upgradeLevel === upgradeLevel
+                )
+                if (upgrade) {
                     maxCapacity += upgrade.capacity
-                }else{
+                } else {
                     throw new Error("[getAnimalMaxOwnership] Upgrade not found.")
                 }
             }
         }
-    
+
         return maxCapacity
     }
-    
-    private canBuyItem({ price, maxOwnership = 0, currentOwnership = 0 }: CanBuyItemParams) {
+
+    private canBuyItem({
+        price,
+        maxOwnership = 0,
+        currentOwnership = 0,
+    }: CanBuyItemParams) {
         const canAfford = this.user.golds >= (price ?? 0)
-        const isAtMaxOwnership = maxOwnership !== 0 && currentOwnership >= maxOwnership
+        const isAtMaxOwnership =
+      maxOwnership !== 0 && currentOwnership >= maxOwnership
         return {
             canAfford,
             isAtMaxOwnership,
-            isPurchasable: canAfford && !isAtMaxOwnership
+            isPurchasable: canAfford && !isAtMaxOwnership,
         }
     }
-    
 
     private updateOwnership() {
-        const { placedItems } = this.scene.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsSyncedMessage
+        const { placedItems } = this.scene.cache.obj.get(
+            CacheKey.PlacedItems
+        ) as PlacedItemsSyncedMessage
         this.placedItems = placedItems
         if (!this.placedItems) {
             console.warn("No placed items found.")
             return
         }
-    
+
         Object.values(ShopTab).forEach((shopTab) => {
             if (!this.gridTableMap[shopTab]) return
-            
+
             const items = this.createItems(shopTab)
             this.gridTableMap[shopTab].setItems(items)
             this.gridTableMap[shopTab].layout()
         })
-    
+
         console.log("Ownership update complete.")
     }
 }
-        
 
 export interface GetCurrentOwnershipParams {
-    type: PlacedItemType;
-    displayId: string;
+  type: PlacedItemType;
+  displayId: string;
 }
 
 export interface GetAnimalMaxOwnershipParams {
-    displayId: string;
+  displayId: string;
 }
 
 export interface CreateItemCardParams {
@@ -912,9 +943,8 @@ export interface ExtendedCreateItemCardParams extends CreateItemCardParams {
   onPress: (pointer: Phaser.Input.Pointer) => void;
 }
 
-
 export interface CanBuyItemParams {
-    price: number;
-    maxOwnership: number;
-    currentOwnership: number;
+  price: number;
+  maxOwnership: number;
+  currentOwnership: number;
 }

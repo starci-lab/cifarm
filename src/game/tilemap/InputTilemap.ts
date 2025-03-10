@@ -250,6 +250,10 @@ export class InputTilemap extends ItemTilemap {
                 this.scene.add.existing(flyItems)
             }
         )
+
+        EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
+            this.user = user
+        })
     }
 
     // method to handle press on tile
@@ -652,8 +656,7 @@ export class InputTilemap extends ItemTilemap {
 
                 EventBus.once(EventName.UseFertilizerCompleted, () => {
                     EventBus.emit(EventName.RefreshUser)
-
-                    // reset the isPressed flag
+                    EventBus.emit(EventName.RefreshInventories)
                     data.pressBlocked = false
                 })
 
@@ -827,7 +830,9 @@ export class InputTilemap extends ItemTilemap {
     //check current mouse position is in which tile
         if (this.placingInProgress) {
             const camera = this.scene.cameras.main
-            const { x, y } = this.scene.input.activePointer.positionToCamera(camera) as Phaser.Math.Vector2
+            const { x, y } = this.scene.input.activePointer.positionToCamera(
+                camera
+            ) as Phaser.Math.Vector2
             const tile = this.getTileAtWorldXY(x, y)
             // do nothing if tile is not found
             if (!tile) {
