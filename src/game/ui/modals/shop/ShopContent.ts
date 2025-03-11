@@ -501,7 +501,7 @@ export class ShopContent extends BaseSizer {
                 const goldsEnough = this.user.golds >= price
                 const currentOwnership = this.getCurrentOwnership({
                     displayId,
-                    type: PlacedItemType.Animal,
+                    type: PlacedItemType.Building,
                 })
                 const maxOwnership = this.buildings.find(
                     (building) => building.displayId === displayId
