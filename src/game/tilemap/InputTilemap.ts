@@ -55,7 +55,7 @@ import {
     PlacedInprogressMessage,
     Position,
     UpdateConfirmModalMessage,
-    UpdateConfirmSellModalMessage,
+    UpdatePlacementConfirmationMessage
 } from "../event-bus"
 import {
     calculateGameplayDepth,
@@ -64,7 +64,7 @@ import {
     UILayer,
 } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
+import { FlyItem, FlyItems, PlacementConfirmation, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 
@@ -96,7 +96,7 @@ export class InputTilemap extends ItemTilemap {
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
     private inventoryTypes: Array<InventoryTypeSchema> = []
-    private placementPopup: PlacementPopup | undefined
+    private placementConfirmation: PlacementConfirmation | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -118,11 +118,6 @@ export class InputTilemap extends ItemTilemap {
         this.pinch.on("pinch", (dragScale: Pinch) => {
             const scaleFactor = dragScale.scaleFactor
             camera.zoom *= scaleFactor
-
-            if (this.placementPopup) {
-                const newScale = POPUP_SCALE / camera.zoom
-                this.placementPopup.setScale(newScale)
-            }
         })
 
         // add event listener for mouse wheel event
@@ -141,11 +136,6 @@ export class InputTilemap extends ItemTilemap {
                 //zoom out
                 else {
                     camera.zoom -= 0.1
-                }
-
-                if (this.placementPopup) {
-                    const newScale = POPUP_SCALE / camera.zoom
-                    this.placementPopup.setScale(newScale)
                 }
             }
         )
@@ -169,9 +159,6 @@ export class InputTilemap extends ItemTilemap {
                     this.placeTileForItem(this.storedPlacedItem)
                 }
             }
-            this.movePlacementMode = false
-            this.placingInProgress = false
-            this.removePlacmentPopupUI()
             this.cancelPlacement()
         })
 
@@ -877,7 +864,7 @@ export class InputTilemap extends ItemTilemap {
     // method called to handle place in progress event
     private handlePlaceInProgress({ id, type }: PlacedInprogressMessage) {
         this.placingInProgress = true
-        this.removePlacmentPopupUI()
+        this.removePlacmentConfirmation()
 
         // switch case to set the place item data
         switch (type) {
@@ -989,6 +976,12 @@ export class InputTilemap extends ItemTilemap {
             // we need to set the position of the temporary place item object and set the origin
             this.temporaryPlaceItemObject
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
+                .setDepth(
+                    calculateGameplayDepth({
+                        layer: GameplayLayer.Effects,
+                        layerDepth: 2,
+                    })
+                )
                 .setOrigin(0.5, 1)
 
             // set tint based on can place
@@ -996,9 +989,13 @@ export class InputTilemap extends ItemTilemap {
                 isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
             )
 
-            this.showPlacmentPopupUI(tile)
+            this.showPlacmentConfirmation(tile)
 
-            this.placementPopup?.setYesButtonVisible(isPlacementValid)
+            this.placementConfirmation?.setYesButtonVisible(isPlacementValid)
+            const eventMessage: UpdatePlacementConfirmationMessage = {
+                isPlacementValid
+            }
+            EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
 
             return
         }
@@ -1034,41 +1031,42 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemObject = object
     }
 
-    private showPlacmentPopupUI(tile: Phaser.Tilemaps.Tile) {
+    private showPlacmentConfirmation(tile: Phaser.Tilemaps.Tile) {
         const position = this.tileToWorldXY(tile.x, tile.y)
 
         if (!position) {
             throw new Error("Position not found")
         }
 
-        if (this.placementPopup) {
-            this.placementPopup.setPosition(position.x + 20, position.y - 2)
+        if(this.placementConfirmation){
+            this.placementConfirmation.setPosition(position.x, position.y)
             return
         }
 
-        if (!position) {
-            throw new Error("Position not found")
-        }
-
-        this.placementPopup = new PlacementPopup({
+        this.placementConfirmation = new PlacementConfirmation({
             scene: this.scene,
+        })
+            .setDepth(
+                calculateGameplayDepth({
+                    layer: GameplayLayer.Effects,
+                    layerDepth: 3,
+                })
+            )
+            .setPosition(position.x, position.y)
+
+        const eventMessage: UpdatePlacementConfirmationMessage = {
             onCancel: () => {
                 EventBus.emit(EventName.MovePlacementModeOff)
             },
             onConfirm: () => {
-                EventBus.emit(EventName.ShowButtons)
+                this.showButtons()
                 this.handlePlaced()
-                EventBus.emit(EventName.MovePlacementModeOff)
+                this.cancelPlacement()
             },
-        })
-            .setPosition(620, 900)
-            .setDepth(
-                calculateUiDepth({
-                    layer: UILayer.Overlay,
-                    layerDepth: 6,
-                })
-            )
-        this.scene.add.existing(this.placementPopup)
+        }
+        EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
+        
+        this.scene.add.existing(this.placementConfirmation)
     }
 
     private handlePlaced() {
@@ -1093,9 +1091,9 @@ export class InputTilemap extends ItemTilemap {
         )
     }
 
-    private removePlacmentPopupUI() {
-        this.placementPopup?.destroy()
-        this.placementPopup = undefined
+    private removePlacmentConfirmation() {
+        this.placementConfirmation?.destroy()
+        this.placementConfirmation = undefined
         this.temporaryPlaceItemData = undefined
     }
 
@@ -1287,7 +1285,7 @@ export class InputTilemap extends ItemTilemap {
         this.placingInProgress = false
         this.movePlacementMode = false
         this.movingPlacedItemId = undefined
-        this.removePlacmentPopupUI()
+        this.removePlacmentConfirmation()
     }
 
     // destroy method to clean up the resources

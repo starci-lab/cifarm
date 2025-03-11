@@ -326,6 +326,11 @@ export class ModalManager extends ContainerLite {
             }
             return this.spinModal
         }
+        case ModalName.ConfirmSell:
+            if(!this.confirmModal) {
+                throw new Error("Confirm modal not found")
+            }
+            return this.confirmModal
         case ModalName.Neighbors:
         case ModalName.Quests:
         case ModalName.Profile:

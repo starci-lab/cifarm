@@ -291,6 +291,8 @@ export enum EventName {
     //Turn on sellPlacementMode
     SellPlacementModeOn = "sell_placement_mode_on",
     SellPlacementModeOff = "sell_placement_mode_off",
+
+    UpdatePlacementConfirmation = "update_placement_confirmation",
 }
 
 export interface OpenTutorialMessage {
@@ -475,4 +477,10 @@ export interface UpdateConfirmSellModalMessage {
 
 export interface UpdateVolumeMessage {
     volume: number
+}
+
+export interface UpdatePlacementConfirmationMessage {
+    isPlacementValid?: boolean
+    onCancel?: () => void
+    onConfirm?: () => void
 }

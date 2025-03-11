@@ -14,7 +14,7 @@ import {
     Toolbar,
     Topbar,
     TutorialManager,
-    UIBackdrop,
+    UIBackdrop
 } from "../ui"
 
 export class UIScene extends Scene {
