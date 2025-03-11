@@ -5,6 +5,5 @@ export interface PetSchema extends StaticAbstractSchema<PetId> {
     availableInShop: boolean
     price?: number
     unlockLevel?: number
-    sellable: boolean
     sellPrice?: number
 }

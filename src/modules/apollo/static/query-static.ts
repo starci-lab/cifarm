@@ -139,10 +139,12 @@ const query = gql`
     placedItemTypes {
       id
       displayId
+      sellable
       type
       tile
       animal
       building
+      pet
     }
     crops {
       id
@@ -178,7 +180,6 @@ const query = gql`
       qualityHarvestExperiences
       type
       sellPrice
-      sellable
     }
     buildings {
       id
@@ -189,7 +190,6 @@ const query = gql`
       type
       maxUpgrade
       price
-      sellable
       upgrades {
         id
         upgradePrice
@@ -210,7 +210,6 @@ const query = gql`
       isNft
       availableInShop
       sellPrice
-      sellable
     }
     tools {
       id
@@ -244,7 +243,6 @@ const query = gql`
       price
       unlockLevel
       sellPrice
-      sellable
     }
     products {
       id

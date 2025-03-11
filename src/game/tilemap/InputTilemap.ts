@@ -1367,57 +1367,13 @@ export class InputTilemap extends ItemTilemap {
         placedItem
     }: CheckCanSellPlacedItemParams) {
         const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
-
-        switch (placedItemObjectData.placedItemType.type) {
-        case PlacedItemType.Building: {
-            const building = this.buildings.find(
-                (building) => building.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
-            )
-            if (!building) {
-                throw new Error("Building not found")
-            }
-            if(building.sellable){
-                placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
-            }
-            else{
-                placedItemObjectData.object.setTint(RED_TINT_COLOR)
-            }
-            break
+        if(placedItemObjectData.placedItemType.sellable){
+            placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
+            placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
         }
-        case PlacedItemType.Tile: {
-            const tile = this._tiles.find(
-                (tile) => tile.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
-            )
-            if (!tile) {
-                throw new Error("Tile not found")
-            }
-            if(tile.sellable){
-                placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
-                placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
-            }
-            else{
-                placedItemObjectData.object.setTint(RED_TINT_COLOR)
-                placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
-            }
-            break
-        }
-        case PlacedItemType.Animal: {
-            const animal = this.animals.find(
-                (animal) => animal.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
-            )
-            if (!animal) {
-                throw new Error("Animal not found")
-            }
-            if(animal.sellable){
-                placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
-                placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
-            }
-            else{
-                placedItemObjectData.object.setTint(RED_TINT_COLOR)
-                placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
-            }
-            break
-        }
+        else{
+            placedItemObjectData.object.setTint(RED_TINT_COLOR)
+            placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
         }
     }
 
@@ -1427,6 +1383,10 @@ export class InputTilemap extends ItemTilemap {
         let sellPrice: number = 0
         const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
 
+        if(!placedItemObjectData.placedItemType.sellable){
+            throw new Error("Item is not sellable")
+        }
+
         switch (placedItemObjectData.placedItemType.type) {
         case PlacedItemType.Building: {
             const building = this.buildings.find(
@@ -1434,10 +1394,6 @@ export class InputTilemap extends ItemTilemap {
             )
             if (!building) {
                 throw new Error("Building not found")
-            }
-            if(!building.sellable){
-                console.log("Building not sellable")
-                return
             }
             const upgradeLevel = placedItemObjectData.object.currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
             const upgradePrice = building.upgrades?.find(upgrade => upgrade.upgradeLevel === upgradeLevel)?.sellPrice ?? 0
@@ -1451,10 +1407,6 @@ export class InputTilemap extends ItemTilemap {
             if (!tile) {
                 throw new Error("Tile not found")
             }
-            if(!tile.sellable){
-                console.log("Tile not sellable")
-                return
-            }
             sellPrice = tile.sellPrice ?? 0
             break
         }
@@ -1464,10 +1416,6 @@ export class InputTilemap extends ItemTilemap {
             )
             if (!animal) {
                 throw new Error("Animal not found")
-            }
-            if(!animal.sellable){
-                console.log("Animal not sellable")
-                return
             }
             sellPrice = animal.sellPrice ?? 0
             break
