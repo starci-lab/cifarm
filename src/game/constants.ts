@@ -31,6 +31,7 @@ export const SCALE_PEAK_VALUE = 1.1 // 10% increase
 
 export const GRAY_TINT_COLOR = new Phaser.Display.Color(192, 192, 192).color
 export const RED_TINT_COLOR = new Phaser.Display.Color(255, 0, 0).color
+export const GREEN_TINT_COLOR = new Phaser.Display.Color(0, 255, 0).color
 export const WHITE_TINT_COLOR = new Phaser.Display.Color(255, 255, 255).color
 export const BROWN_TINT_COLOR = new Phaser.Display.Color(85, 51, 32).color
 

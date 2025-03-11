@@ -391,7 +391,11 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         },
                     })
                     this.scene.add.existing(text)
-                    text.setOrigin(0.5, 1).setDepth(this.depth + 1)
+                    text.setOrigin(0.5, 1).setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
+                    )
                     this.timer = text
                     container.pinLocal(this.timer, {
                         syncScale: false,
@@ -598,6 +602,20 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 this.timer.destroy()
                 this.timer = undefined
             }
+        }
+    }
+
+    public setTintSprite(tintColor: number) {
+        this.seedGrowthInfoSprite?.setTint(tintColor)
+        this.animalInfoSprite?.setTint(tintColor)
+    }
+
+    public clearAllTintSprite() {
+        if(this.seedGrowthInfoSprite) {
+            this.seedGrowthInfoSprite.clearTint()
+        }
+        if(this.animalInfoSprite) {
+            this.animalInfoSprite.clearTint()
         }
     }
 }

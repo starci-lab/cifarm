@@ -46,6 +46,7 @@ import {
     TilesetConfig,
 } from "../assets"
 // import { RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
+import { GREEN_TINT_COLOR, RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
     EventBus,
@@ -65,8 +66,6 @@ import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
-import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
-import { PlacedItemObject } from "./PlacedItemObject"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -86,8 +85,10 @@ export class InputTilemap extends ItemTilemap {
     // is in placing in progress
     private placingInProgress: boolean = false
     // is placement mode
-    private placementMode: boolean = false
+    private movePlacementMode: boolean = false
+    private sellPlacementMode: boolean = false
     private storedPlacedItem: PlacedItemSchema | undefined
+    private sellingPlacedItem: PlacedItemSchema | undefined
 
     // place item data
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
@@ -157,7 +158,13 @@ export class InputTilemap extends ItemTilemap {
 
         EventBus.on(EventName.PlacementModeOn, () => {
             EventBus.emit(EventName.HideButtons)
-            this.placementMode = true
+            this.movePlacementMode = true
+        })
+
+        EventBus.on(EventName.SellPlacementModeOn, () => {
+            EventBus.emit(EventName.HideButtons)
+            this.sellPlacementMode = true
+
         })
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
@@ -182,7 +189,7 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            if(this.placementMode) {
+            if(this.movePlacementMode) {
                 const placedItemId = data.object.currentPlacedItem?.id
                 this.movingPlacedItemId = placedItemId
                 if (placedItemId) {
@@ -206,6 +213,19 @@ export class InputTilemap extends ItemTilemap {
                 }
                 EventBus.emit(EventName.PlaceInprogress, message)
                 return
+            }
+
+            if(this.sellPlacementMode) {
+                console.log("Sell placement mode is on")
+                const placedItemId = data.object.currentPlacedItem?.id
+                console.log("placedItemId", placedItemId)
+                if (placedItemId) {
+                    this.placedItemObjectMap[placedItemId]?.object.destroy()
+                    this.placedItemObjectMap[placedItemId] = {
+                        ...this.placedItemObjectMap[placedItemId],
+                        occupiedTiles: [],
+                    }
+                }
             }
 
             switch (data.placedItemType.type) {
@@ -281,6 +301,7 @@ export class InputTilemap extends ItemTilemap {
                             y: item.position.y,
                             depth: calculateGameplayDepth({
                                 layer: GameplayLayer.Effects,
+                                layerDepth: 1,
                             }),
                         })),
                         delay: 500,
@@ -882,6 +903,35 @@ export class InputTilemap extends ItemTilemap {
             // place the item temporarily on the tile
             this.temporaryPlaceItemOnTile(tile)
         }
+        if(this.sellPlacementMode){
+            const camera = this.scene.cameras.main
+            const { x, y } = this.scene.input.activePointer.positionToCamera(
+                camera
+            ) as Phaser.Math.Vector2
+            const tile = this.getTileAtWorldXY(x, y)
+            // do nothing if tile is not found
+            if (!tile) {
+                return
+            }
+            //check if it is sellable - set green tint - set red tint
+            const data = this.findPlacedItemRoot(tile.x, tile.y)
+            if(this.sellingPlacedItem?.id === data?.object.currentPlacedItem?.id){
+                return
+            }
+            //clear tint 
+            if(this.sellingPlacedItem){
+                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearTint()
+                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearAllTintSprite()
+            }
+            this.sellingPlacedItem = data?.object.currentPlacedItem
+        }
+
+        if(this.sellingPlacedItem){
+            this.checkCanSellPlacedItem({
+                placedItem: this.sellingPlacedItem
+            })
+        }
+
     }
 
     // temporary place item on the tile, for preview the item before placing
@@ -989,7 +1039,7 @@ export class InputTilemap extends ItemTilemap {
             scene: this.scene,
             onCancel: () => {
                 EventBus.emit(EventName.ShowButtons)
-                if(this.placementMode){
+                if(this.movePlacementMode){
                     if (this.storedPlacedItem) {
                         this.placeTileForItem(this.storedPlacedItem)
                     }
@@ -1048,7 +1098,7 @@ export class InputTilemap extends ItemTilemap {
 
         const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
 
-        if(this.placementMode){
+        if(this.movePlacementMode){
             if(!this.movingPlacedItemId){
                 throw new Error("Moving placed item id not found")
             }
@@ -1226,7 +1276,7 @@ export class InputTilemap extends ItemTilemap {
     private cancelPlacement() {
         this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
-        this.placementMode = false
+        this.movePlacementMode = false
         this.movingPlacedItemId = undefined
         this.removePlacmentPopupUI()
     }
@@ -1305,8 +1355,69 @@ export class InputTilemap extends ItemTilemap {
         }
         return true
     }
+
+    private checkCanSellPlacedItem({
+        placedItem
+    }: CheckCanSellPlacedItemParams) {
+        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
+
+        switch (placedItemObjectData.placedItemType.type) {
+        case PlacedItemType.Building: {
+            const building = this.buildings.find(
+                (building) => building.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!building) {
+                throw new Error("Building not found")
+            }
+            if(building.sellable){
+                placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
+            }
+            else{
+                placedItemObjectData.object.setTint(RED_TINT_COLOR)
+            }
+            break
+        }
+        case PlacedItemType.Tile: {
+            const tile = this._tiles.find(
+                (tile) => tile.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!tile) {
+                throw new Error("Tile not found")
+            }
+            if(tile.sellable){
+                placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
+                placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
+            }
+            else{
+                placedItemObjectData.object.setTint(RED_TINT_COLOR)
+                placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
+            }
+            break
+        }
+        case PlacedItemType.Animal: {
+            const animal = this.animals.find(
+                (animal) => animal.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!animal) {
+                throw new Error("Animal not found")
+            }
+            if(animal.sellable){
+                placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
+                placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
+            }
+            else{
+                placedItemObjectData.object.setTint(RED_TINT_COLOR)
+                placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
+            }
+            break
+        }
+        }
+    }
 }
 
+export interface CheckCanSellPlacedItemParams {
+  placedItem: PlacedItemSchema;
+}
 export interface HasThievedCropParams {
   data: PlacedItemObjectData;
 }

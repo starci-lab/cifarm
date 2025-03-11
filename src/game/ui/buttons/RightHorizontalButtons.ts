@@ -11,6 +11,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
     private dailyButton: Sizer
     private questButton: Sizer
     private moveButton: Sizer
+    private sellButton: Sizer
     
 
     constructor(baseParams: ButtonsBaseConstructorParams) {
@@ -99,6 +100,17 @@ export class RightHorizontalButtons extends HorizontalButtons {
             },
         })
         this.addButton(this.moveButton)
+
+        // add move button
+        this.sellButton = this.createButton({
+            iconKey: BaseAssetKey.UIIconSell,
+            text: "Sell",
+            onPress: () => {
+                console.log("sell button pressed")
+                EventBus.emit(EventName.SellPlacementModeOn)
+            },
+        })
+        this.addButton(this.sellButton)
 
         // listen for the open event
         this.scene.events.once(EventName.TutorialOpenInventory, () => {

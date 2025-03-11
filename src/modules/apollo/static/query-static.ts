@@ -177,6 +177,8 @@ const query = gql`
       basicHarvestExperiences
       qualityHarvestExperiences
       type
+      sellPrice
+      sellable
     }
     buildings {
       id
@@ -187,11 +189,13 @@ const query = gql`
       type
       maxUpgrade
       price
+      sellable
       upgrades {
         id
         upgradePrice
         upgradeLevel
         capacity
+        sellPrice
       }
     }
     tiles {
@@ -205,6 +209,8 @@ const query = gql`
       maxOwnership
       isNft
       availableInShop
+      sellPrice
+      sellable
     }
     tools {
       id
@@ -237,6 +243,8 @@ const query = gql`
       availableInShop
       price
       unlockLevel
+      sellPrice
+      sellable
     }
     products {
       id

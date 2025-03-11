@@ -274,7 +274,7 @@ export enum EventName {
 
     WatchUserChanged = "watch_user_changed",
 
-    //Turn on placementMode
+    //Turn on movePlacementMode
     PlacementModeOn = "placement_mode_on",
     PlacementModeOff = "placement_mode_off",
 
@@ -282,6 +282,7 @@ export enum EventName {
     MoveCompleted = "move_completed",
 
     HandlePlacedItemUpdatePosition = "handle_placed_item_update_position",
+    SellPlacementModeOn = "sell_placement_mode_on",
 }
 
 export interface OpenTutorialMessage {
