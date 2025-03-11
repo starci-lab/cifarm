@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@esotericsoftware/spine-phaser": "^4.2.75",
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "^2.7.4",
     "@honeycomb-protocol/edge-client": "^0.0.7-beta.13",

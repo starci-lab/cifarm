@@ -1,6 +1,6 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import { IPaginatedResponse } from "@/modules/apollo"
-import { BuySeedsRequest, BuySuppliesRequest } from "@/modules/axios"
+import { BuySeedsRequest, BuySuppliesRequest, BuyToolRequest } from "@/modules/axios"
 import { sleep } from "@/modules/common"
 import {
     AnimalId,
@@ -10,6 +10,7 @@ import {
     CropSchema,
     DefaultInfo,
     InventorySchema,
+    InventoryTypeSchema,
     PetSchema,
     PlacedItemSchema,
     PlacedItemType,
@@ -17,6 +18,7 @@ import {
     SupplyId,
     SupplySchema,
     TileSchema,
+    ToolId,
     ToolSchema,
     UserSchema,
 } from "@/modules/entities"
@@ -85,6 +87,7 @@ export class ShopContent extends BaseSizer {
     private supplies: Array<SupplySchema>
     private placedItems: Array<PlacedItemSchema> = []
     private placedItemTypes: Array<PlacedItemTypeSchema>
+    private inventoryTypes: Array<InventoryTypeSchema>
     private pets: Array<PetSchema>
     private tools: Array<ToolSchema>
     //default
@@ -199,6 +202,9 @@ export class ShopContent extends BaseSizer {
         this.pets = this.scene.cache.obj.get(CacheKey.Pets)
         this.pets = this.pets.filter((pet) => pet.availableInShop)
 
+        // load inventory types
+        this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
+
         const { data } = this.scene.cache.obj.get(
             CacheKey.Inventories
         ) as IPaginatedResponse<InventorySchema>
@@ -211,7 +217,7 @@ export class ShopContent extends BaseSizer {
             EventName.PlacedItemsSynced,
             ({ placedItems }: PlacedItemsSyncedMessage) => {
                 this.placedItems = placedItems
-                this.updateOwnership()
+                this.updateGridTables()
             }
         )
 
@@ -296,11 +302,16 @@ export class ShopContent extends BaseSizer {
 
         EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
             this.user = user
-            this.updateOwnership()
+            this.updateGridTables()
+        })
+
+        EventBus.on(EventName.InventoriesRefreshed, ({ data }: IPaginatedResponse<InventorySchema>) => {
+            this.inventories = data
+            this.updateGridTables()
         })
 
         EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
-            this.updateOwnership()
+            this.updateGridTables()
         })
     }
 
@@ -623,24 +634,36 @@ export class ShopContent extends BaseSizer {
                         // this.onBuySupplyPress(displayId, pointer)
                         console.log(pointer)
                     },
-                    prepareCloseShop: true,
                     price,
                 })
             }
             break
         }
         case ShopTab.Tools: {
-            for (const { displayId, price, unlockLevel } of this.tools) {
+            for (const { displayId, price, unlockLevel, id } of this.tools) {
+                if (!price) {
+                    throw new Error("Price is not found.")
+                }
+                const goldsEnough = this.user.golds >= price
+                const inventoryType = this.inventoryTypes.find(
+                    (inventoryType) => inventoryType.tool === id
+                )
+                if (!inventoryType) {
+                    throw new Error("Inventory type is not found.")
+                }
+                const owned = this.inventories.some(
+                    (inventory) => inventory.inventoryType === inventoryType.id
+                )
+                const disabled = !goldsEnough || owned
                 // get the image
                 items.push({
                     assetKey: toolAssetMap[displayId].textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     unlockLevel,
+                    disabled,
                     onPress: (pointer: Phaser.Input.Pointer) => {
-                        // this.onBuySupplyPress(displayId, pointer)
-                        console.log(pointer)
+                        this.onBuyToolPress(displayId, pointer)
                     },
-                    prepareCloseShop: true,
                     price,
                 })
             }
@@ -670,6 +693,7 @@ export class ShopContent extends BaseSizer {
         price,
         scaleX = 1,
         scaleY = 1,
+        disabled,
         unlockLevel,
         locked = false,
         showOwnership = false,
@@ -711,6 +735,9 @@ export class ShopContent extends BaseSizer {
             },
         }).setPosition(0, 90)
         this.scene.add.existing(buttonPrice)
+        if (disabled) {
+            buttonPrice.disable()
+        }
         container.addLocal(buttonPrice)
 
         if (showOwnership) {
@@ -737,7 +764,6 @@ export class ShopContent extends BaseSizer {
                 off.width,
                 off.height
             )
-
             const lock = this.scene.add
                 .image(0, 0, BaseAssetKey.UIModalShopLock)
                 .setOrigin(0, 0)
@@ -824,22 +850,6 @@ export class ShopContent extends BaseSizer {
             // refresh user & inventories
             EventBus.emit(EventName.RefreshUser)
             EventBus.emit(EventName.RefreshInventories)
-            const flyItem = new FlyItem({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    assetKey: supplyAssetMap[displayId].textureConfig.key,
-                    x: pointer.x,
-                    y: pointer.y,
-                    quantity: 1,
-                    depth: calculateUiDepth({
-                        layer: UILayer.Overlay,
-                        layerDepth: 1,
-                    }),
-                },
-            })
-            this.scene.add.existing(flyItem)
         })
         const eventMessage: BuySuppliesRequest = {
             supplyId: displayId,
@@ -847,7 +857,52 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySupplies, eventMessage)
+        const flyItem = new FlyItem({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                assetKey: supplyAssetMap[displayId].textureConfig.key,
+                x: pointer.x,
+                y: pointer.y,
+                quantity: 1,
+                depth: calculateUiDepth({
+                    layer: UILayer.Overlay,
+                    layerDepth: 1,
+                }),
+            },
+        })
+        this.scene.add.existing(flyItem)
     }
+
+    private onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
+        EventBus.once(EventName.BuyToolCompleted, () => {
+            // refresh user & inventories
+            EventBus.emit(EventName.RefreshUser)
+            EventBus.emit(EventName.RefreshInventories)
+        })
+        const eventMessage: BuyToolRequest = {
+            toolId: displayId,
+        }
+        // send request to buy seeds
+        EventBus.emit(EventName.RequestBuyTool, eventMessage)
+        const flyItem = new FlyItem({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                assetKey: toolAssetMap[displayId].textureConfig.key,
+                x: pointer.x,
+                y: pointer.y,
+                quantity: 1,
+                depth: calculateUiDepth({
+                    layer: UILayer.Overlay,
+                    layerDepth: 1,
+                }),
+            },
+        })
+        this.scene.add.existing(flyItem)
+    }    
 
     private getCurrentOwnership({
         type,
@@ -913,7 +968,7 @@ export class ShopContent extends BaseSizer {
         return maxCapacity
     }
 
-    private updateOwnership() {
+    private updateGridTables() {
         for (const shop of Object.values(ShopTab)) {
             if (!this.gridTableMap[shop]) {
                 throw new Error("Grid table is not found")

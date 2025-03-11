@@ -8,7 +8,7 @@ import { DataScene } from "./scenes/DataScene"
 import CircleMaskImagePlugin from "phaser3-rex-plugins/plugins/circlemaskimage-plugin.js"
 import { UserSchema } from "@/modules/entities"
 import { SoundScene } from "./scenes/SoundScene"
-
+import { SpinePlugin } from "@esotericsoftware/spine-phaser"
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config: Phaser.Types.Core.GameConfig = {
@@ -50,6 +50,11 @@ const config: Phaser.Types.Core.GameConfig = {
                 key: "rexUI",
                 plugin: UIPlugin,
                 mapping: "rexUI",
+            },
+            { 
+                key: "spine.SpinePlugin", 
+                plugin: SpinePlugin, 
+                mapping: "spine" 
             }
         ],
     },

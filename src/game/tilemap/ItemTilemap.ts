@@ -41,6 +41,7 @@ import { waitUtil } from "../ui"
 
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
+const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
     private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
@@ -725,7 +726,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // set the origin of the object
         object.setOrigin(1, 0.5)
-        object.setDepth(tile.x + tile.y + 1)
+        object.setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER)
         // destructuring the extra offsets
         const { x = 0, y = 0 } = { ...extraOffsets }
         object.setPosition(object.x + x, object.y + y)

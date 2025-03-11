@@ -121,7 +121,6 @@ export enum InventoryTypeId {
     BellPepperSeed = "bellPepperSeed",
     BasicFertilizer = "basicFertilizer",
     AnimalFeed = "animalFeed",
-    AnimalPill = "animalPill",
     Egg = "egg",
     EggQuality = "eggQuality",
     Milk = "milk",
@@ -146,6 +145,7 @@ export enum InventoryTypeId {
     Herbicide = "herbicide",
     Pesticide = "pesticide",
     Hammer = "hammer",
+    AnimalMedicine = "animalMedicine",
 }
 
 export enum PlacedItemTypeId {

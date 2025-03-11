@@ -12,7 +12,7 @@ export const gameplayMap: Record<GameplayLayer, GameplayLayerData> = {
         depth: 0,
     },
     [GameplayLayer.Effects]: {
-        depth: 1000,
+        depth: 100000,
     },
 }
   

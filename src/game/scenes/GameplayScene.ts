@@ -1,7 +1,6 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
-//import { EventName } from "../event-bus"
 
 export class GameplayScene extends Scene
 {

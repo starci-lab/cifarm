@@ -27,6 +27,7 @@ import { useUpgradeBuildingEffects } from "./useUpgradeBuildingEffects"
 import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
 import { useVisitEffects } from "./useVisitEffects"
 import { useWaterEffects } from "./useWaterEffects"
+import { useBuyToolEffects } from "./useBuyToolEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -58,4 +59,5 @@ export const useApiEffects = () => {
     useUpdateFollowXEffects()
     useUpgradeBuildingEffects()
     useDeliverMoreProductEffects()
+    useBuyToolEffects()
 }
