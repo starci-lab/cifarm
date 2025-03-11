@@ -2,17 +2,20 @@ import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import {
     Fade,
+    getScreenBottomY,
+    getScreenCenterX,
+    getScreenTopY,
     LeftHorizontalButtons,
     ModalManager,
+    NeighborLeftHorizontalButtons,
+    NeighborRightHorizontalButtons,
+    PlacementModeLeftHorizontalButtons,
     RightHorizontalButtons,
     Toolbar,
     Topbar,
     TutorialManager,
     UIBackdrop,
 } from "../ui"
-import { getScreenCenterX, getScreenBottomY, getScreenTopY } from "../ui"
-import { NeighborLeftHorizontalButtons } from "../ui/buttons/NeighborLeftHorizontalButtons"
-import { NeighborRightHorizontalButtons } from "../ui/buttons/NeighborRightHorizontalButtons"
 
 export class UIScene extends Scene {
     constructor() {
@@ -58,6 +61,15 @@ export class UIScene extends Scene {
         }).layout()
             .setPosition(width - 50, 200)
         this.add.existing(neighborRightHorizontalButtons)
+
+        // selling mode left horizontal buttons
+        const sellingModeLeftHorizontalButtons = new PlacementModeLeftHorizontalButtons({
+            scene: this,
+        })
+            .layout()
+            .setPosition(50, 200)
+            .hide()
+        this.add.existing(sellingModeLeftHorizontalButtons)
 
         const topbar = new Topbar({
             scene: this,

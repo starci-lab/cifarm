@@ -151,9 +151,15 @@ export class Toolbar extends ContainerLite {
                 this.selectedIndex = defaultSelectedIndex
                 this.startIndex = 0
             }
-            this.controlArrowVisibility()
-            this.updateCacheSelectedTool()
-            this.updateItemSizer()
+            this.updateContent()
+        })
+
+        EventBus.on(EventName.ShowToolbar, () => {
+            this.setVisible(true).setActive(true)
+            this.updateContent()
+        })
+        EventBus.on(EventName.HideToolbar, () => {
+            this.setVisible(false).setActive(false)
         })
     }
 
@@ -554,6 +560,12 @@ export class Toolbar extends ContainerLite {
                 default: true,
             }
         })
+    }
+
+    private updateContent(){
+        this.controlArrowVisibility()
+        this.updateCacheSelectedTool()
+        this.updateItemSizer()
     }
 }
 

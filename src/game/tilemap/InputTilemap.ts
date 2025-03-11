@@ -54,6 +54,8 @@ import {
     OpenModalMessage,
     PlacedInprogressMessage,
     Position,
+    UpdateConfirmModalMessage,
+    UpdateConfirmSellModalMessage,
 } from "../event-bus"
 import {
     calculateGameplayDepth,
@@ -150,20 +152,37 @@ export class InputTilemap extends ItemTilemap {
 
         // listen for place in progress event
         EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
-            // console.log("EventName.PlaceInprogress", data)
+            this.hideButtons()
             this.destroyTemporaryPlaceItemObject()
             this.handlePlaceInProgress(data)
         })
 
-        EventBus.on(EventName.PlacementModeOn, () => {
-            EventBus.emit(EventName.HideButtons)
+        EventBus.on(EventName.MovePlacementModeOn, () => {
+            this.hideButtons()
             this.movePlacementMode = true
         })
 
-        EventBus.on(EventName.SellPlacementModeOn, () => {
-            EventBus.emit(EventName.HideButtons)
-            this.sellPlacementMode = true
+        EventBus.on(EventName.MovePlacementModeOff, () => {
+            this.showButtons()
+            if(this.movePlacementMode){
+                if (this.storedPlacedItem) {
+                    this.placeTileForItem(this.storedPlacedItem)
+                }
+            }
+            this.movePlacementMode = false
+            this.placingInProgress = false
+            this.removePlacmentPopupUI()
+            this.cancelPlacement()
+        })
 
+        EventBus.on(EventName.SellPlacementModeOn, () => {
+            this.hideButtons()
+            this.sellPlacementMode = true
+        })
+        EventBus.on(EventName.SellPlacementModeOff, () => {
+            this.showButtons()
+            this.sellPlacementMode = false
+            this.sellingPlacedItem = undefined
         })
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
@@ -215,15 +234,12 @@ export class InputTilemap extends ItemTilemap {
             }
 
             if(this.sellPlacementMode) {
-                console.log("Sell placement mode is on")
                 const placedItemId = data.object.currentPlacedItem?.id
                 console.log("placedItemId", placedItemId)
-                if (placedItemId) {
-                    this.placedItemObjectMap[placedItemId]?.object.destroy()
-                    this.placedItemObjectMap[placedItemId] = {
-                        ...this.placedItemObjectMap[placedItemId],
-                        occupiedTiles: [],
-                    }
+                if (placedItemId && this.sellingPlacedItem) {
+                    this.handleSellPlacedItem({
+                        placedItem: this.sellingPlacedItem
+                    })
                 }
             }
 
@@ -1037,18 +1053,12 @@ export class InputTilemap extends ItemTilemap {
         this.placementPopup = new PlacementPopup({
             scene: this.scene,
             onCancel: () => {
-                EventBus.emit(EventName.ShowButtons)
-                if(this.movePlacementMode){
-                    if (this.storedPlacedItem) {
-                        this.placeTileForItem(this.storedPlacedItem)
-                    }
-                }
-                this.cancelPlacement()
+                EventBus.emit(EventName.MovePlacementModeOff)
             },
             onConfirm: () => {
                 EventBus.emit(EventName.ShowButtons)
                 this.handlePlaced()
-                this.cancelPlacement()
+                EventBus.emit(EventName.MovePlacementModeOff)
             },
         })
             .setPosition(620, 900)
@@ -1412,11 +1422,96 @@ export class InputTilemap extends ItemTilemap {
         }
         }
     }
+
+    private handleSellPlacedItem({
+        placedItem
+    }: HandleSellPlacedItemParams){
+        let sellPrice: number = 0
+        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
+
+        switch (placedItemObjectData.placedItemType.type) {
+        case PlacedItemType.Building: {
+            const building = this.buildings.find(
+                (building) => building.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!building) {
+                throw new Error("Building not found")
+            }
+            if(!building.sellable){
+                console.log("Building not sellable")
+                return
+            }
+            const upgradeLevel = placedItemObjectData.object.currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
+            const upgradePrice = building.upgrades?.find(upgrade => upgrade.upgradeLevel === upgradeLevel)?.sellPrice ?? 0
+            sellPrice = upgradePrice
+            break
+        }
+        case PlacedItemType.Tile: {
+            const tile = this._tiles.find(
+                (tile) => tile.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!tile) {
+                throw new Error("Tile not found")
+            }
+            if(!tile.sellable){
+                console.log("Tile not sellable")
+                return
+            }
+            sellPrice = tile.sellPrice ?? 0
+            break
+        }
+        case PlacedItemType.Animal: {
+            const animal = this.animals.find(
+                (animal) => animal.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!animal) {
+                throw new Error("Animal not found")
+            }
+            if(!animal.sellable){
+                console.log("Animal not sellable")
+                return
+            }
+            sellPrice = animal.sellPrice ?? 0
+            break
+        }
+        }
+
+        const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
+            message: "Are you sure you want to sell this item? You will receive " + sellPrice + " coins.",
+            callback: () => {
+            // EventBus.emit(EventName.SellPlacedItem, placedItem)
+                console.log("Sell placed item")
+
+                this.sellPlacementMode = false
+            }
+        }
+        EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
+
+        EventBus.emit(EventName.OpenModal, {
+            modalName: ModalName.Confirm
+        })
+    }
+
+    private hideButtons() {
+        EventBus.emit(EventName.HideTopbar)
+        EventBus.emit(EventName.HideToolbar)
+        EventBus.emit(EventName.HideButtons)
+        EventBus.emit(EventName.ShowPlacementModeButtons)
+    }
+    private showButtons() {
+        EventBus.emit(EventName.ShowTopbar)
+        EventBus.emit(EventName.ShowToolbar)
+        EventBus.emit(EventName.ShowButtons)
+        EventBus.emit(EventName.HidePlacementModeButtons)
+    }
 }
 
 export interface CheckCanSellPlacedItemParams {
   placedItem: PlacedItemSchema;
 }
+export interface HandleSellPlacedItemParams {
+    placedItem: PlacedItemSchema;
+  }
 export interface HasThievedCropParams {
   data: PlacedItemObjectData;
 }

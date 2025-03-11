@@ -565,7 +565,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     continue
                 }
                 if(this.movingPlacedItemId && this.movingPlacedItemId === placedItem.id){
-                    console.log("movingPlacedItemId", this.movingPlacedItemId)
                     this.clearPlacedItem(placedItem)
                     this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
                     

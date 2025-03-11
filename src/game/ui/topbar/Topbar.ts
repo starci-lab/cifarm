@@ -72,6 +72,14 @@ export class Topbar extends BaseSizer {
         }
 
         this.updateContent()
+
+        EventBus.on(EventName.HideTopbar,  () => {
+            this.setVisible(false).setActive(false)
+        })
+
+        EventBus.on(EventName.ShowTopbar,  () => {
+            this.setVisible(true).setActive(true)
+        })
     }
 
     private updateContent() {

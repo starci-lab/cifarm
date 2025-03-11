@@ -96,7 +96,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.UIIconMove,
             text: "Move",
             onPress: () => {
-                EventBus.emit(EventName.PlacementModeOn)
+                EventBus.emit(EventName.MovePlacementModeOn)
             },
         })
         this.addButton(this.moveButton)
