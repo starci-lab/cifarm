@@ -908,6 +908,7 @@ export class ShopContent extends BaseSizer {
         type,
         displayId,
     }: GetCurrentOwnershipParams): number {
+        if(this.placedItemTypes.length === 0) return 0
         //get the placed item type
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.displayId === displayId && placedItemType.type === type

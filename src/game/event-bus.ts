@@ -273,6 +273,15 @@ export enum EventName {
     UpdateVolume = "update_volume",
 
     WatchUserChanged = "watch_user_changed",
+
+    //Turn on placementMode
+    PlacementModeOn = "placement_mode_on",
+    PlacementModeOff = "placement_mode_off",
+
+    RequestMove = "request_move",
+    MoveCompleted = "move_completed",
+
+    HandlePlacedItemUpdatePosition = "handle_placed_item_update_position",
 }
 
 export interface OpenTutorialMessage {

@@ -95,11 +95,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.UIIconMove,
             text: "Move",
             onPress: () => {
-                console.log("Move")
-                // const eventMessage: OpenModalMessage = {
-                //     modalName: ModalName.Shop
-                // }
-                // EventBus.emit(EventName.OpenModal, eventMessage)
+                EventBus.emit(EventName.PlacementModeOn)
             },
         })
         this.addButton(this.moveButton)

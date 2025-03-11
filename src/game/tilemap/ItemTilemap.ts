@@ -36,7 +36,7 @@ import { ObjectLayerName } from "./types"
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
 import { sleep } from "@/modules/common"
-import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
+import { FADE_HOLD_TIME, FADE_TIME, GRAY_TINT_COLOR } from "../constants"
 import { waitUtil } from "../ui"
 
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
@@ -51,6 +51,9 @@ export abstract class ItemTilemap extends GroundTilemap {
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
     private previousPlacedItems: PlacedItemsSyncedMessage | undefined
+
+    //placement item id
+    protected movingPlacedItemId: string | undefined
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
@@ -116,6 +119,10 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (this.isWaiting) {
                 this.isWaiting = false
             }
+        })
+
+        EventBus.on(EventName.HandlePlacedItemUpdatePosition, (data: HandlePlacedItemUpdatePositionParams) => {
+            this.handlePlacedItemUpdatePosition(data)
         })
 
         const data = this.scene.cache.obj.get(
@@ -557,6 +564,13 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
+                if(this.movingPlacedItemId && this.movingPlacedItemId === placedItem.id){
+                    console.log("movingPlacedItemId", this.movingPlacedItemId)
+                    this.clearPlacedItem(placedItem)
+                    this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
+                    
+                    return
+                }
                 gameObject.update(
                     this.getPlacedItemType(placedItem.placedItemType).type,
                     placedItem
@@ -579,6 +593,44 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.placedItemObjectMap[placedItem.id]?.object.destroy()
             }
         }
+    }
+
+    protected clearPlacedItem(placedItem: PlacedItemSchema) {
+        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+        gameObject.update(
+            this.getPlacedItemType(placedItem.placedItemType).type,
+            {
+                ...placedItem,
+                seedGrowthInfo: undefined,
+                animalInfo: undefined,
+                buildingInfo: undefined,
+            }
+        )
+    }
+
+    private handlePlacedItemUpdatePosition({
+        placedItemId,
+        position
+    }: HandlePlacedItemUpdatePositionParams) {
+        const placedItem = this.previousPlacedItems?.placedItems.find(
+            (item) => item.id === placedItemId
+        )
+        if (!placedItem) {
+            throw new Error("Placed item not found")
+        }
+
+        //remove old object
+        this.itemLayer.objects = this.itemLayer.objects.filter(
+            (object) => object.name !== placedItemId
+        )
+        this.placedItemObjectMap[placedItemId]?.object.destroy()
+
+        // Place the item again at the new position
+        this.placeTileForItem({
+            ...placedItem,
+            x: position.x,
+            y: position.y,
+        })
     }
 
     // method to create all placed items when user IDs differ
@@ -662,7 +714,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     // reusable method to place a tile for a given placed item
-    private placeTileForItem(placedItem: PlacedItemSchema) {
+    protected placeTileForItem(placedItem: PlacedItemSchema) {
     // get tileset data
         const { gid, extraOffsets, tilesetName } = this.getTilesetData(
             placedItem.placedItemType
@@ -848,4 +900,9 @@ export interface CanPlaceItemAtTileParams {
   tileY: number;
   tileSizeWidth: number;
   tileSizeHeight: number;
+}
+
+export interface HandlePlacedItemUpdatePositionParams {
+  placedItemId: string;
+  position: Position;
 }

@@ -9,6 +9,7 @@ import {
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
     HelpWaterRequest,
+    MoveRequest,
     PlantSeedRequest,
     ThiefCropRequest,
     UseHerbicideRequest,
@@ -23,6 +24,7 @@ import {
     InventorySchema,
     InventoryType,
     InventoryTypeSchema,
+    PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
     SupplyId,
@@ -64,6 +66,7 @@ import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
+import { PlacedItemObject } from "./PlacedItemObject"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -82,6 +85,9 @@ export class InputTilemap extends ItemTilemap {
 
     // is in placing in progress
     private placingInProgress: boolean = false
+    // is placement mode
+    private placementMode: boolean = false
+    private storedPlacedItem: PlacedItemSchema | undefined
 
     // place item data
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
@@ -148,6 +154,12 @@ export class InputTilemap extends ItemTilemap {
             this.destroyTemporaryPlaceItemObject()
             this.handlePlaceInProgress(data)
         })
+
+        EventBus.on(EventName.PlacementModeOn, () => {
+            EventBus.emit(EventName.HideButtons)
+            this.placementMode = true
+        })
+
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
         // click on empty tile to plant seed
@@ -164,8 +176,35 @@ export class InputTilemap extends ItemTilemap {
             }
 
             const data = this.findPlacedItemRoot(tile.x, tile.y)
+            
             if (!data) {
                 console.error("No placed item found for position")
+                return
+            }
+
+            if(this.placementMode) {
+                const placedItemId = data.object.currentPlacedItem?.id
+                this.movingPlacedItemId = placedItemId
+                if (placedItemId) {
+                    this.storedPlacedItem = data.object.currentPlacedItem
+
+                    if (data.object.currentPlacedItem && this.movingPlacedItemId) {
+                        this.clearPlacedItem(data.object.currentPlacedItem)
+                        this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
+                        this.placedItemObjectMap[this.movingPlacedItemId] = {
+                            ...this.placedItemObjectMap[this.movingPlacedItemId],
+                            occupiedTiles: [],
+                        }
+                    }
+                }
+
+                // console.log("Placing mode is on", data.placedItemType)
+                
+                const message: PlacedInprogressMessage = {
+                    id: data.placedItemType.displayId,
+                    type: data.placedItemType.type
+                }
+                EventBus.emit(EventName.PlaceInprogress, message)
                 return
             }
 
@@ -950,11 +989,17 @@ export class InputTilemap extends ItemTilemap {
             scene: this.scene,
             onCancel: () => {
                 EventBus.emit(EventName.ShowButtons)
+                if(this.placementMode){
+                    if (this.storedPlacedItem) {
+                        this.placeTileForItem(this.storedPlacedItem)
+                    }
+                }
                 this.cancelPlacement()
             },
             onConfirm: () => {
                 EventBus.emit(EventName.ShowButtons)
                 this.handlePlaced()
+                this.cancelPlacement()
             },
         })
             .setPosition(620, 900)
@@ -973,9 +1018,12 @@ export class InputTilemap extends ItemTilemap {
             return
         }
 
-        const { worldX, worldY } = this.scene.input.activePointer
+        const camera = this.scene.cameras.main
+        const { x, y } = this.scene.input.activePointer.positionToCamera(
+            camera
+        ) as Phaser.Math.Vector2
 
-        const tileWorld = this.getTileAtWorldXY(worldX, worldY)
+        const tileWorld = this.getTileAtWorldXY(x, y)
         if (!tileWorld) {
             console.error("No tile found for temporary place item object")
             return
@@ -999,6 +1047,34 @@ export class InputTilemap extends ItemTilemap {
         }
 
         const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
+
+        if(this.placementMode){
+            if(!this.movingPlacedItemId){
+                throw new Error("Moving placed item id not found")
+            }
+            
+            const eventMessage: MoveRequest = {
+                placedItemId: this.movingPlacedItemId,
+                position: {
+                    x: position.x,
+                    y: position.y,
+                },
+            }
+
+            if (this.storedPlacedItem) {
+                this.clearPlacedItem(this.storedPlacedItem)
+            }
+            EventBus.emit(EventName.RequestMove, eventMessage)
+            EventBus.emit(EventName.HandlePlacedItemUpdatePosition, eventMessage)
+
+
+            EventBus.once(EventName.MoveCompleted, () => {
+                this.cancelPlacement()
+                EventBus.emit(EventName.RefreshUser)
+            })
+
+            return 
+        }
 
         switch (placedItemType) {
         case PlacedItemType.Building: {
@@ -1150,6 +1226,8 @@ export class InputTilemap extends ItemTilemap {
     private cancelPlacement() {
         this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
+        this.placementMode = false
+        this.movingPlacedItemId = undefined
         this.removePlacmentPopupUI()
     }
 

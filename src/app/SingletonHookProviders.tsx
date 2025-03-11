@@ -45,6 +45,7 @@ import {
     useGameplayIo,
     useMintOffchainTokensRhf,
     useApiDeliverMoreProductSwrMutation,
+    useApiMoveSwrMutation,
     useApiBuyToolSwrMutation,
 } from "@/hooks"
 import { SingletonHookProvider as BaseSingletonHookProvider, SingletonHook2Provider as  BaseSingletonHook2Provider} from "@/modules/singleton-hook"
@@ -85,6 +86,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_MOVE_INVENTORY_SWR_MUTATION: useApiMoveInventorySwrMutation(),
             API_DELIVER_PRODUCT_SWR_MUTATION: useApiDeliverProductSwrMutation(),
             API_DELIVER_MORE_PRODUCT_SWR_MUTATION: useApiDeliverMoreProductSwrMutation(),
+            API_MOVE_SWR_MUTATION: useApiMoveSwrMutation(),
             API_RETAIN_PRODUCT_SWR_MUTATION: useApiRetainProductSwrMutation(),
             API_FOLLOW_SWR_MUTATION: useApiFollowSwrMutation(),
             API_UNFOLLOW_SWR_MUTATION: useApiUnfollowSwrMutation(),
