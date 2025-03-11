@@ -45,7 +45,6 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-// import { RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
