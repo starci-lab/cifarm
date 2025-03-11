@@ -2,7 +2,6 @@ import { inventoryTypeAssetMap } from "@/game/assets"
 import { CacheKey, BaseSizerBaseConstructorParams } from "@/game/types"
 import {
     DefaultInfo,
-    InventoryKind,
     InventorySchema,
     InventoryTypeSchema,
 } from "@/modules/entities"

@@ -391,7 +391,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         },
                     })
                     this.scene.add.existing(text)
-                    text.setOrigin(0.5, 1).setDepth(this.depth + 3)
+                    text.setOrigin(0.5, 1).setDepth(this.depth + 1)
                     this.timer = text
                     container.pinLocal(this.timer, {
                         syncScale: false,
@@ -560,7 +560,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: TILE_HEIGHT / 2 - 10,
+                            y: TILE_HEIGHT / 2 - 20,
                             text: "",
                         },
                         options: {
@@ -569,7 +569,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         },
                     })
                     this.scene.add.existing(text)
-                    text.setOrigin(0.5, 1).setDepth(this.depth)
+                    text.setOrigin(0.5, 1).setDepth(this.depth + 1)
                     this.timer = text
                     container.pinLocal(this.timer, {
                         syncScale: false,

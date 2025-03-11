@@ -127,10 +127,6 @@ export const inventoryTypeAssetMap: Record<
         name: "Animal Feed",
         textureConfig: { ...supplyAssetMap[SupplyId.AnimalFeed].textureConfig, useExisting: true },
     },
-    [InventoryTypeId.AnimalPill]: {
-        name: "Animal Pill",
-        textureConfig: { ...supplyAssetMap[SupplyId.AnimalPill].textureConfig, useExisting: true },
-    },
     [InventoryTypeId.Hand]: {
         name: "Hand",
         textureConfig: { ...toolAssetMap[ToolId.Hand].textureConfig, useExisting: true },
@@ -154,6 +150,10 @@ export const inventoryTypeAssetMap: Record<
     [InventoryTypeId.Hammer]: {
         name: "Hammer",
         textureConfig: { ...toolAssetMap[ToolId.Hammer].textureConfig, useExisting: true },
+    },
+    [InventoryTypeId.AnimalMedicine]: {
+        name: "Animal Medicine",
+        textureConfig: { ...toolAssetMap[ToolId.AnimalMedicine].textureConfig, useExisting: true },
     },
 }
 

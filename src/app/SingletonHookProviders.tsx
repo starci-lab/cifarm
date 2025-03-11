@@ -46,6 +46,7 @@ import {
     useMintOffchainTokensRhf,
     useApiDeliverMoreProductSwrMutation,
     useApiMoveSwrMutation,
+    useApiBuyToolSwrMutation,
 } from "@/hooks"
 import { SingletonHookProvider as BaseSingletonHookProvider, SingletonHook2Provider as  BaseSingletonHook2Provider} from "@/modules/singleton-hook"
 import { useDisclosure } from "@heroui/react"
@@ -97,6 +98,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_USE_FERTILIZER_SWR_MUTATION: useApiUseFertilizerSwrMutation(),
             API_HELP_WATER_SWR_MUTATION: useApiHelpWaterSwrMutation(),
             API_THIEF_CROP_SWR_MUTATION: useApiThiefCropSwrMutation(),
+            API_BUY_TOOL_SWR_MUTATION: useApiBuyToolSwrMutation(),
             API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION:
         useApiClaimHoneycombDailyRewardSwrMutation(),
             API_MINT_OFFCHAIN_TOKENS_SWR_MUTATION:

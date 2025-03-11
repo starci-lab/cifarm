@@ -227,6 +227,10 @@ export enum EventName {
 
     RequestBuyAnimal = "request_buy_animal",
     BuyAnimalCompleted = "buy_animal_completed",
+
+    RequestBuyTool = "request_buy_tool",
+    BuyToolCompleted = "buy_tool_completed",
+
     RequestClaimDailyReward = "request_claim_daily_reward",
     ClaimDailyRewardCompleted = "claim_daily_reward_completed",
 
