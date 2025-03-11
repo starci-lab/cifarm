@@ -36,7 +36,7 @@ import { ObjectLayerName } from "./types"
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
 import { sleep } from "@/modules/common"
-import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
+import { FADE_HOLD_TIME, FADE_TIME, GRAY_TINT_COLOR } from "../constants"
 import { waitUtil } from "../ui"
 
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
@@ -50,6 +50,9 @@ export abstract class ItemTilemap extends GroundTilemap {
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
     private previousPlacedItems: PlacedItemsSyncedMessage | undefined
+
+    //placement item id
+    protected movingPlacedItemId: string | undefined
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
@@ -560,6 +563,13 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
+                if(this.movingPlacedItemId && this.movingPlacedItemId === placedItem.id){
+                    console.log("movingPlacedItemId", this.movingPlacedItemId)
+                    this.clearPlacedItem(placedItem)
+                    this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
+                    
+                    return
+                }
                 gameObject.update(
                     this.getPlacedItemType(placedItem.placedItemType).type,
                     placedItem
@@ -582,6 +592,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                 this.placedItemObjectMap[placedItem.id]?.object.destroy()
             }
         }
+    }
+
+    protected clearPlacedItem(placedItem: PlacedItemSchema) {
+        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+        gameObject.update(
+            this.getPlacedItemType(placedItem.placedItemType).type,
+            {
+                ...placedItem,
+                seedGrowthInfo: undefined,
+                animalInfo: undefined,
+                buildingInfo: undefined,
+            }
+        )
     }
 
     private handlePlacedItemUpdatePosition({

@@ -66,6 +66,7 @@ import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
+import { PlacedItemObject } from "./PlacedItemObject"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -86,7 +87,6 @@ export class InputTilemap extends ItemTilemap {
     private placingInProgress: boolean = false
     // is placement mode
     private placementMode: boolean = false
-    private movingPlacedItemId: string | undefined
     private storedPlacedItem: PlacedItemSchema | undefined
 
     // place item data
@@ -188,11 +188,17 @@ export class InputTilemap extends ItemTilemap {
                 if (placedItemId) {
                     this.storedPlacedItem = data.object.currentPlacedItem
 
-                    this.placedItemObjectMap[placedItemId]?.object.destroy()
-                    delete this.placedItemObjectMap[placedItemId]
+                    if (data.object.currentPlacedItem && this.movingPlacedItemId) {
+                        this.clearPlacedItem(data.object.currentPlacedItem)
+                        this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
+                        this.placedItemObjectMap[this.movingPlacedItemId] = {
+                            ...this.placedItemObjectMap[this.movingPlacedItemId],
+                            occupiedTiles: [],
+                        }
+                    }
                 }
 
-                console.log("Placing mode is on", data.placedItemType)
+                // console.log("Placing mode is on", data.placedItemType)
                 
                 const message: PlacedInprogressMessage = {
                     id: data.placedItemType.displayId,
@@ -1055,8 +1061,12 @@ export class InputTilemap extends ItemTilemap {
                 },
             }
 
-            EventBus.emit(EventName.HandlePlacedItemUpdatePosition, eventMessage)
+            if (this.storedPlacedItem) {
+                this.clearPlacedItem(this.storedPlacedItem)
+            }
             EventBus.emit(EventName.RequestMove, eventMessage)
+            EventBus.emit(EventName.HandlePlacedItemUpdatePosition, eventMessage)
+
 
             EventBus.once(EventName.MoveCompleted, () => {
                 this.cancelPlacement()
@@ -1217,6 +1227,7 @@ export class InputTilemap extends ItemTilemap {
         this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
         this.placementMode = false
+        this.movingPlacedItemId = undefined
         this.removePlacmentPopupUI()
     }
 
