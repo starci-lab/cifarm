@@ -4,12 +4,10 @@ import { LayerName, ObjectLayerName, TilesetName } from "./types"
 import { BaseAssetKey } from "../assets"
 import { TilemapBaseConstructorParams } from "../types"
 
-//show grid flag
-export const SHOW_GRID = false
-
 export class GroundTilemap extends BaseTilemap {
     // create the ground layer
-    protected groundLayer: Phaser.Tilemaps.TilemapLayer
+    protected groundLayer: Phaser.Tilemaps.TilemapLayer | undefined
+    protected paddingLayer: Phaser.Tilemaps.TilemapLayer | undefined
     // constructor
     constructor(baseParams: TilemapBaseConstructorParams) {
         super({
@@ -24,15 +22,12 @@ export class GroundTilemap extends BaseTilemap {
             }
         })
 
-        // set the ground layer
-        this.groundLayer = this.createGroundLayer()
-
-        // show grid
-        this.showGrid()
+        // create the layers
+        this.createGroundLayer()
     }
-
     // create the ground layer
     private createGroundLayer() {
+
         // create the ground layer
         const grassTileset = this.createSingleTileTileset({
             tilesetName: TilesetName.Grass,
@@ -50,27 +45,18 @@ export class GroundTilemap extends BaseTilemap {
         if (!groundLayer) {
             throw new Error("Layer not found")
         }
+        this.groundLayer = groundLayer
         
         // fill the layer with random tiles
-        groundLayer.randomize(0, 0, this.width, this.height, [
+        this.groundLayer.randomize(0, 0, this.width, this.height, [
             ...Array.from({ length: 20 }, () => GRASS_GID),
             FLOWER_GRASS_GID
         ])
         
         // scale the layer
-        groundLayer.setScale(this.scale)
+        this.groundLayer.setScale(this.scale)
         
         // return the layer
-        return groundLayer
-    }
-
-    private showGrid() {
-        if (SHOW_GRID) {
-            const graphic = this.scene.add.graphics()
-            graphic.lineStyle(1, 0x0000ff, 1) // Set the line style to blue with full opacity
-            this.groundLayer.renderDebug(graphic, {
-                collidingTileColor: 0x00ff00,
-            })
-        }
+        return this.groundLayer
     }
 }

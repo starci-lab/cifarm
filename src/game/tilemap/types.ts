@@ -6,6 +6,7 @@ export enum TilesetName {
 }
 
 export enum LayerName {
+    Padding = "padding-layer",
     Ground = "ground-layer",
 }
 

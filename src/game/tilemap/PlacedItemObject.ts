@@ -31,9 +31,7 @@ import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 
-export class PlacedItemObject extends Phaser.GameObjects.Sprite {
-    // list of extra sprites that are part of the placed item
-    private container: ContainerLite | undefined
+export class PlacedItemObject extends ContainerLite {
     private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
     private mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
     private bubbleState: OverlapSizer | undefined
@@ -50,8 +48,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema> = []
 
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
-        super(scene, x, y, texture)
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene, x, y)
 
         this.crops = scene.cache.obj.get(CacheKey.Crops)
         this.products = scene.cache.obj.get(CacheKey.Products)
@@ -63,7 +61,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
 
     public updateContent(placedItem: PlacedItemSchema) {
         this.nextPlacedItem = placedItem
-        this.createContainer()
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === placedItem.placedItemType
         )
@@ -73,11 +70,11 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!placedItem) {
             throw new Error("Placed item not found")
         }
-        
+
         this.updateMainVisual()
         switch (placedItemType.type) {
         case PlacedItemType.Tile: {
-            //this.updateSeedGrowthInfo()
+            this.updateSeedGrowthInfo()
             break
         }
         case PlacedItemType.Building: {
@@ -95,27 +92,20 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         this.currentPlacedItem = placedItem
     }
 
-    private createContainer() {
-        if (!this.container) {
-            this.container = this.scene.rexUI.add
-                .container(this.x, this.y)
-                .setScale(this.scale)
-                .setDepth(this.depth + 1)
-        }
-        this.scene.add.rectangle(this.container.x, this.container.y, 10, 10, 0xff0000).setDepth(999999)
+    public setTexture() {
+    // do nothing
     }
 
     private updateSeedGrowthInfo() {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem.seedGrowthInfo) {
             // remove everything in the container
-            this.container.clear(true)
-            this.setAllPropsToUndefined()
+            this.destroyAll()
         } else {
             // Update the texture
             this.updateSeedGrowthInfoTexture()
@@ -135,13 +125,9 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!this.nextPlacedItem?.animalInfo) {
             throw new Error("Animal info not found")
         }
-        if (!this.container) {
-            throw new Error("Container not found")
-        } 
         if (!this.nextPlacedItem?.animalInfo) {
             // remove everything in the container
-            this.container.clear(true)
-            this.setAllPropsToUndefined()
+            this.clear(true)
         } else {
             // Update the bubble state
             this.updateAnimalInfoBubble()
@@ -154,13 +140,12 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem.buildingInfo) {
             // remove everything in the container
-            this.container.clear(true)
-            this.setAllPropsToUndefined()
+            this.destroyAll()
         } else {
             // Update the star based on level
             this.updateBuildingInfoLevel()
@@ -168,9 +153,6 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
 
     private updateBuildingInfoLevel() {
-        if (!this.container) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
@@ -179,7 +161,10 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         }
 
         //if home not show star
-        if (this.nextPlacedItem.placedItemType === createObjectId(PlacedItemTypeId.Home)) {
+        if (
+            this.nextPlacedItem.placedItemType ===
+      createObjectId(PlacedItemTypeId.Home)
+        ) {
             return
         }
 
@@ -194,26 +179,23 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                 .setDepth(this.depth + 1)
                 .setScale(0.5)
                 .setPosition(i * -40, (-TILE_HEIGHT * 2) / 3)
-            this.container.addLocal(star)
+            this.addLocal(star)
         }
     }
 
     private setAllPropsToUndefined() {
         this.seedGrowthInfoSprite = undefined
-        this.mainVisual = undefined
         this.bubbleState = undefined
         this.timer = undefined
     }
+
     public destroyAll() {
-        this.container?.clear(true)
+        this?.clear(true)
         this.destroy()
         this.setAllPropsToUndefined()
     }
 
     private updateSeedGrowthInfoTexture() {
-        if (!this.container) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
@@ -252,19 +234,18 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             if (!this.seedGrowthInfoSprite) {
                 this.seedGrowthInfoSprite = this.scene.add
                     .sprite(x, y, key)
+                    .setOrigin(0.5, 1)
                     .setDepth(this.depth + 2)
-                this.container.addLocal(this.seedGrowthInfoSprite)
+                this.addLocal(this.seedGrowthInfoSprite)
             } else {
-                this.seedGrowthInfoSprite
-                    .setTexture(key)
-                    .setPosition(x, y)
-                this.container.addLocal(this.seedGrowthInfoSprite)
+                this.seedGrowthInfoSprite.setTexture(key).setPosition(x, y)
+                this.addLocal(this.seedGrowthInfoSprite)
             }
         }
     }
 
     private updateSeedGrowthInfoBubble() {
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem?.seedGrowthInfo) {
@@ -304,6 +285,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                         .overlapSizer({
                             width: background.width,
                             height: background.height,
+                            originY: 1,
                         })
                         .addBackground(background)
                         .setScale(0.5)
@@ -312,8 +294,8 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                                 layer: GameplayLayer.Effects,
                             })
                         )
-                        .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
-                    this.container.addLocal(this.bubbleState)
+                        .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
+                    this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
                 }
@@ -399,7 +381,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
 
     private updateSeedGrowthInfoFertilizer() {
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem?.seedGrowthInfo) {
@@ -413,7 +395,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     .setDepth(this.depth)
                     .setScale(0.7)
                     .setPosition(0, 0)
-                this.container.addLocal(this.fertilizerParticle)
+                this.addLocal(this.fertilizerParticle)
             }
         } else {
             // Remove fertilizer sprite if fertilizer effect is gone
@@ -425,7 +407,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
 
     private updateSeedGrowthInfoTimer() {
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem?.seedGrowthInfo) {
@@ -435,18 +417,19 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             throw new Error("Seed growth info not found")
         }
         if (
-            this.nextPlacedItem.seedGrowthInfo.currentState != CropCurrentState.FullyMatured
+            this.nextPlacedItem.seedGrowthInfo.currentState !=
+      CropCurrentState.FullyMatured
         ) {
             if (
                 this.nextPlacedItem.seedGrowthInfo.currentStageTimeElapsed !==
         this.currentPlacedItem?.seedGrowthInfo?.currentStageTimeElapsed
             ) {
                 if (!this.timer) {
-                    const text = new Text({
+                    this.timer = new Text({
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: TILE_HEIGHT / 2 - 20,
+                            y: -20,
                             text: "",
                         },
                         options: {
@@ -454,23 +437,16 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                             enableStroke: true,
                         },
                     })
-                    this.scene.add.existing(text)
-                    text.setOrigin(0.5, 1).setDepth(this.depth + 2)
-                    this.timer = text
-                    this.container.pinLocal(this.timer, {
-                        syncScale: false,
-                        syncPosition: true,
-                    })
+                    this.scene.add.existing(this.timer)
+                    this.addLocal(this.timer)
                 }
 
-                const crop = this.crops.find(
-                    (crop) => {
-                        if (!this.nextPlacedItem) {
-                            throw new Error("Current placed item not found")
-                        }
-                        return crop.id === this.nextPlacedItem.seedGrowthInfo?.crop
+                const crop = this.crops.find((crop) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
                     }
-                )
+                    return crop.id === this.nextPlacedItem.seedGrowthInfo?.crop
+                })
 
                 if (crop?.growthStageDuration === undefined) {
                     throw new Error("Crop growth stage duration not found")
@@ -493,17 +469,19 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
 
     private updateMainVisual() {
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
         if (
-            this.nextPlacedItem.placedItemType === this.currentPlacedItem?.placedItemType
-            && this.nextPlacedItem.animalInfo?.isAdult === this.currentPlacedItem?.animalInfo?.isAdult
+            this.nextPlacedItem.placedItemType ===
+        this.currentPlacedItem?.placedItemType &&
+      this.nextPlacedItem.animalInfo?.isAdult ===
+        this.currentPlacedItem?.animalInfo?.isAdult
         ) {
-            return 
+            return
         }
         const {
             textureConfig: { key, spineConfig },
@@ -512,19 +490,23 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
         const { x = 0, y = 0 } = { ...offsets }
         if (spineConfig) {
             //render spine animation
-            // if (this.mainVisual) {
-            //     this.container.remove(this.mainVisual, true)
-            // }
-            // this.mainVisual = this.scene.add.spine(x, y, key, spineConfig.atlas.key)
-            // this.mainVisual.animationState.setAnimation(0, "idle", true)
-            // this.container.addLocal(this.mainVisual)
+            if (this.mainVisual) {
+                this.remove(this.mainVisual, true)
+            }
+            this.mainVisual = this.scene.add
+                .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
+                .setDepth(this.depth + 1)
+                .setOrigin(0.5, 1)
+            this.mainVisual.animationState.setAnimation(0, "idle", true)
+            this.addLocal(this.mainVisual)
         } else {
             //render sprite
             if (!this.mainVisual) {
                 this.mainVisual = this.scene.add
                     .sprite(x, y, key)
-                    .setDepth(this.depth + 1).setOrigin(0.5, 1)
-                this.container.addLocal(this.mainVisual)
+                    .setDepth(this.depth + 1)
+                    .setOrigin(0.5, 1)
+                this.addLocal(this.mainVisual)
             } else {
                 const mainVisual = this.mainVisual as Phaser.GameObjects.Sprite
                 mainVisual.setTexture(key)
@@ -533,7 +515,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
 
     private updateAnimalInfoBubble() {
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem?.animalInfo) {
@@ -543,8 +525,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
             throw new Error("Animal info not found")
         }
         if (
-            this.nextPlacedItem.animalInfo.currentState !==
-      AnimalCurrentState.Normal
+            this.nextPlacedItem.animalInfo.currentState !== AnimalCurrentState.Normal
         ) {
             if (
                 this.nextPlacedItem.animalInfo?.currentState !==
@@ -569,7 +550,7 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                             })
                         )
                         .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
-                    this.container.addLocal(this.bubbleState)
+                    this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
                 }
@@ -585,14 +566,16 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
     }
 
     private updateAnimalInfoTimer() {
-        if (!this.container) {
+        if (!this) {
             throw new Error("Container not found")
         }
         if (!this.nextPlacedItem?.animalInfo) {
             throw new Error("Animal info not found")
         }
 
-        if (this.nextPlacedItem.animalInfo.currentState != AnimalCurrentState.Yield) {
+        if (
+            this.nextPlacedItem.animalInfo.currentState != AnimalCurrentState.Yield
+        ) {
             if (
                 this.nextPlacedItem.animalInfo.currentGrowthTime !==
         this.currentPlacedItem?.animalInfo?.currentGrowthTime
@@ -613,20 +596,18 @@ export class PlacedItemObject extends Phaser.GameObjects.Sprite {
                     this.scene.add.existing(text)
                     text.setOrigin(0.5, 1).setDepth(this.depth + 1)
                     this.timer = text
-                    this.container.pinLocal(this.timer, {
+                    this.pinLocal(this.timer, {
                         syncScale: false,
                         syncPosition: true,
                     })
                 }
 
-                const animal = this.animals.find(
-                    (animal) => {
-                        if (!this.nextPlacedItem) {
-                            throw new Error("Current placed item not found")
-                        }
-                        return animal.id === this.nextPlacedItem.animalInfo?.animal
+                const animal = this.animals.find((animal) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
                     }
-                )
+                    return animal.id === this.nextPlacedItem.animalInfo?.animal
+                })
 
                 if (animal?.growthTime == undefined) {
                     throw new Error("Animal growth time not found")

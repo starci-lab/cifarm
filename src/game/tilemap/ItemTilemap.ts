@@ -24,11 +24,8 @@ import {
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
 import {
-    animalAssetMap,
     BaseAssetKey,
-    buildingAssetMap,
     productAssetMap,
-    tileAssetMap,
 } from "../assets"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { EventBus, EventName, Position } from "../event-bus"
@@ -76,8 +73,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             throw new Error("Item layer not found")
         }
         this.itemLayer = itemLayer
-        this.createTilesets()
-
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.activities = this.scene.cache.obj.get(CacheKey.Activities)
         this.crops = this.scene.cache.obj.get(CacheKey.Crops)
@@ -510,34 +505,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         EventBus.off(EventName.RequestUpdatePlacedItemLocal)
     }
 
-    // method to create tilesets for all tile assets
-    private createTilesets() {
-    // create tilesets for all tile assets
-        for (const [, value] of Object.entries(tileAssetMap)) {
-            this.createSingleTileTileset({
-                key: value.textureConfig.key,
-                ...value.tilesetConfig,
-            })
-        }
-        // create tilesets for all building assets
-        for (const [, value] of Object.entries(buildingAssetMap)) {
-            this.createSingleTileTileset({
-                key: value.textureConfig.key,
-                ...value.tilesetConfig,
-            })
-        }
-
-        // create tilesets for all animal assets
-        for (const [, value] of Object.entries(animalAssetMap)) {
-            for (const [, ageValue] of Object.entries(value.ages)) {
-                this.createSingleTileTileset({
-                    key: ageValue.textureConfig.key,
-                    ...ageValue.tilesetConfig,
-                })
-            }
-        }
-    }
-
     // methods to handle changes in the placed items
     private handlePlacedItemsUpdate(
         current: PlacedItemsSyncedMessage,
@@ -692,12 +659,10 @@ export abstract class ItemTilemap extends GroundTilemap {
         // get the placed item type
         // Fill the area of the item, above the tile
         this.itemLayer.objects.push({
-            // -1 indicate that the object has no gid, no visual representation, we will update later
-            gid: -1,
             id: this.tiledObjectId,
             name: placedItem.id,
             type: placedItemType.type,
-            visible: false,
+            visible: true,
             width: 0,
             height: 0,
             ...this.computePositionForTiledObject(tile),
@@ -711,6 +676,8 @@ export abstract class ItemTilemap extends GroundTilemap {
         if (!object) {
             throw new Error("Object not found")
         }
+        const rect = this.scene.add.rectangle(0, 0, 20, 20, 0xff0000).setDepth(99999)
+        object.addLocal(rect)
         object
             .setOrigin(1, 0.5)
             .setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER).setScale(this.scale)

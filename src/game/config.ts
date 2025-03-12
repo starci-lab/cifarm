@@ -14,7 +14,6 @@ import { SpinePlugin } from "@esotericsoftware/spine-phaser"
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     parent: CONTAINER_ID,
-    backgroundColor: "#000000",
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
