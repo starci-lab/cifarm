@@ -52,7 +52,25 @@ export class GroundTilemap extends BaseTilemap {
             ...Array.from({ length: 20 }, () => GRASS_GID),
             FLOWER_GRASS_GID
         ])
-        
+
+        for (const tile of this.groundLayer.getTilesWithin(0, 0, this.width, this.height)) {
+            // draw a diamond shape of the game object
+            const centerX = tile.getCenterX()
+            const centerY = tile.getCenterY()
+            // draw the diamond shape
+            const diamond = this.scene.add.graphics()
+            diamond.fillStyle(0x388A28, 1)
+            diamond.fillPoints([
+                { x: centerX, y: centerY - this.tileHeight * this.scale / 2 },
+                { x: centerX + this.tileWidth * this.scale / 2, y: centerY },
+                { x: centerX, y: centerY + this.tileHeight * this.scale / 2 },
+                { x: centerX - this.tileWidth * this.scale / 2, y: centerY }
+            ])
+            diamond.closePath()
+            // add the diamond shape to the tile
+            diamond.setPosition(tile.pixelX, tile.pixelY).setDepth(-1)
+        }
+
         // scale the layer
         this.groundLayer.setScale(this.scale)
         
