@@ -28,8 +28,6 @@ export interface TilesetConfig {
   scaleTextureHeight?: number;
   textureHeight?: number;
   extraOffsets?: ExtraOffsets;
-  tileSizeWidth?: number;
-  tileSizeHeight?: number;
   starsConfig?: StarsConfig; 
 }
 

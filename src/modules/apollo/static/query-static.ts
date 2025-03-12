@@ -145,6 +145,8 @@ const query = gql`
       animal
       building
       pet
+      sizeX
+      sizeY
     }
     crops {
       id

@@ -52,10 +52,6 @@ const config: Phaser.Types.Core.GameConfig = {
             },
             //add Spine plugin
             { key: "spine.SpinePlugin", plugin: SpinePlugin, mapping: "spine" },
-            {
-                plugin: Phaser.Plugin.KineticScrolling,
-
-            }
         ],
     },
     scene: [BootstrapScene, SoundScene, LoadingScene, GameplayScene, UIScene, DataScene],

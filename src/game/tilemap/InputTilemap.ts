@@ -15,8 +15,8 @@ import {
     UseHerbicideRequest,
     UsePesticideRequest,
     WaterRequest,
+    UseFertilizerRequest,
 } from "@/modules/axios"
-import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
 import {
     AnimalId,
     BuildingId,
@@ -34,7 +34,7 @@ import {
     ToolSchema,
     UserSchema,
 } from "@/modules/entities"
-import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
+import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
     AnimalAge,
     animalAssetMap,
@@ -44,7 +44,7 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { GREEN_TINT_COLOR } from "../constants"
+//import { GREEN_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
     EventBus,
@@ -54,7 +54,7 @@ import {
     PlacedInprogressMessage,
     Position,
     UpdateConfirmModalMessage,
-    UpdatePlacementConfirmationMessage
+    UpdatePlacementConfirmationMessage,
 } from "../event-bus"
 import {
     calculateGameplayDepth,
@@ -154,7 +154,7 @@ export class InputTilemap extends ItemTilemap {
 
         EventBus.on(EventName.MovePlacementModeOff, () => {
             this.showButtons()
-            if(this.movePlacementMode){
+            if (this.movePlacementMode) {
                 if (this.storedPlacedItem) {
                     this.placeTileForItem(this.storedPlacedItem)
                 }
@@ -175,7 +175,8 @@ export class InputTilemap extends ItemTilemap {
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
         // click on empty tile to plant seed
-        this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+        const tap = new Tap(this.scene)
+        tap.on("tap", (pointer: Phaser.Input.Pointer) => {
             const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
             // do nothing if tile is not found
             if (!tile) {
@@ -188,13 +189,14 @@ export class InputTilemap extends ItemTilemap {
             }
 
             const data = this.findPlacedItemRoot(tile.x, tile.y)
+            console.log(data)
             
             if (!data) {
                 console.error("No placed item found for position")
                 return
             }
 
-            if(this.movePlacementMode) {
+            if (this.movePlacementMode) {
                 const placedItemId = data.object.currentPlacedItem?.id
                 this.movingPlacedItemId = placedItemId
                 if (placedItemId) {
@@ -211,21 +213,20 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 // console.log("Placing mode is on", data.placedItemType)
-                
+
                 const message: PlacedInprogressMessage = {
                     id: data.placedItemType.displayId,
-                    type: data.placedItemType.type
+                    type: data.placedItemType.type,
                 }
                 EventBus.emit(EventName.PlaceInprogress, message)
                 return
             }
 
-            if(this.sellPlacementMode) {
+            if (this.sellPlacementMode) {
                 const placedItemId = data.object.currentPlacedItem?.id
-                console.log("placedItemId", placedItemId)
                 if (placedItemId && this.sellingPlacedItem) {
                     this.handleSellPlacedItem({
-                        placedItem: this.sellingPlacedItem
+                        placedItem: this.sellingPlacedItem,
                     })
                 }
             }
@@ -905,7 +906,7 @@ export class InputTilemap extends ItemTilemap {
             // place the item temporarily on the tile
             this.temporaryPlaceItemOnTile(tile)
         }
-        if(this.sellPlacementMode){
+        if (this.sellPlacementMode) {
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -917,23 +918,22 @@ export class InputTilemap extends ItemTilemap {
             }
             //check if it is sellable - set green tint - set red tint
             const data = this.findPlacedItemRoot(tile.x, tile.y)
-            if(this.sellingPlacedItem?.id === data?.object.currentPlacedItem?.id){
+            if (this.sellingPlacedItem?.id === data?.object.currentPlacedItem?.id) {
                 return
             }
-            //clear tint 
-            if(this.sellingPlacedItem){
-                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearTint()
+            //clear tint
+            if (this.sellingPlacedItem) {
+                //this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearTint()
                 //this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearAllTintSprite()
             }
             this.sellingPlacedItem = data?.object.currentPlacedItem
         }
 
-        if(this.sellingPlacedItem){
+        if (this.sellingPlacedItem) {
             this.checkCanSellPlacedItem({
-                placedItem: this.sellingPlacedItem
+                placedItem: this.sellingPlacedItem,
             })
         }
-
     }
 
     // temporary place item on the tile, for preview the item before placing
@@ -954,15 +954,13 @@ export class InputTilemap extends ItemTilemap {
         }
         const { width, height } = sourceImage
 
-        const { tileSizeWidth = 1, tileSizeHeight = 1 } = tilesetConfig
-
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
         const isPlacementValid = this.canPlaceItemAtTile({
             tileX: position.x,
             tileY: position.y,
-            tileSizeWidth,
-            tileSizeHeight,
+            tileSizeHeight: 1,
+            tileSizeWidth: 1,
         })
 
         // if temporary place item object is already created
@@ -993,7 +991,7 @@ export class InputTilemap extends ItemTilemap {
 
             this.placementConfirmation?.setYesButtonVisible(isPlacementValid)
             const eventMessage: UpdatePlacementConfirmationMessage = {
-                isPlacementValid
+                isPlacementValid,
             }
             EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
 
@@ -1038,7 +1036,7 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Position not found")
         }
 
-        if(this.placementConfirmation){
+        if (this.placementConfirmation) {
             this.placementConfirmation.setPosition(position.x, position.y)
             return
         }
@@ -1065,7 +1063,7 @@ export class InputTilemap extends ItemTilemap {
             },
         }
         EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
-        
+
         this.scene.add.existing(this.placementConfirmation)
     }
 
@@ -1105,11 +1103,11 @@ export class InputTilemap extends ItemTilemap {
 
         const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
 
-        if(this.movePlacementMode){
-            if(!this.movingPlacedItemId){
+        if (this.movePlacementMode) {
+            if (!this.movingPlacedItemId) {
                 throw new Error("Moving placed item id not found")
             }
-            
+
             const eventMessage: MoveRequest = {
                 placedItemId: this.movingPlacedItemId,
                 position: {
@@ -1124,13 +1122,12 @@ export class InputTilemap extends ItemTilemap {
             EventBus.emit(EventName.RequestMove, eventMessage)
             EventBus.emit(EventName.HandlePlacedItemUpdatePosition, eventMessage)
 
-
             EventBus.once(EventName.MoveCompleted, () => {
                 this.cancelPlacement()
                 EventBus.emit(EventName.RefreshUser)
             })
 
-            return 
+            return
         }
 
         switch (placedItemType) {
@@ -1288,7 +1285,7 @@ export class InputTilemap extends ItemTilemap {
         this.removePlacmentConfirmation()
     }
 
-    private getAnimalIdFromKey (tileKey: string): AnimalId {
+    private getAnimalIdFromKey(tileKey: string): AnimalId {
         for (const [animalId, animalData] of Object.entries(animalAssetMap)) {
             for (const ageData of Object.values(animalData.ages)) {
                 if (ageData.textureConfig.key === tileKey) {
@@ -1298,7 +1295,6 @@ export class InputTilemap extends ItemTilemap {
         }
         throw new Error("Animal id not found")
     }
-    
 
     // destroy method to clean up the resources
     public destroyTemporaryPlaceItemObject() {
@@ -1375,46 +1371,50 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private checkCanSellPlacedItem({
-        placedItem
-    }: CheckCanSellPlacedItemParams) {
-        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
-        if(placedItemObjectData.placedItemType.sellable){
-            placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
+    private checkCanSellPlacedItem({ placedItem }: CheckCanSellPlacedItemParams) {
+        const placedItemObjectData = this.placedItemObjectMap[placedItem.id]
+        if (placedItemObjectData.placedItemType.sellable) {
+            //placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
             //placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
-        }
-        else{
-            placedItemObjectData.object.setTint(RED_TINT_COLOR)
+        } else {
+            //placedItemObjectData.object.setTint(RED_TINT_COLOR)
             //placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
         }
     }
 
-    private handleSellPlacedItem({
-        placedItem
-    }: HandleSellPlacedItemParams){
+    private handleSellPlacedItem({ placedItem }: HandleSellPlacedItemParams) {
         let sellPrice: number = 0
-        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
+        const placedItemObjectData = this.placedItemObjectMap[placedItem.id]
 
-        if(!placedItemObjectData.placedItemType.sellable){
+        if (!placedItemObjectData.placedItemType.sellable) {
             throw new Error("Item is not sellable")
         }
 
         switch (placedItemObjectData.placedItemType.type) {
         case PlacedItemType.Building: {
             const building = this.buildings.find(
-                (building) => building.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+                (building) =>
+                    building.displayId.toString() ===
+            placedItemObjectData.placedItemType.displayId.toString()
             )
             if (!building) {
                 throw new Error("Building not found")
             }
-            const upgradeLevel = placedItemObjectData.object.currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
-            const upgradePrice = building.upgrades?.find(upgrade => upgrade.upgradeLevel === upgradeLevel)?.sellPrice ?? 0
+            const upgradeLevel =
+          placedItemObjectData.object.currentPlacedItem?.buildingInfo
+              ?.currentUpgrade ?? 1
+            const upgradePrice =
+          building.upgrades?.find(
+              (upgrade) => upgrade.upgradeLevel === upgradeLevel
+          )?.sellPrice ?? 0
             sellPrice = upgradePrice
             break
         }
         case PlacedItemType.Tile: {
             const tile = this._tiles.find(
-                (tile) => tile.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+                (tile) =>
+                    tile.displayId.toString() ===
+            placedItemObjectData.placedItemType.displayId.toString()
             )
             if (!tile) {
                 throw new Error("Tile not found")
@@ -1424,7 +1424,9 @@ export class InputTilemap extends ItemTilemap {
         }
         case PlacedItemType.Animal: {
             const animal = this.animals.find(
-                (animal) => animal.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+                (animal) =>
+                    animal.displayId.toString() ===
+            placedItemObjectData.placedItemType.displayId.toString()
             )
             if (!animal) {
                 throw new Error("Animal not found")
@@ -1435,18 +1437,21 @@ export class InputTilemap extends ItemTilemap {
         }
 
         const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
-            message: "Are you sure you want to sell this item? You will receive " + sellPrice + " coins.",
+            message:
+        "Are you sure you want to sell this item? You will receive " +
+        sellPrice +
+        " coins.",
             callback: () => {
-            // EventBus.emit(EventName.SellPlacedItem, placedItem)
+                // EventBus.emit(EventName.SellPlacedItem, placedItem)
                 console.log("Sell placed item")
 
                 this.sellPlacementMode = false
-            }
+            },
         }
         EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
 
         EventBus.emit(EventName.OpenModal, {
-            modalName: ModalName.Confirm
+            modalName: ModalName.Confirm,
         })
     }
 
@@ -1468,8 +1473,8 @@ export interface CheckCanSellPlacedItemParams {
   placedItem: PlacedItemSchema;
 }
 export interface HandleSellPlacedItemParams {
-    placedItem: PlacedItemSchema;
-  }
+  placedItem: PlacedItemSchema;
+}
 export interface HasThievedCropParams {
   data: PlacedItemObjectData;
 }

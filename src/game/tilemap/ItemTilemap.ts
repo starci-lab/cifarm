@@ -760,33 +760,28 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         return item
     }
-
-    // method to findPlacedItemRoot
+    
     protected findPlacedItemRoot(
         x: number,
         y: number
     ): PlacedItemObjectData | null {
         for (const placedItem of Object.values(this.placedItemObjectMap)) {
-        //     const { tileX, tileY, placedItemType } = placedItem
-            console.log(x,y, placedItem)
-            //     const {
-            //         tilesetConfig: { tileSizeWidth = 1, tileSizeHeight = 1 },
-            //     } = this.getData({
-            //         placedItemTypeId: placedItemType.id,
-            //         animalAge:
-            //   placedItemType.type === PlacedItemType.Animal
-            //       ? AnimalAge.Adult
-            //       : AnimalAge.Baby,
-            //     })
-
-        //     if (
-        //         x <= tileX &&
-        // x > tileX - tileSizeWidth &&
-        // y <= tileY &&
-        // y > tileY - tileSizeHeight
-        //     ) {
-        //         return placedItem
-        //     }
+            const { tileX, tileY, placedItemType } = placedItem
+            const { sizeX, sizeY } = placedItemType
+            if (!sizeX) {
+                throw new Error("SizeX not found")
+            }
+            if (!sizeY) {
+                throw new Error("SizeY not found")
+            }
+            if (
+                x <= tileX &&
+        x > tileX - sizeX &&
+        y <= tileY &&
+        y > tileY - sizeY
+            ) {
+                return placedItem
+            }
         }
         return null
     }

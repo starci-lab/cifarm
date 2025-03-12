@@ -20,9 +20,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             tilesetName: "buildings-home",
             // scaleTextureHeight: 3,
             // scaleTextureWidth: 3,
-            // extraOffsets: { x: -70, y: -120 },
-            tileSizeHeight: 3,
-            tileSizeWidth: 3,
+            extraOffsets: { x: -70, y: -120 },
             starsConfig: {
                 isVisible: false
             }
@@ -40,8 +38,6 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             // scaleTextureHeight: 3,
             // scaleTextureWidth: 3,
             extraOffsets: { x: -10, y: -40 },
-            tileSizeHeight: 3,
-            tileSizeWidth: 3,
             starsConfig: {
                 isVisible: true,
                 extraOffsets: {
@@ -63,8 +59,6 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             // scaleTextureHeight: 3,
             // scaleTextureWidth: 3,
             extraOffsets: { x: 40, y: -100 },
-            tileSizeHeight: 3,
-            tileSizeWidth: 3,
             starsConfig: {
                 isVisible: true,
                 extraOffsets: {

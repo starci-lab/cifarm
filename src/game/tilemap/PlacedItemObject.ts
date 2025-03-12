@@ -41,12 +41,12 @@ export class PlacedItemObject extends ContainerLite {
     private fertilizerParticle: Phaser.GameObjects.Sprite | undefined
     private levelStar: Phaser.GameObjects.Sprite | undefined
     private timer: Phaser.GameObjects.Text | undefined
-    private crops: Array<CropSchema> = []
-    private products: Array<ProductSchema> = []
-    private animals: Array<AnimalSchema> = []
+    private crops: Array<CropSchema>
+    private products: Array<ProductSchema>
+    private animals: Array<AnimalSchema>
     private placedItemTypes: Array<PlacedItemTypeSchema>
     private tiles: Array<TileSchema>
-    private buildings: Array<BuildingSchema> = []
+    private buildings: Array<BuildingSchema>
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
@@ -105,7 +105,7 @@ export class PlacedItemObject extends ContainerLite {
         }
         if (!this.nextPlacedItem.seedGrowthInfo) {
             // remove everything in the container
-            this.destroyAll()
+            this.destroyAll(true)
         } else {
             // Update the texture
             this.updateSeedGrowthInfoTexture()
@@ -183,16 +183,36 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
-    private setAllPropsToUndefined() {
-        this.seedGrowthInfoSprite = undefined
-        this.bubbleState = undefined
-        this.timer = undefined
-    }
+    public destroyAll(exceptMainVisual = false) {
+        if (!exceptMainVisual) {
+            if (!this.mainVisual) {
+                throw new Error("Main visual not found")
+            }
+            this.remove(this.mainVisual, true)
+            this.mainVisual = undefined
+        }
+        if (this.seedGrowthInfoSprite) {
+            this.remove(this.seedGrowthInfoSprite, true)
+            this.seedGrowthInfoSprite = undefined
+        }
+        if (this.bubbleState) {
+            this.bubbleState.removeAll(true)
+            this.remove(this.bubbleState, true)
+            this.bubbleState = undefined
+        }
+        if (this.timer) {
+            this.remove(this.timer, true)
+            this.timer = undefined
+        }
+        if (this.fertilizerParticle) {
+            this.remove(this.fertilizerParticle, true)
+            this.fertilizerParticle = undefined
+        }
 
-    public destroyAll() {
-        this?.clear(true)
-        this.destroy()
-        this.setAllPropsToUndefined()
+        if (this.levelStar) {
+            this.remove(this.levelStar, true)
+            this.levelStar = undefined
+        }
     }
 
     private updateSeedGrowthInfoTexture() {
@@ -230,7 +250,6 @@ export class PlacedItemObject extends ContainerLite {
                 tilesetConfig: { extraOffsets: offsets },
             } = assetData
             const { x = 0, y = 0 } = { ...offsets }
-
             if (!this.seedGrowthInfoSprite) {
                 this.seedGrowthInfoSprite = this.scene.add
                     .sprite(x, y, key)
@@ -238,8 +257,7 @@ export class PlacedItemObject extends ContainerLite {
                     .setDepth(this.depth + 2)
                 this.addLocal(this.seedGrowthInfoSprite)
             } else {
-                this.seedGrowthInfoSprite.setTexture(key).setPosition(x, y)
-                this.addLocal(this.seedGrowthInfoSprite)
+                this.seedGrowthInfoSprite.setTexture(key).setPosition(x, y).setDepth(this.depth + 2)
             }
         }
     }
@@ -368,7 +386,7 @@ export class PlacedItemObject extends ContainerLite {
                     `${
                         this.nextPlacedItem.seedGrowthInfo?.harvestQuantityRemaining || 0
                     }/${crop.maxHarvestQuantity || 0}`
-                )
+                ).setDepth(this.depth + 3)
             }
         } else {
             // if bubble state is present, remove it
@@ -413,9 +431,6 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem?.seedGrowthInfo) {
             throw new Error("Seed growth info not found")
         }
-        if (!this.nextPlacedItem.seedGrowthInfo) {
-            throw new Error("Seed growth info not found")
-        }
         if (
             this.nextPlacedItem.seedGrowthInfo.currentState !=
       CropCurrentState.FullyMatured
@@ -429,36 +444,35 @@ export class PlacedItemObject extends ContainerLite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: -20,
+                            y: -40,
                             text: "",
                         },
                         options: {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    })
+                    }).setDepth(this.depth + 3)
                     this.scene.add.existing(this.timer)
-                    this.addLocal(this.timer)
+                    this.pinLocal(this.timer, {
+                        syncScale: false,
+                    })
                 }
-
                 const crop = this.crops.find((crop) => {
                     if (!this.nextPlacedItem) {
                         throw new Error("Current placed item not found")
                     }
                     return crop.id === this.nextPlacedItem.seedGrowthInfo?.crop
                 })
-
                 if (crop?.growthStageDuration === undefined) {
                     throw new Error("Crop growth stage duration not found")
                 }
-
                 const formattedTime = formatTime(
                     Math.round(
                         crop.growthStageDuration -
               this.nextPlacedItem.seedGrowthInfo.currentStageTimeElapsed
                     )
                 )
-                this.timer.setText(formattedTime)
+                this.timer.setText(formattedTime).setDepth(this.depth + 3)
             }
         } else {
             if (this.timer) {
@@ -475,11 +489,25 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
+        const placedItemType = this.placedItemTypes.find((placedItemType) => {
+            if (!this.nextPlacedItem) {
+                throw new Error("Current placed item not found")
+            }
+            return placedItemType.id === this.nextPlacedItem.placedItemType
+        })
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        if (placedItemType.type === PlacedItemType.Animal) {
+            // check if the isAdult property has changed
+            if (
+                this.currentPlacedItem?.animalInfo?.isAdult !== this.nextPlacedItem.animalInfo?.isAdult
+            ) {
+                return 
+            }
+        }
         if (
-            this.nextPlacedItem.placedItemType ===
-        this.currentPlacedItem?.placedItemType &&
-      this.nextPlacedItem.animalInfo?.isAdult ===
-        this.currentPlacedItem?.animalInfo?.isAdult
+            (this.nextPlacedItem.placedItemType === this.currentPlacedItem?.placedItemType)
         ) {
             return
         }
@@ -509,7 +537,7 @@ export class PlacedItemObject extends ContainerLite {
                 this.addLocal(this.mainVisual)
             } else {
                 const mainVisual = this.mainVisual as Phaser.GameObjects.Sprite
-                mainVisual.setTexture(key)
+                mainVisual.setTexture(key).setDepth(this.depth + 1)
             }
         }
     }
