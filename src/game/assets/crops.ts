@@ -56,7 +56,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     gid: 1003,
                     tilesetName: "crop-turnip-3",
                     extraOffsets: {
-                        x: -20,
+                        x: -10,
                         y: -48,
                     }
                 },

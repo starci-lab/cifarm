@@ -46,7 +46,7 @@ import {
     EventBus,
     EventName,
     ModalName,
-    PlacedInprogressMessage,
+    BuyingModeOnMessage,
     SelectTabMessage,
     ShowPressHereArrowMessage,
 } from "../../../event-bus"
@@ -460,7 +460,7 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Animals: {
-            for (const { displayId, price, unlockLevel } of this.animals) {
+            for (const { displayId, price, unlockLevel, id } of this.animals) {
                 if (!price) {
                     throw new Error("Price is not found.")
                 }
@@ -489,12 +489,12 @@ export class ShopContent extends BaseSizer {
                         }
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: PlacedInprogressMessage = {
-                            id: displayId,
+                        const message: BuyingModeOnMessage = {
+                            id,
                             type: PlacedItemType.Animal,
                         }
+                        EventBus.emit(EventName.BuyingModeOn, message)
                         EventBus.emit(EventName.HideButtons)
-                        EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
                     maxOwnership,
@@ -505,7 +505,7 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Buildings: {
-            for (const { displayId, price, unlockLevel } of this.buildings) {
+            for (const { displayId, price, unlockLevel, id } of this.buildings) {
                 if (!price) {
                     throw new Error("Price is not found.")
                 }
@@ -535,12 +535,12 @@ export class ShopContent extends BaseSizer {
                         }
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: PlacedInprogressMessage = {
-                            id: displayId,
+                        const message: BuyingModeOnMessage = {
+                            id,
                             type: PlacedItemType.Building,
                         }
                         EventBus.emit(EventName.HideButtons)
-                        EventBus.emit(EventName.PlaceInprogress, message)
+                        EventBus.emit(EventName.BuyingModeOn, message)
                     },
                     price,
                     scaleX: 0.5,
@@ -554,7 +554,7 @@ export class ShopContent extends BaseSizer {
         }
         case ShopTab.Tiles:
         {
-            for (const { displayId, price, unlockLevel } of this.tiles) {
+            for (const { displayId, price, unlockLevel, id } of this.tiles) {
                 if (!price) {
                     throw new Error("Price is not found.")
                 }
@@ -584,12 +584,12 @@ export class ShopContent extends BaseSizer {
                         }
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: PlacedInprogressMessage = {
-                            id: displayId,
+                        const message: BuyingModeOnMessage = {
+                            id,
                             type: PlacedItemType.Tile,
                         }
+                        EventBus.emit(EventName.BuyingModeOn, message)
                         EventBus.emit(EventName.HideButtons)
-                        EventBus.emit(EventName.PlaceInprogress, message)
                     },
                     price,
                     showOwnership: true,

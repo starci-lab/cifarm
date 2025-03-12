@@ -11,6 +11,7 @@ import {
     AnimalSchema,
     BuildingSchema,
     CropSchema,
+    InventoryTypeSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
@@ -23,10 +24,7 @@ import {
 } from "@/modules/entities"
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
-import {
-    BaseAssetKey,
-    productAssetMap,
-} from "../assets"
+import { BaseAssetKey, productAssetMap } from "../assets"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
@@ -64,6 +62,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected supplies: Array<SupplySchema>
     protected tools: Array<ToolSchema>
     protected placedItemTypes: Array<PlacedItemTypeSchema>
+    protected inventoryTypes: Array<InventoryTypeSchema>
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -83,6 +82,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
         this.tools = this.scene.cache.obj.get(CacheKey.Tools)
         this.placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes)
+        this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
             this.fading = true
@@ -541,7 +541,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
-                if(this.movingPlacedItemId && this.movingPlacedItemId === placedItem.id){
+                if (
+                    this.movingPlacedItemId &&
+          this.movingPlacedItemId === placedItem.id
+                ) {
                     console.log("movingPlacedItemId", this.movingPlacedItemId)
                     this.clearPlacedItem(placedItem)
                     this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
@@ -630,7 +633,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // reusable method to place a tile for a given placed item
     protected placeTileForItem(placedItem: PlacedItemSchema) {
-        // get the tile
+    // get the tile
         const tile = this.getTileCenteredAt({
             tileX: placedItem.x,
             tileY: placedItem.y,
@@ -676,18 +679,21 @@ export abstract class ItemTilemap extends GroundTilemap {
         if (!object) {
             throw new Error("Object not found")
         }
-        const rect = this.scene.add.rectangle(0, 0, 20, 20, 0xff0000).setDepth(99999)
+        const rect = this.scene.add
+            .rectangle(0, 0, 20, 20, 0xff0000)
+            .setDepth(99999)
         object.addLocal(rect)
         object
             .setOrigin(1, 0.5)
-            .setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER).setScale(this.scale)
+            .setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER)
+            .setScale(this.scale)
         // store the object in the placed item objects map
         this.placedItemObjectMap[placedItem.id] = {
             object,
             tileX: tile.x,
             tileY: tile.y,
             placedItemType,
-            occupiedTiles: this.getOccupiedTiles(placedItem),
+            occupiedTiles: this.getOccupiedTiles(placedItem, placedItemType),
         }
         // update the object
         object.updateContent(placedItem)
@@ -695,27 +701,17 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.tiledObjectId++
     }
 
-    private getOccupiedTiles(placedItem: PlacedItemSchema) {
-        console.log(placedItem)
-        // const { x, y } = placedItem
-        // const {
-        //     tilesetConfig: { tileSizeWidth = 1, tileSizeHeight = 1 },
-        // } = this.getData({
-        //     placedItemTypeId: placedItem.placedItemType,
-        //     animalAge: placedItem.animalInfo?.isAdult
-        //         ? AnimalAge.Adult
-        //         : AnimalAge.Baby,
-        // })
-        // const occupiedTiles: Array<Position> = []
-
-        // for (let dx = 0; dx < tileSizeWidth; dx++) {
-        //     for (let dy = 0; dy < tileSizeHeight; dy++) {
-        //         occupiedTiles.push({ x: x - dx, y: y - dy })
-        //     }
-        // }
-
-        // return occupiedTiles
-        return []
+    private getOccupiedTiles(
+        placedItem: PlacedItemSchema,
+        placedItemType: PlacedItemTypeSchema
+    ) {
+        const occupiedTiles: Array<Position> = []
+        for (let dx = 0; dx < placedItemType.sizeX; dx++) {
+            for (let dy = 0; dy < placedItemType.sizeY; dy++) {
+                occupiedTiles.push({ x: placedItem.x - dx, y: placedItem.y - dy })
+            }
+        }
+        return occupiedTiles
     }
 
     protected canPlaceItemAtTile({
@@ -728,14 +724,12 @@ export abstract class ItemTilemap extends GroundTilemap {
             Object.values(this.placedItemObjectMap),
             (item) => item.occupiedTiles
         )
-
-        const occupiedTemporaryObjectTiles: Array<Position> = _.range(
-            tileSizeWidth
-        ).flatMap((dx) =>
+        const dragTiles: Array<Position> = _.range(tileSizeWidth).flatMap((dx) =>
             _.range(tileSizeHeight).map((dy) => ({ x: tileX - dx, y: tileY - dy }))
         )
+        console.log(dragTiles)
 
-        return !_.some(occupiedTemporaryObjectTiles, (tile) =>
+        return !_.some(dragTiles, (tile) =>
             _.some(occupiedTiles, (occupiedTile) => _.isEqual(occupiedTile, tile))
         )
     }
@@ -760,7 +754,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         return item
     }
-    
+
     protected findPlacedItemRoot(
         x: number,
         y: number
@@ -774,12 +768,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (!sizeY) {
                 throw new Error("SizeY not found")
             }
-            if (
-                x <= tileX &&
-        x > tileX - sizeX &&
-        y <= tileY &&
-        y > tileY - sizeY
-            ) {
+            if (x <= tileX && x > tileX - sizeX && y <= tileY && y > tileY - sizeY) {
                 return placedItem
             }
         }

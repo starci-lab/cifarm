@@ -23,10 +23,10 @@ import {
     CropCurrentState,
     InventorySchema,
     InventoryType,
-    InventoryTypeSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
+    PlacedItemTypeSchema,
     SupplyId,
     SupplySchema,
     TileId,
@@ -51,16 +51,14 @@ import {
     EventName,
     ModalName,
     OpenModalMessage,
-    PlacedInprogressMessage,
+    BuyingModeOnMessage,
     Position,
     UpdateConfirmModalMessage,
     UpdatePlacementConfirmationMessage,
 } from "../event-bus"
 import {
     calculateGameplayDepth,
-    calculateUiDepth,
     GameplayLayer,
-    UILayer,
 } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, FlyItems, PlacementConfirmation, ToolLike } from "../ui"
@@ -69,12 +67,20 @@ import { ObjectLayerName } from "./types"
 import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 
 export const POPUP_SCALE = 0.7
-export const TEMPORARY = "temporary"
-// temporary place item data
-export interface TemporaryPlaceItemData {
+export const DRAG = "drag"
+
+export enum InputMode {
+  Normal,
+  Buy,
+  Move,
+  Sell,
+}
+
+interface DragSpriteData {
   textureConfig: TextureConfig;
   tilesetConfig: TilesetConfig;
-  type?: PlacedItemType;
+  type: PlacedItemType;
+  placedItemType: PlacedItemTypeSchema;
 }
 // key for experience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
@@ -83,19 +89,15 @@ export class InputTilemap extends ItemTilemap {
     // pinch instance
     private pinch: Pinch
 
-    // is in placing in progress
-    private placingInProgress: boolean = false
-    // is placement mode
-    private movePlacementMode: boolean = false
-    private sellPlacementMode: boolean = false
+    // input mode
+    private inputMode = InputMode.Normal
     private storedPlacedItem: PlacedItemSchema | undefined
     private sellingPlacedItem: PlacedItemSchema | undefined
 
     // place item data
-    private temporaryLayer: Phaser.Tilemaps.ObjectLayer
-    private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
-    private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
-    private inventoryTypes: Array<InventoryTypeSchema> = []
+    private dragLayer: Phaser.Tilemaps.ObjectLayer
+    private buyingDragSpriteData: DragSpriteData | undefined
+    private buyingDragSprite: Phaser.GameObjects.Sprite | undefined
     private placementConfirmation: PlacementConfirmation | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
@@ -141,34 +143,34 @@ export class InputTilemap extends ItemTilemap {
         )
 
         // listen for place in progress event
-        EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
+        EventBus.on(EventName.BuyingModeOn, (data: BuyingModeOnMessage) => {
             this.hideButtons()
-            this.destroyTemporaryPlaceItemObject()
-            this.handlePlaceInProgress(data)
+            this.inputMode = InputMode.Buy
+            //this.destroyTemporaryPlaceItemObject()
+            this.handleBuyingMode(data)
         })
 
         EventBus.on(EventName.MovePlacementModeOn, () => {
             this.hideButtons()
-            this.movePlacementMode = true
+            this.inputMode = InputMode.Move
         })
 
         EventBus.on(EventName.MovePlacementModeOff, () => {
             this.showButtons()
-            if (this.movePlacementMode) {
-                if (this.storedPlacedItem) {
-                    this.placeTileForItem(this.storedPlacedItem)
-                }
+            this.inputMode = InputMode.Normal
+            if (this.storedPlacedItem) {
+                this.placeTileForItem(this.storedPlacedItem)
             }
             this.cancelPlacement()
         })
 
         EventBus.on(EventName.SellPlacementModeOn, () => {
             this.hideButtons()
-            this.sellPlacementMode = true
+            this.inputMode = InputMode.Sell
         })
         EventBus.on(EventName.SellPlacementModeOff, () => {
             this.showButtons()
-            this.sellPlacementMode = false
+            this.inputMode = InputMode.Normal
             this.sellingPlacedItem = undefined
         })
 
@@ -183,20 +185,19 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            //if placement in progress
-            if (this.placingInProgress) {
+            //if buying mode is on
+            if (this.inputMode === InputMode.Buy) {
                 return
             }
 
             const data = this.findPlacedItemRoot(tile.x, tile.y)
-            console.log(data)
-            
+
             if (!data) {
                 console.error("No placed item found for position")
                 return
             }
 
-            if (this.movePlacementMode) {
+            if (this.inputMode === InputMode.Move) {
                 const placedItemId = data.object.currentPlacedItem?.id
                 this.movingPlacedItemId = placedItemId
                 if (placedItemId) {
@@ -214,15 +215,15 @@ export class InputTilemap extends ItemTilemap {
 
                 // console.log("Placing mode is on", data.placedItemType)
 
-                const message: PlacedInprogressMessage = {
+                const message: BuyingModeOnMessage = {
                     id: data.placedItemType.displayId,
                     type: data.placedItemType.type,
                 }
-                EventBus.emit(EventName.PlaceInprogress, message)
+                EventBus.emit(EventName.BuyingModeOn, message)
                 return
             }
 
-            if (this.sellPlacementMode) {
+            if (this.inputMode === InputMode.Sell) {
                 const placedItemId = data.object.currentPlacedItem?.id
                 if (placedItemId && this.sellingPlacedItem) {
                     this.handleSellPlacedItem({
@@ -253,12 +254,12 @@ export class InputTilemap extends ItemTilemap {
             }
         })
 
-        // get the temporary layer
-        const temporaryLayer = this.getObjectLayer(ObjectLayerName.Temporary)
-        if (!temporaryLayer) {
-            throw new Error("Temporary layer not found")
+        // get the drag layer
+        const dragLayer = this.getObjectLayer(ObjectLayerName.Drag)
+        if (!dragLayer) {
+            throw new Error("Drag layer not found")
         }
-        this.temporaryLayer = temporaryLayer
+        this.dragLayer = dragLayer
 
         this.scene.events.on(
             EventName.CreateFlyItem,
@@ -862,38 +863,80 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    // method called to handle place in progress event
-    private handlePlaceInProgress({ id, type }: PlacedInprogressMessage) {
-        this.placingInProgress = true
-        this.removePlacmentConfirmation()
+    // method called to handle the buying mode
+    private handleBuyingMode({ id, type }: BuyingModeOnMessage) {
+        this.inputMode = InputMode.Buy
 
-        // switch case to set the place item data
         switch (type) {
-        case PlacedItemType.Animal:
-            this.temporaryPlaceItemData = {
-                ...animalAssetMap[id as AnimalId].ages[AnimalAge.Baby],
-                type: PlacedItemType.Animal,
+        case PlacedItemType.Building: {
+            const building = this.buildings.find((building) => building.id === id)
+            if (!building) {
+                throw new Error(`Building not found for id: ${id}`)
+            }
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.building === building.id
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const { textureConfig, tilesetConfig } =
+          buildingAssetMap[building.displayId]
+            this.buyingDragSpriteData = {
+                textureConfig,
+                tilesetConfig,
+                type,
+                placedItemType,
             }
             break
-        case PlacedItemType.Building:
-            this.temporaryPlaceItemData = {
-                ...buildingAssetMap[id as BuildingId],
-                type: PlacedItemType.Building,
+        }
+        case PlacedItemType.Tile: {
+            const tile = this._tiles.find((tile) => tile.id === id)
+            if (!tile) {
+                throw new Error(`Tile not found for id: ${id}`)
+            }
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.tile === tile.id
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const { textureConfig, tilesetConfig } = tileAssetMap[tile.displayId]
+            this.buyingDragSpriteData = {
+                textureConfig,
+                tilesetConfig,
+                type,
+                placedItemType,
             }
             break
-        case PlacedItemType.Tile:
-            this.temporaryPlaceItemData = {
-                ...tileAssetMap[id as TileId],
-                type: PlacedItemType.Tile,
+        }
+        case PlacedItemType.Animal: {
+            const animal = this.animals.find((animal) => animal.id === id)
+            if (!animal) {
+                throw new Error(`Animal not found for id: ${id}`)
+            }
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.animal === animal.id
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const { textureConfig, tilesetConfig } =
+          animalAssetMap[animal.displayId].ages[AnimalAge.Baby]
+            this.buyingDragSpriteData = {
+                textureConfig,
+                tilesetConfig,
+                type,
+                placedItemType,
             }
             break
+        }
         }
     }
 
     // update method to handle input events
     public update() {
     //check current mouse position is in which tile
-        if (this.placingInProgress) {
+        if (this.inputMode === InputMode.Buy) {
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -904,9 +947,9 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
             // place the item temporarily on the tile
-            this.temporaryPlaceItemOnTile(tile)
+            this.dragBuyingSpriteOnTile(tile)
         }
-        if (this.sellPlacementMode) {
+        if (this.inputMode === InputMode.Sell) {
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -936,122 +979,80 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    // temporary place item on the tile, for preview the item before placing
-    private temporaryPlaceItemOnTile(tile: Phaser.Tilemaps.Tile) {
-    // throw error if temporary place item data is not found
-        if (!this.temporaryPlaceItemData) {
-            throw new Error("Temporary place item data not found")
+    // drag sprite on tile
+    private dragBuyingSpriteOnTile(tile: Phaser.Tilemaps.Tile) {
+    // throw error if drag sprite data is not found
+        if (!this.buyingDragSpriteData) {
+            throw new Error("No drag sprite data found")
         }
-        const { tilesetConfig } = this.temporaryPlaceItemData
-
-        const tileset = this.getTileset(tilesetConfig.tilesetName)
-        if (!tileset) {
-            throw new Error("Tileset not found")
-        }
-        const sourceImage = tileset.image?.getSourceImage() as HTMLImageElement
-        if (!sourceImage) {
-            throw new Error("Source image not found")
-        }
-        const { width, height } = sourceImage
+        const { placedItemType, textureConfig, tilesetConfig } = this.buyingDragSpriteData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
         const isPlacementValid = this.canPlaceItemAtTile({
             tileX: position.x,
             tileY: position.y,
-            tileSizeHeight: 1,
-            tileSizeWidth: 1,
+            tileSizeWidth: placedItemType.sizeX,
+            tileSizeHeight: placedItemType.sizeY,
         })
 
         // if temporary place item object is already created
-        if (this.temporaryPlaceItemObject) {
-            // update the temporary place item object position
-            const position = this.tileToWorldXY(tile.x, tile.y)
-            if (!position) {
-                throw new Error("Position not found")
-            }
-            const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
-            // we need to set the position of the temporary place item object and set the origin
-            this.temporaryPlaceItemObject
-                .setPosition(position.x + x, position.y + this.tileHeight + y)
+        if (!this.buyingDragSprite) {
+            this.buyingDragSprite = this.scene.add.sprite(0, 0, textureConfig.key)
+                .setOrigin(0.5, 1)
                 .setDepth(
                     calculateGameplayDepth({
                         layer: GameplayLayer.Effects,
                         layerDepth: 2,
                     })
                 )
-                .setOrigin(0.5, 1)
-
-            // set tint based on can place
-            this.temporaryPlaceItemObject.setTint(
-                isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
-            )
-
-            this.showPlacmentConfirmation(tile)
-
-            this.placementConfirmation?.setYesButtonVisible(isPlacementValid)
-            const eventMessage: UpdatePlacementConfirmationMessage = {
-                isPlacementValid,
-            }
-            EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
-
-            return
+                .setScale(this.scale, this.scale)
         }
 
-        // push the temporary object to the temporary layer
-        this.temporaryLayer.objects.push({
-            gid: tilesetConfig.gid,
-            id: 0,
-            name: TEMPORARY,
-            width: width * this.scale,
-            height: height * this.scale,
-            type: "",
-            visible: true,
-            ...this.computePositionForTiledObject(tile),
-        })
-
-        // create the temporary place item
-        const object = this.createFromObjects(ObjectLayerName.Temporary, {
-            id: 0,
-            classType: Phaser.GameObjects.Sprite,
-        }).at(0) as Phaser.GameObjects.Sprite | undefined
-        if (!object) {
-            throw new Error("Object not found")
+        // update the temporary place item object position
+        const tilePosition = this.tileToWorldXY(tile.x, tile.y)
+        if (!tilePosition) {
+            throw new Error("Position not found")
         }
-        // set the origin of the object
-        object.setOrigin(1, 0.5)
-        object.setDepth(
-            calculateUiDepth({
-                layer: UILayer.Base,
-                layerDepth: 5,
-            })
+        this.showPlacmentConfirmation(tile)
+        this.placementConfirmation?.setYesButtonVisible(isPlacementValid)
+
+        const eventMessage: UpdatePlacementConfirmationMessage = {
+            isPlacementValid,
+        }
+        EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
+
+        const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
+        // set tint based on can place
+        this.buyingDragSprite.setTint(
+            isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
+        ).setPosition(
+            tilePosition.x + x, 
+            tilePosition.y + this.tileHeight + y
         )
-        this.temporaryPlaceItemObject = object
     }
 
     private showPlacmentConfirmation(tile: Phaser.Tilemaps.Tile) {
-        const position = this.tileToWorldXY(tile.x, tile.y)
+        const tilePosition = this.tileToWorldXY(tile.x, tile.y)
 
-        if (!position) {
+        if (!tilePosition) {
             throw new Error("Position not found")
         }
 
-        if (this.placementConfirmation) {
-            this.placementConfirmation.setPosition(position.x, position.y)
-            return
+        if (!this.placementConfirmation) {
+            this.placementConfirmation = new PlacementConfirmation({
+                scene: this.scene,
+            })
+                .setDepth(
+                    calculateGameplayDepth({
+                        layer: GameplayLayer.Effects,
+                        layerDepth: 3,
+                    })
+                )
+            this.scene.add.existing(this.placementConfirmation)
         }
 
-        this.placementConfirmation = new PlacementConfirmation({
-            scene: this.scene,
-        })
-            .setDepth(
-                calculateGameplayDepth({
-                    layer: GameplayLayer.Effects,
-                    layerDepth: 3,
-                })
-            )
-            .setPosition(position.x, position.y)
-
+        this.placementConfirmation.setPosition(tilePosition.x, tilePosition.y)
         const eventMessage: UpdatePlacementConfirmationMessage = {
             onCancel: () => {
                 EventBus.emit(EventName.MovePlacementModeOff)
@@ -1063,13 +1064,10 @@ export class InputTilemap extends ItemTilemap {
             },
         }
         EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
-
-        this.scene.add.existing(this.placementConfirmation)
     }
 
     private handlePlaced() {
-        if (!this.temporaryPlaceItemObject) {
-            console.error("No temporary place item object found")
+        if (!this.buyingDragSprite) {
             return
         }
 
@@ -1092,7 +1090,7 @@ export class InputTilemap extends ItemTilemap {
     private removePlacmentConfirmation() {
         this.placementConfirmation?.destroy()
         this.placementConfirmation = undefined
-        this.temporaryPlaceItemData = undefined
+        this.dragSpriteData = undefined
     }
 
     private placeItemOnTile(position: Phaser.Math.Vector2) {
@@ -1279,9 +1277,7 @@ export class InputTilemap extends ItemTilemap {
 
     private cancelPlacement() {
         this.destroyTemporaryPlaceItemObject()
-        this.placingInProgress = false
-        this.movePlacementMode = false
-        this.movingPlacedItemId = undefined
+        this.inputMode = InputMode.Normal
         this.removePlacmentConfirmation()
     }
 

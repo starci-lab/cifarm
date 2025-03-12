@@ -17,7 +17,7 @@ export class GroundTilemap extends BaseTilemap {
                 height: HEIGHT,
                 tileWidth: TILE_WIDTH,
                 tileHeight: TILE_HEIGHT,
-                objectLayerNames: [ObjectLayerName.Item, ObjectLayerName.Temporary],
+                objectLayerNames: [ObjectLayerName.Item, ObjectLayerName.Drag],
                 scale: SCALE,
             }
         })
