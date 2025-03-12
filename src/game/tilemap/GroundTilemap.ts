@@ -1,4 +1,12 @@
-import { WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT, GRASS_GID, SCALE, FLOWER_GRASS_GID } from "./constants"
+import {
+    WIDTH,
+    HEIGHT,
+    TILE_WIDTH,
+    TILE_HEIGHT,
+    GRASS_GID,
+    SCALE,
+    FLOWER_GRASS_GID,
+} from "./constants"
 import { BaseTilemap } from "./BaseTilemap"
 import { LayerName, ObjectLayerName, TilesetName } from "./types"
 import { BaseAssetKey } from "../assets"
@@ -17,9 +25,9 @@ export class GroundTilemap extends BaseTilemap {
                 height: HEIGHT,
                 tileWidth: TILE_WIDTH,
                 tileHeight: TILE_HEIGHT,
-                objectLayerNames: [ObjectLayerName.Item, ObjectLayerName.Drag],
+                objectLayerNames: [ObjectLayerName.Item],
                 scale: SCALE,
-            }
+            },
         })
 
         // create the layers
@@ -27,8 +35,7 @@ export class GroundTilemap extends BaseTilemap {
     }
     // create the ground layer
     private createGroundLayer() {
-
-        // create the ground layer
+    // create the ground layer
         const grassTileset = this.createSingleTileTileset({
             tilesetName: TilesetName.Grass,
             key: BaseAssetKey.Grass,
@@ -39,32 +46,40 @@ export class GroundTilemap extends BaseTilemap {
             key: BaseAssetKey.FlowerGrass,
             gid: FLOWER_GRASS_GID,
         })
-        
+
         // create ground layer
-        const groundLayer = this.createBlankLayer(LayerName.Ground, [grassTileset, flowerGrassTileset])
+        const groundLayer = this.createBlankLayer(LayerName.Ground, [
+            grassTileset,
+            flowerGrassTileset,
+        ])
         if (!groundLayer) {
             throw new Error("Layer not found")
         }
         this.groundLayer = groundLayer
-        
+
         // fill the layer with random tiles
         this.groundLayer.randomize(0, 0, this.width, this.height, [
             ...Array.from({ length: 20 }, () => GRASS_GID),
-            FLOWER_GRASS_GID
+            FLOWER_GRASS_GID,
         ])
 
-        for (const tile of this.groundLayer.getTilesWithin(0, 0, this.width, this.height)) {
+        for (const tile of this.groundLayer.getTilesWithin(
+            0,
+            0,
+            this.width,
+            this.height
+        )) {
             // draw a diamond shape of the game object
             const centerX = tile.getCenterX()
             const centerY = tile.getCenterY()
             // draw the diamond shape
             const diamond = this.scene.add.graphics()
-            diamond.fillStyle(0x388A28, 1)
+            diamond.fillStyle(0x388a28, 1)
             diamond.fillPoints([
-                { x: centerX, y: centerY - this.tileHeight * this.scale / 2 },
-                { x: centerX + this.tileWidth * this.scale / 2, y: centerY },
-                { x: centerX, y: centerY + this.tileHeight * this.scale / 2 },
-                { x: centerX - this.tileWidth * this.scale / 2, y: centerY }
+                { x: centerX, y: centerY - (this.tileHeight * this.scale) / 2 },
+                { x: centerX + (this.tileWidth * this.scale) / 2, y: centerY },
+                { x: centerX, y: centerY + (this.tileHeight * this.scale) / 2 },
+                { x: centerX - (this.tileWidth * this.scale) / 2, y: centerY },
             ])
             diamond.closePath()
             // add the diamond shape to the tile
@@ -73,7 +88,7 @@ export class GroundTilemap extends BaseTilemap {
 
         // scale the layer
         this.groundLayer.setScale(this.scale)
-        
+
         // return the layer
         return this.groundLayer
     }

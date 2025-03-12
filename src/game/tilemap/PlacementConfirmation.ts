@@ -1,37 +1,61 @@
-import { SizerBaseConstructorParams } from "@/game/types"
-import { EventBus, EventName, UpdatePlacementConfirmationMessage } from "@/game/event-bus"
+import { ButtonsBaseConstructorParams, ConstructorParams } from "@/game/types"
 import { BaseAssetKey } from "@/game/assets"
 import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+
+export interface PlacementConfirmationOptions {
+  onCancel?: () => void;
+  onConfirm?: (tileX: number, tileY: number) => void;
+}
 
 export class PlacementConfirmation extends Buttons {
     private yesButton: Sizer
     private noButton: Sizer
-    private onCancel: (() => void) | undefined
-    private onConfirm: (() => void) | undefined
+    private tileX: number = 0
+    private tileY: number = 0
+    private onConfirm?: (tileX: number, tileY: number) => void
+    private onCancel?: () => void
 
     constructor({
-        scene,
-        config,
-    }: SizerBaseConstructorParams) {
-        super(scene, config)
-
-        this.yesButton = scene.rexUI.add.sizer()
-            .addBackground(this.scene.add.image(0, 0, BaseAssetKey.UICommonCheckRound))
-
-        this.noButton = scene.rexUI.add.sizer()
-            .addBackground(this.scene.add.image(0, 0, BaseAssetKey.UICommonXRound))
-
-        EventBus.on(EventName.UpdatePlacementConfirmation, (
-            { isPlacementValid = true, onCancel, onConfirm }: UpdatePlacementConfirmationMessage
-        ) => {
-            this.setYesButtonVisible(isPlacementValid)
-            if (onCancel) {
-                this.onCancel = onCancel
-            }
-            if (onConfirm) {
-                this.onConfirm = onConfirm
-            }
+        baseParams: { scene, config },
+        options,
+    }: ConstructorParams<
+    ButtonsBaseConstructorParams,
+    PlacementConfirmationOptions
+  >) {
+        super(scene, {
+            space: {
+                item: 20,
+            },
+            ...config,
         })
+        const { onCancel, onConfirm } = { ...options }
+        this.onCancel = onCancel
+
+        this.onConfirm = onConfirm
+
+        const yesButtonBackground = scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UICommonCheckRound
+        )
+        this.yesButton = scene.rexUI.add
+            .sizer({
+                width: yesButtonBackground.width,
+                height: yesButtonBackground.height,
+            })
+            .addBackground(yesButtonBackground)
+
+        const noButtonBackground = scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UICommonXRound
+        )
+        this.noButton = scene.rexUI.add
+            .sizer({
+                width: noButtonBackground.width,
+                height: noButtonBackground.height,
+            })
+            .addBackground(noButtonBackground)
 
         this.addButton(this.yesButton)
         this.addButton(this.noButton)
@@ -39,7 +63,7 @@ export class PlacementConfirmation extends Buttons {
         this.on("button.click", (button: Sizer) => {
             if (button === this.yesButton) {
                 if (this.onConfirm) {
-                    this.onConfirm()
+                    this.onConfirm(this.tileX, this.tileY)
                 }
             } else if (button === this.noButton) {
                 if (this.onCancel) {
@@ -47,12 +71,21 @@ export class PlacementConfirmation extends Buttons {
                 }
             }
         })
-        
+
         this.layout()
     }
 
+    public updateTileXY(tileX: number, tileY: number) {
+        this.tileX = tileX
+        this.tileY = tileY
+    }
+
     public setYesButtonVisible(visible: boolean) {
-        this.yesButton.setVisible(visible).setActive(visible)
+        if (!visible) {
+            this.yesButton.hide()
+        } else {
+            this.yesButton.show()
+        }
         this.layout()
     }
 }

@@ -12,5 +12,4 @@ export enum LayerName {
 
 export enum ObjectLayerName {
     Item = "item-layer",
-    Drag = "drag-layer",
 }
