@@ -44,7 +44,7 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { GREEN_TINT_COLOR, RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
+import { GREEN_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
     EventBus,
@@ -923,7 +923,7 @@ export class InputTilemap extends ItemTilemap {
             //clear tint 
             if(this.sellingPlacedItem){
                 this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearTint()
-                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearAllTintSprite()
+                //this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearAllTintSprite()
             }
             this.sellingPlacedItem = data?.object.currentPlacedItem
         }
@@ -1381,11 +1381,11 @@ export class InputTilemap extends ItemTilemap {
         const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
         if(placedItemObjectData.placedItemType.sellable){
             placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
-            placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
+            //placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
         }
         else{
             placedItemObjectData.object.setTint(RED_TINT_COLOR)
-            placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
+            //placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
         }
     }
 
