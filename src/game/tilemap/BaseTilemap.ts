@@ -173,12 +173,12 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
 
     // getTileCenteredAt method using the new GetTileCenteredAtParams interface
     public getActualTileCoordinates(
-        centeredTileX: number, 
-        centeredTileY: number
+        actualTileX: number, 
+        actualTileY: number
     ): Phaser.Math.Vector2 {
         return new Phaser.Math.Vector2(
-            centeredTileX - Math.floor(WIDTH / 2),
-            centeredTileY - Math.floor(HEIGHT / 2)
+            actualTileX - Math.floor(WIDTH / 2),
+            actualTileY - Math.floor(HEIGHT / 2)
         )
     }
 
