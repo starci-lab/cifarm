@@ -16,9 +16,6 @@ export class BootstrapScene extends Scene {
         this.load.setPath("assets")
         // load all the assets
         loadBootstrapAssets(this)
-
-        this.load.spineJson("a", "bo-me.json")
-        this.load.spineAtlas("b", "bo-me.atlas")
     }
 
     create() {

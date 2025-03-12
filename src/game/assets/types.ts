@@ -4,6 +4,21 @@ export interface ExtraOffsets {
   y?: number;
 }
 
+export interface AtlasConfig {
+  key: string;
+  assetUrl: string;
+}
+
+export interface JsonConfig {
+  key: string;
+  assetUrl: string;
+}
+
+export interface SpineConfig {
+  atlas: AtlasConfig;
+  json: JsonConfig;
+}
+
 // interface for configuration of tilesets
 export interface TilesetConfig {
   gid: number;
@@ -29,4 +44,5 @@ export interface TextureConfig {
     assetUrl: string;
     useExisting?: boolean;
     isQuality?: boolean;
+    spineConfig?: SpineConfig;
 }

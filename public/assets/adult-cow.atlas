@@ -1,4 +1,5 @@
-bo-me.png
+
+../adult-cow.png
 size: 201,128
 format: RGBA8888
 filter: Linear,Linear

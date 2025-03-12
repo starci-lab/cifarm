@@ -17,7 +17,7 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
     [TileId.BasicTile]: {
         name: "Basic Tile 1",
         textureConfig: {
-            key: TileId.BasicTile,
+            key: "tiles-basic-tile",
             assetUrl: "tiles/starter-tile.png",
         },
         tilesetConfig: {

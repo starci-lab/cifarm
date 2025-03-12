@@ -54,8 +54,6 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         scaleTextureHeight = 1,
         textureHeight,
         textureWidth,
-        tileSizeHeight = 1,
-        tileSizeWidth = 1,
         gid = 0,
         extraOffsets = {},
     }: CreateTilesetOptions): Phaser.Tilemaps.Tileset {

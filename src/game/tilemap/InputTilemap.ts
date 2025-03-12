@@ -40,7 +40,6 @@ import {
     animalAssetMap,
     BaseAssetKey,
     buildingAssetMap,
-    getAnimalIdFromKey,
     TextureConfig,
     tileAssetMap,
     TilesetConfig,
@@ -66,7 +65,6 @@ import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
-import { PlacedItemObject } from "./PlacedItemObject"
 
 export const POPUP_SCALE = 0.7
 export const TEMPORARY = "temporary"
@@ -1130,7 +1128,7 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            const animalId: AnimalId = getAnimalIdFromKey(tileKey) as AnimalId
+            const animalId: AnimalId = this.getAnimalIdFromKey(tileKey)
             if (!animalId) {
                 throw new Error("Animal id not found")
             }
@@ -1230,6 +1228,18 @@ export class InputTilemap extends ItemTilemap {
         this.movingPlacedItemId = undefined
         this.removePlacmentPopupUI()
     }
+
+    private getAnimalIdFromKey (tileKey: string): AnimalId {
+        for (const [animalId, animalData] of Object.entries(animalAssetMap)) {
+            for (const ageData of Object.values(animalData.ages)) {
+                if (ageData.textureConfig.key === tileKey) {
+                    return animalId as AnimalId
+                }
+            }
+        }
+        throw new Error("Animal id not found")
+    }
+    
 
     // destroy method to clean up the resources
     public destroyTemporaryPlaceItemObject() {

@@ -26,7 +26,6 @@ import {
     buildingAssetMap,
     productAssetMap,
     tileAssetMap,
-    TilesetConfig,
 } from "../assets"
 import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
@@ -36,12 +35,13 @@ import { ObjectLayerName } from "./types"
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
 import { sleep } from "@/modules/common"
-import { FADE_HOLD_TIME, FADE_TIME, GRAY_TINT_COLOR } from "../constants"
+import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { waitUtil } from "../ui"
 
+const DEPTH_MULTIPLIER = 100
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
-const DEPTH_MULTIPLIER = 100
+
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
     private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
@@ -66,6 +66,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected _tiles: Array<TileSchema>
     protected supplies: Array<SupplySchema>
     protected tools: Array<ToolSchema>
+    protected placedItemTypes: Array<PlacedItemTypeSchema>
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -86,7 +87,8 @@ export abstract class ItemTilemap extends GroundTilemap {
         this._tiles = this.scene.cache.obj.get(CacheKey.Tiles)
         this.supplies = this.scene.cache.obj.get(CacheKey.Supplies)
         this.tools = this.scene.cache.obj.get(CacheKey.Tools)
-        
+        this.placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes)
+
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
             this.fading = true
             // console.log(toNeighbor)
@@ -102,7 +104,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             let data = this.scene.cache.obj.get(
                 CacheKey.PlacedItems
             ) as PlacedItemsSyncedMessage
-            
+
             if (this.isWaiting) {
                 data = this.scene.cache.obj.get(
                     CacheKey.PlacedItems
@@ -121,15 +123,18 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         })
 
-        EventBus.on(EventName.HandlePlacedItemUpdatePosition, (data: HandlePlacedItemUpdatePositionParams) => {
-            this.handlePlacedItemUpdatePosition(data)
-        })
+        EventBus.on(
+            EventName.HandlePlacedItemUpdatePosition,
+            (data: HandlePlacedItemUpdatePositionParams) => {
+                this.handlePlacedItemUpdatePosition(data)
+            }
+        )
 
         const data = this.scene.cache.obj.get(
             CacheKey.PlacedItems
         ) as PlacedItemsSyncedMessage
         if (data) {
-        // handle the placed items update
+            // handle the placed items update
             this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
             // update the previous placed items
             this.previousPlacedItems = data
@@ -295,11 +300,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                     if (!crop) {
                         throw new Error("Crop not found")
                     }
-                    const product = this.products.find((product) => product.crop === crop.id)
+                    const product = this.products.find(
+                        (product) => product.crop === crop.id
+                    )
                     if (!product) {
                         throw new Error("Product not found")
                     }
-                    const assetKey = productAssetMap[product.displayId].textureConfig.key
+                    const assetKey =
+              productAssetMap[product.displayId].textureConfig.key
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -331,11 +339,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                     if (!crop) {
                         throw new Error("Crop not found")
                     }
-                    const product = this.products.find((product) => product.crop === crop.id)
+                    const product = this.products.find(
+                        (product) => product.crop === crop.id
+                    )
                     if (!product) {
                         throw new Error("Product not found")
                     }
-                    const assetKey = productAssetMap[product.displayId].textureConfig.key
+                    const assetKey =
+              productAssetMap[product.displayId].textureConfig.key
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -560,21 +571,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                 // if the placed item is in the previous placed items, update the item
                 const gameObject = this.placedItemObjectMap[placedItem.id]?.object
                 if (!gameObject) {
-                    console.warn(`Game object not found for ID: ${placedItem.id}`)
                     this.placeTileForItem(placedItem)
                     continue
                 }
-                if(this.movingPlacedItemId && this.movingPlacedItemId === placedItem.id){
-                    console.log("movingPlacedItemId", this.movingPlacedItemId)
+                if (
+                    this.movingPlacedItemId &&
+          this.movingPlacedItemId === placedItem.id
+                ) {
                     this.clearPlacedItem(placedItem)
                     this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
-                    
+
                     return
                 }
-                gameObject.update(
-                    this.getPlacedItemType(placedItem.placedItemType).type,
-                    placedItem
-                )
+                gameObject.updateContent(placedItem)
             }
             // push the placed item to the checked previous placed items
             checkedPreviousPlacedItems.push(placedItem)
@@ -597,20 +606,23 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     protected clearPlacedItem(placedItem: PlacedItemSchema) {
         const gameObject = this.placedItemObjectMap[placedItem.id]?.object
-        gameObject.update(
-            this.getPlacedItemType(placedItem.placedItemType).type,
-            {
-                ...placedItem,
-                seedGrowthInfo: undefined,
-                animalInfo: undefined,
-                buildingInfo: undefined,
-            }
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === placedItem.placedItemType
         )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        gameObject.update(placedItemType.type, {
+            ...placedItem,
+            seedGrowthInfo: undefined,
+            animalInfo: undefined,
+            buildingInfo: undefined,
+        })
     }
 
     private handlePlacedItemUpdatePosition({
         placedItemId,
-        position
+        position,
     }: HandlePlacedItemUpdatePositionParams) {
         const placedItem = this.previousPlacedItems?.placedItems.find(
             (item) => item.id === placedItemId
@@ -648,89 +660,11 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.placedItemObjectMap = {}
     }
 
-    // method to get the GID for a placed item type
-    protected getTilesetData(placedItemTypeId: string): TilesetConfig {
-        const found = this.getPlacedItemType(placedItemTypeId)
-        switch (found.type) {
-        case PlacedItemType.Tile: {
-            if (!found.tile) {
-                throw new Error("Tile ID not found")
-            }
-            const tile = this._tiles.find((tile) => tile.id === found.tile)
-            if (!tile) {
-                throw new Error("Tile not found")
-            }
-            const tilesetConfig =
-          tileAssetMap[tile.displayId].tilesetConfig
-            if (!tilesetConfig) {
-                throw new Error("Tileset config not found")
-            }
-            return tilesetConfig
-        }
-        case PlacedItemType.Building: {
-            if (!found.building) {
-                throw new Error("Building ID not found")
-            }
-            const building = this.buildings.find((building) => building.id === found.building)
-            if (!building) {
-                throw new Error("Building not found")
-            }
-            const tilesetConfig =
-          buildingAssetMap[building.displayId].tilesetConfig
-            if (!tilesetConfig) {
-                throw new Error("Tileset config not found")
-            }
-            return tilesetConfig
-        }
-        case PlacedItemType.Animal: {
-            if (!found.animal) throw new Error("Animal ID not found")
-            const animal = this.animals.find((animal) => animal.id === found.animal)
-            if (!animal) {
-                throw new Error("Animal not found")
-            }
-            const tilesetConfig =
-          animalAssetMap[animal.displayId].ages.baby.tilesetConfig
-            if (!tilesetConfig) {
-                throw new Error("Tileset config not found")
-            }
-            return tilesetConfig
-        }
-        }
-    }
-
     //counter to keep track of the tile object id
     private tiledObjectId = 0
 
-    // get placed item type from cache
-    protected getPlacedItemType(placedItemTypeId: string): PlacedItemTypeSchema {
-        const placedItemTypes = this.scene.cache.obj.get(
-            CacheKey.PlacedItemTypes
-        ) as Array<PlacedItemTypeSchema>
-        const found = placedItemTypes.find((type) => type.id === placedItemTypeId)
-        if (!found) {
-            throw new Error("Placed item type not found")
-        }
-        return found
-    }
-
     // reusable method to place a tile for a given placed item
     protected placeTileForItem(placedItem: PlacedItemSchema) {
-    // get tileset data
-        const { gid, extraOffsets, tilesetName } = this.getTilesetData(
-            placedItem.placedItemType
-        )
-        // get the tileset
-        const tileset = this.getTileset(tilesetName)
-        if (!tileset) {
-            throw new Error("Tileset not found")
-        }
-        // get the source image in the tileset
-        const sourceImage = tileset.image?.getSourceImage()
-        if (!sourceImage) {
-            throw new Error("Source image not found")
-        }
-        // destructuring the to get width and height of the source image
-        const { width, height } = sourceImage
         // get the tile
         const tile = this.getTileCenteredAt({
             tileX: placedItem.x,
@@ -743,8 +677,12 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
 
         // get the placed item type
-        const placedItemType = this.getPlacedItemType(placedItem.placedItemType)
-
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === placedItem.placedItemType
+        )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
         // check if tile is home, then we move the camera to it
         if (placedItemType.id === PlacedItemTypeId.Home) {
             const tileAt = this.getTileAt(tile.x, tile.y)
@@ -756,14 +694,14 @@ export abstract class ItemTilemap extends GroundTilemap {
         // get the placed item type
         // Fill the area of the item, above the tile
         this.itemLayer.objects.push({
-            gid,
+            // -1 indicate that the object has no gid, no visual representation, we will update later
+            gid: -1,
             id: this.tiledObjectId,
             name: placedItem.id,
-            width: width * this.scale,
-            height: height * this.scale,
             type: placedItemType.type,
-            //if not animal then set visible to false
-            visible: placedItemType.type !== PlacedItemType.Animal,
+            visible: false,
+            width: 0,
+            height: 0,
             ...this.computePositionForTiledObject(tile),
         })
 
@@ -775,14 +713,9 @@ export abstract class ItemTilemap extends GroundTilemap {
         if (!object) {
             throw new Error("Object not found")
         }
-
-        // set the origin of the object
-        object.setOrigin(1, 0.5)
-        object.setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER)
-        // destructuring the extra offsets
-        const { x = 0, y = 0 } = { ...extraOffsets }
-        object.setPosition(object.x + x, object.y + y)
-
+        object
+            .setOrigin(1, 0.5)
+            .setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER).setScale(this.scale)
         // store the object in the placed item objects map
         this.placedItemObjectMap[placedItem.id] = {
             object,
@@ -792,25 +725,32 @@ export abstract class ItemTilemap extends GroundTilemap {
             occupiedTiles: this.getOccupiedTiles(placedItem),
         }
         // update the object
-        object.update(placedItemType.type, placedItem)
-
+        object.updateContent(placedItem)
         // increment the object id to ensure uniqueness
         this.tiledObjectId++
     }
 
     private getOccupiedTiles(placedItem: PlacedItemSchema) {
-        const { x, y, placedItemType } = placedItem
-        const { tileSizeWidth = 1, tileSizeHeight = 1 } =
-      this.getTilesetData(placedItemType)
-        const occupiedTiles: Array<Position> = []
+        console.log(placedItem)
+        // const { x, y } = placedItem
+        // const {
+        //     tilesetConfig: { tileSizeWidth = 1, tileSizeHeight = 1 },
+        // } = this.getData({
+        //     placedItemTypeId: placedItem.placedItemType,
+        //     animalAge: placedItem.animalInfo?.isAdult
+        //         ? AnimalAge.Adult
+        //         : AnimalAge.Baby,
+        // })
+        // const occupiedTiles: Array<Position> = []
 
-        for (let dx = 0; dx < tileSizeWidth; dx++) {
-            for (let dy = 0; dy < tileSizeHeight; dy++) {
-                occupiedTiles.push({ x: x - dx, y: y - dy })
-            }
-        }
+        // for (let dx = 0; dx < tileSizeWidth; dx++) {
+        //     for (let dy = 0; dy < tileSizeHeight; dy++) {
+        //         occupiedTiles.push({ x: x - dx, y: y - dy })
+        //     }
+        // }
 
-        return occupiedTiles
+        // return occupiedTiles
+        return []
     }
 
     protected canPlaceItemAtTile({
@@ -862,20 +802,26 @@ export abstract class ItemTilemap extends GroundTilemap {
         y: number
     ): PlacedItemObjectData | null {
         for (const placedItem of Object.values(this.placedItemObjectMap)) {
-            const { tileX, tileY, placedItemType } = placedItem
+        //     const { tileX, tileY, placedItemType } = placedItem
+            console.log(x,y, placedItem)
+            //     const {
+            //         tilesetConfig: { tileSizeWidth = 1, tileSizeHeight = 1 },
+            //     } = this.getData({
+            //         placedItemTypeId: placedItemType.id,
+            //         animalAge:
+            //   placedItemType.type === PlacedItemType.Animal
+            //       ? AnimalAge.Adult
+            //       : AnimalAge.Baby,
+            //     })
 
-            const { tileSizeWidth = 1, tileSizeHeight = 1 } = this.getTilesetData(
-        placedItemType.id as PlacedItemTypeId
-            )
-
-            if (
-                x <= tileX &&
-        x > tileX - tileSizeWidth &&
-        y <= tileY &&
-        y > tileY - tileSizeHeight
-            ) {
-                return placedItem
-            }
+        //     if (
+        //         x <= tileX &&
+        // x > tileX - tileSizeWidth &&
+        // y <= tileY &&
+        // y > tileY - tileSizeHeight
+        //     ) {
+        //         return placedItem
+        //     }
         }
         return null
     }

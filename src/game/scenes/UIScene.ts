@@ -21,9 +21,6 @@ export class UIScene extends Scene {
 
     create() {
         //console.log(this.add.spine)
-        const spineboy = this.add.spine(540, 960, "a", "b")
-        spineboy.setScale(1)
-        spineboy.animationState.setAnimation(0, "idle", true)
         const { width } = this.game.scale
         // Add the backdrop
         const backdrop = new UIBackdrop({
