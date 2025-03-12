@@ -1,7 +1,7 @@
+import { ConstructorParams, SizerBaseConstructorParams } from "@/game/types"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { FlyItem, FlyItemOptions } from "./FlyItem"
-import { ConstructorParams, SizerBaseConstructorParams } from "@/game/types"
-import { calculateUiDepth, UILayer } from "@/game/layers"
+import { calculateGameplayDepth, GameplayLayer } from "@/game/layers"
 
 export interface FlyItemsOptions {
     items: Array<FlyItemOptions>
@@ -30,8 +30,8 @@ export class FlyItems extends Sizer {
                         },
                         options: {
                             ...item,
-                            depth: calculateUiDepth({
-                                layer: UILayer.Overlay,
+                            depth: calculateGameplayDepth({
+                                layer: GameplayLayer.Effects,
                                 layerDepth: 1,
                             }),
                         },

@@ -22,8 +22,10 @@ export enum BaseAssetKey {
     UIIconSetting = "ui-icon-setting",
     UIIconReturn = "ui-icon-return",
     UIIconNext = "ui-icon-next",
+    UIIconPrevious = "ui-icon-previous",
     UIIconSpin = "ui-icon-spin",
     UIIconMove = "ui-icon-move",
+    UIIconSell = "ui-icon-sell",
 
     // UI Backgrounds
     UIBackgroundLarge = "ui-background-large",
@@ -191,8 +193,10 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIIconSetting]: "ui/icons/settings.png",
     [BaseAssetKey.UIIconReturn]: "ui/icons/return.png",
     [BaseAssetKey.UIIconNext]: "ui/icons/next.png",
+    [BaseAssetKey.UIIconPrevious]: "ui/icons/previous.png",
     [BaseAssetKey.UIIconSpin]: "ui/icons/spin.png",
     [BaseAssetKey.UIIconMove]: "ui/icons/move.png",
+    [BaseAssetKey.UIIconSell]: "ui/icons/sell.png",
 
     // backgrounds
     [BaseAssetKey.UIBackgroundLarge]: "ui/backgrounds/large.png",

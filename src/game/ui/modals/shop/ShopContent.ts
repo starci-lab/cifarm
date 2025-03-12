@@ -946,7 +946,6 @@ export class ShopContent extends BaseSizer {
         }
         const placedItemBuildings = this.placedItems.filter(
             (placedItemBuilding) => {
-                console.log(placedItemBuilding.placedItemType, placedItemType.id)
                 return placedItemBuilding.placedItemType === placedItemType.id
             }           
         )

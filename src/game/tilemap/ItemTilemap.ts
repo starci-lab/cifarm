@@ -5,6 +5,7 @@ import {
     PlacedItemsSyncedMessage,
     ThiefCropData,
 } from "@/hooks"
+import { sleep } from "@/modules/common"
 import {
     Activities,
     AnimalSchema,
@@ -20,6 +21,8 @@ import {
     ToolSchema,
     UserSchema,
 } from "@/modules/entities"
+import _ from "lodash"
+import { DeepPartial } from "react-hook-form"
 import {
     animalAssetMap,
     BaseAssetKey,
@@ -27,15 +30,12 @@ import {
     productAssetMap,
     tileAssetMap,
 } from "../assets"
+import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { ObjectLayerName } from "./types"
-import _ from "lodash"
-import { DeepPartial } from "react-hook-form"
-import { sleep } from "@/modules/common"
-import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { waitUtil } from "../ui"
 
 const DEPTH_MULTIPLIER = 100
@@ -574,10 +574,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
-                if (
-                    this.movingPlacedItemId &&
-          this.movingPlacedItemId === placedItem.id
-                ) {
+                if(this.movingPlacedItemId && this.movingPlacedItemId === placedItem.id){
+                    console.log("movingPlacedItemId", this.movingPlacedItemId)
                     this.clearPlacedItem(placedItem)
                     this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
 

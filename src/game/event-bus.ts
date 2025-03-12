@@ -93,6 +93,12 @@ export enum EventName {
     ShowButtons = "show_buttons",
     HideNeighborButtons = "hide_neighbor_buttons",
     ShowNeighborButtons = "show_neighbor_buttons",
+    HidePlacementModeButtons = "hide_selling_mode_buttons",
+    ShowPlacementModeButtons = "show_selling_mode_buttons",
+    HideTopbar = "hide_topbar",
+    ShowTopbar = "show_topbar",
+    ShowToolbar = "show_toolbar",
+    HideToolbar = "hide_toolbar",
     
     // open inventory
     OpenInventory = "open_inventory",
@@ -269,19 +275,24 @@ export enum EventName {
     UpdateVisitedNeighbor = "update_visited_neighbor",
 
     UpdateConfirmModal = "update_warning_modal",
+    UpdateConfirmSellModal = "update_warning_sell_modal",
 
     UpdateVolume = "update_volume",
 
     WatchUserChanged = "watch_user_changed",
 
-    //Turn on placementMode
-    PlacementModeOn = "placement_mode_on",
-    PlacementModeOff = "placement_mode_off",
-
     RequestMove = "request_move",
     MoveCompleted = "move_completed",
 
     HandlePlacedItemUpdatePosition = "handle_placed_item_update_position",
+    //Turn on movePlacementMode
+    MovePlacementModeOn = "placement_mode_on",
+    MovePlacementModeOff = "placement_mode_off",
+    //Turn on sellPlacementMode
+    SellPlacementModeOn = "sell_placement_mode_on",
+    SellPlacementModeOff = "sell_placement_mode_off",
+
+    UpdatePlacementConfirmation = "update_placement_confirmation",
 }
 
 export interface OpenTutorialMessage {
@@ -389,6 +400,7 @@ export enum ModalName {
   Profile = "profile",
   UpgradeBuilding = "upgrade-building",
   Confirm = "confirm",
+  ConfirmSell = "confirm-sell",
   Spin = "spin",
 }
 
@@ -457,6 +469,18 @@ export interface UpdateConfirmModalMessage {
     callback?: () => void
 }
 
+export interface UpdateConfirmSellModalMessage {
+    message: string
+    quantity: number
+    callback?: () => void
+}
+
 export interface UpdateVolumeMessage {
     volume: number
+}
+
+export interface UpdatePlacementConfirmationMessage {
+    isPlacementValid?: boolean
+    onCancel?: () => void
+    onConfirm?: () => void
 }

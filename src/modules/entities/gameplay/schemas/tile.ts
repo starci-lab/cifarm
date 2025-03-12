@@ -9,4 +9,5 @@ export interface TileSchema extends StaticAbstractSchema<TileId> {
     qualityProductChanceLimit: number;
     availableInShop: boolean;
     unlockLevel?: number;
+    sellPrice?: number;
 }

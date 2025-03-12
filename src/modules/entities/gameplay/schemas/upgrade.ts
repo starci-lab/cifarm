@@ -7,4 +7,5 @@ export interface UpgradeSchema extends AbstractSchema {
     upgradeLevel: number;
     buildingId: string;
     building: BuildingSchema;
+    sellPrice?: number;
 }

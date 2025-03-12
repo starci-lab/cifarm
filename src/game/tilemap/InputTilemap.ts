@@ -44,7 +44,7 @@ import {
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-// import { RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
+import { GREEN_TINT_COLOR, RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
     EventBus,
@@ -53,6 +53,8 @@ import {
     OpenModalMessage,
     PlacedInprogressMessage,
     Position,
+    UpdateConfirmModalMessage,
+    UpdatePlacementConfirmationMessage
 } from "../event-bus"
 import {
     calculateGameplayDepth,
@@ -61,7 +63,7 @@ import {
     UILayer,
 } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { FlyItem, FlyItems, PlacementPopup, ToolLike } from "../ui"
+import { FlyItem, FlyItems, PlacementConfirmation, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { ObjectLayerName } from "./types"
 import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
@@ -84,15 +86,17 @@ export class InputTilemap extends ItemTilemap {
     // is in placing in progress
     private placingInProgress: boolean = false
     // is placement mode
-    private placementMode: boolean = false
+    private movePlacementMode: boolean = false
+    private sellPlacementMode: boolean = false
     private storedPlacedItem: PlacedItemSchema | undefined
+    private sellingPlacedItem: PlacedItemSchema | undefined
 
     // place item data
     private temporaryLayer: Phaser.Tilemaps.ObjectLayer
     private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
     private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
     private inventoryTypes: Array<InventoryTypeSchema> = []
-    private placementPopup: PlacementPopup | undefined
+    private placementConfirmation: PlacementConfirmation | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -114,11 +118,6 @@ export class InputTilemap extends ItemTilemap {
         this.pinch.on("pinch", (dragScale: Pinch) => {
             const scaleFactor = dragScale.scaleFactor
             camera.zoom *= scaleFactor
-
-            if (this.placementPopup) {
-                const newScale = POPUP_SCALE / camera.zoom
-                this.placementPopup.setScale(newScale)
-            }
         })
 
         // add event listener for mouse wheel event
@@ -138,24 +137,39 @@ export class InputTilemap extends ItemTilemap {
                 else {
                     camera.zoom -= 0.1
                 }
-
-                if (this.placementPopup) {
-                    const newScale = POPUP_SCALE / camera.zoom
-                    this.placementPopup.setScale(newScale)
-                }
             }
         )
 
         // listen for place in progress event
         EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
-            // console.log("EventName.PlaceInprogress", data)
+            this.hideButtons()
             this.destroyTemporaryPlaceItemObject()
             this.handlePlaceInProgress(data)
         })
 
-        EventBus.on(EventName.PlacementModeOn, () => {
-            EventBus.emit(EventName.HideButtons)
-            this.placementMode = true
+        EventBus.on(EventName.MovePlacementModeOn, () => {
+            this.hideButtons()
+            this.movePlacementMode = true
+        })
+
+        EventBus.on(EventName.MovePlacementModeOff, () => {
+            this.showButtons()
+            if(this.movePlacementMode){
+                if (this.storedPlacedItem) {
+                    this.placeTileForItem(this.storedPlacedItem)
+                }
+            }
+            this.cancelPlacement()
+        })
+
+        EventBus.on(EventName.SellPlacementModeOn, () => {
+            this.hideButtons()
+            this.sellPlacementMode = true
+        })
+        EventBus.on(EventName.SellPlacementModeOff, () => {
+            this.showButtons()
+            this.sellPlacementMode = false
+            this.sellingPlacedItem = undefined
         })
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
@@ -180,7 +194,7 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            if(this.placementMode) {
+            if(this.movePlacementMode) {
                 const placedItemId = data.object.currentPlacedItem?.id
                 this.movingPlacedItemId = placedItemId
                 if (placedItemId) {
@@ -204,6 +218,16 @@ export class InputTilemap extends ItemTilemap {
                 }
                 EventBus.emit(EventName.PlaceInprogress, message)
                 return
+            }
+
+            if(this.sellPlacementMode) {
+                const placedItemId = data.object.currentPlacedItem?.id
+                console.log("placedItemId", placedItemId)
+                if (placedItemId && this.sellingPlacedItem) {
+                    this.handleSellPlacedItem({
+                        placedItem: this.sellingPlacedItem
+                    })
+                }
             }
 
             switch (data.placedItemType.type) {
@@ -279,6 +303,7 @@ export class InputTilemap extends ItemTilemap {
                             y: item.position.y,
                             depth: calculateGameplayDepth({
                                 layer: GameplayLayer.Effects,
+                                layerDepth: 1,
                             }),
                         })),
                         delay: 500,
@@ -839,7 +864,7 @@ export class InputTilemap extends ItemTilemap {
     // method called to handle place in progress event
     private handlePlaceInProgress({ id, type }: PlacedInprogressMessage) {
         this.placingInProgress = true
-        this.removePlacmentPopupUI()
+        this.removePlacmentConfirmation()
 
         // switch case to set the place item data
         switch (type) {
@@ -880,6 +905,35 @@ export class InputTilemap extends ItemTilemap {
             // place the item temporarily on the tile
             this.temporaryPlaceItemOnTile(tile)
         }
+        if(this.sellPlacementMode){
+            const camera = this.scene.cameras.main
+            const { x, y } = this.scene.input.activePointer.positionToCamera(
+                camera
+            ) as Phaser.Math.Vector2
+            const tile = this.getTileAtWorldXY(x, y)
+            // do nothing if tile is not found
+            if (!tile) {
+                return
+            }
+            //check if it is sellable - set green tint - set red tint
+            const data = this.findPlacedItemRoot(tile.x, tile.y)
+            if(this.sellingPlacedItem?.id === data?.object.currentPlacedItem?.id){
+                return
+            }
+            //clear tint 
+            if(this.sellingPlacedItem){
+                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearTint()
+                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearAllTintSprite()
+            }
+            this.sellingPlacedItem = data?.object.currentPlacedItem
+        }
+
+        if(this.sellingPlacedItem){
+            this.checkCanSellPlacedItem({
+                placedItem: this.sellingPlacedItem
+            })
+        }
+
     }
 
     // temporary place item on the tile, for preview the item before placing
@@ -922,6 +976,12 @@ export class InputTilemap extends ItemTilemap {
             // we need to set the position of the temporary place item object and set the origin
             this.temporaryPlaceItemObject
                 .setPosition(position.x + x, position.y + this.tileHeight + y)
+                .setDepth(
+                    calculateGameplayDepth({
+                        layer: GameplayLayer.Effects,
+                        layerDepth: 2,
+                    })
+                )
                 .setOrigin(0.5, 1)
 
             // set tint based on can place
@@ -929,9 +989,13 @@ export class InputTilemap extends ItemTilemap {
                 isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
             )
 
-            this.showPlacmentPopupUI(tile)
+            this.showPlacmentConfirmation(tile)
 
-            this.placementPopup?.setYesButtonVisible(isPlacementValid)
+            this.placementConfirmation?.setYesButtonVisible(isPlacementValid)
+            const eventMessage: UpdatePlacementConfirmationMessage = {
+                isPlacementValid
+            }
+            EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
 
             return
         }
@@ -967,47 +1031,42 @@ export class InputTilemap extends ItemTilemap {
         this.temporaryPlaceItemObject = object
     }
 
-    private showPlacmentPopupUI(tile: Phaser.Tilemaps.Tile) {
+    private showPlacmentConfirmation(tile: Phaser.Tilemaps.Tile) {
         const position = this.tileToWorldXY(tile.x, tile.y)
 
         if (!position) {
             throw new Error("Position not found")
         }
 
-        if (this.placementPopup) {
-            this.placementPopup.setPosition(position.x + 20, position.y - 2)
+        if(this.placementConfirmation){
+            this.placementConfirmation.setPosition(position.x, position.y)
             return
         }
 
-        if (!position) {
-            throw new Error("Position not found")
-        }
-
-        this.placementPopup = new PlacementPopup({
+        this.placementConfirmation = new PlacementConfirmation({
             scene: this.scene,
+        })
+            .setDepth(
+                calculateGameplayDepth({
+                    layer: GameplayLayer.Effects,
+                    layerDepth: 3,
+                })
+            )
+            .setPosition(position.x, position.y)
+
+        const eventMessage: UpdatePlacementConfirmationMessage = {
             onCancel: () => {
-                EventBus.emit(EventName.ShowButtons)
-                if(this.placementMode){
-                    if (this.storedPlacedItem) {
-                        this.placeTileForItem(this.storedPlacedItem)
-                    }
-                }
-                this.cancelPlacement()
+                EventBus.emit(EventName.MovePlacementModeOff)
             },
             onConfirm: () => {
-                EventBus.emit(EventName.ShowButtons)
+                this.showButtons()
                 this.handlePlaced()
                 this.cancelPlacement()
             },
-        })
-            .setPosition(620, 900)
-            .setDepth(
-                calculateUiDepth({
-                    layer: UILayer.Overlay,
-                    layerDepth: 6,
-                })
-            )
-        this.scene.add.existing(this.placementPopup)
+        }
+        EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
+        
+        this.scene.add.existing(this.placementConfirmation)
     }
 
     private handlePlaced() {
@@ -1032,9 +1091,9 @@ export class InputTilemap extends ItemTilemap {
         )
     }
 
-    private removePlacmentPopupUI() {
-        this.placementPopup?.destroy()
-        this.placementPopup = undefined
+    private removePlacmentConfirmation() {
+        this.placementConfirmation?.destroy()
+        this.placementConfirmation = undefined
         this.temporaryPlaceItemData = undefined
     }
 
@@ -1046,7 +1105,7 @@ export class InputTilemap extends ItemTilemap {
 
         const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
 
-        if(this.placementMode){
+        if(this.movePlacementMode){
             if(!this.movingPlacedItemId){
                 throw new Error("Moving placed item id not found")
             }
@@ -1224,9 +1283,9 @@ export class InputTilemap extends ItemTilemap {
     private cancelPlacement() {
         this.destroyTemporaryPlaceItemObject()
         this.placingInProgress = false
-        this.placementMode = false
+        this.movePlacementMode = false
         this.movingPlacedItemId = undefined
-        this.removePlacmentPopupUI()
+        this.removePlacmentConfirmation()
     }
 
     private getAnimalIdFromKey (tileKey: string): AnimalId {
@@ -1315,8 +1374,102 @@ export class InputTilemap extends ItemTilemap {
         }
         return true
     }
+
+    private checkCanSellPlacedItem({
+        placedItem
+    }: CheckCanSellPlacedItemParams) {
+        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
+        if(placedItemObjectData.placedItemType.sellable){
+            placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
+            placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
+        }
+        else{
+            placedItemObjectData.object.setTint(RED_TINT_COLOR)
+            placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
+        }
+    }
+
+    private handleSellPlacedItem({
+        placedItem
+    }: HandleSellPlacedItemParams){
+        let sellPrice: number = 0
+        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
+
+        if(!placedItemObjectData.placedItemType.sellable){
+            throw new Error("Item is not sellable")
+        }
+
+        switch (placedItemObjectData.placedItemType.type) {
+        case PlacedItemType.Building: {
+            const building = this.buildings.find(
+                (building) => building.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!building) {
+                throw new Error("Building not found")
+            }
+            const upgradeLevel = placedItemObjectData.object.currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
+            const upgradePrice = building.upgrades?.find(upgrade => upgrade.upgradeLevel === upgradeLevel)?.sellPrice ?? 0
+            sellPrice = upgradePrice
+            break
+        }
+        case PlacedItemType.Tile: {
+            const tile = this._tiles.find(
+                (tile) => tile.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!tile) {
+                throw new Error("Tile not found")
+            }
+            sellPrice = tile.sellPrice ?? 0
+            break
+        }
+        case PlacedItemType.Animal: {
+            const animal = this.animals.find(
+                (animal) => animal.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+            )
+            if (!animal) {
+                throw new Error("Animal not found")
+            }
+            sellPrice = animal.sellPrice ?? 0
+            break
+        }
+        }
+
+        const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
+            message: "Are you sure you want to sell this item? You will receive " + sellPrice + " coins.",
+            callback: () => {
+            // EventBus.emit(EventName.SellPlacedItem, placedItem)
+                console.log("Sell placed item")
+
+                this.sellPlacementMode = false
+            }
+        }
+        EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
+
+        EventBus.emit(EventName.OpenModal, {
+            modalName: ModalName.Confirm
+        })
+    }
+
+    private hideButtons() {
+        EventBus.emit(EventName.HideTopbar)
+        EventBus.emit(EventName.HideToolbar)
+        EventBus.emit(EventName.HideButtons)
+        EventBus.emit(EventName.ShowPlacementModeButtons)
+    }
+    private showButtons() {
+        EventBus.emit(EventName.ShowTopbar)
+        EventBus.emit(EventName.ShowToolbar)
+        EventBus.emit(EventName.ShowButtons)
+        EventBus.emit(EventName.HidePlacementModeButtons)
+    }
 }
 
+export interface CheckCanSellPlacedItemParams {
+  placedItem: PlacedItemSchema;
+}
+export interface HandleSellPlacedItemParams {
+    placedItem: PlacedItemSchema;
+  }
 export interface HasThievedCropParams {
   data: PlacedItemObjectData;
 }
