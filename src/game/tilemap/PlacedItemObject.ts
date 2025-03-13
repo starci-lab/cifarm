@@ -13,7 +13,7 @@ import {
     TileSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { OverlapSizer, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
     AnimalAge,
     animalAssetMap,
@@ -39,7 +39,7 @@ export class PlacedItemObject extends ContainerLite {
     public currentPlacedItem: PlacedItemSchema | undefined
     private nextPlacedItem: PlacedItemSchema | undefined
     private fertilizerParticle: Phaser.GameObjects.Sprite | undefined
-    private levelStar: Phaser.GameObjects.Sprite | undefined
+    private starsSizer: Sizer | undefined
     private timer: Phaser.GameObjects.Text | undefined
     private crops: Array<CropSchema>
     private products: Array<ProductSchema>
@@ -148,15 +148,15 @@ export class PlacedItemObject extends ContainerLite {
             this.destroyAll()
         } else {
             // Update the star based on level
-            this.updateBuildingInfoLevel()
+            this.updateBuildingUpgrade()
         }
     }
 
-    private updateBuildingInfoLevel() {
+    private updateBuildingUpgrade() {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        if (!this.nextPlacedItem.buildingInfo) {
+        if (!this.nextPlacedItem?.buildingInfo) {
             throw new Error("Building info not found")
         }
 
@@ -171,16 +171,40 @@ export class PlacedItemObject extends ContainerLite {
         const stars = this.nextPlacedItem.buildingInfo.currentUpgrade || 0
         const starKey = BaseAssetKey.UIModalStandPurpleStar
 
+        const placedItemTypes = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id ===  this.nextPlacedItem?.placedItemType
+        )
+        if (!placedItemTypes) {
+            throw new Error("Placed item type not found")
+        }
+        const building = this.buildings.find(
+            (building) => building.id === placedItemTypes.building
+        )
+        if (!building) {
+            throw new Error("Building not found")
+        }
+        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].tilesetConfig.starsConfig?.extraOffsets }
         // Update the number of stars
         // Sizer
+        if (this.starsSizer) {
+            //destroy the previous stars
+            this.starsSizer.removeAll(true)
+            this.remove(this.starsSizer, true)
+        }
+        this.starsSizer = this.scene.rexUI.add
+            .sizer({
+                orientation: "x",
+                space: {
+                    item: 20,
+                }, 
+            })
         for (let i = 0; i < stars; i++) {
             const star = this.scene.add
-                .sprite(i * 40, 0, starKey)
-                .setDepth(this.depth + 1)
-                .setScale(0.5)
-                .setPosition(i * -40, (-TILE_HEIGHT * 2) / 3)
-            this.addLocal(star)
+                .sprite(0, 0, starKey)
+            this.starsSizer.add(star)
         }
+        this.starsSizer.layout().setDepth(this.depth + 2).setPosition(x, y)
+        this.addLocal(this.starsSizer)
     }
 
     public destroyAll(exceptMainVisual = false) {
@@ -209,9 +233,10 @@ export class PlacedItemObject extends ContainerLite {
             this.fertilizerParticle = undefined
         }
 
-        if (this.levelStar) {
-            this.remove(this.levelStar, true)
-            this.levelStar = undefined
+        if (this.starsSizer) {
+            this.starsSizer.removeAll(true)
+            this.remove(this.starsSizer, true)
+            this.starsSizer = undefined
         }
     }
 
@@ -250,15 +275,15 @@ export class PlacedItemObject extends ContainerLite {
                 tilesetConfig: { extraOffsets: offsets },
             } = assetData
             const { x = 0, y = 0 } = { ...offsets }
-            if (!this.seedGrowthInfoSprite) {
-                this.seedGrowthInfoSprite = this.scene.add
-                    .sprite(x, y, key)
-                    .setOrigin(0.5, 1)
-                    .setDepth(this.depth + 2)
-                this.addLocal(this.seedGrowthInfoSprite)
-            } else {
-                this.seedGrowthInfoSprite.setTexture(key).setPosition(x, y).setDepth(this.depth + 2)
+            if (this.seedGrowthInfoSprite) {
+                // destroy the previous sprite
+                this.remove(this.seedGrowthInfoSprite, true)
             }
+            this.seedGrowthInfoSprite = this.scene.add
+                .sprite(x, y, key)
+                .setOrigin(0.5, 1)
+                .setDepth(this.depth + 2)
+            this.addLocal(this.seedGrowthInfoSprite)
         }
     }
 
@@ -501,6 +526,7 @@ export class PlacedItemObject extends ContainerLite {
         if (placedItemType.type === PlacedItemType.Animal) {
             // check if the isAdult property has changed
             if (
+                this.currentPlacedItem?.animalInfo?.isAdult &&
                 this.currentPlacedItem?.animalInfo?.isAdult !== this.nextPlacedItem.animalInfo?.isAdult
             ) {
                 return 
@@ -521,6 +547,7 @@ export class PlacedItemObject extends ContainerLite {
             if (this.mainVisual) {
                 this.remove(this.mainVisual, true)
             }
+            console.log(spineConfig)
             this.mainVisual = this.scene.add
                 .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
                 .setDepth(this.depth + 1)

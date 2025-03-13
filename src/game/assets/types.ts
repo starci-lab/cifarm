@@ -32,7 +32,6 @@ export interface TilesetConfig {
 }
 
 export interface StarsConfig {
-  isVisible?: boolean;
   extraOffsets?: ExtraOffsets;
 }
 

@@ -39,9 +39,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: {
                     gid: 10001,
                     tilesetName: "animals-cow-baby",
-                    scaleTextureHeight: 0.8,
-                    scaleTextureWidth: 0.8,
-                    extraOffsets: { x: 0, y: -20 },
+                    extraOffsets: { x: 0, y: -30 },
                 },
             },
             [AnimalAge.Adult]: {
@@ -62,7 +60,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: {
                     gid: 10002,
                     tilesetName: "animals-cow-adult",
-                    extraOffsets: { x: 0, y: -20 },
+                    extraOffsets: { x: 0, y: -30 },
                 },
             },
         },
@@ -88,9 +86,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: {
                     gid: 10011,
                     tilesetName: "animals-chicken-baby",
-                    scaleTextureHeight: 0.8,
-                    scaleTextureWidth: 0.8,
-                    extraOffsets: { x: 0, y: -20 },
+                    extraOffsets: { x: 0, y: -40 },
                 },
             },
             [AnimalAge.Adult]: {
@@ -111,7 +107,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                 tilesetConfig: {
                     gid: 10012,
                     tilesetName: "animals-chicken-adult",
-                    extraOffsets: { x: -0, y: -30 },
+                    extraOffsets: { x: -0, y: -35 },
                 },
             },
         },

@@ -1031,7 +1031,7 @@ export class InputTilemap extends ItemTilemap {
                         EventBus.emit(EventName.RefreshUser)
                     })
                     const animal = this.animals.find(
-                        (animal) => animal.id === placedItemType.tile
+                        (animal) => animal.id === placedItemType.animal
                     )
                     if (!animal) {
                         throw new Error(`Animal not found for id: ${placedItemType.tile}`)
@@ -1043,7 +1043,7 @@ export class InputTilemap extends ItemTilemap {
                             y: tileY,
                         },
                     }
-                    EventBus.emit(EventName.RequestBuyTile, eventMessage)
+                    EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
                     break
                 }
                 }
