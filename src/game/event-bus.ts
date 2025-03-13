@@ -105,8 +105,8 @@ export enum EventName {
     // change inventory tab
     InventoryTabSelected = "inventory_tab_selected",
 
-    // place item
-    PlaceInprogress = "place_inprogress",
+    // buying mode
+    BuyingModeOn = "buying_mode_on",
 
     // load completed
     LoadCompleted = "load_completed",
@@ -358,7 +358,7 @@ export interface Position {
     y: number,
 }
 
-export interface PlacedInprogressMessage {
+export interface BuyingModeOnMessage {
     // placed item
     id: string,
     type: PlacedItemType

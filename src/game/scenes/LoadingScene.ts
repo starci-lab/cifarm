@@ -242,6 +242,8 @@ export class LoadingScene extends Scene {
         loadInventoryTypesAssets(this)
         loadCropStateAssets(this)
         loadAnimalStateAssets(this)
+
+        this.load.setPath()
     }
 
     async update() {

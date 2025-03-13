@@ -18,14 +18,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         tilesetConfig: {
             gid: 12001,
             tilesetName: "buildings-home",
-            // scaleTextureHeight: 3,
-            // scaleTextureWidth: 3,
-            // extraOffsets: { x: -70, y: -120 },
-            tileSizeHeight: 3,
-            tileSizeWidth: 3,
-            starsConfig: {
-                isVisible: false
-            }
+            extraOffsets: { x: -40, y: -20 },
         },
         textureConfig: {
             key: "buildings-home",
@@ -37,16 +30,11 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         tilesetConfig: {
             gid: 12002,
             tilesetName: "coop",
-            // scaleTextureHeight: 3,
-            // scaleTextureWidth: 3,
             extraOffsets: { x: -10, y: -40 },
-            tileSizeHeight: 3,
-            tileSizeWidth: 3,
             starsConfig: {
-                isVisible: true,
                 extraOffsets: {
-                    x: 0,
-                    y: -20
+                    x: -70,
+                    y: -320
                 }
             }
         },
@@ -60,16 +48,11 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         tilesetConfig: {
             gid: 12003,
             tilesetName: "barn",
-            // scaleTextureHeight: 3,
-            // scaleTextureWidth: 3,
-            extraOffsets: { x: 40, y: -100 },
-            tileSizeHeight: 3,
-            tileSizeWidth: 3,
+            extraOffsets: { x: 0, y: -30 },
             starsConfig: {
-                isVisible: true,
                 extraOffsets: {
-                    x: 0,
-                    y: -20
+                    x: -120,
+                    y: -370
                 }
             }
         },

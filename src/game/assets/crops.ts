@@ -35,7 +35,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-turnip-1",
                     extraOffsets: {
                         x: 0,
-                        y: -10
+                        y: -40,
                     }
                 },
             },
@@ -46,7 +46,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-turnip-2",
                     extraOffsets: {
                         x: 0,
-                        y: -20,
+                        y: -48,
                     }
                 },
             },
@@ -56,8 +56,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     gid: 1003,
                     tilesetName: "crop-turnip-3",
                     extraOffsets: {
-                        x: 0,
-                        y: -30,
+                        x: -10,
+                        y: -48,
                     }
                 },
             },
@@ -68,7 +68,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-turnip-4",
                     extraOffsets: {
                         x: -10,
-                        y: -40,
+                        y: -45,
                     },
                 },
             },
@@ -77,11 +77,9 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1005,
                     tilesetName: "crop-turnip-5",
-                    scaleTextureHeight: 0.55,
-                    scaleTextureWidth: 0.55,
                     extraOffsets: {
                         x: -15,
-                        y: -55,
+                        y: -35,
                     },
                 },
             },
@@ -101,7 +99,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-carrot-1",
                     extraOffsets: {
                         x: 0,
-                        y: -10
+                        y: -40
                     }
                 },
             },
@@ -112,7 +110,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-carrot-2",
                     extraOffsets: {
                         x: 0,
-                        y: -30
+                        y: -48
                     }
                 },
             },
@@ -121,11 +119,9 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1003,
                     tilesetName: "crop-carrot-3",
-                    scaleTextureHeight: 0.8,
-                    scaleTextureWidth: 0.8,
                     extraOffsets: {
                         x: 0,
-                        y: -40
+                        y: -48
                     }
                 },
             },
@@ -134,11 +130,9 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1004,
                     tilesetName: "crop-carrot-4",
-                    scaleTextureHeight: 0.7,
-                    scaleTextureWidth: 0.7,
                     extraOffsets: {
-                        x: 10,
-                        y: -50,
+                        x: 5,
+                        y: -43,
                     }
                 },
             },
@@ -147,11 +141,9 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 tilesetConfig: {
                     gid: 1005,
                     tilesetName: "crop-carrot-5",
-                    scaleTextureHeight: 0.55,
-                    scaleTextureWidth: 0.55,
                     extraOffsets: {
-                        x: 10,
-                        y: -70,
+                        x: 5,
+                        y: -40,
                     }
                 },
             },
@@ -236,7 +228,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-cucumber-1",
                     extraOffsets: {
                         x: 0,
-                        y: -10
+                        y: -40
                     }
                 },
             },
@@ -247,7 +239,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-cucumber-2",
                     extraOffsets: {
                         x: 0,
-                        y: -20
+                        y: -30
                     }
                 },
             },
@@ -257,8 +249,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     gid: 1023,
                     tilesetName: "crop-cucumber-3",
                     extraOffsets: {
-                        x: 10,
-                        y: -40,
+                        x: 0,
+                        y: -30,
                     }
                 },
             },
@@ -268,8 +260,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     gid: 1024,
                     tilesetName: "crop-cucumber-4",
                     extraOffsets: {
-                        x: 5,
-                        y: -40,
+                        x: 0,
+                        y: -20,
                     }
                 },
             },
@@ -280,7 +272,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-cucumber-5",
                     extraOffsets: {
                         x: 0,
-                        y: -40,
+                        y: -20,
                     }
                 },
             },
@@ -300,7 +292,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-potato-1",
                     extraOffsets: {
                         x: 0,
-                        y: -10
+                        y: -40
                     }
                 },
             },
@@ -338,7 +330,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureHeight: 0.8,
                     scaleTextureWidth: 0.8,
                     extraOffsets: {
-                        x: 10,
+                        x: 0,
                         y: -30,
                     }
                 },
@@ -352,7 +344,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureWidth: 0.8,
                     extraOffsets: {
                         x: 5,
-                        y: -50,
+                        y: -30,
                     }
                 },
             },
@@ -372,7 +364,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-pineapple-1",
                     extraOffsets: {
                         x: 0,
-                        y: -10
+                        y: -40
                     }
                 },
             },
@@ -398,7 +390,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureWidth: 0.3,
                     extraOffsets: {
                         x: 0,
-                        y: -10
+                        y: -20
                     }
                 },
             },
@@ -410,8 +402,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureHeight: 0.3,
                     scaleTextureWidth: 0.3,
                     extraOffsets: {
-                        x: -5,
-                        y: -10
+                        x: -10,
+                        y: -23
                     }
                 },
             },
@@ -423,8 +415,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     scaleTextureHeight: 0.3,
                     scaleTextureWidth: 0.3,
                     extraOffsets: {
-                        x: 0,
-                        y: -45,
+                        x: -10,
+                        y: -23
                     }
                 },
             },
@@ -444,7 +436,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     tilesetName: "crop-watermelon-0",
                     extraOffsets: {
                         x: 0,
-                        y: -10
+                        y: -40
                     }
                 },
             },

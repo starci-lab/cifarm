@@ -1,81 +1,81 @@
 import { IPaginatedResponse } from "@/modules/apollo"
 import {
-    BuyAnimalRequest,
     BuyTileRequest,
-    ConstructBuildingRequest,
     CureAnimalRequest,
     FeedAnimalRequest,
     HarvestCropRequest,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
     HelpWaterRequest,
-    MoveRequest,
     PlantSeedRequest,
     SellRequest,
     ThiefCropRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
     WaterRequest,
+    UseFertilizerRequest,
+    ConstructBuildingRequest,
+    BuyAnimalRequest,
 } from "@/modules/axios"
-import { UseFertilizerRequest } from "@/modules/axios/farming/use-fertilizer"
 import {
     AnimalId,
-    BuildingId,
     CropCurrentState,
     InventorySchema,
     InventoryType,
-    InventoryTypeSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
+    PlacedItemTypeSchema,
     SupplyId,
     SupplySchema,
-    TileId,
     ToolId,
     ToolSchema,
     UserSchema,
 } from "@/modules/entities"
-import { Pinch } from "phaser3-rex-plugins/plugins/gestures"
+import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
     AnimalAge,
     animalAssetMap,
     BaseAssetKey,
     buildingAssetMap,
-    getAnimalIdFromKey,
     TextureConfig,
     tileAssetMap,
     TilesetConfig,
 } from "../assets"
-import { GREEN_TINT_COLOR, RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
+//import { GREEN_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
     EventBus,
     EventName,
     ModalName,
     OpenModalMessage,
-    PlacedInprogressMessage,
+    BuyingModeOnMessage,
     Position,
     UpdateConfirmModalMessage,
-    UpdatePlacementConfirmationMessage
 } from "../event-bus"
-import {
-    calculateGameplayDepth,
-    calculateUiDepth,
-    GameplayLayer,
-    UILayer,
-} from "../layers"
+import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { FlyItem, FlyItems, PlacementConfirmation, ToolLike } from "../ui"
+import { FlyItem, FlyItems, ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
-import { ObjectLayerName } from "./types"
+import { WHITE_TINT_COLOR, RED_TINT_COLOR } from "../constants"
+import { SpineGameObject } from "@esotericsoftware/spine-phaser"
+import { PlacementConfirmation } from "./PlacementConfirmation"
 
 export const POPUP_SCALE = 0.7
-export const TEMPORARY = "temporary"
-// temporary place item data
-export interface TemporaryPlaceItemData {
+export const DRAG = "drag"
+
+export enum InputMode {
+  Normal,
+  Buy,
+  Move,
+  Sell,
+}
+
+interface BuyingDragSpriteData {
   textureConfig: TextureConfig;
   tilesetConfig: TilesetConfig;
-  type?: PlacedItemType;
+  type: PlacedItemType;
+  placedItemType: PlacedItemTypeSchema;
 }
 // key for experience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
@@ -84,19 +84,14 @@ export class InputTilemap extends ItemTilemap {
     // pinch instance
     private pinch: Pinch
 
-    // is in placing in progress
-    private placingInProgress: boolean = false
-    // is placement mode
-    private movePlacementMode: boolean = false
-    private sellPlacementMode: boolean = false
+    // input mode
+    private inputMode = InputMode.Normal
     private storedPlacedItem: PlacedItemSchema | undefined
     private sellingPlacedItem: PlacedItemSchema | undefined
 
     // place item data
-    private temporaryLayer: Phaser.Tilemaps.ObjectLayer
-    private temporaryPlaceItemData: TemporaryPlaceItemData | undefined
-    private temporaryPlaceItemObject: Phaser.GameObjects.Sprite | undefined
-    private inventoryTypes: Array<InventoryTypeSchema> = []
+    private buyingDragSpriteData: BuyingDragSpriteData | undefined
+    private dragVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
     private placementConfirmation: PlacementConfirmation | undefined
 
     constructor(baseParams: TilemapBaseConstructorParams) {
@@ -142,66 +137,37 @@ export class InputTilemap extends ItemTilemap {
         )
 
         // listen for place in progress event
-        EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
-            this.hideButtons()
-            EventBus.emit(EventName.ShowPlacementModeButtons)
-            this.destroyTemporaryPlaceItemObject()
-            this.handlePlaceInProgress(data)
+        EventBus.on(EventName.BuyingModeOn, (data: BuyingModeOnMessage) => {
+            this.hideEverything()
+            this.inputMode = InputMode.Buy
+            this.handleBuyingMode(data)
         })
-
-        EventBus.on(EventName.MovePlacementModeOn, () => {
-            this.hideButtons()
-            EventBus.emit(EventName.ShowPlacementModeButtons)
-            this.movePlacementMode = true
-        })
-
-        EventBus.on(EventName.MovePlacementModeOff, () => {
-            EventBus.emit(EventName.HidePlacementModeButtons)
-            this.showButtons()
-            if(this.movePlacementMode){
-                if (this.storedPlacedItem) {
-                    this.placeTileForItem(this.storedPlacedItem)
-                }
-            }
+        EventBus.on(EventName.SellPlacementModeOff, () => {
             this.cancelPlacement()
         })
 
-        EventBus.on(EventName.SellPlacementModeOn, () => {
-            this.hideButtons()
-            EventBus.emit(EventName.ShowPlacementModeButtons)
-            this.sellPlacementMode = true
-        })
-        EventBus.on(EventName.SellPlacementModeOff, () => {
-            EventBus.emit(EventName.HidePlacementModeButtons)
-            this.showButtons()
-            this.sellPlacementMode = false
-            this.sellingPlacedItem = undefined
-        })
-
-        this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
-
         // click on empty tile to plant seed
-        this.scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+        const tap = new Tap(this.scene)
+        tap.on("tap", (pointer: Phaser.Input.Pointer) => {
             const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
             // do nothing if tile is not found
             if (!tile) {
                 return
             }
 
-            //if placement in progress
-            if (this.placingInProgress) {
+            //if buying mode is on
+            if (this.inputMode === InputMode.Buy) {
                 return
             }
 
             const data = this.findPlacedItemRoot(tile.x, tile.y)
-            
+
             if (!data) {
                 console.error("No placed item found for position")
                 return
             }
 
-            if(this.movePlacementMode) {
-                EventBus.emit(EventName.HidePlacementModeButtons)
+            if (this.inputMode === InputMode.Move) {
                 const placedItemId = data.object.currentPlacedItem?.id
                 this.movingPlacedItemId = placedItemId
                 if (placedItemId) {
@@ -218,21 +184,20 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 // console.log("Placing mode is on", data.placedItemType)
-                
-                const message: PlacedInprogressMessage = {
+
+                const message: BuyingModeOnMessage = {
                     id: data.placedItemType.displayId,
-                    type: data.placedItemType.type
+                    type: data.placedItemType.type,
                 }
-                EventBus.emit(EventName.PlaceInprogress, message)
+                EventBus.emit(EventName.BuyingModeOn, message)
                 return
             }
 
-            if(this.sellPlacementMode) {
+            if (this.inputMode === InputMode.Sell) {
                 const placedItemId = data.object.currentPlacedItem?.id
-                console.log("placedItemId", placedItemId)
                 if (placedItemId && this.sellingPlacedItem) {
                     this.handleSellPlacedItem({
-                        placedItem: this.sellingPlacedItem
+                        placedItem: this.sellingPlacedItem,
                     })
                 }
             }
@@ -242,15 +207,7 @@ export class InputTilemap extends ItemTilemap {
                 this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
-                console.log(
-                    "Placed item type building with id ",
-                    data.placedItemType.displayId,
-                    data,
-                    data.object.currentPlacedItem?.id
-                )
-
                 if (data.placedItemType.displayId == PlacedItemTypeId.Home) return
-
                 this.handlePressOnBuilding(data)
                 break
             case PlacedItemType.Animal:
@@ -258,13 +215,6 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
         })
-
-        // get the temporary layer
-        const temporaryLayer = this.getObjectLayer(ObjectLayerName.Temporary)
-        if (!temporaryLayer) {
-            throw new Error("Temporary layer not found")
-        }
-        this.temporaryLayer = temporaryLayer
 
         this.scene.events.on(
             EventName.CreateFlyItem,
@@ -868,38 +818,80 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    // method called to handle place in progress event
-    private handlePlaceInProgress({ id, type }: PlacedInprogressMessage) {
-        this.placingInProgress = true
-        this.removePlacmentConfirmation()
+    // method called to handle the buying mode
+    private handleBuyingMode({ id, type }: BuyingModeOnMessage) {
+        this.inputMode = InputMode.Buy
 
-        // switch case to set the place item data
         switch (type) {
-        case PlacedItemType.Animal:
-            this.temporaryPlaceItemData = {
-                ...animalAssetMap[id as AnimalId].ages[AnimalAge.Baby],
-                type: PlacedItemType.Animal,
+        case PlacedItemType.Building: {
+            const building = this.buildings.find((building) => building.id === id)
+            if (!building) {
+                throw new Error(`Building not found for id: ${id}`)
+            }
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.building === building.id
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const { textureConfig, tilesetConfig } =
+          buildingAssetMap[building.displayId]
+            this.buyingDragSpriteData = {
+                textureConfig,
+                tilesetConfig,
+                type,
+                placedItemType,
             }
             break
-        case PlacedItemType.Building:
-            this.temporaryPlaceItemData = {
-                ...buildingAssetMap[id as BuildingId],
-                type: PlacedItemType.Building,
+        }
+        case PlacedItemType.Tile: {
+            const tile = this._tiles.find((tile) => tile.id === id)
+            if (!tile) {
+                throw new Error(`Tile not found for id: ${id}`)
+            }
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.tile === tile.id
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const { textureConfig, tilesetConfig } = tileAssetMap[tile.displayId]
+            this.buyingDragSpriteData = {
+                textureConfig,
+                tilesetConfig,
+                type,
+                placedItemType,
             }
             break
-        case PlacedItemType.Tile:
-            this.temporaryPlaceItemData = {
-                ...tileAssetMap[id as TileId],
-                type: PlacedItemType.Tile,
+        }
+        case PlacedItemType.Animal: {
+            const animal = this.animals.find((animal) => animal.id === id)
+            if (!animal) {
+                throw new Error(`Animal not found for id: ${id}`)
+            }
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.animal === animal.id
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const { textureConfig, tilesetConfig } =
+          animalAssetMap[animal.displayId].ages[AnimalAge.Baby]
+            this.buyingDragSpriteData = {
+                textureConfig,
+                tilesetConfig,
+                type,
+                placedItemType,
             }
             break
+        }
         }
     }
 
     // update method to handle input events
     public update() {
     //check current mouse position is in which tile
-        if (this.placingInProgress) {
+        if (this.inputMode === InputMode.Buy) {
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -910,9 +902,9 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
             // place the item temporarily on the tile
-            this.temporaryPlaceItemOnTile(tile)
+            this.dragBuyingSpriteOnTile(tile)
         }
-        if(this.sellPlacementMode){
+        if (this.inputMode === InputMode.Sell) {
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -924,301 +916,195 @@ export class InputTilemap extends ItemTilemap {
             }
             //check if it is sellable - set green tint - set red tint
             const data = this.findPlacedItemRoot(tile.x, tile.y)
-            if(this.sellingPlacedItem?.id === data?.object.currentPlacedItem?.id){
+            if (this.sellingPlacedItem?.id === data?.object.currentPlacedItem?.id) {
                 return
             }
-            //clear tint 
-            if(this.sellingPlacedItem){
-                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearTint()
-                this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearAllTintSprite()
+            //clear tint
+            if (this.sellingPlacedItem) {
+                //this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearTint()
+                //this.placedItemObjectMap[this.sellingPlacedItem.id].object.clearAllTintSprite()
             }
             this.sellingPlacedItem = data?.object.currentPlacedItem
         }
 
-        if(this.sellingPlacedItem){
+        if (this.sellingPlacedItem) {
             this.checkCanSellPlacedItem({
-                placedItem: this.sellingPlacedItem
+                placedItem: this.sellingPlacedItem,
             })
         }
-
     }
 
-    // temporary place item on the tile, for preview the item before placing
-    private temporaryPlaceItemOnTile(tile: Phaser.Tilemaps.Tile) {
-    // throw error if temporary place item data is not found
-        if (!this.temporaryPlaceItemData) {
-            throw new Error("Temporary place item data not found")
+    // drag sprite on tile
+    private dragBuyingSpriteOnTile(tile: Phaser.Tilemaps.Tile) {
+    // throw error if drag sprite data is not found
+        if (!this.buyingDragSpriteData) {
+            throw new Error("No drag sprite data found")
         }
-        const { tilesetConfig } = this.temporaryPlaceItemData
-
-        const tileset = this.getTileset(tilesetConfig.tilesetName)
-        if (!tileset) {
-            throw new Error("Tileset not found")
-        }
-        const sourceImage = tileset.image?.getSourceImage() as HTMLImageElement
-        if (!sourceImage) {
-            throw new Error("Source image not found")
-        }
-        const { width, height } = sourceImage
-
-        const { tileSizeWidth = 1, tileSizeHeight = 1 } = tilesetConfig
+        const { placedItemType, textureConfig, tilesetConfig } =
+      this.buyingDragSpriteData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
         const isPlacementValid = this.canPlaceItemAtTile({
             tileX: position.x,
             tileY: position.y,
-            tileSizeWidth,
-            tileSizeHeight,
+            tileSizeWidth: placedItemType.sizeX,
+            tileSizeHeight: placedItemType.sizeY,
         })
 
         // if temporary place item object is already created
-        if (this.temporaryPlaceItemObject) {
-            // update the temporary place item object position
-            const position = this.tileToWorldXY(tile.x, tile.y)
-            if (!position) {
-                throw new Error("Position not found")
-            }
-            const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
-            // we need to set the position of the temporary place item object and set the origin
-            this.temporaryPlaceItemObject
-                .setPosition(position.x + x, position.y + this.tileHeight + y)
+        if (!this.dragVisual) {
+            this.dragVisual = this.scene.add
+                .sprite(0, 0, textureConfig.key)
+                .setOrigin(0.5, 1)
                 .setDepth(
                     calculateGameplayDepth({
                         layer: GameplayLayer.Effects,
                         layerDepth: 2,
                     })
                 )
-                .setOrigin(0.5, 1)
+                .setScale(this.scale, this.scale)
+        }
 
-            // set tint based on can place
-            this.temporaryPlaceItemObject.setTint(
+        // update the temporary place item object position
+        const tilePosition = this.tileToWorldXY(tile.x, tile.y)
+        if (!tilePosition) {
+            throw new Error("Position not found")
+        }
+        this.showPlacmentConfirmation({
+            tile,
+            onCancel: () => {
+                this.cancelPlacement()
+            },
+            onConfirm: (tileX: number, tileY: number) => {       
+                switch (placedItemType.type) {
+                case PlacedItemType.Building: {
+                    const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
+                        message: "Are you sure you want to construct this building?",
+                        callback: () => {
+                            EventBus.on(EventName.ConstructBuildingCompleted, () => {
+                                EventBus.emit(EventName.RefreshUser)
+                            })
+                            const building = this.buildings.find(
+                                (building) => building.id === placedItemType.building
+                            )
+                            if (!building) {
+                                throw new Error(`Building not found for id: ${placedItemType.building}`)
+                            }
+                            const eventMessage: ConstructBuildingRequest = {
+                                buildingId: building.displayId,
+                                position: {
+                                    x: tileX,
+                                    y: tileY,
+                                },
+                            }
+                            EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
+                        }
+                    }
+                    EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
+                    EventBus.emit(EventName.OpenModal, {
+                        modalName: ModalName.Confirm,
+                    })
+                    break
+                }
+                case PlacedItemType.Tile: {
+                    EventBus.on(EventName.BuyTileCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                    })
+                    const tile = this._tiles.find(
+                        (tile) => tile.id === placedItemType.tile
+                    )
+                    if (!tile) {
+                        throw new Error(`Tile not found for id: ${placedItemType.tile}`)
+                    }
+                    const eventMessage: BuyTileRequest = {
+                        tileId: tile.displayId,
+                        position: {
+                            x: tileX,
+                            y: tileY,
+                        },
+                    }
+                    EventBus.emit(EventName.RequestBuyTile, eventMessage)
+                    break
+                }
+                case PlacedItemType.Animal: {
+                    EventBus.on(EventName.BuyAnimalCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                    })
+                    const animal = this.animals.find(
+                        (animal) => animal.id === placedItemType.animal
+                    )
+                    if (!animal) {
+                        throw new Error(`Animal not found for id: ${placedItemType.tile}`)
+                    }
+                    const eventMessage: BuyAnimalRequest = {
+                        animalId: animal.displayId,
+                        position: {
+                            x: tileX,
+                            y: tileY,
+                        },
+                    }
+                    EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
+                    break
+                }
+                }
+            },
+        })
+        if (!this.placementConfirmation) {
+            throw new Error("Placement confirmation not found")
+        }
+        this.placementConfirmation.setYesButtonVisible(isPlacementValid)
+        const { x: centeredX, y: centeredY } = this.getActualTileCoordinates(
+            tile.x,
+            tile.y
+        )
+        this.placementConfirmation.updateTileXY(centeredX, centeredY)
+
+        const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
+        // set tint based on can place
+
+        if (this.dragVisual instanceof SpineGameObject) {
+            // this.dragVisual.setTint(isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR)
+        } else {
+            this.dragVisual.setTint(
                 isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
             )
-
-            this.showPlacmentConfirmation(tile)
-
-            this.placementConfirmation?.setYesButtonVisible(isPlacementValid)
-            const eventMessage: UpdatePlacementConfirmationMessage = {
-                isPlacementValid
-            }
-            EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
-
-            return
         }
-
-        // push the temporary object to the temporary layer
-        this.temporaryLayer.objects.push({
-            gid: tilesetConfig.gid,
-            id: 0,
-            name: TEMPORARY,
-            width: width * this.scale,
-            height: height * this.scale,
-            type: "",
-            visible: true,
-            ...this.computePositionForTiledObject(tile),
-        })
-
-        // create the temporary place item
-        const object = this.createFromObjects(ObjectLayerName.Temporary, {
-            id: 0,
-            classType: Phaser.GameObjects.Sprite,
-        }).at(0) as Phaser.GameObjects.Sprite | undefined
-        if (!object) {
-            throw new Error("Object not found")
-        }
-        // set the origin of the object
-        object.setOrigin(1, 0.5)
-        object.setDepth(
-            calculateUiDepth({
-                layer: UILayer.Base,
-                layerDepth: 5,
-            })
+        this.dragVisual.setPosition(
+            tilePosition.x + x,
+            tilePosition.y + this.tileHeight + y
         )
-        this.temporaryPlaceItemObject = object
     }
 
-    private showPlacmentConfirmation(tile: Phaser.Tilemaps.Tile) {
-        const position = this.tileToWorldXY(tile.x, tile.y)
+    private showPlacmentConfirmation({
+        tile,
+        onCancel,
+        onConfirm,
+    }: ShowPlacmentConfirmationParams) {
+        const tilePosition = this.tileToWorldXY(tile.x, tile.y)
 
-        if (!position) {
+        if (!tilePosition) {
             throw new Error("Position not found")
         }
 
-        if(this.placementConfirmation){
-            this.placementConfirmation.setPosition(position.x, position.y)
-            return
-        }
-
-        this.placementConfirmation = new PlacementConfirmation({
-            scene: this.scene,
-        })
-            .setDepth(
+        if (!this.placementConfirmation) {
+            this.placementConfirmation = new PlacementConfirmation({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    onCancel,
+                    onConfirm,
+                },
+            }).setDepth(
                 calculateGameplayDepth({
                     layer: GameplayLayer.Effects,
                     layerDepth: 3,
                 })
             )
-            .setPosition(position.x, position.y)
-
-        const eventMessage: UpdatePlacementConfirmationMessage = {
-            onCancel: () => {
-                EventBus.emit(EventName.MovePlacementModeOff)
-            },
-            onConfirm: () => {
-                EventBus.emit(EventName.HidePlacementModeButtons)
-                this.showButtons()
-                this.handlePlaced()
-                this.cancelPlacement()
-            },
+            this.scene.add.existing(this.placementConfirmation)
         }
-        EventBus.emit(EventName.UpdatePlacementConfirmation, eventMessage)
-        
-        this.scene.add.existing(this.placementConfirmation)
-    }
-
-    private handlePlaced() {
-        if (!this.temporaryPlaceItemObject) {
-            console.error("No temporary place item object found")
-            return
-        }
-
-        const camera = this.scene.cameras.main
-        const { x, y } = this.scene.input.activePointer.positionToCamera(
-            camera
-        ) as Phaser.Math.Vector2
-
-        const tileWorld = this.getTileAtWorldXY(x, y)
-        if (!tileWorld) {
-            console.error("No tile found for temporary place item object")
-            return
-        }
-
-        this.placeItemOnTile(
-            this.getActualTileCoordinates(tileWorld.x, tileWorld.y)
-        )
-    }
-
-    private removePlacmentConfirmation() {
-        this.placementConfirmation?.destroy()
-        this.placementConfirmation = undefined
-        this.temporaryPlaceItemData = undefined
-    }
-
-    private placeItemOnTile(position: Phaser.Math.Vector2) {
-        if (!this.temporaryPlaceItemData) {
-            console.error("No item data found for placement")
-            return
-        }
-
-        const { textureConfig, type: placedItemType } = this.temporaryPlaceItemData
-
-        if(this.movePlacementMode){
-            if(!this.movingPlacedItemId){
-                throw new Error("Moving placed item id not found")
-            }
-            
-            const eventMessage: MoveRequest = {
-                placedItemId: this.movingPlacedItemId,
-                position: {
-                    x: position.x,
-                    y: position.y,
-                },
-            }
-
-            if (this.storedPlacedItem) {
-                this.clearPlacedItem(this.storedPlacedItem)
-            }
-            EventBus.emit(EventName.RequestMove, eventMessage)
-            EventBus.emit(EventName.HandlePlacedItemUpdatePosition, eventMessage)
-
-
-            EventBus.once(EventName.MoveCompleted, () => {
-                this.cancelPlacement()
-                EventBus.emit(EventName.RefreshUser)
-            })
-
-            return 
-        }
-
-        switch (placedItemType) {
-        case PlacedItemType.Building: {
-            const buildingKey = textureConfig.key
-            if (!buildingKey) {
-                console.error("Error: Building key is undefined")
-                return
-            }
-
-            const eventMessage: ConstructBuildingRequest = {
-                buildingId: buildingKey as BuildingId,
-                position: {
-                    x: position.x,
-                    y: position.y,
-                },
-            }
-
-            EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
-
-            EventBus.once(EventName.ConstructBuildingCompleted, () => {
-                EventBus.emit(EventName.RefreshUser)
-                this.cancelPlacement()
-            })
-            break
-        }
-        case PlacedItemType.Tile: {
-            const tileKey = textureConfig.key
-            if (!tileKey) {
-                console.error("Error: Tile key is undefined")
-                return
-            }
-
-            const eventMessage: BuyTileRequest = {
-                tileId: tileKey as TileId,
-                position: {
-                    x: position.x,
-                    y: position.y,
-                },
-            }
-
-            EventBus.emit(EventName.RequestBuyTile, eventMessage)
-
-            EventBus.once(EventName.BuyTileCompleted, () => {
-                EventBus.emit(EventName.RefreshUser)
-                this.cancelPlacement()
-            })
-            break
-        }
-        case PlacedItemType.Animal: {
-            const tileKey = textureConfig.key
-            if (!tileKey) {
-                console.error("Error: Tile key is undefined")
-                return
-            }
-
-            const animalId: AnimalId = getAnimalIdFromKey(tileKey) as AnimalId
-            if (!animalId) {
-                throw new Error("Animal id not found")
-            }
-
-            const eventMessage: BuyAnimalRequest = {
-                position: {
-                    x: position.x,
-                    y: position.y,
-                },
-                animalId,
-            }
-
-            EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
-
-            EventBus.once(EventName.BuyAnimalCompleted, () => {
-                EventBus.emit(EventName.RefreshUser)
-                this.cancelPlacement()
-            })
-            break
-        }
-        default:
-            console.error("Unsupported placed item type:", placedItemType)
-        }
+        this.placementConfirmation.setPosition(tilePosition.x, tilePosition.y)
     }
 
     private handlePressOnBuilding(data: PlacedItemObjectData) {
@@ -1289,23 +1175,30 @@ export class InputTilemap extends ItemTilemap {
     }
 
     private cancelPlacement() {
-        this.destroyTemporaryPlaceItemObject()
-        this.placingInProgress = false
-        this.movePlacementMode = false
-        this.movingPlacedItemId = undefined
-        this.removePlacmentConfirmation()
+        this.showEverything()
+        this.destroyDragVisual()
+        this.inputMode = InputMode.Normal
+        this.placementConfirmation?.removeAll(true)
+        this.placementConfirmation?.destroy()
+        this.placementConfirmation = undefined
+    }
+
+    private getAnimalIdFromKey(tileKey: string): AnimalId {
+        for (const [animalId, animalData] of Object.entries(animalAssetMap)) {
+            for (const ageData of Object.values(animalData.ages)) {
+                if (ageData.textureConfig.key === tileKey) {
+                    return animalId as AnimalId
+                }
+            }
+        }
+        throw new Error("Animal id not found")
     }
 
     // destroy method to clean up the resources
-    public destroyTemporaryPlaceItemObject() {
-        this.temporaryPlaceItemObject?.destroy()
-        this.temporaryPlaceItemObject = undefined
-        // remove the temporary object from the temporary layer
-        this.temporaryLayer.objects = this.temporaryLayer.objects.filter(
-            (object) => object.name !== TEMPORARY
-        )
-        //temporaryPlaceItemData
-        this.temporaryPlaceItemData = undefined
+    public destroyDragVisual() {
+        this.dragVisual?.destroy()
+        this.dragVisual = undefined
+    // remove the temporary object from the temporary layer
     }
 
     private hasThievedCrop({ data }: HasThievedCropParams): boolean {
@@ -1371,46 +1264,50 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private checkCanSellPlacedItem({
-        placedItem
-    }: CheckCanSellPlacedItemParams) {
-        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
-        if(placedItemObjectData.placedItemType.sellable){
-            placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
-            placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
-        }
-        else{
-            placedItemObjectData.object.setTint(RED_TINT_COLOR)
-            placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
+    private checkCanSellPlacedItem({ placedItem }: CheckCanSellPlacedItemParams) {
+        const placedItemObjectData = this.placedItemObjectMap[placedItem.id]
+        if (placedItemObjectData.placedItemType.sellable) {
+            //placedItemObjectData.object.setTint(GREEN_TINT_COLOR)
+            //placedItemObjectData.object.setTintSprite(GREEN_TINT_COLOR)
+        } else {
+            //placedItemObjectData.object.setTint(RED_TINT_COLOR)
+            //placedItemObjectData.object.setTintSprite(RED_TINT_COLOR)
         }
     }
 
-    private handleSellPlacedItem({
-        placedItem
-    }: HandleSellPlacedItemParams){
+    private handleSellPlacedItem({ placedItem }: HandleSellPlacedItemParams) {
         let sellPrice: number = 0
-        const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
+        const placedItemObjectData = this.placedItemObjectMap[placedItem.id]
 
-        if(!placedItemObjectData.placedItemType.sellable){
-            return
+        if (!placedItemObjectData.placedItemType.sellable) {
+            throw new Error("Item is not sellable")
         }
 
         switch (placedItemObjectData.placedItemType.type) {
         case PlacedItemType.Building: {
             const building = this.buildings.find(
-                (building) => building.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+                (building) =>
+                    building.displayId.toString() ===
+            placedItemObjectData.placedItemType.displayId.toString()
             )
             if (!building) {
                 throw new Error("Building not found")
             }
-            const upgradeLevel = placedItemObjectData.object.currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
-            const upgradePrice = building.upgrades?.find(upgrade => upgrade.upgradeLevel === upgradeLevel)?.sellPrice ?? 0
+            const upgradeLevel =
+          placedItemObjectData.object.currentPlacedItem?.buildingInfo
+              ?.currentUpgrade ?? 1
+            const upgradePrice =
+          building.upgrades?.find(
+              (upgrade) => upgrade.upgradeLevel === upgradeLevel
+          )?.sellPrice ?? 0
             sellPrice = upgradePrice
             break
         }
         case PlacedItemType.Tile: {
             const tile = this._tiles.find(
-                (tile) => tile.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+                (tile) =>
+                    tile.displayId.toString() ===
+            placedItemObjectData.placedItemType.displayId.toString()
             )
             if (!tile) {
                 throw new Error("Tile not found")
@@ -1420,7 +1317,9 @@ export class InputTilemap extends ItemTilemap {
         }
         case PlacedItemType.Animal: {
             const animal = this.animals.find(
-                (animal) => animal.displayId.toString() === placedItemObjectData.placedItemType.displayId.toString()
+                (animal) =>
+                    animal.displayId.toString() ===
+            placedItemObjectData.placedItemType.displayId.toString()
             )
             if (!animal) {
                 throw new Error("Animal not found")
@@ -1431,7 +1330,10 @@ export class InputTilemap extends ItemTilemap {
         }
 
         const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
-            message: "Are you sure you want to sell this item? You will receive " + sellPrice + " coins.",
+            message:
+        "Are you sure you want to sell this item? You will receive " +
+        sellPrice +
+        " coins.",
             callback: () => {
                 if(!placedItemObjectData.object.currentPlacedItem){
                     return
@@ -1454,22 +1356,24 @@ export class InputTilemap extends ItemTilemap {
                     this.clearPlacedItem(placedItemObjectData.object.currentPlacedItem)
 
                 })
+
+                this.inputMode = InputMode.Normal
             }
         }
         EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
 
         EventBus.emit(EventName.OpenModal, {
-            modalName: ModalName.Confirm
+            modalName: ModalName.Confirm,
         })
     }
 
-    private hideButtons() {
-        EventBus.emit(EventName.HideTopbar)
+    private hideEverything() {
+        EventBus.emit(EventName.ShowPlacementModeButtons)
         EventBus.emit(EventName.HideToolbar)
         EventBus.emit(EventName.HideButtons)
     }
-    private showButtons() {
-        EventBus.emit(EventName.ShowTopbar)
+    private showEverything() {
+        EventBus.emit(EventName.HidePlacementModeButtons)
         EventBus.emit(EventName.ShowToolbar)
         EventBus.emit(EventName.ShowButtons)
     }
@@ -1479,8 +1383,8 @@ export interface CheckCanSellPlacedItemParams {
   placedItem: PlacedItemSchema;
 }
 export interface HandleSellPlacedItemParams {
-    placedItem: PlacedItemSchema;
-  }
+  placedItem: PlacedItemSchema;
+}
 export interface HasThievedCropParams {
   data: PlacedItemObjectData;
 }
@@ -1498,4 +1402,10 @@ export interface PlayProductFlyAnimationParams {
   position: Position;
   assetKey: string;
   quantity: number;
+}
+
+export interface ShowPlacmentConfirmationParams {
+  tile: Phaser.Tilemaps.Tile;
+  onConfirm: (tileX: number, tileY: number) => void;
+  onCancel: () => void;
 }

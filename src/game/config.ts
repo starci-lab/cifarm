@@ -1,5 +1,5 @@
 import { AUTO, Game } from "phaser"
-import { BootstrapScene, LoadingScene, GameplayScene, UIScene } from "./scenes"
+import { BootstrapScene, LoadingScene, GameplayScene, UIScene, SoundScene } from "./scenes"
 import { CONTAINER_ID } from "./constants"
 import GesturesPlugin from "phaser3-rex-plugins/plugins/gestures-plugin.js"
 import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscroller-plugin.js"
@@ -7,14 +7,13 @@ import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
 import { DataScene } from "./scenes/DataScene"
 import CircleMaskImagePlugin from "phaser3-rex-plugins/plugins/circlemaskimage-plugin.js"
 import { UserSchema } from "@/modules/entities"
-import { SoundScene } from "./scenes/SoundScene"
 import { SpinePlugin } from "@esotericsoftware/spine-phaser"
+
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     parent: CONTAINER_ID,
-    backgroundColor: "#000000",
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -51,11 +50,8 @@ const config: Phaser.Types.Core.GameConfig = {
                 plugin: UIPlugin,
                 mapping: "rexUI",
             },
-            { 
-                key: "spine.SpinePlugin", 
-                plugin: SpinePlugin, 
-                mapping: "spine" 
-            }
+            //add Spine plugin
+            { key: "spine.SpinePlugin", plugin: SpinePlugin, mapping: "spine" },
         ],
     },
     scene: [BootstrapScene, SoundScene, LoadingScene, GameplayScene, UIScene, DataScene],

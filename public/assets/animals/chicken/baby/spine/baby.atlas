@@ -1,0 +1,16 @@
+baby.png
+size:75,77
+filter:Linear,Linear
+pma:true
+animal/baby/body
+bounds:2,19,65,56
+animal/baby/eye
+bounds:2,2,25,15
+offsets:1,1,27,17
+animal/baby/leg-l
+bounds:29,2,14,15
+animal/baby/leg-r
+bounds:45,3,14,14
+animal/baby/mouth
+bounds:61,4,12,13
+offsets:1,1,14,15

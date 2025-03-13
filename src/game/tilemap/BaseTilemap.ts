@@ -1,4 +1,3 @@
-import { v4 } from "uuid"
 import { HEIGHT, SCALE, TILE_HEIGHT, TILE_WIDTH, WIDTH } from "./constants"
 import { ExtraOffsets } from "../assets"
 import { ConstructorParams, TilemapBaseConstructorParams } from "../types"
@@ -36,7 +35,7 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
                         new Phaser.Tilemaps.ObjectLayer({
                             name,
                         })
-                ),
+                ),   
             })
         }
         // call the super constructor
@@ -50,12 +49,6 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
     protected createSingleTileTileset({
         tilesetName,
         key,
-        scaleTextureWidth = 1,
-        scaleTextureHeight = 1,
-        textureHeight,
-        textureWidth,
-        tileSizeHeight = 1,
-        tileSizeWidth = 1,
         gid = 0,
         extraOffsets = {},
     }: CreateTilesetOptions): Phaser.Tilemaps.Tileset {
@@ -63,29 +56,16 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         const image = this.scene.textures
             .get(key)
             .getSourceImage() as HTMLImageElement
-
-        // update the image dimensions
-        image.width = textureWidth ?? Math.floor(image.width * scaleTextureWidth)
-        image.height =
-      textureHeight ?? Math.floor(image.height * scaleTextureHeight)
-
-        // create a new texture with the scaled image dimensions
-        const imageKey = v4()
-        this.scene.textures.addImage(imageKey, image)
         // create the tileset
         const { x = 0, y = 0 } = extraOffsets
         const tileset = this.addTilesetImage(
             tilesetName,
-            imageKey,
+            key,
             image.width,
             image.height,
             0,
             0,
             gid,
-            // {
-            //     x: -(this.tileWidth - image.width - x), // +x for extra offset
-            //     y: -2 * (this.tileHeight - image.height - y), // +2y to for extra offset
-            // }
             {
                 x: (-this.tileWidth / 2 + image.width / 2 + x) * this.scale,
                 y: (-this.tileHeight + image.height + y) * this.scale,
@@ -193,12 +173,12 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
 
     // getTileCenteredAt method using the new GetTileCenteredAtParams interface
     public getActualTileCoordinates(
-        centeredTileX: number, 
-        centeredTileY: number
+        actualTileX: number, 
+        actualTileY: number
     ): Phaser.Math.Vector2 {
         return new Phaser.Math.Vector2(
-            centeredTileX - Math.floor(WIDTH / 2),
-            centeredTileY - Math.floor(HEIGHT / 2)
+            actualTileX - Math.floor(WIDTH / 2),
+            actualTileY - Math.floor(HEIGHT / 2)
         )
     }
 
@@ -240,14 +220,6 @@ export interface CreateTilesetOptions {
   tilesetName: string;
   // asset key
   key: string;
-  // scale width of texture
-  scaleTextureWidth?: number;
-  // if provide, ignore the scaleTextureWidth
-  textureWidth?: number;
-  // scale height of texture
-  scaleTextureHeight?: number;
-  // if provide, ignore the scaleTextureHeight
-  textureHeight?: number;
   // gid
   gid?: number;
   // extra offsets
