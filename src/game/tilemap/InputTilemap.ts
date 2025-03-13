@@ -2,6 +2,7 @@ import { IPaginatedResponse } from "@/modules/apollo"
 import {
     BuyAnimalRequest,
     BuyBuildingRequest,
+    BuyFruitRequest,
     BuyTileRequest,
     CureAnimalRequest,
     FeedAnimalRequest,
@@ -912,7 +913,6 @@ export class InputTilemap extends ItemTilemap {
             if (!fruit) {
                 throw new Error(`Fruit not found for id: ${id}`)
             }
-            console.log(this.placedItemTypes)
             const placedItemType = this.placedItemTypes.find(
                 (placedItemType) => placedItemType.fruit === fruit.id
             )
@@ -1287,6 +1287,26 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
                     break
                 }
+                case PlacedItemType.Fruit: {
+                    EventBus.on(EventName.BuyFruitCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                    })
+                    const fruit = this.fruits.find(
+                        (fruit) => fruit.id === placedItemType.fruit
+                    )
+                    if (!fruit) {
+                        throw new Error(`Fruit not found for id: ${placedItemType.fruit}`)
+                    }
+                    const eventMessage: BuyFruitRequest = {
+                        fruitId: fruit.displayId,
+                        position: {
+                            x: tileX,
+                            y: tileY,
+                        },
+                    }
+                    EventBus.emit(EventName.RequestBuyFruit, eventMessage)
+                    break
+                }
                 }
             },
         })
@@ -1311,8 +1331,8 @@ export class InputTilemap extends ItemTilemap {
             )
         }
         this.dragVisual.setPosition(
-            tilePosition.x + x,
-            tilePosition.y + this.tileHeight + y
+            tilePosition.x + x * this.scale,
+            tilePosition.y + (this.tileHeight / 2) * this.scale + y * this.scale
         )
     }
 

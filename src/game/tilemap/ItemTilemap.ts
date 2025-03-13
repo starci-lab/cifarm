@@ -549,7 +549,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
             const found = previousPlacedItems.find(
-                (item) => item.id === placedItem.id
+                (item) => item.id === placedItem.id && item.x === placedItem.x && item.y === placedItem.y
             )
             if (!found) {
                 // place the item using the shared tile placing
@@ -563,9 +563,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
 
                 gameObject.updateContent(placedItem)
+                // push the placed item to the checked previous placed items
+                checkedPreviousPlacedItems.push(placedItem)
             }
-            // push the placed item to the checked previous placed items
-            checkedPreviousPlacedItems.push(placedItem)
         }
 
         // remove the unchecked previous placed items that are no longer in the current placed items
@@ -578,7 +578,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                     (object) => object.name !== placedItem.id
                 )
                 // remove the object from the tilemap
-                this.placedItemObjectMap[placedItem.id]?.object.destroy()
+                const object = this.placedItemObjectMap[placedItem.id]?.object
+                if (!object) {
+                    throw new Error("Object not found")
+                }
+                object.clear(true)
+                object.destroy()
+                // remove the object from the placed item objects map
+                delete this.placedItemObjectMap[placedItem.id]
             }
         }
     }

@@ -1,7 +1,7 @@
 // we use range of GID from 12001 - 13000 to represent different types of buildings
 import { BuildingId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, TextureConfig } from "./types"
+import { ExtraOffsets, ShopAssetData, TextureConfig } from "./types"
 
 export interface BuildingAssetData {
   name: string;
@@ -9,8 +9,14 @@ export interface BuildingAssetData {
   shop?: ShopAssetData;
 }
 
+
+export interface StarsConfig {
+    extraOffsets?: ExtraOffsets;
+  }
+  
 export interface BuildingMapAssetData {
     textureConfig: TextureConfig;
+    starsConfig?: StarsConfig;
 }
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
@@ -22,22 +28,23 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                 key: "buildings-home",
                 assetUrl: "buildings/home.png",
                 extraOffsets: { x: 20, y: -90 },
-            },
+            }, 
         },
+
     },
     [BuildingId.Coop]: {
         name: "Coop",
         map: {
             textureConfig: {
                 extraOffsets: { x: 0, y: -65 },
-                starsConfig: {
-                    extraOffsets: {
-                        x: -60,
-                        y: -320
-                    }
-                },
                 key: "buildings-coop",
                 assetUrl: "buildings/coop.png",
+            },
+            starsConfig: {
+                extraOffsets: {
+                    x: -60,
+                    y: -320
+                }
             },
         },
         shop: {
@@ -56,13 +63,13 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                 key: "buildings-barn",
                 assetUrl: "buildings/barn.png",
                 extraOffsets: { x: 0, y: -60 },
-                starsConfig: {
-                    extraOffsets: {
-                        x: -110,
-                        y: -370
-                    }
-                }
             },
+            starsConfig: {
+                extraOffsets: {
+                    x: -110,
+                    y: -370
+                }
+            }
         },
         shop: {
             textureConfig: {

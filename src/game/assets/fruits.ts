@@ -24,8 +24,8 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     key: "fruit-banana-1",
                     assetUrl: "fruits/banana/1.png",
                     extraOffsets: {
-                        x: 0,
-                        y: -40,
+                        x: -20,
+                        y: -90,
                     },
                 },
             },
@@ -89,7 +89,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     assetUrl: "fruits/apple/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -40,
+                        y: -95,
                     },
                 },
             },

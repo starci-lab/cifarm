@@ -19,10 +19,6 @@ export interface SpineConfig {
   json: JsonConfig;
 }
 
-export interface StarsConfig {
-  extraOffsets?: ExtraOffsets;
-}
-
 // interface for configuration of textures
 export interface TextureConfig {
     key: string;
@@ -33,7 +29,6 @@ export interface TextureConfig {
     extraOffsets?: ExtraOffsets;
     scaleWidth?: number;
     scaleHeight?: number;
-    starsConfig?: StarsConfig;
 }
 
 export interface ShopAssetData {

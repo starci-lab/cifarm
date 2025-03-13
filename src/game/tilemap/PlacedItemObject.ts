@@ -186,7 +186,7 @@ export class PlacedItemObject extends ContainerLite {
         if (!building) {
             throw new Error("Building not found")
         }
-        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].map.textureConfig.starsConfig?.extraOffsets }
+        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].map.starsConfig?.extraOffsets }
         // Update the number of stars
         // Sizer
         if (this.starsSizer) {
@@ -548,7 +548,6 @@ export class PlacedItemObject extends ContainerLite {
             if (this.mainVisual) {
                 this.remove(this.mainVisual, true)
             }
-            console.log(spineConfig)
             this.mainVisual = this.scene.add
                 .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
                 .setDepth(this.depth + 1)
@@ -557,16 +556,15 @@ export class PlacedItemObject extends ContainerLite {
             this.addLocal(this.mainVisual)
         } else {
             //render sprite
-            if (!this.mainVisual) {
-                this.mainVisual = this.scene.add
-                    .sprite(x, y, key)
-                    .setDepth(this.depth + 1)
-                    .setOrigin(0.5, 1)
-                this.addLocal(this.mainVisual)
-            } else {
-                const mainVisual = this.mainVisual as Phaser.GameObjects.Sprite
-                mainVisual.setTexture(key).setDepth(this.depth + 1)
+            if (this.mainVisual) {
+                // destroy the previous sprite  
+                this.remove(this.mainVisual, true)        
             }
+            this.mainVisual = this.scene.add
+                .sprite(x, y, key)
+                .setDepth(this.depth + 1)
+                .setOrigin(0.5, 1)
+            this.addLocal(this.mainVisual)
         }
     }
 
