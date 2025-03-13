@@ -834,7 +834,7 @@ export class InputTilemap extends ItemTilemap {
                 throw new Error("Placed item type not found")
             }
             const { textureConfig, tilesetConfig } =
-          buildingAssetMap[building.displayId]
+          buildingAssetMap[building.displayId].map
             this.buyingDragSpriteData = {
                 textureConfig,
                 tilesetConfig,
@@ -875,7 +875,7 @@ export class InputTilemap extends ItemTilemap {
                 throw new Error("Placed item type not found")
             }
             const { textureConfig, tilesetConfig } =
-          animalAssetMap[animal.displayId].ages[AnimalAge.Baby]
+          animalAssetMap[animal.displayId].map[AnimalAge.Baby]
             this.buyingDragSpriteData = {
                 textureConfig,
                 tilesetConfig,
@@ -1184,7 +1184,7 @@ export class InputTilemap extends ItemTilemap {
 
     private getAnimalIdFromKey(tileKey: string): AnimalId {
         for (const [animalId, animalData] of Object.entries(animalAssetMap)) {
-            for (const ageData of Object.values(animalData.ages)) {
+            for (const ageData of Object.values(animalData.map)) {
                 if (ageData.textureConfig.key === tileKey) {
                     return animalId as AnimalId
                 }

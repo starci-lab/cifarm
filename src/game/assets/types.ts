@@ -21,8 +21,8 @@ export interface SpineConfig {
 
 // interface for configuration of tilesets
 export interface TilesetConfig {
-  gid: number;
-  tilesetName: string;
+  gid?: number;
+  tilesetName?: string;
   scaleTextureWidth?: number;
   textureWidth?: number;
   scaleTextureHeight?: number;
@@ -38,8 +38,12 @@ export interface StarsConfig {
 // interface for configuration of textures
 export interface TextureConfig {
     key: string;
-    assetUrl: string;
+    assetUrl?: string;
     useExisting?: boolean;
     isQuality?: boolean;
     spineConfig?: SpineConfig;
+}
+
+export interface ShopAssetData {
+  textureConfig: TextureConfig;
 }

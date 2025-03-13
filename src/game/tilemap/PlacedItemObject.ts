@@ -183,7 +183,7 @@ export class PlacedItemObject extends ContainerLite {
         if (!building) {
             throw new Error("Building not found")
         }
-        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].tilesetConfig.starsConfig?.extraOffsets }
+        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].map.tilesetConfig.starsConfig?.extraOffsets }
         // Update the number of stars
         // Sizer
         if (this.starsSizer) {
@@ -266,7 +266,7 @@ export class PlacedItemObject extends ContainerLite {
                 throw new Error("Crop data not found")
             }
             const assetData =
-        data.stages?.[this.nextPlacedItem.seedGrowthInfo.currentStage]
+        data.map?.[this.nextPlacedItem.seedGrowthInfo.currentStage]
             if (!assetData) {
                 throw new Error("Asset data not found")
             }
@@ -682,8 +682,8 @@ export class PlacedItemObject extends ContainerLite {
             }
         }
     }
-    // method to get the GID for a placed item type
-    private getAssetData() {
+    
+    private getAssetData(): AssetData {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
@@ -717,7 +717,7 @@ export class PlacedItemObject extends ContainerLite {
             if (!building) {
                 throw new Error("Building not found")
             }
-            return buildingAssetMap[building.displayId]
+            return buildingAssetMap[building.displayId].map
         }
         case PlacedItemType.Animal: {
             if (!placedItemType.animal) throw new Error("Animal ID not found")
@@ -730,7 +730,7 @@ export class PlacedItemObject extends ContainerLite {
             const animalAge = this.currentPlacedItem?.animalInfo?.isAdult
                 ? AnimalAge.Adult
                 : AnimalAge.Baby
-            return animalAssetMap[animal.displayId].ages[animalAge]
+            return animalAssetMap[animal.displayId].map[animalAge]
         }
         }
     }

@@ -30,7 +30,6 @@ import {
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
-    AnimalAge,
     animalAssetMap,
     BaseAssetKey,
     buildingAssetMap,
@@ -441,6 +440,9 @@ export class ShopContent extends BaseSizer {
         switch (shopTab) {
         case ShopTab.Seeds: {
             for (const { displayId, price, unlockLevel } of this.crops) {
+                if (!cropAssetMap[displayId].shop) {
+                    throw new Error("Price is not found.")
+                }
                 // get the image
                 items.push({
                     assetKey: cropAssetMap[displayId].shop.textureConfig.key,
@@ -475,12 +477,16 @@ export class ShopContent extends BaseSizer {
                 const ownershipSastified = currentOwnership < maxOwnership
                 const disabled = !(goldsEnough && ownershipSastified)
                 // get the image
+                if (!animalAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
                 items.push({
                     assetKey:
-              animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+              animalAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     disabled,
                     showOwnership: true,
+                    unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -522,8 +528,11 @@ export class ShopContent extends BaseSizer {
                 const ownershipSastified = currentOwnership < maxOwnership
                 const disabled = !(goldsEnough && ownershipSastified)
                 // get the image
+                if (!buildingAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
                 items.push({
-                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    assetKey: buildingAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     disabled,
                     unlockLevel,
@@ -672,7 +681,7 @@ export class ShopContent extends BaseSizer {
             for (const { displayId, price } of this.buildings) {
                 // get the image
                 items.push({
-                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    assetKey: buildingAssetMap[displayId].map.textureConfig.key,
                     onPress: () => {
                         console.log("Clicked on building", displayId)
                     },
@@ -825,6 +834,9 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
+        if (!cropAssetMap[displayId].shop) {
+            throw new Error("Shop asset is not found.")
+        }
         const flyItem = new FlyItem({
             baseParams: {
                 scene: this.scene,
