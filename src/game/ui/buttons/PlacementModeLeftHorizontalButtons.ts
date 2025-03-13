@@ -27,8 +27,7 @@ export class PlacementModeLeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.UIIconPrevious,
             text: "Return",
             onPress: () => {
-                EventBus.emit(EventName.SellPlacementModeOff)
-                EventBus.emit(EventName.MovePlacementModeOff)
+                EventBus.emit(EventName.NormalModeOn)
             },
         })
         this.addButton(this.returnButton)

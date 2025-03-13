@@ -107,6 +107,9 @@ export enum EventName {
 
     // buying mode
     BuyingModeOn = "buying_mode_on",
+    MovingModeOn = "moving_mode_on",
+    NormalModeOn = "normal_mode_on",
+    SellingModeOn = "selling_mode_on",
 
     // load completed
     LoadCompleted = "load_completed",
@@ -288,9 +291,6 @@ export enum EventName {
     MoveCompleted = "move_completed",
 
     HandlePlacedItemUpdatePosition = "handle_placed_item_update_position",
-    //Turn on movePlacementMode
-    MovePlacementModeOn = "placement_mode_on",
-    MovePlacementModeOff = "placement_mode_off",
     //Turn on sellPlacementMode
     SellPlacementModeOn = "sell_placement_mode_on",
     SellPlacementModeOff = "sell_placement_mode_off",

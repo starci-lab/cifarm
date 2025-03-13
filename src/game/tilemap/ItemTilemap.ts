@@ -37,13 +37,8 @@ import { waitUtil } from "../ui"
 const DEPTH_MULTIPLIER = 100
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
-<<<<<<< HEAD
 const COIN_KEY = BaseAssetKey.UICommonIconCoin
 
-const DEPTH_MULTIPLIER = 100
-=======
-
->>>>>>> 13372298524335637df8da1bc2019d1fc518ffdc
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
     private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
@@ -53,9 +48,6 @@ export abstract class ItemTilemap extends GroundTilemap {
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
     private previousPlacedItems: PlacedItemsSyncedMessage | undefined
-
-    //placement item id
-    protected movingPlacedItemId: string | undefined
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
@@ -566,16 +558,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
-                if (
-                    this.movingPlacedItemId &&
-          this.movingPlacedItemId === placedItem.id
-                ) {
-                    console.log("movingPlacedItemId", this.movingPlacedItemId)
-                    this.clearPlacedItem(placedItem)
-                    this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
 
-                    return
-                }
                 gameObject.updateContent(placedItem)
             }
             // push the placed item to the checked previous placed items
@@ -748,7 +731,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         const dragTiles: Array<Position> = _.range(tileSizeWidth).flatMap((dx) =>
             _.range(tileSizeHeight).map((dy) => ({ x: tileX - dx, y: tileY - dy }))
         )
-        console.log(dragTiles)
 
         return !_.some(dragTiles, (tile) =>
             _.some(occupiedTiles, (occupiedTile) => _.isEqual(occupiedTile, tile))

@@ -734,6 +734,42 @@ export class PlacedItemObject extends ContainerLite {
         }
         }
     }
+
+    public setTintColor(tintColor: number) {
+        if (this.mainVisual) {
+            if(this.mainVisual instanceof Phaser.GameObjects.Sprite){
+                this.mainVisual.setTint(tintColor)
+            }else if (this.mainVisual instanceof SpineGameObject) {
+                const r = ((tintColor >> 16) & 0xff) / 255
+                const g = ((tintColor >> 8) & 0xff) / 255
+                const b = (tintColor & 0xff) / 255
+
+                this.mainVisual.skeleton.slots.forEach(slot => {
+                    slot.color.set(r, g, b, 1)
+                })
+            }
+            
+        }
+        if(this.seedGrowthInfoSprite){
+            this.seedGrowthInfoSprite.setTint(tintColor)
+        }
+    }
+
+    public clearTintColor() {
+        if (this.mainVisual) {
+            if(this.mainVisual instanceof Phaser.GameObjects.Sprite){
+                this.mainVisual.clearTint()
+            } else if (this.mainVisual instanceof SpineGameObject) {
+                this.mainVisual.skeleton.slots.forEach(slot => {
+                    slot.color.set(1, 1, 1, 1)
+                })
+            }
+            
+        }
+        if(this.seedGrowthInfoSprite){
+            this.seedGrowthInfoSprite.clearTint()
+        }
+    }
 }
 
 export interface AssetData {
