@@ -36,6 +36,10 @@ export interface HarvestCropData {
     cropId: string
 }
 
+export interface SellData {
+    quantity: number
+}
+
 export enum ActionName {
     Water = "water",
     UsePesticide = "usepesticide",

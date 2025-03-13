@@ -47,6 +47,7 @@ import {
     useApiDeliverMoreProductSwrMutation,
     useApiMoveSwrMutation,
     useApiBuyToolSwrMutation,
+    useApiSellSwrMutation,
     useApiBuyFruitSwrMutation,
 } from "@/hooks"
 import {
@@ -88,6 +89,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_USE_PESTICIDE_SWR_MUTATION: useApiUsePesticideSwrMutation(),
             API_HARVEST_CROP_SWR_MUTATION: useApiHarvestCropSwrMutation(),
             API_MOVE_INVENTORY_SWR_MUTATION: useApiMoveInventorySwrMutation(),
+            API_SELL_SWR_MUTATION: useApiSellSwrMutation(),
             API_DELIVER_PRODUCT_SWR_MUTATION: useApiDeliverProductSwrMutation(),
             API_DELIVER_MORE_PRODUCT_SWR_MUTATION:
         useApiDeliverMoreProductSwrMutation(),

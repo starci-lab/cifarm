@@ -96,7 +96,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.UIIconMove,
             text: "Move",
             onPress: () => {
-                EventBus.emit(EventName.MovePlacementModeOn)
+                EventBus.emit(EventName.MovingModeOn)
             },
         })
         this.addButton(this.moveButton)
@@ -106,8 +106,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.UIIconSell,
             text: "Sell",
             onPress: () => {
-                console.log("sell button pressed")
-                EventBus.emit(EventName.SellPlacementModeOn)
+                EventBus.emit(EventName.SellingModeOn)
             },
         })
         this.addButton(this.sellButton)

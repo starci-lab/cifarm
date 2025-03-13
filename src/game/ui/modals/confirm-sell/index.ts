@@ -1,1 +1,1 @@
-export * from "./ConfirmModal"
+export * from "./ConfirmSellModal"

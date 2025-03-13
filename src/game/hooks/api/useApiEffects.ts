@@ -29,6 +29,7 @@ import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
 import { useVisitEffects } from "./useVisitEffects"
 import { useWaterEffects } from "./useWaterEffects"
 import { useBuyToolEffects } from "./useBuyToolEffects"
+import { useSellEffects } from "./useSellEffects"
 import { useBuyFruitEffects } from "./useBuyFruit"
 
 export const useApiEffects = () => {
@@ -63,5 +64,6 @@ export const useApiEffects = () => {
     useDeliverMoreProductEffects()
     useMoveEffects()
     useBuyToolEffects()
+    useSellEffects()
     useBuyFruitEffects()
 }

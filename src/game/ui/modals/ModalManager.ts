@@ -20,6 +20,7 @@ import { SettingsModal } from "./settings"
 import { UpgradeBuildingModal } from "./upgrade-building"
 import { ConfirmModal } from "./confirm"
 import { SpinModal } from "./spin"
+import { ConfirmSellModal } from "./confirm-sell"
 
 export const MODAL_BACKDROP_DEPTH_1 = calculateUiDepth({
     layer: UILayer.Modal,
@@ -61,6 +62,7 @@ export class ModalManager extends ContainerLite {
     private settingsModal: SettingsModal | undefined
     private animalHousingModal: AnimalHousingModal | undefined
     private confirmModal: ConfirmModal | undefined
+    private confirmSellModal: ConfirmSellModal | undefined
 
     private externalModalNames = [ ModalName.Neighbors, ModalName.Quests, ModalName.Profile ]
     private upgradeBuildingModal: UpgradeBuildingModal | undefined
@@ -183,6 +185,15 @@ export class ModalManager extends ContainerLite {
         })
             .setDepth(MODAL_DEPTH_1)
             .hide()
+
+        this.confirmSellModal = new ConfirmSellModal({
+            scene: this.scene,
+            x: centerX,
+            y: centerY,
+        })
+            .setDepth(MODAL_DEPTH_2)
+            .hide()
+        this.scene.add.existing(this.confirmSellModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
             this.onOpen(message)
@@ -327,10 +338,10 @@ export class ModalManager extends ContainerLite {
             return this.spinModal
         }
         case ModalName.ConfirmSell:
-            if(!this.confirmModal) {
+            if(!this.confirmSellModal) {
                 throw new Error("Confirm modal not found")
             }
-            return this.confirmModal
+            return this.confirmSellModal
         case ModalName.Neighbors:
         case ModalName.Quests:
         case ModalName.Profile:

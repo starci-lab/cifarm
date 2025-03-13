@@ -3,6 +3,7 @@ import {
     ActionName,
     HarvestCropData,
     PlacedItemsSyncedMessage,
+    SellData,
     ThiefCropData,
 } from "@/hooks"
 import { sleep } from "@/modules/common"
@@ -37,6 +38,7 @@ import { waitUtil } from "../ui"
 const DEPTH_MULTIPLIER = 100
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
+const COIN_KEY = BaseAssetKey.UICommonIconCoin
 
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -47,9 +49,6 @@ export abstract class ItemTilemap extends GroundTilemap {
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
     private previousPlacedItems: PlacedItemsSyncedMessage | undefined
-
-    //placement item id
-    protected movingPlacedItemId: string | undefined
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
@@ -500,6 +499,23 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
+            case ActionName.Sell:
+                if (data.success) {
+                    const { quantity } = data.data as SellData
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: COIN_KEY,
+                            position: object.getCenter(),
+                            quantity: quantity,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.Sell,
+                    })
+                }
+                break
             }
         })
     }
@@ -545,16 +561,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.placeTileForItem(placedItem)
                     continue
                 }
-                if (
-                    this.movingPlacedItemId &&
-          this.movingPlacedItemId === placedItem.id
-                ) {
-                    console.log("movingPlacedItemId", this.movingPlacedItemId)
-                    this.clearPlacedItem(placedItem)
-                    this.placedItemObjectMap[this.movingPlacedItemId]?.object.destroy()
 
-                    return
-                }
                 gameObject.updateContent(placedItem)
             }
             // push the placed item to the checked previous placed items
@@ -727,7 +734,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         const dragTiles: Array<Position> = _.range(tileSizeWidth).flatMap((dx) =>
             _.range(tileSizeHeight).map((dy) => ({ x: tileX - dx, y: tileY - dy }))
         )
-        console.log(dragTiles)
 
         return !_.some(dragTiles, (tile) =>
             _.some(occupiedTiles, (occupiedTile) => _.isEqual(occupiedTile, tile))
