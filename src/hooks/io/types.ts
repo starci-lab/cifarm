@@ -36,6 +36,10 @@ export interface HarvestCropData {
     cropId: string
 }
 
+export interface SellData {
+    quantity: number
+}
+
 export enum ActionName {
     Water = "Water",
     UsePesticide = "UsePesticide",
@@ -52,6 +56,7 @@ export enum ActionName {
     HelpWater = "HelpWater",
     ThiefAnimalProduct = "ThiefAnimalProduct",
     ThiefCrop = "ThiefCrop",
+    Sell = "Sell"
 }
 
 export interface ShowFadeMessage {
