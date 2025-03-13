@@ -1,13 +1,13 @@
 import { BaseSizerBaseConstructorParams } from "@/game/types"
-import { getScreenCenterX, getScreenCenterY } from "../../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { ConfirmContent } from "./ConfirmSellContent"
+import { getScreenCenterX, getScreenCenterY } from "../../utils"
+import { ConfirmSellContent } from "./ConfirmSellContent"
 
 // shop modal extends BaseSizer
-export class ConfirmModal extends BaseSizer {
+export class ConfirmSellModal extends BaseSizer {
     private container: ContainerLite
-    private confirmContent: ConfirmContent
+    private confirmSellContent: ConfirmSellContent
 
     constructor({
         scene,
@@ -26,10 +26,10 @@ export class ConfirmModal extends BaseSizer {
         this.add(this.container)
 
         //create the shop content
-        this.confirmContent = new ConfirmContent({
+        this.confirmSellContent = new ConfirmSellContent({
             scene: this.scene,
         })
-        this.scene.add.existing(this.confirmContent)
-        this.container.addLocal(this.confirmContent)
+        this.scene.add.existing(this.confirmSellContent)
+        this.container.addLocal(this.confirmSellContent)
     }
 }

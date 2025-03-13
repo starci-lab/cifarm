@@ -11,6 +11,7 @@ import {
     HelpWaterRequest,
     MoveRequest,
     PlantSeedRequest,
+    SellRequest,
     ThiefCropRequest,
     UseFertilizerRequest,
     UseHerbicideRequest,
@@ -53,6 +54,7 @@ import {
     OpenModalMessage,
     Position,
     UpdateConfirmModalMessage,
+    UpdateConfirmSellModalMessage,
 } from "../event-bus"
 import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
@@ -215,11 +217,6 @@ export class InputTilemap extends ItemTilemap {
             }
 
             if (this.inputMode === InputMode.Sell) {
-                if(this.sellingDragSpriteData) {
-                    console.error("Having selling drag sprite data")
-                    return
-                }
-
                 const placedItem = data.object.currentPlacedItem
 
                 if (!placedItem) {
@@ -1009,59 +1006,72 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Placed item type not found")
         }
 
-        console.log("SELLING")
+        let sellPrice: number = 0
 
-        // switch (placedItemType.type) {
-        // case PlacedItemType.Building: {
-        //     const building = this.buildings.find(
-        //         (building) => building.id === placedItemType.building
-        //     )
-        //     if (!building) {
-        //         throw new Error(`Building not found for id: ${placedItemType.building}`)
-        //     }
-        //     const { textureConfig, tilesetConfig } = buildingAssetMap[building.displayId]
-        //     this.sellingDragSpriteData = {
-        //         textureConfig,
-        //         tilesetConfig,
-        //         type: placedItemType.type,
-        //         placedItemType,
-        //         placedItem
-        //     }
-        //     break
-        // }
-        // case PlacedItemType.Tile: {
-        //     const tile = this._tiles.find((tile) => tile.id === placedItemType.tile)
-        //     if (!tile) {
-        //         throw new Error(`Tile not found for id: ${placedItemType.tile}`)
-        //     }
-        //     const { textureConfig, tilesetConfig } = tileAssetMap[tile.displayId]
-        //     this.sellingDragSpriteData = {
-        //         textureConfig,
-        //         tilesetConfig,
-        //         type: placedItemType.type,
-        //         placedItemType,
-        //         placedItem,
-        //     }
-        //     break
-        // }
-        // case PlacedItemType.Animal: {
-        //     const animal = this.animals.find((animal) => animal.id === placedItemType.animal)
-        //     if (!animal) {
-        //         throw new Error(`Animal not found for id: ${placedItemType.animal}`)
-        //     }
-        //     const { textureConfig, tilesetConfig } = animalAssetMap[animal.displayId].ages[
-        //         AnimalAge.Baby
-        //     ]
-        //     this.sellingDragSpriteData = {
-        //         textureConfig,
-        //         tilesetConfig,
-        //         type: placedItemType.type,
-        //         placedItemType,
-        //         placedItem
-        //     }
-        //     break
-        // }
-        // }
+        if(!placedItemType.sellable){
+            EventBus.emit(EventName.CreateFlyItem, {
+                
+            })
+            return
+        }
+
+        switch (placedItemType.type) {
+        case PlacedItemType.Building: {
+            const building = this.buildings.find(
+                (building) => building.displayId.toString() === placedItemType.displayId.toString()
+            )
+            if (!building) {
+                throw new Error("Building not found")
+            }
+            const upgradeLevel = currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
+            const upgradePrice = building.upgrades?.find(upgrade => upgrade.upgradeLevel === upgradeLevel)?.sellPrice ?? 0
+            sellPrice = upgradePrice
+            break
+        }
+        case PlacedItemType.Tile: {
+            const tile = this._tiles.find(
+                (tile) => tile.displayId.toString() === placedItemType.displayId.toString()
+            )
+            if (!tile) {
+                throw new Error("Tile not found")
+            }
+            sellPrice = tile.sellPrice ?? 0
+            break
+        }
+        case PlacedItemType.Animal: {
+            const animal = this.animals.find(
+                (animal) => animal.displayId.toString() === placedItemType.displayId.toString()
+            )
+            if (!animal) {
+                throw new Error("Animal not found")
+            }
+            sellPrice = animal.sellPrice ?? 0
+            break
+        }
+        }
+
+        if(placedItemType.sellable){
+            const updateConfirmSellModalMessage: UpdateConfirmSellModalMessage = {
+                message: "Are you sure you want to sell this item?",
+                quantity: sellPrice,
+                callback: () => {
+                    EventBus.on(EventName.SellCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                    })
+                    const eventMessage: SellRequest = {
+                        placedItemId: placedItem.id,
+                    }
+                    EventBus.emit(EventName.RequestSell, eventMessage)
+                }
+            }
+            EventBus.emit(EventName.UpdateConfirmSellModal, updateConfirmSellModalMessage)
+            EventBus.emit(EventName.OpenModal, {
+                modalName: ModalName.ConfirmSell,
+            })
+        }else{
+            console.error("Not sellable")
+            return
+        }
     }
 
     // update method to handle input events
@@ -1101,7 +1111,7 @@ export class InputTilemap extends ItemTilemap {
             // do nothing if tile is not found
             if (!tile) {
                 if (this.sellingDragSpriteData) {
-                    this.clearCanSellPlacedItem({
+                    this.applyPlacedItemTint({
                         placedItem: this.sellingDragSpriteData.placedItem,
                     })
                 }
@@ -1110,39 +1120,41 @@ export class InputTilemap extends ItemTilemap {
             //check if it is sellable - set green tint - set red tint
             const data = this.findPlacedItemRoot(tile.x, tile.y)
 
-            this.handleChangeColor({
+            this.updatePlacedItemColor({
                 placedItem: data?.object.currentPlacedItem,
             })
         }
     }
 
-    private handleChangeColor({ placedItem }: HandleChangeColorParams) {
-        if (this.sellingDragSpriteData){
-            if(placedItem){
-                this.clearCanSellPlacedItem({
-                    placedItem: this.sellingDragSpriteData.placedItem
-                })
-                this.sellingDragSpriteData = {
-                    placedItem
-                }
-                this.checkCanSellPlacedItem({
-                    placedItem
-                })
-            }else{
-                this.clearCanSellPlacedItem({
-                    placedItem: this.sellingDragSpriteData.placedItem
-                })
+    private updatePlacedItemColor({ placedItem }: UpdatePlacedItemColorParams) {
+        if (!this.sellingDragSpriteData) {
+            if (placedItem) {
+                this.sellingDragSpriteData = { placedItem }
             }
-        }else{
-            if(placedItem){
-                this.sellingDragSpriteData = {
-                    placedItem
-                }
-            }
+            return
+        }
+    
+        this.removePlacedItemTint({ placedItem: this.sellingDragSpriteData.placedItem })
+    
+        if (placedItem) {
+            this.sellingDragSpriteData = { placedItem }
+            this.applyPlacedItemTint({ placedItem })
+        } else {
+            this.sellingDragSpriteData = undefined
         }
     }
 
-    private clearCanSellPlacedItem({ placedItem }: CheckCanSellPlacedItemParams) {
+    private applyPlacedItemTint({ placedItem }: PlacedItemTintParams) {
+        const object = this.placedItemObjectMap[placedItem.id].object
+        const placedItemObjectData = this.placedItemObjectMap[placedItem.id]
+        if (placedItemObjectData.placedItemType.sellable) {
+            object.setTintColor(GREEN_TINT_COLOR)
+        } else {
+            object.setTintColor(RED_TINT_COLOR)
+        }
+    }
+
+    private removePlacedItemTint({ placedItem }: PlacedItemTintParams) {
         const object = this.placedItemObjectMap[placedItem.id].object
         object.clearTintColor()
     }
@@ -1571,15 +1583,7 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private checkCanSellPlacedItem({ placedItem }: CheckCanSellPlacedItemParams) {
-        const object = this.placedItemObjectMap[placedItem.id].object
-        const placedItemObjectData = this.placedItemObjectMap[placedItem.id]
-        if (placedItemObjectData.placedItemType.sellable) {
-            object.setTintColor(GREEN_TINT_COLOR)
-        } else {
-            object.setTintColor(RED_TINT_COLOR)
-        }
-    }
+    
 
     private hideEverything() {
         EventBus.emit(EventName.ShowPlacementModeButtons)
@@ -1593,7 +1597,7 @@ export class InputTilemap extends ItemTilemap {
     }
 }
 
-export interface CheckCanSellPlacedItemParams {
+export interface PlacedItemTintParams {
   placedItem: PlacedItemSchema;
 }
 export interface HasThievedCropParams {
@@ -1629,6 +1633,6 @@ export interface HandleSellingModeParams {
     placedItem: PlacedItemSchema
 }
 
-export interface HandleChangeColorParams {
+export interface UpdatePlacedItemColorParams {
     placedItem?: PlacedItemSchema
 }
