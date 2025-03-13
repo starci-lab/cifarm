@@ -7,7 +7,7 @@ import { useBuySeedsEffects } from "./useBuySeedsEffects"
 import { useBuySuppliesEffects } from "./useBuySuppliesEffect"
 import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
-import { useConstructBuildingEffects } from "./useConstructBuilding"
+import { useBuyBuildingEffects } from "./useBuyBuilding"
 import { useCureAnimalEffects } from "./useCureAnimalEffects"
 import { useDeliverMoreProductEffects } from "./useDeliverMoreProductEffects"
 import { useDeliverProductEffects } from "./useDeliverProductEffects"
@@ -29,6 +29,7 @@ import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
 import { useVisitEffects } from "./useVisitEffects"
 import { useWaterEffects } from "./useWaterEffects"
 import { useBuyToolEffects } from "./useBuyToolEffects"
+import { useBuyFruitEffects } from "./useBuyFruit"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -38,7 +39,7 @@ export const useApiEffects = () => {
     useUseHerbicideEffects()
     useUsePesticideEffects()
     useHarvestCropEffects()
-    useConstructBuildingEffects()
+    useBuyBuildingEffects()
     useBuyTileEffects()
     useMoveInventoryEffects()
     useDeliverProductEffects()
@@ -62,4 +63,5 @@ export const useApiEffects = () => {
     useDeliverMoreProductEffects()
     useMoveEffects()
     useBuyToolEffects()
+    useBuyFruitEffects()
 }

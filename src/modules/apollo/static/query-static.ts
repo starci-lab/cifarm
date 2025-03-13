@@ -18,7 +18,8 @@ import {
     DailyRewardInfo,
     SupplySchema,
     PetSchema,
-    FruitSchema
+    FruitSchema,
+    PlacedItemInfo
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -223,7 +224,6 @@ const query = gql`
       price
       displayId
       placedItemTypeKey
-      maxOwnership
       isNft
       availableInShop
       sellPrice
@@ -281,6 +281,11 @@ const query = gql`
       type
       unlockLevel
     }
+    placedItemInfo {
+      tileLimit
+      fruitLimit
+      buildingLimit
+    }
     dailyRewardInfo {
       day1 {
         golds
@@ -335,6 +340,7 @@ export interface QueryStaticResponse {
   products: Array<ProductSchema>
   supplies: Array<SupplySchema>
   fruits: Array<FruitSchema>
+  placedItemInfo: PlacedItemInfo
 }
 
 export const queryStatic = async () => {

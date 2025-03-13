@@ -4,17 +4,17 @@ import { authAxios } from "../auth-axios"
 import { EmptyObject } from "@/modules/common"
 import { AxiosResponse } from "axios"
 
-export interface ConstructBuildingRequest {
+export interface BuyBuildingRequest {
     buildingId: BuildingId
     position: Position
 }
 
-export const constructBuilding = (
-    request: ConstructBuildingRequest,
+export const buyBuilding = (
+    request: BuyBuildingRequest,
     { version = Version.V1 }: AxiosOptions = {}
 ) =>
     authAxios.post<
     EmptyObject,
-    AxiosResponse<EmptyObject, ConstructBuildingRequest>,
-    ConstructBuildingRequest
-  >(`${version}/gameplay/construct-building`, request)
+    AxiosResponse<EmptyObject, BuyBuildingRequest>,
+    BuyBuildingRequest
+  >(`${version}/gameplay/buy-building`, request)

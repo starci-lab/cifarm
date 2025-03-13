@@ -24,7 +24,6 @@ import {
     fruitAssetMap,
     TextureConfig,
     tileAssetMap,
-    TilesetConfig,
 } from "../assets"
 import { cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
@@ -187,7 +186,7 @@ export class PlacedItemObject extends ContainerLite {
         if (!building) {
             throw new Error("Building not found")
         }
-        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].map.tilesetConfig.starsConfig?.extraOffsets }
+        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].map.textureConfig.starsConfig?.extraOffsets }
         // Update the number of stars
         // Sizer
         if (this.starsSizer) {
@@ -275,10 +274,9 @@ export class PlacedItemObject extends ContainerLite {
                 throw new Error("Asset data not found")
             }
             const {
-                textureConfig: { key },
-                tilesetConfig: { extraOffsets: offsets },
+                textureConfig: { key, extraOffsets },
             } = assetData
-            const { x = 0, y = 0 } = { ...offsets }
+            const { x = 0, y = 0 } = { ...extraOffsets }
             if (this.seedGrowthInfoSprite) {
                 // destroy the previous sprite
                 this.remove(this.seedGrowthInfoSprite, true)
@@ -542,10 +540,9 @@ export class PlacedItemObject extends ContainerLite {
             return
         }
         const {
-            textureConfig: { key, spineConfig },
-            tilesetConfig: { extraOffsets: offsets },
+            textureConfig: { key, spineConfig, extraOffsets },
         } = this.getAssetData()
-        const { x = 0, y = 0 } = { ...offsets }
+        const { x = 0, y = 0 } = { ...extraOffsets }
         if (spineConfig) {
             //render spine animation
             if (this.mainVisual) {
@@ -752,5 +749,4 @@ export class PlacedItemObject extends ContainerLite {
 
 export interface AssetData {
   textureConfig: TextureConfig;
-  tilesetConfig: TilesetConfig;
 }

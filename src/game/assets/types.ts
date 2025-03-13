@@ -19,18 +19,6 @@ export interface SpineConfig {
   json: JsonConfig;
 }
 
-// interface for configuration of tilesets
-export interface TilesetConfig {
-  gid?: number;
-  tilesetName?: string;
-  scaleTextureWidth?: number;
-  textureWidth?: number;
-  scaleTextureHeight?: number;
-  textureHeight?: number;
-  extraOffsets?: ExtraOffsets;
-  starsConfig?: StarsConfig; 
-}
-
 export interface StarsConfig {
   extraOffsets?: ExtraOffsets;
 }
@@ -45,6 +33,7 @@ export interface TextureConfig {
     extraOffsets?: ExtraOffsets;
     scaleWidth?: number;
     scaleHeight?: number;
+    starsConfig?: StarsConfig;
 }
 
 export interface ShopAssetData {

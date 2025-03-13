@@ -27,6 +27,7 @@ export enum CacheKey {
     DeliveryData = "delivery-data",
     TutorialDepth = "tutorial-depth",
     VisitedNeighbor = "visited-neighbor",
+    PlacedItemInfo = "placed-item-info",
 }
 
 export interface DeliveryData {

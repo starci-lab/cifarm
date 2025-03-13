@@ -1,6 +1,6 @@
 import { AnimalId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, TextureConfig, TilesetConfig } from "./types"
+import { ShopAssetData, TextureConfig } from "./types"
 
 export enum AnimalAge {
   Baby = "baby",
@@ -9,7 +9,6 @@ export enum AnimalAge {
 
 export interface AnimalMapAssetData {
   textureConfig: TextureConfig;
-  tilesetConfig: TilesetConfig;
 }
 
 export interface AnimalAssetData {
@@ -36,10 +35,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/cow/baby/spine/baby.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10001,
-                    tilesetName: "animals-cow-baby",
                     extraOffsets: { x: 0, y: -30 },
                 },
             },
@@ -57,10 +52,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/cow/adult/spine/adult.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10002,
-                    tilesetName: "animals-cow-adult",
                     extraOffsets: { x: 0, y: -30 },
                 },
             },
@@ -89,10 +80,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/chicken/baby/spine/baby.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10011,
-                    tilesetName: "animals-chicken-baby",
                     extraOffsets: { x: 0, y: -40 },
                 },
             },
@@ -110,10 +97,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/chicken/adult/spine/adult.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10012,
-                    tilesetName: "animals-chicken-adult",
                     extraOffsets: { x: -0, y: -35 },
                 },
             },
@@ -133,14 +116,12 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                     key: "animals-pig-baby",
                     assetUrl: "animals/pig/baby.png",
                 },
-                tilesetConfig: { gid: 10022, tilesetName: "animals-pig-baby" },
             },
             [AnimalAge.Adult]: {
                 textureConfig: {
                     key: "animals-pig-adult",
                     assetUrl: "animals/pig/adult.png",
                 },
-                tilesetConfig: { gid: 10023, tilesetName: "animals-pig-adult" },
             },
         },
         shop: {
@@ -158,14 +139,12 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                     key: "animals-sheep-baby",
                     assetUrl: "animals/sheep/baby.png",
                 },
-                tilesetConfig: { gid: 10031, tilesetName: "animals-sheep-baby" },
             },
             [AnimalAge.Adult]: {
                 textureConfig: {
                     key: "animals-sheep-adult",
                     assetUrl: "animals/sheep/adult.png",
                 },
-                tilesetConfig: { gid: 10032, tilesetName: "animals-sheep-adult" },
             },
         },
         shop: {

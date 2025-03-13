@@ -1,12 +1,11 @@
 // Crop Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
 import { FruitId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, TextureConfig, TilesetConfig } from "./types"
+import { ShopAssetData, TextureConfig } from "./types"
 
 // Crop Asset Data Interface
 export interface FruitStageAssetData {
   textureConfig: TextureConfig;
-  tilesetConfig: TilesetConfig; // TilesetConfig optional, can be used for additional offsets and other info
 }
 
 export interface FruitAssetData {
@@ -21,8 +20,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
         name: "Banana",
         map: {
             0: {
-                textureConfig: { key: "fruit-banana-1", assetUrl: "fruits/banana/1.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-banana-1",
+                    assetUrl: "fruits/banana/1.png",
                     extraOffsets: {
                         x: 0,
                         y: -40,
@@ -30,8 +30,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             1: {
-                textureConfig: { key: "fruit-banana-2", assetUrl: "fruits/banana/2.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-banana-2",
+                    assetUrl: "fruits/banana/2.png",
                     extraOffsets: {
                         x: 0,
                         y: -48,
@@ -39,8 +40,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             2: {
-                textureConfig: { key: "fruit-banana-3", assetUrl: "fruits/banana/3.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-banana-3",
+                    assetUrl: "fruits/banana/3.png",
                     extraOffsets: {
                         x: -10,
                         y: -48,
@@ -48,8 +50,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             3: {
-                textureConfig: { key: "fruit-banana-4", assetUrl: "fruits/banana/4.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-banana-4",
+                    assetUrl: "fruits/banana/4.png",
                     extraOffsets: {
                         x: -10,
                         y: -45,
@@ -57,8 +60,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             4: {
-                textureConfig: { key: "fruit-banana-5", assetUrl: "fruits/banana/5.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-banana-5",
+                    assetUrl: "fruits/banana/5.png",
                     extraOffsets: {
                         x: -15,
                         y: -35,
@@ -80,8 +84,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
         name: "Apple",
         map: {
             0: {
-                textureConfig: { key: "fruit-apple-1", assetUrl: "fruits/apple/1.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-apple-1",
+                    assetUrl: "fruits/apple/1.png",
                     extraOffsets: {
                         x: 0,
                         y: -40,
@@ -89,8 +94,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             1: {
-                textureConfig: { key: "fruit-apple-2", assetUrl: "fruits/apple/2.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-apple-2",
+                    assetUrl: "fruits/apple/2.png",
                     extraOffsets: {
                         x: 0,
                         y: -48,
@@ -98,8 +104,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             2: {
-                textureConfig: { key: "fruit-apple-3", assetUrl: "fruits/apple/3.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-apple-3",
+                    assetUrl: "fruits/apple/3.png",
                     extraOffsets: {
                         x: -10,
                         y: -48,
@@ -107,8 +114,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             3: {
-                textureConfig: { key: "fruit-apple-4", assetUrl: "fruits/apple/4.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-apple-4",
+                    assetUrl: "fruits/apple/4.png",
                     extraOffsets: {
                         x: -10,
                         y: -45,
@@ -116,8 +124,9 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
             4: {
-                textureConfig: { key: "fruit-apple-5", assetUrl: "fruits/apple/5.png" },
-                tilesetConfig: {
+                textureConfig: {
+                    key: "fruit-apple-5",
+                    assetUrl: "fruits/apple/5.png",
                     extraOffsets: {
                         x: -15,
                         y: -35,
@@ -157,7 +166,7 @@ export const loadFruitAssets = (scene: Scene) => {
             const { key, assetUrl, useExisting } = stageData.textureConfig
             if (!useExisting) {
                 scene.load.image(key, assetUrl)
-            }      
+            }
         }
     })
 }
