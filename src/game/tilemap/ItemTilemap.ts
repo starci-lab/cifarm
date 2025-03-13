@@ -3,6 +3,7 @@ import {
     ActionName,
     HarvestCropData,
     PlacedItemsSyncedMessage,
+    SellData,
     ThiefCropData,
 } from "@/hooks"
 import { sleep } from "@/modules/common"
@@ -41,6 +42,8 @@ import { ObjectLayerName } from "./types"
 
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
+const COIN_KEY = BaseAssetKey.UICommonIconCoin
+
 const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
     // tileset map
@@ -487,6 +490,23 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.HelpWater,
+                    })
+                }
+                break
+            case ActionName.Sell:
+                if (data.success) {
+                    const { quantity } = data.data as SellData
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: COIN_KEY,
+                            position: object.getCenter(),
+                            quantity: quantity,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position: object.getCenter(),
+                        text: "Failed to " + ActionName.Sell,
                     })
                 }
                 break
