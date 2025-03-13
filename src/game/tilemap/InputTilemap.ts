@@ -1,8 +1,8 @@
 import { IPaginatedResponse } from "@/modules/apollo"
 import {
     BuyAnimalRequest,
+    BuyBuildingRequest,
     BuyTileRequest,
-    ConstructBuildingRequest,
     CureAnimalRequest,
     FeedAnimalRequest,
     HarvestCropRequest,
@@ -16,10 +16,9 @@ import {
     UseFertilizerRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
-    WaterRequest
+    WaterRequest,
 } from "@/modules/axios"
 import {
-    AnimalId,
     CropCurrentState,
     InventorySchema,
     InventoryType,
@@ -33,17 +32,17 @@ import {
     ToolSchema,
     UserSchema,
 } from "@/modules/entities"
+import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
     AnimalAge,
     animalAssetMap,
     BaseAssetKey,
     buildingAssetMap,
+    fruitAssetMap,
     TextureConfig,
     tileAssetMap,
-    TilesetConfig,
 } from "../assets"
-import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
 import {
     BuyingModeOnMessage,
@@ -74,14 +73,12 @@ export enum InputMode {
 
 interface BuyingDragSpriteData {
   textureConfig: TextureConfig;
-  tilesetConfig: TilesetConfig;
   type: PlacedItemType;
   placedItemType: PlacedItemTypeSchema;
 }
 interface MovingDragSpriteData {
     placedItem: PlacedItemSchema;
     textureConfig: TextureConfig;
-    tilesetConfig: TilesetConfig;
     type: PlacedItemType;
     placedItemType: PlacedItemTypeSchema;
 }
@@ -239,6 +236,9 @@ export class InputTilemap extends ItemTilemap {
                 break
             case PlacedItemType.Animal:
                 this.handlePressOnAnimal(data)
+                break
+            case PlacedItemType.Fruit:
+                //this.handlePressOnFruit(data)
                 break
             }
         })
@@ -859,11 +859,10 @@ export class InputTilemap extends ItemTilemap {
             if (!placedItemType) {
                 throw new Error("Placed item type not found")
             }
-            const { textureConfig, tilesetConfig } =
-          buildingAssetMap[building.displayId]
+            const { textureConfig } =
+          buildingAssetMap[building.displayId].map
             this.buyingDragSpriteData = {
                 textureConfig,
-                tilesetConfig,
                 type,
                 placedItemType,
             }
@@ -880,10 +879,9 @@ export class InputTilemap extends ItemTilemap {
             if (!placedItemType) {
                 throw new Error("Placed item type not found")
             }
-            const { textureConfig, tilesetConfig } = tileAssetMap[tile.displayId]
+            const { textureConfig } = tileAssetMap[tile.displayId]
             this.buyingDragSpriteData = {
                 textureConfig,
-                tilesetConfig,
                 type,
                 placedItemType,
             }
@@ -900,11 +898,31 @@ export class InputTilemap extends ItemTilemap {
             if (!placedItemType) {
                 throw new Error("Placed item type not found")
             }
-            const { textureConfig, tilesetConfig } =
-          animalAssetMap[animal.displayId].ages[AnimalAge.Baby]
+            const { textureConfig } =
+          animalAssetMap[animal.displayId].map[AnimalAge.Baby]
             this.buyingDragSpriteData = {
                 textureConfig,
-                tilesetConfig,
+                type,
+                placedItemType,
+            }
+            break
+        }
+        case PlacedItemType.Fruit: {
+            const fruit = this.fruits.find((fruit) => fruit.id === id)
+            if (!fruit) {
+                throw new Error(`Fruit not found for id: ${id}`)
+            }
+            console.log(this.placedItemTypes)
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.fruit === fruit.id
+            )
+            if (!placedItemType) {
+                throw new Error("Fruid placed item type not found")
+            }
+            const { textureConfig } =
+          fruitAssetMap[fruit.displayId].map[0]
+            this.buyingDragSpriteData = {
+                textureConfig,
                 type,
                 placedItemType,
             }
@@ -941,10 +959,9 @@ export class InputTilemap extends ItemTilemap {
             if (!building) {
                 throw new Error(`Building not found for id: ${placedItemType.building}`)
             }
-            const { textureConfig, tilesetConfig } = buildingAssetMap[building.displayId]
+            const { textureConfig } = buildingAssetMap[building.displayId].map
             this.movingDragSpriteData = {
                 textureConfig,
-                tilesetConfig,
                 type: placedItemType.type,
                 placedItemType,
                 placedItem
@@ -956,10 +973,9 @@ export class InputTilemap extends ItemTilemap {
             if (!tile) {
                 throw new Error(`Tile not found for id: ${placedItemType.tile}`)
             }
-            const { textureConfig, tilesetConfig } = tileAssetMap[tile.displayId]
+            const { textureConfig } = tileAssetMap[tile.displayId]
             this.movingDragSpriteData = {
                 textureConfig,
-                tilesetConfig,
                 type: placedItemType.type,
                 placedItemType,
                 placedItem,
@@ -971,12 +987,11 @@ export class InputTilemap extends ItemTilemap {
             if (!animal) {
                 throw new Error(`Animal not found for id: ${placedItemType.animal}`)
             }
-            const { textureConfig, tilesetConfig } = animalAssetMap[animal.displayId].ages[
+            const { textureConfig } = animalAssetMap[animal.displayId].map[
                 AnimalAge.Baby
             ]
             this.movingDragSpriteData = {
                 textureConfig,
-                tilesetConfig,
                 type: placedItemType.type,
                 placedItemType,
                 placedItem
@@ -1165,7 +1180,7 @@ export class InputTilemap extends ItemTilemap {
         if (!this.buyingDragSpriteData) {
             throw new Error("No drag sprite data found")
         }
-        const { placedItemType, textureConfig, tilesetConfig } =
+        const { placedItemType, textureConfig } =
       this.buyingDragSpriteData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
@@ -1207,7 +1222,7 @@ export class InputTilemap extends ItemTilemap {
                     const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
                         message: "Are you sure you want to construct this building?",
                         callback: () => {
-                            EventBus.on(EventName.ConstructBuildingCompleted, () => {
+                            EventBus.on(EventName.BuyBuildingCompleted, () => {
                                 EventBus.emit(EventName.RefreshUser)
                             })
                             const building = this.buildings.find(
@@ -1216,14 +1231,14 @@ export class InputTilemap extends ItemTilemap {
                             if (!building) {
                                 throw new Error(`Building not found for id: ${placedItemType.building}`)
                             }
-                            const eventMessage: ConstructBuildingRequest = {
+                            const eventMessage: BuyBuildingRequest = {
                                 buildingId: building.displayId,
                                 position: {
                                     x: tileX,
                                     y: tileY,
                                 },
                             }
-                            EventBus.emit(EventName.RequestConstructBuilding, eventMessage)
+                            EventBus.emit(EventName.RequestBuyBuilding, eventMessage)
                         }
                     }
                     EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
@@ -1285,7 +1300,7 @@ export class InputTilemap extends ItemTilemap {
         )
         this.placementConfirmation.updateTileXY(centeredX, centeredY)
 
-        const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
+        const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
         // set tint based on can place
 
         if (this.dragVisual instanceof SpineGameObject) {
@@ -1305,7 +1320,7 @@ export class InputTilemap extends ItemTilemap {
         if (!this.movingDragSpriteData) {
             return
         }
-        const { placedItemType, textureConfig, tilesetConfig, placedItem } = this.movingDragSpriteData
+        const { placedItemType, textureConfig, placedItem } = this.movingDragSpriteData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
@@ -1379,7 +1394,7 @@ export class InputTilemap extends ItemTilemap {
         )
         this.placementConfirmation.updateTileXY(centeredX, centeredY)
 
-        const { x = 0, y = 0 } = { ...tilesetConfig.extraOffsets }
+        const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
         // set tint based on can place
 
         if (this.dragVisual instanceof SpineGameObject) {
@@ -1500,17 +1515,6 @@ export class InputTilemap extends ItemTilemap {
         this.placementConfirmation?.removeAll(true)
         this.placementConfirmation?.destroy()
         this.placementConfirmation = undefined
-    }
-
-    private getAnimalIdFromKey(tileKey: string): AnimalId {
-        for (const [animalId, animalData] of Object.entries(animalAssetMap)) {
-            for (const ageData of Object.values(animalData.ages)) {
-                if (ageData.textureConfig.key === tileKey) {
-                    return animalId as AnimalId
-                }
-            }
-        }
-        throw new Error("Animal id not found")
     }
 
     // destroy method to clean up the resources

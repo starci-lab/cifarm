@@ -56,8 +56,8 @@ export interface DefaultInfo {
   deliveryCapacity: number;
   followeeLimit: number;
   referredLimit: number;
-  referralRewardQuantity: number
-  referredRewardQuantity: number
+  referralRewardQuantity: number;
+  referredRewardQuantity: number;
   followXRewardQuantity: number;
 }
 
@@ -95,4 +95,10 @@ export interface DailyRewardInfo {
   [DailyRewardId.Day3]: DailyReward;
   [DailyRewardId.Day4]: DailyReward;
   [DailyRewardId.Day5]: DailyReward;
+}
+
+export interface PlacedItemInfo {
+  tileLimit: number;
+  fruitLimit: number;
+  buildingLimit: number;
 }

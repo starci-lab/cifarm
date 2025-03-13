@@ -17,7 +17,9 @@ import {
     TileSchema,
     DailyRewardInfo,
     SupplySchema,
-    PetSchema
+    PetSchema,
+    FruitSchema,
+    PlacedItemInfo
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -144,6 +146,7 @@ const query = gql`
       tile
       animal
       building
+      fruit
       pet
       sizeX
       sizeY
@@ -155,8 +158,21 @@ const query = gql`
       growthStages
       price
       unlockLevel
-      premium
       perennialCount
+      nextGrowthStageAfterHarvest
+      minHarvestQuantity
+      maxHarvestQuantity
+      basicHarvestExperiences
+      qualityHarvestExperiences
+      availableInShop
+    }
+    fruits {
+      id
+      displayId
+      growthStageDuration
+      growthStages
+      price
+      unlockLevel
       nextGrowthStageAfterHarvest
       minHarvestQuantity
       maxHarvestQuantity
@@ -208,7 +224,6 @@ const query = gql`
       price
       displayId
       placedItemTypeKey
-      maxOwnership
       isNft
       availableInShop
       sellPrice
@@ -266,6 +281,11 @@ const query = gql`
       type
       unlockLevel
     }
+    placedItemInfo {
+      tileLimit
+      fruitLimit
+      buildingLimit
+    }
     dailyRewardInfo {
       day1 {
         golds
@@ -319,6 +339,8 @@ export interface QueryStaticResponse {
   inventoryTypes: Array<InventoryTypeSchema>;
   products: Array<ProductSchema>
   supplies: Array<SupplySchema>
+  fruits: Array<FruitSchema>
+  placedItemInfo: PlacedItemInfo
 }
 
 export const queryStatic = async () => {

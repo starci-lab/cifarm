@@ -7,7 +7,7 @@ import {
     useApiPlantSeedSwrMutation,
     useApiClaimDailyRewardSwrMutation,
     useApiWaterSwrMutation,
-    useApiConstructBuildingSwrMutation,
+    useApiBuyBuildingSwrMutation,
     useApiBuyTileSwrMutation,
     useApiBuyAnimalSwrMutation,
     useApiFeedAnimalSwrMutation,
@@ -48,8 +48,12 @@ import {
     useApiMoveSwrMutation,
     useApiBuyToolSwrMutation,
     useApiSellSwrMutation,
+    useApiBuyFruitSwrMutation,
 } from "@/hooks"
-import { SingletonHookProvider as BaseSingletonHookProvider, SingletonHook2Provider as  BaseSingletonHook2Provider} from "@/modules/singleton-hook"
+import {
+    SingletonHookProvider as BaseSingletonHookProvider,
+    SingletonHook2Provider as BaseSingletonHook2Provider,
+} from "@/modules/singleton-hook"
 import { useDisclosure } from "@heroui/react"
 import React, { PropsWithChildren } from "react"
 
@@ -76,7 +80,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_PLANT_SEED_SWR_MUTATION: useApiPlantSeedSwrMutation(),
             API_CLAIM_DAILY_REWARD_SWR_MUTATION: useApiClaimDailyRewardSwrMutation(),
             API_WATER_SWR_MUTATION: useApiWaterSwrMutation(),
-            API_CONSTRUCT_BUILDING_SWR_MUTATION: useApiConstructBuildingSwrMutation(),
+            API_BUY_BUILDING_SWR_MUTATION: useApiBuyBuildingSwrMutation(),
             API_BUY_TILE_SWR_MUTATION: useApiBuyTileSwrMutation(),
             API_BUY_ANIMAL_SWR_MUTATION: useApiBuyAnimalSwrMutation(),
             API_FEED_ANIMAL_SWR_MUTATION: useApiFeedAnimalSwrMutation(),
@@ -87,7 +91,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_MOVE_INVENTORY_SWR_MUTATION: useApiMoveInventorySwrMutation(),
             API_SELL_SWR_MUTATION: useApiSellSwrMutation(),
             API_DELIVER_PRODUCT_SWR_MUTATION: useApiDeliverProductSwrMutation(),
-            API_DELIVER_MORE_PRODUCT_SWR_MUTATION: useApiDeliverMoreProductSwrMutation(),
+            API_DELIVER_MORE_PRODUCT_SWR_MUTATION:
+        useApiDeliverMoreProductSwrMutation(),
             API_MOVE_SWR_MUTATION: useApiMoveSwrMutation(),
             API_RETAIN_PRODUCT_SWR_MUTATION: useApiRetainProductSwrMutation(),
             API_FOLLOW_SWR_MUTATION: useApiFollowSwrMutation(),
@@ -107,6 +112,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
         useApiMintOffchainTokensSwrMutation(),
             API_UPDATE_REFERRAL_SWR_MUTATION: useApiUpdateReferralSwrMutation(),
             API_UPDATE_FOLLOW_X_SWR_MUTATION: useApiUpdateFollowXSwrMutation(),
+            API_BUY_FRUIT_SWR_MUTATION: useApiBuyFruitSwrMutation(),
+
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION:
         useHoneycombSendTransactionSwrMutation(),

@@ -9,9 +9,11 @@ import {
     CropId,
     CropSchema,
     DefaultInfo,
+    FruitSchema,
     InventorySchema,
     InventoryTypeSchema,
     PetSchema,
+    PlacedItemInfo,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeSchema,
@@ -30,11 +32,11 @@ import {
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
-    AnimalAge,
     animalAssetMap,
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    fruitAssetMap,
     petAssetMap,
     supplyAssetMap,
     tileAssetMap,
@@ -84,12 +86,14 @@ export class ShopContent extends BaseSizer {
     private crops: Array<CropSchema>
     private buildings: Array<BuildingSchema>
     private tiles: Array<TileSchema>
+    private fruits: Array<FruitSchema>
     private supplies: Array<SupplySchema>
     private placedItems: Array<PlacedItemSchema> = []
     private placedItemTypes: Array<PlacedItemTypeSchema>
     private inventoryTypes: Array<InventoryTypeSchema>
     private pets: Array<PetSchema>
     private tools: Array<ToolSchema>
+    private placedItemInfo: PlacedItemInfo
     //default
     private defaultItemCard: ContainerLite | undefined
     private defaultSeedButton: Label | undefined
@@ -180,9 +184,13 @@ export class ShopContent extends BaseSizer {
         this.crops = this.scene.cache.obj.get(CacheKey.Crops)
         this.crops = this.crops.filter((crop) => crop.availableInShop)
 
+        this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
+        this.fruits = this.fruits.filter((fruit) => fruit.availableInShop)
+
         this.placedItemTypes = this.scene.cache.obj.get(
             CacheKey.PlacedItemTypes
         )
+        this.placedItemInfo = this.scene.cache.obj.get(CacheKey.PlacedItemInfo)
 
         // load buildings
         this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
@@ -441,9 +449,12 @@ export class ShopContent extends BaseSizer {
         switch (shopTab) {
         case ShopTab.Seeds: {
             for (const { displayId, price, unlockLevel } of this.crops) {
+                if (!cropAssetMap[displayId].shop) {
+                    throw new Error("Price is not found.")
+                }
                 // get the image
                 items.push({
-                    assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                    assetKey: cropAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(
                         unlockLevel
                     ),
@@ -475,13 +486,16 @@ export class ShopContent extends BaseSizer {
                 const ownershipSastified = currentOwnership < maxOwnership
                 const disabled = !(goldsEnough && ownershipSastified)
                 // get the image
+                if (!animalAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
                 items.push({
                     assetKey:
-              animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
+              animalAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
-                    unlockLevel,
                     disabled,
                     showOwnership: true,
+                    unlockLevel,
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -523,8 +537,11 @@ export class ShopContent extends BaseSizer {
                 const ownershipSastified = currentOwnership < maxOwnership
                 const disabled = !(goldsEnough && ownershipSastified)
                 // get the image
+                if (!buildingAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
                 items.push({
-                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    assetKey: buildingAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     disabled,
                     unlockLevel,
@@ -543,11 +560,49 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.BuyingModeOn, message)
                     },
                     price,
-                    scaleX: 0.5,
-                    scaleY: 0.5,
+                    scaleWidth: buildingAssetMap[displayId].shop.textureConfig.scaleWidth,
+                    scaleHeight: buildingAssetMap[displayId].shop.textureConfig.scaleHeight,
                     showOwnership: true,
                     maxOwnership,
                     currentOwnership
+                })
+            }
+            break
+        }
+        case ShopTab.Fruits:
+        {
+            for (const { displayId, price, unlockLevel, id } of this.fruits) {
+                if (!fruitAssetMap[displayId].shop) {
+                    throw new Error("Price is not found.")
+                }
+                const maxOwnership = this.placedItemInfo.fruitLimit
+                // get the image
+                items.push({
+                    assetKey: fruitAssetMap[displayId].shop.textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
+                    maxOwnership,
+                    showOwnership: true,
+                    currentOwnership: this.getCurrentOwnership({
+                        displayId,
+                        type: PlacedItemType.Fruit,
+                    }),
+                    onPress: () => {
+                        // close the modal
+                        const eventMessage: CloseModalMessage = {
+                            modalName: ModalName.Shop,
+                        }
+                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        // then turn on the building mode
+                        const message: BuyingModeOnMessage = {
+                            id,
+                            type: PlacedItemType.Fruit,
+                        }
+                        EventBus.emit(EventName.HideButtons)
+                        EventBus.emit(EventName.BuyingModeOn, message)
+                    },
+                    prepareCloseShop: true,
+                    price,
                 })
             }
             break
@@ -563,9 +618,7 @@ export class ShopContent extends BaseSizer {
                     displayId,
                     type: PlacedItemType.Tile,
                 })
-                const maxOwnership = this.tiles.find(
-                    (tile) => tile.displayId === displayId
-                )?.maxOwnership
+                const maxOwnership = this.placedItemInfo.tileLimit
                 if (!maxOwnership) {
                     throw new Error("Max ownership is not found.")
                 }
@@ -593,9 +646,7 @@ export class ShopContent extends BaseSizer {
                     },
                     price,
                     showOwnership: true,
-                    maxOwnership: this.tiles.find(
-                        (tile) => tile.displayId === displayId
-                    )?.maxOwnership,
+                    maxOwnership,
                     currentOwnership: this.getCurrentOwnership({
                         type: PlacedItemType.Tile,
                         displayId,
@@ -673,7 +724,7 @@ export class ShopContent extends BaseSizer {
             for (const { displayId, price } of this.buildings) {
                 // get the image
                 items.push({
-                    assetKey: buildingAssetMap[displayId].textureConfig.key,
+                    assetKey: buildingAssetMap[displayId].map.textureConfig.key,
                     onPress: () => {
                         console.log("Clicked on building", displayId)
                     },
@@ -691,8 +742,8 @@ export class ShopContent extends BaseSizer {
         assetKey,
         iconOffset,
         price,
-        scaleX = 1,
-        scaleY = 1,
+        scaleHeight = 1,
+        scaleWidth = 1,
         disabled,
         unlockLevel,
         locked = false,
@@ -717,9 +768,11 @@ export class ShopContent extends BaseSizer {
         )
         container.addLocal(cardBackground)
         const icon = this.scene.add
-            .image(x, y - 40, assetKey)
-            .setScale(scaleX, scaleY)
-        container.addLocal(icon)
+            .image(x, y + 20, assetKey).setOrigin(0.5, 1)
+            .setScale(scaleWidth, scaleHeight)
+        container.pinLocal(icon, {
+            syncScale: false,
+        })
         // create button
         const buttonPrice = new Button({
             baseParams: {
@@ -826,12 +879,15 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuySeeds, eventMessage)
+        if (!cropAssetMap[displayId].shop) {
+            throw new Error("Shop asset is not found.")
+        }
         const flyItem = new FlyItem({
             baseParams: {
                 scene: this.scene,
             },
             options: {
-                assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                assetKey: cropAssetMap[displayId].shop.textureConfig.key,
                 x: pointer.x,
                 y: pointer.y,
                 quantity: 1,
@@ -996,10 +1052,10 @@ export interface CreateItemCardParams {
   iconOffset?: IconOffsets;
   // price
   price?: number;
-  // scale X
-  scaleX?: number;
-  // scale Y
-  scaleY?: number;
+  // scale width
+  scaleWidth?: number;
+  // scale height
+  scaleHeight?: number;
   // locked
   locked?: boolean;
   // level unlock

@@ -12,6 +12,7 @@ import {
     AnimalSchema,
     BuildingSchema,
     CropSchema,
+    FruitSchema,
     InventoryTypeSchema,
     PlacedItemSchema,
     PlacedItemType,
@@ -56,6 +57,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected products: Array<ProductSchema>
     protected user: UserSchema
     protected animals: Array<AnimalSchema>
+    protected fruits: Array<FruitSchema>
     protected buildings: Array<BuildingSchema>
     protected _tiles: Array<TileSchema>
     protected supplies: Array<SupplySchema>
@@ -82,6 +84,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.tools = this.scene.cache.obj.get(CacheKey.Tools)
         this.placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes)
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
+        this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
 
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
             this.fading = true

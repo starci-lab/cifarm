@@ -1,23 +1,20 @@
 import { PetId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { TextureConfig, TilesetConfig } from "./types"
+import { TextureConfig } from "./types"
 
 export interface PetAssetData {
     name: string;
     textureConfig: TextureConfig;
-    tilesetConfig: TilesetConfig;
 }
 
 export const petAssetMap: Record<PetId, PetAssetData> = {
     [PetId.Dog]: {
         name: "Dog",
         textureConfig: { key: "pets-dog", assetUrl: "pets/dog.png" },
-        tilesetConfig: { gid: 14001, tilesetName: "pets-cat" },
     },
     [PetId.Cat]: {
         name: "Cat",
         textureConfig: { key: "pets-cat", assetUrl: "pets/cat.png" },
-        tilesetConfig: { gid: 14002, tilesetName: "pets-cat" },
     },
 }
 

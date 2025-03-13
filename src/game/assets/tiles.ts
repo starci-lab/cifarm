@@ -1,13 +1,11 @@
 // we use range of GID from 13001 - 14000 to represent different types of tiles
 import { TileId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { TextureConfig, TilesetConfig } from "./types"
+import { TextureConfig } from "./types"
 
 
 export interface TileAssetData {
     name: string;
-   // config for tileset
-   tilesetConfig: TilesetConfig;
    // texture config
    textureConfig: TextureConfig
 }
@@ -20,10 +18,6 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
             key: "tiles-basic-tile",
             assetUrl: "tiles/starter-tile.png",
         },
-        tilesetConfig: {
-            gid: 13002,
-            tilesetName: "tiles-basic-tile",
-        }
     },
 }
 

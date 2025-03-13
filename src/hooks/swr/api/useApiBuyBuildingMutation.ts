@@ -1,24 +1,24 @@
-import { ConstructBuildingRequest, constructBuilding } from "@/modules/axios"
+import { BuyBuildingRequest, buyBuilding } from "@/modules/axios"
 import useSWRMutation from "swr/mutation"
 import { v4 } from "uuid"
 import { UseSWRMutation } from "../types"
 import { WithAxiosOptionsAndRequest } from "./types"
 
-export type UseApiConstructBuildingSwrMutationArgs = WithAxiosOptionsAndRequest<ConstructBuildingRequest>
+export type UseApiBuyBuildingSwrMutationArgs = WithAxiosOptionsAndRequest<BuyBuildingRequest>
 
-export const useApiConstructBuildingSwrMutation = (): UseSWRMutation<
+export const useApiBuyBuildingSwrMutation = (): UseSWRMutation<
   void,
-  UseApiConstructBuildingSwrMutationArgs
+  UseApiBuyBuildingSwrMutationArgs
 > => {
     const swrMutation = useSWRMutation(
         v4(),
         async (
             _: string,
-            extraArgs: { arg: UseApiConstructBuildingSwrMutationArgs }
+            extraArgs: { arg: UseApiBuyBuildingSwrMutationArgs }
         ) => {
             const { request, options } = { ...extraArgs.arg }
             //update the tutorial only
-            await constructBuilding(request, options)
+            await buyBuilding(request, options)
         }
     )
 

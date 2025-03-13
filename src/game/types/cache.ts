@@ -8,6 +8,7 @@ export enum CacheKey {
     Supplies = "supplies",
     Activities = "activities",
     Pets = "pets",
+    Fruits = "fruits",
     Inventories = "inventories",
     NeighborsArgs = "neighbors-args",
     Neighbors = "neighbors",
@@ -26,6 +27,7 @@ export enum CacheKey {
     DeliveryData = "delivery-data",
     TutorialDepth = "tutorial-depth",
     VisitedNeighbor = "visited-neighbor",
+    PlacedItemInfo = "placed-item-info",
 }
 
 export interface DeliveryData {

@@ -5,6 +5,7 @@ import {
     BuildingSchema,
     CropCurrentState,
     CropSchema,
+    FruitSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
@@ -20,9 +21,9 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    fruitAssetMap,
     TextureConfig,
     tileAssetMap,
-    TilesetConfig,
 } from "../assets"
 import { cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
@@ -47,6 +48,7 @@ export class PlacedItemObject extends ContainerLite {
     private placedItemTypes: Array<PlacedItemTypeSchema>
     private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema>
+    private fruits: Array<FruitSchema>
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
@@ -57,6 +59,7 @@ export class PlacedItemObject extends ContainerLite {
         this.placedItemTypes = scene.cache.obj.get(CacheKey.PlacedItemTypes)
         this.tiles = scene.cache.obj.get(CacheKey.Tiles)
         this.buildings = scene.cache.obj.get(CacheKey.Buildings)
+        this.fruits = scene.cache.obj.get(CacheKey.Fruits)
     }
 
     public updateContent(placedItem: PlacedItemSchema) {
@@ -183,7 +186,7 @@ export class PlacedItemObject extends ContainerLite {
         if (!building) {
             throw new Error("Building not found")
         }
-        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].tilesetConfig.starsConfig?.extraOffsets }
+        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].map.textureConfig.starsConfig?.extraOffsets }
         // Update the number of stars
         // Sizer
         if (this.starsSizer) {
@@ -266,15 +269,14 @@ export class PlacedItemObject extends ContainerLite {
                 throw new Error("Crop data not found")
             }
             const assetData =
-        data.stages?.[this.nextPlacedItem.seedGrowthInfo.currentStage]
+        data.map?.[this.nextPlacedItem.seedGrowthInfo.currentStage]
             if (!assetData) {
                 throw new Error("Asset data not found")
             }
             const {
-                textureConfig: { key },
-                tilesetConfig: { extraOffsets: offsets },
+                textureConfig: { key, extraOffsets },
             } = assetData
-            const { x = 0, y = 0 } = { ...offsets }
+            const { x = 0, y = 0 } = { ...extraOffsets }
             if (this.seedGrowthInfoSprite) {
                 // destroy the previous sprite
                 this.remove(this.seedGrowthInfoSprite, true)
@@ -469,14 +471,14 @@ export class PlacedItemObject extends ContainerLite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: -40,
+                            y: -25,
                             text: "",
                         },
                         options: {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    }).setDepth(this.depth + 3)
+                    }).setOrigin(0.5, 1).setDepth(this.depth + 3)
                     this.scene.add.existing(this.timer)
                     this.pinLocal(this.timer, {
                         syncScale: false,
@@ -538,10 +540,9 @@ export class PlacedItemObject extends ContainerLite {
             return
         }
         const {
-            textureConfig: { key, spineConfig },
-            tilesetConfig: { extraOffsets: offsets },
+            textureConfig: { key, spineConfig, extraOffsets },
         } = this.getAssetData()
-        const { x = 0, y = 0 } = { ...offsets }
+        const { x = 0, y = 0 } = { ...extraOffsets }
         if (spineConfig) {
             //render spine animation
             if (this.mainVisual) {
@@ -604,7 +605,7 @@ export class PlacedItemObject extends ContainerLite {
                                 layer: GameplayLayer.Effects,
                             })
                         )
-                        .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
+                        .setPosition(-TILE_WIDTH / 4,  (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -640,7 +641,7 @@ export class PlacedItemObject extends ContainerLite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: TILE_HEIGHT / 2 - 20,
+                            y: -25,
                             text: "",
                         },
                         options: {
@@ -682,8 +683,8 @@ export class PlacedItemObject extends ContainerLite {
             }
         }
     }
-    // method to get the GID for a placed item type
-    private getAssetData() {
+
+    private getAssetData(): AssetData {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
@@ -717,7 +718,7 @@ export class PlacedItemObject extends ContainerLite {
             if (!building) {
                 throw new Error("Building not found")
             }
-            return buildingAssetMap[building.displayId]
+            return buildingAssetMap[building.displayId].map
         }
         case PlacedItemType.Animal: {
             if (!placedItemType.animal) throw new Error("Animal ID not found")
@@ -730,7 +731,17 @@ export class PlacedItemObject extends ContainerLite {
             const animalAge = this.currentPlacedItem?.animalInfo?.isAdult
                 ? AnimalAge.Adult
                 : AnimalAge.Baby
-            return animalAssetMap[animal.displayId].ages[animalAge]
+            return animalAssetMap[animal.displayId].map[animalAge]
+        }
+        case PlacedItemType.Fruit: {
+            if (!placedItemType.fruit) {
+                throw new Error("Fruit ID not found")
+            }
+            const fruit = this.fruits.find((fruit) => fruit.id === placedItemType.fruit)
+            if (!fruit) {
+                throw new Error("Fruit not found")
+            }
+            return fruitAssetMap[fruit.displayId].map[0]
         }
         }
     }
@@ -774,5 +785,4 @@ export class PlacedItemObject extends ContainerLite {
 
 export interface AssetData {
   textureConfig: TextureConfig;
-  tilesetConfig: TilesetConfig;
 }

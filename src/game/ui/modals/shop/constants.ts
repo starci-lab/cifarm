@@ -11,6 +11,9 @@ export const tabsConfig: Record<ShopTab, TabData> = {
     [ShopTab.Animals]: {
         iconKey: BaseAssetKey.UIModalShopAnimalsTab,
     },
+    [ShopTab.Fruits]: {
+        iconKey: BaseAssetKey.UIModalShopFruitsTab,
+    },
     [ShopTab.Buildings]: {
         iconKey: BaseAssetKey.UIModalShopBuildingTab,
     },

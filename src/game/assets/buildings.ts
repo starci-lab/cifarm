@@ -1,64 +1,76 @@
 // we use range of GID from 12001 - 13000 to represent different types of buildings
 import { BuildingId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { TextureConfig, TilesetConfig } from "./types"
+import { ShopAssetData, TextureConfig } from "./types"
 
 export interface BuildingAssetData {
   name: string;
-  // config for tileset
-  tilesetConfig: TilesetConfig;
-  // texture config
-  textureConfig: TextureConfig
+  map: BuildingMapAssetData;
+  shop?: ShopAssetData;
+}
+
+export interface BuildingMapAssetData {
+    textureConfig: TextureConfig;
 }
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
 export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
     [BuildingId.Home]: {
         name: "Home",
-        tilesetConfig: {
-            gid: 12001,
-            tilesetName: "buildings-home",
-            extraOffsets: { x: -40, y: -20 },
+        map: {
+            textureConfig: {
+                key: "buildings-home",
+                assetUrl: "buildings/home.png",
+                extraOffsets: { x: 20, y: -90 },
+            },
         },
-        textureConfig: {
-            key: "buildings-home",
-            assetUrl: "buildings/home.png",
-        }
     },
     [BuildingId.Coop]: {
         name: "Coop",
-        tilesetConfig: {
-            gid: 12002,
-            tilesetName: "coop",
-            extraOffsets: { x: -10, y: -40 },
-            starsConfig: {
-                extraOffsets: {
-                    x: -70,
-                    y: -320
-                }
-            }
+        map: {
+            textureConfig: {
+                extraOffsets: { x: 0, y: -65 },
+                starsConfig: {
+                    extraOffsets: {
+                        x: -60,
+                        y: -320
+                    }
+                },
+                key: "buildings-coop",
+                assetUrl: "buildings/coop.png",
+            },
         },
-        textureConfig: {
-            key: "coop",
-            assetUrl: "buildings/coop.png",
+        shop: {
+            textureConfig: {
+                key: "buildings-coop",
+                useExisting: true,
+                scaleWidth: 0.35,
+                scaleHeight: 0.35
+            }
         }
     },
     [BuildingId.Barn]: {
         name: "Barn",
-        tilesetConfig: {
-            gid: 12003,
-            tilesetName: "barn",
-            extraOffsets: { x: 0, y: -30 },
-            starsConfig: {
-                extraOffsets: {
-                    x: -120,
-                    y: -370
+        map: {
+            textureConfig: {
+                key: "buildings-barn",
+                assetUrl: "buildings/barn.png",
+                extraOffsets: { x: 0, y: -60 },
+                starsConfig: {
+                    extraOffsets: {
+                        x: -110,
+                        y: -370
+                    }
                 }
-            }
+            },
         },
-        textureConfig: {
-            key: "barn",
-            assetUrl: "buildings/barn.png",
+        shop: {
+            textureConfig: {
+                key: "buildings-barn",
+                useExisting: true,
+                scaleWidth: 0.35,
+                scaleHeight: 0.35
+            }
         }
     },
 }
@@ -75,13 +87,21 @@ export const loadBuildingAssets = (scene: Scene) => {
         }
 
         // Load the asset for the building
-        const { key, assetUrl, useExisting } = buildingData.textureConfig
-        if (useExisting) {
-            return
+        const { key, assetUrl, useExisting } = buildingData.map.textureConfig
+        if (!useExisting) {
+            scene.load.image(
+                key,
+                assetUrl
+            )
         }
-        scene.load.image(
-            key,
-            assetUrl
-        )
+        
+        // Load the asset for the shop
+        if (buildingData.shop) {
+            const { key, useExisting, assetUrl } = buildingData.shop.textureConfig
+            if (useExisting) {
+                scene.load.image(key, assetUrl)
+            }
+            
+        }
     })
 }

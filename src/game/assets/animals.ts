@@ -1,26 +1,26 @@
 import { AnimalId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { TextureConfig, TilesetConfig } from "./types"
+import { ShopAssetData, TextureConfig } from "./types"
 
 export enum AnimalAge {
   Baby = "baby",
   Adult = "adult",
 }
 
-export interface AnimalAgeAssetData {
+export interface AnimalMapAssetData {
   textureConfig: TextureConfig;
-  tilesetConfig: TilesetConfig;
 }
 
 export interface AnimalAssetData {
   name: string;
-  ages: Record<AnimalAge, AnimalAgeAssetData>;
+  map: Record<AnimalAge, AnimalMapAssetData>;
+  shop?: ShopAssetData;
 }
 
 export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
     [AnimalId.Cow]: {
         name: "Cow",
-        ages: {
+        map: {
             [AnimalAge.Baby]: {
                 textureConfig: {
                     key: "animals-cow-baby",
@@ -35,10 +35,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/cow/baby/spine/baby.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10001,
-                    tilesetName: "animals-cow-baby",
                     extraOffsets: { x: 0, y: -30 },
                 },
             },
@@ -56,18 +52,20 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/cow/adult/spine/adult.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10002,
-                    tilesetName: "animals-cow-adult",
                     extraOffsets: { x: 0, y: -30 },
                 },
             },
         },
+        shop: {
+            textureConfig: {
+                key: "animals-cow-adult",
+                useExisting: true,
+            },
+        }
     },
     [AnimalId.Chicken]: {
         name: "Chicken",
-        ages: {
+        map: {
             [AnimalAge.Baby]: {
                 textureConfig: {
                     key: "animals-chicken-baby",
@@ -82,10 +80,6 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/chicken/baby/spine/baby.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10011,
-                    tilesetName: "animals-chicken-baby",
                     extraOffsets: { x: 0, y: -40 },
                 },
             },
@@ -103,52 +97,62 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                             assetUrl: "animals/chicken/adult/spine/adult.json",
                         },
                     },
-                },
-                tilesetConfig: {
-                    gid: 10012,
-                    tilesetName: "animals-chicken-adult",
                     extraOffsets: { x: -0, y: -35 },
                 },
             },
         },
+        shop: {
+            textureConfig: {
+                key: "animals-chicken-adult",
+                useExisting: true,
+            }
+        }
     },
     [AnimalId.Pig]: {
         name: "Pig",
-        ages: {
+        map: {
             [AnimalAge.Baby]: {
                 textureConfig: {
                     key: "animals-pig-baby",
                     assetUrl: "animals/pig/baby.png",
                 },
-                tilesetConfig: { gid: 10022, tilesetName: "animals-pig-baby" },
             },
             [AnimalAge.Adult]: {
                 textureConfig: {
                     key: "animals-pig-adult",
                     assetUrl: "animals/pig/adult.png",
                 },
-                tilesetConfig: { gid: 10023, tilesetName: "animals-pig-adult" },
             },
         },
+        shop: {
+            textureConfig: {
+                key: "animals-pig-adult",
+                useExisting: true,
+            }
+        }
     },
     [AnimalId.Sheep]: {
         name: "Sheep",
-        ages: {
+        map: {
             [AnimalAge.Baby]: {
                 textureConfig: {
                     key: "animals-sheep-baby",
                     assetUrl: "animals/sheep/baby.png",
                 },
-                tilesetConfig: { gid: 10031, tilesetName: "animals-sheep-baby" },
             },
             [AnimalAge.Adult]: {
                 textureConfig: {
                     key: "animals-sheep-adult",
                     assetUrl: "animals/sheep/adult.png",
                 },
-                tilesetConfig: { gid: 10032, tilesetName: "animals-sheep-adult" },
             },
         },
+        shop: {
+            textureConfig: {
+                key: "animals-sheep-adult",
+                useExisting: true,
+            }
+        }
     },
 }
 
@@ -163,7 +167,7 @@ export const loadAnimalAssets = (scene: Scene) => {
         }
 
         for (const age of Object.values(AnimalAge)) {
-            const { key, assetUrl, useExisting, spineConfig } = animalData.ages[age].textureConfig
+            const { key, assetUrl, useExisting, spineConfig } = animalData.map[age].textureConfig
             if (spineConfig) {
                 scene.load.spineJson(
                     spineConfig.json.key,
@@ -174,10 +178,16 @@ export const loadAnimalAssets = (scene: Scene) => {
                     spineConfig.atlas.assetUrl
                 )
             }
+            if (!useExisting) {
+                scene.load.image(key, assetUrl)
+            }    
+        }
+
+        if (animalData.shop) {
+            const { key, useExisting, assetUrl } = animalData.shop.textureConfig
             if (useExisting) {
-                continue
+                scene.load.image(key, assetUrl)
             }
-            scene.load.image(key, assetUrl)
         }
     })
 }
