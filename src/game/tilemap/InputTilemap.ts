@@ -11,6 +11,7 @@ import {
     HelpWaterRequest,
     MoveRequest,
     PlantSeedRequest,
+    SellRequest,
     ThiefCropRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
@@ -143,16 +144,19 @@ export class InputTilemap extends ItemTilemap {
         // listen for place in progress event
         EventBus.on(EventName.PlaceInprogress, (data: PlacedInprogressMessage) => {
             this.hideButtons()
+            EventBus.emit(EventName.ShowPlacementModeButtons)
             this.destroyTemporaryPlaceItemObject()
             this.handlePlaceInProgress(data)
         })
 
         EventBus.on(EventName.MovePlacementModeOn, () => {
             this.hideButtons()
+            EventBus.emit(EventName.ShowPlacementModeButtons)
             this.movePlacementMode = true
         })
 
         EventBus.on(EventName.MovePlacementModeOff, () => {
+            EventBus.emit(EventName.HidePlacementModeButtons)
             this.showButtons()
             if(this.movePlacementMode){
                 if (this.storedPlacedItem) {
@@ -164,9 +168,11 @@ export class InputTilemap extends ItemTilemap {
 
         EventBus.on(EventName.SellPlacementModeOn, () => {
             this.hideButtons()
+            EventBus.emit(EventName.ShowPlacementModeButtons)
             this.sellPlacementMode = true
         })
         EventBus.on(EventName.SellPlacementModeOff, () => {
+            EventBus.emit(EventName.HidePlacementModeButtons)
             this.showButtons()
             this.sellPlacementMode = false
             this.sellingPlacedItem = undefined
@@ -195,6 +201,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             if(this.movePlacementMode) {
+                EventBus.emit(EventName.HidePlacementModeButtons)
                 const placedItemId = data.object.currentPlacedItem?.id
                 this.movingPlacedItemId = placedItemId
                 if (placedItemId) {
@@ -1059,6 +1066,7 @@ export class InputTilemap extends ItemTilemap {
                 EventBus.emit(EventName.MovePlacementModeOff)
             },
             onConfirm: () => {
+                EventBus.emit(EventName.HidePlacementModeButtons)
                 this.showButtons()
                 this.handlePlaced()
                 this.cancelPlacement()
@@ -1384,7 +1392,7 @@ export class InputTilemap extends ItemTilemap {
         const placedItemObjectData =  this.placedItemObjectMap[placedItem.id]
 
         if(!placedItemObjectData.placedItemType.sellable){
-            throw new Error("Item is not sellable")
+            return
         }
 
         switch (placedItemObjectData.placedItemType.type) {
@@ -1425,10 +1433,27 @@ export class InputTilemap extends ItemTilemap {
         const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
             message: "Are you sure you want to sell this item? You will receive " + sellPrice + " coins.",
             callback: () => {
-            // EventBus.emit(EventName.SellPlacedItem, placedItem)
-                console.log("Sell placed item")
+                if(!placedItemObjectData.object.currentPlacedItem){
+                    return
+                }
 
-                this.sellPlacementMode = false
+                const eventMessage: SellRequest = {
+                    placedItemId: placedItemObjectData.object.currentPlacedItem.id
+                }
+                EventBus.emit(EventName.RequestSell, eventMessage)
+
+                EventBus.once(EventName.SellCompleted, () => {
+                    EventBus.emit(EventName.RefreshUser)
+                    EventBus.emit(EventName.SellPlacementModeOff)
+
+                    if(!placedItemObjectData.object.currentPlacedItem){
+                        return
+                    }
+                    this.placedItemObjectMap[placedItemObjectData.object.currentPlacedItem.id].occupiedTiles = []
+                    //destroy placed item object
+                    this.clearPlacedItem(placedItemObjectData.object.currentPlacedItem)
+
+                })
             }
         }
         EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
@@ -1442,13 +1467,11 @@ export class InputTilemap extends ItemTilemap {
         EventBus.emit(EventName.HideTopbar)
         EventBus.emit(EventName.HideToolbar)
         EventBus.emit(EventName.HideButtons)
-        EventBus.emit(EventName.ShowPlacementModeButtons)
     }
     private showButtons() {
         EventBus.emit(EventName.ShowTopbar)
         EventBus.emit(EventName.ShowToolbar)
         EventBus.emit(EventName.ShowButtons)
-        EventBus.emit(EventName.HidePlacementModeButtons)
     }
 }
 
