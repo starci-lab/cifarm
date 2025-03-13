@@ -34,6 +34,11 @@ export enum CropId {
     BellPepper = "bellPepper"
 }
 
+export enum FruitId {
+    Banana = "banana",
+    Apple = "apple",
+}
+
 // Daily Reward Enum
 export enum DailyRewardId {
     Day1 = "day1",

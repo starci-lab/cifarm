@@ -3,9 +3,6 @@ import { CropId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ShopAssetData, TextureConfig, TilesetConfig } from "./types"
 
-// Number of growth map for each crop
-export const NUM_GROWTH_STAGES = 5
-
 // Crop Asset Data Interface
 export interface CropStageAssetData {
   textureConfig: TextureConfig;
@@ -550,10 +547,10 @@ export const loadCropAssets = (scene: Scene) => {
         }
         // Load the seed asset
         if (cropData.shop) {
-            scene.load.image(
-                cropData.shop.textureConfig.key,
-                cropData.shop.textureConfig.assetUrl
-            )
+            const { key, useExisting, assetUrl } = cropData.shop.textureConfig
+            if (!useExisting) {
+                scene.load.image(key, assetUrl)
+            }
         }
 
         // Load the asset for each growth stage

@@ -17,7 +17,6 @@ import {
     BuyAnimalRequest,
 } from "@/modules/axios"
 import {
-    AnimalId,
     CropCurrentState,
     InventorySchema,
     InventoryType,
@@ -1180,17 +1179,6 @@ export class InputTilemap extends ItemTilemap {
         this.placementConfirmation?.removeAll(true)
         this.placementConfirmation?.destroy()
         this.placementConfirmation = undefined
-    }
-
-    private getAnimalIdFromKey(tileKey: string): AnimalId {
-        for (const [animalId, animalData] of Object.entries(animalAssetMap)) {
-            for (const ageData of Object.values(animalData.map)) {
-                if (ageData.textureConfig.key === tileKey) {
-                    return animalId as AnimalId
-                }
-            }
-        }
-        throw new Error("Animal id not found")
     }
 
     // destroy method to clean up the resources

@@ -9,6 +9,7 @@ import {
     CropId,
     CropSchema,
     DefaultInfo,
+    FruitSchema,
     InventorySchema,
     InventoryTypeSchema,
     PetSchema,
@@ -34,6 +35,7 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    fruitAssetMap,
     petAssetMap,
     supplyAssetMap,
     tileAssetMap,
@@ -83,6 +85,7 @@ export class ShopContent extends BaseSizer {
     private crops: Array<CropSchema>
     private buildings: Array<BuildingSchema>
     private tiles: Array<TileSchema>
+    private fruits: Array<FruitSchema>
     private supplies: Array<SupplySchema>
     private placedItems: Array<PlacedItemSchema> = []
     private placedItemTypes: Array<PlacedItemTypeSchema>
@@ -178,6 +181,9 @@ export class ShopContent extends BaseSizer {
         // load crops
         this.crops = this.scene.cache.obj.get(CacheKey.Crops)
         this.crops = this.crops.filter((crop) => crop.availableInShop)
+
+        this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
+        this.fruits = this.fruits.filter((fruit) => fruit.availableInShop)
 
         this.placedItemTypes = this.scene.cache.obj.get(
             CacheKey.PlacedItemTypes
@@ -551,11 +557,42 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.BuyingModeOn, message)
                     },
                     price,
-                    scaleX: 0.5,
-                    scaleY: 0.5,
+                    scaleWidth: buildingAssetMap[displayId].shop.textureConfig.scaleWidth,
+                    scaleHeight: buildingAssetMap[displayId].shop.textureConfig.scaleHeight,
                     showOwnership: true,
                     maxOwnership,
                     currentOwnership
+                })
+            }
+            break
+        }
+        case ShopTab.Fruits:
+        {
+            for (const { displayId, price, unlockLevel, id } of this.fruits) {
+                if (!fruitAssetMap[displayId].shop) {
+                    throw new Error("Price is not found.")
+                }
+                // get the image
+                items.push({
+                    assetKey: fruitAssetMap[displayId].shop.textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    unlockLevel,
+                    onPress: () => {
+                        // close the modal
+                        const eventMessage: CloseModalMessage = {
+                            modalName: ModalName.Shop,
+                        }
+                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        // then turn on the building mode
+                        const message: BuyingModeOnMessage = {
+                            id,
+                            type: PlacedItemType.Fruit,
+                        }
+                        EventBus.emit(EventName.HideButtons)
+                        EventBus.emit(EventName.BuyingModeOn, message)
+                    },
+                    prepareCloseShop: true,
+                    price,
                 })
             }
             break
@@ -699,8 +736,8 @@ export class ShopContent extends BaseSizer {
         assetKey,
         iconOffset,
         price,
-        scaleX = 1,
-        scaleY = 1,
+        scaleHeight = 1,
+        scaleWidth = 1,
         disabled,
         unlockLevel,
         locked = false,
@@ -725,9 +762,11 @@ export class ShopContent extends BaseSizer {
         )
         container.addLocal(cardBackground)
         const icon = this.scene.add
-            .image(x, y - 40, assetKey)
-            .setScale(scaleX, scaleY)
-        container.addLocal(icon)
+            .image(x, y + 20, assetKey).setOrigin(0.5, 1)
+            .setScale(scaleWidth, scaleHeight)
+        container.pinLocal(icon, {
+            syncScale: false,
+        })
         // create button
         const buttonPrice = new Button({
             baseParams: {
@@ -1007,10 +1046,10 @@ export interface CreateItemCardParams {
   iconOffset?: IconOffsets;
   // price
   price?: number;
-  // scale X
-  scaleX?: number;
-  // scale Y
-  scaleY?: number;
+  // scale width
+  scaleWidth?: number;
+  // scale height
+  scaleHeight?: number;
   // locked
   locked?: boolean;
   // level unlock

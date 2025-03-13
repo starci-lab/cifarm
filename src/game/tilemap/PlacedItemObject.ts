@@ -5,6 +5,7 @@ import {
     BuildingSchema,
     CropCurrentState,
     CropSchema,
+    FruitSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
@@ -20,6 +21,7 @@ import {
     BaseAssetKey,
     buildingAssetMap,
     cropAssetMap,
+    fruitAssetMap,
     TextureConfig,
     tileAssetMap,
     TilesetConfig,
@@ -47,6 +49,7 @@ export class PlacedItemObject extends ContainerLite {
     private placedItemTypes: Array<PlacedItemTypeSchema>
     private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema>
+    private fruits: Array<FruitSchema>
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
@@ -57,6 +60,7 @@ export class PlacedItemObject extends ContainerLite {
         this.placedItemTypes = scene.cache.obj.get(CacheKey.PlacedItemTypes)
         this.tiles = scene.cache.obj.get(CacheKey.Tiles)
         this.buildings = scene.cache.obj.get(CacheKey.Buildings)
+        this.fruits = scene.cache.obj.get(CacheKey.Fruits)
     }
 
     public updateContent(placedItem: PlacedItemSchema) {
@@ -682,7 +686,7 @@ export class PlacedItemObject extends ContainerLite {
             }
         }
     }
-    
+
     private getAssetData(): AssetData {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
@@ -731,6 +735,16 @@ export class PlacedItemObject extends ContainerLite {
                 ? AnimalAge.Adult
                 : AnimalAge.Baby
             return animalAssetMap[animal.displayId].map[animalAge]
+        }
+        case PlacedItemType.Fruit: {
+            if (!placedItemType.fruit) {
+                throw new Error("Fruit ID not found")
+            }
+            const fruit = this.fruits.find((fruit) => fruit.id === placedItemType.fruit)
+            if (!fruit) {
+                throw new Error("Fruit not found")
+            }
+            return fruitAssetMap[fruit.displayId].map[0]
         }
         }
     }

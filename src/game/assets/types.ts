@@ -42,6 +42,9 @@ export interface TextureConfig {
     useExisting?: boolean;
     isQuality?: boolean;
     spineConfig?: SpineConfig;
+    extraOffsets?: ExtraOffsets;
+    scaleWidth?: number;
+    scaleHeight?: number;
 }
 
 export interface ShopAssetData {

@@ -32,10 +32,10 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         name: "Coop",
         map: {
             tilesetConfig: {
-                extraOffsets: { x: -10, y: -40 },
+                extraOffsets: { x: 0, y: -65 },
                 starsConfig: {
                     extraOffsets: {
-                        x: -70,
+                        x: -60,
                         y: -320
                     }
                 }
@@ -48,7 +48,9 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         shop: {
             textureConfig: {
                 key: "buildings-coop",
-                useExisting: true
+                useExisting: true,
+                scaleWidth: 0.35,
+                scaleHeight: 0.35
             }
         }
     },
@@ -56,10 +58,10 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         name: "Barn",
         map: {
             tilesetConfig: {
-                extraOffsets: { x: 0, y: -30 },
+                extraOffsets: { x: 0, y: -60 },
                 starsConfig: {
                     extraOffsets: {
-                        x: -120,
+                        x: -110,
                         y: -370
                     }
                 }
@@ -72,7 +74,9 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         shop: {
             textureConfig: {
                 key: "buildings-barn",
-                useExisting: true
+                useExisting: true,
+                scaleWidth: 0.35,
+                scaleHeight: 0.35
             }
         }
     },
@@ -98,5 +102,13 @@ export const loadBuildingAssets = (scene: Scene) => {
             )
         }
         
+        // Load the asset for the shop
+        if (buildingData.shop) {
+            const { key, useExisting, assetUrl } = buildingData.shop.textureConfig
+            if (useExisting) {
+                scene.load.image(key, assetUrl)
+            }
+            
+        }
     })
 }

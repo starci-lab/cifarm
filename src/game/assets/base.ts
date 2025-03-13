@@ -53,6 +53,7 @@ export enum BaseAssetKey {
     UIModalShopBuildingTab = "ui-modal-shop-building-tab",
     UIModalShopDecorationTab = "ui-modal-shop-decoration-tab",
     UIModalShopToolsTab = "ui-modal-shop-tool-tab",
+    UIModalShopFruitsTab = "ui-modal-shop-fruit-tab",
     UIModalShopPetsTab = "ui-modal-shop-pet-tab",
     UIModalShopTilesTab = "ui-modal-shop-tile-tab",
     UIModalShopSeedsTab = "ui-modal-shop-seed-tab",
@@ -227,6 +228,7 @@ export const baseAssetMap: Record<BaseAssetKey, string> = {
     [BaseAssetKey.UIModalShopTilesTab]: "ui/modals/shop/tiles-tab.png",
     [BaseAssetKey.UIModalShopSeedsTab]: "ui/modals/shop/seeds-tab.png",
     [BaseAssetKey.UIModalShopSuppliesTab]: "ui/modals/shop/supplies-tab.png",
+    [BaseAssetKey.UIModalShopFruitsTab]: "ui/modals/shop/fruits-tab.png",
 
     // Spin UIModals
     [BaseAssetKey.UIModalSpinBackground]: "ui/modals/spin/background.png",
