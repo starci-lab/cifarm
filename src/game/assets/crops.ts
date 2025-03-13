@@ -20,7 +20,7 @@ export interface CropAssetData {
   stages: Record<number, CropStageAssetData>;
   name: string;
   textureConfig: TextureConfig;
-  seed: SeedAssetData;
+  shop: SeedAssetData;
 }
 
 // Crop asset data map with the GID and asset URL for each crop using CropId as the key
@@ -84,7 +84,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
         },
-        seed: {
+        shop: {
             textureConfig: { key: "crop-turnip-seed", assetUrl: "crops/turnip/seed.png" },
         },
         textureConfig: { key: "crop-turnip", assetUrl: "crops/turnip/base.png" },
@@ -148,7 +148,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
         },
-        seed: {
+        shop: {
             textureConfig: { key: "crop-carrot-seed", assetUrl: "crops/carrot/seed.png" },
         },
         textureConfig: { key: "crop-carrot", assetUrl: "crops/carrot/base.png" },
@@ -212,7 +212,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
         },
-        seed: {
+        shop: {
             textureConfig: { key: "crop-bell-pepper-seed", assetUrl: "crops/bell-pepper/seed.png" },
         },
         textureConfig: { key: "crop-bell-pepper", assetUrl: "crops/bell-pepper/base.png" },
@@ -277,7 +277,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
         },
-        seed: {
+        shop: {
             textureConfig: { key: "crop-cucumber-seed", assetUrl: "crops/cucumber/seed.png" },
         },
         textureConfig: { key: "crop-cucumber", assetUrl: "crops/cucumber/base.png" },
@@ -349,7 +349,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
         },
-        seed: {
+        shop: {
             textureConfig: { key: "crop-potato-seed", assetUrl: "crops/potato/seed.png" },
         },
         textureConfig: { key: "crop-potato", assetUrl: "crops/potato/base.png" },
@@ -421,7 +421,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
         },
-        seed: {
+        shop: {
             textureConfig: { key: "crop-pineapple-seed", assetUrl: "crops/pineapple/seed.png" },
         },
         textureConfig: { key: "crop-pineapple", assetUrl: "crops/pineapple/base.png" },
@@ -493,7 +493,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                 },
             },
         },
-        seed: {
+        shop: {
             textureConfig: { key: "crop-watermelon-seed", assetUrl: "crops/watermelon/seed.png" },
         },
         textureConfig: { key: "crop-watermelon", assetUrl: "crops/watermelon/base.png" },
@@ -514,7 +514,7 @@ export const loadCropAssets = (scene: Scene) => {
         scene.load.image(cropData.textureConfig.key, cropData.textureConfig.assetUrl)
 
         // Load the seed asset
-        scene.load.image(cropData.seed.textureConfig.key, cropData.seed.textureConfig.assetUrl)
+        scene.load.image(cropData.shop.textureConfig.key, cropData.shop.textureConfig.assetUrl)
 
         // Load the asset for each growth stage
         for (const stage of Object.keys(cropData.stages)) {

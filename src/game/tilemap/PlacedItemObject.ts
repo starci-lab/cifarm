@@ -469,14 +469,14 @@ export class PlacedItemObject extends ContainerLite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: -40,
+                            y: -25,
                             text: "",
                         },
                         options: {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    }).setDepth(this.depth + 3)
+                    }).setOrigin(0.5, 1).setDepth(this.depth + 3)
                     this.scene.add.existing(this.timer)
                     this.pinLocal(this.timer, {
                         syncScale: false,
@@ -604,7 +604,7 @@ export class PlacedItemObject extends ContainerLite {
                                 layer: GameplayLayer.Effects,
                             })
                         )
-                        .setPosition(-TILE_WIDTH / 4, -TILE_HEIGHT / 2)
+                        .setPosition(-TILE_WIDTH / 4,  (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -640,7 +640,7 @@ export class PlacedItemObject extends ContainerLite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: TILE_HEIGHT / 2 - 20,
+                            y: -25,
                             text: "",
                         },
                         options: {

@@ -41,7 +41,7 @@ export const inventoryTypeAssetMap: Record<
     },
     [InventoryTypeId.TurnipSeed]: {
         name: "Turnip Seed",
-        textureConfig: { ...cropAssetMap[CropId.Turnip].seed.textureConfig, useExisting: true },
+        textureConfig: { ...cropAssetMap[CropId.Turnip].shop.textureConfig, useExisting: true },
     },
     [InventoryTypeId.Carrot]: {
         name: "Carrot",
@@ -53,7 +53,7 @@ export const inventoryTypeAssetMap: Record<
     },
     [InventoryTypeId.CarrotSeed]: {
         name: "Carrot Seed",
-        textureConfig: { ...cropAssetMap[CropId.Carrot].seed.textureConfig, useExisting: true },
+        textureConfig: { ...cropAssetMap[CropId.Carrot].shop.textureConfig, useExisting: true },
     },
     [InventoryTypeId.Potato]: {
         name: "Potato",
@@ -65,7 +65,7 @@ export const inventoryTypeAssetMap: Record<
     },
     [InventoryTypeId.PotatoSeed]: {
         name: "Potato Seed",
-        textureConfig: { ...cropAssetMap[CropId.Potato].seed.textureConfig, useExisting: true },
+        textureConfig: { ...cropAssetMap[CropId.Potato].shop.textureConfig, useExisting: true },
     },
 
     [InventoryTypeId.Cucumber]: {
@@ -78,7 +78,7 @@ export const inventoryTypeAssetMap: Record<
     },
     [InventoryTypeId.CucumberSeed]: {
         name: "Cucumber Seed",
-        textureConfig: { ...cropAssetMap[CropId.Cucumber].seed.textureConfig, useExisting: true },
+        textureConfig: { ...cropAssetMap[CropId.Cucumber].shop.textureConfig, useExisting: true },
     },
 
     [InventoryTypeId.Pineapple]: {
@@ -91,7 +91,7 @@ export const inventoryTypeAssetMap: Record<
     },
     [InventoryTypeId.PineappleSeed]: {
         name: "Pineapple Seed",
-        textureConfig: { ...cropAssetMap[CropId.Pineapple].seed.textureConfig, useExisting: true },
+        textureConfig: { ...cropAssetMap[CropId.Pineapple].shop.textureConfig, useExisting: true },
     },
     [InventoryTypeId.Watermelon]: {
         name: "Watermelon",
@@ -103,7 +103,7 @@ export const inventoryTypeAssetMap: Record<
     },
     [InventoryTypeId.WatermelonSeed]: {
         name: "Watermelon Seed",
-        textureConfig: { ...cropAssetMap[CropId.Watermelon].seed.textureConfig, useExisting: true },
+        textureConfig: { ...cropAssetMap[CropId.Watermelon].shop.textureConfig, useExisting: true },
     },
 
     [InventoryTypeId.BellPepper]: {
@@ -116,7 +116,7 @@ export const inventoryTypeAssetMap: Record<
     },
     [InventoryTypeId.BellPepperSeed]: {
         name: "Bell Pepper Seed",
-        textureConfig: cropAssetMap[CropId.BellPepper].seed.textureConfig,
+        textureConfig: cropAssetMap[CropId.BellPepper].shop.textureConfig,
     },
 
     [InventoryTypeId.BasicFertilizer]: {

@@ -443,7 +443,7 @@ export class ShopContent extends BaseSizer {
             for (const { displayId, price, unlockLevel } of this.crops) {
                 // get the image
                 items.push({
-                    assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                    assetKey: cropAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(
                         unlockLevel
                     ),
@@ -479,7 +479,6 @@ export class ShopContent extends BaseSizer {
                     assetKey:
               animalAssetMap[displayId].ages[AnimalAge.Baby].textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
-                    unlockLevel,
                     disabled,
                     showOwnership: true,
                     onPress: () => {
@@ -831,7 +830,7 @@ export class ShopContent extends BaseSizer {
                 scene: this.scene,
             },
             options: {
-                assetKey: cropAssetMap[displayId].seed.textureConfig.key,
+                assetKey: cropAssetMap[displayId].shop.textureConfig.key,
                 x: pointer.x,
                 y: pointer.y,
                 quantity: 1,
