@@ -4,7 +4,6 @@ import {
     setAccounts,
     setLoaded,
     setMnemonic,
-    setPin,
     triggerLoadAccounts,
     useAppDispatch,
     useAppSelector,
@@ -23,7 +22,6 @@ export const useAccounts = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
-    const pin = useAppSelector((state) => state.sessionReducer.pin)
     const [accountsLoaded, setAccountsLoaded] = useState(false)
     const {
         swrMutation,
@@ -62,7 +60,7 @@ export const useAccounts = () => {
             )
             setAccountsLoaded(true)
             //move to next page
-            router.push(pathConstants.home)
+            router.push(pathConstants.transfer)
         }
         handleEffect()
     }, [loadAccountsKey])
@@ -81,8 +79,6 @@ export const useAccounts = () => {
                 }
                 //dispatch to set mnemonic
                 dispatch(setMnemonic(mnemonic.value))
-                //dispatch to set pin
-                dispatch(setPin(pin))
                 //dispatch to all useEffects to update changes with key `loadAccountsKey`
                 dispatch(triggerLoadAccounts())
             } finally {

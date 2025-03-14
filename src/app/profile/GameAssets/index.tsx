@@ -1,5 +1,5 @@
 import { GOLD_IMAGE_URL, QUERY_USER_SWR, TOKEN_IMAGE_URL, TOKENS_OFFCHAIN_DISCLOSURE } from "@/app/constants"
-import { QuestionTooltip } from "@/components"
+import { ExclamationTooltip } from "@/components"
 import { useQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Card, CardBody, Spacer, Image, useDisclosure } from "@heroui/react"
@@ -14,7 +14,7 @@ export const GameAssets : FC = () => {
             <div>
                 <div className="flex gap-2 items-center">
                     <div className="text-lg font-bold">Assets</div>
-                    <QuestionTooltip message="Achievements and badges earned by the user." />
+                    <ExclamationTooltip message="Achievements and badges earned by the user." />
                 </div>
                 <Spacer y={4} />
                 <Card>

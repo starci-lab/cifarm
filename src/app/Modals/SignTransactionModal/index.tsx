@@ -21,7 +21,6 @@ import React, { FC } from "react"
 import { TxResponse } from "@/modules/honeycomb"
 import { ChainKey } from "@/modules/blockchain"
 import { useHoneycombSendTransactionSwrMutation } from "@/hooks"
-import { toastSuccess } from "@/modules/toast"
 
 interface ProviderInfo {
   name: string;

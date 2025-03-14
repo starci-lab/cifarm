@@ -1,6 +1,6 @@
 "use client"
 import { PROFILE_DISCLOSURE, QUERY_USER_SWR } from "@/app/constants"
-import { QuestionTooltip } from "@/components"
+import { ExclamationTooltip } from "@/components"
 import { pathConstants } from "@/constants"
 import { useQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
@@ -135,7 +135,7 @@ export const ProfileModal: FC = () => {
                         <div>
                             <div className="flex gap-2 items-center">
                                 <div className="text-lg font-bold">Achievements</div>
-                                <QuestionTooltip message="Achievements and badges earned by the user." />
+                                <ExclamationTooltip message="Achievements and badges earned by the user." />
                             </div>
                             <Spacer y={4} />
               Currently, there are no achievements.

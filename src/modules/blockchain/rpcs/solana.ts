@@ -1,13 +1,9 @@
 import { Network } from "../common"
-import { Cluster, Connection, clusterApiUrl } from "@solana/web3.js"
-
-const networkMap: Record<Network, Cluster> = {
-    [Network.Mainnet]: "mainnet-beta",
-    [Network.Testnet]: "devnet",
-}
+import { Connection, clusterApiUrl } from "@solana/web3.js"
 
 export const solanaClient = (network: Network = Network.Testnet) => {
-    return new Connection(clusterApiUrl(networkMap[network]), {
+    const rpcUrl = _solanaHttpRpcUrl(network)
+    return new Connection(rpcUrl, {
         commitment: "confirmed",
     })
 }
@@ -20,7 +16,9 @@ export const _solanaHttpRpcUrl = (network: Network) => {
         break
     }
     case Network.Testnet: {
-        rpcUrl = clusterApiUrl("devnet")
+        // we use honeycomb testnet for now, instead of devnet  
+        rpcUrl = "https://rpc.test.honeycombprotocol.com"
+        //rpcUrl = clusterApiUrl("devnet")
         break
     }
     }

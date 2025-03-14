@@ -3,7 +3,7 @@
 import { useRouterWithSearchParams } from "@/hooks"
 import { Button, Link, Spacer, useDisclosure } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
-import { Container, QuestionTooltip } from "@/components"
+import { Container, ExclamationTooltip } from "@/components"
 import React, { FC } from "react"
 import { Theme } from "./Theme"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -41,7 +41,7 @@ const Page: FC = () => {
                     <div>
                         <div className="flex gap-2 items-center">
                             <div className="text-lg font-bold">Security</div>
-                            <QuestionTooltip message="Manage your security settings." />
+                            <ExclamationTooltip message="Manage your security settings." />
                         </div>
                     </div>
                     <Spacer y={4} />

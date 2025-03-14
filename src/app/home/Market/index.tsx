@@ -1,5 +1,5 @@
 import { NATIVE_COINGEKCO_SWR } from "@/app/constants"
-import { QuestionTooltip } from "@/components"
+import { ExclamationTooltip } from "@/components"
 import { useNativeCoinGeckoSWR } from "@/hooks"
 import { blockchainMap, DefaultToken } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -31,7 +31,7 @@ export const Market: FC = () => {
         <div>
             <div className="flex gap-2 items-center">
                 <div className="text-lg font-bold">Market</div>
-                <QuestionTooltip message="The current market prices and trends are based on the last 24 hours." />
+                <ExclamationTooltip message="The current market prices and trends are based on the last 24 hours." />
             </div>
             <Spacer y={4} />
             <Card>

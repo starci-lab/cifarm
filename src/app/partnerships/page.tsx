@@ -1,6 +1,6 @@
 "use client"
 
-import { Container, QuestionTooltip } from "@/components"
+import { Container, ExclamationTooltip } from "@/components"
 import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
 import { valuesWithKey } from "@/modules/common"
@@ -42,7 +42,7 @@ const Page: FC = () => {
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Available Partnerships</div>
-                        <QuestionTooltip message="Select the chain you want to use."  />
+                        <ExclamationTooltip message="Select the chain you want to use."  />
                     </div>
                     <Spacer y={4} />
                     <Card>

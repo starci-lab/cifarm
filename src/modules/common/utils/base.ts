@@ -25,3 +25,13 @@ export const computeExperiencesQuota = (level: number): number => {
     // 10: 1625
     return 50 * level + 25 * Math.pow(level - 1, 2)
 }
+
+
+export const sanitizeNumericInput = (input: string): string | null => {
+    const regex = new RegExp(/^\d*[.,]?\d*$/)
+    if (!regex.test(input)) {
+        return null
+    }
+    const sanitizedValue = input.replace(/,/g, ".")
+    return sanitizedValue
+}

@@ -1,4 +1,4 @@
-import { QuestionTooltip } from "@/components"
+import { ExclamationTooltip } from "@/components"
 import { Spacer } from "@heroui/react"
 import React, { FC } from "react"
 
@@ -7,7 +7,7 @@ export const UpcomingEvents: FC = () => {
         <div>
             <div className="flex gap-2 items-center">
                 <div className="text-lg font-bold">Upcoming Events</div>
-                <QuestionTooltip message="Upcoming events and activities for CiFarmers." />
+                <ExclamationTooltip message="Upcoming events and activities for CiFarmers." />
             </div>
             <Spacer y={4} />
             <div>
