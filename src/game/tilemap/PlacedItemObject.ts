@@ -546,8 +546,7 @@ export class PlacedItemObject extends ContainerLite {
             case PlacedItemType.Animal: {
                 // check if the isAdult property has changed
                 if (
-                    this.currentPlacedItem?.animalInfo?.isAdult &&
-            this.currentPlacedItem?.animalInfo?.isAdult ===
+                    this.currentPlacedItem?.animalInfo?.isAdult ===
               this.nextPlacedItem.animalInfo?.isAdult
                 ) {
                     willReturn = true
@@ -566,10 +565,10 @@ export class PlacedItemObject extends ContainerLite {
             default: {
                 willReturn = true
             }
-            }
-            if (willReturn) {
-                return
-            }
+            } 
+        }
+        if (willReturn) {
+            return
         }
         const {
             textureConfig: { key, spineConfig, extraOffsets },
