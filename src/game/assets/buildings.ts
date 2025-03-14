@@ -43,7 +43,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             starsConfig: {
                 extraOffsets: {
                     x: -50,
-                    y: -320
+                    y: -300
                 }
             },
         },
