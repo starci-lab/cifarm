@@ -14,7 +14,10 @@ import {
     TileSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { OverlapSizer, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import {
+    OverlapSizer,
+    Sizer,
+} from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
     AnimalAge,
     animalAssetMap,
@@ -175,7 +178,8 @@ export class PlacedItemObject extends ContainerLite {
         const starKey = BaseAssetKey.UIModalStandPurpleStar
 
         const placedItemTypes = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.id ===  this.nextPlacedItem?.placedItemType
+            (placedItemType) =>
+                placedItemType.id === this.nextPlacedItem?.placedItemType
         )
         if (!placedItemTypes) {
             throw new Error("Placed item type not found")
@@ -186,7 +190,9 @@ export class PlacedItemObject extends ContainerLite {
         if (!building) {
             throw new Error("Building not found")
         }
-        const { x = 0, y = 0 } = { ...buildingAssetMap[building.displayId].map.starsConfig?.extraOffsets }
+        const { x = 0, y = 0 } = {
+            ...buildingAssetMap[building.displayId].map.starsConfig?.extraOffsets,
+        }
         // Update the number of stars
         // Sizer
         if (this.starsSizer) {
@@ -194,19 +200,20 @@ export class PlacedItemObject extends ContainerLite {
             this.starsSizer.removeAll(true)
             this.remove(this.starsSizer, true)
         }
-        this.starsSizer = this.scene.rexUI.add
-            .sizer({
-                orientation: "x",
-                space: {
-                    item: 20,
-                }, 
-            })
+        this.starsSizer = this.scene.rexUI.add.sizer({
+            orientation: "x",
+            space: {
+                item: 20,
+            },
+        })
         for (let i = 0; i < stars; i++) {
-            const star = this.scene.add
-                .sprite(0, 0, starKey)
+            const star = this.scene.add.sprite(0, 0, starKey)
             this.starsSizer.add(star)
         }
-        this.starsSizer.layout().setDepth(this.depth + 2).setPosition(x, y)
+        this.starsSizer
+            .layout()
+            .setDepth(this.depth + 2)
+            .setPosition(x, y)
         this.addLocal(this.starsSizer)
     }
 
@@ -409,11 +416,13 @@ export class PlacedItemObject extends ContainerLite {
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
-                this.quantityText.setText(
-                    `${
-                        this.nextPlacedItem.seedGrowthInfo?.harvestQuantityRemaining || 0
-                    }/${crop.maxHarvestQuantity || 0}`
-                ).setDepth(this.depth + 3)
+                this.quantityText
+                    .setText(
+                        `${
+                            this.nextPlacedItem.seedGrowthInfo?.harvestQuantityRemaining || 0
+                        }/${crop.maxHarvestQuantity || 0}`
+                    )
+                    .setDepth(this.depth + 3)
             }
         } else {
             // if bubble state is present, remove it
@@ -478,7 +487,9 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    }).setOrigin(0.5, 1).setDepth(this.depth + 3)
+                    })
+                        .setOrigin(0.5, 1)
+                        .setDepth(this.depth + 3)
                     this.scene.add.existing(this.timer)
                     this.pinLocal(this.timer, {
                         syncScale: false,
@@ -525,23 +536,45 @@ export class PlacedItemObject extends ContainerLite {
         if (!placedItemType) {
             throw new Error("Placed item type not found")
         }
-        if (placedItemType.type === PlacedItemType.Animal) {
-            // check if the isAdult property has changed
-            if (
-                this.currentPlacedItem?.animalInfo?.isAdult &&
-                this.currentPlacedItem?.animalInfo?.isAdult !== this.nextPlacedItem.animalInfo?.isAdult
-            ) {
-                return 
-            }
-        }
+        // if the placed item type is the same as the current placed item, we will check it either is tree or animal
+        let willReturn = false
         if (
-            (this.nextPlacedItem.placedItemType === this.currentPlacedItem?.placedItemType)
+            this.nextPlacedItem.placedItemType ===
+      this.currentPlacedItem?.placedItemType
         ) {
-            return
+            switch (placedItemType.type) {
+            case PlacedItemType.Animal: {
+                // check if the isAdult property has changed
+                if (
+                    this.currentPlacedItem?.animalInfo?.isAdult &&
+            this.currentPlacedItem?.animalInfo?.isAdult ===
+              this.nextPlacedItem.animalInfo?.isAdult
+                ) {
+                    willReturn = true
+                }
+                break
+            }
+            case PlacedItemType.Fruit: {
+                if (
+                    this.currentPlacedItem.fruitInfo?.currentStage ===
+            this.nextPlacedItem.fruitInfo?.currentStage
+                ) {
+                    willReturn = true
+                }
+                break
+            }
+            default: {
+                willReturn = true
+            }
+            }
+            if (willReturn) {
+                return
+            }
         }
         const {
             textureConfig: { key, spineConfig, extraOffsets },
         } = this.getAssetData()
+        console.log(key, spineConfig, extraOffsets)
         const { x = 0, y = 0 } = { ...extraOffsets }
         if (spineConfig) {
             //render spine animation
@@ -557,8 +590,8 @@ export class PlacedItemObject extends ContainerLite {
         } else {
             //render sprite
             if (this.mainVisual) {
-                // destroy the previous sprite  
-                this.remove(this.mainVisual, true)        
+                // destroy the previous sprite
+                this.remove(this.mainVisual, true)
             }
             this.mainVisual = this.scene.add
                 .sprite(x, y, key)
@@ -603,7 +636,7 @@ export class PlacedItemObject extends ContainerLite {
                                 layer: GameplayLayer.Effects,
                             })
                         )
-                        .setPosition(-TILE_WIDTH / 4,  (-3 * TILE_HEIGHT) / 4)
+                        .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -648,7 +681,7 @@ export class PlacedItemObject extends ContainerLite {
                         },
                     })
                     this.scene.add.existing(text)
-                    text.setOrigin(0.5, 1).setDepth(this.depth + 1)
+                    text.setOrigin(0.5, 1).setDepth(this.depth + 2)
                     this.timer = text
                     this.pinLocal(this.timer, {
                         syncScale: false,
@@ -726,7 +759,7 @@ export class PlacedItemObject extends ContainerLite {
             if (!animal) {
                 throw new Error("Animal not found")
             }
-            const animalAge = this.currentPlacedItem?.animalInfo?.isAdult
+            const animalAge = this.nextPlacedItem?.animalInfo?.isAdult
                 ? AnimalAge.Adult
                 : AnimalAge.Baby
             return animalAssetMap[animal.displayId].map[animalAge]
@@ -735,47 +768,51 @@ export class PlacedItemObject extends ContainerLite {
             if (!placedItemType.fruit) {
                 throw new Error("Fruit ID not found")
             }
-            const fruit = this.fruits.find((fruit) => fruit.id === placedItemType.fruit)
+            const fruit = this.fruits.find(
+                (fruit) => fruit.id === placedItemType.fruit
+            )
             if (!fruit) {
                 throw new Error("Fruit not found")
             }
-            return fruitAssetMap[fruit.displayId].map[0]
+            const fruitStage = this.nextPlacedItem?.fruitInfo?.currentStage
+            if (fruitStage === undefined) {
+                throw new Error("Fruit stage not found")
+            }
+            return fruitAssetMap[fruit.displayId].map[fruitStage]
         }
         }
     }
 
     public setTintColor(tintColor: number) {
         if (this.mainVisual) {
-            if(this.mainVisual instanceof Phaser.GameObjects.Sprite){
+            if (this.mainVisual instanceof Phaser.GameObjects.Sprite) {
                 this.mainVisual.setTint(tintColor)
-            }else if (this.mainVisual instanceof SpineGameObject) {
+            } else if (this.mainVisual instanceof SpineGameObject) {
                 const r = ((tintColor >> 16) & 0xff) / 255
                 const g = ((tintColor >> 8) & 0xff) / 255
                 const b = (tintColor & 0xff) / 255
 
-                this.mainVisual.skeleton.slots.forEach(slot => {
+                this.mainVisual.skeleton.slots.forEach((slot) => {
                     slot.color.set(r, g, b, 1)
                 })
             }
-            
         }
-        if(this.seedGrowthInfoSprite){
+        if (this.seedGrowthInfoSprite) {
             this.seedGrowthInfoSprite.setTint(tintColor)
         }
     }
 
     public clearTintColor() {
         if (this.mainVisual) {
-            if(this.mainVisual instanceof Phaser.GameObjects.Sprite){
+            if (this.mainVisual instanceof Phaser.GameObjects.Sprite) {
                 this.mainVisual.clearTint()
             } else if (this.mainVisual instanceof SpineGameObject) {
-                this.mainVisual.skeleton.slots.forEach(slot => {
+                this.mainVisual.skeleton.slots.forEach((slot) => {
                     slot.color.set(1, 1, 1, 1)
                 })
             }
-            
         }
-        if(this.seedGrowthInfoSprite){
+        if (this.seedGrowthInfoSprite) {
             this.seedGrowthInfoSprite.clearTint()
         }
     }

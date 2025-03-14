@@ -4,6 +4,7 @@ import { SeedGrowthInfoSchema } from "./seed-grow-info"
 import { TileInfoSchema } from "./tile-info"
 import { AnimalInfoSchema } from "./animal-info"
 import { BuildingInfoSchema } from "./building-info"
+import { FruitInfoSchema } from "./fruit-info"
 
 export interface PlacedItemSchema extends AbstractSchema {
     x: number
@@ -16,4 +17,5 @@ export interface PlacedItemSchema extends AbstractSchema {
     animalInfo?: AnimalInfoSchema
     buildingInfo?: BuildingInfoSchema
     placedItemType: string
+    fruitInfo?: FruitInfoSchema
 }

@@ -27,7 +27,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             textureConfig: {
                 key: "buildings-home",
                 assetUrl: "buildings/home.png",
-                extraOffsets: { x: 20, y: -90 },
+                extraOffsets: { x: 60, y: -100 },
             }, 
         },
 
@@ -42,7 +42,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             },
             starsConfig: {
                 extraOffsets: {
-                    x: -60,
+                    x: -50,
                     y: -320
                 }
             },
