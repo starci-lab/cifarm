@@ -139,6 +139,10 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
             const object = this.placedItemObjectMap[data.placedItemId]?.object
+            if (!object) {
+                // return since object not found
+                return 
+            }
             const position = object.getCenter()
             position.y -= this.tileHeight
             switch (data.action) {
@@ -549,30 +553,35 @@ export abstract class ItemTilemap extends GroundTilemap {
         for (const placedItem of placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
             const found = previousPlacedItems.find(
-                (item) => item.id === placedItem.id && item.x === placedItem.x && item.y === placedItem.y
+                (item) => item.id === placedItem.id
             )
-            if (!found) {
-                // place the item using the shared tile placing
-                this.placeTileForItem(placedItem)
-            } else {
-                // if the placed item is in the previous placed items, update the item
-                const gameObject = this.placedItemObjectMap[placedItem.id]?.object
-                if (!gameObject) {
-                    this.placeTileForItem(placedItem)
-                    continue
-                }
-
-                gameObject.updateContent(placedItem)
-                // push the placed item to the checked previous placed items
+            if (found) {
                 checkedPreviousPlacedItems.push(placedItem)
+                if (placedItem.x !== found.x || placedItem.y !== found.y) {
+                    console.log(`Placing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`)
+                    // place the item using the shared tile placing
+                    this.placeTileForItem(placedItem)
+                } else {
+                    // if the placed item is in the previous placed items, update the item
+                    const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+                    if (!gameObject) {
+                        this.placeTileForItem(placedItem)
+                        continue
+                    }
+                    gameObject.updateContent(placedItem)
+                // push the placed item to the checked previous placed items
+                }
             }
         }
 
         // remove the unchecked previous placed items that are no longer in the current placed items
+        // Loop through previous placed items to remove any that are no longer present
         for (const placedItem of previousPlacedItems) {
+            // Check if this item exists in the checked items list
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
             ) {
+                console.log(`Removing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`)
                 // remove the object from the item layer
                 this.itemLayer.objects = this.itemLayer.objects.filter(
                     (object) => object.name !== placedItem.id
@@ -584,8 +593,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 object.clear(true)
                 object.destroy()
-                // remove the object from the placed item objects map
-                delete this.placedItemObjectMap[placedItem.id]
             }
         }
     }
@@ -657,6 +664,13 @@ export abstract class ItemTilemap extends GroundTilemap {
             tileY: placedItem.y,
             layer: this.groundLayer,
         })
+
+        // check if the placed item is already in the map
+        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+        if (gameObject) {
+            gameObject.clear(true)
+            gameObject.destroy()
+        }
 
         if (!tile) {
             throw new Error("Tile not found")
