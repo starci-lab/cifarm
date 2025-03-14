@@ -1,4 +1,4 @@
-import { QuestionTooltip } from "@/components"
+import { ExclamationTooltip } from "@/components"
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid"
 import { cn, Spacer, Switch } from "@heroui/react"
 import { useTheme } from "next-themes"
@@ -11,7 +11,7 @@ export const Theme: FC = () => {
             <div>
                 <div className="flex gap-2 items-center">
                     <div className="text-lg font-bold">Theme</div>
-                    <QuestionTooltip message="Change the theme of the application." />
+                    <ExclamationTooltip message="Change the theme of the application." />
                 </div>
             </div>
             <Spacer y={4} />

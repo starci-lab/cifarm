@@ -1,5 +1,5 @@
 "use client"
-import { Container, QuestionTooltip } from "@/components"
+import { Container, ExclamationTooltip } from "@/components"
 import { useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap, ChainKey, Network, networkMap } from "@/modules/blockchain"
 import { setChainKey, setNetwork, useAppDispatch, useAppSelector } from "@/redux"
@@ -37,7 +37,7 @@ const Page: FC = () => {
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Supported Chains</div>
-                        <QuestionTooltip message="Select the chain you want to use."  />
+                        <ExclamationTooltip message="Select the chain you want to use."  />
                     </div>
                     <Spacer y={4} />
                     <Card>
@@ -83,7 +83,7 @@ const Page: FC = () => {
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Network</div>
-                        <QuestionTooltip message="Select the network you want to use."  />
+                        <ExclamationTooltip message="Select the network you want to use."  />
                     </div>
                     <Spacer y={4} />
                     <Dropdown>

@@ -1,5 +1,5 @@
 import { NEIGHBORS_DISCLOSURE, QUERY_USER_SWR, QUESTS_DISCLOSURE } from "@/app/constants"
-import { QuestionTooltip } from "@/components"
+import { ExclamationTooltip } from "@/components"
 import { useQueryUserSwr } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { computeExperiencesQuota, truncateString } from "@/modules/common"
@@ -107,7 +107,7 @@ export const Profile : FC = () => {
             <div>
                 <div className="flex gap-2 items-center">
                     <div className="text-lg font-bold">Achievements</div>
-                    <QuestionTooltip message="Achievements and badges earned by the user." />
+                    <ExclamationTooltip message="Achievements and badges earned by the user." />
                 </div>
                 <Spacer y={4} />
               Currently, there are no achievements.
@@ -116,7 +116,7 @@ export const Profile : FC = () => {
             <div>
                 <div className="flex gap-2 items-center">
                     <div className="text-lg font-bold">Features</div>
-                    <QuestionTooltip message="Features and capabilities of the user." />
+                    <ExclamationTooltip message="Features and capabilities of the user." />
                 </div>
                 <Spacer y={4} />
                 <div className="flex gap-2">

@@ -3,7 +3,7 @@ import { useAppSelector } from "@/redux"
 import { Button, Card, Divider, Spacer } from "@heroui/react"
 import React, { FC } from "react"
 import { Token } from "./Token"
-import { QuestionTooltip } from "@/components"
+import { ExclamationTooltip } from "@/components"
 import {
     AdjustmentsHorizontalIcon,
     ArrowDownTrayIcon,
@@ -47,7 +47,7 @@ export const Tokens: FC = () => {
             <div>
                 <div className="flex gap-2 items-center">
                     <div className="text-lg font-bold">Operations</div>
-                    <QuestionTooltip message="Perform operations on your tokens." />
+                    <ExclamationTooltip message="Perform operations on your tokens." />
                 </div>
             </div>
             <Spacer y={4} />
@@ -60,7 +60,7 @@ export const Tokens: FC = () => {
             <div>
                 <div className="flex gap-2 items-center">
                     <div className="text-lg font-bold">Tokens</div>
-                    <QuestionTooltip message="The tokens you have added to your wallet." />
+                    <ExclamationTooltip message="The tokens you have added to your wallet." />
                 </div>
                 <Spacer y={4} />
                 <Card>

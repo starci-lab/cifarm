@@ -52,6 +52,8 @@ import {
     useApiHarvestAnimalSwrMutation,
     useApiThiefAnimalProductSwrMutation,
     useApiHelpCureAnimalSwrMutation,
+    useTransferTokensRhf,
+    useTransferTokenFormik,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -75,6 +77,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             PROFILE_DISCLOSURE: useDisclosure(),
             TOKENS_OFFCHAIN_DISCLOSURE: useDisclosure(),
             MINT_AMOUNT_DISCLOSURE: useDisclosure(),
+            SELECT_TOKEN_DISCLOSURE: useDisclosure(),
             //swr mutations
             API_AUTHENTICATION_SWR_MUTATION: useApiAuthenticationSwrMutation(),
             API_UPDATE_TUTORIAL_SWR_MUTATION: useApiUpdateTutorialSwrMutation(),
@@ -145,6 +148,8 @@ export const SingletonHook2Provider = ({ children }: PropsWithChildren) => (
     <BaseSingletonHook2Provider
         hooks={{
             MINT_OFFCHAIN_TOKENS_RHF: useMintOffchainTokensRhf(),
+            TRANSFER_TOKEN_RHF: useTransferTokensRhf(),
+            TRANSFER_TOKEN_FORMIK: useTransferTokenFormik(),
         }}
     >
         {children}

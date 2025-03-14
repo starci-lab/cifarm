@@ -21,7 +21,6 @@ export interface Accounts {
 export interface SessionState {
   telegram: Telegram;
   network: Network;
-  pin: string;
   mnemonic: string;
   accounts: Accounts;
   chainKey: ChainKey;
@@ -31,16 +30,15 @@ export interface SessionState {
   authenticated: boolean;
 }
 
-export type WithEnabled<T> = T & { enabled: boolean };
-export type Tokens = Record<string, WithEnabled<TokenInfo>>;
-export type ImportedTokens = Record<string, WithEnabled<TokenInfo>>;
+export type WithValue<T> = T & { enabled: boolean, balance: number };
+export type Tokens = Record<string, WithValue<TokenInfo>>;
+export type ImportedTokens = Record<string, WithValue<TokenInfo>>;
 
 const initialState: SessionState = {
     telegram: {
         username: "starci",
     },
     network: defaultNetwork,
-    pin: "",
     mnemonic: "",
     accounts: {
         accounts: [],
@@ -49,9 +47,9 @@ const initialState: SessionState = {
     chainKey: defaultChainKey,
     tokens: Object.entries(
         blockchainMap[defaultChainKey].defaultTokens[defaultNetwork]
-    ).reduce((acc, [id, token]) => {
-        acc[id] = { ...token, enabled: true }
-        return acc
+    ).reduce((tokens, [id, token]) => {
+        tokens[id] = { ...token, enabled: true, balance: 0 }
+        return tokens
     }, {} as Tokens),
     retries: 0,
     loaded: false,
@@ -67,9 +65,6 @@ export const sessionSlice = createSlice({
         },
         setNetwork: (state, action: PayloadAction<Network>) => {
             state.network = action.payload
-        },
-        setPin: (state, action: PayloadAction<string>) => {
-            state.pin = action.payload
         },
         setMnemonic: (state, action: PayloadAction<string>) => {
             state.mnemonic = action.payload
@@ -105,7 +100,6 @@ export const sessionReducer = sessionSlice.reducer
 export const {
     setTelegram,
     setNetwork,
-    setPin,
     setMnemonic,
     setAccounts,
     setChainKey,

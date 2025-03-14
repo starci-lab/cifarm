@@ -10,6 +10,12 @@ export interface ReferralLinkModal {
     code: string
 }
 
+export interface SelectTokenModal {
+    // if tokenKey is not provided, it will use the first token in the tokens array
+    callback?: (tokenKey: string) => void
+    tokenKey?: string
+}
+
 export enum TransactionFrom {
     Honeycomb = "Honeycomb",
     Base = "Base",
@@ -26,6 +32,7 @@ export interface SignTransactionModal {
 export interface ModalSlice {
     warningModal: WarningModal
     signTransactionModal: SignTransactionModal
+    selectTokenModal: SelectTokenModal
 }
 
 const initialState: ModalSlice = {
@@ -37,6 +44,7 @@ const initialState: ModalSlice = {
         serializedTx: "",
         transactionFrom: TransactionFrom.Base,
     },
+    selectTokenModal: {},
 }
 
 export const modalSlice = createSlice({
@@ -49,8 +57,11 @@ export const modalSlice = createSlice({
         setSignTransactionModal: (state, action: PayloadAction<SignTransactionModal>) => {
             state.signTransactionModal = action.payload
         },
+        setSelectTokenModal: (state, action: PayloadAction<SelectTokenModal>) => {
+            state.selectTokenModal = action.payload
+        },
     }
 })
 
 export const modalReducer = modalSlice.reducer
-export const { setWarningModal, setSignTransactionModal } = modalSlice.actions
+export const { setWarningModal, setSignTransactionModal, setSelectTokenModal } = modalSlice.actions

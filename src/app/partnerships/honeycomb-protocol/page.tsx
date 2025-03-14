@@ -1,6 +1,6 @@
 "use client"
 import { API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
-import { Container, QuestionTooltip } from "@/components"
+import { Container, ExclamationTooltip } from "@/components"
 import { useApiClaimHoneycombDailyRewardSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { TxResponse } from "@/modules/honeycomb"
@@ -37,7 +37,7 @@ const Page: FC = () => {
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Available Features</div>
-                        <QuestionTooltip message="Select the chain you want to use."  />
+                        <ExclamationTooltip message="Select the chain you want to use."  />
                     </div>
                     <Spacer y={4} />
                     <Card>

@@ -9,6 +9,7 @@ import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
 import { TokensOffchainModal } from "./TokensOffchainModal"
 import { MintAmountModal } from "./MintAmountModal"
+import { SelectTokenModal } from "./SelectTokenModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -24,6 +25,7 @@ const Modals : FC = () => {
             <NeighborsModal />
             <QuestsModal />
             <TokensOffchainModal />
+            <SelectTokenModal />
         </div>
     )
 }
