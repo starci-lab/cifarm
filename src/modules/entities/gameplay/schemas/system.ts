@@ -11,10 +11,10 @@ export interface ActivityInfo {
 }
 
 export interface Activities {
-  water: ActivityInfo;
+  waterCrop: ActivityInfo;
   feedAnimal: ActivityInfo;
   plantSeed: ActivityInfo;
-  collectAnimalProduct: ActivityInfo;
+  harvestAnimal: ActivityInfo;
   usePesticide: ActivityInfo;
   useFertilizer: ActivityInfo;
   useHerbicide: ActivityInfo;
@@ -59,6 +59,9 @@ export interface DefaultInfo {
   referralRewardQuantity: number;
   referredRewardQuantity: number;
   followXRewardQuantity: number;
+  tileLimit: number;
+  fruitLimit: number;
+  buildingLimit: number;
 }
 
 export interface SlotInfo {
@@ -95,10 +98,4 @@ export interface DailyRewardInfo {
   [DailyRewardId.Day3]: DailyReward;
   [DailyRewardId.Day4]: DailyReward;
   [DailyRewardId.Day5]: DailyReward;
-}
-
-export interface PlacedItemInfo {
-  tileLimit: number;
-  fruitLimit: number;
-  buildingLimit: number;
 }

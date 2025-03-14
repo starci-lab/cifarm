@@ -40,13 +40,13 @@ export interface AnimalStateAssetData {
 
 export const animalStateAssetMap: Partial<Record<AnimalCurrentState, AnimalStateAssetData>> = {
     [AnimalCurrentState.Hungry]: {
-        textureConfig: { key: "is-animal-hungry", assetUrl: "states/is-hungry.png" },
+        textureConfig: { key: "animal-hungry", assetUrl: "states/hungry.png" },
     },
     [AnimalCurrentState.Sick]: {
-        textureConfig: { key: "is-animal-sick", assetUrl: "states/is-sick.png" },
+        textureConfig: { key: "animal-sick", assetUrl: "states/sick.png" },
     },
     [AnimalCurrentState.Yield]: {
-        textureConfig: { key: "is-animal-ready", assetUrl: "states/is-ready.png" },
+        textureConfig: { key: "animal-ready", assetUrl: "states/ready.png" },
     },
 }
 

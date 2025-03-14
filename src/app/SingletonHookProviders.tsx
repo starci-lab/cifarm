@@ -6,7 +6,7 @@ import {
     useApiBuySuppliesSwrMutation,
     useApiPlantSeedSwrMutation,
     useApiClaimDailyRewardSwrMutation,
-    useApiWaterSwrMutation,
+    useApiWaterCropSwrMutation,
     useApiBuyBuildingSwrMutation,
     useApiBuyTileSwrMutation,
     useApiBuyAnimalSwrMutation,
@@ -49,6 +49,8 @@ import {
     useApiBuyToolSwrMutation,
     useApiSellSwrMutation,
     useApiBuyFruitSwrMutation,
+    useApiHarvestAnimalSwrMutation,
+    useApiThiefAnimalProductSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -79,7 +81,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_BUY_SUPPLIES_SWR_MUTATION: useApiBuySuppliesSwrMutation(),
             API_PLANT_SEED_SWR_MUTATION: useApiPlantSeedSwrMutation(),
             API_CLAIM_DAILY_REWARD_SWR_MUTATION: useApiClaimDailyRewardSwrMutation(),
-            API_WATER_SWR_MUTATION: useApiWaterSwrMutation(),
+            API_WATER_CROP_SWR_MUTATION: useApiWaterCropSwrMutation(),
             API_BUY_BUILDING_SWR_MUTATION: useApiBuyBuildingSwrMutation(),
             API_BUY_TILE_SWR_MUTATION: useApiBuyTileSwrMutation(),
             API_BUY_ANIMAL_SWR_MUTATION: useApiBuyAnimalSwrMutation(),
@@ -100,6 +102,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_VISIT_SWR_MUTATION: useApiVisitSwrMutation(),
             API_UPGRADE_BUILDING_SWR_MUTATION: useApiUpgradeBuildingSwrMutation(),
             API_RETURN_SWR_MUTATION: useApiReturnSwrMutation(),
+            API_HARVEST_ANIMAL_SWR_MUTATION: useApiHarvestAnimalSwrMutation(),
             API_HELP_USE_HERBICIDE_SWR_MUTATION: useApiHelpUseHerbicideSwrMutation(),
             API_HELP_USE_PESTICIDE_SWR_MUTATION: useApiHelpUsePesticideSwrMutation(),
             API_USE_FERTILIZER_SWR_MUTATION: useApiUseFertilizerSwrMutation(),
@@ -113,6 +116,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_UPDATE_REFERRAL_SWR_MUTATION: useApiUpdateReferralSwrMutation(),
             API_UPDATE_FOLLOW_X_SWR_MUTATION: useApiUpdateFollowXSwrMutation(),
             API_BUY_FRUIT_SWR_MUTATION: useApiBuyFruitSwrMutation(),
+            API_THIEF_ANIMAL_PRODUCT_SWR_MUTATION: useApiThiefAnimalProductSwrMutation(),
 
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION:

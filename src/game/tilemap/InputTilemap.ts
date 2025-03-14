@@ -6,6 +6,7 @@ import {
     BuyTileRequest,
     CureAnimalRequest,
     FeedAnimalRequest,
+    HarvestAnimalRequest,
     HarvestCropRequest,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
@@ -13,13 +14,15 @@ import {
     MoveRequest,
     PlantSeedRequest,
     SellRequest,
+    ThiefAnimalProductRequest,
     ThiefCropRequest,
     UseFertilizerRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
-    WaterRequest,
+    WaterCropRequest,
 } from "@/modules/axios"
 import {
+    AnimalCurrentState,
     CropCurrentState,
     InventorySchema,
     InventoryType,
@@ -440,13 +443,13 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.water.energyConsume,
+                            actionEnergy: this.activities.waterCrop.energyConsume,
                         })
                     ) {
                         return
                     }
                     //emit the event to water the plant
-                    EventBus.once(EventName.WaterCompleted, () => {
+                    EventBus.once(EventName.WaterCropCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
@@ -454,10 +457,10 @@ export class InputTilemap extends ItemTilemap {
                         data.pressBlocked = true
                     })
                     // emit the event to plant seed
-                    const eventMessage: WaterRequest = {
+                    const eventMessage: WaterCropRequest = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestWater, eventMessage)
+                    EventBus.emit(EventName.RequestWaterCrop, eventMessage)
                     data.pressBlocked = true
                 }
                 break
@@ -601,7 +604,7 @@ export class InputTilemap extends ItemTilemap {
                 }
                 if (visitedNeighbor) {
                     if (
-                        !this.thiefQuantityReactMinimun({
+                        !this.thiefCropQuantityReactMinimum({
                             data,
                         })
                     ) {
@@ -838,6 +841,89 @@ export class InputTilemap extends ItemTilemap {
                 }
                 EventBus.emit(EventName.RequestCureAnimal, eventMessage)
                 data.pressBlocked = true
+                break
+            }
+            case ToolId.Crate: {
+                // return if seed growth info is not need water
+                if (
+                    currentPlacedItem.animalInfo?.currentState !==
+                  AnimalCurrentState.Yield
+                ) {
+                    return
+                }
+                const placedItem = object.currentPlacedItem
+                if (!placedItem) {
+                    throw new Error("Placed item not found")
+                }
+                const animal = this.animals.find(
+                    (animal) => animal.id === placedItem.animalInfo?.animal
+                )
+                if (!animal) {
+                    throw new Error("Animal not found")
+                }
+                const product = this.products.find(
+                    (product) => product.animal === animal.id
+                )
+                if (!product) {
+                    throw new Error("Product not found")
+                }
+                if (visitedNeighbor) {
+                    if (
+                        !this.thiefAnimalProductQuantityReactMinimum({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
+                        !this.hasThievedAnimalProduct({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.thiefAnimalProduct.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    // emit the event to water the plant
+                    EventBus.once(EventName.ThiefAnimalProductCompleted, async () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: ThiefAnimalProductRequest = {
+                        placedItemAnimalId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestThiefAnimalProduct, eventMessage)
+                    data.pressBlocked = true
+                } else {
+                    // emit the event to water the plant
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.harvestAnimal.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    EventBus.once(EventName.HarvestAnimalCompleted, async () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: HarvestAnimalRequest = {
+                        placedItemAnimalId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestHarvestAnimal, eventMessage)
+                    data.pressBlocked = true
+                }
                 break
             }
             }
@@ -1561,9 +1647,26 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private thiefQuantityReactMinimun({
+    private hasThievedAnimalProduct({ data }: HasThievedAnimalProductParams): boolean {
+        if (
+            data.object.currentPlacedItem?.animalInfo?.thieves.includes(
+                this.user.id
+            )
+        ) {
+            this.scene.events.emit(EventName.CreateFlyItems, [
+                {
+                    position: data.object.getCenter(),
+                    text: "You are already thieved",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+
+    private thiefCropQuantityReactMinimum({
         data,
-    }: ThiefQuantityReactMinimunParams): boolean {
+    }: ThiefCropQuantityReactMinimumParams): boolean {
         const crop = this.crops.find(
             (crop) => crop.id === data.object.currentPlacedItem?.seedGrowthInfo?.crop
         )
@@ -1578,6 +1681,35 @@ export class InputTilemap extends ItemTilemap {
         if (
             crop.minHarvestQuantity >=
       data.object.currentPlacedItem.seedGrowthInfo.harvestQuantityRemaining
+        ) {
+            this.scene.events.emit(EventName.CreateFlyItems, [
+                {
+                    position: data.object.getCenter(),
+                    text: "Minimum quantity reached",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+
+    private thiefAnimalProductQuantityReactMinimum({
+        data,
+    }: ThiefAnimalProductQuantityReactMinimumParams): boolean {
+        const animal = this.animals.find(
+            (animal) => animal.id === data.object.currentPlacedItem?.animalInfo?.animal
+        )
+        if (!animal) {
+            throw new Error("Animal not found")
+        }
+        if (
+            !data.object.currentPlacedItem?.animalInfo?.harvestQuantityRemaining
+        ) {
+            throw new Error("Harvest quantity remaining not found")
+        }
+        if (
+            animal.minHarvestQuantity >=
+      data.object.currentPlacedItem.animalInfo.harvestQuantityRemaining
         ) {
             this.scene.events.emit(EventName.CreateFlyItems, [
                 {
@@ -1627,10 +1759,17 @@ export interface PlacedItemTintParams {
 export interface HasThievedCropParams {
   data: PlacedItemObjectData;
 }
+export interface HasThievedAnimalProductParams {
+    data: PlacedItemObjectData;
+  }
 
-export interface ThiefQuantityReactMinimunParams {
+export interface ThiefCropQuantityReactMinimumParams {
   data: PlacedItemObjectData;
 }
+
+export interface ThiefAnimalProductQuantityReactMinimumParams {
+    data: PlacedItemObjectData;
+  }
 
 export interface EnergyNotEnoughParams {
   data: PlacedItemObjectData;

@@ -31,6 +31,8 @@ import { useWaterEffects } from "./useWaterEffects"
 import { useBuyToolEffects } from "./useBuyToolEffects"
 import { useSellEffects } from "./useSellEffects"
 import { useBuyFruitEffects } from "./useBuyFruit"
+import { useHarvestAnimalEffects } from "./useHarvestAnimalEffects"
+import { useThiefAnimalProductEffects } from "./useThiefAnimalProductEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -66,4 +68,6 @@ export const useApiEffects = () => {
     useBuyToolEffects()
     useSellEffects()
     useBuyFruitEffects()
+    useHarvestAnimalEffects()
+    useThiefAnimalProductEffects()
 }

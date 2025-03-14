@@ -13,7 +13,6 @@ import {
     InventorySchema,
     InventoryTypeSchema,
     PetSchema,
-    PlacedItemInfo,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeSchema,
@@ -93,7 +92,6 @@ export class ShopContent extends BaseSizer {
     private inventoryTypes: Array<InventoryTypeSchema>
     private pets: Array<PetSchema>
     private tools: Array<ToolSchema>
-    private placedItemInfo: PlacedItemInfo
     //default
     private defaultItemCard: ContainerLite | undefined
     private defaultSeedButton: Label | undefined
@@ -190,7 +188,6 @@ export class ShopContent extends BaseSizer {
         this.placedItemTypes = this.scene.cache.obj.get(
             CacheKey.PlacedItemTypes
         )
-        this.placedItemInfo = this.scene.cache.obj.get(CacheKey.PlacedItemInfo)
 
         // load buildings
         this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
@@ -575,7 +572,7 @@ export class ShopContent extends BaseSizer {
                 if (!fruitAssetMap[displayId].shop) {
                     throw new Error("Price is not found.")
                 }
-                const maxOwnership = this.placedItemInfo.fruitLimit
+                const maxOwnership = this.defaultInfo.fruitLimit
                 // get the image
                 items.push({
                     assetKey: fruitAssetMap[displayId].shop.textureConfig.key,
@@ -618,7 +615,7 @@ export class ShopContent extends BaseSizer {
                     displayId,
                     type: PlacedItemType.Tile,
                 })
-                const maxOwnership = this.placedItemInfo.tileLimit
+                const maxOwnership = this.defaultInfo.tileLimit
                 if (!maxOwnership) {
                     throw new Error("Max ownership is not found.")
                 }

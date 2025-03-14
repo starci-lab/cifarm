@@ -183,11 +183,14 @@ export enum EventName {
     RequestPlantSeed = "request_plant_seed",
     PlantSeedCompleted = "plant_seed_completed",
 
-    RequestWater = "request_water_crop",
-    WaterCompleted = "water_crop_completed",
+    RequestWaterCrop = "request_water_crop",
+    WaterCropCompleted = "water_crop_completed",
 
     RequestHarvestCrop = "request_harvest_crop",
     HarvestCropCompleted = "harvest_crop_completed",
+
+    RequestHarvestAnimal = "request_harvest_animal",
+    HarvestAnimalCompleted = "harvest_animal_completed",
 
     RequestSell = "request_sell",
     SellCompleted = "sell_completed",
@@ -241,6 +244,9 @@ export enum EventName {
 
     RequestThiefCrop = "request_thief_crop",
     ThiefCropCompleted = "thief_crop_completed",
+
+    ThiefAnimalProductCompleted = "thief_animal_product_completed",
+    RequestThiefAnimalProduct = "request_thief_animal_product",
 
     RequestBuyAnimal = "request_buy_animal",
     BuyAnimalCompleted = "buy_animal_completed",

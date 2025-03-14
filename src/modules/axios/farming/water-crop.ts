@@ -3,16 +3,16 @@ import { AxiosResponse } from "axios"
 import { authAxios } from "../auth-axios"
 import { AxiosOptions, Version } from "../types"
 
-export interface WaterRequest {
+export interface WaterCropRequest {
     placedItemTileId: string
 }
 
-export const water = (
-    request: WaterRequest,
+export const waterCrop = (
+    request: WaterCropRequest,
     { version = Version.V1 }: AxiosOptions = {}
 ) =>
     authAxios.post<
     EmptyObject,
-    AxiosResponse<EmptyObject, WaterRequest>,
-    WaterRequest
-  >(`${version}/gameplay/water`, request)
+    AxiosResponse<EmptyObject, WaterCropRequest>,
+    WaterCropRequest
+  >(`${version}/gameplay/water-crop`, request)

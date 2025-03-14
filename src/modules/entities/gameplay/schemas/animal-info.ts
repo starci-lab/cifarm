@@ -1,5 +1,4 @@
 import { AnimalCurrentState } from "../enums"
-import { UserSchema } from "./user"
 import { PlacedItemSchema } from "./placed-item"
 
 export interface AnimalInfoSchema {
@@ -15,7 +14,7 @@ export interface AnimalInfoSchema {
     yieldCount: number
     currentState: AnimalCurrentState
     harvestQuantityRemaining?: number
-    thiefedBy: Array<UserSchema>
+    thieves: Array<string>
     animal: string
     immunized: boolean
     placedItemId: string
