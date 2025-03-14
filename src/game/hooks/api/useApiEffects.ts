@@ -33,6 +33,7 @@ import { useSellEffects } from "./useSellEffects"
 import { useBuyFruitEffects } from "./useBuyFruit"
 import { useHarvestAnimalEffects } from "./useHarvestAnimalEffects"
 import { useThiefAnimalProductEffects } from "./useThiefAnimalProductEffects"
+import { useHelpCureAnimalEffects } from "./useHelpCureAnimalEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -70,4 +71,5 @@ export const useApiEffects = () => {
     useBuyFruitEffects()
     useHarvestAnimalEffects()
     useThiefAnimalProductEffects()
+    useHelpCureAnimalEffects()
 }

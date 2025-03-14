@@ -8,6 +8,7 @@ import {
     FeedAnimalRequest,
     HarvestAnimalRequest,
     HarvestCropRequest,
+    HelpCureAnimalRequest,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
     HelpWaterRequest,
@@ -815,32 +816,51 @@ export class InputTilemap extends ItemTilemap {
                 if (!currentPlacedItem?.animalInfo) {
                     return
                 }
-                // do nothing if neighbor user id is found
                 if (visitedNeighbor) {
-                    return
-                }
-
-                if (
-                    !this.energyNotEnough({
-                        data,
-                        actionEnergy: this.activities.cureAnimal.energyConsume,
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.helpCureAnimal.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+    
+                    EventBus.once(EventName.HelpCureAnimalCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
                     })
-                ) {
-                    return
+                    // emit the event to plant seed
+                    const eventMessage: HelpCureAnimalRequest = {
+                        placedItemAnimalId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestHelpCureAnimal, eventMessage)
+                    data.pressBlocked = true
+                }else{
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.cureAnimal.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+    
+                    EventBus.once(EventName.CureAnimalCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: CureAnimalRequest = {
+                        inventorySupplyId: selectedTool.id,
+                        placedItemAnimalId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestCureAnimal, eventMessage)
+                    data.pressBlocked = true
                 }
-
-                EventBus.once(EventName.CureAnimalCompleted, () => {
-                    EventBus.emit(EventName.RefreshUser)
-                    EventBus.emit(EventName.RefreshInventories)
-                    data.pressBlocked = false
-                })
-                // emit the event to plant seed
-                const eventMessage: CureAnimalRequest = {
-                    inventorySupplyId: selectedTool.id,
-                    placedItemAnimalId: placedItemId,
-                }
-                EventBus.emit(EventName.RequestCureAnimal, eventMessage)
-                data.pressBlocked = true
+                
                 break
             }
             case ToolId.Crate: {

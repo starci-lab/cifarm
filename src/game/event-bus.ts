@@ -236,6 +236,9 @@ export enum EventName {
     RequestHelpWater = "request_help_water",
     HelpWaterCompleted = "help_water_completed",
 
+    RequestHelpCureAnimal = "request_help_cure_animal",
+    HelpCureAnimalCompleted = "help_cure_animal_completed",
+
     RequestHelpUsePesticide = "request_help_pesticide",
     HelpUsePesticideCompleted = "help_pesticide_completed",
 

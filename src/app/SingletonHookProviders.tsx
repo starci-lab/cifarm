@@ -51,6 +51,7 @@ import {
     useApiBuyFruitSwrMutation,
     useApiHarvestAnimalSwrMutation,
     useApiThiefAnimalProductSwrMutation,
+    useApiHelpCureAnimalSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -88,6 +89,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_FEED_ANIMAL_SWR_MUTATION: useApiFeedAnimalSwrMutation(),
             API_CURE_ANIMAL_SWR_MUTATION: useApiCureAnimalSwrMutation(),
             API_USE_HERBICIDE_SWR_MUTATION: useApiUseHerbicideSwrMutation(),
+            API_HELP_CURE_ANIMAL_SWR_MUTATION: useApiHelpCureAnimalSwrMutation(),
             API_USE_PESTICIDE_SWR_MUTATION: useApiUsePesticideSwrMutation(),
             API_HARVEST_CROP_SWR_MUTATION: useApiHarvestCropSwrMutation(),
             API_MOVE_INVENTORY_SWR_MUTATION: useApiMoveInventorySwrMutation(),
