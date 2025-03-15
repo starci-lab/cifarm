@@ -19,14 +19,13 @@ import {
     SupplySchema,
     PetSchema,
     FruitSchema,
-    PlacedItemInfo
 } from "@/modules/entities"
 
 //long query for querying all the static data
 const query = gql`
   {
     activities {
-      water {
+      waterCrop {
         experiencesGain
         energyConsume
       }
@@ -42,7 +41,7 @@ const query = gql`
         experiencesGain
         energyConsume
       }
-      collectAnimalProduct {
+      harvestAnimal {
         experiencesGain
         energyConsume
       }
@@ -110,6 +109,9 @@ const query = gql`
       referralRewardQuantity
       referredRewardQuantity
       followXRewardQuantity
+      tileLimit
+      fruitLimit
+      buildingLimit
     }
     spinInfo {
       appearanceChanceSlots {
@@ -281,11 +283,6 @@ const query = gql`
       type
       unlockLevel
     }
-    placedItemInfo {
-      tileLimit
-      fruitLimit
-      buildingLimit
-    }
     dailyRewardInfo {
       day1 {
         golds
@@ -340,7 +337,6 @@ export interface QueryStaticResponse {
   products: Array<ProductSchema>
   supplies: Array<SupplySchema>
   fruits: Array<FruitSchema>
-  placedItemInfo: PlacedItemInfo
 }
 
 export const queryStatic = async () => {

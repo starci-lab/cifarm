@@ -1,24 +1,24 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
 import { v4 } from "uuid"
-import { collectAnimalProduct, CollectAnimalProductRequest } from "@/modules/axios"
 import { WithAxiosOptionsAndRequest } from "./types"
+import { waterCrop, WaterCropRequest } from "@/modules/axios"
 
-export type UseApiCollectAnimalProductSwrMutationArgs = WithAxiosOptionsAndRequest<CollectAnimalProductRequest>
+export type useApiWaterCropSwrMutationArgs = WithAxiosOptionsAndRequest<WaterCropRequest>
 
-export const useApiCollectAnimalProductSwrMutation = (): UseSWRMutation<
+export const useApiWaterCropSwrMutation = (): UseSWRMutation<
   void,
-  UseApiCollectAnimalProductSwrMutationArgs
+  useApiWaterCropSwrMutationArgs
 > => {
     const swrMutation = useSWRMutation(
         v4(),
         async (
             _: string,
-            extraArgs: { arg: UseApiCollectAnimalProductSwrMutationArgs }
+            extraArgs: { arg: useApiWaterCropSwrMutationArgs }
         ) => {
             const { request, options } = { ...extraArgs.arg }
             //update the tutorial only
-            await collectAnimalProduct(request, options)
+            await waterCrop(request, options)
         }
     )
 

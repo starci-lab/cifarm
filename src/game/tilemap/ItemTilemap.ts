@@ -1,9 +1,11 @@
 import {
     ActionEmittedMessage,
     ActionName,
+    HarvestAnimalData,
     HarvestCropData,
     PlacedItemsSyncedMessage,
     SellData,
+    ThiefAnimalProductData,
     ThiefCropData,
 } from "@/hooks"
 import { sleep } from "@/modules/common"
@@ -146,24 +148,24 @@ export abstract class ItemTilemap extends GroundTilemap {
             const position = object.getCenter()
             position.y -= this.tileHeight
             switch (data.action) {
-            case ActionName.Water:
+            case ActionName.WaterCrop:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.water.energyConsume,
+                            quantity: -this.activities.waterCrop.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.water.experiencesGain,
+                            quantity: this.activities.waterCrop.experiencesGain,
                         },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.Water,
+                        text: "Failed to " + ActionName.WaterCrop,
                     })
                 }
                 break
@@ -419,29 +421,54 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            case ActionName.CollectAnimalProduct:
+            case ActionName.HarvestAnimal:
                 if (data.success) {
+                    const { quantity, productId } = data.data as HarvestAnimalData
+                    const product = this.products.find(
+                        (product) => product.displayId === productId
+                    )
+                    if (!product) {
+                        throw new Error("Product not found")
+                    }
+                    const assetKey =
+              productAssetMap[product.displayId].textureConfig.key
+
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.collectAnimalProduct.energyConsume,
+                            quantity: -this.activities.harvestAnimal.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.collectAnimalProduct.experiencesGain,
+                            quantity: this.activities.harvestAnimal.experiencesGain,
                         },
+                        {
+                            assetKey,
+                            position,
+                            quantity,
+                        }
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.CollectAnimalProduct,
+                        text: "Failed to " + ActionName.HarvestAnimal,
                     })
                 }
                 break
             case ActionName.ThiefAnimalProduct:
                 if (data.success) {
+                    const { quantity, productId } = data.data as ThiefAnimalProductData
+                    const product = this.products.find(
+                        (product) => product.displayId === productId
+                    )
+                    if (!product) {
+                        throw new Error("Product not found")
+                    }
+                    const assetKey =
+              productAssetMap[product.displayId].textureConfig.key
+
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -453,7 +480,13 @@ export abstract class ItemTilemap extends GroundTilemap {
                             position,
                             quantity: this.activities.thiefAnimalProduct.experiencesGain,
                         },
-                    ])
+                        {
+                            assetKey,
+                            position,
+                            quantity,
+                        }
+                    ]
+                    )
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,

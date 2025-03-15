@@ -28,7 +28,7 @@ import {
     TextureConfig,
     tileAssetMap,
 } from "../assets"
-import { cropStateAssetMap } from "../assets/states"
+import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
@@ -368,13 +368,15 @@ export class PlacedItemObject extends ContainerLite {
                             layer: GameplayLayer.Effects,
                         })
                     )
-                    this.bubbleState
-                        .add(icon, {
-                            align: "center",
-                            expand: false,
-                            offsetY: -10,
-                        })
-                        .layout()
+                    if (this.bubbleState) {
+                        this.bubbleState
+                            .add(icon, {
+                                align: "center",
+                                expand: false,
+                                offsetY: -10,
+                            })
+                            .layout()
+                    }
                 } else {
                     const text = `${
                         this.nextPlacedItem.seedGrowthInfo.harvestQuantityRemaining || 0
@@ -607,14 +609,23 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem?.animalInfo) {
             throw new Error("Animal info not found")
         }
-        if (!this.nextPlacedItem.animalInfo) {
-            throw new Error("Animal info not found")
-        }
+
         if (
             this.nextPlacedItem.animalInfo.currentState !== AnimalCurrentState.Normal
         ) {
+            const animal = this.animals.find((animal) => {
+                if (!this.nextPlacedItem?.animalInfo) {
+                    throw new Error("Placed item not found")
+                }
+                return animal.id === this.nextPlacedItem.animalInfo.animal
+            })
+
+            if (!animal) {
+                throw new Error("Animal not found")
+            }
+
             if (
-                this.nextPlacedItem.animalInfo?.currentState !==
+                this.currentPlacedItem?.animalInfo?.currentState !==
         this.nextPlacedItem.animalInfo.currentState
             ) {
                 if (!this.bubbleState) {
@@ -627,6 +638,7 @@ export class PlacedItemObject extends ContainerLite {
                         .overlapSizer({
                             width: background.width,
                             height: background.height,
+                            originY: 1,
                         })
                         .addBackground(background)
                         .setScale(0.5)
@@ -640,6 +652,78 @@ export class PlacedItemObject extends ContainerLite {
                 } else {
                     this.bubbleState.removeAll(true)
                 }
+
+                if (
+                    this.nextPlacedItem.animalInfo.currentState !==
+            AnimalCurrentState.Yield
+                ) {
+                    const stateKey =
+            animalStateAssetMap[this.nextPlacedItem.animalInfo.currentState]
+                ?.textureConfig.key
+                    if (!stateKey) {
+                        throw new Error("State key not found")
+                    }
+                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
+                    )
+                    if (this.bubbleState) {
+                        this.bubbleState
+                            .add(icon, {
+                                align: "center",
+                                expand: false,
+                                offsetY: -10,
+                            })
+                            .layout()
+                    }
+                } else {
+                    const text = `${
+                        this.nextPlacedItem.animalInfo.harvestQuantityRemaining || 0
+                    }/${animal.maxHarvestQuantity || 0}`
+
+                    this.quantityText = new Text({
+                        baseParams: {
+                            scene: this.scene,
+                            text,
+                            x: 0,
+                            y: 0,
+                        },
+                        options: {
+                            fontSize: 28,
+                            textColor: TextColor.Brown,
+                        },
+                    }).setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
+                    )
+
+                    this.scene.add.existing(this.quantityText)
+                    this.bubbleState
+                        .add(this.quantityText, {
+                            align: "center",
+                            expand: false,
+                            offsetY: -10,
+                        })
+                        .layout()
+                }
+            } else if (
+                this.currentPlacedItem?.animalInfo?.currentState ===
+            AnimalCurrentState.Yield &&
+        this.currentPlacedItem?.animalInfo?.harvestQuantityRemaining !==
+          this.nextPlacedItem.animalInfo.harvestQuantityRemaining
+            ){
+                if (!this.quantityText) {
+                    throw new Error("Quantity text not found")
+                }
+                this.quantityText
+                    .setText(
+                        `${
+                            this.nextPlacedItem.animalInfo?.harvestQuantityRemaining || 0
+                        }/${animal.maxHarvestQuantity || 0}`
+                    )
+                    .setDepth(this.depth + 3)
             }
         } else {
             // if bubble state is present, remove it
