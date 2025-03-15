@@ -1,5 +1,5 @@
 import useSWRMutation from "swr/mutation"
-import { UseSWRMutation } from "../types"
+import { UseSWRMutation } from "../../types"
 import { sendTransaction } from "@honeycomb-protocol/edge-client/client/helpers"
 import { edgeClient, TxResponse } from "@/modules/honeycomb"
 import { useAppSelector } from "@/redux"

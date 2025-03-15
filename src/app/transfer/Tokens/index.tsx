@@ -1,7 +1,7 @@
 "use client"
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
-import { Button, Image, Input, Spacer } from "@heroui/react"
+import { Button, Image, Input, Link, Spacer } from "@heroui/react"
 import { setSelectTokenModal, useAppDispatch, useAppSelector } from "@/redux"
 import { useDisclosure } from "@heroui/react"
 import {
@@ -11,17 +11,28 @@ import {
 import { valuesWithKey } from "@/modules/common"
 import { NumberInput, Title } from "@/components"
 import { useTransferTokenFormik } from "@/hooks"
+import { AtSymbolIcon } from "@heroicons/react/24/outline"
 
 export const Tokens: FC = () => {
+    const balances = useAppSelector((state) => state.sessionReducer.balances)
+    
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
     )
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const tokensArray = valuesWithKey(tokens)
     const selectedTokenKey = formik.values.tokenKey || tokensArray[0].key
+    const balance = balances[selectedTokenKey]
     const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_TOKEN_DISCLOSURE
     )
+
+    useEffect(() => {
+        if (balance.amount) {
+            formik.setFieldValue("balance", balance.amount)
+        }
+    }, [balance.amount])
+
     const dispatch = useAppDispatch()
     return (
         <form
@@ -37,7 +48,7 @@ export const Tokens: FC = () => {
                     />
                     <Spacer y={1.5} />
                     <Button
-                        className="justify-start"
+                        className="justify-start bg-default-100"
                         fullWidth
                         startContent={
                             <Image
@@ -68,7 +79,7 @@ export const Tokens: FC = () => {
                             title="Amount"
                             tooltipString="Enter the amount you want to transfer"
                         />
-                        <div className="text-sm text-gray-400">Balance: 0</div>
+                        <div className="text-sm text-gray-400">{`Balance: ${balance.amount}`}</div>
                     </div>
                     <Spacer y={1.5} />
                     <NumberInput
@@ -111,12 +122,17 @@ export const Tokens: FC = () => {
                         errorMessage={
                             formik.touched.recipientAddress && formik.errors.recipientAddress
                         }
+                        endContent={
+                            <Link>
+                                <AtSymbolIcon className="w-5 h-5" />
+                            </Link>
+                        }
                     />
                 </div>
                 <Spacer y={6} />
             </div>
-            <Button type="submit" fullWidth>
-        Transfer
+            <Button size="lg" color="primary" type="submit" fullWidth>
+                <div className="text-secondary-foreground">Transfer</div>
             </Button>
         </form>
     )

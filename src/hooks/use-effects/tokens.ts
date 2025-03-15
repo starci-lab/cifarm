@@ -1,4 +1,3 @@
-import { valuesWithKey } from "@/modules/common"
 import { sessionDb } from "@/modules/dexie"
 import {
     ImportedTokens,
@@ -15,7 +14,7 @@ export const useTokens = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
     const dispatch = useAppDispatch()
-
+    
     useEffect(() => {
     //do nothing if loadTokensKey is equal to 0
         if (!loadTokensKey) return
@@ -30,7 +29,6 @@ export const useTokens = () => {
             //convert tokens to map
             const tokenMap: ImportedTokens = tokens.reduce((tokens, token) => {
                 tokens[token.id.toString()] = {
-                    balance: 0,
                     address: token.address,
                     decimals: token.decimals,
                     imageUrl: token.imageUrl,
@@ -45,22 +43,4 @@ export const useTokens = () => {
         }
         handleEffect()
     }, [loadTokensKey])
-
-    useEffect(() => {
-        const handleEffect = async () => {
-            // fetch the token balance from the chain
-            const tokens = useAppSelector((state) => state.sessionReducer.tokens)
-            const tokensArray = valuesWithKey(tokens)
-            const promises: Array<Promise<void>> = []
-
-            for (const token of tokensArray) {
-                const getBalance = async () => {
-                    token.balance = 100
-                }
-                promises.push(getBalance())
-            }
-            await Promise.all(promises)
-        }
-        handleEffect()
-    }, [chainKey, network])
 }

@@ -2,7 +2,7 @@
 import { HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { truncateString } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { TransactionFrom, useAppSelector } from "@/redux"
+import { TransactionType, useAppSelector } from "@/redux"
 import {
     Button,
     Chip,
@@ -53,12 +53,12 @@ export const SignTransactionModal: FC = () => {
     if (!account) return null   
     if (chainKey !== ChainKey.Solana) return null
     
-    const providers: Record<TransactionFrom, ProviderInfo> = {
-        [TransactionFrom.Base]: {
+    const providers: Record<TransactionType, ProviderInfo> = {
+        [TransactionType.Base]: {
             name: "Base",
             imageUrl: "/base.svg",
         },
-        [TransactionFrom.Honeycomb]: {
+        [TransactionType.Honeycomb]: {
             name: "Honeycomb",
             imageUrl: "/honeycomb-protocol.svg",
         },
@@ -112,7 +112,7 @@ export const SignTransactionModal: FC = () => {
                         className="light text-background"
                         onPress={async () => {
                             //close the current modal
-                            if (transactionFrom === TransactionFrom.Honeycomb) {
+                            if (transactionFrom === TransactionType.Honeycomb) {
                                 const response = await swrMutation.trigger({
                                     transaction: data as TxResponse,
                                 })

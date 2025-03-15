@@ -1,27 +1,24 @@
-import { ChainKey, defaultChainKey, defaultNetwork, getBalance, Network } from "@/modules/blockchain"
+import { getBalance } from "@/modules/blockchain"
 import { useAppSelector } from "@/redux"
 import useSWR from "swr"
-import { UseSWR } from "./types"
+import { UseSWR } from "../../swr/types"
 
-export interface UseBalanceSWRParams {
-    chainKey?: ChainKey
-    network?: Network
+export interface UseBalanceSwrParams {
     //if tokenKey is set, tokenAddress is ignored
     tokenKey?: string
     //use token address incase you want to get balance of a specific token
     tokenAddress?: string
+    //use honeycomb protocol
+    useHoneycombProtocol?: boolean
 }
 
-export const useBalanceSWR = ({
-    chainKey,
-    network,
+export const useBalanceSwr = ({
     tokenAddress,
     tokenKey
-}: UseBalanceSWRParams): UseSWR<number> => {
+}: UseBalanceSwrParams): UseSWR<number> => {
     //default values
-    chainKey = chainKey || defaultChainKey
-    network = network || defaultNetwork
-    
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
+    const network = useAppSelector((state) => state.sessionReducer.network)
     const accountId = useAppSelector((state) => state.sessionReducer.accounts.currentId)
     const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -29,7 +26,7 @@ export const useBalanceSWR = ({
 
     //if tokenKey is set, tokenAddress is ignored
     const swr = useSWR(
-        [chainKey, network, tokenAddress, tokenKey],
+        [chainKey, network, tokenAddress, tokenKey, account],
         async () => {
             if (!account) {
                 return 0

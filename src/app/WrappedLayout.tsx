@@ -11,7 +11,6 @@ import {
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
 import { SWRConfig } from "swr"
-import { Toast } from "@/modules/toast"
 import dynamic from "next/dynamic"
 import { SingletonHook2Provider, SingletonHookProvider } from "./SingletonHookProviders"
 
@@ -30,10 +29,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                             {loaded ? children : <LoadingScreen />}
                             <UseEffects />
                             <Modals />
-                            <Toast />
-                            <div className="z-100">
-                                <ToastProvider placement="bottom-center"/>
-                            </div>       
+                            <ToastProvider placement="bottom-center"/>  
                         </SingletonHook2Provider>
                     </SingletonHookProvider>
                 </SWRConfig>

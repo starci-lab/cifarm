@@ -9,17 +9,17 @@ import {
 import { Account } from "@/modules/dexie"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-export interface Telegram {
-  username: string;
-}
-
 export interface Accounts {
   accounts: Array<Account>;
   currentId: number;
 }
 
+export interface Balance {
+    amount: number
+    isLoading: boolean
+}
+
 export interface SessionState {
-  telegram: Telegram;
   network: Network;
   mnemonic: string;
   accounts: Accounts;
@@ -28,16 +28,14 @@ export interface SessionState {
   retries: number;
   loaded: boolean;
   authenticated: boolean;
+  balances: Record<string, Balance>
 }
 
-export type WithValue<T> = T & { enabled: boolean, balance: number };
-export type Tokens = Record<string, WithValue<TokenInfo>>;
-export type ImportedTokens = Record<string, WithValue<TokenInfo>>;
+export type WithEnabled<T> = T & { enabled: boolean };
+export type Tokens = Record<string, WithEnabled<TokenInfo>>;
+export type ImportedTokens = Record<string, WithEnabled<TokenInfo>>;
 
 const initialState: SessionState = {
-    telegram: {
-        username: "starci",
-    },
     network: defaultNetwork,
     mnemonic: "",
     accounts: {
@@ -48,21 +46,19 @@ const initialState: SessionState = {
     tokens: Object.entries(
         blockchainMap[defaultChainKey].defaultTokens[defaultNetwork]
     ).reduce((tokens, [id, token]) => {
-        tokens[id] = { ...token, enabled: true, balance: 0 }
+        tokens[id] = { ...token, enabled: true }
         return tokens
     }, {} as Tokens),
     retries: 0,
     loaded: false,
     authenticated: false,
+    balances: {}
 }
 
 export const sessionSlice = createSlice({
     name: "session",
     initialState,
     reducers: {
-        setTelegram: (state, action: PayloadAction<Telegram>) => {
-            state.telegram = action.payload
-        },
         setNetwork: (state, action: PayloadAction<Network>) => {
             state.network = action.payload
         },
@@ -92,13 +88,19 @@ export const sessionSlice = createSlice({
         },
         setAuthenticated: (state, action: PayloadAction<boolean>) => {
             state.authenticated = action.payload
-        } 
+        },
+        setBalance: (state, action: PayloadAction<SetBalanceParams>) => {
+            const { tokenKey, balance } = action.payload
+            state.balances[tokenKey] = balance
+        },
+        removeBalance: (state, action: PayloadAction<string>) => {
+            delete state.balances[action.payload]
+        },
     },
 })
 
 export const sessionReducer = sessionSlice.reducer
 export const {
-    setTelegram,
     setNetwork,
     setMnemonic,
     setAccounts,
@@ -107,10 +109,17 @@ export const {
     importTokens,
     setRetries,
     setLoaded,
-    setAuthenticated
+    setAuthenticated,
+    setBalance,
+    removeBalance,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
     id: string;
     enabled: boolean;
+}
+
+export interface SetBalanceParams {
+    tokenKey: string
+    balance: Balance
 }

@@ -6,7 +6,7 @@ import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { TxResponse } from "@/modules/honeycomb"
 import { deserialize, serialize } from "@/modules/serialization"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { setSignTransactionModal, TransactionFrom, useAppDispatch } from "@/redux"
+import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
 import { Spacer, Link, Card, CardBody, Divider, Image, Button, useDisclosure } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
@@ -68,7 +68,7 @@ const Page: FC = () => {
                                             }
                                             dispatch(setSignTransactionModal({
                                                 serializedTx: tx.transaction,
-                                                transactionFrom: TransactionFrom.Honeycomb,
+                                                transactionFrom: TransactionType.Honeycomb,
                                                 data: tx,
                                                 extraAction: () => {
                                                     // remove the transaction

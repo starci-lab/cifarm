@@ -1,5 +1,4 @@
 "use client"
-import { useBalanceSWR } from "@/hooks"
 import { TokenInfo } from "@/modules/blockchain"
 import { WithKey } from "@/modules/common"
 import { useAppSelector, WithEnabled } from "@/redux"
@@ -11,15 +10,8 @@ export interface TokenProps {
 }
 
 export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const network = useAppSelector((state) => state.sessionReducer.network)
-    //get the balance swr for the token
-    const balanceSwr = useBalanceSWR({
-        chainKey,
-        network,
-        tokenKey: token.key,
-    })
-    const { data } = balanceSwr.swr
+    const balances = useAppSelector((state) => state.sessionReducer.balances)
+    const balance = balances[token.key]
     return (
         <Card isPressable key={token.key} radius="none" shadow="none">
             <CardBody>
@@ -38,7 +30,7 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
                         </div>
                     </div>
                     <div className="text-sm">
-                        {data}
+                        {balance.amount}
                     </div>
                 </div>
             </CardBody>

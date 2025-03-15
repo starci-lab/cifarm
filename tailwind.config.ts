@@ -24,6 +24,7 @@ const config: Config = {
     },
     darkMode: "class",
     plugins: [heroui({
+        defaultTheme: "dark",
         themes: {
             light: {
                 colors: {

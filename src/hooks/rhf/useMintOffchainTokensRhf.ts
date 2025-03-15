@@ -1,6 +1,6 @@
 import { SessionDbKey, sessionDb } from "@/modules/dexie"
 import { deserialize } from "@/modules/serialization"
-import { setSignTransactionModal, TransactionFrom, useAppDispatch } from "@/redux"
+import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z, ZodType } from "zod"
@@ -53,7 +53,7 @@ export const useMintOffchainTokensRhf = () => {
         }
         dispatch(setSignTransactionModal({
             serializedTx: tx.transaction,
-            transactionFrom: TransactionFrom.Honeycomb,
+            transactionFrom: TransactionType.Honeycomb,
             data: tx,
             extraAction: async () => {
                 // remove the transaction

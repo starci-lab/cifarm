@@ -18,6 +18,10 @@ const sessionDb = new Dexie("SessionDB") as Dexie & {
   CurrentAccount,
     "id" // primary key "id" (for the typings only)
   >;
+  storedAddresses: EntityTable<
+  StoredAddress,
+    "id" // primary key "id" (for the typings only)
+  >;
 }
 
 export enum SessionDbKey {
@@ -64,6 +68,19 @@ export interface CurrentAccount {
     accountId: number
 }
 
+export enum StoredAddressType {
+  RecentlyTransferred = "recentlyTransferred",
+  Added = "added",
+}
+
+export interface StoredAddress {
+  id: number
+  chainKey: string
+  network: string
+  accountAddress: string
+  type: StoredAddressType
+}
+
 //store all sessions
 sessionDb.version(1).stores({
     //store all key-value pairs
@@ -74,6 +91,8 @@ sessionDb.version(1).stores({
     tokens: "++id, chainKey, network, tokenKey, address, enabled, symbol, name, decimals, imageUrl",
     //current selected account
     currentAccount: "++id, chainKey, network, accountId",
+    //stored addresses
+    storedAddresses: "++id, chainKey, network, accountAddress, type",
 })
 
 export { sessionDb } 

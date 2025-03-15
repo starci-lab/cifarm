@@ -25,6 +25,7 @@ export const getSolanaBalance = async ({
     accountAddress,
     tokenKey,
     tokens,
+    chainKey,
 }: GetBalanceParams): Promise<number> => {
     network = network || defaultNetwork
     if (tokenKey) {
@@ -32,7 +33,7 @@ export const getSolanaBalance = async ({
         //case native
         if (tokenKey === DefaultToken.Native) {
             const decimals = tokens[tokenKey].decimals
-            const balance = await solanaClient(network).getBalance(
+            const balance = await solanaClient({chainKey, network}).getBalance(
                 new PublicKey(accountAddress)
             )
             return computeDenomination(balance, decimals)
@@ -42,7 +43,10 @@ export const getSolanaBalance = async ({
     if (!tokenAddress)
         throw new Error("Cannot find balance without token address")
 
-    const result = await solanaClient(network).getParsedTokenAccountsByOwner(
+    const result = await solanaClient({
+        chainKey,
+        network
+    }).getParsedTokenAccountsByOwner(
         new PublicKey(accountAddress),
         {
             mint: new PublicKey(tokenAddress),

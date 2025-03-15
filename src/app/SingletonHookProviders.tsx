@@ -51,6 +51,7 @@ import {
     useApiBuyFruitSwrMutation,
     useTransferTokensRhf,
     useTransferTokenFormik,
+    useTransferTokenSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -116,7 +117,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_UPDATE_REFERRAL_SWR_MUTATION: useApiUpdateReferralSwrMutation(),
             API_UPDATE_FOLLOW_X_SWR_MUTATION: useApiUpdateFollowXSwrMutation(),
             API_BUY_FRUIT_SWR_MUTATION: useApiBuyFruitSwrMutation(),
-
+            TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION:
         useHoneycombSendTransactionSwrMutation(),

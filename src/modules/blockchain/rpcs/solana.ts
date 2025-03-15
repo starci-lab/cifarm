@@ -1,26 +1,50 @@
-import { Network } from "../common"
-import { Connection, clusterApiUrl } from "@solana/web3.js"
+import { ChainKey, Network } from "../common"
+import { Commitment, Connection, clusterApiUrl } from "@solana/web3.js"
 
-export const solanaClient = (network: Network = Network.Testnet) => {
-    const rpcUrl = _solanaHttpRpcUrl(network)
+export const solanaClient = ({chainKey, network, commitment}: SolanaClientParams) => {
+    const rpcUrl = solanaHttpRpcUrl({
+        chainKey: chainKey,
+        network: network
+    })
     return new Connection(rpcUrl, {
-        commitment: "confirmed",
+        commitment: commitment || "confirmed",
     })
 }
 
-export const _solanaHttpRpcUrl = (network: Network) => {
+export const solanaHttpRpcUrl = ({chainKey, network}: SolanaHttpRpcUrlParams) => {
     let rpcUrl = ""
     switch (network) {
     case Network.Mainnet: {
-        rpcUrl = clusterApiUrl("mainnet-beta")
+        switch (chainKey) {
+        case ChainKey.Solana:
+            rpcUrl = clusterApiUrl("mainnet-beta")
+            break
+        default:
+            throw new Error(`Unsupported chain key: ${chainKey}`)
+        }
         break
     }
     case Network.Testnet: {
-        // we use honeycomb testnet for now, instead of devnet  
-        rpcUrl = "https://rpc.test.honeycombprotocol.com"
-        //rpcUrl = clusterApiUrl("devnet")
+        switch (chainKey) {
+        case ChainKey.Solana:
+            // we use honeycomb testnet for now, instead of devnet  
+            rpcUrl = "https://rpc.test.honeycombprotocol.com"
+            //rpcUrl = clusterApiUrl("devnet")
+            break
+        default:
+            throw new Error(`Unsupported chain key: ${chainKey}`)
+        }
         break
     }
     }
     return rpcUrl
+}
+
+export interface SolanaHttpRpcUrlParams {
+    chainKey: ChainKey
+    network: Network
+}
+
+export type SolanaClientParams = SolanaHttpRpcUrlParams & {
+    commitment?: Commitment
 }
