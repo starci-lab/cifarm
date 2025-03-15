@@ -28,9 +28,10 @@ import {
     Divider,
     CardBody,
     addToast,
+    Link,
 } from "@heroui/react"
 import React, { FC } from "react"
-import { blockchainMap } from "@/modules/blockchain"
+import { blockchainMap, explorerUrl } from "@/modules/blockchain"
 import { useHoneycombSendTransactionSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
 import { CopyText, Title } from "@/components"
 import useSWRMutation from "swr/mutation"
@@ -38,18 +39,6 @@ import useSWRMutation from "swr/mutation"
 interface ProviderInfo {
   name: string;
 }
-
-export const addTxHashToast = (txHash: string) => addToast({
-    title: "Tx Hash",
-    description: truncateString(txHash, 40, 4),
-    color: "success",
-})
-
-export const addErrorToast = () => addToast({
-    title: "Error",
-    description: "Failed to sign transaction",
-    color: "danger",
-})
 
 export const SignTransactionModal: FC = () => {
     const { isOpen, onOpenChange, onClose } = useSingletonHook<
@@ -73,6 +62,28 @@ export const SignTransactionModal: FC = () => {
     const extraAction = useAppSelector(
         (state) => state.modalReducer.signTransactionModal.extraAction
     )
+
+    const network = useAppSelector((state) => state.sessionReducer.network)
+
+    const addTxHashToast = (txHash: string) => addToast({
+        title: "Tx Hash",
+        endContent: <Link color="foreground" isExternal showAnchorIcon href={explorerUrl({
+            chainKey,
+            network,
+            value: txHash,
+            type: "tx",
+        })}>
+            {truncateString(txHash, 10, 4)}
+        </Link>,
+        color: "success",
+    })
+    
+    const addErrorToast = () => addToast({
+        title: "Error",
+        endContent: <div className="text-sm">Failed to sign transaction</div>,
+        color: "danger",
+    })
+    
 
     const { trigger, isMutating } = useSWRMutation(
         "SIGN_TRANSACTION",
