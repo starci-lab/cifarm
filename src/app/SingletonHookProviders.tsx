@@ -55,6 +55,13 @@ import {
     useTransferTokensRhf,
     useTransferTokenFormik,
     useTransferTokenSwrMutation,
+    useApiHelpFeedAnimalSwrMutation,
+    useApiHarvestFruitSwrMutation,
+    useApiHelpUseBugNetSwrMutation,
+    useApiHelpUseFruitFertilizerSwrMutation,
+    useApiThiefFruitSwrMutation,
+    useApiUseBugNetSwrMutation,
+    useApiUseFruitFertilizerSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -124,6 +131,13 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             API_BUY_FRUIT_SWR_MUTATION: useApiBuyFruitSwrMutation(),
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
             API_THIEF_ANIMAL_PRODUCT_SWR_MUTATION: useApiThiefAnimalProductSwrMutation(),
+            API_HELP_FEED_ANIMAL_SWR_MUTATION: useApiHelpFeedAnimalSwrMutation(),
+            API_HARVEST_FRUIT_SWR_MUTATION: useApiHarvestFruitSwrMutation(),
+            API_THIEF_FRUIT_SWR_MUTATION: useApiThiefFruitSwrMutation(),
+            API_USE_BUG_NET_SWR_MUTATION: useApiUseBugNetSwrMutation(),
+            API_HELP_USE_BUG_NET_SWR_MUTATION: useApiHelpUseBugNetSwrMutation(),
+            API_USE_FRUIT_FERTILIZER_SWR_MUTATION: useApiUseFruitFertilizerSwrMutation(),
+            API_HELP_USE_FRUIT_FERTILIZER_SWR_MUTATION: useApiHelpUseFruitFertilizerSwrMutation(),
 
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION:

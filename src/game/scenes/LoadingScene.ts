@@ -13,7 +13,8 @@ import {
     loadSupplyAssets,
     loadTileAssets,
     loadToolsAssets,
-    loadFruitAssets
+    loadFruitAssets,
+    loadAnimalStateAssets, loadCropStateAssets, loadFruitStateAssets
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
@@ -21,7 +22,6 @@ import { QueryFolloweesArgs, QueryNeighborsArgs, QueryNeighborsParams, QueryStat
 import { CacheKey } from "../types"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
-import { loadAnimalStateAssets, loadCropStateAssets } from "../assets/states"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { VisitRequest } from "@/modules/axios"
@@ -245,6 +245,7 @@ export class LoadingScene extends Scene {
         loadInventoryTypesAssets(this)
         loadCropStateAssets(this)
         loadAnimalStateAssets(this)
+        loadFruitStateAssets(this)
         loadFruitAssets(this)
 
         this.load.setPath()

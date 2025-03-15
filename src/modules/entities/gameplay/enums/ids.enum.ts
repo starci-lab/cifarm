@@ -61,6 +61,7 @@ export enum DailyRewardPossibilityId {
 export enum SupplyId {
     BasicFertilizer = "basicFertilizer",
     AnimalFeed = "animalFeed",
+    FruitFertilizer = "fruitFertilizer",
 }
 
 // Tile Enum
@@ -77,6 +78,7 @@ export enum ToolId {
     Pesticide = "pesticide",
     Hammer = "hammer",
     AnimalMedicine = "animalMedicine",
+    BugNet = "bugNet",
 }
 
 // Product Enum
@@ -98,7 +100,11 @@ export enum ProductId {
     Cucumber = "cucumber",
     CucumberQuality = "cucumberQuality",
     BellPepper = "bellPepper",
-    BellPepperQuality = "bellPepperQuality"
+    BellPepperQuality = "bellPepperQuality",
+    Banana = "banana",
+    BananaQuality = "bananaQuality",
+    Apple = "apple",
+    AppleQuality = "appleQuality",
 }
 
 export enum SystemId {
@@ -113,6 +119,7 @@ export enum SystemId {
 export enum KeyValueStoreId {
     CropGrowthLastSchedule = "cropGrowthLastSchedule",
     AnimalGrowthLastSchedule = "animalGrowthLastSchedule",
+    FruitGrowthLastSchedule = "fruitGrowthLastSchedule",
     EnergyRegenerationLastSchedule = "energyRegenerationLastSchedule"
 }
 
@@ -126,6 +133,7 @@ export enum InventoryTypeId {
     BellPepperSeed = "bellPepperSeed",
     BasicFertilizer = "basicFertilizer",
     AnimalFeed = "animalFeed",
+    FruitFertilizer = "fruitFertilizer",
     Egg = "egg",
     EggQuality = "eggQuality",
     Milk = "milk",
@@ -144,6 +152,10 @@ export enum InventoryTypeId {
     CucumberQuality = "cucumberQuality",
     BellPepper = "bellPepper",
     BellPepperQuality = "bellPepperQuality",
+    Banana = "banana",
+    BananaQuality = "bananaQuality",
+    Apple = "apple",
+    AppleQuality = "appleQuality",
     Hand = "hand",
     Crate = "crate",
     WateringCan = "wateringCan",
@@ -151,6 +163,7 @@ export enum InventoryTypeId {
     Pesticide = "pesticide",
     Hammer = "hammer",
     AnimalMedicine = "animalMedicine",
+    BugNet = "bugNet",
 }
 
 export enum PlacedItemTypeId {

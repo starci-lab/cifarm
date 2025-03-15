@@ -3,10 +3,12 @@ import {
     ActionName,
     HarvestAnimalData,
     HarvestCropData,
+    HarvestFruitData,
     PlacedItemsSyncedMessage,
     SellData,
     ThiefAnimalProductData,
     ThiefCropData,
+    ThiefFruitData,
 } from "@/hooks"
 import { sleep } from "@/modules/common"
 import {
@@ -457,6 +459,27 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
+            case ActionName.HelpFeedAnimal: 
+                if (data.success) {
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.feedAnimal.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.feedAnimal.experiencesGain,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.HelpFeedAnimal,
+                    })
+                }
+                break
             case ActionName.ThiefAnimalProduct:
                 if (data.success) {
                     const { quantity, productId } = data.data as ThiefAnimalProductData
@@ -550,6 +573,161 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position: object.getCenter(),
                         text: "Failed to " + ActionName.Sell,
+                    })
+                }
+                break
+            
+            case ActionName.HarvestFruit:
+                if (data.success) {
+                    const { quantity, productId } = data.data as HarvestFruitData
+                    const product = this.fruits.find(
+                        (product) => product.id === productId
+                    )
+                    if (!product) {
+                        throw new Error("Product not found")
+                    }
+                    const assetKey = productAssetMap[product.displayId].textureConfig.key
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.harvestFruit.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.harvestFruit.experiencesGain,
+                        },
+                        {
+                            assetKey,
+                            position,
+                            quantity,
+                        }
+                    ])
+                }
+                else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.HarvestFruit,
+                    })
+                }
+                break
+            case ActionName.ThiefFruit:
+                if (data.success) {
+                    const { quantity, productId } = data.data as ThiefFruitData
+                    const product = this.fruits.find(
+                        (product) => product.id === productId
+                    )
+                    if (!product) {
+                        throw new Error("Product not found")
+                    }
+                    const assetKey = productAssetMap[product.displayId].textureConfig.key
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.thiefFruit.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.thiefFruit.experiencesGain,
+                        },
+                        {
+                            assetKey,
+                            position,
+                            quantity,
+                        }
+                    ])
+                }
+                else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.ThiefFruit,
+                    })
+                }
+                break
+            case ActionName.UseBugNet:
+                if (data.success) {
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.useBugNet.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.useBugNet.experiencesGain,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.UseBugNet,
+                    })
+                }
+                break
+            case ActionName.HelpUseFruitFertilizer:
+                if (data.success) {
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.helpUseFruitFertilizer.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.helpUseFruitFertilizer.experiencesGain,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.HelpUseFruitFertilizer,
+                    })
+                }
+                break
+            case ActionName.HelpUseBugNet:
+                if (data.success) {
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.helpUseBugNet.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.helpUseBugNet.experiencesGain,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.HelpUseBugNet,
+                    })
+                }
+                break
+            case ActionName.UseFruitFertilizer:
+                if (data.success) {
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.useFruitFertilizer.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.useFruitFertilizer.experiencesGain,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.UseFruitFertilizer,
                     })
                 }
                 break

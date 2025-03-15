@@ -162,6 +162,40 @@ export const productAssetMap: Record<
             isQuality: true,
         },
     },
+    [ProductId.Banana]: {
+        name: "Banana",
+        textureConfig: {
+            assetUrl: "products/banana.png",
+            key: "banana",
+            isQuality: false,
+        },
+    },
+    [ProductId.BananaQuality]: {
+        name: "Banana Quality",
+        textureConfig: {
+            assetUrl: "products/banana.png",
+            key: "banana",
+            useExisting: true,
+            isQuality: true,
+        },
+    },
+    [ProductId.Apple]: {
+        name: "Apple",
+        textureConfig: {
+            assetUrl: "products/apple.png",
+            key: "apple",
+            isQuality: false,
+        },
+    },
+    [ProductId.AppleQuality]: {
+        name: "Apple Quality",
+        textureConfig: {
+            assetUrl: "products/apple.png",
+            key: "apple",
+            useExisting: true,
+            isQuality: true,
+        },
+    },
 }
 
 // Function to load inventory assets in Phaser scene

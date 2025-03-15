@@ -60,6 +60,13 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
             assetUrl: "tools/animal-medicine.png",
         }
     },
+    [ToolId.BugNet]: {
+        name: "Bug Net",
+        textureConfig: {
+            key: "bug-net",
+            assetUrl: "tools/bug-net.png",
+        }
+    },
 }
 
 // function to load the tools assets
