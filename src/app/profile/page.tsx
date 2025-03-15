@@ -16,9 +16,9 @@ const Page: FC = () => {
 
     const renderContent = () => {
         const contentMap = {
+            [AssetTab.OnChainAssets]: <Tokens />,
             [AssetTab.Profile]: <Profile />,
             [AssetTab.GameAssets]: <GameAssets />,
-            [AssetTab.OnChainAssets]: <Tokens />,
         }
         return contentMap[assetTab]
     }
@@ -43,9 +43,9 @@ const Page: FC = () => {
                         tabList: "w-full",
                         tabContent: "group-data-[selected=true]:light group-data-[selected=true]:text-background",
                     }} selectedKey={assetTab} onSelectionChange={(assetTab) => dispatch(setAssetTab(assetTab))} aria-label="Options">
+                        <Tab key={AssetTab.OnChainAssets} title="On-chain Assets"/>
                         <Tab key={AssetTab.Profile} title="Profile"/>
                         <Tab key={AssetTab.GameAssets} title="Game Assets"/>
-                        <Tab key={AssetTab.OnChainAssets} title="On-chain Assets"/>
                     </Tabs>    
                     <Spacer y={6} />
                     {renderContent()}

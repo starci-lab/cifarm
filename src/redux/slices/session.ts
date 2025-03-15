@@ -8,15 +8,11 @@ import {
 } from "@/modules/blockchain"
 import { Account } from "@/modules/dexie"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { SWRResponse } from "swr"
 
 export interface Accounts {
   accounts: Array<Account>;
   currentId: number;
-}
-
-export interface Balance {
-    amount: number
-    isLoading: boolean
 }
 
 export interface SessionState {
@@ -28,7 +24,7 @@ export interface SessionState {
   retries: number;
   loaded: boolean;
   authenticated: boolean;
-  balances: Record<string, Balance>
+  balances: Record<string, SWRResponse<number>>
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -89,11 +85,11 @@ export const sessionSlice = createSlice({
         setAuthenticated: (state, action: PayloadAction<boolean>) => {
             state.authenticated = action.payload
         },
-        setBalance: (state, action: PayloadAction<SetBalanceParams>) => {
-            const { tokenKey, balance } = action.payload
-            state.balances[tokenKey] = balance
+        setSwr: (state, action: PayloadAction<SetSwrParams>) => {
+            const { tokenKey, swr } = action.payload
+            state.balances[tokenKey] = swr
         },
-        removeBalance: (state, action: PayloadAction<string>) => {
+        removeSwr: (state, action: PayloadAction<string>) => {
             delete state.balances[action.payload]
         },
     },
@@ -110,8 +106,8 @@ export const {
     setRetries,
     setLoaded,
     setAuthenticated,
-    setBalance,
-    removeBalance,
+    setSwr,
+    removeSwr,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
@@ -119,7 +115,7 @@ export interface SwitchTokenParams {
     enabled: boolean;
 }
 
-export interface SetBalanceParams {
+export interface SetSwrParams {
     tokenKey: string
-    balance: Balance
+    swr: SWRResponse<number>
 }

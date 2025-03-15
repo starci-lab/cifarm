@@ -10,8 +10,8 @@ import {
     ArrowPathIcon,
     PaperAirplaneIcon,
 } from "@heroicons/react/24/outline"
-import { QrCodeIcon, SendToBackIcon } from "lucide-react"
-import Operation, { OperationProps } from "./Operation"
+import { CalendarCheck2, HandCoins, QrCodeIcon, SendToBackIcon, UserRoundCheck } from "lucide-react"
+import { Action, ActionProps } from "./Action"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 
@@ -20,10 +20,11 @@ export const Tokens: FC = () => {
     const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
     const router = useRouterWithSearchParams()
 
-    const operations: Array<WithKey<OperationProps>> = [
+    const operations: Array<WithKey<ActionProps>> = [
         {
             key: "transfer",
             icon: <PaperAirplaneIcon className="w-8 h-8" />,
+            onPress: () => router.push(pathConstants.transfer),
             name: "Transfer",
         },
         {
@@ -42,6 +43,25 @@ export const Tokens: FC = () => {
             name: "Cross-chain Transfer",
         },
     ]
+
+    const honeycombProtocols: Array<WithKey<ActionProps>> = [
+        {
+            key: "claimDailyReward",
+            icon: <CalendarCheck2 className="w-8 h-8" strokeWidth={1.5} />,
+            name: "Claim Daily Reward",
+        },
+        {
+            key: "staking",
+            icon: <HandCoins className="w-8 h-8" strokeWidth={1.5} />,
+            name: "Staking",
+        },
+        {
+            key: "kyc",
+            icon: <UserRoundCheck className="w-8 h-8" strokeWidth={1.5} />,
+            name: "KYC",
+        },
+    ]
+
     return (
         <>
             <div>
@@ -53,7 +73,25 @@ export const Tokens: FC = () => {
             <Spacer y={4} />
             <div className="grid grid-cols-3 gap-2">
                 {operations.map((operation) => {
-                    return <Operation {...operation} key={operation.key} />
+                    return <Action {...operation} key={operation.key} />
+                })}
+            </div>
+            <Spacer y={6} />
+            <div>
+                <div className="flex gap-2 items-center">
+                    <div className="text-lg font-bold">Honeycomb Protocol</div>
+                    <ExclamationTooltip message="Actions on Honeycomb Protocol." />
+                </div>
+            </div>
+            <Spacer y={4} />
+            <div className="grid grid-cols-3 gap-2">
+                {honeycombProtocols.map((honeycombProtocol) => {
+                    return (
+                        <Action
+                            {...honeycombProtocol}
+                            key={honeycombProtocol.key}
+                        />
+                    )
                 })}
             </div>
             <Spacer y={6} />
@@ -79,7 +117,12 @@ export const Tokens: FC = () => {
                     <Button isIconOnly variant="flat" fullWidth>
                         <ArrowPathIcon className="w-5 h-5" />
                     </Button>
-                    <Button onPress={() => router.push(pathConstants.adjustTokens)} isIconOnly variant="flat" fullWidth>
+                    <Button
+                        onPress={() => router.push(pathConstants.adjustTokens)}
+                        isIconOnly
+                        variant="flat"
+                        fullWidth
+                    >
                         <AdjustmentsHorizontalIcon className="w-5 h-5" />
                     </Button>
                 </div>

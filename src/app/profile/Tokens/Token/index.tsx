@@ -11,7 +11,7 @@ export interface TokenProps {
 
 export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
     const balances = useAppSelector((state) => state.sessionReducer.balances)
-    const balance = balances[token.key]
+    const balanceSwr = balances[token.key]
     return (
         <Card isPressable key={token.key} radius="none" shadow="none">
             <CardBody>
@@ -30,7 +30,7 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
                         </div>
                     </div>
                     <div className="text-sm">
-                        {balance.amount}
+                        {balanceSwr.data}
                     </div>
                 </div>
             </CardBody>

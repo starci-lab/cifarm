@@ -18,6 +18,7 @@ export const useHoneycombSendTransactionSwrMutation = (): UseSWRMutation<
     const { accounts, currentId } = useAppSelector((state) => state.sessionReducer.accounts)
     const account = accounts.find((account) => account.id === currentId)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey) 
+    const network = useAppSelector((state) => state.sessionReducer.network)
     const swrMutation = useSWRMutation(
         JSON.stringify({ chainKey, account }),
         async (
@@ -30,7 +31,7 @@ export const useHoneycombSendTransactionSwrMutation = (): UseSWRMutation<
             const { transaction } = { ...extraArgs.arg }
             console.log(keypair.publicKey.toBase58())
             //claim the daily reward
-            return await sendTransaction(edgeClient, transaction, [keypair])
+            return await sendTransaction(edgeClient(network), transaction, [keypair])
         }
     )
 

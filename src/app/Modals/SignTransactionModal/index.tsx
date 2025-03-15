@@ -65,6 +65,8 @@ export const SignTransactionModal: FC = () => {
 
     const network = useAppSelector((state) => state.sessionReducer.network)
 
+
+
     const addTxHashToast = (txHash: string) => addToast({
         title: "Tx Hash",
         endContent: <Link color="foreground" isExternal showAnchorIcon href={explorerUrl({
@@ -83,6 +85,8 @@ export const SignTransactionModal: FC = () => {
         endContent: <div className="text-sm">Failed to sign transaction</div>,
         color: "danger",
     })
+
+    const balances = useAppSelector((state) => state.sessionReducer.balances)
     
 
     const { trigger, isMutating } = useSWRMutation(
@@ -104,6 +108,9 @@ export const SignTransactionModal: FC = () => {
                         recipientAddress,
                     })
                     txHash = txHashResponse
+                    
+                    await balances[tokenKey].mutate()
+
                     break
                 } 
                 default: {
