@@ -1,20 +1,21 @@
-
 import {
-    mplTokenMetadata,
-    fetchDigitalAsset,
-} from "@metaplex-foundation/mpl-token-metadata"
-import { keypairIdentity, publicKey, sol } from "@metaplex-foundation/umi"
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
+    Connection,
+    Keypair,
+    PublicKey,
+    SystemProgram,
+    Transaction,
+    sendAndConfirmTransaction,
+} from "@solana/web3.js"
 import {
-    findAssociatedTokenPda,
-    transferTokens,
-    transferSol,
-} from "@metaplex-foundation/mpl-toolbox"
-import { base58 } from "@metaplex-foundation/umi/serializers"
+    createTransferCheckedInstruction,
+    getOrCreateAssociatedTokenAccount,
+    TOKEN_2022_PROGRAM_ID,
+} from "@solana/spl-token"
+import base58 from "bs58"
 import { ChainKey, chainKeyToPlatform, Network, Platform } from "../common"
 import {
-    Transaction,
     SerialTransactionExecutor,
+    Transaction as SuiTransaction,
 } from "@mysten/sui/transactions"
 import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519"
 import { defaultNetwork } from "../default"
@@ -46,62 +47,93 @@ export const _transferSolana = async ({
     privateKey,
     recipientAddress,
     amount,
+    fromAddress,
     tokens,
-    tokenKey
+    tokenKey,
 }: TransferParams): Promise<TransferResult> => {
     network = network || defaultNetwork
-    const recipientPublicKey = publicKey(recipientAddress)
+    const recipientPublicKey = new PublicKey(recipientAddress)
+    const connection = new Connection(
+        solanaHttpRpcUrl({ chainKey, network })
+    )
+    const keypair = Keypair.fromSecretKey(base58.decode(privateKey))
     if (tokenKey) {
         if (!tokens) throw new Error("Cannot find balance without tokens")
+        const token = tokens[tokenKey]
         //case native
         if (tokenKey === DefaultToken.Native) {
-            const umi = createUmi(solanaHttpRpcUrl({ chainKey, network })).use(
-                mplTokenMetadata()
+            const tx = new Transaction()
+            tx.add(
+                SystemProgram.transfer({
+                    fromPubkey: keypair.publicKey,
+                    toPubkey: recipientPublicKey,
+                    lamports: computeRaw(amount, token.decimals),
+                })
             )
-            const keypair = umi.eddsa.createKeypairFromSecretKey(
-                base58.serialize(privateKey)
+            const signature = await sendAndConfirmTransaction(
+                connection,
+                tx,
+                [keypair],
+                {
+                    commitment: "confirmed",
+                }
             )
-            umi.use(keypairIdentity(keypair))
-    
-            const { signature } = await transferSol(umi, {
-                source: umi.identity,
-                destination: recipientPublicKey,
-                amount: sol(amount),
-            }).sendAndConfirm(umi)
-            const txHash = base58.deserialize(signature)[0]
-            return { txHash }
-        } else {
-            tokenAddress = tokens[tokenKey].address
+            return { txHash: signature }
         }
+        tokenAddress = token.address
     }
     if (!tokenAddress)
-        throw new Error("Cannot find balance without token address")
-    const umi = createUmi(solanaHttpRpcUrl({ chainKey, network })).use(
-        mplTokenMetadata()
+        throw new Error("Cannot transfer token without token address")
+    if (!fromAddress) throw new Error("Cannot transfer token without from address")
+    // get mint account
+    // check if mint account is valid
+    const sourceAssociatedTokenAddress = await getOrCreateAssociatedTokenAccount(
+        connection,
+        keypair,
+        new PublicKey(tokenAddress),
+        new PublicKey(fromAddress),
+        true,
+        "confirmed",
+        undefined,
+        TOKEN_2022_PROGRAM_ID,
+    )   
+    console.log(`Source token account: ${sourceAssociatedTokenAddress.address.toBase58()}`)
+    const destinationAssociatedTokenAddress = await getOrCreateAssociatedTokenAccount(
+        connection,
+        keypair,
+        new PublicKey(tokenAddress),
+        new PublicKey(recipientAddress),
+        true,
+        "confirmed",
+        undefined,
+        TOKEN_2022_PROGRAM_ID,
     )
-    const asset = await fetchDigitalAsset(umi, publicKey(tokenAddress))
-    const keypair = umi.eddsa.createKeypairFromSecretKey(
-        new Uint8Array(Buffer.from(privateKey, "hex"))
+    console.log(`Destination token account: ${destinationAssociatedTokenAddress.address.toBase58()}`)
+    // get token metadata
+    //console.log(`Destination token account: ${destinationAccount.address.toBase58()}`)
+    // get token metadata
+    const metadata = await connection.getTokenAccountBalance(sourceAssociatedTokenAddress.address)
+    if (!metadata) throw new Error("Token metadata not found")
+    console.log(amount)
+    //const decimals = metadata.value.decimals
+    console.log(metadata.value.decimals)
+    const tx = new Transaction()
+    tx.add(
+        createTransferCheckedInstruction(
+            sourceAssociatedTokenAddress.address,
+            new PublicKey(tokenAddress),
+            destinationAssociatedTokenAddress.address,
+            new PublicKey(fromAddress),
+            computeRaw(amount, metadata.value.decimals),
+            metadata.value.decimals,
+            undefined,
+            TOKEN_2022_PROGRAM_ID,
+        )
     )
-    umi.use(keypairIdentity(keypair))
-    const tokenPublicKey = publicKey(tokenAddress)
-
-    const sourceTokenAccount = findAssociatedTokenPda(umi, {
-        mint: tokenPublicKey,
-        owner: umi.identity.publicKey,
+    const signature = await sendAndConfirmTransaction(connection, tx, [keypair], {
+        commitment: "confirmed",
     })
-
-    const destinationTokenAccount = findAssociatedTokenPda(umi, {
-        mint: tokenPublicKey,
-        owner: recipientPublicKey,
-    })
-    const { signature } = await transferTokens(umi, {
-        source: sourceTokenAccount,
-        destination: destinationTokenAccount,
-        amount: computeRaw(amount, asset.mint.decimals),
-    }).sendAndConfirm(umi)
-    const txHash = base58.deserialize(signature)[0]
-    return { txHash }
+    return { txHash: signature }
 }
 
 export const _transferSui = async ({
@@ -111,7 +143,7 @@ export const _transferSui = async ({
     recipientAddress,
     amount,
     tokens,
-    tokenKey
+    tokenKey,
 }: TransferParams): Promise<TransferResult> => {
     network = network || defaultNetwork
     const client = suiClient(network)
@@ -125,8 +157,10 @@ export const _transferSui = async ({
         const decimals = tokens[tokenKey].decimals
         //case native
         if (tokenKey === DefaultToken.Native) {
-            const tx = new Transaction()
-            const [coin] = tx.splitCoins(SUI_COIN_TYPE, [computeRaw(amount, decimals)])
+            const tx = new SuiTransaction()
+            const [coin] = tx.splitCoins(SUI_COIN_TYPE, [
+                computeRaw(amount, decimals),
+            ])
             tx.transferObjects([coin], recipientAddress)
             const { digest } = await executor.executeTransaction(tx)
             return { txHash: digest }
@@ -141,7 +175,7 @@ export const _transferSui = async ({
         coinType: tokenAddress,
     })
     if (!metadata) throw new Error("Sui coin metadata not found")
-    const tx = new Transaction()
+    const tx = new SuiTransaction()
     const [coin] = tx.splitCoins(tokenAddress, [
         computeRaw(amount, metadata.decimals),
     ])

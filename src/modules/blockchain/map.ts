@@ -1,3 +1,4 @@
+import { envConfig } from "@/env"
 import { ChainKey, Network } from "./common"
 
 export enum DefaultToken {
@@ -10,6 +11,14 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
     [ChainKey.Solana]: {
         imageUrl: "/solana.svg",
         name: "Solana",
+        honeycombProtocol: {
+            [Network.Testnet]: {
+                projectAddress: envConfig().honeycombProjectAddress[Network.Testnet],
+            },
+            [Network.Mainnet]: {
+                projectAddress: envConfig().honeycombProjectAddress[Network.Mainnet],
+            }
+        },
         defaultTokens: {
             [Network.Mainnet]: {
                 [DefaultToken.Native]: {
@@ -25,6 +34,7 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     address: "",
                     decimals: 9,
                     imageUrl: "/$CARROT.png",
+                    useHoneycombProtocol: true,
                 },
                 [DefaultToken.$CAULI]: {
                     name: "$CAULI",
@@ -45,9 +55,10 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                 [DefaultToken.$CARROT]: {
                     name: "$CARROT",
                     symbol: "$CARROT",
-                    address: "",
+                    address: envConfig().honeycombTokenAddress[Network.Testnet],
                     decimals: 9,
                     imageUrl: "/$CARROT.png",
+                    useHoneycombProtocol: true,
                 },
                 [DefaultToken.$CAULI]: {
                     name: "$CAULI",
@@ -124,10 +135,15 @@ export const networkMap: Record<Network, NetworkInfo> = {
 
 export type DefaultTokens = Record<DefaultToken, TokenInfo>
 
+export interface HoneycombProtocol {
+    projectAddress: string
+}
+
 export interface BlockchainInfo {
     imageUrl: string
     name: string
     defaultTokens: Record<Network, DefaultTokens>
+    honeycombProtocol?: Record<Network, HoneycombProtocol>
 }
 
 export interface TokenInfo {
@@ -136,6 +152,8 @@ export interface TokenInfo {
     address: string
     decimals: number
     imageUrl: string
+    // a boolean value to check if the token is using the honeycomb protocol
+    useHoneycombProtocol?: boolean
 }
 
 export interface NetworkInfo {

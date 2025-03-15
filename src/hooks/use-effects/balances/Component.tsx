@@ -1,7 +1,7 @@
 // component to fetch the balance of a token via SWR
 import React, { useEffect } from "react"
 import { useBalanceSwr } from "./useBalanceSwr"
-import { removeBalance, setBalance } from "@/redux/slices/session"
+import { removeSwr, setSwr } from "@/redux"
 import { useAppDispatch } from "@/redux"
 
 interface BalanceComponentProps {
@@ -21,16 +21,16 @@ export const BalanceComponent = ({
 
     useEffect(() => {
         dispatch(
-            setBalance({
+            setSwr({
                 tokenKey,
-                balance: { amount: swr.data || 0, isLoading: swr.isValidating },
+                swr,
             })
         )
-    }, [swr.data])
+    }, [swr])
 
     useEffect(() => {
         return () => {
-            dispatch(removeBalance(tokenKey))
+            dispatch(removeSwr(tokenKey))
         }
     }, [])
 

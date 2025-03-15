@@ -17,7 +17,7 @@ export interface TabSlice {
 }
 
 const initialState: TabSlice = {
-    assetTab: AssetTab.Profile,
+    assetTab: AssetTab.OnChainAssets,
     transferTab: TransferTab.Token,
 }
 

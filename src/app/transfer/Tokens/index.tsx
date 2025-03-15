@@ -22,16 +22,16 @@ export const Tokens: FC = () => {
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const tokensArray = valuesWithKey(tokens)
     const selectedTokenKey = formik.values.tokenKey || tokensArray[0].key
-    const balance = balances[selectedTokenKey]
+    const balanceSwr = balances[selectedTokenKey]
     const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_TOKEN_DISCLOSURE
     )
 
     useEffect(() => {
-        if (balance.amount) {
-            formik.setFieldValue("balance", balance.amount)
+        if (balanceSwr.data) {
+            formik.setFieldValue("balance", balanceSwr.data)
         }
-    }, [balance.amount])
+    }, [balanceSwr.data])
 
     const dispatch = useAppDispatch()
     return (
@@ -79,7 +79,7 @@ export const Tokens: FC = () => {
                             title="Amount"
                             tooltipString="Enter the amount you want to transfer"
                         />
-                        <div className="text-sm text-gray-400">{`Balance: ${balance.amount}`}</div>
+                        <div className="text-sm text-gray-400">{`Balance: ${balanceSwr.data}`}</div>
                     </div>
                     <Spacer y={1.5} />
                     <NumberInput

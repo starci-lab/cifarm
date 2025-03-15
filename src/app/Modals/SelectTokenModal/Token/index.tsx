@@ -14,7 +14,7 @@ export interface TokenProps {
 export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
     const { onClose } = useSingletonHook<ReturnType<typeof useDisclosure>>(SELECT_TOKEN_DISCLOSURE)
     const balances = useAppSelector((state) => state.sessionReducer.balances)
-    const balance = balances[token.key]
+    const balanceSwr = balances[token.key]
     const callback = useAppSelector(state => state.modalReducer.selectTokenModal.callback)
     return (
         <Card onPress={() => {
@@ -39,7 +39,7 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
                         </div>
                     </div>
                     <div className="text-sm">
-                        {balance.amount}
+                        {balanceSwr.data}
                     </div>
                 </div>
             </CardBody>

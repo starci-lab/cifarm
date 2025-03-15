@@ -33,23 +33,17 @@ export const useTransferTokenSwrMutation = (): UseSWRMutation<
             extraArgs: { arg: UseTransferTokenSwrMutationArgs }
         ) => {
             const { amount, recipientAddress, tokenKey } = { ...extraArgs.arg }
-            if (!account?.privateKey) throw new Error("No private key found")
-            console.log({
-                amount,
-                tokenKey,
-                recipientAddress,
-                chainKey,
-                network,
-                privateKey: account?.privateKey,
-            })
+            if (!account) throw new Error("No account found")
+            
             return await transferToken({
-                amount,
+                fromAddress: account.address,
                 tokenKey,
                 recipientAddress,
                 chainKey,
                 network,
                 privateKey: account?.privateKey,
-                tokens
+                tokens,
+                amount,
             })            
         }
     )
