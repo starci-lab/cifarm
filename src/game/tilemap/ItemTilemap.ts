@@ -580,8 +580,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             case ActionName.HarvestFruit:
                 if (data.success) {
                     const { quantity, productId } = data.data as HarvestFruitData
-                    const product = this.fruits.find(
-                        (product) => product.id === productId
+                    const product = this.products.find(
+                        (product) => product.displayId === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")
@@ -615,8 +615,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             case ActionName.ThiefFruit:
                 if (data.success) {
                     const { quantity, productId } = data.data as ThiefFruitData
-                    const product = this.fruits.find(
-                        (product) => product.id === productId
+                    const product = this.products.find(
+                        (product) => product.displayId === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")

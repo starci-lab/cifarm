@@ -5,6 +5,7 @@ import {
     BuildingSchema,
     CropCurrentState,
     CropSchema,
+    FruitCurrentState,
     FruitSchema,
     PlacedItemSchema,
     PlacedItemType,
@@ -28,7 +29,7 @@ import {
     TextureConfig,
     tileAssetMap,
 } from "../assets"
-import { animalStateAssetMap, cropStateAssetMap } from "../assets/states"
+import { animalStateAssetMap, cropStateAssetMap, fruitStateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
@@ -89,6 +90,10 @@ export class PlacedItemObject extends ContainerLite {
         }
         case PlacedItemType.Animal: {
             this.updateAnimalInfo()
+            break
+        }
+        case PlacedItemType.Fruit: {
+            this.updateFruitInfo()
             break
         }
         default:
@@ -157,6 +162,272 @@ export class PlacedItemObject extends ContainerLite {
             this.updateBuildingUpgrade()
         }
     }
+
+    private updateFruitInfo() {
+        if (!this.nextPlacedItem) {
+            throw new Error("Placed item not found")
+        }
+        if (!this.nextPlacedItem.fruitInfo) {
+            // remove everything in the container
+            this.clear(true)
+        } else {
+            // Update the texture
+            this.updateFruitInfoTexture()
+
+            // Update the bubble state
+            this.updateFruitInfoBubble()
+
+            // Update the timer
+            this.updateFruitInfoTimer()
+        }
+    }
+
+    private updateFruitInfoTexture() {
+        if (!this.nextPlacedItem) {
+            throw new Error("Placed item not found")
+        }
+        if (!this.nextPlacedItem.fruitInfo) {
+            throw new Error("Fruit info not found")
+        }
+        if (
+            this.currentPlacedItem?.fruitInfo?.currentStage !==
+            this.nextPlacedItem.fruitInfo.currentStage
+        ) {
+            const fruit = this.fruits.find((fruit) => {
+                if (!this.nextPlacedItem?.fruitInfo) {
+                    throw new Error("Placed item not found")
+                }
+                return fruit.id === this.nextPlacedItem.fruitInfo.fruit
+            })
+            if (!fruit) {
+                throw new Error("Fruit not found")
+            }
+
+            const data = fruitAssetMap[fruit.displayId]
+            if (!data) {
+                throw new Error("Fruit data not found")
+            }
+            const assetData =
+                data.map?.[this.nextPlacedItem.fruitInfo.currentStage]
+            if (!assetData) {
+                throw new Error("Asset data not found")
+            }
+            const {
+                textureConfig: { key, extraOffsets },
+            } = assetData
+            const { x = 0, y = 0 } = { ...extraOffsets }
+            if (this.mainVisual) {
+                // destroy the previous sprite
+                this.remove(this.mainVisual, true)
+            }
+            this.mainVisual = this.scene.add
+                .sprite(x, y, key)
+                .setOrigin(0.5, 1)
+                .setDepth(this.depth + 2)
+            this.addLocal(this.mainVisual)
+        }
+    }
+
+    private updateFruitInfoBubble() {
+        if (!this) {
+            throw new Error("Container not found")
+        }
+        if (!this.nextPlacedItem?.fruitInfo) {
+            throw new Error("Fruit info not found")
+        }
+        if (
+            this.nextPlacedItem.fruitInfo.currentState !==
+            FruitCurrentState.Normal
+        ) {
+            // use the product icon
+            const fruit = this.fruits.find((fruit) => {
+                if (!this.nextPlacedItem?.fruitInfo) {
+                    throw new Error("Placed item not found")
+                }
+                return fruit.id === this.nextPlacedItem.fruitInfo.fruit
+            })
+            if (!fruit) {
+                throw new Error("Fruit not found")
+            }
+            const product = this.products.find((product) => product.fruit === fruit.id)
+            if (!product) {
+                throw new Error("Product not found")
+            }
+
+            // if the current state is different from the previous state
+            if (
+                this.currentPlacedItem?.fruitInfo?.currentState !==
+                this.nextPlacedItem.fruitInfo.currentState
+            ) {
+                if (!this.bubbleState) {
+                    const background = this.scene.add.image(
+                        0,
+                        0,
+                        BaseAssetKey.BubbleState
+                    )
+                    this.bubbleState = this.scene.rexUI.add
+                        .overlapSizer({
+                            width: background.width,
+                            height: background.height,
+                            originY: 1,
+                        })
+                        .addBackground(background)
+                        .setScale(0.5)
+                        .setDepth(
+                            calculateGameplayDepth({
+                                layer: GameplayLayer.Effects,
+                            })
+                        )
+                        .setPosition(-TILE_WIDTH / 2, (-3 * TILE_HEIGHT) / 2)
+                    this.addLocal(this.bubbleState)
+                } else {
+                    this.bubbleState.removeAll(true)
+                }
+                // update the icon
+                // for state 0-3, use the icon in the fruit asset map
+                if (
+                    this.nextPlacedItem.fruitInfo.currentState !==
+                    FruitCurrentState.FullyMatured
+                ) {
+                    const stateKey =
+                        fruitStateAssetMap[this.nextPlacedItem.fruitInfo.currentState]
+                            ?.textureConfig.key
+                    if (!stateKey) {
+                        throw new Error("State key not found")
+                    }
+                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
+                    )
+                    if (this.bubbleState) {
+                        this.bubbleState
+                            .add(icon, {
+                                align: "center",
+                                expand: false,
+                                offsetY: -10,
+                            })
+                            .layout()
+                    }
+                } else {
+                    const text = `${
+                        this.nextPlacedItem.fruitInfo.harvestQuantityRemaining || 0
+                    }/${fruit.maxHarvestQuantity || 0}`
+
+                    this.quantityText = new Text({
+                        baseParams: {
+                            scene: this.scene,
+                            text,
+                            x: 0,
+                            y: 0,
+                        },
+                        options: {
+                            fontSize: 28,
+                            textColor: TextColor.Brown,
+                        },
+                    }).setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
+                    )
+
+                    this.scene.add.existing(this.quantityText)
+                    this.bubbleState
+                        .add(this.quantityText, {
+                            align: "center",
+                            expand: false,
+                            offsetY: -10,
+                        })
+                        .layout()
+                }
+            } else if (
+                // for fully matured state, update the quantity text if the fruit is thiefed
+                this.currentPlacedItem?.fruitInfo?.currentState ===
+                FruitCurrentState.FullyMatured &&
+                this.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining !==
+                this.nextPlacedItem.fruitInfo.harvestQuantityRemaining
+            ) {
+                if (!this.quantityText) {
+                    throw new Error("Quantity text not found")
+                }
+                this.quantityText
+                    .setText(
+                        `${
+                            this.nextPlacedItem.fruitInfo?.harvestQuantityRemaining || 0
+                        }/${fruit.maxHarvestQuantity || 0}`
+                    )
+                    .setDepth(this.depth + 3)
+            }
+        } else {
+            // if bubble state is present, remove it
+            if (this.bubbleState) {
+                this.bubbleState.removeAll(true)
+                this.bubbleState.destroy()
+                this.bubbleState = undefined
+            }
+        }
+    }
+
+    private updateFruitInfoTimer() {
+        if (!this) {
+            throw new Error("Container not found")
+        }
+        if (!this.nextPlacedItem?.fruitInfo) {
+            throw new Error("Fruit info not found")
+        }
+        if (
+            this.nextPlacedItem.fruitInfo.currentState !=
+            FruitCurrentState.FullyMatured
+        ) {
+            if (
+                this.nextPlacedItem.fruitInfo.currentStageTimeElapsed !==
+                this.currentPlacedItem?.fruitInfo?.currentStageTimeElapsed
+            ) {
+                if (!this.timer) {
+                    this.timer = new Text({
+                        baseParams: {
+                            scene: this.scene,
+                            x: 0,
+                            y: -25,
+                            text: "",
+                        },
+                        options: {
+                            fontSize: 32,
+                            enableStroke: true,
+                        },
+                    })
+                        .setOrigin(0.5, 1)
+                        .setDepth(this.depth + 3)
+                    this.scene.add.existing(this.timer)
+                    this.pinLocal(this.timer, {
+                        syncScale: false,
+                    })
+                }
+                const fruit = this.fruits.find((fruit) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
+                    }
+                    return fruit.id === this.nextPlacedItem.fruitInfo?.fruit
+                })
+                if (fruit?.growthStageDuration === undefined) {
+                    throw new Error("Fruit growth stage duration not found")
+                }
+                const formattedTime = formatTime(
+                    Math.round(
+                        fruit.growthStageDuration -
+                        this.nextPlacedItem.fruitInfo.currentStageTimeElapsed
+                    )
+                )
+                this.timer.setText(formattedTime).setDepth(this.depth + 3)
+            }
+        } else {
+            if (this.timer) {
+                this.timer.destroy()
+                this.timer = undefined
+            }
+        }
+    }
+
 
     private updateBuildingUpgrade() {
         if (!this.nextPlacedItem) {

@@ -72,7 +72,7 @@ export const fruitStateAssetMap: Partial<Record<FruitCurrentState, FruitStateAss
         textureConfig: { key: "need-fertilizer", assetUrl: "states/hungry.png" },
     },
     [FruitCurrentState.IsInfested]: {
-        textureConfig: { key: "is-infested", assetUrl: "states/caterpillar-infested.png" },
+        textureConfig: { key: "caterpillar-infested", assetUrl: "states/caterpillar-infested.png" },
     },
     [FruitCurrentState.FullyMatured]: {
         textureConfig: { key: "fully-mature", assetUrl: "states/is-ready.png" },
