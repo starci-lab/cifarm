@@ -1,27 +1,27 @@
-import { UseSWR } from "../types"
+import { UseSWR } from "../../types"
 import {
     queryFollowees,
-    QueryFolloweesParams,
     QueryFolloweesResponse,
+    QueryFolloweesParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
-import useSWR from "swr"
 import { useState } from "react"
 import { useAppSelector } from "@/redux"
-import { defaultArgs } from "./constants"
-
-export const useQueryFolloweesSwr = (): UseSWR<
+import useSWR from "swr"
+import { defaultRequest } from "../constants"
+export const useGraphQLQueryFolloweesSwr = (): UseSWR<
   ApolloQueryResult<QueryFolloweesResponse>,
   QueryFolloweesParams
 > => {
-    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
-    const [ params, setParams ] = useState<QueryFolloweesParams>({
-        args: defaultArgs
+    const [params, setParams] = useState<QueryFolloweesParams>({
+        request: defaultRequest
     })
+    const authenticated = useAppSelector(
+        (state) => state.sessionReducer.authenticated
+    )
     const swr = useSWR(
         authenticated ? ["QUERY_FOLLOWEES", params] : null,
-        async (
-        ) => {
+        async () => {
             return await queryFollowees(params)
         }
     )
@@ -30,6 +30,6 @@ export const useQueryFolloweesSwr = (): UseSWR<
     return {
         swr,
         setParams,
-        params
+        params,
     }
-}
+} 

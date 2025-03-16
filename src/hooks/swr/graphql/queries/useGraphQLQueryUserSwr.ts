@@ -1,4 +1,4 @@
-import { UseSWR } from "../types"
+import { UseSWR } from "../../types"
 import {
     queryUser,
     QueryUserResponse,
@@ -9,7 +9,7 @@ import { useState } from "react"
 import { useAppSelector } from "@/redux"
 import useSWR from "swr"
 
-export const useQueryUserSwr = (): UseSWR<
+export const useGraphQLQueryUserSwr = (): UseSWR<
   ApolloQueryResult<QueryUserResponse>,
   QueryUserParams
 > => {
@@ -28,4 +28,4 @@ export const useQueryUserSwr = (): UseSWR<
         setParams,
         params
     }
-}
+} 

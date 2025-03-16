@@ -3,16 +3,26 @@ export interface IPaginatedResponse<TSchema> {
     data: Array<TSchema>
 }
 
-export interface QueryManyArgs {
+export interface QueryManyRequest {
     limit?: number
     offset?: number
 }
 
-export interface QueryVariables<TArgs> {
-    args: TArgs
+export interface QueryVariables<TRequest> {
+    request: TRequest
 }
 
-export interface QueryParams<TQuery, TArgs = undefined> {
+export interface QueryParams<TQuery, TRequest = undefined> {
     query?: TQuery
-    args?: TArgs
+    request?: TRequest
 }
+
+export interface MutationParams<TMutation, TRequest = undefined> {
+    mutation?: TMutation
+    request?: TRequest
+}
+
+export interface MutationVariables<TRequest> {
+    request: TRequest
+}
+

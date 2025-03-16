@@ -12,8 +12,8 @@ import { useEffect, useState } from "react"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { API_AUTHENTICATION_SWR_MUTATION } from "@/app/constants"
-import { useApiAuthenticationSwrMutation } from "../swr"
+import { MUTATION_GRAPHQL_AUTHENTICATION_SWR_MUTATION } from "@/app/constants"
+import { useGraphQLMutationAuthenticationSwrMutation } from "../swr"
 
 export const useAccounts = () => {
     const loadAccountsKey = useAppSelector(
@@ -26,8 +26,8 @@ export const useAccounts = () => {
     const {
         swrMutation,
     } =
-        useSingletonHook<ReturnType<typeof useApiAuthenticationSwrMutation>>(
-            API_AUTHENTICATION_SWR_MUTATION
+        useSingletonHook<ReturnType<typeof useGraphQLMutationAuthenticationSwrMutation>>(
+            MUTATION_GRAPHQL_AUTHENTICATION_SWR_MUTATION
         )
     useEffect(() => {
     //do nothing if loadAccountsKey is equal to 0
@@ -93,7 +93,7 @@ export const useAccounts = () => {
         if (!accountsLoaded) return
         const handleEffect = async () => {
             //trigger the swrMutation
-            await swrMutation.trigger({})
+            await swrMutation.trigger()
         }
         handleEffect()
     }, [accountsLoaded])

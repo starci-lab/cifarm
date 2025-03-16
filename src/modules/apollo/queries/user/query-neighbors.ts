@@ -1,16 +1,16 @@
 import { DocumentNode, gql } from "@apollo/client"
-import { noCacheAuthClient } from "../auth-client"
+import { noCacheAuthClient } from "../../auth-client"
 import { UserSchema } from "@/modules/entities"
 import {
     IPaginatedResponse,
-    QueryManyArgs,
+    QueryManyRequest,
     QueryParams,
     QueryVariables,
-} from "../types"
+} from "../../types"
 
 const query1 = gql`
-  query ($args: GetNeighborsArgs!) {
-    neighbors(args: $args) {
+  query Neighbors($request: GetNeighborsRequest!) {
+    neighbors(request: $request) {
       data {
         id
         level
@@ -38,13 +38,13 @@ const queryMap: Record<QueryNeighbors, DocumentNode> = {
     [QueryNeighbors.Query1]: query1,
 }
 
-export interface QueryNeighborsArgs extends QueryManyArgs {
+export interface QueryNeighborsArgs extends QueryManyRequest {
    searchString?: string;
 }
 export type QueryNeighborsParams = QueryParams<QueryNeighbors, QueryNeighborsArgs>;
 export const queryNeighbors = async ({
     query = QueryNeighbors.Query1,
-    args = { limit: 5, offset: 0 },
+    request = { limit: 5, offset: 0 },
 }: QueryNeighborsParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
@@ -53,7 +53,7 @@ export const queryNeighbors = async ({
   >({
       query: queryDocument,
       variables: {
-          args,
+          request,
       },
   })
 }

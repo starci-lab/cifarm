@@ -1,4 +1,4 @@
-import { UseSWR } from "../types"
+import { UseSWR } from "../../types"
 import {
     QueryStaticResponse,
     queryStatic,
@@ -6,7 +6,7 @@ import {
 import { ApolloQueryResult } from "@apollo/client"
 import useSWR from "swr"
 
-export const useQueryStaticSwr: () => UseSWR<
+export const useGraphQLQueryStaticSwr: () => UseSWR<
   ApolloQueryResult<QueryStaticResponse>,
   void
 > = () => {

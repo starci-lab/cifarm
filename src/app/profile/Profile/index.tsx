@@ -1,6 +1,6 @@
-import { NEIGHBORS_DISCLOSURE, QUERY_USER_SWR, QUESTS_DISCLOSURE } from "@/app/constants"
+import { NEIGHBORS_DISCLOSURE, QUERY_GRAPHQL_USER_SWR, QUESTS_DISCLOSURE } from "@/app/constants"
 import { ExclamationTooltip } from "@/components"
-import { useQueryUserSwr } from "@/hooks"
+import { useGraphQLQueryUserSwr } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { computeExperiencesQuota, truncateString } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -10,7 +10,7 @@ import React, { FC } from "react"
 
 export const Profile : FC = () => {
     const { swr } =
-    useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
+    useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(QUERY_GRAPHQL_USER_SWR)
     const user = swr.data?.data.user
     const avatarUrl = user
         ? user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)

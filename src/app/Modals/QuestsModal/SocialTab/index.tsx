@@ -2,13 +2,13 @@
 import { ScrollShadow, Card, Divider, useDisclosure } from "@heroui/react"
 import React, { FC } from "react"
 import { QuestCard } from "../QuestCard"
-import { API_UPDATE_FOLLOW_X_SWR_MUTATION, INVITE_USER_DISCLOSURE, QUERY_STATIC_SWR, QUERY_USER_SWR, TOKEN_IMAGE_URL } from "@/app/constants"
-import { useApiUpdateFollowXSwrMutation, useQueryStaticSwr, useQueryUserSwr } from "@/hooks"
+import { API_UPDATE_FOLLOW_X_SWR_MUTATION, INVITE_USER_DISCLOSURE, QUERY_GRAPHQL_STATIC_SWR, QUERY_GRAPHQL_USER_SWR, TOKEN_IMAGE_URL } from "@/app/constants"
+import { useApiUpdateFollowXSwrMutation, useQueryStaticSwr, useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 
 export const SocialTab: FC = () => {
-    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useQueryStaticSwr>>(QUERY_STATIC_SWR)
-    const { swr: userSwr } = useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useQueryStaticSwr>>(QUERY_GRAPHQL_STATIC_SWR)
+    const { swr: userSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(QUERY_GRAPHQL_USER_SWR)
     const { swrMutation: updateFollowXSwrMutation } = useSingletonHook<ReturnType<typeof useApiUpdateFollowXSwrMutation>>(API_UPDATE_FOLLOW_X_SWR_MUTATION)
     const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(INVITE_USER_DISCLOSURE)
     return (

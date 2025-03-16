@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client"
-import { client } from "../client"
+import { noCacheAuthClient } from "../../auth-client"
 import {
     Activities,
     AnimalSchema,
@@ -23,7 +23,7 @@ import {
 
 //long query for querying all the static data
 const query = gql`
-  {
+  query Static {
     activities {
       waterCrop {
         experiencesGain
@@ -340,7 +340,7 @@ export interface QueryStaticResponse {
 }
 
 export const queryStatic = async () => {
-    return client.query<QueryStaticResponse>({
+    return noCacheAuthClient.query<QueryStaticResponse>({
         query,
     })
 }

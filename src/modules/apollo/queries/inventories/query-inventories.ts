@@ -1,12 +1,12 @@
 import { InventorySchema } from "@/modules/entities"
 import { DocumentNode, gql } from "@apollo/client"
-import { noCacheAuthClient } from "../auth-client"
-import { IPaginatedResponse, QueryManyArgs, QueryParams } from "../types"
-import { QueryVariables } from "../types"
+import { noCacheAuthClient } from "../../auth-client"
+import { IPaginatedResponse, QueryManyRequest, QueryParams } from "../../types"
+import { QueryVariables } from "../../types"
 
 const query1 = gql`
-  query ($args: GetInventoriesArgs!) {
-    inventories(args: $args) {
+  query Inventories($request: GetInventoriesRequest!) {
+    inventories(request: $request) {
       data {
         id
         inventoryType
@@ -19,7 +19,7 @@ const query1 = gql`
 `
 
 export enum QueryInventories {
-  Query1 = "query1",
+  Query1 = "query1",  
 }
 
 export interface QueryInventoriesResponse {
@@ -31,11 +31,11 @@ const queryMap: Record<QueryInventories, DocumentNode> = {
 }
 
 export type QueryInventoriesParams = QueryParams<QueryInventories, QueryInventoriesArgs>;
-export type QueryInventoriesArgs = QueryManyArgs;
+export type QueryInventoriesArgs = QueryManyRequest;
 export const queryInventories = async (
     {
         query = QueryInventories.Query1,
-        args = { limit: 150 + 8 + 9, offset: 0 },
+        request = { limit: 150 + 8 + 9, offset: 0 },
     }: QueryInventoriesParams
 ) => {
     const queryDocument = queryMap[query]
@@ -45,7 +45,7 @@ export const queryInventories = async (
   >({
       query: queryDocument,
       variables: {
-          args,
+          request,
       },
   })
 }

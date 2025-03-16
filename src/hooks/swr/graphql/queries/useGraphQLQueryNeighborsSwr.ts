@@ -1,23 +1,25 @@
-import { UseSWR } from "../types"
+import { UseSWR } from "../../types"
 import {
     queryNeighbors,
-    QueryNeighborsParams,
     QueryNeighborsResponse,
+    QueryNeighborsParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
-import useSWR from "swr"
 import { useState } from "react"
 import { useAppSelector } from "@/redux"
-import { defaultArgs } from "./constants"
+import useSWR from "swr"
+import { defaultRequest } from "../constants"
 
-export const useQueryNeighborsSwr = (): UseSWR<
+export const useGraphQLQueryNeighborsSwr = (): UseSWR<
   ApolloQueryResult<QueryNeighborsResponse>,
   QueryNeighborsParams
 > => {
-    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
-    const [ params, setParams ] = useState<QueryNeighborsParams>({
-        args: defaultArgs
+    const [params, setParams] = useState<QueryNeighborsParams>({
+        request: defaultRequest
     })
+    const authenticated = useAppSelector(
+        (state) => state.sessionReducer.authenticated
+    )
     const swr = useSWR(
         authenticated ? ["QUERY_NEIGHBORS", params] : null,
         async () => {
@@ -28,7 +30,7 @@ export const useQueryNeighborsSwr = (): UseSWR<
     //return the state and the data
     return {
         swr,
+        setParams,
         params,
-        setParams
     }
-}
+} 

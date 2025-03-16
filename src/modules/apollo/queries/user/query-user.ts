@@ -1,10 +1,10 @@
 import { DocumentNode, gql } from "@apollo/client"
-import { noCacheAuthClient } from "../auth-client"
+import { noCacheAuthClient } from "../../auth-client"
 import { UserSchema } from "@/modules/entities"
-import { QueryParams } from "../types"
+import { QueryParams } from "../../types"
 
 const query1 = gql`
-  query {
+  query User { 
     user {
       id
       accountAddress

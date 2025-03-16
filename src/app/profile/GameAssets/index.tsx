@@ -1,13 +1,13 @@
-import { GOLD_IMAGE_URL, QUERY_USER_SWR, TOKEN_IMAGE_URL, TOKENS_OFFCHAIN_DISCLOSURE } from "@/app/constants"
+import { GOLD_IMAGE_URL, QUERY_GRAPHQL_USER_SWR, TOKEN_IMAGE_URL, TOKENS_OFFCHAIN_DISCLOSURE } from "@/app/constants"
 import { ExclamationTooltip } from "@/components"
-import { useQueryUserSwr } from "@/hooks"
+import { useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Card, CardBody, Spacer, Image, useDisclosure } from "@heroui/react"
 import React, { FC } from "react"
 
 export const GameAssets : FC = () => {
     const { onOpen: onTokensOffchainPress } = useSingletonHook<ReturnType<typeof useDisclosure>>(TOKENS_OFFCHAIN_DISCLOSURE)
-    const { swr } = useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
+    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(QUERY_GRAPHQL_USER_SWR)
     const user = swr.data?.data.user
     return (
         <div>

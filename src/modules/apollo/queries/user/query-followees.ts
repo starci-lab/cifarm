@@ -1,16 +1,16 @@
 import { DocumentNode, gql } from "@apollo/client"
-import { noCacheAuthClient } from "../auth-client"
+import { noCacheAuthClient } from "../../auth-client"
 import { UserSchema } from "@/modules/entities"
 import {
-    IPaginatedResponse,
-    QueryManyArgs,
+    IPaginatedResponse, 
+    QueryManyRequest,
     QueryParams,
     QueryVariables,
-} from "../types"
+} from "../../types"
 
 const query1 = gql`
-  query ($args: GetFolloweesArgs!) {
-    followees(args: $args) {
+  query Followees($request: GetFolloweesRequest!) {
+    followees(request: $request) {  
       data {
         id
         level
@@ -37,14 +37,14 @@ const queryMap: Record<QueryFollowees, DocumentNode> = {
     [QueryFollowees.Query1]: query1,
 }
 
-export interface QueryFolloweesArgs extends QueryManyArgs {
+export interface QueryFolloweesArgs extends QueryManyRequest {
   searchString?: string;
 }
 
 export type QueryFolloweesParams = QueryParams<QueryFollowees, QueryFolloweesArgs>;
 export const queryFollowees = async ({
     query = QueryFollowees.Query1,
-    args = { limit: 5, offset: 0 },
+    request = { limit: 5, offset: 0 },
 }: QueryFolloweesParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
@@ -53,7 +53,7 @@ export const queryFollowees = async ({
   >({
       query: queryDocument,
       variables: {
-          args,
+          request,
       },
   })
 }

@@ -1,6 +1,6 @@
 "use client"
-import { INVITE_USER_DISCLOSURE, QUERY_USER_SWR } from "@/app/constants"
-import { useQueryUserSwr } from "@/hooks"
+import { INVITE_USER_DISCLOSURE, QUERY_GRAPHQL_USER_SWR } from "@/app/constants"
+import { useGraphQLQueryUserSwr } from "@/hooks"
 import { REFERRAL_USER_ID } from "@/hooks/use-effects/referral"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
@@ -20,7 +20,7 @@ export const InviteUserModal: FC = () => {
     ReturnType<typeof useDisclosure>
   >(INVITE_USER_DISCLOSURE)
 
-    const { swr } = useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
+    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(QUERY_GRAPHQL_USER_SWR)
 
     const [webUrl, setWebUrl] = useState("")
 

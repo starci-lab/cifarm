@@ -1,8 +1,8 @@
 "use client"
-import { PROFILE_DISCLOSURE, QUERY_USER_SWR } from "@/app/constants"
+import { PROFILE_DISCLOSURE, QUERY_GRAPHQL_USER_SWR } from "@/app/constants"
 import { ExclamationTooltip } from "@/components"
 import { pathConstants } from "@/constants"
-import { useQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { computeExperiencesQuota, truncateString } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -29,7 +29,7 @@ export const ProfileModal: FC = () => {
     const { isOpen, onOpenChange, onClose } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(PROFILE_DISCLOSURE)
     const { swr } =
-    useSingletonHook<ReturnType<typeof useQueryUserSwr>>(QUERY_USER_SWR)
+    useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(QUERY_GRAPHQL_USER_SWR)
     const user = swr.data?.data.user
     const avatarUrl = user
         ? user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)

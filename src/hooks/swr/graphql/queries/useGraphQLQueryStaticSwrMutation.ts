@@ -1,4 +1,4 @@
-import { UseSWRMutation } from "../types"
+import { UseSWRMutation } from "../../types"
 import {
     queryStatic,
     QueryStaticResponse,
@@ -7,7 +7,7 @@ import useSWRMutation from "swr/mutation"
 import { v4 } from "uuid"
 import { ApolloQueryResult } from "@apollo/client"
 
-export const useQueryStaticSwrMutation = (): UseSWRMutation<
+export const useGraphQLQueryStaticSwrMutation = (): UseSWRMutation<
   ApolloQueryResult<QueryStaticResponse>
 > => {
     const swrMutation = useSWRMutation(
