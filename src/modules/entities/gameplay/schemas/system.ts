@@ -26,6 +26,13 @@ export interface Activities {
   cureAnimal: ActivityInfo;
   helpCureAnimal: ActivityInfo;
   harvestCrop: ActivityInfo;
+  helpFeedAnimal: ActivityInfo
+  useFruitFertilizer: ActivityInfo
+  useBugNet: ActivityInfo
+  helpUseFruitFertilizer: ActivityInfo
+  helpUseBugNet: ActivityInfo
+  harvestFruit: ActivityInfo
+  thiefFruit: ActivityInfo
 }
 
 export interface CropRandomness {
@@ -39,6 +46,13 @@ export interface AnimalRandomness {
   sickChance: number;
   thief3: number;
   thief2: number;
+}
+
+export interface FruitRandomness {
+  thief3: number
+  thief2: number
+  needFertilizer: number
+  hasCaterpillar: number
 }
 
 export interface Positions {

@@ -85,6 +85,34 @@ const query = gql`
         experiencesGain
         energyConsume
       }
+      helpFeedAnimal {
+        experiencesGain
+        energyConsume
+      }
+      useFruitFertilizer {
+        experiencesGain
+        energyConsume
+      }
+      useBugNet {
+        experiencesGain
+        energyConsume
+      }
+      helpUseFruitFertilizer {
+        experiencesGain
+        energyConsume
+      }
+      helpUseBugNet {
+        experiencesGain
+        energyConsume
+      }
+      harvestFruit {
+        experiencesGain
+        energyConsume
+      }
+      thiefFruit {
+        experiencesGain
+        energyConsume
+      }
     }
     cropRandomness {
       thief3
@@ -273,6 +301,7 @@ const query = gql`
       type
       crop
       animal
+      fruit
     }
     supplies {
       displayId

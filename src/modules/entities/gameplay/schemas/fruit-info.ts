@@ -1,5 +1,5 @@
+import { FruitCurrentState } from "../enums"
 import { AbstractSchema } from "./abstract"
-import { CropCurrentState } from "../enums"
 
 export interface FruitInfoSchema extends AbstractSchema {
   currentStage: number;
@@ -7,7 +7,7 @@ export interface FruitInfoSchema extends AbstractSchema {
   harvestQuantityRemaining: number;
   harvestCount: number;
   isQuality: boolean;
-  currentState: CropCurrentState;
+  currentState: FruitCurrentState;
   thieves: Array<string>;
   fruit: string;
 }

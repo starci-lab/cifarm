@@ -8,7 +8,11 @@ import {
     FeedAnimalRequest,
     HarvestAnimalRequest,
     HarvestCropRequest,
+    HarvestFruitRequest,
     HelpCureAnimalRequest,
+    HelpFeedAnimalRequest,
+    HelpUseBugNetRequest,
+    HelpUseFruitFertilizerRequest,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
     HelpWaterRequest,
@@ -17,7 +21,10 @@ import {
     SellRequest,
     ThiefAnimalProductRequest,
     ThiefCropRequest,
+    ThiefFruitRequest,
+    UseBugNetRequest,
     UseFertilizerRequest,
+    UseFruitFertilizerRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
     WaterCropRequest,
@@ -25,6 +32,7 @@ import {
 import {
     AnimalCurrentState,
     CropCurrentState,
+    FruitCurrentState,
     InventorySchema,
     InventoryType,
     PlacedItemSchema,
@@ -243,7 +251,7 @@ export class InputTilemap extends ItemTilemap {
                 this.handlePressOnAnimal(data)
                 break
             case PlacedItemType.Fruit:
-                //this.handlePressOnFruit(data)
+                this.handlePressOnFruit(data)
                 break
             }
         })
@@ -775,30 +783,51 @@ export class InputTilemap extends ItemTilemap {
                 }
                 // do nothing if neighbor user id is found
                 if (visitedNeighbor) {
-                    return
-                }
-
-                if (
-                    !this.energyNotEnough({
-                        data,
-                        actionEnergy: this.activities.feedAnimal.energyConsume,
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.helpFeedAnimal.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    EventBus.once(EventName.HelpFeedAnimalCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
                     })
-                ) {
-                    return
+                    // emit the event to plant seed
+                    const eventMessage: HelpFeedAnimalRequest = {
+                        placedItemAnimalId: placedItemId,
+                        inventorySupplyId: selectedTool.id,
+                    }
+                    EventBus.emit(EventName.RequestHelpFeedAnimal, eventMessage)
+                    data.pressBlocked = true
+                }else{
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.feedAnimal.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+    
+                    EventBus.once(EventName.FeedAnimalCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: FeedAnimalRequest = {
+                        inventorySupplyId: selectedTool.id,
+                        placedItemAnimalId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestFeedAnimal, eventMessage)
+                    data.pressBlocked = true
                 }
 
-                EventBus.once(EventName.FeedAnimalCompleted, () => {
-                    EventBus.emit(EventName.RefreshUser)
-                    EventBus.emit(EventName.RefreshInventories)
-                    data.pressBlocked = false
-                })
-                // emit the event to plant seed
-                const eventMessage: FeedAnimalRequest = {
-                    inventorySupplyId: selectedTool.id,
-                    placedItemAnimalId: placedItemId,
-                }
-                EventBus.emit(EventName.RequestFeedAnimal, eventMessage)
-                data.pressBlocked = true
+                
                 break
             }
             }
@@ -1634,6 +1663,261 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
+    private handlePressOnFruit(data: PlacedItemObjectData) {
+        if (data.placedItemType.type !== PlacedItemType.Fruit) {
+            throw new Error("Invalid placed item type")
+        }
+
+        const visitedNeighbor = this.scene.cache.obj.get(
+            CacheKey.VisitedNeighbor
+        ) as UserSchema
+        const selectedTool = this.scene.cache.obj.get(
+            CacheKey.SelectedTool
+        ) as ToolLike
+
+        // do nothing if selected tool is default
+        if (selectedTool.default) {
+            return
+        }
+
+        const inventoryType = this.inventoryTypes.find(
+            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
+        )
+        if (!inventoryType) {
+            throw new Error(
+                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+            )
+        }
+        const object = data.object
+        const currentPlacedItem = object.currentPlacedItem
+
+        const placedItemId = currentPlacedItem?.id
+        // do nothing if placed item id is not found
+        if (!placedItemId) {
+            return
+        }
+
+        switch (inventoryType.type) {
+        case InventoryType.Tool: {
+            const tools = this.scene.cache.obj.get(
+                CacheKey.Tools
+            ) as Array<ToolSchema>
+            if (!tools) {
+                throw new Error("Tools not found")
+            }
+            const tool = tools.find(
+                (tool) => tool.id === selectedTool.inventoryType?.id
+            )
+            if (!tool) {
+                throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
+            }
+            // check if tool id is water can
+            switch (tool.displayId) {
+            case ToolId.BugNet: {
+                // return if seed growth info is not need water
+                if (
+                    currentPlacedItem.fruitInfo?.currentState !==
+                      FruitCurrentState.IsInfested
+                ) {
+                    return
+                }
+        
+                if (visitedNeighbor) {
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.helpUseBugNet.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+        
+                    //emit the event to water the plant
+                    EventBus.once(EventName.HelpUseBugNetCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        data.pressBlocked = false
+                    })
+        
+                    // emit the event to plant seed
+                    const eventMessage: HelpUseBugNetRequest = {
+                        placedItemFruitId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestHelpUseBugNet, eventMessage)
+                    data.pressBlocked = true
+                } else {
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.useBugNet.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    //emit the event to water the plant
+                    EventBus.once(EventName.UseBugNetCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        data.pressBlocked = false
+                    })
+        
+                    // emit the event to plant seed
+                    const eventMessage: UseBugNetRequest = {
+                        placedItemFruitId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestUseBugNet, eventMessage)
+                    data.pressBlocked = true
+                }
+                break
+            }
+            case ToolId.Crate: {
+                if (
+                    currentPlacedItem.fruitInfo?.currentState !==
+                  FruitCurrentState.FullyMatured
+                ) {
+                    return
+                }
+                const placedItem = object.currentPlacedItem
+                if (!placedItem) {
+                    throw new Error("Placed item not found")
+                }
+                const fruit = this.fruits.find(
+                    (fruit) => fruit.id === placedItem.fruitInfo?.fruit
+                )
+                if (!fruit) {
+                    throw new Error("Fruit not found")
+                }
+                const product = this.products.find(
+                    (product) => product.fruit === fruit.id
+                )
+                if (!product) {
+                    throw new Error("Product not found")
+                }
+                if (visitedNeighbor) {
+                    if (
+                        !this.thiefFruitQuantityReactMinimum({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
+                        !this.hasThievedFruit({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.thiefFruit.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    // emit the event to water the plant
+                    EventBus.once(EventName.ThiefFruitCompleted, async () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: ThiefFruitRequest = {
+                        placedItemFruitId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestThiefFruit, eventMessage)
+                    data.pressBlocked = true
+                } else {
+                    // emit the event to water the plant
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.harvestFruit.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    EventBus.once(EventName.HarvestFruitCompleted, async () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: HarvestFruitRequest = {
+                        placedItemFruitId: placedItemId,
+                    }
+                    EventBus.emit(EventName.RequestHarvestFruit, eventMessage)
+                    data.pressBlocked = true
+                }
+                break
+            }
+            }
+            break
+        }
+        case InventoryType.Supply: {
+            const supply = this.supplies.find(
+                (supply) => supply.id === selectedTool.inventoryType?.id
+            )
+            if (!supply) {
+                throw new Error(`Supply not found for supply id: ${selectedTool.id}`)
+            }
+            switch (supply.displayId) {
+            case SupplyId.FruitFertilizer: {
+                if (!currentPlacedItem?.fruitInfo) {
+                    return
+                }
+                // do nothing if neighbor user id is found
+                if (visitedNeighbor) {
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.helpUseFruitFertilizer.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    EventBus.once(EventName.HelpUseFruitFertilizerCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: HelpUseFruitFertilizerRequest = {
+                        placedItemFruitId: placedItemId,
+                        inventorySupplyId: selectedTool.id,
+                    }
+                    EventBus.emit(EventName.RequestHelpUseFruitFertilizer, eventMessage)
+                    data.pressBlocked = true
+                }else{
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.useFruitFertilizer.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+        
+                    EventBus.once(EventName.UseFruitFertilizerCompleted, () => {
+                        EventBus.emit(EventName.RefreshUser)
+                        EventBus.emit(EventName.RefreshInventories)
+                        data.pressBlocked = false
+                    })
+                    // emit the event to plant seed
+                    const eventMessage: UseFruitFertilizerRequest = {
+                        placedItemFruitId: placedItemId,
+                        inventorySupplyId: selectedTool.id,
+                    }
+                    EventBus.emit(EventName.RequestUseFruitFertilizer, eventMessage)
+                    data.pressBlocked = true
+                }
+                break
+            }
+            }
+            break
+        }
+        }
+    }
+
     private cancelPlacement() {
         this.showEverything()
         this.destroyDragVisual()
@@ -1670,6 +1954,23 @@ export class InputTilemap extends ItemTilemap {
     private hasThievedAnimalProduct({ data }: HasThievedAnimalProductParams): boolean {
         if (
             data.object.currentPlacedItem?.animalInfo?.thieves.includes(
+                this.user.id
+            )
+        ) {
+            this.scene.events.emit(EventName.CreateFlyItems, [
+                {
+                    position: data.object.getCenter(),
+                    text: "You are already thieved",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+    //has thieved fruit
+    private hasThievedFruit({ data }: HasThievedFruitParams): boolean {
+        if (
+            data.object.currentPlacedItem?.fruitInfo?.thieves.includes(
                 this.user.id
             )
         ) {
@@ -1742,6 +2043,35 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
+    private thiefFruitQuantityReactMinimum({
+        data,
+    }: ThiefFruitQuantityReactMinimumParams): boolean {
+        const fruit = this.fruits.find(
+            (fruit) => fruit.id === data.object.currentPlacedItem?.fruitInfo?.fruit
+        )
+        if (!fruit) {
+            throw new Error("Fruit not found")
+        }
+        if (
+            !data.object.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining
+        ) {
+            throw new Error("Harvest quantity remaining not found")
+        }
+        if (
+            fruit.minHarvestQuantity >=
+      data.object.currentPlacedItem.fruitInfo.harvestQuantityRemaining
+        ) {
+            this.scene.events.emit(EventName.CreateFlyItems, [
+                {
+                    position: data.object.getCenter(),
+                    text: "Minimum quantity reached",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+
     private energyNotEnough({
         data,
         actionEnergy = 0,
@@ -1781,7 +2111,11 @@ export interface HasThievedCropParams {
 }
 export interface HasThievedAnimalProductParams {
     data: PlacedItemObjectData;
-  }
+}
+//HasThievedFruitParams
+export interface HasThievedFruitParams {
+    data: PlacedItemObjectData;
+}
 
 export interface ThiefCropQuantityReactMinimumParams {
   data: PlacedItemObjectData;
@@ -1789,7 +2123,11 @@ export interface ThiefCropQuantityReactMinimumParams {
 
 export interface ThiefAnimalProductQuantityReactMinimumParams {
     data: PlacedItemObjectData;
-  }
+}
+
+export interface ThiefFruitQuantityReactMinimumParams {
+    data: PlacedItemObjectData;
+}
 
 export interface EnergyNotEnoughParams {
   data: PlacedItemObjectData;

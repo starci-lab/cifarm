@@ -206,7 +206,6 @@ export const inventoryTypeAssetMap: Record<
             }
         })(),
     },
-
     [InventoryTypeId.BellPepper]: {
         name: "Bell Pepper",
         textureConfig: {
@@ -233,7 +232,34 @@ export const inventoryTypeAssetMap: Record<
             }
         })(),
     },
-
+    [InventoryTypeId.Banana]: {
+        name: "Banana",
+        textureConfig: {
+            ...productAssetMap[ProductId.Banana].textureConfig,
+            useExisting: true,
+        },
+    },
+    [InventoryTypeId.BananaQuality]: {
+        name: "Banana Quality",
+        textureConfig: {
+            ...productAssetMap[ProductId.BananaQuality].textureConfig,
+            useExisting: true,
+        },
+    },
+    [InventoryTypeId.Apple]: {
+        name: "Apple",
+        textureConfig: {
+            ...productAssetMap[ProductId.Apple].textureConfig,
+            useExisting: true,
+        },
+    },
+    [InventoryTypeId.AppleQuality]: {
+        name: "Apple Quality",
+        textureConfig: {
+            ...productAssetMap[ProductId.AppleQuality].textureConfig,
+            useExisting: true,
+        }
+    },
     [InventoryTypeId.BasicFertilizer]: {
         name: "Basic Fertilizer",
         textureConfig: {
@@ -245,6 +271,13 @@ export const inventoryTypeAssetMap: Record<
         name: "Animal Feed",
         textureConfig: {
             ...supplyAssetMap[SupplyId.AnimalFeed].textureConfig,
+            useExisting: true,
+        },
+    },
+    [InventoryTypeId.FruitFertilizer]: {
+        name: "FruitFertilizer",
+        textureConfig: {
+            ...supplyAssetMap[SupplyId.FruitFertilizer].textureConfig,
             useExisting: true,
         },
     },
@@ -294,6 +327,13 @@ export const inventoryTypeAssetMap: Record<
         name: "Animal Medicine",
         textureConfig: {
             ...toolAssetMap[ToolId.AnimalMedicine].textureConfig,
+            useExisting: true,
+        },
+    },
+    [InventoryTypeId.BugNet]: {
+        name: "BugNet",
+        textureConfig: {
+            ...toolAssetMap[ToolId.BugNet].textureConfig,
             useExisting: true,
         },
     },

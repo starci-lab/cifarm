@@ -272,6 +272,28 @@ export enum EventName {
     RequestUpgradeBuilding = "request_upgrade_building",
     UpgradeBuildingCompleted = "upgrade_building_completed",
 
+    RequestHelpFeedAnimal = "request_help_feed_animal",
+    HelpFeedAnimalCompleted = "help_feed_animal_completed",
+
+    RequestHarvestFruit = "request_harvest_fruit",
+    HarvestFruitCompleted = "harvest_fruit_completed",
+
+    RequestThiefFruit = "request_thief_fruit",
+    ThiefFruitCompleted = "thief_fruit_completed",
+
+    RequestUseBugNet = "request_use_bug_net",
+    UseBugNetCompleted = "use_bug_net_completed",
+
+    RequestHelpUseBugNet = "request_help_use_bug_net",
+    HelpUseBugNetCompleted = "help_use_bug_net_completed",
+
+    RequestHelpUseFruitFertilizer = "request_help_use_fruit_fertilizer",
+    HelpUseFruitFertilizerCompleted = "help_use_fruit_fertilizer_completed",
+
+    RequestUseFruitFertilizer = "request_use_fruit_fertilizer",
+    UseFruitFertilizerCompleted = "use_fruit_fertilizer_completed",
+
+
     CreateFlyItem = "create_fly_item",
     CreateFlyItems = "create_fly_items",
 

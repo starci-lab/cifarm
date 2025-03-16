@@ -45,11 +45,19 @@ export interface HarvestAnimalData {
     quantity: number
     productId: string
 }
+export interface HarvestFruitData {
+    quantity: number
+    productId : string
+}
+
+export interface ThiefFruitData {
+    quantity: number
+    productId: string
+}
 
 export interface SellData {
     quantity: number
 }
-
 export enum ActionName {
     WaterCrop = "watercrop",
     UsePesticide = "usepesticide",
@@ -59,6 +67,7 @@ export enum ActionName {
     PlantSeed = "plantseed",
     CureAnimal = "cureanimal",
     FeedAnimal = "feedanimal",
+    HelpFeedAnimal = "helpfeedanimal",
     HarvestAnimal = "havestanimal",
     HelpCureAnimal = "helpcureanimal",
     HelpUseHerbicide = "helpuseherbicide",
@@ -72,6 +81,12 @@ export enum ActionName {
     BuyFruit = "buyfruit",
     Move = "move",
     Sell = "sell",
+    UseBugNet = "usebugnet",
+    UseFruitFertilizer = "usefruitfertilizer",
+    HelpUseBugNet = "helpusebugnet",
+    HelpUseFruitFertilizer = "helpusefruitfertilizer",
+    HarvestFruit = "harvestfruit",
+    ThiefFruit = "thieffruit",
 }
 
 export interface ShowFadeMessage {

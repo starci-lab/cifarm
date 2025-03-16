@@ -34,6 +34,13 @@ import { useBuyFruitEffects } from "./useBuyFruit"
 import { useHarvestAnimalEffects } from "./useHarvestAnimalEffects"
 import { useThiefAnimalProductEffects } from "./useThiefAnimalProductEffects"
 import { useHelpCureAnimalEffects } from "./useHelpCureAnimalEffects"
+import { useHarvestFruitEffects } from "./useHarvestFruitEffects"
+import { useHelpFeedAnimalEffects } from "./useHelpFeedAnimalEffects"
+import { useHelpUseBugNetEffects } from "./useHelpUseBugNetEffects"
+import { useHelpUseFruitFertilizerEffects } from "./useHelpUseFruitFertilizerEffects"
+import { useThiefFruitEffects } from "./useThiefFruitEffects"
+import { useUseBugNetEffects } from "./useUseBugNetEffects"
+import { useUseFruitFertilizerEffects } from "./useUseFruitFertilizerEffects"
 
 export const useApiEffects = () => {
     useUpdateTutorialEffects()
@@ -72,4 +79,11 @@ export const useApiEffects = () => {
     useHarvestAnimalEffects()
     useThiefAnimalProductEffects()
     useHelpCureAnimalEffects()
+    useHelpFeedAnimalEffects()
+    useHarvestFruitEffects()
+    useThiefFruitEffects()
+    useUseBugNetEffects()
+    useHelpUseBugNetEffects()
+    useUseFruitFertilizerEffects()
+    useHelpUseFruitFertilizerEffects()
 }

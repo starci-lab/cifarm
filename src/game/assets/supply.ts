@@ -25,6 +25,13 @@ export const supplyAssetMap: Record<
             key: "animal-feed",
         },
     },
+    [SupplyId.FruitFertilizer]: {
+        name: "Fruit Fertilizer",
+        textureConfig: {
+            assetUrl: "supplies/fruit-fertilizer.png",
+            key: "fruit-fertilizer",
+        },
+    },
 }
 
 // Function to load inventory assets in Phaser scene
