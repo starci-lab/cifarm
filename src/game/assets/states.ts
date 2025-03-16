@@ -1,4 +1,4 @@
-import { AnimalCurrentState, CropCurrentState } from "@/modules/entities"
+import { AnimalCurrentState, CropCurrentState, FruitCurrentState } from "@/modules/entities"
 import { TextureConfig } from "./types"
 import { Scene } from "phaser"
 
@@ -60,5 +60,34 @@ export const loadAnimalStateAssets = (scene: Scene) => {
             throw new Error(`Animal state data not found for state: ${state}`)
         }
         scene.load.image(animalStateData.textureConfig.key, animalStateData.textureConfig.assetUrl)
+    })
+}
+
+export interface FruitStateAssetData {
+    textureConfig: TextureConfig;
+}
+
+export const fruitStateAssetMap: Partial<Record<FruitCurrentState, FruitStateAssetData>> = {
+    [FruitCurrentState.NeedFertilizer]: {
+        textureConfig: { key: "need-fertilizer", assetUrl: "states/hungry.png" },
+    },
+    [FruitCurrentState.IsInfested]: {
+        textureConfig: { key: "caterpillar-infested", assetUrl: "states/caterpillar-infested.png" },
+    },
+    [FruitCurrentState.FullyMatured]: {
+        textureConfig: { key: "fully-mature", assetUrl: "states/is-ready.png" },
+    },
+}
+
+// Function to load fruit assets in Phaser scene
+export const loadFruitStateAssets = (scene: Scene) => {
+    Object.keys(fruitStateAssetMap).forEach((state) => {
+        const _state = state as FruitCurrentState
+        const fruitStateData = fruitStateAssetMap[_state]
+
+        if (!fruitStateData) {
+            throw new Error(`Fruit state data not found for state: ${state}`)
+        }
+        scene.load.image(fruitStateData.textureConfig.key, fruitStateData.textureConfig.assetUrl)
     })
 }

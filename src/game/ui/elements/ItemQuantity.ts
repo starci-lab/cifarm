@@ -52,7 +52,7 @@ export class ItemQuantity extends BadgeLabel {
             rightBottomText = new Text({
                 baseParams: {
                     scene,
-                    text: quantity.toString(),
+                    text: quantity ? quantity.toString() : "0",
                     x: 0,
                     y: 0,
                     style: {

@@ -8,4 +8,5 @@ export interface ProductSchema extends StaticAbstractSchema<ProductId> {
     type: ProductType
     crop: string
     animal: string
+    fruit: string
 }

@@ -1,8 +1,10 @@
 // Product Type Enum
 export enum ProductType {
     Animal = "animal",
-    Crop = "crop"
+    Crop = "crop",
+    Fruit = "fruit",
 }
+
 
 // Animal Type Enum
 export enum AnimalType {
