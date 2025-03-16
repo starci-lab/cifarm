@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@civic/solana-gateway-react": "^1.2.4",
     "@esotericsoftware/spine-phaser": "^4.2.75",
     "@heroicons/react": "^2.2.0",
     "@heroui/react": "^2.7.4",
