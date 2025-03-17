@@ -38,7 +38,7 @@ export const mutateUpdateReferral = async ({
     args
 }: MutationUpdateReferralParams) => {
     if (!args) {
-        throw new Error("Args are required for update referral mutation")
+        throw new Error("Request is required for update referral mutation")
     }
     
     const mutationDocument = mutationMap[query]

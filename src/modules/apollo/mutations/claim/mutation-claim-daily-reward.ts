@@ -11,6 +11,7 @@ export enum MutationClaimDailyReward {
   Mutation1 = "mutation1",
 }
 
+
 const mutationMap: Record<MutationClaimDailyReward, DocumentNode> = {
     [MutationClaimDailyReward.Mutation1]: mutation1,
 }
@@ -19,11 +20,13 @@ export interface MutationClaimDailyRewardParams {
   query?: MutationClaimDailyReward;
 }
 
-export const mutateClaimDailyReward = async ({
+export const mutationClaimDailyReward = async ({
     query = MutationClaimDailyReward.Mutation1,
 }: MutationClaimDailyRewardParams = {}) => {
     const mutationDocument = mutationMap[query]
-    return await authClient.mutate({
+    return await authClient.mutate<
+        { claimDailyReward: null }
+    >({
         mutation: mutationDocument
     })
 } 

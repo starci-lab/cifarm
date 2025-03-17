@@ -38,7 +38,7 @@ export const mutateUpgradeBuilding = async ({
     args
 }: MutationUpgradeBuildingParams) => {
     if (!args) {
-        throw new Error("Args are required for upgrade building mutation")
+        throw new Error("Request is required for upgrade building mutation")
     }
     
     const mutationDocument = mutationMap[query]

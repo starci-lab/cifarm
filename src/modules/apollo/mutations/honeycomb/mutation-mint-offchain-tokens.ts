@@ -4,34 +4,32 @@ import { MutationParams, MutationVariables } from "../../types"
 import { TxResponse } from "@/modules/honeycomb"
 
 const mutation1 = gql`
-  mutation MintOffchainTokens($request: MintOffchainTokensRequest!) {
-    mintOffchainTokens(request: $request) {
-      transaction
-      blockhash
-      lastValidBlockHeight
+    mutation MintOffchainTokens($request: MintOffchainTokensRequest!) {
+        mintOffchainTokens(request: $request) {
+            txHash
+            blockHash
+            blockNumber
+        }
     }
-  }
 `
 
 export enum MutationMintOffchainTokens {
-  Mutation1 = "mutation1",
+    Mutation1 = "mutation1",
 }
 
 export interface MintOffchainTokensRequest {
-  amount: number;
+    amount: number
 }
+
+export type MintOffchainTokensResponse = TxResponse
 
 const mutationMap: Record<MutationMintOffchainTokens, DocumentNode> = {
     [MutationMintOffchainTokens.Mutation1]: mutation1,
 }
 
-export interface MutationMintOffchainTokensRequest {
-  amount: number;
-}
-
 export type MutationMintOffchainTokensParams = MutationParams<MutationMintOffchainTokens, MintOffchainTokensRequest>
 
-export const mutateMintOffchainTokens = async ({
+export const mutationMintOffchainTokens = async ({
     mutation = MutationMintOffchainTokens.Mutation1,
     request
 }: MutationMintOffchainTokensParams) => {
@@ -41,10 +39,10 @@ export const mutateMintOffchainTokens = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-    { mintOffchainTokens: TxResponse },
-    MutationVariables<MintOffchainTokensRequest>
-  >({
-      mutation: mutationDocument,
-      variables: { request }
-  })
+        { mintOffchainTokens: MintOffchainTokensResponse },
+        MutationVariables<MintOffchainTokensRequest>
+    >({
+        mutation: mutationDocument,
+        variables: { request }
+    })
 } 

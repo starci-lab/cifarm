@@ -1,6 +1,6 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
-import { MutationVariables } from "../../types"
+import { MutationParams, MutationVariables } from "../../types"
 
 const mutation1 = gql`
   mutation DeliverProduct($request: DeliverProductRequest!) {
@@ -22,31 +22,28 @@ const mutationMap: Record<MutationDeliverProduct, DocumentNode> = {
     [MutationDeliverProduct.Mutation1]: mutation1,
 }
 
-export interface MutationDeliverProductArgs {
+export interface MutationDeliverProductRequest {
   inventoryId: string;
   quantity: number;
   index: number;
 }
 
-export interface MutationDeliverProductParams {
-  query?: MutationDeliverProduct;
-  args?: MutationDeliverProductArgs;
-}
+export type MutationDeliverProductParams = MutationParams<MutationDeliverProduct, MutationDeliverProductRequest>      
 
-export const mutateDeliverProduct = async ({
-    query = MutationDeliverProduct.Mutation1,
-    args
+export const mutationDeliverProduct = async ({
+    mutation = MutationDeliverProduct.Mutation1,
+    request
 }: MutationDeliverProductParams) => {
-    if (!args) {
-        throw new Error("Args are required for deliver product mutation")
+    if (!request) {
+        throw new Error("Request is required for deliver product mutation")
     }
     
-    const mutationDocument = mutationMap[query]
+    const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
     { deliverProduct: void },
     MutationVariables<DeliverProductRequest>
   >({
       mutation: mutationDocument,
-      variables: { request: args }
+      variables: { request }
   })
 } 

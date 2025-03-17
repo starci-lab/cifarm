@@ -5,8 +5,9 @@ import { TxResponse } from "@/modules/honeycomb"
 const mutation1 = gql`
   mutation ClaimHoneycombDailyReward {
     claimHoneycombDailyReward {
-      hash
-      success
+      transaction
+      blockhash
+      lastValidBlockHeight
     }
   }
 `

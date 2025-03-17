@@ -54,7 +54,7 @@ export const mutationVerifySignature = async ({
     request
 }: MutationVerifySignatureParams) => {
     if (!request) {
-        throw new Error("Args are required for verify signature mutation")
+        throw new Error("Request is required for verify signature mutation")
     }
     
     const mutationDocument = mutationMap[mutation]
