@@ -5,9 +5,7 @@ import { FruitId, Position } from "@/modules/entities"
 
 const mutation1 = gql`
     mutation BuyFruit($request: BuyFruitRequest!) {
-        buyFruit(request: $request) {
-            success
-        }
+        buyFruit(request: $request)
     }
 `
 
@@ -18,10 +16,6 @@ export enum MutationBuyFruit {
 export interface BuyFruitRequest {
     fruitId: FruitId
     position: Position
-}
-
-export interface MutationBuyFruitResponse {
-    success: boolean
 }
 
 const mutationMap: Record<MutationBuyFruit, DocumentNode> = {
@@ -40,7 +34,7 @@ export const mutationBuyFruit = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-        { buyFruit: MutationBuyFruitResponse },
+        { buyFruit: null },
         MutationVariables<BuyFruitRequest>
     >({
         mutation: mutationDocument,

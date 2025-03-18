@@ -4,9 +4,7 @@ import { MutationParams, MutationVariables } from "../../types"
 
 const mutation1 = gql`
     mutation WaterCrop($request: WaterCropRequest!) {
-        waterCrop(request: $request) {
-            success
-        }
+        waterCrop(request: $request)
     }
 `
 
@@ -16,10 +14,6 @@ export enum MutationWaterCrop {
 
 export interface WaterCropRequest {
     placedItemTileId: string
-}
-
-export interface MutationWaterCropResponse {
-    success: boolean
 }
 
 const mutationMap: Record<MutationWaterCrop, DocumentNode> = {
@@ -38,8 +32,8 @@ export const mutationWaterCrop = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-        { waterCrop: MutationWaterCropResponse },
-        MutationVariables<WaterCropRequest>
+    { waterCrop: null },
+    MutationVariables<WaterCropRequest>
     >({
         mutation: mutationDocument,
         variables: { request }

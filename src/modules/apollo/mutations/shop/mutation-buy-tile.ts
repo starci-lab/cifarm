@@ -5,9 +5,7 @@ import { Position, TileId } from "@/modules/entities"
 
 const mutation1 = gql`
     mutation BuyTile($request: BuyTileRequest!) {
-        buyTile(request: $request) {
-            success
-        }
+        buyTile(request: $request)
     }
 `
 
@@ -18,10 +16,6 @@ export enum MutationBuyTile {
 export interface BuyTileRequest {
     position: Position
     tileId: TileId
-}
-
-export interface MutationBuyTileResponse {
-    success: boolean
 }
 
 const mutationMap: Record<MutationBuyTile, DocumentNode> = {
@@ -40,7 +34,7 @@ export const mutationBuyTile = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-        { buyTile: MutationBuyTileResponse },
+        { buyTile: null },
         MutationVariables<BuyTileRequest>
     >({
         mutation: mutationDocument,

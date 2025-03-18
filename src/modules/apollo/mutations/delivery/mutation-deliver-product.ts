@@ -22,13 +22,7 @@ const mutationMap: Record<MutationDeliverProduct, DocumentNode> = {
     [MutationDeliverProduct.Mutation1]: mutation1,
 }
 
-export interface MutationDeliverProductRequest {
-  inventoryId: string;
-  quantity: number;
-  index: number;
-}
-
-export type MutationDeliverProductParams = MutationParams<MutationDeliverProduct, MutationDeliverProductRequest>      
+export type MutationDeliverProductParams = MutationParams<MutationDeliverProduct, DeliverProductRequest>      
 
 export const mutationDeliverProduct = async ({
     mutation = MutationDeliverProduct.Mutation1,

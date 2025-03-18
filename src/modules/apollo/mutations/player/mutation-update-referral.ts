@@ -16,10 +16,6 @@ export interface UpdateReferralRequest {
   referralUserId: string;
 }
 
-export interface MutationUpdateReferralResponse {
-  success: boolean;
-}
-
 const mutationMap: Record<MutationUpdateReferral, DocumentNode> = {
     [MutationUpdateReferral.Mutation1]: mutation1,
 }
@@ -40,7 +36,7 @@ export const mutationUpdateReferral = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-    { updateReferral: MutationUpdateReferralResponse },
+    { updateReferral: null },
     MutationVariables<UpdateReferralRequest>
   >({
       mutation: mutationDocument,

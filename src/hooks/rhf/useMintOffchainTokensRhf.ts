@@ -5,10 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { z, ZodType } from "zod"
 import { serialize } from "@/modules/serialization"
-import { API_MINT_OFFCHAIN_TOKENS_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "@heroui/react"
-import { useApiMintOffchainTokensSwrMutation } from "../swr"
+import { useGraphQLMutationMintOffchainTokensSwrMutation } from "../swr"
 import { TxResponse } from "@/modules/honeycomb"
 
 export interface MintOffchainTokensRhfInputs {
@@ -27,8 +27,8 @@ export const useMintOffchainTokensRhf = () => {
         resolver: zodResolver(Schema), 
     })
     const { swrMutation } = useSingletonHook<
-            ReturnType<typeof useApiMintOffchainTokensSwrMutation>
-          >(API_MINT_OFFCHAIN_TOKENS_SWR_MUTATION)
+            ReturnType<typeof useGraphQLMutationMintOffchainTokensSwrMutation>
+          >(GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION)
     const dispatch = useAppDispatch()
     const signTransactionDiscloresure = useSingletonHook<ReturnType<typeof useDisclosure>
     >(SIGN_TRANSACTION_DISCLOSURE)
@@ -38,16 +38,16 @@ export const useMintOffchainTokensRhf = () => {
         let tx: TxResponse
         const transaction = await sessionDb.keyValueStore.get(SessionDbKey.HoneycombMintOffchainTokensTransaction)
         if (!transaction) {
-            const { data } = await swrMutation.trigger({
+            const txResponse = await swrMutation.trigger({
                 request: {
                     amount: inputs.amount
                 }
             })
             await sessionDb.keyValueStore.put({
                 key: SessionDbKey.HoneycombDailyRewardTransaction,
-                value: serialize(data)
+                value: serialize(txResponse)
             })
-            tx = data
+            tx = txResponse
         } else {
             tx = deserialize(transaction.value)
         }

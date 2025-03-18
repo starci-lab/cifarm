@@ -28,18 +28,14 @@ const mutationMap: Record<MutationRefresh, DocumentNode> = {
     [MutationRefresh.Mutation1]: mutation1,
 }
 
-export interface MutationRefreshArgs {
-  refreshToken: string;
-}
-
-export type MutationRefreshParams = MutationParams<MutationRefresh, MutationRefreshArgs>;
+export type MutationRefreshParams = MutationParams<MutationRefresh, RefreshRequest>;
 
 export const mutationRefresh = async ({
     mutation = MutationRefresh.Mutation1,
     request
 }: MutationRefreshParams) => {
-    if (!request || !request.refreshToken) {
-        throw new Error("Refresh token is required")
+    if (!request) {
+        throw new Error("Request is required for refresh mutation")
     }
     
     const mutationDocument = mutationMap[mutation]

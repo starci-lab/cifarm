@@ -2,7 +2,7 @@ import { DocumentNode, gql } from "@apollo/client"
 import { noCacheAuthClient } from "../../auth-client"
 import { MutationParams, MutationVariables } from "../../types"
 import { ChainKey, Network } from "@/modules/blockchain"
-
+  
 const mutation1 = gql`
   mutation VerifySignature(
     $request: VerifySignatureRequest!
@@ -30,7 +30,7 @@ export interface VerifySignatureRequest {
 
 export interface MutationVerifySignatureResponse {
   accessToken: string;
-  refreshToken: string;
+  refreshToken: string; 
 }
 
 const mutationMap: Record<MutationVerifySignature, DocumentNode> = {

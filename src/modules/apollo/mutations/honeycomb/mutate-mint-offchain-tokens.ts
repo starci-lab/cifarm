@@ -29,22 +29,25 @@ export interface MutationMintOffchainTokensRequest {
   amount: number;
 }
 
-export type MutationMintOffchainTokensParams = MutationParams<MutationMintOffchainTokens, MintOffchainTokensRequest>
+export type MutationMintOffchainTokensParams = MutationParams<
+  MutationMintOffchainTokens,
+  MintOffchainTokensRequest
+>;
 
 export const mutateMintOffchainTokens = async ({
     mutation = MutationMintOffchainTokens.Mutation1,
-    request
+    request,
 }: MutationMintOffchainTokensParams) => {
     if (!request) {
         throw new Error("Request is required for mint offchain tokens mutation")
     }
-    
+
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
     { mintOffchainTokens: TxResponse },
     MutationVariables<MintOffchainTokensRequest>
   >({
       mutation: mutationDocument,
-      variables: { request }
+      variables: { request },
   })
-} 
+}

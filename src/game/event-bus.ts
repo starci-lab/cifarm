@@ -233,8 +233,8 @@ export enum EventName {
     RequestReturn = "request_return",
     ReturnCompleted = "return_completed",
 
-    RequestHelpWater = "request_help_water",
-    HelpWaterCompleted = "help_water_completed",
+    RequestHelpWaterCrop = "request_help_water_crop",
+    HelpWaterCropCompleted = "help_water_crop_completed",
 
     RequestHelpCureAnimal = "request_help_cure_animal",
     HelpCureAnimalCompleted = "help_cure_animal_completed",
@@ -522,4 +522,8 @@ export interface UpdatePlacementConfirmationMessage {
     isPlacementValid?: boolean
     onCancel?: () => void
     onConfirm?: () => void
+}
+
+export interface CompletedMessage {
+    success: boolean
 }
