@@ -1,184 +1,184 @@
 // Animal Enum
 export enum AnimalId {
-    Chicken = "Chicken",
-    Cow = "Cow",
-    Pig = "Pig",
-    Sheep = "Sheep"
+    Chicken = "chicken",
+    Cow = "cow",
+    Pig = "pig",
+    Sheep = "sheep"
 }
 
 // Building Enum
 export enum BuildingId {
-    Coop = "Coop",
-    Barn = "Barn",
-    Home = "Home"
+    Coop = "coop",
+    Barn = "barn",
+    Home = "home"
 }
 
 // Upgrade Enum
 export enum UpgradeId {
-    CoopUpgrade1 = "CoopUpgrade1",
-    CoopUpgrade2 = "CoopUpgrade2",
-    CoopUpgrade3 = "CoopUpgrade3",
-    PastureUpgrade1 = "PastureUpgrade1",
-    PastureUpgrade2 = "PastureUpgrade2",
-    PastureUpgrade3 = "PastureUpgrade3"
+    CoopUpgrade1 = "coopUpgrade1",
+    CoopUpgrade2 = "coopUpgrade2",
+    CoopUpgrade3 = "coopUpgrade3",
+    PastureUpgrade1 = "pastureUpgrade1",
+    PastureUpgrade2 = "pastureUpgrade2",
+    PastureUpgrade3 = "pastureUpgrade3"
 }
 
 // Crop Enum
 export enum CropId {
-    Turnip = "Turnip",
-    Carrot = "Carrot",
-    Potato = "Potato",
-    Pineapple = "Pineapple",
-    Watermelon = "Watermelon",
-    Cucumber = "Cucumber",
-    BellPepper = "BellPepper"
+    Turnip = "turnip",
+    Carrot = "carrot",
+    Potato = "potato",
+    Pineapple = "pineapple",
+    Watermelon = "watermelon",
+    Cucumber = "cucumber",
+    BellPepper = "bellPepper"
 }
 
 export enum FruitId {
-    Banana = "Banana",
-    Apple = "Apple",
+    Banana = "banana",
+    Apple = "apple",
 }
 
 // Daily Reward Enum
 export enum DailyRewardId {
-    Day1 = "Day1",
-    Day2 = "Day2",
-    Day3 = "Day3",
-    Day4 = "Day4",
-    Day5 = "Day5"
+    Day1 = "day1",
+    Day2 = "day2",
+    Day3 = "day3",
+    Day4 = "day4",
+    Day5 = "day5"
 }
 
 // Daily Reward Possibility Enum
 export enum DailyRewardPossibilityId {
-    Possibility1 = "Possibility1",
-    Possibility2 = "Possibility2",
-    Possibility3 = "Possibility3",
-    Possibility4 = "Possibility4",
-    Possibility5 = "Possibility5"
+    Possibility1 = "possibility1",
+    Possibility2 = "possibility2",
+    Possibility3 = "possibility3",
+    Possibility4 = "possibility4",
+    Possibility5 = "possibility5"
 }
 
 // Supply Enum
 export enum SupplyId {
-    BasicFertilizer = "BasicFertilizer",
-    AnimalFeed = "AnimalFeed",
-    FruitFertilizer = "FruitFertilizer",
+    BasicFertilizer = "basicFertilizer",
+    AnimalFeed = "animalFeed",
+    FruitFertilizer = "fruitFertilizer",
 }
 
 // Tile Enum
 export enum TileId {
-    BasicTile = "BasicTile",
+    BasicTile = "basicTile",
 }
 
 // Tool Enum
 export enum ToolId {
-    Hand = "Hand",
-    Crate = "Crate",
-    WateringCan = "WateringCan",
-    Herbicide = "Herbicide",
-    Pesticide = "Pesticide",
-    Hammer = "Hammer",
-    AnimalMedicine = "AnimalMedicine",
-    BugNet = "BugNet",
+    Hand = "hand",
+    Crate = "crate",
+    WateringCan = "wateringCan",
+    Herbicide = "herbicide",
+    Pesticide = "pesticide",
+    Hammer = "hammer",
+    AnimalMedicine = "animalMedicine",
+    BugNet = "bugNet",
 }
 
 // Product Enum
 export enum ProductId {
-    Egg = "Egg",
-    EggQuality = "EggQuality",
-    Milk = "Milk",
-    MilkQuality = "MilkQuality",
-    Turnip = "Turnip",
-    TurnipQuality = "TurnipQuality",
-    Carrot = "Carrot",
-    CarrotQuality = "CarrotQuality",
-    Potato = "Potato",
-    PotatoQuality = "PotatoQuality",
-    Pineapple = "Pineapple",
-    PineappleQuality = "PineappleQuality",
-    Watermelon = "Watermelon",
-    WatermelonQuality = "WatermelonQuality",
-    Cucumber = "Cucumber",
-    CucumberQuality = "CucumberQuality",
-    BellPepper = "BellPepper",
-    BellPepperQuality = "BellPepperQuality",
-    Banana = "Banana",
-    BananaQuality = "BananaQuality",
-    Apple = "Apple",
-    AppleQuality = "AppleQuality",
+    Egg = "egg",
+    EggQuality = "eggQuality",
+    Milk = "milk",
+    MilkQuality = "milkQuality",
+    Turnip = "turnip",
+    TurnipQuality = "turnipQuality",
+    Carrot = "carrot",
+    CarrotQuality = "carrotQuality",
+    Potato = "potato",
+    PotatoQuality = "potatoQuality",
+    Pineapple = "pineapple",
+    PineappleQuality = "pineappleQuality",
+    Watermelon = "watermelon",
+    WatermelonQuality = "watermelonQuality",
+    Cucumber = "cucumber",
+    CucumberQuality = "cucumberQuality",
+    BellPepper = "bellPepper",
+    BellPepperQuality = "bellPepperQuality",
+    Banana = "banana",
+    BananaQuality = "bananaQuality",
+    Apple = "apple",
+    AppleQuality = "appleQuality",
 }
 
 export enum SystemId {
-    Activities = "Activities",
-    CropRandomness = "CropRandomness",
-    AnimalRandomness = "AnimalRandomness",
-    Starter = "Starter",
-    SpinInfo = "SpinInfo",
-    EnergyRegen = "EnergyRegen",
+    Activities = "activities",
+    CropRandomness = "cropRandomness",
+    AnimalRandomness = "animalRandomness",
+    Starter = "starter",
+    SpinInfo = "spinInfo",
+    EnergyRegen = "energyRegen",
 }
 
 export enum KeyValueStoreId {
-    CropGrowthLastSchedule = "CropGrowthLastSchedule",
-    AnimalGrowthLastSchedule = "AnimalGrowthLastSchedule",
-    FruitGrowthLastSchedule = "FruitGrowthLastSchedule",
-    EnergyRegenerationLastSchedule = "EnergyRegenerationLastSchedule"
+    CropGrowthLastSchedule = "cropGrowthLastSchedule",
+    AnimalGrowthLastSchedule = "animalGrowthLastSchedule",
+    FruitGrowthLastSchedule = "fruitGrowthLastSchedule",
+    EnergyRegenerationLastSchedule = "energyRegenerationLastSchedule"
 }
 
 export enum InventoryTypeId {
-    TurnipSeed = "TurnipSeed",
-    CarrotSeed = "CarrotSeed",
-    PotatoSeed = "PotatoSeed",
-    PineappleSeed = "PineappleSeed",
-    WatermelonSeed = "WatermelonSeed",
-    CucumberSeed = "CucumberSeed",
-    BellPepperSeed = "BellPepperSeed",
-    BasicFertilizer = "BasicFertilizer",
-    AnimalFeed = "AnimalFeed",
-    FruitFertilizer = "FruitFertilizer",
-    Egg = "Egg",
-    EggQuality = "EggQuality",
-    Milk = "Milk",
-    MilkQuality = "MilkQuality",
-    Turnip = "Turnip",
-    TurnipQuality = "TurnipQuality",
-    Carrot = "Carrot",
-    CarrotQuality = "CarrotQuality",
-    Potato = "Potato",
-    PotatoQuality = "PotatoQuality",
-    Pineapple = "Pineapple",
-    PineappleQuality = "PineappleQuality",
-    Watermelon = "Watermelon",
-    WatermelonQuality = "WatermelonQuality",
-    Cucumber = "Cucumber",
-    CucumberQuality = "CucumberQuality",
-    BellPepper = "BellPepper",
-    BellPepperQuality = "BellPepperQuality",
-    Banana = "Banana",
-    BananaQuality = "BananaQuality",
-    Apple = "Apple",
-    AppleQuality = "AppleQuality",
-    Hand = "Hand",
-    Crate = "Crate",
-    WateringCan = "WateringCan",
-    Herbicide = "Herbicide",
-    Pesticide = "Pesticide",
-    Hammer = "Hammer",
-    AnimalMedicine = "AnimalMedicine",
-    BugNet = "BugNet",
+    TurnipSeed = "turnipSeed",
+    CarrotSeed = "carrotSeed",
+    PotatoSeed = "potatoSeed",
+    PineappleSeed = "pineappleSeed",
+    WatermelonSeed = "watermelonSeed",
+    CucumberSeed = "cucumberSeed",
+    BellPepperSeed = "bellPepperSeed",
+    BasicFertilizer = "basicFertilizer",
+    AnimalFeed = "animalFeed",
+    FruitFertilizer = "fruitFertilizer",
+    Egg = "egg",
+    EggQuality = "eggQuality",
+    Milk = "milk",
+    MilkQuality = "milkQuality",
+    Turnip = "turnip",
+    TurnipQuality = "turnipQuality",
+    Carrot = "carrot",
+    CarrotQuality = "carrotQuality",
+    Potato = "potato",
+    PotatoQuality = "potatoQuality",
+    Pineapple = "pineapple",
+    PineappleQuality = "pineappleQuality",
+    Watermelon = "watermelon",
+    WatermelonQuality = "watermelonQuality",
+    Cucumber = "cucumber",
+    CucumberQuality = "cucumberQuality",
+    BellPepper = "bellPepper",
+    BellPepperQuality = "bellPepperQuality",
+    Banana = "banana",
+    BananaQuality = "bananaQuality",
+    Apple = "apple",
+    AppleQuality = "appleQuality",
+    Hand = "hand",
+    Crate = "crate",
+    WateringCan = "wateringCan",
+    Herbicide = "herbicide",
+    Pesticide = "pesticide",
+    Hammer = "hammer",
+    AnimalMedicine = "animalMedicine",
+    BugNet = "bugNet",
 }
 
 export enum PlacedItemTypeId {
-    Chicken = "Chicken",
-    Cow = "Cow",
-    Pig = "Pig",
-    Sheep = "Sheep",
-    Coop = "Coop",
-    Barn = "Barn",
-    Home = "Home",
-    BasicTile = "BasicTile",
+    Chicken = "chicken",
+    Cow = "cow",
+    Pig = "pig",
+    Sheep = "sheep",
+    Coop = "coop",
+    Barn = "barn",
+    Home = "home",
+    BasicTile = "basicTile",
 }
 
 // Pet Enum
 export enum PetId {
-    Dog = "Dog",
-    Cat = "Cat",
+    Dog = "dog",
+    Cat = "cat",
 }

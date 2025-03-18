@@ -1,68 +1,68 @@
 // Product Type Enum
 export enum ProductType {
-    Animal = "Animal",
-    Crop = "Crop",
-    Fruit = "Fruit",
+    Animal = "animal",
+    Crop = "crop",
+    Fruit = "fruit",
 }
 
 
 // Animal Type Enum
 export enum AnimalType {
-    Poultry = "Poultry",
-    Livestock = "Livestock" 
+    Poultry = "poultry",
+    Livestock = "livestock" 
 }
 
 // Available In Type Enum
 export enum AvailableInType {
-    Home = "Home",
-    Neighbor = "Neighbor",
-    Both = "Both"
+    Home = "home",
+    Neighbor = "neighbor",
+    Both = "both"
 }
 
 // Supply Type Enum
 export enum SupplyType {
-    Fertilizer = "Fertilizer",
-    AnimalFeed = "AnimalFeed"
+    Fertilizer = "fertilizer",
+    AnimalFeed = "animalFeed"
 }
 
 // Spin Type Enum
 export enum SpinPrizeType {
-    Gold = "Gold",
-    Seed = "Seed",
-    Supply = "Supply",
-    Token = "Token"
+    Gold = "gold",
+    Seed = "seed",
+    Supply = "supply",
+    Token = "token"
 }
 
 // Inventory Type Enum
 export enum InventoryType {
-    Seed = "Seed",
-    Tile = "Tile",
-    Animal = "Animal",
-    Product = "Product",
-    Supply = "Supply",
-    Tool = "Tool",
+    Seed = "seed",
+    Tile = "tile",
+    Animal = "animal",
+    Product = "product",
+    Supply = "supply",
+    Tool = "tool",
 }
 
 
 // Placed Item Type Enum
 export enum PlacedItemType {
-    Tile = "Tile",
-    Building = "Building",
-    Animal = "Animal",
-    Fruit = "Fruit",
+    Tile = "tile",
+    Building = "building",
+    Animal = "animal",
+    Fruit = "fruit",
 }
 
 // AppearanceChance Enum
 export enum AppearanceChance {
-    Common = "Common",
-    Uncommon = "Uncommon",
-    Rare = "Rare",
-    VeryRare = "VeryRare",  
+    Common = "common",
+    Uncommon = "uncommon",
+    Rare = "rare",
+    VeryRare = "veryRare",  
 } 
 
 // Inventory Kind
 export enum InventoryKind {
-    Storage = "Storage",
-    Tool = "Tool",
-    Delivery = "Delivery"
+    Storage = "storage",
+    Tool = "tool",
+    Delivery = "delivery"
 }

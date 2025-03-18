@@ -1,24 +1,24 @@
 // Crop Current State Enum
 export enum CropCurrentState {
-    Normal = "Normal",
-    NeedWater = "NeedWater",
-    IsWeedy = "IsWeedy",
-    IsInfested = "IsInfested",
-    FullyMatured = "FullyMatured",
+    Normal = "normal",
+    NeedWater = "needWater",
+    IsWeedy = "isWeedy",
+    IsInfested = "isInfested",
+    FullyMatured = "fullyMatured",
 }
 
 // Animal Current State Enum
 export enum AnimalCurrentState {
-    Normal = "Normal",
-    Hungry = "Hungry",
-    Sick = "Sick",
-    Yield = "Yield",
+    Normal = "normal",
+    Hungry = "hungry",
+    Sick = "sick",
+    Yield = "yield",
 }
 
 // Fruit Current State Enum
 export enum FruitCurrentState {
-    Normal = "Normal",
-    NeedFertilizer = "NeedFertilizer",
-    IsInfested = "IsInfested",
-    FullyMatured = "FullyMatured",
+    Normal = "normal",
+    NeedFertilizer = "needFertilizer",
+    IsInfested = "isInfested",
+    FullyMatured = "fullyMatured",
 }
