@@ -1,5 +1,5 @@
 import { DocumentNode, gql } from "@apollo/client"
-import { noCacheAuthClient } from "../../auth-client"
+import { noCacheClient } from "../../client"
 
 const mutation1 = gql`
   mutation RequestMessage {
@@ -29,7 +29,7 @@ export const mutationRequestMessage = async ({
     query = MutationRequestMessage.Mutation1,
 }: MutationRequestMessageParams = {}) => {
     const mutationDocument = mutationMap[query]
-    return await noCacheAuthClient.mutate<
+    return await noCacheClient.mutate<
     { requestMessage: MutationRequestMessageResponse } 
   >({
       mutation: mutationDocument

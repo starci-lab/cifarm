@@ -1,5 +1,5 @@
 import { DocumentNode, gql } from "@apollo/client"
-import { noCacheAuthClient } from "../../auth-client"
+import { noCacheClient } from "../../client"
 import { MutationParams, MutationVariables } from "../../types"
 
 const mutation1 = gql`
@@ -39,7 +39,7 @@ export const mutationRefresh = async ({
     }
     
     const mutationDocument = mutationMap[mutation]
-    return await noCacheAuthClient.mutate<
+    return await noCacheClient.mutate<
     { refresh: MutationRefreshResponse },
     MutationVariables<RefreshRequest>
   >({

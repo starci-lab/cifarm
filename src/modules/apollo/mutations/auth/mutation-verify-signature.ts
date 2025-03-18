@@ -1,5 +1,5 @@
 import { DocumentNode, gql } from "@apollo/client"
-import { noCacheAuthClient } from "../../auth-client"
+import { noCacheClient } from "../../client"
 import { MutationParams, MutationVariables } from "../../types"
 import { ChainKey, Network } from "@/modules/blockchain"
   
@@ -58,7 +58,7 @@ export const mutationVerifySignature = async ({
     }
     
     const mutationDocument = mutationMap[mutation]
-    return await noCacheAuthClient.mutate<
+    return await noCacheClient.mutate<
     { verifySignature: MutationVerifySignatureResponse },
     MutationVariables<VerifySignatureRequest>
   >({

@@ -1,6 +1,6 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import { IPaginatedResponse } from "@/modules/apollo"
-import { BuySeedsRequest, BuySuppliesRequest, BuyToolRequest } from "@/modules/axios"
+import { BuySeedsRequest, BuySuppliesRequest, BuyToolRequest } from "@/modules/apollo"
 import { sleep } from "@/modules/common"
 import {
     AnimalId,
@@ -986,7 +986,7 @@ export class ShopContent extends BaseSizer {
         }
 
         const building = this.buildings.find(
-            (building) => building.type === animal.type
+            (building) => building.animalContainedType === animal.type
         )
         if (!building) {
             throw new Error("Building not found.")

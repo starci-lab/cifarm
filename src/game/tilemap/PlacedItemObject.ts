@@ -846,7 +846,7 @@ export class PlacedItemObject extends ContainerLite {
         const {
             textureConfig: { key, spineConfig, extraOffsets },
         } = this.getAssetData()
-        console.log(key, spineConfig, extraOffsets)
+
         const { x = 0, y = 0 } = { ...extraOffsets }
         if (spineConfig) {
             //render spine animation
