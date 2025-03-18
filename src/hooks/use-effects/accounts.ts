@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { MUTATION_GRAPHQL_AUTHENTICATION_SWR_MUTATION } from "@/app/constants"
+import { GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationAuthenticationSwrMutation } from "../swr"
 
 export const useAccounts = () => {
@@ -27,7 +27,7 @@ export const useAccounts = () => {
         swrMutation,
     } =
         useSingletonHook<ReturnType<typeof useGraphQLMutationAuthenticationSwrMutation>>(
-            MUTATION_GRAPHQL_AUTHENTICATION_SWR_MUTATION
+            GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION
         )
     useEffect(() => {
     //do nothing if loadAccountsKey is equal to 0

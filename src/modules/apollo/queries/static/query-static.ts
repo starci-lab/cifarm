@@ -3,10 +3,8 @@ import { noCacheAuthClient } from "../../auth-client"
 import {
     Activities,
     AnimalSchema,
-    AnimalRandomness,
     BuildingSchema,
     CropSchema,
-    CropRandomness,
     EnergyRegen,
     InventoryTypeSchema,
     PlacedItemTypeSchema,
@@ -19,11 +17,14 @@ import {
     SupplySchema,
     PetSchema,
     FruitSchema,
+    AnimalInfo,
+    CropInfo,
+    FruitInfo,
 } from "@/modules/entities"
 
 //long query for querying all the static data
 const query = gql`
-  query Static {
+  query Static {  
     activities {
       waterCrop {
         experiencesGain
@@ -114,17 +115,6 @@ const query = gql`
         energyConsume
       }
     }
-    cropRandomness {
-      thief3
-      thief2
-      needWater
-      isWeedyOrInfested
-    }
-    animalRandomness {
-      sickChance
-      thief3
-      thief2
-    }
     defaultInfo {
       golds
       defaultCropId
@@ -189,7 +179,6 @@ const query = gql`
       price
       unlockLevel
       perennialCount
-      nextGrowthStageAfterHarvest
       minHarvestQuantity
       maxHarvestQuantity
       basicHarvestExperiences
@@ -203,7 +192,6 @@ const query = gql`
       growthStages
       price
       unlockLevel
-      nextGrowthStageAfterHarvest
       minHarvestQuantity
       maxHarvestQuantity
       basicHarvestExperiences
@@ -235,7 +223,7 @@ const query = gql`
       availableInShop
       unlockLevel
       maxOwnership
-      type
+      animalContainedType
       maxUpgrade
       price
       upgrades {
@@ -272,7 +260,6 @@ const query = gql`
       id
       displayId
       type
-      availableIn
       placeable
       deliverable
       asTool
@@ -312,6 +299,31 @@ const query = gql`
       type
       unlockLevel
     }
+    fruitInfo {
+      randomness {
+        thief3
+        thief2
+        needFertilizer
+        hasCaterpillar
+      }
+      nextGrowthStageAfterHarvest
+    }
+    cropInfo {
+      randomness {
+        thief3
+        thief2
+        needWater
+        isWeedyOrInfested
+      }
+      nextGrowthStageAfterHarvest
+    }
+    animalInfo {
+      randomness {
+        sickChance
+        thief3
+        thief2
+      }
+    }
     dailyRewardInfo {
       day1 {
         golds
@@ -349,8 +361,6 @@ const query = gql`
 
 export interface QueryStaticResponse {
   activities: Activities;
-  cropRandomness: CropRandomness;
-  animalRandomness: AnimalRandomness;
   defaultInfo: DefaultInfo;
   spinInfo: SpinInfo;
   pets: Array<PetSchema>;
@@ -366,6 +376,9 @@ export interface QueryStaticResponse {
   products: Array<ProductSchema>
   supplies: Array<SupplySchema>
   fruits: Array<FruitSchema>
+  fruitInfo: FruitInfo
+  cropInfo: CropInfo
+  animalInfo: AnimalInfo
 }
 
 export const queryStatic = async () => {

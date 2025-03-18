@@ -1,18 +1,21 @@
-import { QUERY_INVENTORIES_SWR_MUTATION } from "@/app/constants"
+import { GRAPHQL_QUERY_INVENTORIES_SWR_MUTATION } from "@/app/constants"
 import { EventBus, EventName } from "@/game/event-bus"
-import { useQueryInventoriesSwrMutation } from "@/hooks"
+import { useGraphQLQueryInventoriesSwrMutation } from "@/hooks"
+import { QueryInventoriesParams } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 
 export const useInventoriesEffects = () => {
     //get the singleton instance of the user swr
-    const { swrMutation } = useSingletonHook<ReturnType<typeof useQueryInventoriesSwrMutation>>(QUERY_INVENTORIES_SWR_MUTATION)
-    
-    // load user data
+    const { swrMutation } = useSingletonHook<ReturnType<typeof useGraphQLQueryInventoriesSwrMutation>>(
+        GRAPHQL_QUERY_INVENTORIES_SWR_MUTATION,
+    )
+
+    // load inventory data
     useEffect(() => {
-        EventBus.on(EventName.LoadInventories, async () => {
-            //load user data
-            const { data } = await swrMutation.trigger({})
+        EventBus.on(EventName.LoadInventories, async (params: QueryInventoriesParams) => {
+            //load inventory data
+            const { data } = await swrMutation.trigger(params)
             EventBus.emit(EventName.InventoriesLoaded, data.inventories)
         })
 
@@ -21,11 +24,11 @@ export const useInventoriesEffects = () => {
         }
     }, [swrMutation])
 
-    // refresh user data
+    // refresh inventory data
     useEffect(() => {
-        EventBus.on(EventName.RefreshInventories, async () => {
-            //load user data
-            const { data } = await swrMutation.trigger({})
+        EventBus.on(EventName.RefreshInventories, async (params: QueryInventoriesParams) => {
+            //load inventory data
+            const { data } = await swrMutation.trigger(params)
             EventBus.emit(EventName.InventoriesRefreshed, data.inventories)
         })
 

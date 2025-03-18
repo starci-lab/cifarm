@@ -1,15 +1,13 @@
 import { API_HELP_USE_HERBICIDE_SWR_MUTATION } from "@/app/constants"
-import { useApiHelpUseHerbicideSwrMutation } from "@/hooks"
+import { EventBus, EventName } from "@/game/event-bus"
+import { HelpUseHerbicideRequest } from "@/modules/axios"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../../event-bus"
-import { HelpUseHerbicideRequest } from "@/modules/axios"
+import { useGraphQLMutationHelpUseHerbicideSwrMutation } from "@/hooks"
 
 export const useHelpUseHerbicideEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useApiHelpUseHerbicideSwrMutation>
-      >(API_HELP_USE_HERBICIDE_SWR_MUTATION)
+    //get the singleton instance of the help use herbicide mutation
+    const { swrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationHelpUseHerbicideSwrMutation>>(API_HELP_USE_HERBICIDE_SWR_MUTATION)
     
     useEffect(() => {
         EventBus.on(EventName.RequestHelpUseHerbicide, async (message: HelpUseHerbicideRequest) => {

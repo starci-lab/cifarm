@@ -8,7 +8,7 @@ export interface BuildingSchema extends StaticAbstractSchema<BuildingId> {
     updatedAt: Date
     deletedAt: Date
     availableInShop: boolean
-    type?: AnimalType
+    animalContainedType?: AnimalType
     maxUpgrade: number
     unlockLevel: number
     maxOwnership: number

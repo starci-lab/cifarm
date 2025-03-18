@@ -6,7 +6,6 @@ export interface FruitSchema extends StaticAbstractSchema<FruitId> {
     growthStages: number
     price: number
     unlockLevel: number
-    nextGrowthStageAfterHarvest: number
     availableInShop: boolean
     minHarvestQuantity: number
     maxHarvestQuantity: number

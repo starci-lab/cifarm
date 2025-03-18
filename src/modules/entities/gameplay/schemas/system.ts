@@ -35,6 +35,11 @@ export interface Activities {
   thiefFruit: ActivityInfo
 }
 
+export interface CropInfo {
+  randomness: CropRandomness;
+  nextGrowthStageAfterHarvest: number
+}
+
 export interface CropRandomness {
   thief3: number;
   thief2: number;
@@ -48,11 +53,20 @@ export interface AnimalRandomness {
   thief2: number;
 }
 
+export interface AnimalInfo {
+  randomness: AnimalRandomness;
+}
+
 export interface FruitRandomness {
   thief3: number
   thief2: number
   needFertilizer: number
   hasCaterpillar: number
+}
+
+export interface FruitInfo {
+  randomness: FruitRandomness;
+  nextGrowthStageAfterHarvest: number
 }
 
 export interface Positions {

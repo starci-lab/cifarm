@@ -14,7 +14,6 @@ export interface CropSchema extends StaticAbstractSchema<CropId> {
     premium: boolean
     unlockLevel: number
     perennialCount: number
-    nextGrowthStageAfterHarvest: number
     minHarvestQuantity: number
     maxHarvestQuantity: number
     basicHarvestExperiences: number

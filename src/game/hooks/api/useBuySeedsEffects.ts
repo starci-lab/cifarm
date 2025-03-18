@@ -1,15 +1,15 @@
-import { API_BUY_SEEDS_SWR_MUTATION } from "@/app/constants"
-import { useApiBuySeedsSwrMutation } from "@/hooks"
+import { GRAPHQL_MUTATION_BUY_SEEDS_SWR_MUTATION } from "@/app/constants"
+import { useGraphQLMutationBuySeedsSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EventBus, EventName } from "../../event-bus"
 import { BuySeedsRequest } from "@/modules/axios"
 
 export const useBuySeedsEffects = () => {
-    //authentication useEffect
+    //get the singleton instance of the buy seeds mutation
     const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useApiBuySeedsSwrMutation>
-      >(API_BUY_SEEDS_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationBuySeedsSwrMutation>
+      >(GRAPHQL_MUTATION_BUY_SEEDS_SWR_MUTATION)
     
     useEffect(() => {
         EventBus.on(EventName.RequestBuySeeds, async (message: BuySeedsRequest) => {

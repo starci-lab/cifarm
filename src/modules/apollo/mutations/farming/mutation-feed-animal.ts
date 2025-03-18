@@ -30,7 +30,6 @@ export const mutationFeedAnimal = async ({
     if (!request) {
         throw new Error("Request is required for feed animal mutation")
     }
-    
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
         { feedAnimal: null },

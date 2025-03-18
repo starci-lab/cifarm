@@ -1,19 +1,22 @@
-import { QUERY_NEIGHBORS_SWR_MUTATION } from "@/app/constants"
+import { GRAPHQL_QUERY_FOLLOWEES_SWR_MUTATION } from "@/app/constants"
 import { EventBus, EventName } from "@/game/event-bus"
-import { useQueryFolloweesSwrMutation } from "@/hooks"
+import { useGraphQLQueryFolloweesSwrMutation } from "@/hooks"
 import { QueryFolloweesParams } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
+
 export const useFolloweesEffects = () => {
     //get the singleton instance of the user swr
-    const { swrMutation } = useSingletonHook<ReturnType<typeof useQueryFolloweesSwrMutation>>(QUERY_NEIGHBORS_SWR_MUTATION)
-    
-    // load user data
+    const { swrMutation } = useSingletonHook<ReturnType<typeof useGraphQLQueryFolloweesSwrMutation>>(
+        GRAPHQL_QUERY_FOLLOWEES_SWR_MUTATION,
+    )
+
+    // load followees data
     useEffect(() => {
         EventBus.on(EventName.LoadFollowees, async (params: QueryFolloweesParams) => {
-            //load user data
+            //load followees data
             const { data } = await swrMutation.trigger(params)
-            EventBus.emit(EventName.FolloweesLoaded, data?.followees)
+            EventBus.emit(EventName.FolloweesLoaded, data.followees)
         })
 
         return () => {
@@ -21,12 +24,12 @@ export const useFolloweesEffects = () => {
         }
     }, [swrMutation])
 
-    // refresh user data
+    // refresh followees data
     useEffect(() => {
         EventBus.on(EventName.RefreshFollowees, async (params: QueryFolloweesParams) => {
-            //load user data
+            //load followees data
             const { data } = await swrMutation.trigger(params)
-            EventBus.emit(EventName.FolloweesLoaded, data.followees)
+            EventBus.emit(EventName.FolloweesRefreshed, data.followees)
         })
 
         return () => {

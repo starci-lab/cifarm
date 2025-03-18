@@ -37,7 +37,6 @@ export const mutationBuyAnimal = async ({
     if (!request) {
         throw new Error("Request is required for buy animal mutation")
     }
-    
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
         { buyAnimal: MutationBuyAnimalResponse },

@@ -1,15 +1,15 @@
-import { API_UPDATE_REFERRAL_SWR_MUTATION } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { retrieveLaunchParams, postEvent } from "@telegram-apps/sdk"
 import { useEffect } from "react"
-import { useApiUpdateReferralSwrMutation } from "../swr"
+import { useGraphQLMutationUpdateReferralSwrMutation } from "@/hooks"
+import { GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION } from "@/app/constants"
 
 export const REFERRAL_USER_ID = "referralUserId"
 
 export const useReferral = () => {
     const { swrMutation } = useSingletonHook<
-    ReturnType<typeof useApiUpdateReferralSwrMutation>
-  >(API_UPDATE_REFERRAL_SWR_MUTATION)
+    ReturnType<typeof useGraphQLMutationUpdateReferralSwrMutation>
+  >(GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION)
     useEffect(() => {
         const handleEffect = async () => {
             try {

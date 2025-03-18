@@ -1,15 +1,15 @@
-import { API_HELP_WATER_SWR_MUTATION } from "@/app/constants"
-import { useApiHelpWaterSwrMutation } from "@/hooks"
+import { GRAPHQL_MUTATION_HELP_WATER_SWR_MUTATION } from "@/app/constants"
+import { EventBus, EventName } from "@/game/event-bus"
+import { useGraphQLMutationHelpWaterSwrMutation } from "@/hooks"
+import { HelpWaterRequest } from "@/modules/axios"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EventBus, EventName } from "../../event-bus"
-import { HelpWaterRequest } from "@/modules/axios"
 
 export const useHelpWaterEffects = () => {
-    //authentication useEffect
+    //get the singleton instance of the help water mutation
     const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useApiHelpWaterSwrMutation>
-      >(API_HELP_WATER_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationHelpWaterSwrMutation>
+    >(GRAPHQL_MUTATION_HELP_WATER_SWR_MUTATION)
     
     useEffect(() => {
         EventBus.on(EventName.RequestHelpWater, async (message: HelpWaterRequest) => {

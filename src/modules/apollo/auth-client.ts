@@ -1,10 +1,11 @@
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
-import { refresh, saveTokens } from "../axios"
+import { saveTokens } from "./tokens"
 import { ApolloClient, ApolloLink, InMemoryCache, } from "@apollo/client"
 import { defaultOptions, httpLink, timeoutLink, MAX_RETRY, MAX_RETRY_DELAY } from "./common"
 import { RetryLink } from "@apollo/client/link/retry"
+import { mutationRefresh } from "./mutations"
 
 const authLink = setContext(async (_, { headers }) => {
     // get the authentication token from local storage if it exists
@@ -37,11 +38,16 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
                     throw new Error("Refresh token not found")
                 }
                 // send refresh token request
-                const refreshResponse = await refresh({
-                    refreshToken: refreshToken.value,
+                const refreshResponse = await mutationRefresh({
+                    request: {
+                        refreshToken: refreshToken.value,
+                    },
                 })
+                if (!refreshResponse.data) {
+                    throw new Error("Refresh token request failed")
+                }
                 // save the new tokens
-                await saveTokens(refreshResponse.data)
+                await saveTokens(refreshResponse.data.refresh)
                 // retry the request
                 return forward(operation)
             }

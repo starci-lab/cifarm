@@ -1,4 +1,4 @@
-import { QUERY_GRAPHQL_USER_SWR_MUTATION } from "@/app/constants"
+import { GRAPHQL_QUERY_USER_SWR_MUTATION } from "@/app/constants"
 import { EventBus, EventName } from "@/game/event-bus"
 import { useGraphQLQueryUserSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -6,7 +6,7 @@ import { useEffect } from "react"
 
 export const useUserEffects = () => {
     //get the singleton instance of the user swr
-    const { swrMutation } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwrMutation>>(QUERY_GRAPHQL_USER_SWR_MUTATION)
+    const { swrMutation } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwrMutation>>(GRAPHQL_QUERY_USER_SWR_MUTATION)
     
     // load user data
     useEffect(() => {
