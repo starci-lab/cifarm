@@ -1,5 +1,5 @@
-import { GRAPHQL_MUTATION_USE_PESTICIDE_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationHelpUsePesticideSwrMutation } from "@/hooks"
+import { GRAPHQL_MUTATION_USE_HERBICIDE_SWR_MUTATION } from "@/app/constants"
+import { useGraphQLMutationHelpUseHerbicideSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
@@ -8,8 +8,8 @@ import { HelpUseHerbicideRequest } from "@/modules/apollo"
 export const useUseHerbicideEffects = () => {
     //authentication useEffect
     const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationHelpUsePesticideSwrMutation>
-      >(GRAPHQL_MUTATION_USE_PESTICIDE_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationHelpUseHerbicideSwrMutation>
+      >(GRAPHQL_MUTATION_USE_HERBICIDE_SWR_MUTATION)
     
     useEffect(() => {
         EventBus.on(EventName.RequestUseHerbicide, async (message: HelpUseHerbicideRequest) => {

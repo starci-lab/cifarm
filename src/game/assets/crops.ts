@@ -198,8 +198,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-2",
                     assetUrl: "crops/cucumber/2.png",
                     extraOffsets: {
-                        x: 0,
-                        y: -30,
+                        x: -5,
+                        y: -40,
                     },
                 },
             },
@@ -208,8 +208,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-3",
                     assetUrl: "crops/cucumber/3.png",
                     extraOffsets: {
-                        x: 0,
-                        y: -30,
+                        x: 10,
+                        y: -20,
                     },
                 },
             },
@@ -218,7 +218,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-4",
                     assetUrl: "crops/cucumber/4.png",
                     extraOffsets: {
-                        x: 0,
+                        x: 10,
                         y: -20,
                     },
                 },
@@ -228,7 +228,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-5",
                     assetUrl: "crops/cucumber/5.png",
                     extraOffsets: {
-                        x: 0,
+                        x: 10,
                         y: -20,
                     },
                 },
@@ -252,8 +252,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
             },
             1: {
                 textureConfig: { key: "crop-potato-2", assetUrl: "crops/potato/2.png",   extraOffsets: {
-                    x: -10,
-                    y: -30,
+                    x: 0,
+                    y: -40,
                 }, },
             },
             2: {
@@ -300,8 +300,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-pineapple-2",
                     assetUrl: "crops/pineapple/2.png",
                     extraOffsets: {
-                        x: -5,
-                        y: -10,
+                        x: 0,
+                        y: -32,
                     },
                 },
             },
@@ -310,7 +310,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-pineapple-3",
                     assetUrl: "crops/pineapple/3.png",
                     extraOffsets: {
-                        x: -5,
+                        x: -0,
                         y: -20,
                     },
                 },
@@ -320,7 +320,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-pineapple-4",
                     assetUrl: "crops/pineapple/4.png",
                     extraOffsets: {
-                        x: -5,
+                        x: -0,
                         y: -20,
                     },
                 },
@@ -330,7 +330,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-pineapple-5",
                     assetUrl: "crops/pineapple/5.png",
                     extraOffsets: {
-                        x: -5,
+                        x: -0,
                         y: -20,
                     },
                 },

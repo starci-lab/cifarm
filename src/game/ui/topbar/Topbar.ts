@@ -249,18 +249,18 @@ export class Topbar extends BaseSizer {
         }
         this.energyLabel = this.addLabel({
             iconKey: BaseAssetKey.UITopbarIconEnergy,
-            amount: `${this.user.energy}/${this.getMaxEnergy(
+            text: `${this.user.energy}/${this.getMaxEnergy(
                 this.user.level
             )}`,
             scale: 0.8,
         })
         this.goldLabel = this.addLabel({
             iconKey: BaseAssetKey.UICommonIconCoin,
-            amount: `${this.user.golds ?? 0}`,
+            text: `${this.user.golds ?? 0}`,
         }).setVisible(!this.visited)
         this.tokenLabel = this.addLabel({
             iconKey: BaseAssetKey.UICommonIconCarrot,
-            amount: `${this.user.tokens ?? 0}`,
+            text: `${this.user.tokens ?? 0}`,
             scale: 0.9,
         }).setVisible(!this.visited)
         this.resourcesContainer = this.scene.rexUI.add
@@ -279,14 +279,14 @@ export class Topbar extends BaseSizer {
         this.addLocal(this.resourcesContainer)
     }
 
-    private addLabel({ iconKey, amount, scale = 1 }: AddLabelParams) {
+    private addLabel({ iconKey, text, scale = 1 }: AddLabelParams) {
         const resourceLabel = new ResourceLabel({
             baseParams: {
                 scene: this.scene,
             },
             options: {
                 iconKey,
-                amount: parseInt(amount),
+                text,
                 scale,
             },
         })
@@ -302,5 +302,5 @@ export class Topbar extends BaseSizer {
 interface AddLabelParams {
   iconKey: BaseAssetKey;
   scale?: number;
-  amount: string;
+  text: string;
 }

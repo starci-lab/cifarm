@@ -273,7 +273,6 @@ export class ShopContent extends BaseSizer {
                 text: "",
             },
             options: {
-                enableStroke: true,
                 textColor: TextColor.White,
                 fontSize: 40,
             },
@@ -282,7 +281,7 @@ export class ShopContent extends BaseSizer {
             .setOrigin(0, 0)
         this.scene.add.existing(this.limitText)
         this.contentContainer.addLocal(this.limitText)
-        
+
         EventBus.on(
             EventName.PlacedItemsSynced,
             ({ placedItems }: PlacedItemsSyncedMessage) => {

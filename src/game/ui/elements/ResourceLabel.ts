@@ -5,7 +5,7 @@ import { TextColor, Text } from "./Text"
 
 export interface ResourceLabelOptions {
     iconKey: BaseAssetKey
-    amount: number
+    text: string
     //icon scale
     scale?: number      
 }
@@ -18,7 +18,7 @@ export class ResourceLabel extends Label {
         if (!options) {
             throw new Error("ResourceLabelOptions is required")
         }
-        const { iconKey, amount, scale = 1 } = options
+        const { iconKey, text, scale = 1 } = options
         // create background
         const background = scene.add.image(0, 0, BaseAssetKey.UITopbarResource)
         // create icon container
@@ -33,7 +33,7 @@ export class ResourceLabel extends Label {
                 scene,
                 x: 0,
                 y: 0,
-                text: amount.toString(),
+                text,
             },
             options: {
                 fontSize: 24,
