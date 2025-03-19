@@ -161,7 +161,7 @@ export const getBackgroundContainerSize = ({
 }
 
 export class ModalBackground extends ContainerLite {
-    public xButton: XButton
+    public xButton: XButton | undefined
     private titleText: Text
     public backgroundImage: Phaser.GameObjects.Image
     public uiContainer: ContainerLite
@@ -314,6 +314,9 @@ export class ModalBackground extends ContainerLite {
                     onPress: () => {
                         if (!onXButtonPress) {
                             throw new Error("onXButtonPress is required")
+                        }
+                        if (!this.xButton) {
+                            throw new Error("XButton is not set")
                         }
                         onXButtonPress(this.xButton)
                     },

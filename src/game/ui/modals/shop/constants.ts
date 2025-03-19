@@ -20,7 +20,7 @@ export const tabsConfig: Record<ShopTab, TabData> = {
     [ShopTab.Tiles]: {
         iconKey: BaseAssetKey.UIModalShopTilesTab,
     },
-    [ShopTab.Supply]: {
+    [ShopTab.Supplies]: {
         iconKey: BaseAssetKey.UIModalShopSuppliesTab,
     },
     [ShopTab.Decorations]: {

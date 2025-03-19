@@ -31,6 +31,15 @@ export interface ThiefCropData {
     cropId: string
 }
 
+export interface BuyTileData {
+    price: number
+    placedItemTileId: string
+}
+
+export interface BuyAnimalData {
+    price: number
+}
+
 export interface HarvestCropData {
     quantity: number
     cropId: string

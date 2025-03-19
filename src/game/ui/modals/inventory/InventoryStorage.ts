@@ -126,6 +126,9 @@ export class InventoryStorage extends BaseSizer {
             })
             // re-render the grid table
             this.updateGridTable()
+            if (!this.background.xButton) {
+                throw new Error("XButton not found")
+            }
             setTutorialDepth({
                 gameObject: this.background.xButton,
             })

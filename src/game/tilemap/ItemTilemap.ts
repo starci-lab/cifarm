@@ -1,6 +1,7 @@
 import {
     ActionEmittedMessage,
     ActionName,
+    BuyTileData,
     HarvestAnimalData,
     HarvestCropData,
     HarvestFruitData,
@@ -105,7 +106,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             let data = this.scene.cache.obj.get(
                 CacheKey.PlacedItems
             ) as PlacedItemsSyncedMessage
-
+            console.log(`Number of placed items: ${data.placedItems.length}`)
             if (this.isWaiting) {
                 data = this.scene.cache.obj.get(
                     CacheKey.PlacedItems
@@ -142,7 +143,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
-            console.log(data)
             const object = this.placedItemObjectMap[data.placedItemId]?.object
             if (!object) {
                 // return since object not found
@@ -336,6 +336,27 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
                         text: "Failed to " + ActionName.HarvestCrop,
+                    })
+                }
+                break
+            case ActionName.BuyTile:
+                if (data.success) {
+                    const { price, placedItemTileId } = data.data as BuyTileData
+                    // get the tile position
+                    console.log(placedItemTileId)
+                    const position = this.placedItemObjectMap[placedItemTileId].object.getCenter()
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: COIN_KEY,
+                            position, 
+                            quantity: -price,
+                        },
+                    ])
+                }
+                else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.BuyTile,
                     })
                 }
                 break
@@ -783,6 +804,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                     gameObject.updateContent(placedItem)
                 // push the placed item to the checked previous placed items
                 }
+            } else {
+                console.log(`Placing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`)
+                // place the item using the shared tile placing
+                this.placeTileForItem(placedItem)
             }
         }
 

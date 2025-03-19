@@ -1,6 +1,10 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import { IPaginatedResponse } from "@/modules/apollo"
-import { BuySeedsRequest, BuySuppliesRequest, BuyToolRequest } from "@/modules/apollo"
+import {
+    BuySeedsRequest,
+    BuySuppliesRequest,
+    BuyToolRequest,
+} from "@/modules/apollo"
 import { sleep } from "@/modules/common"
 import {
     AnimalId,
@@ -51,7 +55,7 @@ import {
     SelectTabMessage,
     ShowPressHereArrowMessage,
 } from "../../../event-bus"
-import { getFirstSeedInventory } from "../../../queries"
+import { getFirstSeedInventory, getPlacedItemsByType } from "../../../queries"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import {
     Background,
@@ -65,6 +69,7 @@ import {
     Size,
     SizeStyle,
     XButton,
+    TextColor,
 } from "../../elements"
 import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 import { onGameObjectPress } from "../../utils"
@@ -75,11 +80,53 @@ import { PlacedItemsSyncedMessage } from "@/hooks"
 
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
+
+export interface ShopTabData {
+  showLimitText?: boolean;
+}
+
+export const shopTabData: Record<ShopTab, ShopTabData> = {
+    [ShopTab.Seeds]: {
+        showLimitText: false,
+    },
+    [ShopTab.Animals]: {
+        showLimitText: false,
+    },
+    [ShopTab.Buildings]: {
+        showLimitText: true,
+    },
+    [ShopTab.Fruits]: {
+        showLimitText: true,
+    },
+    [ShopTab.Tiles]: {
+        showLimitText: true,
+    },
+    [ShopTab.Supplies]: {
+        showLimitText: false,
+    },
+    [ShopTab.Tools]: {
+        showLimitText: false,
+    },
+    [ShopTab.Pets]: {
+        showLimitText: false,
+    },
+    [ShopTab.Decorations]: {
+        showLimitText: false,
+    },
+}
+
+const HEIGHT_OFFSET = 80
+
+export interface LimitData {
+  limitReached: boolean;
+}
+
 export class ShopContent extends BaseSizer {
     private contentContainer: ContainerLite
     private background: ModalBackground
     // list of items
     private gridTableMap: Partial<Record<ShopTab, GridTable>> = {}
+    private limitMap: Partial<Record<ShopTab, LimitData>> = {}
     // data
     private animals: Array<AnimalSchema>
     private crops: Array<CropSchema>
@@ -104,6 +151,8 @@ export class ShopContent extends BaseSizer {
     private cellHeight: number
     private contentWidth: number
     private size: Size
+    private limitText: Text
+
     constructor({
         scene,
         height,
@@ -185,9 +234,7 @@ export class ShopContent extends BaseSizer {
         this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
         this.fruits = this.fruits.filter((fruit) => fruit.availableInShop)
 
-        this.placedItemTypes = this.scene.cache.obj.get(
-            CacheKey.PlacedItemTypes
-        )
+        this.placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes)
 
         // load buildings
         this.buildings = this.scene.cache.obj.get(CacheKey.Buildings)
@@ -218,6 +265,24 @@ export class ShopContent extends BaseSizer {
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
+        this.limitText = new Text({
+            baseParams: {
+                scene: this.scene,
+                x: -this.contentWidth / 2,
+                y: 0,
+                text: "",
+            },
+            options: {
+                enableStroke: true,
+                textColor: TextColor.White,
+                fontSize: 40,
+            },
+        })
+            .setVisible(false)
+            .setOrigin(0, 0)
+        this.scene.add.existing(this.limitText)
+        this.contentContainer.addLocal(this.limitText)
+        
         EventBus.on(
             EventName.PlacedItemsSynced,
             ({ placedItems }: PlacedItemsSyncedMessage) => {
@@ -225,6 +290,7 @@ export class ShopContent extends BaseSizer {
                 this.updateGridTables()
             }
         )
+
 
         // create the scrollable panel
         for (const shopTab of Object.values(ShopTab)) {
@@ -245,6 +311,9 @@ export class ShopContent extends BaseSizer {
 
         // set the tutorial depth
         scene.events.once(EventName.TutorialPrepareCloseShop, () => {
+            if (!this.background.xButton) {
+                throw new Error("XButton not found")
+            }
             setTutorialDepth({
                 gameObject: this.background.xButton,
             })
@@ -310,10 +379,13 @@ export class ShopContent extends BaseSizer {
             this.updateGridTables()
         })
 
-        EventBus.on(EventName.InventoriesRefreshed, ({ data }: IPaginatedResponse<InventorySchema>) => {
-            this.inventories = data
-            this.updateGridTables()
-        })
+        EventBus.on(
+            EventName.InventoriesRefreshed,
+            ({ data }: IPaginatedResponse<InventorySchema>) => {
+                this.inventories = data
+                this.updateGridTables()
+            }
+        )
 
         EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
             this.updateGridTables()
@@ -337,23 +409,65 @@ export class ShopContent extends BaseSizer {
         gridTable.show()
         // set the selected tab
         this.selectedShopTab = shopTab
+
+        // check the limit
+        this.checkLimit(shopTab)
+    }
+
+    private getLimit(): GetLimitResult {
+        switch (this.selectedShopTab) {
+        case ShopTab.Tiles:
+            return {
+                currentOwnership: getPlacedItemsByType({
+                    scene: this.scene,
+                    placedItems: this.placedItems,
+                    type: PlacedItemType.Tile,
+                }).length,
+                maxOwnership: this.defaultInfo.tileLimit,
+            }
+        case ShopTab.Buildings:
+            return {
+                currentOwnership: getPlacedItemsByType({
+                    scene: this.scene,
+                    placedItems: this.placedItems,
+                    type: PlacedItemType.Building,
+                }).length,
+                maxOwnership: this.defaultInfo.buildingLimit,
+            }
+        case ShopTab.Fruits:
+            return {
+                currentOwnership: getPlacedItemsByType({
+                    scene: this.scene,
+                    placedItems: this.placedItems,
+                    type: PlacedItemType.Fruit,
+                }).length,
+                maxOwnership: this.defaultInfo.fruitLimit,
+            }
+        default:
+            throw new Error("Shop tab not found")
+        }
     }
 
     private updateGridTable(shopTab: ShopTab) {
-        // get the item cards
+    // get the item cards
         const items = this.createItems(shopTab)
         if (this.gridTableMap[shopTab]) {
             this.gridTableMap[shopTab].setItems(items)
             this.gridTableMap[shopTab].layout()
             return
         }
+        const { showLimitText } = shopTabData[shopTab]
         // create a sizer to hold all the item cards
+        if (!this.size.width || !this.size.height) {
+            throw new Error("Size not found")
+        }
+        const heightOffset = showLimitText ? HEIGHT_OFFSET : 0
         this.gridTableMap[shopTab] = this.scene.rexUI.add
             .gridTable({
                 x: 0,
-                y: 0,
+                y: heightOffset,
                 originY: 0,
-                height: this.size?.height,
+                height: this.size.height - heightOffset,
                 width: 3 * this.cellWidth + 2 * CELL_SPACE,
                 scrollMode: 0,
                 table: {
@@ -395,18 +509,18 @@ export class ShopContent extends BaseSizer {
                 _: number,
                 pointer: Phaser.Input.Pointer
             ) => {
-                const {
-                    onPress,
-                    locked,
-                    disabled,
-                } = cellContainer.getData(
+                const { onPress, locked, disabled } = cellContainer.getData(
                     ITEM_DATA_KEY
                 ) as ExtendedCreateItemCardParams
                 const button = (
           cellContainer.getChildren()[0] as ContainerLite
         ).getChildren()[2] as Button
-                // check if clicked on the button
-                if (!disabled && !locked && button.getBounds().contains(pointer.x, pointer.y)) {
+        // check if clicked on the button
+                if (
+                    !disabled &&
+          !locked &&
+          button.getBounds().contains(pointer.x, pointer.y)
+                ) {
                     onGameObjectPress({
                         gameObject: button,
                         onPress: () => {
@@ -427,6 +541,28 @@ export class ShopContent extends BaseSizer {
         // hide the grid table if it is not the default shop tab
         if (shopTab !== this.selectedShopTab) {
             this.gridTableMap[shopTab].hide()
+        }
+
+        // check the limit
+        if (shopTab === this.selectedShopTab) {
+            //check the limit
+            this.checkLimit(shopTab)
+        }
+    }
+
+    private checkLimit(shopTab: ShopTab) {
+        if (!shopTabData[shopTab].showLimitText) {
+            this.limitText.setVisible(false)
+            return
+        }
+        const { currentOwnership, maxOwnership } = this.getLimit()
+        this.limitText
+            .setText(`Limit: ${currentOwnership}/${maxOwnership}`)
+            .setVisible(true)
+        if (currentOwnership >= maxOwnership) {
+            this.limitMap[shopTab] = {
+                limitReached: true,
+            }
         }
     }
 
@@ -452,9 +588,7 @@ export class ShopContent extends BaseSizer {
                 // get the image
                 items.push({
                     assetKey: cropAssetMap[displayId].shop.textureConfig.key,
-                    locked: !this.checkUnlock(
-                        unlockLevel
-                    ),
+                    locked: !this.checkUnlock(unlockLevel),
                     disabled: this.user.golds < price,
                     unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
@@ -487,8 +621,7 @@ export class ShopContent extends BaseSizer {
                     throw new Error("Shop asset is not found.")
                 }
                 items.push({
-                    assetKey:
-              animalAssetMap[displayId].shop.textureConfig.key,
+                    assetKey: animalAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     disabled,
                     showOwnership: true,
@@ -532,7 +665,9 @@ export class ShopContent extends BaseSizer {
                     throw new Error("Max ownership is not found.")
                 }
                 const ownershipSastified = currentOwnership < maxOwnership
-                const disabled = !(goldsEnough && ownershipSastified)
+                const disabled =
+            !(goldsEnough && ownershipSastified) ||
+            this.limitMap[ShopTab.Buildings]?.limitReached
                 // get the image
                 if (!buildingAssetMap[displayId].shop) {
                     throw new Error("Shop asset is not found.")
@@ -557,33 +692,30 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.BuyingModeOn, message)
                     },
                     price,
-                    scaleWidth: buildingAssetMap[displayId].shop.textureConfig.scaleWidth,
-                    scaleHeight: buildingAssetMap[displayId].shop.textureConfig.scaleHeight,
+                    scaleWidth:
+              buildingAssetMap[displayId].shop.textureConfig.scaleWidth,
+                    scaleHeight:
+              buildingAssetMap[displayId].shop.textureConfig.scaleHeight,
                     showOwnership: true,
                     maxOwnership,
-                    currentOwnership
+                    currentOwnership,
                 })
             }
             break
         }
-        case ShopTab.Fruits:
-        {
+        case ShopTab.Fruits: {
             for (const { displayId, price, unlockLevel, id } of this.fruits) {
                 if (!fruitAssetMap[displayId].shop) {
                     throw new Error("Price is not found.")
                 }
-                const maxOwnership = this.defaultInfo.fruitLimit
+                const goldsEnough = this.user.golds >= price
+                const disabled =
+            !goldsEnough || this.limitMap[ShopTab.Fruits]?.limitReached
                 // get the image
                 items.push({
                     assetKey: fruitAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     unlockLevel,
-                    maxOwnership,
-                    showOwnership: true,
-                    currentOwnership: this.getCurrentOwnership({
-                        displayId,
-                        type: PlacedItemType.Fruit,
-                    }),
                     onPress: () => {
                         // close the modal
                         const eventMessage: CloseModalMessage = {
@@ -600,12 +732,12 @@ export class ShopContent extends BaseSizer {
                     },
                     prepareCloseShop: true,
                     price,
+                    disabled,
                 })
             }
             break
         }
-        case ShopTab.Tiles:
-        {
+        case ShopTab.Tiles: {
             for (const { displayId, price, unlockLevel, id } of this.tiles) {
                 if (!price) {
                     throw new Error("Price is not found.")
@@ -620,7 +752,9 @@ export class ShopContent extends BaseSizer {
                     throw new Error("Max ownership is not found.")
                 }
                 const ownershipSastified = currentOwnership < maxOwnership
-                const disabled = !(goldsEnough && ownershipSastified)
+                const disabled =
+            !(goldsEnough && ownershipSastified) ||
+            this.limitMap[ShopTab.Tiles]?.limitReached
                 // get the image
                 items.push({
                     assetKey: tileAssetMap[displayId].textureConfig.key,
@@ -642,19 +776,12 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.HideButtons)
                     },
                     price,
-                    showOwnership: true,
-                    maxOwnership,
-                    currentOwnership: this.getCurrentOwnership({
-                        type: PlacedItemType.Tile,
-                        displayId,
-                    }),
                 })
                 // add the item card to the scrollable panel
             }
             break
         }
-        case ShopTab.Supply: 
-        {
+        case ShopTab.Supplies: {
             for (const { displayId, price, unlockLevel } of this.supplies) {
                 // get the image
                 items.push({
@@ -670,8 +797,7 @@ export class ShopContent extends BaseSizer {
             }
             break
         }
-        case ShopTab.Pets: 
-        {
+        case ShopTab.Pets: {
             for (const { displayId, price, unlockLevel } of this.pets) {
                 // get the image
                 items.push({
@@ -765,7 +891,8 @@ export class ShopContent extends BaseSizer {
         )
         container.addLocal(cardBackground)
         const icon = this.scene.add
-            .image(x, y + 20, assetKey).setOrigin(0.5, 1)
+            .image(x, y + 20, assetKey)
+            .setOrigin(0.5, 1)
             .setScale(scaleWidth, scaleHeight)
         container.pinLocal(icon, {
             syncScale: false,
@@ -795,12 +922,12 @@ export class ShopContent extends BaseSizer {
                 baseParams: {
                     scene: this.scene,
                     text: `${currentOwnership}/${maxOwnership}`,
-                    x: cardBackground.width/2 - 10,
-                    y: -cardBackground.height/2 + 10,
+                    x: cardBackground.width / 2 - 10,
+                    y: -cardBackground.height / 2 + 10,
                 },
                 options: {
                     fontSize: 32,
-                    enableStroke: true
+                    enableStroke: true,
                 },
             }).setOrigin(1, 0)
             this.scene.add.existing(ownership)
@@ -847,8 +974,8 @@ export class ShopContent extends BaseSizer {
             if (buttonPrice.input) {
                 buttonPrice.input.enabled = false
             }
-        } 
-        
+        }
+
         return container
     }
 
@@ -955,16 +1082,17 @@ export class ShopContent extends BaseSizer {
             },
         })
         this.scene.add.existing(flyItem)
-    }    
+    }
 
     private getCurrentOwnership({
         type,
         displayId,
     }: GetCurrentOwnershipParams): number {
-        if(this.placedItemTypes.length === 0) return 0
+        if (this.placedItemTypes.length === 0) return 0
         //get the placed item type
         const placedItemType = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.displayId === displayId && placedItemType.type === type
+            (placedItemType) =>
+                placedItemType.displayId === displayId && placedItemType.type === type
         )
         if (!placedItemType) {
             throw new Error("Placed item type not found.")
@@ -992,7 +1120,7 @@ export class ShopContent extends BaseSizer {
             throw new Error("Building not found.")
         }
         const placedItemType = this.placedItemTypes.find(
-            placedItemType => placedItemType.building === building.id
+            (placedItemType) => placedItemType.building === building.id
         )
         if (!placedItemType) {
             throw new Error("Placed item type not found.")
@@ -1000,7 +1128,7 @@ export class ShopContent extends BaseSizer {
         const placedItemBuildings = this.placedItems.filter(
             (placedItemBuilding) => {
                 return placedItemBuilding.placedItemType === placedItemType.id
-            }           
+            }
         )
         let maxCapacity = 0
         for (const placedItemBuilding of placedItemBuildings) {
@@ -1073,4 +1201,9 @@ export interface CreateItemCardParams {
 
 export interface ExtendedCreateItemCardParams extends CreateItemCardParams {
   onPress: (pointer: Phaser.Input.Pointer) => void;
+}
+
+export interface GetLimitResult {
+  currentOwnership: number;
+  maxOwnership: number;
 }

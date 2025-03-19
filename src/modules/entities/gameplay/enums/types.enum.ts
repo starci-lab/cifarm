@@ -50,6 +50,7 @@ export enum PlacedItemType {
     Building = "building",
     Animal = "animal",
     Fruit = "fruit",
+    Pet = "pet",
 }
 
 // AppearanceChance Enum

@@ -1356,11 +1356,11 @@ export class InputTilemap extends ItemTilemap {
                 this.cancelPlacement()
             },
             onConfirm: (tileX: number, tileY: number) => { 
-                // disable drag
-                this.disableDrag = true
                 // show modal
                 switch (placedItemType.type) {
                 case PlacedItemType.Building: {
+                    // disable drag
+                    this.disableDrag = true
                     const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
                         message: "Are you sure you want to buy this building?",
                         callback: () => {
