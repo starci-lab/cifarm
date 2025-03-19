@@ -29,8 +29,8 @@ export class NumberInput extends Sizer {
     private rightArrow: Label | undefined
     private inputText: Label  
     private bbCodeText: BBCodeText  
-    private min: number
-    private max: number
+    public min: number
+    public max: number
 
     constructor({ baseParams: { scene, config}, options}: ConstructorParams<SizerBaseConstructorParams, NumberInputOptions>) {
         super(scene, {
@@ -161,6 +161,11 @@ export class NumberInput extends Sizer {
         }
 
         this.layout()
+    }
+
+    public setValue(value: number) {
+        this.bbCodeText.setText(value)
+        this.controlArrowVisibility(value)
     }
 
     private controlArrowVisibility(intValue: number = parseInt(this.bbCodeText.text)) {

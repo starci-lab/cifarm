@@ -11,7 +11,7 @@ import { EventBus, EventName, RequestStorageInventoryIndexMessage, RequestToolba
 import { getDepth } from "./utils"
 import { DragItemParams } from "./types"
 import { CELL_TOOLBAR_DATA_KEY } from "./constants"
-import { MoveInventoryRequest } from "@/modules/axios"
+import { MoveInventoryRequest } from "@/modules/apollo"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "@/game/constants"
 import { setTutorialDepth } from "../../tutorial"
@@ -138,15 +138,13 @@ export class InventoryToolbar extends ContainerLite {
                         const itemQuantity = new ItemQuantity({
                             baseParams: {
                                 scene: this.scene,
-                                config: {
-                                    width: this.cellSize.width,
-                                    height: this.cellSize.height,
-                                }
                             },
                             options: {
                                 assetKey: key,
                                 quantity: inventory.quantity,
                                 showBadge: inventoryType.stackable,
+                                itemHeight: this.cellSize.height,
+                                itemWidth: this.cellSize.width,
                             },
                         }).layout()
                         this.scene.add.existing(itemQuantity)

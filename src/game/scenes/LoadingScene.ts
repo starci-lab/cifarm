@@ -24,7 +24,7 @@ import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { createJazziconBlobUrl } from "@/modules/jazz"
-import { VisitRequest } from "@/modules/axios"
+import { VisitRequest } from "@/modules/apollo"
 
 export enum LoadingPhase {
     DataFetching = "dataFetching",

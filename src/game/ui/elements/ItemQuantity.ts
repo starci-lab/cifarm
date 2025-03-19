@@ -13,6 +13,10 @@ export interface ItemQuantityOptions {
   showBadge?: boolean;
   // scale the icon
   scale?: number;
+  // width of the item
+  itemWidth?: number;
+  // height of the item
+  itemHeight?: number;
 }
 
 export class ItemQuantity extends BadgeLabel {
@@ -33,7 +37,14 @@ export class ItemQuantity extends BadgeLabel {
         if (!options) {
             throw new Error("ItemQuantity requires options")
         }
-        const { assetKey, quantity = 1, showBadge = false, scale = 1 } = options
+        const {
+            assetKey,
+            quantity = 1,
+            showBadge = false,
+            scale = 1,
+            itemWidth,
+            itemHeight,
+        } = options
         // create the icon
         const iconContainer = scene.rexUI.add.container(0, 0)
         const iconImage = scene.add.image(0, 0, assetKey)
@@ -69,10 +80,12 @@ export class ItemQuantity extends BadgeLabel {
             scene.add.existing(rightBottomText)
         }
 
+        const thisWidth = itemWidth || width
+        const thisHeight = itemHeight || height
         super(scene, {
             center: iconContainer,
-            width,
-            height,
+            width: thisWidth,
+            height: thisHeight,
             rightBottom: rightBottomText,
             ...config,
         })
@@ -82,7 +95,10 @@ export class ItemQuantity extends BadgeLabel {
 
     public duplicate() {
         const position = this.getCenter()
-        const duplicated = new ItemQuantity(this.constructorParams).setPosition(position.x, position.y)
+        const duplicated = new ItemQuantity(this.constructorParams).setPosition(
+            position.x,
+            position.y
+        )
         this.scene.add.existing(duplicated)
         duplicated.layout()
         return duplicated

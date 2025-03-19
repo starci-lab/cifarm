@@ -11,8 +11,8 @@ export const HIGHLIGH_DEPTH = calculateUiDepth({
 export const setTutorialDepth = <T extends ContainerLite>({
     gameObject,
 }: SetTutorialDepthParams<T>) => {
+    console.log("tutorial depth set")
     const retrievedValue = gameObject.getData(KEY)
-    console.log(retrievedValue)
     if (retrievedValue === null || retrievedValue === undefined) { 
         gameObject.setData(KEY, gameObject.depth)
     }
@@ -28,7 +28,7 @@ export const restoreTutorialDepth = <T extends ContainerLite>({
     gameObject,
     plusOne = false,
 }: RestoreTutorialDepthParams<T>) => {
-    console.log(`called from ${gameObject}`)
+    console.log("restore tutorial depth called")   
     const depth = gameObject.getData(KEY)
     if (depth === undefined) {
         throw new Error("Depth is not set")

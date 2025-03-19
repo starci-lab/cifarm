@@ -86,6 +86,4 @@ export const useGraphQLMutationEffects = () => {
     useHelpUseBugNetEffects()
     useUseFruitFertilizerEffects()
     useHelpUseFruitFertilizerEffects()
-    useDeliverProductEffects()
-    useDeliverMoreProductEffects()
 }

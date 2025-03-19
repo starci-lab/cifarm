@@ -7,7 +7,8 @@ import { Text, TextColor } from "./Text"
 import { BaseAssetKey } from "@/game/assets"
 import { XButton } from "./XButton"
 import { Tabs, TabsOptions } from "./Tabs"
-import { Button } from "./Button"
+import { Button, ButtonBackground } from "./Button"
+import { Buttons } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 const CONTAINER_OFFSET_Y = 150
 const BASE_WIDTH = 884
@@ -101,6 +102,7 @@ const map: Record<Background, BackgroundData> = {
             },
         },
         buttonOffsetY: -40,
+        buttonScale: 0.9,
     },
     [Background.XXLarge]: {
         backgroundAssetKey: BaseAssetKey.UIBackgroundXXLarge,
@@ -121,7 +123,8 @@ const map: Record<Background, BackgroundData> = {
 export interface ModalBackgroundOptions {
   background: Background;
   title: string;
-  onXButtonPress: (xButton: XButton) => void;
+  hideXButton?: boolean;
+  onXButtonPress?: (xButton: XButton) => void;
   titleFontSize?: number;
   container?: {
     showWrapperContainer?: boolean;
@@ -133,6 +136,10 @@ export interface ModalBackgroundOptions {
     tabContainerOffsetY?: number;
   };
   mainButton?: {
+    text: string;
+    onPress: (button: Button) => void;
+  };
+  secondaryButton?: {
     text: string;
     onPress: (button: Button) => void;
   };
@@ -165,8 +172,11 @@ export class ModalBackground extends ContainerLite {
     public tabs: Tabs | undefined
     public tabContainerImage: Phaser.GameObjects.Image | undefined
     public wrapperContainerOffsetY: number
+    public buttons: Buttons 
     public mainButton: Button | undefined
-    constructor({
+    public secondaryButton: Button | undefined
+
+    constructor({   
         baseParams: { scene, children, height, width, x, y },
         options,
     }: ConstructorParams<
@@ -183,7 +193,9 @@ export class ModalBackground extends ContainerLite {
             titleFontSize = 56,
             container: containerConfig,
             mainButton,
+            secondaryButton,
             tabs: tabsConfig,
+            hideXButton = false,
             align = "top",
         } = options
         super(scene, x, y, width, height, children)
@@ -289,26 +301,63 @@ export class ModalBackground extends ContainerLite {
         })
         scene.add.existing(this.titleText)
         this.addLocal(this.titleText)
-        this.xButton = new XButton({
-            baseParams: {
-                scene,
-                config: {
-                    x: 0,
-                    y: 0,
+        if (!hideXButton) {
+            this.xButton = new XButton({
+                baseParams: {
+                    scene,
+                    config: {
+                        x: 0,
+                        y: 0,
+                    },
                 },
-            },
-            options: {
-                onPress: () => onXButtonPress(this.xButton),
-                disableInteraction: false,
-            },
+                options: {
+                    onPress: () => {
+                        if (!onXButtonPress) {
+                            throw new Error("onXButtonPress is required")
+                        }
+                        onXButtonPress(this.xButton)
+                    },
+                    disableInteraction: false,
+                },
+            })
+                .layout()
+                .setPosition(
+                    this.backgroundImage.width / 2 - 75,
+                    -(this.backgroundImage.height - 75)
+                )
+            this.scene.add.existing(this.xButton)
+            this.addLocal(this.xButton)
+        }
+
+        this.buttons = this.scene.rexUI.add.buttons({
+            y: buttonOffsetY,
+            space: {
+                item: 20
+            }
         })
-            .layout()
-            .setPosition(
-                this.backgroundImage.width / 2 - 75,
-                -(this.backgroundImage.height - 75)
-            )
-        this.scene.add.existing(this.xButton)
-        this.addLocal(this.xButton)
+
+        if (secondaryButton) {
+            const { text, onPress } = secondaryButton
+            this.secondaryButton = new Button({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    text,
+                    background: ButtonBackground.Secondary,
+                    syncTextScale: true,
+                    scale: buttonScale,
+                    onPress: () => {
+                        if (!this.mainButton) {
+                            throw new Error("Main button is not set")
+                        }
+                        onPress(this.mainButton)
+                    },
+                },
+            })
+            this.scene.add.existing(this.secondaryButton)
+            this.buttons.addButton(this.secondaryButton)
+        }
 
         if (mainButton) {
             const { text, onPress } = mainButton
@@ -328,13 +377,11 @@ export class ModalBackground extends ContainerLite {
                     },
                 },
             })
-            this.mainButton.setY(buttonOffsetY)
             this.scene.add.existing(this.mainButton)
-            if (!this.container) {
-                throw new Error("Container is not set")
-            }
-            this.addLocal(this.mainButton)
+            this.buttons.addButton(this.mainButton)
         }
+        this.buttons.layout()
+        this.addLocal(this.buttons)
 
         switch (align) {
         case BackgroundAlign.Center: {

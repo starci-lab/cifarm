@@ -340,7 +340,7 @@ export class ShopContent extends BaseSizer {
     }
 
     private updateGridTable(shopTab: ShopTab) {
-    // get the item cards
+        // get the item cards
         const items = this.createItems(shopTab)
         if (this.gridTableMap[shopTab]) {
             this.gridTableMap[shopTab].setItems(items)
@@ -348,7 +348,7 @@ export class ShopContent extends BaseSizer {
             return
         }
         // create a sizer to hold all the item cards
-        const gridTable = this.scene.rexUI.add
+        this.gridTableMap[shopTab] = this.scene.rexUI.add
             .gridTable({
                 x: 0,
                 y: 0,
@@ -365,11 +365,12 @@ export class ShopContent extends BaseSizer {
                     },
                 },
                 createCellContainerCallback: (cell, cellContainer) => {
+                    const depth = this.gridTableMap[shopTab]?.depth || MODAL_DEPTH_1 + 1
                     if (cellContainer === null) {
                         if (!cellContainer) {
                             cellContainer = this.scene.rexUI.add
                                 .sizer({ orientation: "y" })
-                                .setDepth(MODAL_DEPTH_1 + 1)
+                                .setDepth(depth)
                             const _cellContainer = cellContainer as Sizer
                             const params = cell.item as ExtendedCreateItemCardParams
                             const itemCard = this.createItemCard(params)
@@ -377,7 +378,7 @@ export class ShopContent extends BaseSizer {
                                 this.defaultItemCard = itemCard
                                 this.defaultSeedButton = itemCard.getChildren()[2] as Label
                             }
-                            _cellContainer.add(itemCard).setDepth(MODAL_DEPTH_1 + 1)
+                            _cellContainer.add(itemCard).setDepth(depth + 1)
                             cellContainer.setData(ITEM_DATA_KEY, params)
                         }
                     }
@@ -387,7 +388,7 @@ export class ShopContent extends BaseSizer {
             })
             .layout()
 
-        gridTable.on(
+        this.gridTableMap[shopTab].on(
             "cell.click",
             (
                 cellContainer: ContainerLite,
@@ -421,12 +422,11 @@ export class ShopContent extends BaseSizer {
             }
         )
 
-        this.gridTableMap[shopTab] = gridTable
-        this.contentContainer.addLocal(gridTable)
+        this.contentContainer.addLocal(this.gridTableMap[shopTab])
 
         // hide the grid table if it is not the default shop tab
         if (shopTab !== this.selectedShopTab) {
-            gridTable.hide()
+            this.gridTableMap[shopTab].hide()
         }
     }
 

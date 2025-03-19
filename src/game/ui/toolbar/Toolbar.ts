@@ -28,14 +28,13 @@ import {
     getToolInventories,
 } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { ItemQuantity } from "../elements"
+import { CellSize, getCellSize, ItemQuantity } from "../elements"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { restoreTutorialDepth, setTutorialDepth } from "../tutorial"
+import Button from "phaser3-rex-plugins/plugins/button"
 
 // number of items to show
 const ITEM_COUNT = 4
-const SLOT_WIDTH = 120
-const SLOT_HEIGHT = 120
 
 export interface ToolLike {
   // id of the tool, base on either inventory id or tool id
@@ -78,6 +77,8 @@ export class Toolbar extends ContainerLite {
     private defaultInfo: DefaultInfo
     private mainContainer: ContainerLite | undefined
     private enableTutorial = false
+    private cellSize: CellSize
+
     constructor({
         scene,
         x,
@@ -87,7 +88,7 @@ export class Toolbar extends ContainerLite {
         children,
     }: ContainerLiteBaseConstructorParams) {
         super(scene, x, y, width, height, children)
-
+        this.cellSize = getCellSize(this.scene)
         // create the toolbar background
         this.background = this.scene.add
             .image(0, 0, BaseAssetKey.UIToolbarBackground)
@@ -199,8 +200,6 @@ export class Toolbar extends ContainerLite {
                 const toolType = this.tools.find(
                     ({ id }) => id === inventoryType.tool
                 )
-                console.log(this.tools)
-                console.log(inventoryType)
                 if (!toolType) {
                     throw new Error(
                         `Tool type not found for id: ${inventoryType.tool}`
@@ -273,7 +272,8 @@ export class Toolbar extends ContainerLite {
                 background,
             })
             .layout()
-        prevButton.setInteractive().on("pointerdown", () => {
+        const button = new Button(prevButton)
+        button.on("click", () => {
             onGameObjectPress({
                 gameObject: prevButton,
                 onPress: () => {
@@ -281,7 +281,7 @@ export class Toolbar extends ContainerLite {
                     this.startIndex -= 1
                     this.movePage()
                     if (this.selectedIndex < ITEM_COUNT - 1) {
-                        this.selectTool(this.selectedIndex, false)
+                        this.selectTool(this.selectedIndex + 1, false)
                     } else {
                         this.selectTool(ITEM_COUNT - 1, false)
                     }
@@ -325,7 +325,9 @@ export class Toolbar extends ContainerLite {
                 background,
             })
             .layout()
-        nextButton.setInteractive().on("pointerdown", () => {
+
+        const button = new Button(nextButton)
+        button.on("click", () => {
             onGameObjectPress({
                 gameObject: nextButton,
                 onPress: () => {
@@ -334,7 +336,7 @@ export class Toolbar extends ContainerLite {
                     this.movePage()
                     // update the item sizer
                     if (this.selectedIndex > 0) {
-                        this.selectTool(this.selectedIndex, false)
+                        this.selectTool(this.selectedIndex - 1, false)
                     } else {
                         this.selectTool(0, false)
                     }
@@ -356,10 +358,7 @@ export class Toolbar extends ContainerLite {
         })
         for (let i = 0; i < ITEM_COUNT - 1; i++) {
             const slot = this.scene.rexUI.add
-                .sizer(0, 0, SLOT_HEIGHT, SLOT_WIDTH)
-                .addBackground(
-                    this.scene.add.rectangle(0, 0, SLOT_WIDTH, SLOT_HEIGHT, 0x000000)
-                )
+                .sizer(0, 0, this.cellSize.height, this.cellSize.width)
             this.slotMap[i] = slot
             leftSlots.add(slot)
         }
@@ -373,10 +372,7 @@ export class Toolbar extends ContainerLite {
             },
         })
         const slot = this.scene.rexUI.add
-            .sizer(0, 0, SLOT_HEIGHT, SLOT_WIDTH)
-            .addBackground(
-                this.scene.add.rectangle(0, 0, SLOT_WIDTH, SLOT_HEIGHT, 0x000000)
-            )
+            .sizer(0, 0, this.cellSize.height, this.cellSize.width)
         this.slotMap[ITEM_COUNT - 1] = slot
         rightSlots.add(slot)
         rightSlots.layout()
@@ -467,11 +463,14 @@ export class Toolbar extends ContainerLite {
                         assetKey: tool.assetKey,
                         quantity: tool.quantity,
                         showBadge: tool.stackable, 
+                        itemHeight: this.cellSize.height,
+                        itemWidth: this.cellSize.width,
                         scale: 1,
                     },
                 }).layout()
                 this.scene.add.existing(item)
-                item.setInteractive().on("pointerdown", () => {
+                const button = new Button(item)
+                button.on("click", () => {
                     this.selectTool(i, true)
                 })
                 item.layout()

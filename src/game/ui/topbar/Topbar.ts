@@ -1,6 +1,6 @@
 import { UserSchema } from "@/modules/entities"
 import { BaseAssetKey } from "../../assets"
-import { Text, TextColor } from "../elements"
+import { ResourceLabel, Text, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
@@ -280,39 +280,18 @@ export class Topbar extends BaseSizer {
     }
 
     private addLabel({ iconKey, amount, scale = 1 }: AddLabelParams) {
-        const background = this.scene.add.image(
-            0,
-            0,
-            BaseAssetKey.UITopbarResource
-        )
-        const iconContainer = this.scene.add.container(0, 0)
-        const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)
-        iconContainer.add(icon)
-        const amountText = new Text({
+        const resourceLabel = new ResourceLabel({
             baseParams: {
                 scene: this.scene,
-                x: 0,
-                y: 0,
-                text: amount.toString(),
             },
             options: {
-                fontSize: 24,
-                textColor: TextColor.White,
+                iconKey,
+                amount: parseInt(amount),
+                scale,
             },
         })
-        this.scene.add.existing(amountText)
-        const label = this.scene.rexUI.add.label({
-            background,
-            icon: iconContainer,
-            text: amountText,
-            width: background.width,
-            height: background.height,
-            space: {
-                icon: 40,
-                top: -2
-            },
-        })
-        return label
+        this.scene.add.existing(resourceLabel)
+        return resourceLabel
     }
 
     private getMaxEnergy(level: number = 1): number {

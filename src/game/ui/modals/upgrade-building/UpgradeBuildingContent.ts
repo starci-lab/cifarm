@@ -1,4 +1,4 @@
-import { UpgradeBuildingRequest } from "@/modules/axios"
+import { UpgradeBuildingRequest } from "@/modules/apollo"
 import { BuildingSchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"

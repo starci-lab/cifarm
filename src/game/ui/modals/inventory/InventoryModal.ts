@@ -6,7 +6,7 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { InventoryStorage } from "./InventoryStorage"
 import { DefaultInfo, InventoryKind, InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { IPaginatedResponse } from "@/modules/apollo"
-import { MoveInventoryRequest } from "@/modules/axios"
+import { MoveInventoryRequest } from "@/modules/apollo"
 import { EventBus, EventName } from "@/game/event-bus"
 
 export class InventoryModal extends BaseSizer {

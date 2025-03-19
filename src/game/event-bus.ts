@@ -506,6 +506,7 @@ export interface CreateFlyItemMessage {
 export interface UpdateConfirmModalMessage {
     message: string
     callback?: () => void
+    secondaryCallback?: () => void
 }
 
 export interface UpdateConfirmSellModalMessage {

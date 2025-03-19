@@ -7,7 +7,7 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Background, Button, ModalBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
-import { DeliverMoreProductRequest, DeliverProductRequest } from "@/modules/axios"
+import { DeliverMoreProductRequest, DeliverProductRequest } from "@/modules/apollo"
 import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 
 export class InputQuantityContent extends BaseSizer {
@@ -49,9 +49,6 @@ export class InputQuantityContent extends BaseSizer {
                         if (!this.inventory) {
                             throw new Error("Inventory is not set")
                         }
-                        EventBus.on(EventName.DeliverProductCompleted, () => {
-                            this.scene.events.emit(EventName.CloseModal)
-                        })
                         const { index, isMore } = this.scene.cache.obj.get(CacheKey.DeliveryData) as DeliveryData
                         if (!isMore) {
                             const eventName: DeliverProductRequest = {
@@ -74,7 +71,6 @@ export class InputQuantityContent extends BaseSizer {
                                 inventoryId: this.inventory.id,
                                 index,
                             }
-
                             EventBus.once(EventName.DeliverMoreProductCompleted, () => {
                                 EventBus.emit(EventName.RefreshInventories)
                                 const eventMessage: CloseModalMessage = { 
@@ -162,6 +158,9 @@ export class InputQuantityContent extends BaseSizer {
             min: 1,
             max: inventory.quantity,
         })
+        // reset the quantity of the number input
+        this.numberInput.setValue(this.numberInput.min)
+        this.quantity = this.numberInput.min
         this.iconContainer.clear(true)
         this.iconContainer.addLocal(image)  
 

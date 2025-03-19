@@ -14,3 +14,12 @@ export const formatTime = (time: number) => {
 export const isoUtcDateToLocale = (isoDateString: dayjs.ConfigType): dayjs.Dayjs => {
     return dayjs.utc(isoDateString).local()
 }
+
+export const getNextDayMidnightUtc = (timeZoneOffset: number = 7): dayjs.Dayjs => {
+    return dayjs().utcOffset(timeZoneOffset).add(1, "day").startOf("day")
+}
+
+// get now in utc
+export const getNowUtc = (): dayjs.Dayjs => {
+    return dayjs.utc()
+}

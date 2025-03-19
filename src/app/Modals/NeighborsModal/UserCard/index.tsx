@@ -1,8 +1,8 @@
 "use client"
 import {
-    API_FOLLOW_SWR_MUTATION,
-    API_UNFOLLOW_SWR_MUTATION,
-    API_VISIT_SWR_MUTATION,
+    GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
+    GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
+    GRAPHQL_MUTATION_VISIT_SWR_MUTATION,
     EXPERIENCE_IMAGE_URL,
     GOLD_IMAGE_URL,
     NEIGHBORS_DISCLOSURE,
@@ -11,7 +11,7 @@ import {
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
-import { useApiFollowSwrMutation, useApiUnfollowSwrMutation, useApiVisitSwrMutation, useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLMutationFollowSwrMutation, useGraphQLMutationVisitSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -37,16 +37,16 @@ export const UserCard: FC<UserCardProps> = ({
     followed: baseFollowed,
 }: UserCardProps) => {
     const { swrMutation: followSwrMutation } = useSingletonHook<
-    ReturnType<typeof useApiFollowSwrMutation>
-  >(API_FOLLOW_SWR_MUTATION)
+    ReturnType<typeof useGraphQLMutationFollowSwrMutation>
+  >(GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION)
 
     const { swrMutation: unfollowSwrMutation } = useSingletonHook<
-    ReturnType<typeof useApiUnfollowSwrMutation>
-  >(API_UNFOLLOW_SWR_MUTATION)
+    ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
+  >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
 
     const { swrMutation: visitSwrMutation } = useSingletonHook<
-    ReturnType<typeof useApiVisitSwrMutation>
-  >(API_VISIT_SWR_MUTATION)
+    ReturnType<typeof useGraphQLMutationVisitSwrMutation>
+  >(GRAPHQL_MUTATION_VISIT_SWR_MUTATION)
 
     const { onClose } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NEIGHBORS_DISCLOSURE

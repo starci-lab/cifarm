@@ -33,7 +33,7 @@ import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 import { IPaginatedResponse } from "@/modules/apollo"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "@/game/constants"
-import { MoveInventoryRequest } from "@/modules/axios"
+import { MoveInventoryRequest } from "@/modules/apollo"
 import { CELL_STORAGE_DATA_KEY } from "./constants"
 import { DragItemParams } from "./types"
 import { getDepth } from "./utils"
@@ -167,19 +167,7 @@ export class InventoryStorage extends BaseSizer {
         setTutorialDepth({
             gameObject: this.background.container,
         })
-        const { x, y } = cell.getCenter()
-        const eventMessage: ShowPressHereArrowMessage = {
-            rotation: 45,
-            originPosition: {
-                x: x - 60,
-                y: y + 60,
-            },
-            targetPosition: {
-                x: x - 40,
-                y: y + 40,
-            },
-        }
-        this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+        this.updatePressHereArrowPosition()
     }
 
     private disableScroller() {
@@ -240,10 +228,6 @@ export class InventoryStorage extends BaseSizer {
                             itemQuantity = new ItemQuantity({
                                 baseParams: {
                                     scene: this.scene,
-                                    config: {
-                                        width: this.cellSize.width,
-                                        height: this.cellSize.height,
-                                    },
                                 },
                                 options: {
                                     assetKey:
@@ -251,6 +235,8 @@ export class InventoryStorage extends BaseSizer {
                         .textureConfig.key,
                                     quantity,
                                     showBadge: inventoryType.stackable,
+                                    itemHeight: this.cellSize.height,
+                                    itemWidth: this.cellSize.width,
                                 },
                             })
                             this.items[id] = itemQuantity
@@ -331,6 +317,32 @@ export class InventoryStorage extends BaseSizer {
         return this.gridTable
     }
 
+    private updatePressHereArrowPosition() {
+        if (!this.tutorialEnabled) {
+            return
+        }
+        if (!this.tutorialSeedInventoryId) {
+            throw new Error("Tutorial seed inventory id not found")
+        }
+        const cell = this.items[this.tutorialSeedInventoryId]
+        if (!cell) {
+            throw new Error("Cell not found")
+        }
+        const { x, y } = cell.getCenter()
+        const eventMessage: ShowPressHereArrowMessage = {
+            rotation: 45,
+            originPosition: {
+                x: x - 60,
+                y: y + 60,
+            },
+            targetPosition: {
+                x: x - 40,
+                y: y + 40,
+            },
+        }
+        this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
+    }
+
     private updateGridTable() {
         const gridTable = this._updateGridTable()
         // if (this.tutorialEnabled) {
@@ -404,6 +416,8 @@ export class InventoryStorage extends BaseSizer {
             }
             EventBus.emit(EventName.RequestMoveInventory, eventMessage)
             EventBus.emit(EventName.RequestMoveInventoryLocal, eventMessage)
+            // update the arrow position
+            this.updatePressHereArrowPosition()
         } else {
             //  destroy the badge label
             item.destroy()

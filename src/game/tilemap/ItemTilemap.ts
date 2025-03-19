@@ -142,6 +142,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
+            console.log(data)
             const object = this.placedItemObjectMap[data.placedItemId]?.object
             if (!object) {
                 // return since object not found

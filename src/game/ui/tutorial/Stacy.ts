@@ -20,6 +20,7 @@ import { getScreenBottomY, getScreenCenterX, getScreenTopY } from "../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { calculateUiDepth, UILayer } from "../../layers"
 import { getPlacedItemsWithSeedGrowthInfo } from "@/game/queries"
+import { CompletedMessage } from "../../event-bus"
 
 export class Stacy extends ContainerLite {
     private stacyImage: Phaser.GameObjects.Image
@@ -171,7 +172,11 @@ export class Stacy extends ContainerLite {
         this.user = this.scene.cache.obj.get(CacheKey.User)
 
         // callback when the tutorial is completed
-        EventBus.on(EventName.UpdateTutorialCompleted, () => {
+        EventBus.on(EventName.UpdateTutorialCompleted, ({ success }: CompletedMessage) => {
+            if (!success) {
+                console.error("Failed to update tutorial")  
+                return
+            }
             EventBus.once(EventName.UserRefreshed, (user: UserSchema) => {
                 // check  if the tutorial is not shown
                 // set the user

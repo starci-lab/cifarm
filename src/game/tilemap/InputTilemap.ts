@@ -28,7 +28,7 @@ import {
     UseHerbicideRequest,
     UsePesticideRequest,
     WaterCropRequest,
-} from "@/modules/axios"
+} from "@/modules/apollo"
 import {
     AnimalCurrentState,
     CropCurrentState,
@@ -108,6 +108,7 @@ export class InputTilemap extends ItemTilemap {
 
     // input mode
     private inputMode = InputMode.Normal
+    private disableDrag = false
 
     // place item data
     private buyingDragSpriteData: BuyingDragSpriteData | undefined
@@ -115,7 +116,7 @@ export class InputTilemap extends ItemTilemap {
     private sellingDragSpriteData: SellingDragSpriteData | undefined
     private dragVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
     private placementConfirmation: PlacementConfirmation | undefined
-
+    
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
 
@@ -438,7 +439,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     //emit the event to water the plant
-                    EventBus.once(EventName.HelpWaterCompleted, () => {
+                    EventBus.once(EventName.HelpWaterCropCompleted, () => {
                         EventBus.emit(EventName.RefreshUser)
                         data.pressBlocked = true
                     })
@@ -447,7 +448,7 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpWaterRequest = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpWater, eventMessage)
+                    EventBus.emit(EventName.RequestHelpWaterCrop, eventMessage)
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -1228,6 +1229,9 @@ export class InputTilemap extends ItemTilemap {
     public update() {
     //check current mouse position is in which tile
         if (this.inputMode === InputMode.Buy) {
+            if (this.disableDrag) {
+                return
+            }
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -1351,11 +1355,14 @@ export class InputTilemap extends ItemTilemap {
             onCancel: () => {
                 this.cancelPlacement()
             },
-            onConfirm: (tileX: number, tileY: number) => {       
+            onConfirm: (tileX: number, tileY: number) => { 
+                // disable drag
+                this.disableDrag = true
+                // show modal
                 switch (placedItemType.type) {
                 case PlacedItemType.Building: {
                     const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
-                        message: "Are you sure you want to construct this building?",
+                        message: "Are you sure you want to buy this building?",
                         callback: () => {
                             EventBus.on(EventName.BuyBuildingCompleted, () => {
                                 EventBus.emit(EventName.RefreshUser)
@@ -1374,7 +1381,17 @@ export class InputTilemap extends ItemTilemap {
                                 },
                             }
                             EventBus.emit(EventName.RequestBuyBuilding, eventMessage)
-                        }
+                            // turn off disable drag
+                            this.disableDrag = false
+                            // cancel placement
+                            this.cancelPlacement()
+                        },
+                        secondaryCallback: () => {
+                            // turn off disable drag
+                            this.disableDrag = false
+                            // cancel placement
+                            this.cancelPlacement()
+                        },
                     }
                     EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
                     EventBus.emit(EventName.OpenModal, {

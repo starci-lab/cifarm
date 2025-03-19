@@ -183,17 +183,13 @@ export const getProductInventories = ({
         const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
         inventories = data
     }
-    const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
+    let inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
+    inventoryTypes = inventoryTypes.filter((type) => type.type === InventoryType.Product)
+
     const result: Array<InventorySchema> = []
-    
-    for (const type of inventoryTypes) {
-        if (type.type === InventoryType.Product) {
-            for (const inventory of inventories) {
-                if (inventory.inventoryType === type.id) {
-                    result.push(inventory)
-                    break
-                }
-            }
+    for (const inventory of inventories) {
+        if (inventoryTypes.map((inventoryType) => inventoryType.id).includes(inventory.inventoryType) && inventory.kind === InventoryKind.Storage) {
+            result.push(inventory)
         }
     }
     return result
