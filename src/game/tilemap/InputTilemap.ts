@@ -15,7 +15,7 @@ import {
     HelpUseFruitFertilizerRequest,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
-    HelpWaterRequest,
+    HelpWaterCropRequest,
     MoveRequest,
     PlantSeedRequest,
     SellRequest,
@@ -198,6 +198,8 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
+            data.object.showTimer()
+
             if (this.inputMode === InputMode.Move) {
                 if(this.movingDragSpriteData) {
                     console.error("Having moving drag sprite data")
@@ -240,6 +242,7 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
+            
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
                 this.handlePressOnTile(data)
@@ -430,7 +433,7 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.helpWater.energyConsume,
+                            actionEnergy: this.activities.helpWaterCrop.energyConsume,
                         })
                     ) {
                         return
@@ -442,7 +445,7 @@ export class InputTilemap extends ItemTilemap {
                     })
 
                     // emit the event to plant seed
-                    const eventMessage: HelpWaterRequest = {
+                    const eventMessage: HelpWaterCropRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpWaterCrop, eventMessage)

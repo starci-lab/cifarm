@@ -1,9 +1,12 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../../types"
 import { v4 } from "uuid"
-import { MutationHelpWaterParams, mutationHelpWater } from "@/modules/apollo"
+import {
+    MutationHelpWaterCropParams,
+    mutationHelpWaterCrop,
+} from "@/modules/apollo"
 
-export type UseGraphQLHelpWaterMutationArgs = MutationHelpWaterParams
+export type UseGraphQLHelpWaterMutationArgs = MutationHelpWaterCropParams;
 
 export const useGraphQLMutationHelpWaterSwrMutation = (): UseSWRMutation<
   void,
@@ -16,7 +19,7 @@ export const useGraphQLMutationHelpWaterSwrMutation = (): UseSWRMutation<
             extraArgs: { arg: UseGraphQLHelpWaterMutationArgs }
         ) => {
             const params = { ...extraArgs.arg }
-            await mutationHelpWater(params)
+            await mutationHelpWaterCrop(params)
         }
     )
 

@@ -20,7 +20,7 @@ export interface Activities {
   useHerbicide: ActivityInfo;
   helpUseHerbicide: ActivityInfo;
   helpUsePesticide: ActivityInfo;
-  helpWater: ActivityInfo;
+  helpWaterCrop: ActivityInfo;
   thiefCrop: ActivityInfo;
   thiefAnimalProduct: ActivityInfo;
   cureAnimal: ActivityInfo;

@@ -560,24 +560,24 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            case ActionName.HelpWater:
+            case ActionName.HelpWaterCrop:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.helpWater.energyConsume,
+                            quantity: -this.activities.helpWaterCrop.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.helpWater.experiencesGain,
+                            quantity: this.activities.helpWaterCrop.experiencesGain,
                         },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.HelpWater,
+                        text: "Failed to " + ActionName.HelpWaterCrop,
                     })
                 }
                 break

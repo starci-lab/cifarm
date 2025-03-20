@@ -65,6 +65,18 @@ export class PlacedItemObject extends ContainerLite {
         this.fruits = scene.cache.obj.get(CacheKey.Fruits)
     }
 
+    public showTimer() {
+        if (this.timer) {
+            this.timer.setVisible(true)
+        }
+        //delay call for 2s
+        this.scene.time.delayedCall(2000, () => {
+            if (this.timer) {
+                this.timer.setVisible(false)
+            }
+        })
+    }
+
     public updateContent(placedItem: PlacedItemSchema) {
         this.nextPlacedItem = placedItem
         const placedItemType = this.placedItemTypes.find(
@@ -390,7 +402,7 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    })
+                    }).setVisible(false)
                         .setOrigin(0.5, 1)
                         .setDepth(this.depth + 3)
                     this.scene.add.existing(this.timer)
@@ -745,7 +757,7 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    })
+                    }).setVisible(false)
                         .setOrigin(0.5, 1)
                         .setDepth(this.depth + 3)
                     this.scene.add.existing(this.timer)
@@ -1022,9 +1034,8 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    })
+                    }).setVisible(false).setOrigin(0.5, 1).setDepth(this.depth + 2)
                     this.scene.add.existing(text)
-                    text.setOrigin(0.5, 1).setDepth(this.depth + 2)
                     this.timer = text
                     this.pinLocal(this.timer, {
                         syncScale: false,

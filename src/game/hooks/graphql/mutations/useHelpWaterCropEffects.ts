@@ -1,5 +1,5 @@
-import { GRAPHQL_MUTATION_HELP_USE_PESTICIDE_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationHelpUsePesticideSwrMutation } from "@/hooks"
+import { GRAPHQL_MUTATION_HELP_WATER_CROP_SWR_MUTATION } from "@/app/constants"
+import { useGraphQLMutationHelpWaterCropSwrMutation } from "@/hooks"
 import { HelpUsePesticideRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
@@ -8,8 +8,8 @@ import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
 export const useHelpWaterCropEffects = () => {
     //authentication useEffect
     const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationHelpUsePesticideSwrMutation>
-      >(GRAPHQL_MUTATION_HELP_USE_PESTICIDE_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationHelpWaterCropSwrMutation>
+      >(GRAPHQL_MUTATION_HELP_WATER_CROP_SWR_MUTATION)
     
     useEffect(() => {
         EventBus.on(EventName.RequestHelpWaterCrop, async (message: HelpUsePesticideRequest) => {

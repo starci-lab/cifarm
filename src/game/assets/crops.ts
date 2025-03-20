@@ -199,7 +199,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/cucumber/2.png",
                     extraOffsets: {
                         x: -5,
-                        y: -40,
+                        y: -30,
                     },
                 },
             },
@@ -253,25 +253,25 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
             1: {
                 textureConfig: { key: "crop-potato-2", assetUrl: "crops/potato/2.png",   extraOffsets: {
                     x: 0,
-                    y: -40,
+                    y: -35,
                 }, },
             },
             2: {
                 textureConfig: { key: "crop-potato-3", assetUrl: "crops/potato/3.png", extraOffsets: {
                     x: 0,
-                    y: -30,
+                    y: -25,
                 }, },
             },
             3: {
                 textureConfig: { key: "crop-potato-4", assetUrl: "crops/potato/4.png",  extraOffsets: {
                     x: 0,
-                    y: -30,
+                    y: -25,
                 }, },
             },
             4: {
                 textureConfig: { key: "crop-potato-5", assetUrl: "crops/potato/5.png",  extraOffsets: {
                     x: 5,
-                    y: -30,
+                    y: -25,
                 }, },
             },
         },

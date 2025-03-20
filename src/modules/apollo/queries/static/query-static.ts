@@ -62,7 +62,7 @@ const query = gql`
         experiencesGain
         energyConsume
       }
-      helpWater {
+      helpWaterCrop {
         experiencesGain
         energyConsume
       }
