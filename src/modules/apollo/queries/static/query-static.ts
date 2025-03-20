@@ -175,7 +175,6 @@ const query = gql`
       id
       displayId
       growthStageDuration
-      growthStages
       price
       unlockLevel
       perennialCount
@@ -189,7 +188,6 @@ const query = gql`
       id
       displayId
       growthStageDuration
-      growthStages
       price
       unlockLevel
       minHarvestQuantity
@@ -307,6 +305,7 @@ const query = gql`
         hasCaterpillar
       }
       nextGrowthStageAfterHarvest
+      growthStages
     }
     cropInfo {
       randomness {
@@ -316,6 +315,7 @@ const query = gql`
         isWeedyOrInfested
       }
       nextGrowthStageAfterHarvest
+      growthStages
     }
     animalInfo {
       randomness {

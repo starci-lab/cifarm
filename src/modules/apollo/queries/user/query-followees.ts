@@ -9,7 +9,7 @@ import {
 } from "../../types"
 
 const query1 = gql`
-  query Followees($request: GetFolloweesRequest!) {
+  query Followees($request: FolloweesRequest!) {
     followees(request: $request) {  
       data {
         id

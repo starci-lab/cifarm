@@ -22,7 +22,6 @@ import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { VisitRequest } from "@/modules/apollo"
 
@@ -148,10 +147,9 @@ export class LoadingScene extends Scene {
 
         //listen for load inventory event
         EventBus.once(
-            EventName.InventoriesLoaded, ({ data }: IPaginatedResponse<InventorySchema>
-            ) => {
+            EventName.InventoriesLoaded, (inventories: Array<InventorySchema>) => {
                 //load the user inventory
-                this.cache.obj.add(CacheKey.Inventories, data)
+                this.cache.obj.add(CacheKey.Inventories, inventories)
                 this.handleFetchData("Loading inventories...")
             })
 

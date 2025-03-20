@@ -9,7 +9,7 @@ import {
 } from "../../types"
 
 const query1 = gql`
-  query Neighbors($request: GetNeighborsRequest!) {
+  query Neighbors($request: NeighborsRequest!) {
     neighbors(request: $request) {
       data {
         id
