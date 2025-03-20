@@ -1,5 +1,4 @@
 import { CacheKey } from "@/game/types"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { CropId, CropSchema, InventoryKind, InventorySchema, InventoryType, InventoryTypeSchema } from "@/modules/entities"
 import { Scene } from "phaser"
 
@@ -12,8 +11,7 @@ export const getFirstSeedInventory = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        inventories = data
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>               
     }
     const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
     const crops = scene.cache.obj.get(CacheKey.Crops) as Array<CropSchema>
@@ -62,8 +60,7 @@ export const getSeedInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        inventories = data
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
     const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
     // get the inventory entities
@@ -97,8 +94,7 @@ export const getSpecificSeedInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        inventories = data
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
     const inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
     // get the inventory entities
@@ -138,8 +134,7 @@ export const getToolInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        inventories = data
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
 
     return inventories.filter((inventory) => inventory.kind === InventoryKind.Tool)
@@ -159,8 +154,7 @@ export const getStorageInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        inventories = data
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
 
     return inventories.filter((inventory) => inventory.kind === InventoryKind.Storage)
@@ -180,8 +174,7 @@ export const getProductInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        inventories = data
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
     let inventoryTypes: Array<InventoryTypeSchema> = scene.cache.obj.get(CacheKey.InventoryTypes)
     inventoryTypes = inventoryTypes.filter((type) => type.type === InventoryType.Product)
@@ -211,8 +204,7 @@ export const getDeliveryInventories = ({
     // if inventories is not provided, get from cache
     if (!inventories) {
         // get the inventories from cache
-        const { data } = scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        inventories = data
+        inventories = scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
     }
 
     return inventories.filter((inventory) => inventory.kind === InventoryKind.Delivery)

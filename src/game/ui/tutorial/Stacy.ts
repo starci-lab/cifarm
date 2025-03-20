@@ -185,6 +185,7 @@ export class Stacy extends ContainerLite {
                 // we perform switch case here to know what to do next
                 this.render()
             })
+            EventBus.emit(EventName.RefreshUser)
         })
 
         this.scene.events.on(EventName.HidePressHereArrow, () => {

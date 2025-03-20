@@ -1,8 +1,7 @@
-import { IPaginatedResponse } from "@/modules/apollo"
 import {
     BuyAnimalRequest,
-    BuyBuildingRequest,
-    BuyFruitRequest,
+        BuyBuildingRequest,
+        BuyFruitRequest,
     BuyTileRequest,
     CureAnimalRequest,
     FeedAnimalRequest,
@@ -388,9 +387,9 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            const { data: inventories } = this.scene.cache.obj.get(
+            const inventories = this.scene.cache.obj.get(
                 CacheKey.Inventories
-            ) as IPaginatedResponse<InventorySchema>
+            ) as Array<InventorySchema>
             const inventory = inventories.find(
                 (inventory) => inventory.id === selectedTool.id
             )
