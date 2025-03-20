@@ -2,12 +2,15 @@
 import {
     ACTION_EMITTED_EVENT,
     ActionEmittedMessage,
-    ENERGY_SYNCED_EVENT,
+    InventorySyncedMessage,
+    INVENTORIES_SYNCED_EVENT,
     PLACED_ITEMS_SYNCED_EVENT,
     PlacedItemsSyncedMessage,
     SHOW_FADE_EVENT,
     ShowFadeMessage,
     useGameplayIo,
+    USER_SYNCED_EVENT,
+    UserSyncedMessage,
 } from "@/hooks"
 import React, { FC, useEffect, useLayoutEffect, useRef } from "react"
 import { gameState, startGame } from "./config"
@@ -35,8 +38,15 @@ export const Game: FC = () => {
         })
 
         // listen for energy synced
-        socket.on(ENERGY_SYNCED_EVENT, (energy: number) => {
-            EventBus.emit(EventName.EnergySynced, energy)
+        socket.on(USER_SYNCED_EVENT, ({ user }: UserSyncedMessage) => {
+            console.log("user synced")
+            EventBus.emit(EventName.UserRefreshed, user)
+        })
+
+        // listen for inventories synced
+        socket.on(INVENTORIES_SYNCED_EVENT, ({ inventories }: InventorySyncedMessage) => {
+            console.log("inventories synced")
+            EventBus.emit(EventName.InventoriesRefreshed, inventories)
         })
 
         //listen for show fade event
@@ -47,7 +57,8 @@ export const Game: FC = () => {
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
             socket.off(ACTION_EMITTED_EVENT)
-            socket.off(ENERGY_SYNCED_EVENT)
+            socket.off(USER_SYNCED_EVENT)
+            socket.off(INVENTORIES_SYNCED_EVENT)
             socket.off(SHOW_FADE_EVENT)
         }
     }, [socket])

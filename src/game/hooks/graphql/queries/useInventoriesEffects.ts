@@ -7,17 +7,20 @@ import { useEffect } from "react"
 
 export const useInventoriesEffects = () => {
     //get the singleton instance of the user swr
-    const { swrMutation } = useSingletonHook<ReturnType<typeof useGraphQLQueryInventoriesSwrMutation>>(
-        GRAPHQL_QUERY_INVENTORIES_SWR_MUTATION,
-    )
+    const { swrMutation } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryInventoriesSwrMutation>
+  >(GRAPHQL_QUERY_INVENTORIES_SWR_MUTATION)
 
     // load inventory data
     useEffect(() => {
-        EventBus.on(EventName.LoadInventories, async (params: QueryInventoriesParams) => {
-            //load inventory data
-            const { data } = await swrMutation.trigger(params)
-            EventBus.emit(EventName.InventoriesLoaded, data.inventories)
-        })
+        EventBus.on(
+            EventName.LoadInventories,
+            async (params: QueryInventoriesParams) => {
+                //load inventory data
+                const { data } = await swrMutation.trigger(params)
+                EventBus.emit(EventName.InventoriesLoaded, data.inventories)
+            }
+        )
 
         return () => {
             EventBus.removeListener(EventName.LoadInventories)
@@ -26,11 +29,14 @@ export const useInventoriesEffects = () => {
 
     // refresh inventory data
     useEffect(() => {
-        EventBus.on(EventName.RefreshInventories, async (params: QueryInventoriesParams) => {
-            //load inventory data
-            const { data } = await swrMutation.trigger(params)
-            EventBus.emit(EventName.InventoriesRefreshed, data.inventories)
-        })
+        EventBus.on(
+            EventName.RefreshInventories,
+            async (params: QueryInventoriesParams) => {
+                //load inventory data
+                const { data } = await swrMutation.trigger(params)
+                EventBus.emit(EventName.InventoriesRefreshed, data.inventories.data)
+            }
+        )
 
         return () => {
             EventBus.removeListener(EventName.RefreshInventories)

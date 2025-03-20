@@ -1,5 +1,4 @@
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../assets"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -45,16 +44,15 @@ export class InventoryToolbar extends ContainerLite {
         this.addLocal(grassImage)
 
         // fetch the inventories
-        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        this.inventories = data
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
         this.updateGridSizer()
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            ({ data }: IPaginatedResponse<InventorySchema>) => {
-                this.inventories = data
+            (inventories: Array<InventorySchema>) => {
+                this.inventories = inventories
                 this.updateGridSizer()
             }
         ) 

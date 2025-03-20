@@ -5,7 +5,6 @@ import { InventoryToolbar } from "./InventoryToolbar"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { InventoryStorage } from "./InventoryStorage"
 import { DefaultInfo, InventoryKind, InventorySchema, InventoryTypeSchema } from "@/modules/entities"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { MoveInventoryRequest } from "@/modules/apollo"
 import { EventBus, EventName } from "@/game/event-bus"
 
@@ -44,8 +43,7 @@ export class InventoryModal extends BaseSizer {
         inventoryId,
     }: MoveInventoryRequest) {
         // Get the inventories from the cache
-        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        let inventories = data
+        let inventories = this.scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
 
         const updateInventories = () => {
             const inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes) as Array<InventoryTypeSchema>
@@ -110,10 +108,6 @@ export class InventoryModal extends BaseSizer {
         }
         updateInventories()
         // emit the update inventory event
-        const eventMessage: IPaginatedResponse<InventorySchema> = {
-            data: inventories,
-            count: inventories.length,
-        }
-        EventBus.emit(EventName.InventoriesRefreshed, eventMessage)
+        EventBus.emit(EventName.InventoriesRefreshed, inventories)
     }
 }

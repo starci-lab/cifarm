@@ -30,7 +30,6 @@ import {
     ShowPressHereArrowMessage,
 } from "@/game/event-bus"
 import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { sleep } from "@/modules/common"
 import { SCALE_TIME } from "@/game/constants"
 import { MoveInventoryRequest } from "@/modules/apollo"
@@ -86,18 +85,15 @@ export class InventoryStorage extends BaseSizer {
         })
         this.addLocal(this.background)
         // Load inventories from cache
-        const { data } = this.scene.cache.obj.get(
-            CacheKey.Inventories
-        ) as IPaginatedResponse<InventorySchema>
-        this.inventories = data
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.updateGridTable()
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            ({ data }: IPaginatedResponse<InventorySchema>) => {
-                this.inventories = data
+            (inventories: Array<InventorySchema>) => {
+                this.inventories = inventories
                 this.updateGridTable()
             }
         )

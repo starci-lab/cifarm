@@ -1,6 +1,5 @@
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../assets"
 import { CacheKey, BaseSizerBaseConstructorParams, DeliveryData } from "../../../types"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { onGameObjectPress } from "../../utils"
@@ -43,16 +42,15 @@ export class StandContent extends BaseSizer {
     }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config) 
 
-        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        this.inventories = data
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         //this.createStandGrid()
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
         this.updateStandGridSizer()
 
-        EventBus.on(EventName.InventoriesRefreshed, ({ data }: IPaginatedResponse<InventorySchema>) => {
-            this.inventories = data
+        EventBus.on(EventName.InventoriesRefreshed, (inventories: Array<InventorySchema>) => {
+            this.inventories = inventories
             this.updateStandGridSizer()
         })
 

@@ -1,4 +1,4 @@
-import { PlacedItemSchema } from "@/modules/entities"
+import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
 import { Socket } from "socket.io-client"
 
 export interface UseIo {
@@ -100,4 +100,12 @@ export enum ActionName {
 
 export interface ShowFadeMessage {
     toNeighbor: boolean
+}
+
+export interface InventorySyncedMessage {
+    inventories: Array<InventorySchema>
+}
+
+export interface UserSyncedMessage {
+    user: UserSchema
 }

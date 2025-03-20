@@ -3,9 +3,7 @@ import { EventBus, EventName } from "../event-bus"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { CacheKey } from "../types"
 import { SceneName } from "../scene"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { PlacedItemsSyncedMessage } from "@/hooks"
-//import { EventName } from "../event-bus"
 
 export class DataScene extends Scene {
     constructor() {
@@ -19,7 +17,8 @@ export class DataScene extends Scene {
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            (inventories: IPaginatedResponse<InventorySchema>) => {
+            (inventories: Array<InventorySchema>) => {
+                console.log(inventories)
                 this.cache.obj.add(CacheKey.Inventories, inventories)
             }
         )

@@ -1,5 +1,4 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
-import { IPaginatedResponse } from "@/modules/apollo"
 import {
     BuySeedsRequest,
     BuySuppliesRequest,
@@ -254,10 +253,7 @@ export class ShopContent extends BaseSizer {
         // load inventory types
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
-        const { data } = this.scene.cache.obj.get(
-            CacheKey.Inventories
-        ) as IPaginatedResponse<InventorySchema>
-        this.inventories = data
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
@@ -358,8 +354,8 @@ export class ShopContent extends BaseSizer {
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            ({ data }: IPaginatedResponse<InventorySchema>) => {
-                this.inventories = data
+            (inventories: Array<InventorySchema>) => {
+                this.inventories = inventories
                 this.updateGridTables()
             }
         )

@@ -29,7 +29,6 @@ import {
 } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CellSize, getCellSize, ItemQuantity } from "../elements"
-import { IPaginatedResponse } from "@/modules/apollo"
 import { restoreTutorialDepth, setTutorialDepth } from "../tutorial"
 import Button from "phaser3-rex-plugins/plugins/button"
 
@@ -108,8 +107,8 @@ export class Toolbar extends ContainerLite {
 
        
         this.tools = this.scene.cache.obj.get(CacheKey.Tools)
-        const { data } = this.scene.cache.obj.get(CacheKey.Inventories) as IPaginatedResponse<InventorySchema>
-        this.inventories = data
+        const inventories = this.scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
+        this.inventories = inventories
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.toolItems = this.getToolItems()
         // store the first selected tool
@@ -143,8 +142,8 @@ export class Toolbar extends ContainerLite {
             this.enableTutorial = false
         })
 
-        EventBus.on(EventName.InventoriesRefreshed, ({ data }: IPaginatedResponse<InventorySchema>) => {
-            this.inventories = data
+        EventBus.on(EventName.InventoriesRefreshed, (inventories: Array<InventorySchema>) => {
+            this.inventories = inventories
             this.toolItems = this.getToolItems()
             // check if the selected index is still valid
             const lastIndex = this.toolItems.length - 1

@@ -105,8 +105,8 @@ export class SelectProductContent extends BaseSizer {
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            ({ data }: IPaginatedResponse<InventorySchema>) => {
-                this.inventories = data
+            (inventories: Array<InventorySchema>) => {
+                this.inventories = inventories
             }
         )
     }

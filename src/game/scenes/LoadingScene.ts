@@ -18,7 +18,7 @@ import {
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
-import { QueryFolloweesArgs, QueryNeighborsArgs, QueryNeighborsParams, QueryStaticResponse } from "@/modules/apollo"
+import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
 import { InventorySchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
@@ -47,7 +47,7 @@ export class LoadingScene extends Scene {
 
     // data fetching
     private dataFetchingLoaded = 0
-    private totalDataFetching = 5
+    private totalDataFetching = 3
     
     async init() {
         // Listen to the shutdown event
@@ -148,29 +148,11 @@ export class LoadingScene extends Scene {
 
         //listen for load inventory event
         EventBus.once(
-            EventName.InventoriesLoaded, (data: IPaginatedResponse<InventorySchema>
+            EventName.InventoriesLoaded, ({ data }: IPaginatedResponse<InventorySchema>
             ) => {
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, data)
                 this.handleFetchData("Loading inventories...")
-            })
-    
-        //listen for load neighbors event
-        EventBus.once(
-            EventName.NeighborsLoaded, (data: IPaginatedResponse<UserSchema>
-            ) => {
-                //load the user inventory
-                this.cache.obj.add(CacheKey.Neighbors, data)
-                this.handleFetchData("Loading neighbors...")
-            })
-
-        //listen for load followees event
-        EventBus.once(
-            EventName.FolloweesLoaded, (data: IPaginatedResponse<UserSchema>
-            ) => {
-                //load the user inventory
-                this.cache.obj.add(CacheKey.Followees, data)
-                this.handleFetchData("Loading followees...")
             })
 
         this.events.once(EventName.LoadCompleted, () => {
@@ -187,8 +169,6 @@ export class LoadingScene extends Scene {
         EventBus.off(EventName.StaticDataLoaded)
         EventBus.off(EventName.UserLoaded)
         EventBus.off(EventName.InventoriesLoaded)
-        EventBus.off(EventName.NeighborsLoaded)
-        EventBus.off(EventName.FolloweesLoaded)
     }
 
     create() { 
@@ -275,27 +255,6 @@ export class LoadingScene extends Scene {
         EventBus.emit(EventName.LoadStaticData)
         EventBus.emit(EventName.LoadUser)
         EventBus.emit(EventName.LoadInventories)
-        // query neighbors
-        const queryNeighborsArgs: QueryNeighborsArgs = {
-            limit: 10,
-            offset: 0,
-        }
-        const queryNeighborsParams: QueryNeighborsParams = {
-            args: queryNeighborsArgs
-        }
-        this.cache.obj.add(CacheKey.NeighborsArgs, queryNeighborsParams)
-        EventBus.emit(EventName.LoadNeighbors, queryNeighborsParams)
-
-        // query followees
-        const queryFolloweesArgs: QueryFolloweesArgs = {
-            limit: 10,
-            offset: 0,
-        }
-        const queryFolloweesParams: QueryNeighborsParams = {
-            args: queryFolloweesArgs
-        }
-        this.cache.obj.add(CacheKey.FolloweesArgs, queryFolloweesParams)
-        EventBus.emit(EventName.LoadFollowees, queryFolloweesParams)
     }
 
     private handleFetchData(message: string) {
