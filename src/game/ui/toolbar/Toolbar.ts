@@ -107,8 +107,7 @@ export class Toolbar extends ContainerLite {
 
        
         this.tools = this.scene.cache.obj.get(CacheKey.Tools)
-        const inventories = this.scene.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
-        this.inventories = inventories
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.toolItems = this.getToolItems()
         // store the first selected tool

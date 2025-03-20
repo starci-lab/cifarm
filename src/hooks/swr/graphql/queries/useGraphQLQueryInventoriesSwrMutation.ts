@@ -2,14 +2,14 @@ import { UseSWRMutation } from "../../types"
 import {
     queryInventories,
     QueryInventoriesParams,
+    QueryInventoriesResponse,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
 import useSWRMutation from "swr/mutation"
 import { v4 } from "uuid"
-import { InventorySchema } from "@/modules/entities"
 
 export const useGraphQLQueryInventoriesSwrMutation = (): UseSWRMutation<
-  ApolloQueryResult<Array<InventorySchema>>,
+  ApolloQueryResult<QueryInventoriesResponse>,
   QueryInventoriesParams
 > => {
     const swrMutation = useSWRMutation(

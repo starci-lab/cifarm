@@ -18,7 +18,6 @@ export class DataScene extends Scene {
         EventBus.on(
             EventName.InventoriesRefreshed,
             (inventories: Array<InventorySchema>) => {
-                console.log(inventories)
                 this.cache.obj.add(CacheKey.Inventories, inventories)
             }
         )
