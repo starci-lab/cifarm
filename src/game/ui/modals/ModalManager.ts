@@ -8,7 +8,7 @@ import {
     ModalName,
     OpenModalMessage,
 } from "../../event-bus"
-import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
+import { ContainerLiteBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { AnimalHousingModal } from "./animal-housing"
 import { DailyModal } from "./daily"
@@ -36,9 +36,6 @@ export const MODAL_BACKDROP_DEPTH_2 = calculateUiDepth({
 export const MODAL_DEPTH_2 = calculateUiDepth({
     layer: UILayer.Modal,
     additionalDepth: 11,
-})
-export const TUTORIAL_BACKDROP_DEPTH = calculateUiDepth({
-    layer: UILayer.Tutorial,
 })
 
 const EXTERNAL_MODAL_OPACITY_LEVEL = 0.67
@@ -207,19 +204,9 @@ export class ModalManager extends ContainerLite {
 
     // show method, to show the modal
     private showBackdrop({
-        showTutorialBackdrop = false,
         modalName,
         opacityLevel = 1,
     }: ShowBackdropParams = {}) {
-    // do not show the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (this.checkTutorialActive()) {
-            if (showTutorialBackdrop) {
-                EventBus.emit(EventName.ShowUIBackdrop, {
-                    depth: TUTORIAL_BACKDROP_DEPTH,
-                })
-            }
-            return
-        }
         let depth = MODAL_BACKDROP_DEPTH_1
 
         switch (modalName) {
@@ -236,16 +223,8 @@ export class ModalManager extends ContainerLite {
     }
 
     private hideBackdrop({
-        hideTutorialBackdrop = false,
         modalName,
     }: HideBackdropParams) {
-    // do not hide the backdrop if the tutorial is active, since the backdrop is used for the tutorial
-        if (this.checkTutorialActive()) {
-            if (hideTutorialBackdrop) {
-                EventBus.emit(EventName.HideUIBackdrop)
-            }
-            return
-        }
         //check if modal is chained
         switch (modalName) {
         case ModalName.SelectProduct:
@@ -257,10 +236,6 @@ export class ModalManager extends ContainerLite {
             return
         }
         EventBus.emit(EventName.HideUIBackdrop)
-    }
-
-    private checkTutorialActive() {
-        return this.scene.cache.obj.get(CacheKey.TutorialActive)
     }
 
     private getModal(name: ModalName) {
@@ -350,14 +325,13 @@ export class ModalManager extends ContainerLite {
     }
 
     // open the modal
-    private onOpen({ modalName, showTutorialBackdrop }: OpenModalMessage) {
+    private onOpen({ modalName }: OpenModalMessage) {
         if (this.externalModalNames.includes(modalName)) {
             EventBus.emit(EventName.OpenExternalModal, {
                 modalName
             })
             this.showBackdrop({
                 modalName,
-                showTutorialBackdrop,
                 opacityLevel: EXTERNAL_MODAL_OPACITY_LEVEL,
             })
             return
@@ -365,7 +339,6 @@ export class ModalManager extends ContainerLite {
         const modal = this.getModal(modalName)
         this.showBackdrop({
             modalName,
-            showTutorialBackdrop,
         })
         // disable modal input
         if (modal.input) {
@@ -382,23 +355,21 @@ export class ModalManager extends ContainerLite {
     }
 
     // close the modal
-    private onClose({ modalName, hideTutorialBackdrop }: CloseModalMessage) {
+    private onClose({ modalName }: CloseModalMessage) {
         if (!this.externalModalNames.includes(modalName)) {
             const modal = this.getModal(modalName)
             // hide the modal
             modal.hide()
         }
-        this.hideBackdrop({ modalName, hideTutorialBackdrop })
+        this.hideBackdrop({ modalName })
     }
 }
 
 interface ShowBackdropParams {
-  showTutorialBackdrop?: boolean;
   modalName?: ModalName;
   opacityLevel?: number;
 }
 
 interface HideBackdropParams {
-  hideTutorialBackdrop?: boolean;
   modalName?: ModalName;
 }

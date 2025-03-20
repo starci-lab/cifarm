@@ -1,13 +1,11 @@
-import { useFolloweesEffects } from "./useFolloweesEffects"
 import { useInventoriesEffects } from "./useInventoriesEffects"
-import { useNeighborsEffects } from "./useNeighborsEffects"
+import { usePlacedItemsEffects } from "./usePlacedItemsEffects"
 import { useStaticEffects } from "./useStaticEffects"
 import { useUserEffects } from "./useUserEffects"
 
 export const useGraphQLQueryEffects = () => {
     useUserEffects()
     useInventoriesEffects()
-    useNeighborsEffects()
+    usePlacedItemsEffects()
     useStaticEffects()
-    useFolloweesEffects()
 }

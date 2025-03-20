@@ -1,4 +1,4 @@
-import { InventorySchema, PlacedItemSchema, PlacedItemType, TutorialStep, UserSchema } from "@/modules/entities"
+import { InventorySchema, PlacedItemSchema, PlacedItemType, UserSchema } from "@/modules/entities"
 import { Events } from "phaser"
 
 // Used to emit events between React components and Phaser scenes
@@ -30,6 +30,10 @@ export enum EventName {
     LoadUser = "load_user",
     // user data loaded, from React to Phaser
     UserLoaded = "user_loaded",
+    // user load placed items, from React to Phaser
+    LoadPlacedItems = "load_placed_items",
+    // placed items loaded, from React to Phaser
+    PlacedItemsLoaded = "placed_items_loaded",
     // inventory loaded, from React to Phaser
     LoadInventories = "load_inventories",
     // inventory loaded, from React to Phaser
@@ -65,10 +69,6 @@ export enum EventName {
     OpenModal = "open_modal",
     CloseModal = "close_modal",
     CloseAllModals = "close_all_modals",
-
-    // tutorial events
-    OpenTutorial = "open_tutorial",
-    CloseTutorial = "close_tutorial",
 
     OpenReferralLinkModal = "open-referral-link-modal",
     OpenExternalModal = "open-external-modal",
@@ -125,47 +125,6 @@ export enum EventName {
     RequestToolbarInventoryIndex = "request_toolbar_inventory_index",
     StorageInventoryIndexResponsed = "storage_inventory_index_responsed",
     ToolbarInventoryIndexResponsed = "toolbar_inventory_index_responsed",
-
-    // tutorial events
-    TutorialOpenShop = "tutorial_open_shop",
-    TutorialOpenShopResponsed = "tutorial_open_shop_responsed",
-    TutorialOpenShopPressed = "tutorial_open_shop_pressed",
-    TutorialShopButtonPressed = "tutorial_shop_button_pressed",
-    TutorialRoadsideStandButtonPressed = "tutorial_roadside_stand_button_pressed",
-    TutorialRoadsideStandCloseButtonPressed = "tutorial_roadside_stand_close_button_pressed",
-    TutorialShopButtonPressedResponsed = "tutorial_shop_button_pressed_responsed",
-    TutorialPrepareBuySeeds = "tutorial_prepare_buy_seeds",
-    TutorialPrepareBuySeedsResponsed = "tutorial_prepare_buy_seeds_responsed",
-    TutorialPrepareCloseShop = "tutorial_prepare_close_shop",
-    TutorialCloseInventoryButtonPressed = "tutorial_close_inventory_button_pressed",
-    TutorialPrepareCloseShopResponsed = "tutorial_prepare_close_shop_responsed",
-    TutorialCloseShopButtonPressed = "tutorial_close_shop_button_pressed",
-    TutorialOpenInventory = "tutorial_open_inventory",
-    TutorialOpenRoadsideStand = "tutorial_open_roadside_stand",
-    TutorialOpenRoadsideStandResponsed = "tutorial_open_roadside_stand_responsed",
-    TutorialOpenInventoryResponsed = "tutorial_open_inventory_responsed",
-    TutorialInventoryButtonPressed = "tutorial_inventory_button_pressed",
-    TutorialPrepareCloseInventory = "tutorial_prepare_close_inventory",
-    TutorialPlantSeeds = "tutorial_plant_seeds",
-    TutorialSeedsPressed = "tutorial_seeds_pressed",
-    TutorialCratePressed = "tutorial_crate_pressed",
-    TutorialSeedPlanted = "tutorial_seed_planted",
-    TutorialTilePressed = "tutorial_tile_pressed",
-    TutorialCropWatered = "tutorial_crop_watered",
-    TutorialCropPesticideUsed = "tutorial_crop_pesticide_used",
-    TutorialCropHerbicideUsed = "tutorial_crop_herbicide_used",
-    TutorialCropHarvested = "tutorial_crop_harvested",
-    TutorialPesiticidePressed = "tutorial_pesticide_pressed",
-    TutorialHerbicidePressed = "tutorial_herbicide_pressed",
-    TutorialTilePressedResponsed = "tutorial_tile_pressed_responsed",
-    TutorialWateringCanPressed = "tutorial_water_can_pressed",
-    TutorialResetToolbar = "tutorial_reset_toolbar",
-    TutorialHighlightToolbar = "tutorial_highlight_toolbar",
-    TutorialPrepareCloseStand = "tutorial_prepare_close_stand",
-    TutorialCloseStandButtonPressed = "tutorial_close_stand_button_pressed",
-    // api events
-    RequestUpdateTutorial = "request_update_tutorial",
-    UpdateTutorialCompleted = "update_tutorial_completed",
 
     RequestUpdateFollowX = "request_update_follow_x",
     UpdateFollowXCompleted = "update_follow_x_completed",
@@ -336,59 +295,15 @@ export enum EventName {
     UpdatePlacementConfirmation = "update_placement_confirmation",
 }
 
-export interface OpenTutorialMessage {
-    // name of the tutorial to open
-    tutorialStep: TutorialStep,
-}
-
 export interface WatchUserChangedMessage {
     prevUser: UserSchema
     currentUser: UserSchema
 }
 
-export interface CloseTutorialMessage {
-    // name of the tutorial to close
-    tutorialStep: TutorialStep,
-} 
-
-export interface TutorialOpenShopResponsedMessage {
-    // position of the shop button
-    position: Position,
-}
-
-export interface TutorialOpenInventoryResponsedMessage {
-    // position of the shop button
-    position: Position,
-}
 
 export interface SelectToolMessage {
     index: number,
     animate?: boolean
-}
-
-export interface TutorialOpenRoadsideStandResponsedMessage {
-    // position of the shop button
-    position: Position,
-}
-
-export interface TutorialWateringCanPressedMessage {
-    // position of the shop button
-    position: Position,
-}
-
-export interface TutorialPrepareBuySeedsMessage {
-    // position of the shop button
-    position: Position,
-}
-
-export interface TutorialPrepareCloseShopResponsedMessage {
-    // position of the shop button
-    position: Position,
-}
-
-export interface TutorialTilePressedResponsedMessage {
-    // position of the shop button
-    position: Position,
 }
 
 export interface Position {
@@ -418,14 +333,6 @@ export interface UpdateUIBackdropMessage {
     depth: number
 }
 
-export interface ShowPressHereArrowMessage {
-    // position of the arrow
-    originPosition: Position
-    targetPosition: Position
-    rotation?: number
-    requireSetVisibility?: boolean
-}
-
 export enum ModalName {
   Shop = "shop",
   Inventory = "inventory",
@@ -448,8 +355,6 @@ export enum ModalName {
 export interface OpenModalMessage {
     // name of the modal to open
     modalName: ModalName
-    // show tutorial backdrop
-    showTutorialBackdrop?: boolean
 }
 
 export interface OpenExternalModalMessage {
@@ -460,7 +365,6 @@ export interface OpenExternalModalMessage {
 export interface CloseModalMessage {
     // name of the modal to close
     modalName: ModalName
-    hideTutorialBackdrop?: boolean
 }
 
 export interface UpdateInputQuantityModalMessage {

@@ -5,15 +5,11 @@ import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CellSize, getCellSize, ItemQuantity } from "../../elements"
 import { CacheKey } from "../../../types"
 import { getToolInventories } from "../../../queries"
-import { MODAL_DEPTH_1 } from "../ModalManager"
+import { MODAL_BACKDROP_DEPTH_1, MODAL_DEPTH_1 } from "../ModalManager"
 import { EventBus, EventName, RequestStorageInventoryIndexMessage, RequestToolbarInventoryIndexMessage } from "@/game/event-bus"
-import { getDepth } from "./utils"
 import { DragItemParams } from "./types"
 import { CELL_TOOLBAR_DATA_KEY } from "./constants"
 import { MoveInventoryRequest } from "@/modules/apollo"
-import { sleep } from "@/modules/common"
-import { SCALE_TIME } from "@/game/constants"
-import { setTutorialDepth } from "../../tutorial"
 
 const TOOLBAR_COLUMN_COUNT = 4
 const TOOLBAR_ROW_COUNT = 2
@@ -24,7 +20,6 @@ export class InventoryToolbar extends ContainerLite {
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private gridSizer: GridSizer | undefined
     private containers: Record<number, ContainerLite> = {}
-    private tutorialEnabled = false
     private cellSize: CellSize
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -59,30 +54,6 @@ export class InventoryToolbar extends ContainerLite {
 
         this.scene.events.on(EventName.RequestToolbarInventoryIndex, ({ pointer }: RequestToolbarInventoryIndexMessage) => {
             this.scene.events.emit(EventName.ToolbarInventoryIndexResponsed,  this.getPositionIndex(pointer))
-        })
-
-        this.scene.events.once(
-            EventName.TutorialInventoryButtonPressed,
-            async () => {
-                await sleep(SCALE_TIME)
-                this.tutorialEnabled = true
-                this.highlight()
-            }
-        )
-
-        this.scene.events.once(EventName.TutorialPrepareCloseInventory, () => {
-            this.tutorialEnabled = false
-            // rerender the grid sizer
-            this.updateGridSizer()
-        })
-    }
-
-    private highlight() {
-        if (!this.gridSizer) {
-            throw new Error("Grid table not found")
-        }
-        setTutorialDepth({
-            gameObject: this.gridSizer,
         })
     }
 
@@ -158,21 +129,13 @@ export class InventoryToolbar extends ContainerLite {
                                 throw new Error("Parent not found")
                             }
                             parent.remove(itemQuantity, true)
-                            dragItem.setDepth(getDepth({
-                                scene: this.scene,
-                                tutorialEnabled: this.tutorialEnabled,
-                                plus: 2
-                            }))
+                            dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 2)
                             this.scene.rexUI.add.drag(dragItem).drag()
                             dragItem.on("dragend", (pointer: Phaser.Input.Pointer) => {
                                 if (!this.gridSizer) {
                                     throw new Error("Storage grid sizer not found")
                                 }
-                                dragItem.setDepth(getDepth({
-                                    scene: this.scene,
-                                    tutorialEnabled: this.tutorialEnabled,
-                                    plus: 2
-                                }))
+                                dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 2)
                                 this.dragItem({
                                     item: dragItem,
                                     pointer,
@@ -189,11 +152,7 @@ export class InventoryToolbar extends ContainerLite {
                     return container
                 },
             }).addBackground(background)
-            .layout().setDepth(getDepth({
-                scene: this.scene,
-                tutorialEnabled: this.tutorialEnabled,
-                plus: 1
-            }))
+            .layout().setDepth(MODAL_BACKDROP_DEPTH_1 + 1)
         this.addLocal(this.gridSizer)
         return this.gridSizer
     }
@@ -254,12 +213,6 @@ export class InventoryToolbar extends ContainerLite {
             EventBus.once(EventName.MoveInventoryCompleted, () => {
                 if (!item) {
                     throw new Error("Badge label not found")
-                }
-                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                // if (isTool) {
-                //     this.inventorySeedMoveToToolbar = true
-                //     this.tutorialEnabled = false
-                // }
                 }
                 //  destroy the badge label
                 item.destroy()

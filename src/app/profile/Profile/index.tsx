@@ -1,4 +1,8 @@
-import { NEIGHBORS_DISCLOSURE, QUERY_GRAPHQL_USER_SWR, QUESTS_DISCLOSURE } from "@/app/constants"
+import {
+    NEIGHBORS_DISCLOSURE,
+    GRAPHQL_QUERY_USER_SWR,
+    QUESTS_DISCLOSURE,
+} from "@/app/constants"
 import { ExclamationTooltip } from "@/components"
 import { useGraphQLQueryUserSwr } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
@@ -10,7 +14,7 @@ import React, { FC } from "react"
 
 export const Profile : FC = () => {
     const { swr } =
-    useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(QUERY_GRAPHQL_USER_SWR)
+    useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
     const user = swr.data?.data.user
     const avatarUrl = user
         ? user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)

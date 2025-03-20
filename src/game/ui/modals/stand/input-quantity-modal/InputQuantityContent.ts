@@ -5,10 +5,9 @@ import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { Background, Button, ModalBackground, NumberInput } from "../../../elements"
+import { Background, ModalBackground, NumberInput } from "../../../elements"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverMoreProductRequest, DeliverProductRequest } from "@/modules/apollo"
-import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 
 export class InputQuantityContent extends BaseSizer {
     private background: ModalBackground
@@ -45,7 +44,7 @@ export class InputQuantityContent extends BaseSizer {
                     })
                 },
                 mainButton: {
-                    onPress: (button: Button) => {
+                    onPress: () => {
                         if (!this.inventory) {
                             throw new Error("Inventory is not set")
                         }
@@ -77,13 +76,6 @@ export class InputQuantityContent extends BaseSizer {
                                 EventBus.emit(EventName.CloseModal, eventMessage)
                             })
                             EventBus.emit(EventName.RequestDeliverMoreProduct, eventName)
-                        }
-
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            restoreTutorialDepth({
-                                gameObject: button,
-                            })
-                            this.scene.events.emit(EventName.TutorialPrepareCloseStand)
                         }
                     },
                     text: "Confirm",
@@ -161,23 +153,5 @@ export class InputQuantityContent extends BaseSizer {
         this.quantity = this.numberInput.min
         this.iconContainer.clear(true)
         this.iconContainer.addLocal(image)  
-
-        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-            if (!this.background.mainButton) {
-                throw new Error("Main button not found")
-            }
-            setTutorialDepth({
-                gameObject: this.background.mainButton,
-            })
-        }
-
-        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-            if (!this.background.mainButton) {
-                throw new Error("Main button not found")
-            }
-            setTutorialDepth({
-                gameObject: this.background.mainButton,
-            })
-        }
     }
 }

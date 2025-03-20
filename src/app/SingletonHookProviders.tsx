@@ -25,21 +25,12 @@ import {
     useGraphQLMutationThiefAnimalProductSwrMutation,
     useGraphQLMutationHelpCureAnimalSwrMutation,
     useGraphQLMutationUseFruitFertilizerSwrMutation,
-    useGraphQLQueryNeighborsSwr,
-    useGraphQLQueryFolloweesSwr,
-    useGraphQLQueryFolloweesSwrMutation,
-    useGraphQLQueryNeighborsSwrMutation,
-    useGraphQLQueryInventoriesSwrMutation,
-    useGraphQLQueryStaticSwrMutation,
     useGraphQLMutationHelpUseFruitFertilizerSwrMutation,
     useGraphQLMutationHelpUseBugNetSwrMutation,
     useGraphQLMutationUseBugNetSwrMutation,
     useGraphQLMutationThiefFruitSwrMutation,
     useGraphQLMutationHarvestFruitSwrMutation,
     useGraphQLMutationHelpFeedAnimalSwrMutation,
-    useGraphQLQueryStaticSwr,
-    useGraphQLQueryUserSwr,
-    useGraphQLQueryUserSwrMutation,
     useGameplayIo,
     useMintOffchainTokensRhf,
     useTransferTokensRhf,
@@ -47,7 +38,6 @@ import {
     useTransferTokenSwrMutation,
     useHoneycombSendTransactionSwrMutation,
     useGraphQLMutationUpdateReferralSwrMutation,
-    useGraphQLMutationUpdateTutorialSwrMutation,
     useGraphQLMutationUpdateFollowXSwrMutation,
     useGraphQLMutationVisitSwrMutation,
     useGraphQLMutationUsePesticideSwrMutation,
@@ -62,6 +52,12 @@ import {
     useGraphQLMutationCureAnimalSwrMutation,
     useGraphQLMutationUseFertilizerSwrMutation,
     useGraphQLMutationClaimHoneycombDailyRewardSwrMutation,
+    useGraphQLQueryInventoriesSwr,
+    useGraphQLQueryStaticSwr,
+    useGraphQLQueryFolloweesSwr,
+    useGraphQLQueryNeighborsSwr,
+    useGraphQLQueryUserSwr,
+    useGraphQLQueryPlacedItemsSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -120,7 +116,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_HARVEST_FRUIT_SWR_MUTATION: useGraphQLMutationHarvestFruitSwrMutation(),
             GRAPHQL_MUTATION_HELP_FEED_ANIMAL_SWR_MUTATION: useGraphQLMutationHelpFeedAnimalSwrMutation(),
             GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION: useGraphQLMutationUpdateReferralSwrMutation(),   
-            GRAPHQL_MUTATION_UPDATE_TUTORIAL_SWR_MUTATION: useGraphQLMutationUpdateTutorialSwrMutation(),
             GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION: useGraphQLMutationUpdateFollowXSwrMutation(),
             GRAPHQL_MUTATION_VISIT_SWR_MUTATION: useGraphQLMutationVisitSwrMutation(),
             GRAPHQL_MUTATION_USE_PESTICIDE_SWR_MUTATION: useGraphQLMutationUsePesticideSwrMutation(),
@@ -137,21 +132,15 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useGraphQLMutationClaimHoneycombDailyRewardSwrMutation(),
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
-
             // honeycomb
-            HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),
-            
+            HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
             // queries
-            GRAPHQL_QUERY_USER_SWR_MUTATION: useGraphQLQueryUserSwrMutation(),
-            GRAPHQL_QUERY_STATIC_SWR_MUTATION: useGraphQLQueryStaticSwrMutation(),
-            GRAPHQL_QUERY_INVENTORIES_SWR_MUTATION: useGraphQLQueryInventoriesSwrMutation(),
-            GRAPHQL_QUERY_NEIGHBORS_SWR_MUTATION: useGraphQLQueryNeighborsSwrMutation(),
-            GRAPHQL_QUERY_FOLLOWEES_SWR_MUTATION: useGraphQLQueryFolloweesSwrMutation(),
+            GRAPHQL_QUERY_INVENTORIES_SWR: useGraphQLQueryInventoriesSwr(),
+            GRAPHQL_QUERY_STATIC_SWR: useGraphQLQueryStaticSwr(),
             GRAPHQL_QUERY_FOLLOWEES_SWR: useGraphQLQueryFolloweesSwr(),
             GRAPHQL_QUERY_NEIGHBORS_SWR: useGraphQLQueryNeighborsSwr(),
             GRAPHQL_QUERY_USER_SWR: useGraphQLQueryUserSwr(),
-            GRAPHQL_QUERY_STATIC_SWR: useGraphQLQueryStaticSwr(),
-                                    
+            GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION: useGraphQLQueryPlacedItemsSwrMutation(),        
             //io
             GAMEPLAY_IO: useGameplayIo(),
         }}

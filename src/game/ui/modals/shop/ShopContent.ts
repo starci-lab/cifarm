@@ -4,7 +4,6 @@ import {
     BuySuppliesRequest,
     BuyToolRequest,
 } from "@/modules/apollo"
-import { sleep } from "@/modules/common"
 import {
     AnimalId,
     AnimalSchema,
@@ -44,7 +43,6 @@ import {
     tileAssetMap,
     toolAssetMap,
 } from "../../../assets"
-import { SCALE_TIME } from "../../../constants"
 import {
     CloseModalMessage,
     EventBus,
@@ -52,9 +50,8 @@ import {
     ModalName,
     BuyingModeOnMessage,
     SelectTabMessage,
-    ShowPressHereArrowMessage,
 } from "../../../event-bus"
-import { getFirstSeedInventory, getPlacedItemsByType } from "../../../queries"
+import { getPlacedItemsByType } from "../../../queries"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import {
     Background,
@@ -67,10 +64,8 @@ import {
     ModalBackground,
     Size,
     SizeStyle,
-    XButton,
     TextColor,
 } from "../../elements"
-import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 import { onGameObjectPress } from "../../utils"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { ITEM_DATA_KEY, tabsConfig } from "./constants"
@@ -176,18 +171,10 @@ export class ShopContent extends BaseSizer {
             },
             options: {
                 background: Background.XLarge,
-                onXButtonPress: (xButton: XButton) => {
+                onXButtonPress: () => {
                     EventBus.emit(EventName.CloseModal, {
                         modalName: ModalName.Shop,
                     })
-                    // emit the events related to the tutorial
-                    if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                        restoreTutorialDepth({
-                            gameObject: xButton,
-                        })
-                        this.scene.events.emit(EventName.TutorialCloseShopButtonPressed)
-                        this.scene.events.emit(EventName.HidePressHereArrow)
-                    }
                 },
                 title: "Shop",
                 tabs: {
@@ -266,7 +253,6 @@ export class ShopContent extends BaseSizer {
             }
         )
 
-
         // create the scrollable panel
         this.updateGridTables()
 
@@ -281,71 +267,6 @@ export class ShopContent extends BaseSizer {
                 this.onShopTabSelected(tabKey)
             }
         )
-
-        // set the tutorial depth
-        scene.events.once(EventName.TutorialPrepareCloseShop, () => {
-            if (!this.background.xButton) {
-                throw new Error("XButton not found")
-            }
-            setTutorialDepth({
-                gameObject: this.background.xButton,
-            })
-            const { x, y } = this.background.xButton.getCenter()
-            const eventMessage: ShowPressHereArrowMessage = {
-                rotation: 45,
-                originPosition: { x: x - 60, y: y + 60 },
-                targetPosition: { x: x - 40, y: y + 40 },
-            }
-            scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-        })
-
-        this.scene.events.once(EventName.TutorialShopButtonPressed, async () => {
-            // wait for the scale time
-            await sleep(SCALE_TIME)
-            // get the default seed button
-            if (!this.defaultSeedButton) {
-                throw new Error("Default seed button is not found")
-            }
-
-            if (!this.defaultItemCard) {
-                throw new Error("Default item card is not found")
-            }
-
-            const inventory = getFirstSeedInventory({
-                cropId: this.defaultInfo.defaultCropId,
-                scene: this.scene,
-                inventories: this.inventories,
-            })
-            if (
-                inventory &&
-        inventory.quantity > this.defaultInfo.defaultSeedQuantity
-            ) {
-                this.scene.events.emit(EventName.TutorialPrepareCloseShop)
-                return
-            }
-
-            const gridTable = this.gridTableMap[this.selectedShopTab]
-            if (!gridTable) {
-                throw new Error("Grid table is not found")
-            }
-            setTutorialDepth({
-                gameObject: gridTable,
-            })
-
-            const eventMessage: ShowPressHereArrowMessage = {
-                originPosition: {
-                    x: this.defaultSeedButton.x + 60,
-                    y: this.defaultSeedButton.y + 40,
-                },
-                targetPosition: {
-                    x: this.defaultSeedButton.x + 40,
-                    y: this.defaultSeedButton.y + 20,
-                },
-            }
-            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-
-            // EventBus.on(EventName.RefreshActivePlacedItem)
-        })
 
         EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
             this.user = user
@@ -1002,19 +923,6 @@ export class ShopContent extends BaseSizer {
 
     private onBuySeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuySeedsCompleted, () => {
-            // refresh user & inventories
-            // emit the events related to the tutorial
-            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                const gridTable = this.gridTableMap[this.selectedShopTab]
-                if (!gridTable) {
-                    throw new Error("Grid table is not found")
-                }
-                restoreTutorialDepth({
-                    gameObject: gridTable,
-                    plusOne: true,
-                })
-                this.scene.events.emit(EventName.TutorialPrepareCloseShop)
-            }
         })
         const eventMessage: BuySeedsRequest = {
             cropId: displayId,

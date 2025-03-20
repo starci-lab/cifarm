@@ -13,7 +13,6 @@ import {
     RightHorizontalButtons,
     Toolbar,
     Topbar,
-    TutorialManager,
     UIBackdrop
 } from "../ui"
 
@@ -87,12 +86,6 @@ export class UIScene extends Scene {
             scene: this,
         })
         this.add.existing(modalManager)
-
-        //add the tutorial manager
-        const tutorialManager = new TutorialManager({
-            scene: this
-        })
-        this.add.existing(tutorialManager)
 
         const fade =  new Fade({
             scene: this,

@@ -1,6 +1,5 @@
 import { Network, ChainKey } from "@/modules/blockchain"
 import { AbstractSchema } from "./abstract"
-import { TutorialStep } from "../enums"
 
 export interface UserSchema extends AbstractSchema {
     username: string;
@@ -10,7 +9,6 @@ export interface UserSchema extends AbstractSchema {
     golds: number;
     tokens: number;
     experiences: number;
-    tutorialStep: TutorialStep;
     energy: number;
     energyRegenTime: number;
     energyFull: boolean;

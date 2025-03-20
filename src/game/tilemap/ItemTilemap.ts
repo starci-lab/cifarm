@@ -5,7 +5,6 @@ import {
     HarvestAnimalData,
     HarvestCropData,
     HarvestFruitData,
-    PlacedItemsSyncedMessage,
     SellData,
     ThiefAnimalProductData,
     ThiefCropData,
@@ -53,7 +52,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     // item layer
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
-    private previousPlacedItems: PlacedItemsSyncedMessage | undefined
+    private previousPlacedItems: Array<PlacedItemSchema> | undefined
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
@@ -105,22 +104,22 @@ export abstract class ItemTilemap extends GroundTilemap {
         })
 
         EventBus.on(EventName.UpdatePlacedItems, async () => {
-            let data = this.scene.cache.obj.get(
+            let placedItems = this.scene.cache.obj.get(
                 CacheKey.PlacedItems
-            ) as PlacedItemsSyncedMessage
+            ) as Array<PlacedItemSchema>
             if (this.isWaiting) {
-                data = this.scene.cache.obj.get(
+                placedItems = this.scene.cache.obj.get(
                     CacheKey.PlacedItems
-                ) as PlacedItemsSyncedMessage
+                ) as Array<PlacedItemSchema>
             }
             if (this.fading) {
                 this.isWaiting = true
                 await waitUtil(() => !this.fading)
             }
             // handle the placed items update
-            this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
+            this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
             // update the previous placed items
-            this.previousPlacedItems = data
+            this.previousPlacedItems = placedItems
             if (this.isWaiting) {
                 this.isWaiting = false
             }
@@ -133,14 +132,14 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         )
 
-        const data = this.scene.cache.obj.get(
+        const placedItems = this.scene.cache.obj.get(
             CacheKey.PlacedItems
-        ) as PlacedItemsSyncedMessage
-        if (data) {
+        ) as Array<PlacedItemSchema>
+        if (placedItems) {
             // handle the placed items update
-            this.handlePlacedItemsUpdate(data, this.previousPlacedItems)
+            this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
             // update the previous placed items
-            this.previousPlacedItems = data
+            this.previousPlacedItems = placedItems
         }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
@@ -765,28 +764,23 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // methods to handle changes in the placed items
     private handlePlacedItemsUpdate(
-        current: PlacedItemsSyncedMessage,
-        previous?: PlacedItemsSyncedMessage
+        current: Array<PlacedItemSchema>,
+        previous: Array<PlacedItemSchema> = []
     ) {
-    // if current.userId doesn't match previous.userId, treat all placed items as new
-        if (!previous || (previous && current.userId !== previous.userId)) {
-            // if user ids are different, create all placed items (treat as new)
-            this.clearAllPlacedItems()
-            this.createAllPlacedItems(current.placedItems)
-            return // exit early to avoid redundant checks later
-        }
-
-        // initialize the previousPlacedItems array only if previous exists
-        const previousPlacedItems: Array<PlacedItemSchema> = previous.placedItems
-
-        const { placedItems } = current
+        // if current.userId doesn't match previous.userId, treat all placed items as new
+        // if (!previous || (previous && current.userId !== previous.userId)) {
+        //     // if user ids are different, create all placed items (treat as new)
+        //     this.clearAllPlacedItems()
+        //     this.createAllPlacedItems(current.placedItems)
+        //     return // exit early to avoid redundant checks later
+        // }
 
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
-        for (const placedItem of placedItems) {
+        for (const placedItem of current) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
-            const found = previousPlacedItems.find(
+            const found = previous.find(
                 (item) => item.id === placedItem.id
             )
             if (found) {
@@ -814,7 +808,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // remove the unchecked previous placed items that are no longer in the current placed items
         // Loop through previous placed items to remove any that are no longer present
-        for (const placedItem of previousPlacedItems) {
+        for (const placedItem of previous) {
             // Check if this item exists in the checked items list
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
@@ -855,7 +849,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         placedItemId,
         position,
     }: HandlePlacedItemUpdatePositionParams) {
-        const placedItem = this.previousPlacedItems?.placedItems.find(
+        const placedItem = this.previousPlacedItems?.find(
             (item) => item.id === placedItemId
         )
         if (!placedItem) {

@@ -3,16 +3,13 @@ import { CacheKey, BaseSizerBaseConstructorParams, DeliveryData } from "../../..
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { onGameObjectPress } from "../../utils"
-import { EventBus, EventName, ModalName, OpenModalMessage, ShowPressHereArrowMessage } from "../../../event-bus"
+import { EventBus, EventName, ModalName, OpenModalMessage } from "../../../event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "@/game/queries"
 import { MODAL_DEPTH_1 } from "../ModalManager"
 import { Text, XButton, XButtonColor } from "../../elements"
 import { RetainProductRequest } from "@/modules/apollo"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { SCALE_TIME } from "@/game/constants"
-import { sleep } from "@/modules/common"
-import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
 
 const ROW_COUNT = 3
 const COLUMN_COUNT = 3
@@ -52,39 +49,6 @@ export class StandContent extends BaseSizer {
         EventBus.on(EventName.InventoriesRefreshed, (inventories: Array<InventorySchema>) => {
             this.inventories = inventories
             this.updateStandGridSizer()
-        })
-
-        this.scene.events.once(EventName.TutorialRoadsideStandButtonPressed, async () => {
-            // wait for the scale time
-            await sleep(SCALE_TIME)
-            // get the first non empty cell
-            const nonEmptyCell = Object.values(this.containerMap).find(({ hasItem }) => hasItem)
-            if (nonEmptyCell) {
-                this.scene.events.emit(EventName.TutorialPrepareCloseStand)
-                return
-            }
-            // get the first empty cell
-            const emptyCell = Object.values(this.containerMap).find(({ hasItem }) => !hasItem)
-            // highlight the empty cell
-            if (!emptyCell) {
-                throw new Error("No empty cell found")
-            }
-            setTutorialDepth({
-                gameObject: emptyCell.container,
-            })
-            // show the press here arrow
-            const { x, y } = emptyCell.container.getCenter()
-            const eventMessage: ShowPressHereArrowMessage = {
-                originPosition: {
-                    x: x + 60,
-                    y: y,
-                },
-                targetPosition: {
-                    x: x + 40,
-                    y: y - 20,
-                },
-            }
-            this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
         })
     }
 
@@ -191,18 +155,6 @@ export class StandContent extends BaseSizer {
                     modalName: ModalName.SelectProduct,
                 }
                 EventBus.emit(EventName.OpenModal, eventMessage)
-                // close the arrow
-                this.scene.events.emit(EventName.HidePressHereArrow)
-                // remove the highlight
-                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                    const emptyCell = this.containerMap[index]
-                    if (!emptyCell) {
-                        throw new Error("No empty cell found")
-                    }
-                    restoreTutorialDepth({
-                        gameObject: emptyCell.container,
-                    })
-                }
             }
         })
         addButton.setPosition(0, -addButton.height / 2 - 10)
@@ -263,16 +215,6 @@ export class StandContent extends BaseSizer {
                 EventBus.emit(EventName.OpenModal, eventMessage)
                 // close the arrow
                 this.scene.events.emit(EventName.HidePressHereArrow)
-                // remove the highlight
-                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                    const emptyCell = this.containerMap[inventory.index]
-                    if (!emptyCell) {
-                        throw new Error("No empty cell found")
-                    }
-                    restoreTutorialDepth({
-                        gameObject: emptyCell.container,
-                    })
-                }
             },
             percentHeight: ADD_BUTTON_SCALE,
             percentWidth: ADD_BUTTON_SCALE

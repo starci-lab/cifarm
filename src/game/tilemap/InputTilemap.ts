@@ -1,7 +1,7 @@
 import {
     BuyAnimalRequest,
-        BuyBuildingRequest,
-        BuyFruitRequest,
+    BuyBuildingRequest,
+    BuyFruitRequest,
     BuyTileRequest,
     CureAnimalRequest,
     FeedAnimalRequest,
@@ -401,9 +401,6 @@ export class InputTilemap extends ItemTilemap {
             }
 
             EventBus.once(EventName.PlantSeedCompleted, () => {
-                if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                    EventBus.emit(EventName.TutorialSeedPlanted)
-                }
                 data.pressBlocked = false
             })
             // emit the event to plant seed
@@ -471,9 +468,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     //emit the event to water the plant
                     EventBus.once(EventName.WaterCropCompleted, () => {
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropWatered)
-                        }
                         data.pressBlocked = true
                     })
                     // emit the event to plant seed
@@ -524,9 +518,6 @@ export class InputTilemap extends ItemTilemap {
 
                     // emit the event to water the plant
                     EventBus.once(EventName.UsePesticideCompleted, () => {
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropPesticideUsed)
-                        }
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -579,9 +570,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     // emit the event to water the plant
                     EventBus.once(EventName.UseHerbicideCompleted, () => {
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropHerbicideUsed)
-                        }
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -662,9 +650,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     EventBus.once(EventName.HarvestCropCompleted, async () => {
-                        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                            EventBus.emit(EventName.TutorialCropHarvested)
-                        }
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed

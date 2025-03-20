@@ -9,14 +9,13 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
     Label,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { getFirstSeedInventory, getStorageInventories } from "@/game/queries"
+import { getStorageInventories } from "@/game/queries"
 import {
     GridTable,
     ItemQuantity,
     GridTableFrame,
     ModalBackground,
     Background,
-    XButton,
     CellSize,
     getCellSize,
 } from "../../elements"
@@ -27,15 +26,11 @@ import {
     ModalName,
     RequestStorageInventoryIndexMessage,
     RequestToolbarInventoryIndexMessage,
-    ShowPressHereArrowMessage,
 } from "@/game/event-bus"
-import { restoreTutorialDepth, setTutorialDepth } from "../../tutorial"
-import { sleep } from "@/modules/common"
-import { SCALE_TIME } from "@/game/constants"
 import { MoveInventoryRequest } from "@/modules/apollo"
 import { CELL_STORAGE_DATA_KEY } from "./constants"
 import { DragItemParams } from "./types"
-import { getDepth } from "./utils"
+import { MODAL_BACKDROP_DEPTH_1 } from "../ModalManager"
 
 // part of the inventory that holds the inventory items
 export class InventoryStorage extends BaseSizer {
@@ -49,9 +44,8 @@ export class InventoryStorage extends BaseSizer {
     private inventories: Array<InventorySchema> = []
     private inventoryTypes: Array<InventoryTypeSchema> = []
     private defaultInfo: DefaultInfo
-    private tutorialEnabled = false
-    private tutorialSeedInventoryId: string | undefined
     private cellSize: CellSize
+
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
         this.cellSize = getCellSize(this.scene)
@@ -67,16 +61,9 @@ export class InventoryStorage extends BaseSizer {
                     showWrapperContainer: true,
                     showContainer: true
                 },
-                onXButtonPress: (xButton: XButton) => {
+                onXButtonPress: () => {
                     const eventMessage: CloseModalMessage = {
                         modalName: ModalName.Inventory,
-                    }
-                    if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                        this.scene.events.emit(EventName.TutorialCloseInventoryButtonPressed)
-                        this.scene.events.emit(EventName.HidePressHereArrow)
-                        restoreTutorialDepth({
-                            gameObject: xButton,
-                        })
                     }
                     EventBus.emit(EventName.CloseModal, eventMessage)
                 },
@@ -98,75 +85,9 @@ export class InventoryStorage extends BaseSizer {
             }
         )
 
-        this.scene.events.once(
-            EventName.TutorialInventoryButtonPressed,
-            async () => {
-                await sleep(SCALE_TIME)
-                this.tutorialEnabled = true
-                this.highlight()
-            }
-        )
-
         this.scene.events.on(EventName.RequestStorageInventoryIndex, ({ pointer }: RequestStorageInventoryIndexMessage) => {
             this.scene.events.emit(EventName.StorageInventoryIndexResponsed,  this.getPositionIndex(pointer))
         })
-
-        // set the tutorial depth
-        scene.events.once(EventName.TutorialPrepareCloseInventory, () => {
-            this.tutorialEnabled = false
-            if (!this.background.container) {
-                throw new Error("Background container not found")
-            }
-            restoreTutorialDepth({
-                gameObject: this.background.container,
-            })
-            // re-render the grid table
-            this.updateGridTable()
-            if (!this.background.xButton) {
-                throw new Error("XButton not found")
-            }
-            setTutorialDepth({
-                gameObject: this.background.xButton,
-            })
-            const { x, y } = this.background.xButton.getCenter()
-            const eventMessage: ShowPressHereArrowMessage = {
-                rotation: 45,
-                originPosition: { x: x - 60, y: y + 60 },
-                targetPosition: { x: x - 40, y: y + 40 },
-            }
-            scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-        })
-    }
-
-    private highlight() {
-        // get the label that
-        const inventory = getFirstSeedInventory({
-            inventories: this.inventories,
-            scene: this.scene,
-            cropId: this.defaultInfo.defaultCropId,
-        })
-        if (!inventory) {
-            throw new Error("Inventory was not found")
-        }
-        this.tutorialSeedInventoryId = inventory.id
-        // this.setDepth(HIGHLIGH_DEPTH)
-        const cell = this.items[this.tutorialSeedInventoryId]
-        if (!cell) {
-            throw new Error("Cell not found")
-        }
-        if (!this.gridTable) {
-            throw new Error("Grid table not found")
-        }
-        setTutorialDepth({
-            gameObject: this.gridTable,
-        })
-        if (!this.background.container) {
-            throw new Error("Background container not found")
-        }
-        setTutorialDepth({
-            gameObject: this.background.container,
-        })
-        this.updatePressHereArrowPosition()
     }
 
     private disableScroller() {
@@ -248,11 +169,7 @@ export class InventoryStorage extends BaseSizer {
                                     background,
                                     icon: itemQuantity,
                                 })
-                                .setDepth(getDepth({
-                                    scene: this.scene,
-                                    tutorialEnabled: this.tutorialEnabled,
-                                    plus: 2
-                                }))
+                                .setDepth(MODAL_BACKDROP_DEPTH_1 + 1)
                                 .layout()
                         }
                     }
@@ -281,21 +198,13 @@ export class InventoryStorage extends BaseSizer {
                         throw new Error("Parent not found")
                     }
                     parent.remove(itemQuantity, true)
-                    dragItem.setDepth(getDepth({
-                        scene: this.scene,
-                        tutorialEnabled: this.tutorialEnabled,
-                        plus: 3
-                    }))
+                    dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 3)
                     this.scene.rexUI.add.drag(dragItem).drag()
                     dragItem.on("dragend", (pointer: Phaser.Input.Pointer) => {
                         if (!itemQuantity) {
                             throw new Error("Badge label not found")
                         }
-                        dragItem.setDepth(getDepth({
-                            scene: this.scene,
-                            tutorialEnabled: this.tutorialEnabled,
-                            plus: 2
-                        }))
+                        dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 2)
                         if (!this.gridTable) {
                             throw new Error("Storage grid table not found")
                         }
@@ -316,42 +225,9 @@ export class InventoryStorage extends BaseSizer {
         return this.gridTable
     }
 
-    private updatePressHereArrowPosition() {
-        if (!this.tutorialEnabled) {
-            return
-        }
-        if (!this.tutorialSeedInventoryId) {
-            throw new Error("Tutorial seed inventory id not found")
-        }
-        const cell = this.items[this.tutorialSeedInventoryId]
-        if (!cell) {
-            throw new Error("Cell not found")
-        }
-        const { x, y } = cell.getCenter()
-        const eventMessage: ShowPressHereArrowMessage = {
-            rotation: 45,
-            originPosition: {
-                x: x - 60,
-                y: y + 60,
-            },
-            targetPosition: {
-                x: x - 40,
-                y: y + 40,
-            },
-        }
-        this.scene.events.emit(EventName.ShowPressHereArrow, eventMessage)
-    }
-
     private updateGridTable() {
         const gridTable = this._updateGridTable()
-        // if (this.tutorialEnabled) {
-        //     this.highlight()
-        // }
-        gridTable.setDepth(getDepth({
-            scene: this.scene,
-            tutorialEnabled: this.tutorialEnabled,
-            plus: 1
-        }))
+        gridTable.setDepth(MODAL_BACKDROP_DEPTH_1 + 1)
     }
 
     // -1 indicate not found
@@ -400,11 +276,6 @@ export class InventoryStorage extends BaseSizer {
                 if (!item) {
                     throw new Error("Badge label not found")
                 }
-                if (this.tutorialEnabled) {
-                    if (isTool && data.id === this.tutorialSeedInventoryId) {
-                        this.scene.events.emit(EventName.TutorialPrepareCloseInventory)
-                    }
-                }
                 //  destroy the badge label
                 item.destroy()
             })
@@ -415,8 +286,6 @@ export class InventoryStorage extends BaseSizer {
             }
             EventBus.emit(EventName.RequestMoveInventory, eventMessage)
             EventBus.emit(EventName.RequestMoveInventoryLocal, eventMessage)
-            // update the arrow position
-            this.updatePressHereArrowPosition()
         } else {
             //  destroy the badge label
             item.destroy()

@@ -1,7 +1,6 @@
 export enum UILayer {
   Base = "base",
   Modal = "modal",
-  Tutorial = "tutorial",
   Overlay = "overlay",
 }
 
@@ -16,11 +15,8 @@ export const layerMap: Record<UILayer, UILayerData> = {
     [UILayer.Modal]: {
         depth: 1000,
     },
-    [UILayer.Tutorial]: {
-        depth: 2000,
-    },
     [UILayer.Overlay]: {
-        depth: 3000,
+        depth: 2000,
     },
 }
 

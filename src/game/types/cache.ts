@@ -19,13 +19,11 @@ export enum CacheKey {
     User = "user",
     Tools = "tools",
     Products = "products",
-    TutorialActive = "tutorial-active",
     SelectedTileId = "selected-tile-id",
     SelectedTileType = "selected-tile-type",
     SelectedTool = "selected-tool",
     DefaultInfo = "default-info",
     DeliveryData = "delivery-data",
-    TutorialDepth = "tutorial-depth",
     VisitedNeighbor = "visited-neighbor",
 }
 

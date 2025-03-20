@@ -58,16 +58,23 @@ export type QueryPlacedItemsParams = QueryParams<
   QueryPlacedItems,
   QueryPlacedItemsRequest
 >;
+
 export interface QueryPlacedItemsRequest {
   storeAsCache: boolean;
+  userId?: string;
 }
+
+export interface QueryPlacedItemsResponse {
+  placedItems: Array<PlacedItemSchema>;
+}
+
 export const queryPlacedItems = async ({
     query = QueryPlacedItems.Query1,
     request = { storeAsCache: true },
 }: QueryPlacedItemsParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    Array<PlacedItemSchema>,
+    QueryPlacedItemsResponse,
     QueryVariables<QueryPlacedItemsRequest>
   >({
       query: queryDocument,

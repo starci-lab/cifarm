@@ -5,11 +5,6 @@ import {
 import {
     InventorySchema,
     InventoryTypeSchema,
-    DefaultInfo,
-    ToolId,
-    ToolSchema,
-    InventoryType,
-    InventoryKind,
 } from "@/modules/entities"
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
@@ -24,12 +19,10 @@ import {
 } from "../utils"
 import {
     getDefaultTools,
-    getFirstSeedInventory,
     getToolInventories,
 } from "@/game/queries"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CellSize, getCellSize, ItemQuantity } from "../elements"
-import { restoreTutorialDepth, setTutorialDepth } from "../tutorial"
 import Button from "phaser3-rex-plugins/plugins/button"
 
 // number of items to show
@@ -65,17 +58,13 @@ export class Toolbar extends ContainerLite {
     private background: Phaser.GameObjects.Image
     private prevButton: Label
     private nextButton: Label
-    private tools: Array<ToolSchema> = []
     private inventories: Array<InventorySchema> = []
     // selected tool index
     private selectedIndex = defaultSelectedIndex
-    private seedInventory: InventorySchema | undefined
     private toolItems: Array<ToolLike> = []
     private slots: Sizer | undefined
     // flags to check if the events are emitted
-    private defaultInfo: DefaultInfo
     private mainContainer: ContainerLite | undefined
-    private enableTutorial = false
     private cellSize: CellSize
 
     constructor({
@@ -105,10 +94,7 @@ export class Toolbar extends ContainerLite {
         this.mainContainer.addLocal(this.slots)
         this.addLocal(this.mainContainer)
 
-       
-        this.tools = this.scene.cache.obj.get(CacheKey.Tools)
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
-        this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.toolItems = this.getToolItems()
         // store the first selected tool
 
@@ -119,27 +105,6 @@ export class Toolbar extends ContainerLite {
         this.updateCacheSelectedTool()
         this.updateItemSizer()
         this.controlArrowVisibility()
-
-        this.scene.events.on(EventName.TutorialHighlightToolbar, () => {
-            this.seedInventory = getFirstSeedInventory({
-                cropId: this.defaultInfo.defaultCropId,
-                scene: this.scene,
-                kind: InventoryKind.Tool
-            })
-            setTutorialDepth({
-                gameObject: this,
-            })
-            this.enableTutorial = true
-        })
-
-        this.scene.events.on(EventName.TutorialResetToolbar, () => {
-            // re update the item sizer
-            this.updateItemSizer()
-            restoreTutorialDepth({
-                gameObject: this,
-            })
-            this.enableTutorial = false
-        })
 
         EventBus.on(EventName.InventoriesRefreshed, (inventories: Array<InventorySchema>) => {
             this.inventories = inventories
@@ -175,56 +140,6 @@ export class Toolbar extends ContainerLite {
         // update the selected index
         this.selectedIndex = index
         this.updateCacheSelectedTool()
-        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-            const tool = this.toolItems[this.startIndex + index]
-            // do nothing if the tool is not found
-            if (!tool) {
-                throw new Error(`Tool not found for index: ${index}`)
-            }
-            const inventoryType = tool.inventoryType
-            if (!inventoryType) {
-                // if inventory not found, mean that it is a default tool, skip
-                return
-            }
-            switch (inventoryType.type) {
-            case InventoryType.Seed: {
-                // check if the tool is a seed
-                if (tool.id === this.seedInventory?.id) {
-                    this.scene.events.emit(EventName.TutorialSeedsPressed)
-                }
-                break
-            }
-            case InventoryType.Tool: {
-                const toolType = this.tools.find(
-                    ({ id }) => id === inventoryType.tool
-                )
-                if (!toolType) {
-                    throw new Error(
-                        `Tool type not found for id: ${inventoryType.tool}`
-                    )
-                }
-                switch (toolType.displayId) {
-                case ToolId.WateringCan: {
-                    this.scene.events.emit(EventName.TutorialWateringCanPressed)
-                    break
-                }
-                case ToolId.Herbicide: {
-                    this.scene.events.emit(EventName.TutorialHerbicidePressed)
-                    break
-                }
-                case ToolId.Pesticide: {
-                    this.scene.events.emit(EventName.TutorialPesiticidePressed)
-                    break
-                }
-                case ToolId.Crate: {
-                    this.scene.events.emit(EventName.TutorialCratePressed)
-                    break
-                }
-                }
-                break
-            }
-            }
-        }
     }
 
     private updateCacheSelectedTool() {
@@ -484,11 +399,6 @@ export class Toolbar extends ContainerLite {
                 } else {
                     this.onDeselect({ index: i, animate: false })
                 }
-            }
-            if (this.scene.cache.obj.get(CacheKey.TutorialActive) && this.enableTutorial) {
-                setTutorialDepth({
-                    gameObject: this,
-                })
             }
         }
     }

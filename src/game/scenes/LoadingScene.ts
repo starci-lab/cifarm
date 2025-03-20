@@ -9,35 +9,36 @@ import {
     loadInventoryTypesAssets,
     loadPetAssets,
     loadProductAssets,
-    loadStacyAssets,
     loadSupplyAssets,
     loadTileAssets,
     loadToolsAssets,
     loadFruitAssets,
-    loadAnimalStateAssets, loadCropStateAssets, loadFruitStateAssets
+    loadAnimalStateAssets,
+    loadCropStateAssets,
+    loadFruitStateAssets,
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
-import { InventorySchema, UserSchema } from "@/modules/entities"
+import { InventorySchema, UserSchema, PlacedItemSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { VisitRequest } from "@/modules/apollo"
 
 export enum LoadingPhase {
-    DataFetching = "dataFetching",
-    AssetsLoading = "assetsLoading",
+  DataFetching = "dataFetching",
+  AssetsLoading = "assetsLoading",
 }
 
 export class LoadingScene extends Scene {
     // loading part in phase data fetching
     // loading fill width and height
     private loadingProgressBar: LoadingProgressBar | undefined
+    private visitedUser: UserSchema | undefined
 
     constructor() {
         super(SceneName.Loading)
-        //define point for loading
     }
 
     // asset loading
@@ -46,12 +47,10 @@ export class LoadingScene extends Scene {
 
     // data fetching
     private dataFetchingLoaded = 0
-    private totalDataFetching = 3
-    
-    async init() {
-        // Listen to the shutdown event
-        this.events.on("shutdown", this.shutdown, this)
+    private totalDataFetching = 4
 
+    async init() {
+        this.visitedUser = this.cache.obj.get(CacheKey.VisitedNeighbor)
         //listen for static data loaded event
         EventBus.once(
             EventName.StaticDataLoaded,
@@ -92,66 +91,77 @@ export class LoadingScene extends Scene {
         )
 
         //listen for load user data event
-        EventBus.once(
-            EventName.UserLoaded, async (user: UserSchema) => {
-                //load the user data
-                this.cache.obj.add(CacheKey.User, user)
-                // get the image url
-                if (user.avatarUrl) {
+        EventBus.once(EventName.UserLoaded, async (user: UserSchema) => {
+            //load the user data
+            this.cache.obj.add(CacheKey.User, user)
+            // get the image url
+            if (user.avatarUrl) {
+                await loadImageAwait({
+                    key: user.id,
+                    imageUrl: user.avatarUrl,
+                    scene: this,
+                })
+            } else {
+                // create jazzicon blob url
+                const imageUrl = createJazziconBlobUrl(user.id)
+                await loadSvgAwait({
+                    key: user.id,
+                    svgUrl: imageUrl,
+                    scene: this,
+                    scale: 16,
+                })
+            }
+            // load the image
+            const visitedUser = this.cache.obj.get(CacheKey.VisitedNeighbor)
+            if (visitedUser) {
+                if (visitedUser.avatarUrl) {
                     await loadImageAwait({
-                        key: user.id,
-                        imageUrl: user.avatarUrl,
+                        key: visitedUser.id,
+                        imageUrl: visitedUser.avatarUrl,
                         scene: this,
                     })
                 } else {
                     // create jazzicon blob url
-                    const imageUrl = createJazziconBlobUrl(user.id)
+                    const imageUrl = createJazziconBlobUrl(visitedUser.id)
                     await loadSvgAwait({
-                        key: user.id,
+                        key: visitedUser.id,
                         svgUrl: imageUrl,
                         scene: this,
-                        scale: 16
+                        scale: 16,
                     })
                 }
-                // load the image
-                const visitedUser = this.cache.obj.get(CacheKey.VisitedNeighbor)
-                if (visitedUser) {
-                    if (visitedUser.avatarUrl) {
-                        await loadImageAwait({
-                            key: visitedUser.id,
-                            imageUrl: visitedUser.avatarUrl,
-                            scene: this,
-                        })
-                    } else {
-                        // create jazzicon blob url
-                        const imageUrl = createJazziconBlobUrl(visitedUser.id)
-                        await loadSvgAwait({
-                            key: visitedUser.id,
-                            svgUrl: imageUrl,
-                            scene: this,
-                            scale: 16
-                        })
-                    }
-                    EventBus.once(EventName.WatchUserChanged, () => {
-                        this.handleFetchData("Loading user...")
-                    })
-                    const visitMessage: VisitRequest = {
-                        neighborUserId: visitedUser.id
-                    }
-                    EventBus.emit(EventName.RequestVisit, visitMessage)
-                } else {
-                    // create the image by the url
+                EventBus.once(EventName.WatchUserChanged, () => {
                     this.handleFetchData("Loading user...")
-                }        
-            })
+                })
+                const visitMessage: VisitRequest = {
+                    neighborUserId: visitedUser.id,
+                }
+                EventBus.emit(EventName.RequestVisit, visitMessage)
+            } else {
+                // create the image by the url
+                this.handleFetchData("Loading user...")
+            }
+        })
 
         //listen for load inventory event
         EventBus.once(
-            EventName.InventoriesLoaded, (inventories: Array<InventorySchema>) => {
+            EventName.InventoriesLoaded,
+            (inventories: Array<InventorySchema>) => {
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, inventories)
                 this.handleFetchData("Loading inventories...")
-            })
+            }
+        )
+
+        //listen for load placed items event
+        EventBus.once(
+            EventName.PlacedItemsLoaded,
+            (placedItems: Array<PlacedItemSchema>) => {
+                //load the placed items
+                this.cache.obj.add(CacheKey.PlacedItems, placedItems)
+                this.handleFetchData("Loading placed items...")
+            }
+        )
 
         this.events.once(EventName.LoadCompleted, () => {
             //load the main game scene
@@ -159,18 +169,12 @@ export class LoadingScene extends Scene {
         })
     }
 
-    preload() {   
+    preload() {
         this.load.setPath("assets")
     }
 
-    shutdown() {
-        EventBus.off(EventName.StaticDataLoaded)
-        EventBus.off(EventName.UserLoaded)
-        EventBus.off(EventName.InventoriesLoaded)
-    }
-
-    create() { 
-        // get the width and height of the game
+    create() {
+    // get the width and height of the game
         const { width, height } = this.game.scale
 
         //  We loaded this image in our Boottrap Scene, so we can display it here
@@ -195,7 +199,7 @@ export class LoadingScene extends Scene {
                 scene: this,
                 x: width / 2,
                 y: height * 0.85,
-            }
+            },
         })
         // add the loading progress container to the scene
         this.add.existing(this.loadingProgressBar)
@@ -206,7 +210,7 @@ export class LoadingScene extends Scene {
         this.load.on("progress", async (progress: number) => {
             const assetLoaded = progress - this.previousAssetLoaded
             this.previousAssetLoaded = progress
-            this.loadAssets(assetLoaded)       
+            this.loadAssets(assetLoaded)
         })
 
         // load all the assets
@@ -218,7 +222,6 @@ export class LoadingScene extends Scene {
         loadProductAssets(this)
         loadTileAssets(this)
         loadPetAssets(this)
-        loadStacyAssets(this)
         loadToolsAssets(this)
         loadInventoryTypesAssets(this)
         loadCropStateAssets(this)
@@ -230,7 +233,7 @@ export class LoadingScene extends Scene {
     }
 
     async update() {
-        // use the loading progress container to update the loading progress
+    // use the loading progress container to update the loading progress
         if (this.loadingProgressBar) {
             await this.loadingProgressBar.update()
 
@@ -249,10 +252,11 @@ export class LoadingScene extends Scene {
         }
         // sleep 0.1 seconds to ensure the hook is updated
         await sleep(100)
-        // start fetching the data    
+        // start fetching the data
         EventBus.emit(EventName.LoadStaticData)
         EventBus.emit(EventName.LoadUser)
         EventBus.emit(EventName.LoadInventories)
+        EventBus.emit(EventName.LoadPlacedItems, this.visitedUser?.id)
     }
 
     private handleFetchData(message: string) {

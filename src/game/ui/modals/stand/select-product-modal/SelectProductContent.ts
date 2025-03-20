@@ -29,7 +29,6 @@ import { MODAL_DEPTH_2 } from "../../ModalManager"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { inventoryTypeAssetMap } from "@/game/assets"
 import { CELL_SELECT_PRODUCT_DATA_KEY } from "./constants"
-import { restoreTutorialDepth, setTutorialDepth } from "@/game/ui/tutorial"
 
 export class SelectProductContent extends BaseSizer {
     private background: ModalBackground
@@ -109,48 +108,12 @@ export class SelectProductContent extends BaseSizer {
         )
     }
 
-    private highlight() {
-        if (!this.background.container) {
-            throw new Error("Background container not found")
-        }
-        setTutorialDepth({
-            gameObject: this.background.container,
-        })
-
-        if (!this.gridTable) {
-            throw new Error("Grid table not found")
-        }
-        setTutorialDepth({
-            gameObject: this.gridTable,
-        })
-    }
-
-    private unhighlight() {
-        if (!this.background.container) {
-            throw new Error("Background container not found")
-        }
-        restoreTutorialDepth({
-            gameObject: this.background.container,
-        })
-
-        if (!this.gridTable) {
-            throw new Error("Grid table not found")
-        }
-        restoreTutorialDepth({
-            gameObject: this.gridTable,
-        })
-    }
-
     private updateGridTable(inventoryTypeId?: string) {
         this._updateGridTable(inventoryTypeId)
-        if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-            this.highlight()
-        } else {
-            if (!this.gridTable) {
-                throw new Error("Grid table not found")
-            }
-            this.gridTable.setDepth(MODAL_DEPTH_2 + 1)
+        if (!this.gridTable) {
+            throw new Error("Grid table not found")
         }
+        this.gridTable.setDepth(MODAL_DEPTH_2 + 1)
     }
 
     private _updateGridTable(inventoryTypeId?: string) {
@@ -248,10 +211,6 @@ export class SelectProductContent extends BaseSizer {
             this.scene.events.emit(EventName.UpdateInputQuantityModal, {
                 inventory,
             })
-
-            if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
-                this.unhighlight()
-            }
         })
         this.scene.add.existing(this.gridTable)
         if (!this.background.container) {

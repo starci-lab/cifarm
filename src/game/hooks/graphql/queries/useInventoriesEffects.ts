@@ -1,45 +1,40 @@
-import { GRAPHQL_QUERY_INVENTORIES_SWR_MUTATION } from "@/app/constants"
+import { GRAPHQL_QUERY_INVENTORIES_SWR } from "@/app/constants"
 import { EventBus, EventName } from "@/game/event-bus"
-import { useGraphQLQueryInventoriesSwrMutation } from "@/hooks"
-import { QueryInventoriesParams } from "@/modules/apollo"
+import { useGraphQLQueryInventoriesSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 
 export const useInventoriesEffects = () => {
     //get the singleton instance of the user swr
-    const { swrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryInventoriesSwrMutation>
-  >(GRAPHQL_QUERY_INVENTORIES_SWR_MUTATION)
+    const { swr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryInventoriesSwr>
+  >(GRAPHQL_QUERY_INVENTORIES_SWR)
 
     // load inventory data
     useEffect(() => {
-        EventBus.on(
-            EventName.LoadInventories,
-            async (params: QueryInventoriesParams) => {
-                //load inventory data
-                const { data } = await swrMutation.trigger(params)
-                EventBus.emit(EventName.InventoriesLoaded, data.inventories)
-            }
-        )
+        EventBus.on(EventName.LoadInventories, async () => {
+            //load inventory data
+            EventBus.emit(EventName.InventoriesLoaded, swr.data?.data?.inventories)
+        })
 
         return () => {
             EventBus.removeListener(EventName.LoadInventories)
         }
-    }, [swrMutation])
+    }, [swr])
 
     // refresh inventory data
     useEffect(() => {
-        EventBus.on(
-            EventName.RefreshInventories,
-            async (params: QueryInventoriesParams) => {
-                //load inventory data
-                const { data } = await swrMutation.trigger(params)
-                EventBus.emit(EventName.InventoriesRefreshed, data.inventories)
-            }
-        )
+        EventBus.on(EventName.RefreshInventories, async () => {
+            //load inventory data
+            const response = await swr.mutate()
+            EventBus.emit(
+                EventName.InventoriesRefreshed,
+                response?.data?.inventories
+            )
+        })
 
         return () => {
             EventBus.removeListener(EventName.RefreshInventories)
         }
-    }, [swrMutation])
+    }, [swr])
 }
