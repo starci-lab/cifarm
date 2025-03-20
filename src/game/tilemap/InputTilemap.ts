@@ -110,6 +110,8 @@ export class InputTilemap extends ItemTilemap {
     private inputMode = InputMode.Normal
     private disableDrag = false
 
+    private minZoom = 0.5
+    private maxZoom = 5
     // place item data
     private buyingDragSpriteData: BuyingDragSpriteData | undefined
     private movingDragSpriteData: MovingDragSpriteData | undefined
@@ -128,15 +130,23 @@ export class InputTilemap extends ItemTilemap {
         const camera = this.scene.cameras.main
 
         // add event listener for pinch gesture
-        this.pinch.on("drag1", (dragScale: Pinch) => {
+        this.pinch.on("drag1", (dragScale: Pinch) => { 
             const drag1Vector = dragScale.drag1Vector
+            const previousScrollX = camera.scrollX
+            const previousScrollY = camera.scrollY
             camera.scrollX -= drag1Vector.x / camera.zoom
             camera.scrollY -= drag1Vector.y / camera.zoom
+            // reset if current not stay in tilemap
+            if (!this.getTileAtWorldXY(camera.scrollX, camera.scrollY)) {
+                camera.scrollX = previousScrollX
+                camera.scrollY = previousScrollY
+            }
         })
         // add event listener for pinch gesture
         this.pinch.on("pinch", (dragScale: Pinch) => {
             const scaleFactor = dragScale.scaleFactor
-            camera.zoom *= scaleFactor
+            const zoom = Math.max(this.minZoom, Math.min(this.maxZoom, camera.zoom * scaleFactor))
+            camera.setZoom(zoom)
         })
 
         // add event listener for mouse wheel event
@@ -150,11 +160,13 @@ export class InputTilemap extends ItemTilemap {
             ) => {
                 //zoom in
                 if (dy < 0) {
-                    camera.zoom += 0.1
+                    const zoom = Math.min(this.maxZoom, camera.zoom + 0.1)
+                    camera.setZoom(zoom)
                 }
                 //zoom out
                 else {
-                    camera.zoom -= 0.1
+                    const zoom = Math.max(this.minZoom, camera.zoom - 0.1)
+                    camera.setZoom(zoom)
                 }
             }
         )
