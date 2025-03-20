@@ -90,7 +90,6 @@ export class DailyContent extends BaseSizer {
                             }
                         }
                         EventBus.once(EventName.ClaimDailyRewardCompleted, () => {
-                            EventBus.emit(EventName.RefreshUser)
                             const items : Array<ClaimItem> = [{
                                 assetKey: this.goldBaseAssetKey,
                                 quantity: this.dailyRewardInfo[id].golds,

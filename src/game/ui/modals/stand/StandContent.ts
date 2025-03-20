@@ -239,7 +239,6 @@ export class StandContent extends BaseSizer {
                     console.log("XButton pressed!")
                     // call retain method
                     EventBus.once(EventName.RetainProductCompleted, () => {
-                        EventBus.emit(EventName.RefreshInventories)
                     })
                     const eventName: RetainProductRequest = {
                         inventoryId: inventory.id

@@ -387,8 +387,6 @@ export class InputTilemap extends ItemTilemap {
             }
 
             EventBus.once(EventName.PlantSeedCompleted, () => {
-                EventBus.emit(EventName.RefreshUser)
-                EventBus.emit(EventName.RefreshInventories)
                 if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                     EventBus.emit(EventName.TutorialSeedPlanted)
                 }
@@ -440,7 +438,6 @@ export class InputTilemap extends ItemTilemap {
 
                     //emit the event to water the plant
                     EventBus.once(EventName.HelpWaterCropCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         data.pressBlocked = true
                     })
 
@@ -460,7 +457,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     //emit the event to water the plant
                     EventBus.once(EventName.WaterCropCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropWatered)
                         }
@@ -493,7 +489,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     EventBus.once(EventName.HelpUsePesticideCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         data.pressBlocked = false
                     })
 
@@ -515,7 +510,6 @@ export class InputTilemap extends ItemTilemap {
 
                     // emit the event to water the plant
                     EventBus.once(EventName.UsePesticideCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropPesticideUsed)
                         }
@@ -551,7 +545,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     // emit the event to water the plant
                     EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -572,7 +565,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     // emit the event to water the plant
                     EventBus.once(EventName.UseHerbicideCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHerbicideUsed)
                         }
@@ -637,8 +629,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     // emit the event to water the plant
                     EventBus.once(EventName.ThiefCropCompleted, async () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -658,8 +648,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     EventBus.once(EventName.HarvestCropCompleted, async () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                             EventBus.emit(EventName.TutorialCropHarvested)
                         }
@@ -715,8 +703,6 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 EventBus.once(EventName.UseFertilizerCompleted, () => {
-                    EventBus.emit(EventName.RefreshUser)
-                    EventBus.emit(EventName.RefreshInventories)
                     data.pressBlocked = false
                 })
 
@@ -793,8 +779,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     EventBus.once(EventName.HelpFeedAnimalCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -815,8 +799,6 @@ export class InputTilemap extends ItemTilemap {
                     }
     
                     EventBus.once(EventName.FeedAnimalCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -857,8 +839,6 @@ export class InputTilemap extends ItemTilemap {
                     }
     
                     EventBus.once(EventName.HelpCureAnimalCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -878,8 +858,6 @@ export class InputTilemap extends ItemTilemap {
                     }
     
                     EventBus.once(EventName.CureAnimalCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -942,8 +920,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     // emit the event to water the plant
                     EventBus.once(EventName.ThiefAnimalProductCompleted, async () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -963,8 +939,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     EventBus.once(EventName.HarvestAnimalCompleted, async () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1206,8 +1180,7 @@ export class InputTilemap extends ItemTilemap {
                 message: "Are you sure you want to sell this item?",
                 quantity: sellPrice,
                 callback: () => {
-                    EventBus.on(EventName.SellCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
+                    EventBus.once(EventName.SellCompleted, () => {
                     })
                     const eventMessage: SellRequest = {
                         placedItemId: placedItem.id,
@@ -1364,8 +1337,7 @@ export class InputTilemap extends ItemTilemap {
                     const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
                         message: "Are you sure you want to buy this building?",
                         callback: () => {
-                            EventBus.on(EventName.BuyBuildingCompleted, () => {
-                                EventBus.emit(EventName.RefreshUser)
+                            EventBus.once(EventName.BuyBuildingCompleted, () => {
                             })
                             const building = this.buildings.find(
                                 (building) => building.id === placedItemType.building
@@ -1400,8 +1372,7 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Tile: {
-                    EventBus.on(EventName.BuyTileCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
+                    EventBus.once(EventName.BuyTileCompleted, () => {
                     })
                     const tile = this._tiles.find(
                         (tile) => tile.id === placedItemType.tile
@@ -1420,8 +1391,7 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Animal: {
-                    EventBus.on(EventName.BuyAnimalCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
+                    EventBus.once(EventName.BuyAnimalCompleted, () => {
                     })
                     const animal = this.animals.find(
                         (animal) => animal.id === placedItemType.animal
@@ -1440,8 +1410,7 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Fruit: {
-                    EventBus.on(EventName.BuyFruitCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
+                    EventBus.once(EventName.BuyFruitCompleted, () => {
                     })
                     const fruit = this.fruits.find(
                         (fruit) => fruit.id === placedItemType.fruit
@@ -1751,7 +1720,6 @@ export class InputTilemap extends ItemTilemap {
         
                     //emit the event to water the plant
                     EventBus.once(EventName.HelpUseBugNetCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         data.pressBlocked = false
                     })
         
@@ -1772,7 +1740,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     //emit the event to water the plant
                     EventBus.once(EventName.UseBugNetCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
                         data.pressBlocked = false
                     })
         
@@ -1833,8 +1800,6 @@ export class InputTilemap extends ItemTilemap {
                     }
                     // emit the event to water the plant
                     EventBus.once(EventName.ThiefFruitCompleted, async () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1854,8 +1819,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     EventBus.once(EventName.HarvestFruitCompleted, async () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1893,8 +1856,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     EventBus.once(EventName.HelpUseFruitFertilizerCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1915,8 +1876,6 @@ export class InputTilemap extends ItemTilemap {
                     }
         
                     EventBus.once(EventName.UseFruitFertilizerCompleted, () => {
-                        EventBus.emit(EventName.RefreshUser)
-                        EventBus.emit(EventName.RefreshInventories)
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed

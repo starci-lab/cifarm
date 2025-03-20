@@ -5,7 +5,7 @@ import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../../assets"
 import { EventBus, EventName, ModalName } from "../../../event-bus"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
-import { Background, Text, Button, ModalBackground, TextColor } from "../../elements"
+import { Background, Text, ModalBackground, TextColor } from "../../elements"
 import { createObjectId } from "@/modules/common"
 
 export class UpgradeBuildingContent extends BaseSizer {
@@ -36,13 +36,12 @@ export class UpgradeBuildingContent extends BaseSizer {
                     EventBus.emit(EventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
                 },
                 mainButton: {
-                    onPress: (button: Button) => {
+                    onPress: () => {
                         const eventName: UpgradeBuildingRequest = {
                             placedItemBuildingId: this.currentPlacedItemId
                         }
 
                         EventBus.once(EventName.UpgradeBuildingCompleted, () => {
-                            EventBus.emit(EventName.RefreshUser)
                             EventBus.emit(EventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
                         })
                         EventBus.emit(EventName.RequestUpgradeBuilding, eventName)

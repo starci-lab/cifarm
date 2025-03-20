@@ -58,7 +58,6 @@ export class InputQuantityContent extends BaseSizer {
                             }
 
                             EventBus.once(EventName.DeliverProductCompleted, () => {
-                                EventBus.emit(EventName.RefreshInventories)
                                 const eventMessage: CloseModalMessage = { 
                                     modalName: ModalName.InputQuantity
                                 }
@@ -72,7 +71,6 @@ export class InputQuantityContent extends BaseSizer {
                                 index,
                             }
                             EventBus.once(EventName.DeliverMoreProductCompleted, () => {
-                                EventBus.emit(EventName.RefreshInventories)
                                 const eventMessage: CloseModalMessage = { 
                                     modalName: ModalName.InputQuantity
                                 }

@@ -115,8 +115,6 @@ export const shopTabData: Record<ShopTab, ShopTabData> = {
     },
 }
 
-const HEIGHT_OFFSET = 80
-
 export interface LimitData {
   limitReached: boolean;
 }
@@ -125,7 +123,7 @@ export class ShopContent extends BaseSizer {
     private contentContainer: ContainerLite
     private background: ModalBackground
     // list of items
-    private gridTableMap: Partial<Record<ShopTab, GridTable>> = {}
+    private gridTableMap: Partial<Record<ShopTab, Sizer>> = {}
     private limitMap: Partial<Record<ShopTab, LimitData>> = {}
     // data
     private animals: Array<AnimalSchema>
@@ -151,7 +149,6 @@ export class ShopContent extends BaseSizer {
     private cellHeight: number
     private contentWidth: number
     private size: Size
-    private limitText: Text
 
     constructor({
         scene,
@@ -265,23 +262,6 @@ export class ShopContent extends BaseSizer {
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
-        this.limitText = new Text({
-            baseParams: {
-                scene: this.scene,
-                x: -this.contentWidth / 2,
-                y: 0,
-                text: "",
-            },
-            options: {
-                textColor: TextColor.White,
-                fontSize: 40,
-            },
-        })
-            .setVisible(false)
-            .setOrigin(0, 0)
-        this.scene.add.existing(this.limitText)
-        this.contentContainer.addLocal(this.limitText)
-
         EventBus.on(
             EventName.PlacedItemsSynced,
             ({ placedItems }: PlacedItemsSyncedMessage) => {
@@ -292,9 +272,7 @@ export class ShopContent extends BaseSizer {
 
 
         // create the scrollable panel
-        for (const shopTab of Object.values(ShopTab)) {
-            this.updateGridTable(shopTab)
-        }
+        this.updateGridTables()
 
         //this.layout()
         // listen for the select shop tab event
@@ -413,8 +391,8 @@ export class ShopContent extends BaseSizer {
         this.checkLimit(shopTab)
     }
 
-    private getLimit(): GetLimitResult {
-        switch (this.selectedShopTab) {
+    private getLimit(shopTab: ShopTab): GetLimitResult {
+        switch (shopTab) {
         case ShopTab.Tiles:
             return {
                 currentOwnership: getPlacedItemsByType({
@@ -447,26 +425,64 @@ export class ShopContent extends BaseSizer {
         }
     }
 
+    private getGridTable(shopTab: ShopTab) {
+        const { showLimitText } = shopTabData[shopTab] 
+        return this.gridTableMap[shopTab]?.getChildren()[showLimitText ? 1 : 0] as GridTable
+    }
+    
     private updateGridTable(shopTab: ShopTab) {
-    // get the item cards
+        // get the item cards
         const items = this.createItems(shopTab)
+        const { showLimitText } = shopTabData[shopTab]
         if (this.gridTableMap[shopTab]) {
-            this.gridTableMap[shopTab].setItems(items)
-            this.gridTableMap[shopTab].layout()
+            if (showLimitText) {
+                const limitText = this.gridTableMap[shopTab].getChildren()[0] as Text
+                console.log(shopTab)
+                const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
+                limitText.setText(`Limit: ${currentOwnership}/${maxOwnership}`)
+            }
+            const gridTable = this.getGridTable(shopTab)
+            gridTable.setItems(items)
+            gridTable.layout()
             return
         }
-        const { showLimitText } = shopTabData[shopTab]
+
         // create a sizer to hold all the item cards
         if (!this.size.width || !this.size.height) {
             throw new Error("Size not found")
         }
-        const heightOffset = showLimitText ? HEIGHT_OFFSET : 0
+
         this.gridTableMap[shopTab] = this.scene.rexUI.add
+            .sizer({ orientation: "y", space: { item: 40 }, originY: 0 })
+
+        if (showLimitText) {
+            const limitText = new Text({
+                baseParams: {
+                    scene: this.scene,
+                    x: 0,
+                    y: 0,
+                    text: "",
+                },
+                options: {
+                    textColor: TextColor.White,
+                    fontSize: 40,
+                },
+            })
+                .setVisible(false)
+                .setOrigin(0, 0)
+            this.scene.add.existing(limitText)
+            const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
+            limitText.setText(`Limit: ${currentOwnership}/${maxOwnership}`)
+            // add the limit text to the grid table
+            this.gridTableMap[shopTab].add(limitText, {
+                align: "left-center",
+            })
+        }
+        const gridTable = this.scene.rexUI.add
             .gridTable({
                 x: 0,
-                y: heightOffset,
-                originY: 0,
-                height: this.size.height - heightOffset,
+                y: 0,
+                height: this.size.height,
                 width: 3 * this.cellWidth + 2 * CELL_SPACE,
                 scrollMode: 0,
                 table: {
@@ -500,8 +516,10 @@ export class ShopContent extends BaseSizer {
                 items,
             })
             .layout()
+        this.gridTableMap[shopTab].add(gridTable)
+        this.gridTableMap[shopTab].layout()
 
-        this.gridTableMap[shopTab].on(
+        gridTable.on(
             "cell.click",
             (
                 cellContainer: ContainerLite,
@@ -550,12 +568,20 @@ export class ShopContent extends BaseSizer {
     }
 
     private checkLimit(shopTab: ShopTab) {
-        if (!shopTabData[shopTab].showLimitText) {
-            this.limitText.setVisible(false)
+        if (!this.gridTableMap[shopTab]) {
+            throw new Error("Grid table is not found")
+        }
+        const { showLimitText } = shopTabData[shopTab]
+        if (!showLimitText) {
             return
         }
-        const { currentOwnership, maxOwnership } = this.getLimit()
-        this.limitText
+        const limitText = this.gridTableMap[shopTab].getChildren()[0] as Text
+        if (!shopTabData[shopTab].showLimitText) {
+            limitText.setVisible(false)
+            return
+        }
+        const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
+        limitText
             .setText(`Limit: ${currentOwnership}/${maxOwnership}`)
             .setVisible(true)
         if (currentOwnership >= maxOwnership) {
@@ -981,8 +1007,6 @@ export class ShopContent extends BaseSizer {
     private onBuySeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuySeedsCompleted, () => {
             // refresh user & inventories
-            EventBus.emit(EventName.RefreshUser)
-            EventBus.emit(EventName.RefreshInventories)
             // emit the events related to the tutorial
             if (this.scene.cache.obj.get(CacheKey.TutorialActive)) {
                 const gridTable = this.gridTableMap[this.selectedShopTab]
@@ -1026,9 +1050,6 @@ export class ShopContent extends BaseSizer {
     //onBuySupplyPress
     private onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuySuppliesCompleted, () => {
-            // refresh user & inventories
-            EventBus.emit(EventName.RefreshUser)
-            EventBus.emit(EventName.RefreshInventories)
         })
         const eventMessage: BuySuppliesRequest = {
             supplyId: displayId,
@@ -1056,9 +1077,6 @@ export class ShopContent extends BaseSizer {
 
     private onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuyToolCompleted, () => {
-            // refresh user & inventories
-            EventBus.emit(EventName.RefreshUser)
-            EventBus.emit(EventName.RefreshInventories)
         })
         const eventMessage: BuyToolRequest = {
             toolId: displayId,
@@ -1150,12 +1168,7 @@ export class ShopContent extends BaseSizer {
 
     private updateGridTables() {
         for (const shop of Object.values(ShopTab)) {
-            if (!this.gridTableMap[shop]) {
-                throw new Error("Grid table is not found")
-            }
-            const items = this.createItems(shop)
-            this.gridTableMap[shop].setItems(items)
-            this.gridTableMap[shop].layout()
+            this.updateGridTable(shop) 
         }
     }
 }
