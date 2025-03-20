@@ -111,6 +111,8 @@ export enum EventName {
     NormalModeOn = "normal_mode_on",
     SellingModeOn = "selling_mode_on",
 
+    CenterCamera = "center_camera",
+
     // load completed
     LoadCompleted = "load_completed",
 

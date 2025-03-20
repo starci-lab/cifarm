@@ -1,4 +1,5 @@
 import { Scene } from "phaser"
+import { EventBus, EventName } from "../event-bus"
 import { SceneName } from "../scene"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
 
@@ -13,6 +14,9 @@ export class GameplayScene extends Scene
     init () {
         // Listen to the shutdown event
         this.events.on("shutdown", this.shutdown, this)
+        EventBus.on(EventName.CenterCamera, () => {
+            this.setCameraCenter()
+        })
     }
 
     // shutdown method
@@ -21,15 +25,19 @@ export class GameplayScene extends Scene
         this.tilemap?.shutdown()
     }
 
+    private setCameraCenter() {
+        const x = TILE_WIDTH
+        const y = (HEIGHT % 2 === 0 ? HEIGHT + 1 : HEIGHT) * TILE_HEIGHT
+        this.cameras.main.centerOn(x, y)
+    }
+
     create ()
     {   
         // launch the UI scene parallel to the gameplay scene
         this.scene.launch(SceneName.UI)
 
         // set the camera to the center of the tilemap
-        const x = TILE_WIDTH
-        const y = (HEIGHT % 2 === 0 ? HEIGHT + 1 : HEIGHT) * TILE_HEIGHT
-        this.cameras.main.centerOn(x, y)
+        this.setCameraCenter()
 
         // create the tilemap
         this.tilemap = new Tilemap({

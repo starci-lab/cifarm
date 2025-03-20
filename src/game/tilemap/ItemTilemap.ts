@@ -98,6 +98,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             EventBus.emit(EventName.FadeIn)
             await sleep(FADE_TIME)
             EventBus.emit(toNeighbor ? EventName.Visit : EventName.Return)
+            EventBus.emit(EventName.CenterCamera)
             this.fading = false
             await sleep(FADE_HOLD_TIME)
             EventBus.emit(EventName.FadeOut)

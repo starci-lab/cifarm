@@ -26,7 +26,6 @@ import {
 import { EventBus, EventName, ModalName } from "../../../../event-bus"
 import { onGameObjectPress } from "@/game/ui/utils"
 import { MODAL_DEPTH_2 } from "../../ModalManager"
-import { IPaginatedResponse } from "@/modules/apollo"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { inventoryTypeAssetMap } from "@/game/assets"
 import { CELL_SELECT_PRODUCT_DATA_KEY } from "./constants"
@@ -44,10 +43,9 @@ export class SelectProductContent extends BaseSizer {
         super(scene, x, y, width, height)
         this.cellSize = getCellSize(this.scene)
 
-        const { data } = this.scene.cache.obj.get(
+        this.inventories =  this.scene.cache.obj.get(
             CacheKey.Inventories
-        ) as IPaginatedResponse<InventorySchema>
-        this.inventories = data
+        )
         this.background = new ModalBackground({
             baseParams: {
                 scene: this.scene,
