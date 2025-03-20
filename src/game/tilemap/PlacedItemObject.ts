@@ -29,11 +29,16 @@ import {
     TextureConfig,
     tileAssetMap,
 } from "../assets"
-import { animalStateAssetMap, cropStateAssetMap, fruitStateAssetMap } from "../assets/states"
+import {
+    animalStateAssetMap,
+    cropStateAssetMap,
+    fruitStateAssetMap,
+} from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
+import { calculateGameplayDepth, GameplayLayer } from "../layers"
 
 export class PlacedItemObject extends ContainerLite {
     private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
@@ -182,60 +187,11 @@ export class PlacedItemObject extends ContainerLite {
             // remove everything in the container
             this.clear(true)
         } else {
-            // Update the texture
-            this.updateFruitInfoTexture()
-
             // Update the bubble state
             this.updateFruitInfoBubble()
 
             // Update the timer
             this.updateFruitInfoTimer()
-        }
-    }
-
-    private updateFruitInfoTexture() {
-        if (!this.nextPlacedItem) {
-            throw new Error("Placed item not found")
-        }
-        if (!this.nextPlacedItem.fruitInfo) {
-            throw new Error("Fruit info not found")
-        }
-        if (
-            this.currentPlacedItem?.fruitInfo?.currentStage !==
-            this.nextPlacedItem.fruitInfo.currentStage
-        ) {
-            const fruit = this.fruits.find((fruit) => {
-                if (!this.nextPlacedItem?.fruitInfo) {
-                    throw new Error("Placed item not found")
-                }
-                return fruit.id === this.nextPlacedItem.fruitInfo.fruit
-            })
-            if (!fruit) {
-                throw new Error("Fruit not found")
-            }
-
-            const data = fruitAssetMap[fruit.displayId]
-            if (!data) {
-                throw new Error("Fruit data not found")
-            }
-            const assetData =
-                data.map?.[this.nextPlacedItem.fruitInfo.currentStage]
-            if (!assetData) {
-                throw new Error("Asset data not found")
-            }
-            const {
-                textureConfig: { key, extraOffsets },
-            } = assetData
-            const { x = 0, y = 0 } = { ...extraOffsets }
-            if (this.mainVisual) {
-                // destroy the previous sprite
-                this.remove(this.mainVisual, true)
-            }
-            this.mainVisual = this.scene.add
-                .sprite(x, y, key)
-                .setOrigin(0.5, 1)
-                .setDepth(this.depth + 2)
-            this.addLocal(this.mainVisual)
         }
     }
 
@@ -247,8 +203,7 @@ export class PlacedItemObject extends ContainerLite {
             throw new Error("Fruit info not found")
         }
         if (
-            this.nextPlacedItem.fruitInfo.currentState !==
-            FruitCurrentState.Normal
+            this.nextPlacedItem.fruitInfo.currentState !== FruitCurrentState.Normal
         ) {
             // use the product icon
             const fruit = this.fruits.find((fruit) => {
@@ -260,7 +215,9 @@ export class PlacedItemObject extends ContainerLite {
             if (!fruit) {
                 throw new Error("Fruit not found")
             }
-            const product = this.products.find((product) => product.fruit === fruit.id)
+            const product = this.products.find(
+                (product) => product.fruit === fruit.id
+            )
             if (!product) {
                 throw new Error("Product not found")
             }
@@ -268,7 +225,7 @@ export class PlacedItemObject extends ContainerLite {
             // if the current state is different from the previous state
             if (
                 this.currentPlacedItem?.fruitInfo?.currentState !==
-                this.nextPlacedItem.fruitInfo.currentState
+        this.nextPlacedItem.fruitInfo.currentState
             ) {
                 if (!this.bubbleState) {
                     const background = this.scene.add.image(
@@ -284,9 +241,7 @@ export class PlacedItemObject extends ContainerLite {
                         })
                         .addBackground(background)
                         .setScale(0.5)
-                        .setDepth(
-                            this.depth + 3
-                        )
+                        .setDepth(this.depth + 30)
                         .setPosition(-TILE_WIDTH / 4, -2 * TILE_HEIGHT)
                     this.addLocal(this.bubbleState)
                 } else {
@@ -296,11 +251,11 @@ export class PlacedItemObject extends ContainerLite {
                 // for state 0-3, use the icon in the fruit asset map
                 if (
                     this.nextPlacedItem.fruitInfo.currentState !==
-                    FruitCurrentState.FullyMatured
+          FruitCurrentState.FullyMatured
                 ) {
                     const textureConfig =
-                        fruitStateAssetMap[this.nextPlacedItem.fruitInfo.currentState]
-                            ?.textureConfig
+            fruitStateAssetMap[this.nextPlacedItem.fruitInfo.currentState]
+                ?.textureConfig
                     if (!textureConfig) {
                         throw new Error("Texture config not found")
                     }
@@ -308,9 +263,10 @@ export class PlacedItemObject extends ContainerLite {
                     if (!key) {
                         throw new Error("State key not found")
                     }
-                    const icon = this.scene.add.image(0, 0, key)
+                    const icon = this.scene.add
+                        .image(0, 0, key)
                         .setScale(scaleWidth, scaleHeight)
-                        .setDepth(this.depth + 4)
+                        .setDepth(this.depth + 31)
                     if (this.bubbleState) {
                         this.bubbleState
                             .add(icon, {
@@ -336,7 +292,7 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 28,
                             textColor: TextColor.Brown,
                         },
-                    }).setDepth(this.depth + 4)
+                    }).setDepth(this.depth + 31)
 
                     this.scene.add.existing(this.quantityText)
                     this.bubbleState
@@ -348,22 +304,22 @@ export class PlacedItemObject extends ContainerLite {
                         .layout()
                 }
             } else if (
-                // for fully matured state, update the quantity text if the fruit is thiefed
+            // for fully matured state, update the quantity text if the fruit is thiefed
                 this.currentPlacedItem?.fruitInfo?.currentState ===
-                FruitCurrentState.FullyMatured &&
-                this.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining !==
-                this.nextPlacedItem.fruitInfo.harvestQuantityRemaining
+          FruitCurrentState.FullyMatured &&
+        this.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining !==
+          this.nextPlacedItem.fruitInfo.harvestQuantityRemaining
             ) {
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
                 this.quantityText
                     .setText(
-                        `${
-                            this.nextPlacedItem.fruitInfo?.harvestQuantityRemaining || 0
-                        }/${fruit.maxHarvestQuantity || 0}`
+                        `${this.nextPlacedItem.fruitInfo?.harvestQuantityRemaining || 0}/${
+                            fruit.maxHarvestQuantity || 0
+                        }`
                     )
-                    .setDepth(this.depth + 4)
+                    .setDepth(this.depth + 31)
             }
         } else {
             // if bubble state is present, remove it
@@ -384,11 +340,11 @@ export class PlacedItemObject extends ContainerLite {
         }
         if (
             this.nextPlacedItem.fruitInfo.currentState !=
-            FruitCurrentState.FullyMatured
+      FruitCurrentState.FullyMatured
         ) {
             if (
                 this.nextPlacedItem.fruitInfo.currentStageTimeElapsed !==
-                this.currentPlacedItem?.fruitInfo?.currentStageTimeElapsed
+        this.currentPlacedItem?.fruitInfo?.currentStageTimeElapsed
             ) {
                 if (!this.timer) {
                     this.timer = new Text({
@@ -402,9 +358,14 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    }).setVisible(false)
+                    })
+                        .setVisible(false)
                         .setOrigin(0.5, 1)
-                        .setDepth(this.depth + 3)
+                        .setDepth(
+                            calculateGameplayDepth({
+                                layer: GameplayLayer.Effects,
+                            })
+                        )
                     this.scene.add.existing(this.timer)
                     this.pinLocal(this.timer, {
                         syncScale: false,
@@ -422,10 +383,10 @@ export class PlacedItemObject extends ContainerLite {
                 const formattedTime = formatTime(
                     Math.round(
                         fruit.growthStageDuration -
-                        this.nextPlacedItem.fruitInfo.currentStageTimeElapsed
+              this.nextPlacedItem.fruitInfo.currentStageTimeElapsed
                     )
                 )
-                this.timer.setText(formattedTime).setDepth(this.depth + 3)
+                this.timer.setText(formattedTime)
             }
         } else {
             if (this.timer) {
@@ -434,7 +395,6 @@ export class PlacedItemObject extends ContainerLite {
             }
         }
     }
-
 
     private updateBuildingUpgrade() {
         if (!this.nextPlacedItem) {
@@ -490,8 +450,8 @@ export class PlacedItemObject extends ContainerLite {
         }
         this.starsSizer
             .layout()
-            .setDepth(this.depth + 2)
             .setPosition(x, y)
+            .setDepth(this.depth + 10)
         this.addLocal(this.starsSizer)
     }
 
@@ -569,7 +529,7 @@ export class PlacedItemObject extends ContainerLite {
             this.seedGrowthInfoSprite = this.scene.add
                 .sprite(x, y, key)
                 .setOrigin(0.5, 1)
-                .setDepth(this.depth + 2)
+                .setDepth(this.depth + 20)
             this.addLocal(this.seedGrowthInfoSprite)
         }
     }
@@ -619,9 +579,7 @@ export class PlacedItemObject extends ContainerLite {
                         })
                         .addBackground(background)
                         .setScale(0.5)
-                        .setDepth(
-                            this.depth + 3
-                        )
+                        .setDepth(this.depth + 30)
                         .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
                 } else {
@@ -639,7 +597,9 @@ export class PlacedItemObject extends ContainerLite {
                     if (!stateKey) {
                         throw new Error("State key not found")
                     }
-                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(this.depth + 4)
+                    const icon = this.scene.add
+                        .image(0, 0, stateKey)
+                        .setDepth(this.depth + 31)
                     if (this.bubbleState) {
                         this.bubbleState
                             .add(icon, {
@@ -665,7 +625,7 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 28,
                             textColor: TextColor.Brown,
                         },
-                    }).setDepth(this.depth + 4)
+                    }).setDepth(this.depth + 31)
 
                     this.scene.add.existing(this.quantityText)
                     this.bubbleState
@@ -692,7 +652,7 @@ export class PlacedItemObject extends ContainerLite {
                             this.nextPlacedItem.seedGrowthInfo?.harvestQuantityRemaining || 0
                         }/${crop.maxHarvestQuantity || 0}`
                     )
-                    .setDepth(this.depth + 3)
+                    .setDepth(this.depth + 30)
             }
         } else {
             // if bubble state is present, remove it
@@ -716,9 +676,8 @@ export class PlacedItemObject extends ContainerLite {
             if (!this.fertilizerParticle) {
                 this.fertilizerParticle = this.scene.add
                     .sprite(0, 0, BaseAssetKey.FertilizerParticle) // Using sprite instead of image
-                    .setDepth(this.depth)
-                    .setScale(0.7)
-                    .setPosition(0, 0)
+                    .setDepth(this.depth + 11)
+                    .setOrigin(0.5, 1)
                 this.addLocal(this.fertilizerParticle)
             }
         } else {
@@ -757,9 +716,14 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    }).setVisible(false)
+                    })
+                        .setVisible(false)
                         .setOrigin(0.5, 1)
-                        .setDepth(this.depth + 3)
+                        .setDepth(
+                            calculateGameplayDepth({
+                                layer: GameplayLayer.Effects,
+                            })
+                        )
                     this.scene.add.existing(this.timer)
                     this.pinLocal(this.timer, {
                         syncScale: false,
@@ -780,7 +744,7 @@ export class PlacedItemObject extends ContainerLite {
               this.nextPlacedItem.seedGrowthInfo.currentStageTimeElapsed
                     )
                 )
-                this.timer.setText(formattedTime).setDepth(this.depth + 3)
+                this.timer.setText(formattedTime)
             }
         } else {
             if (this.timer) {
@@ -817,7 +781,7 @@ export class PlacedItemObject extends ContainerLite {
                 // check if the isAdult property has changed
                 if (
                     this.currentPlacedItem?.animalInfo?.isAdult ===
-              this.nextPlacedItem.animalInfo?.isAdult
+            this.nextPlacedItem.animalInfo?.isAdult
                 ) {
                     willReturn = true
                 }
@@ -835,7 +799,7 @@ export class PlacedItemObject extends ContainerLite {
             default: {
                 willReturn = true
             }
-            } 
+            }
         }
         if (willReturn) {
             return
@@ -856,7 +820,7 @@ export class PlacedItemObject extends ContainerLite {
             }
             this.mainVisual = this.scene.add
                 .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
-                .setDepth(this.depth + 1)
+                .setDepth(this.depth + 10)
                 .setOrigin(0.5, 1)
             this.mainVisual.animationState.setAnimation(0, "idle", true)
             this.addLocal(this.mainVisual)
@@ -868,7 +832,7 @@ export class PlacedItemObject extends ContainerLite {
             }
             this.mainVisual = this.scene.add
                 .sprite(x, y, key)
-                .setDepth(this.depth + 1)
+                .setDepth(this.depth + 10)
                 .setOrigin(0.5, 1)
             this.addLocal(this.mainVisual)
         }
@@ -914,9 +878,7 @@ export class PlacedItemObject extends ContainerLite {
                         })
                         .addBackground(background)
                         .setScale(0.5)
-                        .setDepth(
-                            this.depth + 3
-                        )
+                        .setDepth(this.depth + 30)
                         .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
                 } else {
@@ -925,7 +887,7 @@ export class PlacedItemObject extends ContainerLite {
 
                 if (
                     this.nextPlacedItem.animalInfo.currentState !==
-            AnimalCurrentState.Yield
+          AnimalCurrentState.Yield
                 ) {
                     const textureConfig =
             animalStateAssetMap[this.nextPlacedItem.animalInfo.currentState]
@@ -937,11 +899,10 @@ export class PlacedItemObject extends ContainerLite {
                     if (!key) {
                         throw new Error("State key not found")
                     }
-                    const icon = this.scene.add.image(0, 0, key)
+                    const icon = this.scene.add
+                        .image(0, 0, key)
                         .setScale(scaleWidth, scaleHeight)
-                        .setDepth(
-                            this.depth + 4
-                        )
+                        .setDepth(this.depth + 31)
                     if (this.bubbleState) {
                         this.bubbleState
                             .add(icon, {
@@ -967,9 +928,7 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 28,
                             textColor: TextColor.Brown,
                         },
-                    }).setDepth(
-                        this.depth + 4
-                    )
+                    }).setDepth(this.depth + 31)
 
                     this.scene.add.existing(this.quantityText)
                     this.bubbleState
@@ -982,20 +941,20 @@ export class PlacedItemObject extends ContainerLite {
                 }
             } else if (
                 this.currentPlacedItem?.animalInfo?.currentState ===
-            AnimalCurrentState.Yield &&
+          AnimalCurrentState.Yield &&
         this.currentPlacedItem?.animalInfo?.harvestQuantityRemaining !==
           this.nextPlacedItem.animalInfo.harvestQuantityRemaining
-            ){
+            ) {
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
                 this.quantityText
                     .setText(
-                        `${
-                            this.nextPlacedItem.animalInfo?.harvestQuantityRemaining || 0
-                        }/${animal.maxHarvestQuantity || 0}`
+                        `${this.nextPlacedItem.animalInfo?.harvestQuantityRemaining || 0}/${
+                            animal.maxHarvestQuantity || 0
+                        }`
                     )
-                    .setDepth(this.depth + 4)
+                    .setDepth(this.depth + 31)
             }
         } else {
             // if bubble state is present, remove it
@@ -1034,7 +993,14 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 32,
                             enableStroke: true,
                         },
-                    }).setVisible(false).setOrigin(0.5, 1).setDepth(this.depth + 2)
+                    })
+                        .setVisible(false)
+                        .setOrigin(0.5, 1)
+                        .setDepth(
+                            calculateGameplayDepth({
+                                layer: GameplayLayer.Effects,
+                            })
+                        )
                     this.scene.add.existing(text)
                     this.timer = text
                     this.pinLocal(this.timer, {
