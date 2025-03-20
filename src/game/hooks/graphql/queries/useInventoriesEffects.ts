@@ -18,7 +18,7 @@ export const useInventoriesEffects = () => {
             async (params: QueryInventoriesParams) => {
                 //load inventory data
                 const { data } = await swrMutation.trigger(params)
-                EventBus.emit(EventName.InventoriesLoaded, data.inventories)
+                EventBus.emit(EventName.InventoriesLoaded, data)
             }
         )
 
@@ -34,7 +34,7 @@ export const useInventoriesEffects = () => {
             async (params: QueryInventoriesParams) => {
                 //load inventory data
                 const { data } = await swrMutation.trigger(params)
-                EventBus.emit(EventName.InventoriesRefreshed, data.inventories.data)
+                EventBus.emit(EventName.InventoriesRefreshed, data)
             }
         )
 

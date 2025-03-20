@@ -70,6 +70,7 @@ export class Input extends Label {
             options: {
                 fontSize,
                 textColor,
+                width,
             },
         })
         scene.add.existing(text)

@@ -1,10 +1,10 @@
 "use client"
-import { QUERY_FOLLOWEES_SWR, QUERY_NEIGHBORS_SWR } from "@/app/constants"
+import { GRAPHQL_QUERY_NEIGHBORS_SWR, GRAPHQL_QUERY_FOLLOWEES_SWR } from "@/app/constants"
 import {
     DEFAULT_LIMIT,
     DEFAULT_OFFSET,
-    useQueryFolloweesSwr,
-    useQueryNeighborsSwr,
+    useGraphQLQueryFolloweesSwr,
+    useGraphQLQueryNeighborsSwr,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Button, Card, Divider, Link, Pagination, ScrollShadow, Spacer } from "@heroui/react"
@@ -18,30 +18,30 @@ export const WorldTab: FC = () => {
         swr: { data, mutate: neighborsMutate },
         params,
         setParams,
-    } = useSingletonHook<ReturnType<typeof useQueryNeighborsSwr>>(
-        QUERY_NEIGHBORS_SWR
+    } = useSingletonHook<ReturnType<typeof useGraphQLQueryNeighborsSwr>>(
+        GRAPHQL_QUERY_NEIGHBORS_SWR
     )
 
     const {
         swr: { mutate: followeesMutate },
     } =
-    useSingletonHook<ReturnType<typeof useQueryFolloweesSwr>>(
-        QUERY_FOLLOWEES_SWR
+    useSingletonHook<ReturnType<typeof useGraphQLQueryFolloweesSwr>>(
+        GRAPHQL_QUERY_FOLLOWEES_SWR
     )
 
     const neighbors = data?.data.neighbors.data || []
     const count = data?.data.neighbors.count || 0
     // compute the total number of pages
-    const limit = params?.args?.limit ?? DEFAULT_LIMIT
-    const offset = params?.args?.offset ?? DEFAULT_OFFSET
+    const limit = params?.request?.limit ?? DEFAULT_LIMIT
+    const offset = params?.request?.offset ?? DEFAULT_OFFSET
     const totalPage = Math.max(Math.ceil(count / limit), 1)
     const currentPage = Math.ceil(offset / limit) + 1
     const setPage = (page: number) => {
         if (!setParams) throw new Error("setParams is not defined")
         setParams({
             ...params,
-            args: {
-                ...params?.args,
+            request: {
+                ...params?.request,
                 offset: (page - 1) * limit,
             },
         })
@@ -50,16 +50,17 @@ export const WorldTab: FC = () => {
         <div className="relative">
             <div className="flex gap-2">
                 <FilterBar
-                    fetchMethod={({ searchString }) => {
-                        if (!setParams) throw new Error("setParams is not defined")
-                        setParams({
-                            ...params,
-                            args: {
-                                ...params?.args,
-                                searchString
-                            },
-                        })
-                    }}
+                    handleSearchResult={
+                        ({ searchString }) => {
+                            if (!setParams) throw new Error("setParams is not defined")
+                            setParams({
+                                ...params,
+                                request: {
+                                    ...params?.request,
+                                    searchString
+                                },
+                            })
+                        }}
                 />
                 <Button variant="light" isIconOnly onPress={() => neighborsMutate()}>
                     <Link color="primary">

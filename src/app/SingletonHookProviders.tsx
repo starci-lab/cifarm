@@ -61,6 +61,7 @@ import {
     useGraphQLMutationFeedAnimalSwrMutation,
     useGraphQLMutationCureAnimalSwrMutation,
     useGraphQLMutationUseFertilizerSwrMutation,
+    useGraphQLMutationClaimHoneycombDailyRewardSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -133,6 +134,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_FEED_ANIMAL_SWR_MUTATION: useGraphQLMutationFeedAnimalSwrMutation(),
             GRAPHQL_MUTATION_CURE_ANIMAL_SWR_MUTATION: useGraphQLMutationCureAnimalSwrMutation(),
             GRAPHQL_MUTATION_USE_FERTILIZER_SWR_MUTATION: useGraphQLMutationUseFertilizerSwrMutation(),
+            GRAPHQL_MUTATION_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useGraphQLMutationClaimHoneycombDailyRewardSwrMutation(),
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
 

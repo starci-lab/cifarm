@@ -1,2 +1,2 @@
 export * from "./mutation-mint-offchain-tokens"
-export * from "./mutate-claim-honeycomb-daily-reward" 
+export * from "./mutation-claim-honeycomb-daily-reward" 

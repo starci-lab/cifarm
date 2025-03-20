@@ -1,7 +1,7 @@
 "use client"
-import { API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_MUTATION_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { Container, ExclamationTooltip } from "@/components"
-import { useApiClaimHoneycombDailyRewardSwrMutation, useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLMutationClaimHoneycombDailyRewardSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { TxResponse } from "@/modules/honeycomb"
 import { deserialize, serialize } from "@/modules/serialization"
@@ -15,8 +15,8 @@ const Page: FC = () => {
     const router = useRouterWithSearchParams()
 
     const { swrMutation } = useSingletonHook<
-            ReturnType<typeof useApiClaimHoneycombDailyRewardSwrMutation>
-          >(API_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION)
+    ReturnType<typeof useGraphQLMutationClaimHoneycombDailyRewardSwrMutation >
+    >(GRAPHQL_MUTATION_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION)
     const dispatch = useAppDispatch()
     const signTransactionDiscloresure = useSingletonHook<ReturnType<typeof useDisclosure>
     >(SIGN_TRANSACTION_DISCLOSURE)
@@ -62,14 +62,18 @@ const Page: FC = () => {
                                                     key: SessionDbKey.HoneycombDailyRewardTransaction,
                                                     value: serialize(data)
                                                 })
-                                                tx = data
+                                                if (!data) {
+                                                    return
+                                                }
+                                                tx = data?.claimHoneycombDailyReward
                                             } else {
                                                 tx = deserialize(transaction.value)
                                             }
                                             dispatch(setSignTransactionModal({
-                                                serializedTx: tx.transaction,
-                                                transactionFrom: TransactionType.Honeycomb,
-                                                data: tx,
+                                                type: TransactionType.HoneycombProtocolRawTx,
+                                                data: {
+                                                    serializedTx: tx.transaction,
+                                                },
                                                 extraAction: () => {
                                                     // remove the transaction
                                                     sessionDb.keyValueStore.delete(SessionDbKey.HoneycombDailyRewardTransaction)

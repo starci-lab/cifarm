@@ -53,6 +53,12 @@ export class UpgradeBuildingContent extends BaseSizer {
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
 
+        this.amountText = new Text({
+            baseParams: { scene, text: "0", x: 0, y: 0 },
+            options: { fontSize: 30, textColor: TextColor.Brown }
+        })
+        this.scene.add.existing(this.amountText)
+        
         this.mainContainer = this.scene.rexUI.add.sizer({
             orientation: "y",
             space: { item: 25 },

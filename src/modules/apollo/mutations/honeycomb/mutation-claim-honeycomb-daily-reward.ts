@@ -24,7 +24,7 @@ export interface MutationClaimHoneycombDailyRewardParams {
   query?: MutationClaimHoneycombDailyReward;
 }
 
-export const mutateClaimHoneycombDailyReward = async ({
+export const mutationClaimHoneycombDailyReward = async ({
     query = MutationClaimHoneycombDailyReward.Mutation1,
 }: MutationClaimHoneycombDailyRewardParams = {}) => {
     const mutationDocument = mutationMap[query]
