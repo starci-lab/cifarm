@@ -4,7 +4,9 @@ import { MutationParams, MutationVariables } from "../../types"
 
 const mutation1 = gql`
     mutation Visit($request: VisitRequest!) {
-        visit(request: $request)
+        visit(request: $request) {
+            neighborUserId        
+        }
     }
 `
 

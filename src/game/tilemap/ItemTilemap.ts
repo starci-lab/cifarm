@@ -92,6 +92,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
 
         EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
+            console.log("showing fade...")
             this.fading = true
             // console.log(toNeighbor)
             EventBus.emit(EventName.FadeIn)
@@ -106,7 +107,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             let data = this.scene.cache.obj.get(
                 CacheKey.PlacedItems
             ) as PlacedItemsSyncedMessage
-            console.log(`Number of placed items: ${data.placedItems.length}`)
             if (this.isWaiting) {
                 data = this.scene.cache.obj.get(
                     CacheKey.PlacedItems

@@ -33,7 +33,6 @@ import { animalStateAssetMap, cropStateAssetMap, fruitStateAssetMap } from "../a
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
-import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 
 export class PlacedItemObject extends ContainerLite {
@@ -274,11 +273,9 @@ export class PlacedItemObject extends ContainerLite {
                         .addBackground(background)
                         .setScale(0.5)
                         .setDepth(
-                            calculateGameplayDepth({
-                                layer: GameplayLayer.Effects,
-                            })
+                            this.depth + 3
                         )
-                        .setPosition(-TILE_WIDTH / 2, (-3 * TILE_HEIGHT) / 2)
+                        .setPosition(-TILE_WIDTH / 4, -2 * TILE_HEIGHT)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -289,17 +286,19 @@ export class PlacedItemObject extends ContainerLite {
                     this.nextPlacedItem.fruitInfo.currentState !==
                     FruitCurrentState.FullyMatured
                 ) {
-                    const stateKey =
+                    const textureConfig =
                         fruitStateAssetMap[this.nextPlacedItem.fruitInfo.currentState]
-                            ?.textureConfig.key
-                    if (!stateKey) {
+                            ?.textureConfig
+                    if (!textureConfig) {
+                        throw new Error("Texture config not found")
+                    }
+                    const { key, scaleHeight, scaleWidth } = textureConfig
+                    if (!key) {
                         throw new Error("State key not found")
                     }
-                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
-                    )
+                    const icon = this.scene.add.image(0, 0, key)
+                        .setScale(scaleWidth, scaleHeight)
+                        .setDepth(this.depth + 4)
                     if (this.bubbleState) {
                         this.bubbleState
                             .add(icon, {
@@ -325,11 +324,7 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 28,
                             textColor: TextColor.Brown,
                         },
-                    }).setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
-                    )
+                    }).setDepth(this.depth + 4)
 
                     this.scene.add.existing(this.quantityText)
                     this.bubbleState
@@ -356,7 +351,7 @@ export class PlacedItemObject extends ContainerLite {
                             this.nextPlacedItem.fruitInfo?.harvestQuantityRemaining || 0
                         }/${fruit.maxHarvestQuantity || 0}`
                     )
-                    .setDepth(this.depth + 3)
+                    .setDepth(this.depth + 4)
             }
         } else {
             // if bubble state is present, remove it
@@ -388,7 +383,7 @@ export class PlacedItemObject extends ContainerLite {
                         baseParams: {
                             scene: this.scene,
                             x: 0,
-                            y: -25,
+                            y: -50,
                             text: "",
                         },
                         options: {
@@ -613,9 +608,7 @@ export class PlacedItemObject extends ContainerLite {
                         .addBackground(background)
                         .setScale(0.5)
                         .setDepth(
-                            calculateGameplayDepth({
-                                layer: GameplayLayer.Effects,
-                            })
+                            this.depth + 3
                         )
                         .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
@@ -634,11 +627,7 @@ export class PlacedItemObject extends ContainerLite {
                     if (!stateKey) {
                         throw new Error("State key not found")
                     }
-                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
-                    )
+                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(this.depth + 4)
                     if (this.bubbleState) {
                         this.bubbleState
                             .add(icon, {
@@ -664,11 +653,7 @@ export class PlacedItemObject extends ContainerLite {
                             fontSize: 28,
                             textColor: TextColor.Brown,
                         },
-                    }).setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
-                    )
+                    }).setDepth(this.depth + 4)
 
                     this.scene.add.existing(this.quantityText)
                     this.bubbleState
@@ -843,9 +828,13 @@ export class PlacedItemObject extends ContainerLite {
         if (willReturn) {
             return
         }
+        const assetData = this.getAssetData()
+        if (!assetData) {
+            throw new Error("Asset data not found")
+        }
         const {
             textureConfig: { key, spineConfig, extraOffsets },
-        } = this.getAssetData()
+        } = assetData
 
         const { x = 0, y = 0 } = { ...extraOffsets }
         if (spineConfig) {
@@ -914,9 +903,7 @@ export class PlacedItemObject extends ContainerLite {
                         .addBackground(background)
                         .setScale(0.5)
                         .setDepth(
-                            calculateGameplayDepth({
-                                layer: GameplayLayer.Effects,
-                            })
+                            this.depth + 3
                         )
                         .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
@@ -928,17 +915,21 @@ export class PlacedItemObject extends ContainerLite {
                     this.nextPlacedItem.animalInfo.currentState !==
             AnimalCurrentState.Yield
                 ) {
-                    const stateKey =
+                    const textureConfig =
             animalStateAssetMap[this.nextPlacedItem.animalInfo.currentState]
-                ?.textureConfig.key
-                    if (!stateKey) {
+                ?.textureConfig
+                    if (!textureConfig) {
+                        throw new Error("Texture config not found")
+                    }
+                    const { scaleHeight, scaleWidth, key } = textureConfig
+                    if (!key) {
                         throw new Error("State key not found")
                     }
-                    const icon = this.scene.add.image(0, 0, stateKey).setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
-                    )
+                    const icon = this.scene.add.image(0, 0, key)
+                        .setScale(scaleWidth, scaleHeight)
+                        .setDepth(
+                            this.depth + 4
+                        )
                     if (this.bubbleState) {
                         this.bubbleState
                             .add(icon, {
@@ -965,9 +956,7 @@ export class PlacedItemObject extends ContainerLite {
                             textColor: TextColor.Brown,
                         },
                     }).setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
+                        this.depth + 4
                     )
 
                     this.scene.add.existing(this.quantityText)
@@ -994,7 +983,7 @@ export class PlacedItemObject extends ContainerLite {
                             this.nextPlacedItem.animalInfo?.harvestQuantityRemaining || 0
                         }/${animal.maxHarvestQuantity || 0}`
                     )
-                    .setDepth(this.depth + 3)
+                    .setDepth(this.depth + 4)
             }
         } else {
             // if bubble state is present, remove it
@@ -1069,7 +1058,7 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
-    private getAssetData(): AssetData {
+    private getAssetData(): AssetData | undefined {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }

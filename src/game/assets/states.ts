@@ -1,12 +1,18 @@
-import { AnimalCurrentState, CropCurrentState, FruitCurrentState } from "@/modules/entities"
+import {
+    AnimalCurrentState,
+    CropCurrentState,
+    FruitCurrentState,
+} from "@/modules/entities"
 import { TextureConfig } from "./types"
 import { Scene } from "phaser"
 
 export interface CropStateAssetData {
-    textureConfig: TextureConfig;
+  textureConfig: TextureConfig;
 }
 
-export const cropStateAssetMap: Partial<Record<CropCurrentState, CropStateAssetData>> = {
+export const cropStateAssetMap: Partial<
+  Record<CropCurrentState, CropStateAssetData>
+> = {
     [CropCurrentState.NeedWater]: {
         textureConfig: { key: "need-water", assetUrl: "states/need-water.png" },
     },
@@ -30,23 +36,31 @@ export const loadCropStateAssets = (scene: Scene) => {
         if (!cropStateData) {
             throw new Error(`Crop state data not found for state: ${state}`)
         }
-        scene.load.image(cropStateData.textureConfig.key, cropStateData.textureConfig.assetUrl)
+        scene.load.image(
+            cropStateData.textureConfig.key,
+            cropStateData.textureConfig.assetUrl
+        )
     })
 }
 
 export interface AnimalStateAssetData {
-    textureConfig: TextureConfig;
+  textureConfig: TextureConfig;
 }
 
-export const animalStateAssetMap: Partial<Record<AnimalCurrentState, AnimalStateAssetData>> = {
+export const animalStateAssetMap: Partial<
+  Record<AnimalCurrentState, AnimalStateAssetData>
+> = {
     [AnimalCurrentState.Hungry]: {
-        textureConfig: { key: "animal-hungry", assetUrl: "states/hungry.png" },
+        textureConfig: {
+            key: "animal-feed",
+            assetUrl: "supplies/animal-feed.png",
+            useExisting: true,
+            scaleHeight: 0.8,
+            scaleWidth: 0.8,
+        },
     },
     [AnimalCurrentState.Sick]: {
         textureConfig: { key: "animal-sick", assetUrl: "states/sick.png" },
-    },
-    [AnimalCurrentState.Yield]: {
-        textureConfig: { key: "animal-ready", assetUrl: "states/ready.png" },
     },
 }
 
@@ -59,23 +73,36 @@ export const loadAnimalStateAssets = (scene: Scene) => {
         if (!animalStateData) {
             throw new Error(`Animal state data not found for state: ${state}`)
         }
-        scene.load.image(animalStateData.textureConfig.key, animalStateData.textureConfig.assetUrl)
+        if (!animalStateData.textureConfig.useExisting) {
+            scene.load.image(
+                animalStateData.textureConfig.key,
+                animalStateData.textureConfig.assetUrl
+            )
+        }
     })
 }
 
 export interface FruitStateAssetData {
-    textureConfig: TextureConfig;
+  textureConfig: TextureConfig;
 }
 
-export const fruitStateAssetMap: Partial<Record<FruitCurrentState, FruitStateAssetData>> = {
+export const fruitStateAssetMap: Partial<
+  Record<FruitCurrentState, FruitStateAssetData>
+> = {
     [FruitCurrentState.NeedFertilizer]: {
-        textureConfig: { key: "need-fertilizer", assetUrl: "states/hungry.png" },
+        textureConfig: {
+            key: "fruit-fertilizer",
+            assetUrl: "supplies/fruit-fertilizer.png",
+            useExisting: true,
+            scaleHeight: 0.8,
+            scaleWidth: 0.8,
+        },
     },
     [FruitCurrentState.IsInfested]: {
-        textureConfig: { key: "caterpillar-infested", assetUrl: "states/caterpillar-infested.png" },
-    },
-    [FruitCurrentState.FullyMatured]: {
-        textureConfig: { key: "fully-mature", assetUrl: "states/is-ready.png" },
+        textureConfig: {
+            key: "caterpillar-infested",
+            assetUrl: "states/caterpillar-infested.png",
+        },
     },
 }
 
@@ -88,6 +115,9 @@ export const loadFruitStateAssets = (scene: Scene) => {
         if (!fruitStateData) {
             throw new Error(`Fruit state data not found for state: ${state}`)
         }
-        scene.load.image(fruitStateData.textureConfig.key, fruitStateData.textureConfig.assetUrl)
+        scene.load.image(
+            fruitStateData.textureConfig.key,
+            fruitStateData.textureConfig.assetUrl
+        )
     })
 }
