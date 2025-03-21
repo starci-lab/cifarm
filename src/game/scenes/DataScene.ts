@@ -1,10 +1,9 @@
 import { Scene } from "phaser"
 import { EventBus, EventName } from "../event-bus"
-import { InventorySchema, UserSchema } from "@/modules/entities"
+import { InventorySchema, UserSchema, PlacedItemSchema } from "@/modules/entities"
 import { CacheKey } from "../types"
 import { SceneName } from "../scene"
-import { PlacedItemsSyncedMessage } from "@/hooks"
-
+import { mergeChangesToObjectsArray } from "@/modules/common"
 export class DataScene extends Scene {
     constructor() {
         super(SceneName.Data)
@@ -28,9 +27,13 @@ export class DataScene extends Scene {
 
         EventBus.on(
             EventName.PlacedItemsSynced,
-            async (data: PlacedItemsSyncedMessage) => {
-                //store the placed items in the cache
-                this.cache.obj.add(CacheKey.PlacedItems, data)
+            async (changes: Array<PlacedItemSchema>) => {
+                // append changes to the placed items
+                const placedItems = this.cache.obj.get(CacheKey.PlacedItems)
+                const mergedPlacedItems = mergeChangesToObjectsArray(placedItems, changes)
+                // store the placed items in the cache
+                this.cache.obj.add(CacheKey.PlacedItems, mergedPlacedItems)
+                // emit the event to update the placed items
                 EventBus.emit(EventName.UpdatePlacedItems)
             }
         )

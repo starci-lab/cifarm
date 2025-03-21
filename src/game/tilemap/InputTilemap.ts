@@ -55,7 +55,11 @@ import {
     TextureConfig,
     tileAssetMap,
 } from "../assets"
-import { GREEN_TINT_COLOR, RED_TINT_COLOR, WHITE_TINT_COLOR } from "../constants"
+import {
+    GREEN_TINT_COLOR,
+    RED_TINT_COLOR,
+    WHITE_TINT_COLOR,
+} from "../constants"
 import {
     BuyingModeOnMessage,
     CreateFlyItemMessage,
@@ -70,7 +74,11 @@ import {
 import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, FlyItems, ToolLike } from "../ui"
-import { HandlePlacedItemUpdatePositionParams, ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
+import {
+    HandlePlacedItemUpdatePositionParams,
+    ItemTilemap,
+    PlacedItemObjectData,
+} from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
 
 export const POPUP_SCALE = 0.7
@@ -89,13 +97,13 @@ interface BuyingDragSpriteData {
   placedItemType: PlacedItemTypeSchema;
 }
 interface MovingDragSpriteData {
-    placedItem: PlacedItemSchema;
-    textureConfig: TextureConfig;
-    type: PlacedItemType;
-    placedItemType: PlacedItemTypeSchema;
+  placedItem: PlacedItemSchema;
+  textureConfig: TextureConfig;
+  type: PlacedItemType;
+  placedItemType: PlacedItemTypeSchema;
 }
 interface SellingDragSpriteData {
-    placedItem: PlacedItemSchema;
+  placedItem: PlacedItemSchema;
 }
 
 // key for experience
@@ -117,7 +125,7 @@ export class InputTilemap extends ItemTilemap {
     private sellingDragSpriteData: SellingDragSpriteData | undefined
     private dragVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
     private placementConfirmation: PlacementConfirmation | undefined
-    
+
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
 
@@ -129,7 +137,7 @@ export class InputTilemap extends ItemTilemap {
         const camera = this.scene.cameras.main
 
         // add event listener for pinch gesture
-        this.pinch.on("drag1", (dragScale: Pinch) => { 
+        this.pinch.on("drag1", (dragScale: Pinch) => {
             const drag1Vector = dragScale.drag1Vector
             const previousScrollX = camera.scrollX
             const previousScrollY = camera.scrollY
@@ -144,7 +152,10 @@ export class InputTilemap extends ItemTilemap {
         // add event listener for pinch gesture
         this.pinch.on("pinch", (dragScale: Pinch) => {
             const scaleFactor = dragScale.scaleFactor
-            const zoom = Math.max(this.minZoom, Math.min(this.maxZoom, camera.zoom * scaleFactor))
+            const zoom = Math.max(
+                this.minZoom,
+                Math.min(this.maxZoom, camera.zoom * scaleFactor)
+            )
             camera.setZoom(zoom)
         })
 
@@ -212,7 +223,7 @@ export class InputTilemap extends ItemTilemap {
             data.object.showTimer()
 
             if (this.inputMode === InputMode.Move) {
-                if(this.movingDragSpriteData) {
+                if (this.movingDragSpriteData) {
                     console.error("Having moving drag sprite data")
                     return
                 }
@@ -226,9 +237,9 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 this.handleMovingMode({
-                    placedItem
+                    placedItem,
                 })
-                
+
                 if (placedItem) {
                     this.clearPlacedItem(placedItem)
                     this.placedItemObjectMap[placedItem.id]?.object.destroy()
@@ -248,12 +259,11 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 this.handleSellingMode({
-                    placedItem
+                    placedItem,
                 })
                 return
             }
 
-            
             switch (data.placedItemType.type) {
             case PlacedItemType.Tile:
                 this.handlePressOnTile(data)
@@ -787,7 +797,7 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestHelpFeedAnimal, eventMessage)
                     data.pressBlocked = true
-                }else{
+                } else {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -796,7 +806,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-    
+
                     EventBus.once(EventName.FeedAnimalCompleted, () => {
                         data.pressBlocked = false
                     })
@@ -809,7 +819,6 @@ export class InputTilemap extends ItemTilemap {
                     data.pressBlocked = true
                 }
 
-                
                 break
             }
             }
@@ -836,7 +845,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-    
+
                     EventBus.once(EventName.HelpCureAnimalCompleted, () => {
                         data.pressBlocked = false
                     })
@@ -846,7 +855,7 @@ export class InputTilemap extends ItemTilemap {
                     }
                     EventBus.emit(EventName.RequestHelpCureAnimal, eventMessage)
                     data.pressBlocked = true
-                }else{
+                } else {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -855,7 +864,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-    
+
                     EventBus.once(EventName.CureAnimalCompleted, () => {
                         data.pressBlocked = false
                     })
@@ -867,14 +876,14 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.emit(EventName.RequestCureAnimal, eventMessage)
                     data.pressBlocked = true
                 }
-                
+
                 break
             }
             case ToolId.Crate: {
-                // return if seed growth info is not need water
+            // return if seed growth info is not need water
                 if (
                     currentPlacedItem.animalInfo?.currentState !==
-                  AnimalCurrentState.Yield
+              AnimalCurrentState.Yield
                 ) {
                     return
                 }
@@ -912,7 +921,8 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.thiefAnimalProduct.energyConsume,
+                            actionEnergy:
+                    this.activities.thiefAnimalProduct.energyConsume,
                         })
                     ) {
                         return
@@ -969,8 +979,7 @@ export class InputTilemap extends ItemTilemap {
             if (!placedItemType) {
                 throw new Error("Placed item type not found")
             }
-            const { textureConfig } =
-          buildingAssetMap[building.displayId].map
+            const { textureConfig } = buildingAssetMap[building.displayId].map
             this.buyingDragSpriteData = {
                 textureConfig,
                 type,
@@ -1028,8 +1037,7 @@ export class InputTilemap extends ItemTilemap {
             if (!placedItemType) {
                 throw new Error("Fruid placed item type not found")
             }
-            const { textureConfig } =
-          fruitAssetMap[fruit.displayId].map[0]
+            const { textureConfig } = fruitAssetMap[fruit.displayId].map[0]
             this.buyingDragSpriteData = {
                 textureConfig,
                 type,
@@ -1054,7 +1062,7 @@ export class InputTilemap extends ItemTilemap {
         }
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === currentPlacedItem.placedItemType
-        ) 
+        )
 
         if (!placedItemType) {
             throw new Error("Placed item type not found")
@@ -1066,19 +1074,23 @@ export class InputTilemap extends ItemTilemap {
                 (building) => building.id === placedItemType.building
             )
             if (!building) {
-                throw new Error(`Building not found for id: ${placedItemType.building}`)
+                throw new Error(
+                    `Building not found for id: ${placedItemType.building}`
+                )
             }
             const { textureConfig } = buildingAssetMap[building.displayId].map
             this.movingDragSpriteData = {
                 textureConfig,
                 type: placedItemType.type,
                 placedItemType,
-                placedItem
+                placedItem,
             }
             break
         }
         case PlacedItemType.Tile: {
-            const tile = this._tiles.find((tile) => tile.id === placedItemType.tile)
+            const tile = this._tiles.find(
+                (tile) => tile.id === placedItemType.tile
+            )
             if (!tile) {
                 throw new Error(`Tile not found for id: ${placedItemType.tile}`)
             }
@@ -1092,18 +1104,19 @@ export class InputTilemap extends ItemTilemap {
             break
         }
         case PlacedItemType.Animal: {
-            const animal = this.animals.find((animal) => animal.id === placedItemType.animal)
+            const animal = this.animals.find(
+                (animal) => animal.id === placedItemType.animal
+            )
             if (!animal) {
                 throw new Error(`Animal not found for id: ${placedItemType.animal}`)
             }
-            const { textureConfig } = animalAssetMap[animal.displayId].map[
-                AnimalAge.Baby
-            ]
+            const { textureConfig } =
+          animalAssetMap[animal.displayId].map[AnimalAge.Baby]
             this.movingDragSpriteData = {
                 textureConfig,
                 type: placedItemType.type,
                 placedItemType,
-                placedItem
+                placedItem,
             }
             break
         }
@@ -1124,7 +1137,7 @@ export class InputTilemap extends ItemTilemap {
         }
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === currentPlacedItem.placedItemType
-        ) 
+        )
 
         if (!placedItemType) {
             throw new Error("Placed item type not found")
@@ -1132,29 +1145,34 @@ export class InputTilemap extends ItemTilemap {
 
         let sellPrice: number = 0
 
-        if(!placedItemType.sellable){
-            EventBus.emit(EventName.CreateFlyItem, {
-                
-            })
+        if (!placedItemType.sellable) {
+            EventBus.emit(EventName.CreateFlyItem, {})
             return
         }
 
         switch (placedItemType.type) {
         case PlacedItemType.Building: {
             const building = this.buildings.find(
-                (building) => building.displayId.toString() === placedItemType.displayId.toString()
+                (building) =>
+                    building.displayId.toString() ===
+            placedItemType.displayId.toString()
             )
             if (!building) {
                 throw new Error("Building not found")
             }
-            const upgradeLevel = currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
-            const upgradePrice = building.upgrades?.find(upgrade => upgrade.upgradeLevel === upgradeLevel)?.sellPrice ?? 0
+            const upgradeLevel =
+          currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
+            const upgradePrice =
+          building.upgrades?.find(
+              (upgrade) => upgrade.upgradeLevel === upgradeLevel
+          )?.sellPrice ?? 0
             sellPrice = upgradePrice
             break
         }
         case PlacedItemType.Tile: {
             const tile = this._tiles.find(
-                (tile) => tile.displayId.toString() === placedItemType.displayId.toString()
+                (tile) =>
+                    tile.displayId.toString() === placedItemType.displayId.toString()
             )
             if (!tile) {
                 throw new Error("Tile not found")
@@ -1164,7 +1182,8 @@ export class InputTilemap extends ItemTilemap {
         }
         case PlacedItemType.Animal: {
             const animal = this.animals.find(
-                (animal) => animal.displayId.toString() === placedItemType.displayId.toString()
+                (animal) =>
+                    animal.displayId.toString() === placedItemType.displayId.toString()
             )
             if (!animal) {
                 throw new Error("Animal not found")
@@ -1174,24 +1193,26 @@ export class InputTilemap extends ItemTilemap {
         }
         }
 
-        if(placedItemType.sellable){
+        if (placedItemType.sellable) {
             const updateConfirmSellModalMessage: UpdateConfirmSellModalMessage = {
                 message: "Are you sure you want to sell this item?",
                 quantity: sellPrice,
                 callback: () => {
-                    EventBus.once(EventName.SellCompleted, () => {
-                    })
+                    EventBus.once(EventName.SellCompleted, () => {})
                     const eventMessage: SellRequest = {
                         placedItemId: placedItem.id,
                     }
                     EventBus.emit(EventName.RequestSell, eventMessage)
-                }
+                },
             }
-            EventBus.emit(EventName.UpdateConfirmSellModal, updateConfirmSellModalMessage)
+            EventBus.emit(
+                EventName.UpdateConfirmSellModal,
+                updateConfirmSellModalMessage
+            )
             EventBus.emit(EventName.OpenModal, {
                 modalName: ModalName.ConfirmSell,
             })
-        }else{
+        } else {
             console.error("Not sellable")
             return
         }
@@ -1216,7 +1237,7 @@ export class InputTilemap extends ItemTilemap {
             // place the item temporarily on the tile
             this.dragBuyingSpriteOnTile(tile)
         }
-        if(this.inputMode === InputMode.Move) {
+        if (this.inputMode === InputMode.Move) {
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -1259,9 +1280,11 @@ export class InputTilemap extends ItemTilemap {
             }
             return
         }
-    
-        this.removePlacedItemTint({ placedItem: this.sellingDragSpriteData.placedItem })
-    
+
+        this.removePlacedItemTint({
+            placedItem: this.sellingDragSpriteData.placedItem,
+        })
+
         if (placedItem) {
             this.sellingDragSpriteData = { placedItem }
             this.applyPlacedItemTint({ placedItem })
@@ -1291,8 +1314,7 @@ export class InputTilemap extends ItemTilemap {
         if (!this.buyingDragSpriteData) {
             throw new Error("No drag sprite data found")
         }
-        const { placedItemType, textureConfig } =
-      this.buyingDragSpriteData
+        const { placedItemType, textureConfig } = this.buyingDragSpriteData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
@@ -1327,7 +1349,7 @@ export class InputTilemap extends ItemTilemap {
             onCancel: () => {
                 this.cancelPlacement()
             },
-            onConfirm: (tileX: number, tileY: number) => { 
+            onConfirm: (tileX: number, tileY: number) => {
                 // show modal
                 switch (placedItemType.type) {
                 case PlacedItemType.Building: {
@@ -1336,13 +1358,14 @@ export class InputTilemap extends ItemTilemap {
                     const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
                         message: "Are you sure you want to buy this building?",
                         callback: () => {
-                            EventBus.once(EventName.BuyBuildingCompleted, () => {
-                            })
+                            EventBus.once(EventName.BuyBuildingCompleted, () => {})
                             const building = this.buildings.find(
                                 (building) => building.id === placedItemType.building
                             )
                             if (!building) {
-                                throw new Error(`Building not found for id: ${placedItemType.building}`)
+                                throw new Error(
+                                    `Building not found for id: ${placedItemType.building}`
+                                )
                             }
                             const eventMessage: BuyBuildingRequest = {
                                 buildingId: building.displayId,
@@ -1364,15 +1387,17 @@ export class InputTilemap extends ItemTilemap {
                             this.cancelPlacement()
                         },
                     }
-                    EventBus.emit(EventName.UpdateConfirmModal, updateConfirmSellModalMessage)
+                    EventBus.emit(
+                        EventName.UpdateConfirmModal,
+                        updateConfirmSellModalMessage
+                    )
                     EventBus.emit(EventName.OpenModal, {
                         modalName: ModalName.Confirm,
                     })
                     break
                 }
                 case PlacedItemType.Tile: {
-                    EventBus.once(EventName.BuyTileCompleted, () => {
-                    })
+                    EventBus.once(EventName.BuyTileCompleted, () => {})
                     const tile = this._tiles.find(
                         (tile) => tile.id === placedItemType.tile
                     )
@@ -1390,13 +1415,14 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Animal: {
-                    EventBus.once(EventName.BuyAnimalCompleted, () => {
-                    })
+                    EventBus.once(EventName.BuyAnimalCompleted, () => {})
                     const animal = this.animals.find(
                         (animal) => animal.id === placedItemType.animal
                     )
                     if (!animal) {
-                        throw new Error(`Animal not found for id: ${placedItemType.tile}`)
+                        throw new Error(
+                            `Animal not found for id: ${placedItemType.tile}`
+                        )
                     }
                     const eventMessage: BuyAnimalRequest = {
                         animalId: animal.displayId,
@@ -1409,13 +1435,14 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Fruit: {
-                    EventBus.once(EventName.BuyFruitCompleted, () => {
-                    })
+                    EventBus.once(EventName.BuyFruitCompleted, () => {})
                     const fruit = this.fruits.find(
                         (fruit) => fruit.id === placedItemType.fruit
                     )
                     if (!fruit) {
-                        throw new Error(`Fruit not found for id: ${placedItemType.fruit}`)
+                        throw new Error(
+                            `Fruit not found for id: ${placedItemType.fruit}`
+                        )
                     }
                     const eventMessage: BuyFruitRequest = {
                         fruitId: fruit.displayId,
@@ -1460,7 +1487,8 @@ export class InputTilemap extends ItemTilemap {
         if (!this.movingDragSpriteData) {
             return
         }
-        const { placedItemType, textureConfig, placedItem } = this.movingDragSpriteData
+        const { placedItemType, textureConfig, placedItem } =
+      this.movingDragSpriteData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
@@ -1512,16 +1540,20 @@ export class InputTilemap extends ItemTilemap {
                 EventBus.once(EventName.MoveCompleted, () => {
                     this.cancelPlacement()
                     EventBus.emit(EventName.UpdatePlacedItems)
-                    const handlePlacedItemUpdatePosition: HandlePlacedItemUpdatePositionParams = {
-                        placedItemId: placedItem.id,
-                        position: {
-                            x: tileX,
-                            y: tileY,
-                        },
-                    }
-                    EventBus.emit(EventName.HandlePlacedItemUpdatePosition, handlePlacedItemUpdatePosition)
-                })
+                    const handlePlacedItemUpdatePosition: HandlePlacedItemUpdatePositionParams =
+            {
+                placedItemId: placedItem.id,
+                position: {
+                    x: tileX,
+                    y: tileY,
+                },
             }
+                    EventBus.emit(
+                        EventName.HandlePlacedItemUpdatePosition,
+                        handlePlacedItemUpdatePosition
+                    )
+                })
+            },
         })
 
         if (!this.placementConfirmation) {
@@ -1699,14 +1731,14 @@ export class InputTilemap extends ItemTilemap {
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.BugNet: {
-                // return if seed growth info is not need water
+            // return if seed growth info is not need water
                 if (
                     currentPlacedItem.fruitInfo?.currentState !==
-                      FruitCurrentState.IsInfested
+              FruitCurrentState.IsInfested
                 ) {
                     return
                 }
-        
+
                 if (visitedNeighbor) {
                     if (
                         !this.energyNotEnough({
@@ -1716,12 +1748,12 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-        
+
                     //emit the event to water the plant
                     EventBus.once(EventName.HelpUseBugNetCompleted, () => {
                         data.pressBlocked = false
                     })
-        
+
                     // emit the event to plant seed
                     const eventMessage: HelpUseBugNetRequest = {
                         placedItemFruitId: placedItemId,
@@ -1741,7 +1773,7 @@ export class InputTilemap extends ItemTilemap {
                     EventBus.once(EventName.UseBugNetCompleted, () => {
                         data.pressBlocked = false
                     })
-        
+
                     // emit the event to plant seed
                     const eventMessage: UseBugNetRequest = {
                         placedItemFruitId: placedItemId,
@@ -1754,7 +1786,7 @@ export class InputTilemap extends ItemTilemap {
             case ToolId.Crate: {
                 if (
                     currentPlacedItem.fruitInfo?.currentState !==
-                  FruitCurrentState.FullyMatured
+              FruitCurrentState.FullyMatured
                 ) {
                     return
                 }
@@ -1849,7 +1881,8 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.helpUseFruitFertilizer.energyConsume,
+                            actionEnergy:
+                    this.activities.helpUseFruitFertilizer.energyConsume,
                         })
                     ) {
                         return
@@ -1862,18 +1895,22 @@ export class InputTilemap extends ItemTilemap {
                         placedItemFruitId: placedItemId,
                         inventorySupplyId: selectedTool.id,
                     }
-                    EventBus.emit(EventName.RequestHelpUseFruitFertilizer, eventMessage)
+                    EventBus.emit(
+                        EventName.RequestHelpUseFruitFertilizer,
+                        eventMessage
+                    )
                     data.pressBlocked = true
-                }else{
+                } else {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.useFruitFertilizer.energyConsume,
+                            actionEnergy:
+                    this.activities.useFruitFertilizer.energyConsume,
                         })
                     ) {
                         return
                     }
-        
+
                     EventBus.once(EventName.UseFruitFertilizerCompleted, () => {
                         data.pressBlocked = false
                     })
@@ -1926,11 +1963,11 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private hasThievedAnimalProduct({ data }: HasThievedAnimalProductParams): boolean {
+    private hasThievedAnimalProduct({
+        data,
+    }: HasThievedAnimalProductParams): boolean {
         if (
-            data.object.currentPlacedItem?.animalInfo?.thieves.includes(
-                this.user.id
-            )
+            data.object.currentPlacedItem?.animalInfo?.thieves.includes(this.user.id)
         ) {
             this.scene.events.emit(EventName.CreateFlyItems, [
                 {
@@ -1945,9 +1982,7 @@ export class InputTilemap extends ItemTilemap {
     //has thieved fruit
     private hasThievedFruit({ data }: HasThievedFruitParams): boolean {
         if (
-            data.object.currentPlacedItem?.fruitInfo?.thieves.includes(
-                this.user.id
-            )
+            data.object.currentPlacedItem?.fruitInfo?.thieves.includes(this.user.id)
         ) {
             this.scene.events.emit(EventName.CreateFlyItems, [
                 {
@@ -1993,14 +2028,13 @@ export class InputTilemap extends ItemTilemap {
         data,
     }: ThiefAnimalProductQuantityReactMinimumParams): boolean {
         const animal = this.animals.find(
-            (animal) => animal.id === data.object.currentPlacedItem?.animalInfo?.animal
+            (animal) =>
+                animal.id === data.object.currentPlacedItem?.animalInfo?.animal
         )
         if (!animal) {
             throw new Error("Animal not found")
         }
-        if (
-            !data.object.currentPlacedItem?.animalInfo?.harvestQuantityRemaining
-        ) {
+        if (!data.object.currentPlacedItem?.animalInfo?.harvestQuantityRemaining) {
             throw new Error("Harvest quantity remaining not found")
         }
         if (
@@ -2027,9 +2061,7 @@ export class InputTilemap extends ItemTilemap {
         if (!fruit) {
             throw new Error("Fruit not found")
         }
-        if (
-            !data.object.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining
-        ) {
+        if (!data.object.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining) {
             throw new Error("Harvest quantity remaining not found")
         }
         if (
@@ -2064,8 +2096,6 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    
-
     private hideEverything() {
         EventBus.emit(EventName.ShowPlacementModeButtons)
         EventBus.emit(EventName.HideToolbar)
@@ -2085,11 +2115,11 @@ export interface HasThievedCropParams {
   data: PlacedItemObjectData;
 }
 export interface HasThievedAnimalProductParams {
-    data: PlacedItemObjectData;
+  data: PlacedItemObjectData;
 }
 //HasThievedFruitParams
 export interface HasThievedFruitParams {
-    data: PlacedItemObjectData;
+  data: PlacedItemObjectData;
 }
 
 export interface ThiefCropQuantityReactMinimumParams {
@@ -2097,11 +2127,11 @@ export interface ThiefCropQuantityReactMinimumParams {
 }
 
 export interface ThiefAnimalProductQuantityReactMinimumParams {
-    data: PlacedItemObjectData;
+  data: PlacedItemObjectData;
 }
 
 export interface ThiefFruitQuantityReactMinimumParams {
-    data: PlacedItemObjectData;
+  data: PlacedItemObjectData;
 }
 
 export interface EnergyNotEnoughParams {
@@ -2122,13 +2152,13 @@ export interface ShowPlacmentConfirmationParams {
 }
 
 export interface HandleMovingModeParams {
-    placedItem: PlacedItemSchema
+  placedItem: PlacedItemSchema;
 }
 
 export interface HandleSellingModeParams {
-    placedItem: PlacedItemSchema
+  placedItem: PlacedItemSchema;
 }
 
 export interface UpdatePlacedItemColorParams {
-    placedItem?: PlacedItemSchema
+  placedItem?: PlacedItemSchema;
 }

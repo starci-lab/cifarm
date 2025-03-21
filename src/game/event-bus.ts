@@ -126,6 +126,9 @@ export enum EventName {
     StorageInventoryIndexResponsed = "storage_inventory_index_responsed",
     ToolbarInventoryIndexResponsed = "toolbar_inventory_index_responsed",
 
+    RequestSyncPlacedItems = "request_sync_placed_items",
+    SyncPlacedItemsCompleted = "sync_placed_items_completed",
+
     RequestUpdateFollowX = "request_update_follow_x",
     UpdateFollowXCompleted = "update_follow_x_completed",
 

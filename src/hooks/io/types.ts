@@ -15,8 +15,6 @@ export interface UseIo {
 export interface PlacedItemsSyncedMessage {
   //placed items
   placedItems: Array<PlacedItemSchema>;
-  //current user id, beneficial for debugging
-  userId: string;
 }
 
 export interface EmitActionPayload {

@@ -37,7 +37,6 @@ import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { ObjectLayerName } from "./types"
-import { waitUtil } from "../ui"
 
 const DEPTH_MULTIPLIER = 100
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
@@ -103,26 +102,17 @@ export abstract class ItemTilemap extends GroundTilemap {
             EventBus.emit(EventName.FadeOut)
         })
 
-        EventBus.on(EventName.UpdatePlacedItems, async () => {
-            let placedItems = this.scene.cache.obj.get(
+        EventBus.on(EventName.UpdatePlacedItems, () => {
+            //console.log("update placed items")
+            const cachedPlacedItems = this.scene.cache.obj.get(
                 CacheKey.PlacedItems
             ) as Array<PlacedItemSchema>
-            if (this.isWaiting) {
-                placedItems = this.scene.cache.obj.get(
-                    CacheKey.PlacedItems
-                ) as Array<PlacedItemSchema>
-            }
-            if (this.fading) {
-                this.isWaiting = true
-                await waitUtil(() => !this.fading)
-            }
+            // create a new array from the cached placed items
+            const placedItems = _.cloneDeep<Array<PlacedItemSchema>>(cachedPlacedItems)
             // handle the placed items update
             this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
             // update the previous placed items
             this.previousPlacedItems = placedItems
-            if (this.isWaiting) {
-                this.isWaiting = false
-            }
         })
 
         EventBus.on(
@@ -132,21 +122,22 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         )
 
-        const placedItems = this.scene.cache.obj.get(
-            CacheKey.PlacedItems
-        ) as Array<PlacedItemSchema>
-        if (placedItems) {
-            // handle the placed items update
-            this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
-            // update the previous placed items
-            this.previousPlacedItems = placedItems
-        }
+        // const placedItems = this.scene.cache.obj.get(
+        //     CacheKey.PlacedItems
+        // ) as Array<PlacedItemSchema>
+
+        // if (placedItems) {
+        //     // handle the placed items update
+        //     this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
+        //     // update the previous placed items
+        //     this.previousPlacedItems = placedItems
+        // }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
             const object = this.placedItemObjectMap[data.placedItemId]?.object
             if (!object) {
                 // return since object not found
-                return 
+                return
             }
             const position = object.getCenter()
             position.y -= this.tileHeight
@@ -344,16 +335,16 @@ export abstract class ItemTilemap extends GroundTilemap {
                     const { price, placedItemTileId } = data.data as BuyTileData
                     // get the tile position
                     console.log(placedItemTileId)
-                    const position = this.placedItemObjectMap[placedItemTileId].object.getCenter()
+                    const position =
+              this.placedItemObjectMap[placedItemTileId].object.getCenter()
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: COIN_KEY,
-                            position, 
+                            position,
                             quantity: -price,
                         },
                     ])
-                }
-                else {
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
                         text: "Failed to " + ActionName.BuyTile,
@@ -472,7 +463,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             assetKey,
                             position,
                             quantity,
-                        }
+                        },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
@@ -481,7 +472,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            case ActionName.HelpFeedAnimal: 
+            case ActionName.HelpFeedAnimal:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
@@ -529,9 +520,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                             assetKey,
                             position,
                             quantity,
-                        }
-                    ]
-                    )
+                        },
+                    ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
@@ -598,7 +588,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            
+
             case ActionName.HarvestFruit:
                 if (data.success) {
                     const { quantity, productId } = data.data as HarvestFruitData
@@ -608,7 +598,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                     if (!product) {
                         throw new Error("Product not found")
                     }
-                    const assetKey = productAssetMap[product.displayId].textureConfig.key
+                    const assetKey =
+              productAssetMap[product.displayId].textureConfig.key
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -624,10 +615,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                             assetKey,
                             position,
                             quantity,
-                        }
+                        },
                     ])
-                }
-                else {
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
                         text: "Failed to " + ActionName.HarvestFruit,
@@ -643,7 +633,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                     if (!product) {
                         throw new Error("Product not found")
                     }
-                    const assetKey = productAssetMap[product.displayId].textureConfig.key
+                    const assetKey =
+              productAssetMap[product.displayId].textureConfig.key
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -659,10 +650,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                             assetKey,
                             position,
                             quantity,
-                        }
+                        },
                     ])
-                }
-                else {
+                } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
                         text: "Failed to " + ActionName.ThiefFruit,
@@ -701,7 +691,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.helpUseFruitFertilizer.experiencesGain,
+                            quantity:
+                  this.activities.helpUseFruitFertilizer.experiencesGain,
                         },
                     ])
                 } else {
@@ -758,7 +749,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     public shutdown() {
-        EventBus.off(EventName.PlacedItemsSynced)
+        EventBus.off(EventName.UpdatePlacedItems)
         EventBus.off(EventName.RequestUpdatePlacedItemLocal)
     }
 
@@ -767,26 +758,27 @@ export abstract class ItemTilemap extends GroundTilemap {
         current: Array<PlacedItemSchema>,
         previous: Array<PlacedItemSchema> = []
     ) {
-        // if current.userId doesn't match previous.userId, treat all placed items as new
-        // if (!previous || (previous && current.userId !== previous.userId)) {
-        //     // if user ids are different, create all placed items (treat as new)
-        //     this.clearAllPlacedItems()
-        //     this.createAllPlacedItems(current.placedItems)
-        //     return // exit early to avoid redundant checks later
-        // }
+    // if current.userId doesn't match previous.userId, treat all placed items as new
+    // if (!previous || (previous && current.userId !== previous.userId)) {
+    //     // if user ids are different, create all placed items (treat as new)
+    //     this.clearAllPlacedItems()
+    //     this.createAllPlacedItems(current.placedItems)
+    //     return // exit early to avoid redundant checks later
+    // }
+        console.log(_.isEqual(current, previous))
 
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
         for (const placedItem of current) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
-            const found = previous.find(
-                (item) => item.id === placedItem.id
-            )
+            const found = previous.find((item) => item.id === placedItem.id)
             if (found) {
                 checkedPreviousPlacedItems.push(placedItem)
                 if (placedItem.x !== found.x || placedItem.y !== found.y) {
-                    console.log(`Placing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`)
+                    console.log(
+                        `Placing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`
+                    )
                     // place the item using the shared tile placing
                     this.placeTileForItem(placedItem)
                 } else {
@@ -797,10 +789,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                         continue
                     }
                     gameObject.updateContent(placedItem)
-                // push the placed item to the checked previous placed items
+                    // push the placed item to the checked previous placed items
                 }
             } else {
-                console.log(`Placing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`)
+                console.log(
+                    `Placing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`
+                )
                 // place the item using the shared tile placing
                 this.placeTileForItem(placedItem)
             }
@@ -813,7 +807,9 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
             ) {
-                console.log(`Removing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`)
+                console.log(
+                    `Removing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`
+                )
                 // remove the object from the item layer
                 this.itemLayer.objects = this.itemLayer.objects.filter(
                     (object) => object.name !== placedItem.id
