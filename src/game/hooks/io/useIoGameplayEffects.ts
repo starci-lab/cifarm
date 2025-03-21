@@ -1,17 +1,28 @@
 import { GAMEPLAY_IO } from "@/app/constants"
-import { EventBus, EventName } from "@/game/event-bus"
-import { ACTION_EMITTED_EVENT, PLACED_ITEMS_SYNCED_EVENT, SYNC_PLACED_ITEMS_EVENT, useGameplayIo, ActionEmittedMessage, INVENTORIES_SYNCED_EVENT, InventorySyncedMessage, PlacedItemsSyncedMessage, SHOW_FADE_EVENT, ShowFadeMessage, USER_SYNCED_EVENT, UserSyncedMessage } from "@/hooks"
+import { EventBus, EventName, SyncPlacedItemsMessage } from "@/game/event-bus"
+import {
+    ACTION_EMITTED_EVENT,
+    PLACED_ITEMS_SYNCED_EVENT,
+    useGameplayIo,
+    ActionEmittedMessage,
+    INVENTORIES_SYNCED_EVENT,
+    InventorySyncedMessage,
+    PlacedItemsSyncedMessage,
+    SHOW_FADE_EVENT,
+    USER_SYNCED_EVENT,
+    UserSyncedMessage,
+    SYNC_PLACED_ITEMS_EVENT,
+} from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 
 export const useSyncPlacedItemsEffects = () => {
     //get the singleton instance of the thief crop mutation
-    const { socket, connect } = useSingletonHook<
-        ReturnType<typeof useGameplayIo>
-    >(GAMEPLAY_IO)
+    const { socket, connect } =
+    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
 
     useEffect(() => {
-        // connect
+    // connect
         connect()
         //if socket is null do nothing
         if (!socket) return
@@ -21,31 +32,30 @@ export const useSyncPlacedItemsEffects = () => {
         })
 
         // listen for energy synced
-        socket.on(USER_SYNCED_EVENT, ({ user }: UserSyncedMessage) => {
-            console.log("user synced")
-            EventBus.emit(EventName.UserRefreshed, user)
+        socket.on(USER_SYNCED_EVENT, ({ data }: UserSyncedMessage) => {
+            EventBus.emit(EventName.UserSynced, data)
         })
 
         // listen for inventories synced
-        socket.on(INVENTORIES_SYNCED_EVENT, ({ inventories }: InventorySyncedMessage) => {
-            console.log("inventories synced")
-            EventBus.emit(EventName.InventoriesRefreshed, inventories)
-        })
+        socket.on(
+            INVENTORIES_SYNCED_EVENT,
+            ({ data }: InventorySyncedMessage) => {
+                EventBus.emit(EventName.InventorySynced, data)
+            }
+        )
 
-        //listen for show fade event
-        socket.on(SHOW_FADE_EVENT, ({ toNeighbor }: ShowFadeMessage) => {
-            EventBus.emit(EventName.ShowFade, toNeighbor)
-        })
+        socket.on(
+            PLACED_ITEMS_SYNCED_EVENT,
+            ({ data }: PlacedItemsSyncedMessage) => {
+                EventBus.emit(EventName.PlacedItemsSynced, data)
+            }
+        )
 
-        socket.on(PLACED_ITEMS_SYNCED_EVENT, ({ placedItems }: PlacedItemsSyncedMessage) => {
-            EventBus.emit(EventName.PlacedItemsSynced, placedItems)
+        EventBus.on(EventName.SyncPlacedItems, ({ placedItemIds }: SyncPlacedItemsMessage) => {
+            socket.emit(SYNC_PLACED_ITEMS_EVENT, {
+                placedItemIds,
+            })
         })
-        setInterval(() => {
-            if (!socket) {
-                return
-            }      
-            socket.emit(SYNC_PLACED_ITEMS_EVENT)
-        }, 1000)
 
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
@@ -55,5 +65,7 @@ export const useSyncPlacedItemsEffects = () => {
             socket.off(SHOW_FADE_EVENT)
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
         }
-    }, [socket])        
+    }, [socket])
+
+
 }

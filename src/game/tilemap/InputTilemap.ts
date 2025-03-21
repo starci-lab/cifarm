@@ -199,6 +199,8 @@ export class InputTilemap extends ItemTilemap {
             this.inputMode = InputMode.Sell
         })
 
+        this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
+
         // click on empty tile to plant seed
         const tap = new Tap(this.scene)
         tap.on("tap", (pointer: Phaser.Input.Pointer) => {
@@ -334,10 +336,6 @@ export class InputTilemap extends ItemTilemap {
                 this.scene.add.existing(flyItems)
             }
         )
-
-        EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
-            this.user = user
-        })
     }
 
     // method to handle press on tile
@@ -1524,7 +1522,7 @@ export class InputTilemap extends ItemTilemap {
                 this.placeTileForItem(placedItem)
                 this.movingDragSpriteData = undefined
                 this.cancelPlacement()
-                EventBus.emit(EventName.UpdatePlacedItems)
+                EventBus.emit(EventName.PlacedItemsRefreshed)
             },
             onConfirm: (tileX: number, tileY: number) => {
                 this.movingDragSpriteData = undefined
@@ -1539,7 +1537,7 @@ export class InputTilemap extends ItemTilemap {
 
                 EventBus.once(EventName.MoveCompleted, () => {
                     this.cancelPlacement()
-                    EventBus.emit(EventName.UpdatePlacedItems)
+                    EventBus.emit(EventName.PlacedItemsRefreshed)
                     const handlePlacedItemUpdatePosition: HandlePlacedItemUpdatePositionParams =
             {
                 placedItemId: placedItem.id,

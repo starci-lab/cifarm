@@ -17,7 +17,7 @@ export enum EventName {
     Authenticated = "authenticated",
     // placed items to sync in-game
     PlacedItemsSynced = "placed_items_synced",
-    UpdatePlacedItems = "update_placed_items",
+    PlacedItemsRefreshed = "update_placed_items",
     // action emitted in-game
     ActionEmitted = "action_emitted",
     // show fade in/out
@@ -48,6 +48,12 @@ export enum EventName {
     FolloweesLoaded = "followees_loaded",
     // energy synced, from React to Phaser
     EnergySynced = "energy_synced",
+    // inventory synced, from React to Phaser
+    InventorySynced = "inventory_synced",
+    // user synced, from React to Phaser
+    UserSynced = "user_synced",
+    // sync placed items, from React to Phaser
+    SyncPlacedItems = "sync_placed_items",
     // refresh
     RefreshUser = "refresh_user",
     UserRefreshed = "user_refreshed",
@@ -437,3 +443,8 @@ export interface UpdatePlacementConfirmationMessage {
 export interface CompletedMessage {
     success: boolean
 }
+
+export interface SyncPlacedItemsMessage {
+    placedItemIds: Array<string>
+}
+

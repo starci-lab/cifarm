@@ -107,7 +107,10 @@ export class InventoryModal extends BaseSizer {
             }
         }
         updateInventories()
+        
         // emit the update inventory event
-        EventBus.emit(EventName.InventoriesRefreshed, inventories)
+        // save the inventories to the cache
+        this.scene.cache.obj.add(CacheKey.Inventories, inventories)
+        EventBus.emit(EventName.InventoriesRefreshed)
     }
 }

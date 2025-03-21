@@ -36,13 +36,8 @@ export class Topbar extends BaseSizer {
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
 
-        EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
-            this.user = user
-            this.updateContent()
-        })
-
-        EventBus.on(EventName.EnergySynced, (energy: number) => {
-            this.user.energy = energy
+        EventBus.on(EventName.UserRefreshed, () => {
+            this.user = this.scene.cache.obj.get(CacheKey.User)
             this.updateContent()
         })
 

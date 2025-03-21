@@ -5,7 +5,7 @@ import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CellSize, getCellSize, ItemQuantity } from "../../elements"
 import { CacheKey } from "../../../types"
 import { getToolInventories } from "../../../queries"
-import { MODAL_BACKDROP_DEPTH_1, MODAL_DEPTH_1 } from "../ModalManager"
+import { MODAL_BACKDROP_DEPTH_1 } from "../ModalManager"
 import { EventBus, EventName, RequestStorageInventoryIndexMessage, RequestToolbarInventoryIndexMessage } from "@/game/event-bus"
 import { DragItemParams } from "./types"
 import { CELL_TOOLBAR_DATA_KEY } from "./constants"
@@ -46,8 +46,8 @@ export class InventoryToolbar extends ContainerLite {
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            (inventories: Array<InventorySchema>) => {
-                this.inventories = inventories
+            () => {
+                this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
                 this.updateGridSizer()
             }
         ) 
@@ -90,7 +90,7 @@ export class InventoryToolbar extends ContainerLite {
                     let gridTableCell: ItemQuantity | undefined
                     const inventory = items[y * TOOLBAR_COLUMN_COUNT + x]
                     const container = scene.rexUI.add
-                        .container().setDepth(MODAL_DEPTH_1 + 1)
+                        .container().setDepth(this.depth + 1)
                     if (inventory) {
                         const inventoryType = this.inventoryTypes.find(
                             (inventoryType) => inventoryType.id === inventory.inventoryType
@@ -129,13 +129,13 @@ export class InventoryToolbar extends ContainerLite {
                                 throw new Error("Parent not found")
                             }
                             parent.remove(itemQuantity, true)
-                            dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 2)
+                            dragItem.setDepth(this.depth + 2)
                             this.scene.rexUI.add.drag(dragItem).drag()
                             dragItem.on("dragend", (pointer: Phaser.Input.Pointer) => {
                                 if (!this.gridSizer) {
                                     throw new Error("Storage grid sizer not found")
                                 }
-                                dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 2)
+                                dragItem.setDepth(this.depth + 2)
                                 this.dragItem({
                                     item: dragItem,
                                     pointer,

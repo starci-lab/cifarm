@@ -30,7 +30,6 @@ import {
 import { MoveInventoryRequest } from "@/modules/apollo"
 import { CELL_STORAGE_DATA_KEY } from "./constants"
 import { DragItemParams } from "./types"
-import { MODAL_BACKDROP_DEPTH_1 } from "../ModalManager"
 
 // part of the inventory that holds the inventory items
 export class InventoryStorage extends BaseSizer {
@@ -79,8 +78,8 @@ export class InventoryStorage extends BaseSizer {
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            (inventories: Array<InventorySchema>) => {
-                this.inventories = inventories
+            () => {
+                this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
                 this.updateGridTable()
             }
         )
@@ -169,7 +168,7 @@ export class InventoryStorage extends BaseSizer {
                                     background,
                                     icon: itemQuantity,
                                 })
-                                .setDepth(MODAL_BACKDROP_DEPTH_1 + 1)
+                                .setDepth(this.depth + 1)
                                 .layout()
                         }
                     }
@@ -198,13 +197,13 @@ export class InventoryStorage extends BaseSizer {
                         throw new Error("Parent not found")
                     }
                     parent.remove(itemQuantity, true)
-                    dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 3)
+                    dragItem.setDepth(this.depth + 3)
                     this.scene.rexUI.add.drag(dragItem).drag()
                     dragItem.on("dragend", (pointer: Phaser.Input.Pointer) => {
                         if (!itemQuantity) {
                             throw new Error("Badge label not found")
                         }
-                        dragItem.setDepth(MODAL_BACKDROP_DEPTH_1 + 2)
+                        dragItem.setDepth(this.depth + 2)
                         if (!this.gridTable) {
                             throw new Error("Storage grid table not found")
                         }
@@ -227,7 +226,7 @@ export class InventoryStorage extends BaseSizer {
 
     private updateGridTable() {
         const gridTable = this._updateGridTable()
-        gridTable.setDepth(MODAL_BACKDROP_DEPTH_1 + 1)
+        gridTable.setDepth(this.depth + 1)
     }
 
     // -1 indicate not found

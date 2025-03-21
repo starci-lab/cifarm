@@ -36,7 +36,7 @@ import { EventBus, EventName, Position } from "../event-bus"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { PlacedItemObject } from "./PlacedItemObject"
-import { ObjectLayerName } from "./types"
+import { LayerName, ObjectLayerName } from "./types"
 
 const DEPTH_MULTIPLIER = 100
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
@@ -102,7 +102,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             EventBus.emit(EventName.FadeOut)
         })
 
-        EventBus.on(EventName.UpdatePlacedItems, () => {
+        EventBus.on(EventName.PlacedItemsRefreshed, () => {
             //console.log("update placed items")
             const cachedPlacedItems = this.scene.cache.obj.get(
                 CacheKey.PlacedItems
@@ -122,25 +122,36 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         )
 
-        // const placedItems = this.scene.cache.obj.get(
-        //     CacheKey.PlacedItems
-        // ) as Array<PlacedItemSchema>
-
-        // if (placedItems) {
-        //     // handle the placed items update
-        //     this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
-        //     // update the previous placed items
-        //     this.previousPlacedItems = placedItems
-        // }
+        const placedItems = _.cloneDeep<Array<PlacedItemSchema>>(this.scene.cache.obj.get(
+            CacheKey.PlacedItems
+        ))
+        if (placedItems) {
+            // handle the placed items update
+            this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
+            // update the previous placed items
+            this.previousPlacedItems = placedItems
+        }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
-            const object = this.placedItemObjectMap[data.placedItemId]?.object
-            if (!object) {
-                // return since object not found
-                return
+            const { placedItem: { x, y} } = data
+            if (x === undefined) {
+                throw new Error("X is not found")
             }
-            const position = object.getCenter()
-            position.y -= this.tileHeight
+            if (y === undefined) {
+                throw new Error("Y is not found")
+            }
+            const tile = this.getTileCenteredAt({
+                tileX: x,
+                tileY: y,
+                layer: LayerName.Ground,
+            })
+            if (!tile) {
+                throw new Error("Tile not found")
+            }
+            const position = {
+                x: tile.getCenterX() - this.tileWidth / 2,
+                y: tile.getCenterY() - this.tileHeight / 2,
+            }
             switch (data.action) {
             case ActionName.WaterCrop:
                 if (data.success) {
@@ -577,13 +588,13 @@ export abstract class ItemTilemap extends GroundTilemap {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: COIN_KEY,
-                            position: object.getCenter(),
+                            position,
                             quantity: quantity,
                         },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
-                        position: object.getCenter(),
+                        position,
                         text: "Failed to " + ActionName.Sell,
                     })
                 }
@@ -749,7 +760,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     public shutdown() {
-        EventBus.off(EventName.UpdatePlacedItems)
+        EventBus.off(EventName.PlacedItemsRefreshed)
         EventBus.off(EventName.RequestUpdatePlacedItemLocal)
     }
 
@@ -886,7 +897,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // reusable method to place a tile for a given placed item
     protected placeTileForItem(placedItem: PlacedItemSchema) {
-    // get the tile
+        // get the tile
         const tile = this.getTileCenteredAt({
             tileX: placedItem.x,
             tileY: placedItem.y,

@@ -21,7 +21,7 @@ import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey } from "../types"
-import { InventorySchema, UserSchema, PlacedItemSchema } from "@/modules/entities"
+import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { VisitRequest } from "@/modules/apollo"
@@ -35,7 +35,6 @@ export class LoadingScene extends Scene {
     // loading part in phase data fetching
     // loading fill width and height
     private loadingProgressBar: LoadingProgressBar | undefined
-    private visitedUser: UserSchema | undefined
 
     constructor() {
         super(SceneName.Loading)
@@ -50,7 +49,6 @@ export class LoadingScene extends Scene {
     private totalDataFetching = 4
 
     async init() {
-        this.visitedUser = this.cache.obj.get(CacheKey.VisitedNeighbor)
         //listen for static data loaded event
         EventBus.once(
             EventName.StaticDataLoaded,
@@ -157,7 +155,6 @@ export class LoadingScene extends Scene {
         EventBus.once(
             EventName.PlacedItemsLoaded,
             (placedItems: Array<PlacedItemSchema>) => {
-                //load the placed items
                 this.cache.obj.add(CacheKey.PlacedItems, placedItems)
                 this.handleFetchData("Loading placed items...")
             }
@@ -256,7 +253,7 @@ export class LoadingScene extends Scene {
         EventBus.emit(EventName.LoadStaticData)
         EventBus.emit(EventName.LoadUser)
         EventBus.emit(EventName.LoadInventories)
-        EventBus.emit(EventName.LoadPlacedItems, this.visitedUser?.id)
+        EventBus.emit(EventName.LoadPlacedItems)
     }
 
     private handleFetchData(message: string) {

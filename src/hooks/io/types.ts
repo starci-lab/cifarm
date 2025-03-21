@@ -3,6 +3,7 @@ import {
     PlacedItemSchema,
     UserSchema,
 } from "@/modules/entities"
+import { DeepPartial } from "react-hook-form"
 import { Socket } from "socket.io-client"
 
 export interface UseIo {
@@ -14,12 +15,12 @@ export interface UseIo {
 
 export interface PlacedItemsSyncedMessage {
   //placed items
-  placedItems: Array<PlacedItemSchema>;
+  data: Array<PlacedItemSchema>;
 }
 
 export interface EmitActionPayload {
   userId: string;
-  placedItemId: string;
+  placedItem: DeepPartial<PlacedItemSchema>;
   action?: ActionName;
   success?: boolean;
   data?: unknown;
@@ -106,9 +107,9 @@ export interface ShowFadeMessage {
 }
 
 export interface InventorySyncedMessage {
-  inventories: Array<InventorySchema>;
+  data: Array<InventorySchema>;
 }
 
 export interface UserSyncedMessage {
-  user: UserSchema;
+  data: UserSchema;
 }

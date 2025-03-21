@@ -6,7 +6,6 @@ import { onGameObjectPress } from "../../utils"
 import { EventBus, EventName, ModalName, OpenModalMessage } from "../../../event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "@/game/queries"
-import { MODAL_DEPTH_1 } from "../ModalManager"
 import { Text, XButton, XButtonColor } from "../../elements"
 import { RetainProductRequest } from "@/modules/apollo"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
@@ -46,8 +45,8 @@ export class StandContent extends BaseSizer {
 
         this.updateStandGridSizer()
 
-        EventBus.on(EventName.InventoriesRefreshed, (inventories: Array<InventorySchema>) => {
-            this.inventories = inventories
+        EventBus.on(EventName.InventoriesRefreshed, () => {
+            this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
             this.updateStandGridSizer()
         })
     }
@@ -137,7 +136,7 @@ export class StandContent extends BaseSizer {
                 },
             })
             .addBackground(background)
-            .setOrigin(0.5, 0.5).layout().setDepth(MODAL_DEPTH_1 + 1)
+            .setOrigin(0.5, 0.5).layout().setDepth(this.depth + 1)
         this.addLocal(this.gridSizer)
     }
 

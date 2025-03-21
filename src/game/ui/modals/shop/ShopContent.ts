@@ -67,7 +67,6 @@ import {
     TextColor,
 } from "../../elements"
 import { onGameObjectPress } from "../../utils"
-import { MODAL_DEPTH_1 } from "../ModalManager"
 import { ITEM_DATA_KEY, tabsConfig } from "./constants"
 import { ShopTab } from "./types"
 
@@ -245,7 +244,7 @@ export class ShopContent extends BaseSizer {
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
 
         EventBus.on(
-            EventName.UpdatePlacedItems,
+            EventName.PlacedItemsRefreshed,
             () => {
                 this.placedItems = this.scene.cache.obj.get(
                     CacheKey.PlacedItems
@@ -269,15 +268,15 @@ export class ShopContent extends BaseSizer {
             }
         )
 
-        EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
-            this.user = user
+        EventBus.on(EventName.UserRefreshed, () => {
+            this.user = this.scene.cache.obj.get(CacheKey.User)
             this.updateGridTables()
         })
 
         EventBus.on(
             EventName.InventoriesRefreshed,
-            (inventories: Array<InventorySchema>) => {
-                this.inventories = inventories
+            () => {
+                this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
                 this.updateGridTables()
             }
         )
@@ -355,7 +354,6 @@ export class ShopContent extends BaseSizer {
         if (this.gridTableMap[shopTab]) {
             if (showLimitText) {
                 const limitText = this.gridTableMap[shopTab].getChildren()[0] as Text
-                console.log(shopTab)
                 const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
                 limitText.setText(`Limit: ${currentOwnership}/${maxOwnership}`)
             }
@@ -412,7 +410,7 @@ export class ShopContent extends BaseSizer {
                     },
                 },
                 createCellContainerCallback: (cell, cellContainer) => {
-                    const depth = this.gridTableMap[shopTab]?.depth || MODAL_DEPTH_1 + 1
+                    const depth = this.gridTableMap[shopTab]?.depth || this.depth + 1
                     if (cellContainer === null) {
                         if (!cellContainer) {
                             cellContainer = this.scene.rexUI.add

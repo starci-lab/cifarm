@@ -6,7 +6,6 @@ import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Background, ModalBackground, NumberInput } from "../../../elements"
-import { MODAL_DEPTH_2 } from "../../ModalManager"
 import { DeliverMoreProductRequest, DeliverProductRequest } from "@/modules/apollo"
 
 export class InputQuantityContent extends BaseSizer {
@@ -142,7 +141,7 @@ export class InputQuantityContent extends BaseSizer {
             textureConfig: { key }
         } = inventoryTypeAssetMap[inventoryType.displayId]
 
-        const image = this.scene.add.image(0, 0, key).setDepth(MODAL_DEPTH_2 + 1)
+        const image = this.scene.add.image(0, 0, key).setDepth(this.depth + 1)
 
         this.numberInput.setBounds({
             min: 1,

@@ -5,8 +5,8 @@ import { QueryParams } from "../../types"
 import { QueryVariables } from "../../types"
 
 const query1 = gql`
-  query Inventories($request: InventoriesRequest!) {
-    inventories(request: $request) {
+  query Inventories {
+    inventories {
       id
       inventoryType
       index
@@ -28,24 +28,17 @@ export interface QueryInventoriesResponse {
   inventories: Array<InventorySchema>
 }
 
-export type QueryInventoriesParams = QueryParams<QueryInventories, QueryInventoriesRequest>;
-export interface QueryInventoriesRequest {
-  storeAsCache: boolean
-};
+export type QueryInventoriesParams = QueryParams<QueryInventories>;
 export const queryInventories = async (
     {
         query = QueryInventories.Query1,
-        request = { storeAsCache: true },
     }: QueryInventoriesParams
 ) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
     QueryInventoriesResponse,
-    QueryVariables<QueryInventoriesRequest>
+    QueryVariables<never>
   >({
       query: queryDocument,
-      variables: {
-          request,
-      },
   })
 }

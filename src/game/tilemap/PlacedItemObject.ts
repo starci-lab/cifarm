@@ -39,6 +39,8 @@ import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { calculateGameplayDepth, GameplayLayer } from "../layers"
+import { EventName } from "../event-bus"
+import { EventBus } from "../event-bus"
 
 export class PlacedItemObject extends ContainerLite {
     private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
@@ -57,7 +59,8 @@ export class PlacedItemObject extends ContainerLite {
     private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema>
     private fruits: Array<FruitSchema>
-
+    private timerIsShown = false
+    
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
 
@@ -71,14 +74,23 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     public showTimer() {
-        if (this.timer) {
-            this.timer.setVisible(true)
+        if (!this.timer) {
+            return
         }
+        if (this.timerIsShown) {
+            return
+        }
+        this.timerIsShown = true
+        EventBus.emit(EventName.SyncPlacedItems, {
+            placedItemIds: [this.currentPlacedItem?.id],
+        })
+        this.timer.setVisible(true)
         //delay call for 2s
         this.scene.time.delayedCall(2000, () => {
             if (this.timer) {
                 this.timer.setVisible(false)
             }
+            this.timerIsShown = false
         })
     }
 

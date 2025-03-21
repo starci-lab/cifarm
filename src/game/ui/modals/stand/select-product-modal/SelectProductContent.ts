@@ -99,13 +99,6 @@ export class SelectProductContent extends BaseSizer {
             }
             this.updateGridTable(inventoryTypeId)
         })
-
-        EventBus.on(
-            EventName.InventoriesRefreshed,
-            (inventories: Array<InventorySchema>) => {
-                this.inventories = inventories
-            }
-        )
     }
 
     private updateGridTable(inventoryTypeId?: string) {

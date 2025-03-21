@@ -131,8 +131,8 @@ export class DailyContent extends BaseSizer {
             throw new Error("Reward container sizer is not defined")
         }
 
-        EventBus.on(EventName.UserRefreshed, (user: UserSchema) => {
-            this.user = user
+        EventBus.on(EventName.UserRefreshed, () => {
+            this.user = this.scene.cache.obj.get(CacheKey.User)
             this.updateSizer()
         })
     }

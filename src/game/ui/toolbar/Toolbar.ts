@@ -106,8 +106,8 @@ export class Toolbar extends ContainerLite {
         this.updateItemSizer()
         this.controlArrowVisibility()
 
-        EventBus.on(EventName.InventoriesRefreshed, (inventories: Array<InventorySchema>) => {
-            this.inventories = inventories
+        EventBus.on(EventName.InventoriesRefreshed, () => {
+            this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
             this.toolItems = this.getToolItems()
             // check if the selected index is still valid
             const lastIndex = this.toolItems.length - 1

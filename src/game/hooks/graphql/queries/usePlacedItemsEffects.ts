@@ -20,7 +20,6 @@ export const usePlacedItemsEffects = () => {
             const response = await swrMutation.trigger({
                 request: {
                     userId,
-                    storeAsCache: true,
                 },
             })
             EventBus.emit(EventName.PlacedItemsLoaded, response.data?.placedItems)
