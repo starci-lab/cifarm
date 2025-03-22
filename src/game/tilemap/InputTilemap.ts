@@ -18,7 +18,7 @@ import {
     MoveRequest,
     PlantSeedRequest,
     SellRequest,
-    ThiefAnimalProductRequest,
+    ThiefAnimalRequest,
     ThiefCropRequest,
     ThiefFruitRequest,
     UseBugNetRequest,
@@ -866,7 +866,6 @@ export class InputTilemap extends ItemTilemap {
                     })
                     // emit the event to plant seed
                     const eventMessage: CureAnimalRequest = {
-                        inventorySupplyId: selectedTool.id,
                         placedItemAnimalId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestCureAnimal, eventMessage)
@@ -907,7 +906,7 @@ export class InputTilemap extends ItemTilemap {
                 }
                 if (watchingUser) {
                     if (
-                        !this.thiefAnimalProductQuantityReactMinimum({
+                        !this.thiefAnimalQuantityReactMinimum({
                             data,
                         })
                     ) {
@@ -924,20 +923,20 @@ export class InputTilemap extends ItemTilemap {
                         !this.energyNotEnough({
                             data,
                             actionEnergy:
-                    this.activities.thiefAnimalProduct.energyConsume,
+                    this.activities.thiefAnimal.energyConsume,
                         })
                     ) {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefAnimalProductResponsed, async () => {
+                    EventBus.once(EventName.ThiefAnimalResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
-                    const eventMessage: ThiefAnimalProductRequest = {
+                    const eventMessage: ThiefAnimalRequest = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestThiefAnimalProduct, eventMessage)
+                    EventBus.emit(EventName.RequestThiefAnimal, eventMessage)
                     data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
@@ -2006,9 +2005,9 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private thiefAnimalProductQuantityReactMinimum({
+    private thiefAnimalQuantityReactMinimum({
         data,
-    }: ThiefAnimalProductQuantityReactMinimumParams): boolean {
+    }: ThiefAnimalQuantityReactMinimumParams): boolean {
         const placedItemType = this.placedItemTypes.find(   
             (placedItemType) => placedItemType.id === data.object.currentPlacedItem?.placedItemType
         )
@@ -2120,7 +2119,7 @@ export interface ThiefCropQuantityReactMinimumParams {
   data: PlacedItemObjectData;
 }
 
-export interface ThiefAnimalProductQuantityReactMinimumParams {
+export interface ThiefAnimalQuantityReactMinimumParams {
   data: PlacedItemObjectData;
 }
 

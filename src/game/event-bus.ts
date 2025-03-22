@@ -238,8 +238,8 @@ export enum EventName {
   RequestThiefCrop = "request_thief_crop",
   ThiefCropResponsed = "thief_crop_completed",
 
-  ThiefAnimalProductResponsed = "thief_animal_product_completed",
-  RequestThiefAnimalProduct = "request_thief_animal_product",
+  ThiefAnimalResponsed = "thief_animal_completed",
+  RequestThiefAnimal = "request_thief_animal",
 
   RequestBuyAnimal = "request_buy_animal",
   BuyAnimalResponsed = "buy_animal_completed",

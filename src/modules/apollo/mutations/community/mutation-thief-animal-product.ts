@@ -3,43 +3,43 @@ import { authClient } from "../../auth-client"
 import { MutationParams, MutationVariables } from "../../types"
 
 const mutation1 = gql`
-    mutation ThiefAnimalProduct($request: ThiefAnimalProductRequest!) {
-        thiefAnimalProduct(request: $request) {
+    mutation ThiefAnimal($request: ThiefAnimalRequest!) {
+        thiefAnimal(request: $request) {
             quantity
         }
     }
 `
 
-export enum MutationThiefAnimalProduct {
+export enum MutationThiefAnimal {
     Mutation1 = "mutation1",
 }
 
-export interface ThiefAnimalProductRequest {
+export interface ThiefAnimalRequest {
     placedItemAnimalId: string
 }
 
-export interface MutationThiefAnimalProductResponse {
+export interface MutationThiefAnimalResponse {
     quantity: number
 }
 
-const mutationMap: Record<MutationThiefAnimalProduct, DocumentNode> = {
-    [MutationThiefAnimalProduct.Mutation1]: mutation1,
+const mutationMap: Record<MutationThiefAnimal, DocumentNode> = {
+    [MutationThiefAnimal.Mutation1]: mutation1,
 }
 
-export type MutationThiefAnimalProductParams = MutationParams<MutationThiefAnimalProduct, ThiefAnimalProductRequest>
+export type MutationThiefAnimalParams = MutationParams<MutationThiefAnimal, ThiefAnimalRequest>
 
-export const mutationThiefAnimalProduct = async ({
-    mutation = MutationThiefAnimalProduct.Mutation1,
+export const mutationThiefAnimal = async ({
+    mutation = MutationThiefAnimal.Mutation1,
     request
-}: MutationThiefAnimalProductParams) => {
+}: MutationThiefAnimalParams) => {
     if (!request) {
-        throw new Error("Request is required for thief animal product mutation")
+        throw new Error("Request is required for thief animal mutation")
     }
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-        { thiefAnimalProduct: MutationThiefAnimalProductResponse },
-        MutationVariables<ThiefAnimalProductRequest>
+        { thiefAnimal: MutationThiefAnimalResponse },
+        MutationVariables<ThiefAnimalRequest>
     >({
         mutation: mutationDocument,
         variables: { request }

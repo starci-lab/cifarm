@@ -919,6 +919,8 @@ export class PlacedItemObject extends ContainerLite {
                     const textureConfig =
             animalStateAssetMap[this.nextPlacedItem.animalInfo.currentState]
                 ?.textureConfig
+                    console.log(this.nextPlacedItem.animalInfo.currentState)
+                    console.log(textureConfig)
                     if (!textureConfig) {
                         throw new Error("Texture config not found")
                     }

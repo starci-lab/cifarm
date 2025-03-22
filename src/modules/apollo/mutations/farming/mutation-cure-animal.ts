@@ -14,7 +14,6 @@ export enum MutationCureAnimal {
 
 export interface CureAnimalRequest {
     placedItemAnimalId: string
-    inventorySupplyId: string
 }
 
 const mutationMap: Record<MutationCureAnimal, DocumentNode> = {

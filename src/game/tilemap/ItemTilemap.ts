@@ -571,12 +571,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.thiefAnimalProduct.energyConsume,
+                            quantity: -this.activities.thiefAnimal.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.thiefAnimalProduct.experiencesGain,
+                            quantity: this.activities.thiefAnimal.experiencesGain,
                         },
                         {
                             assetKey,

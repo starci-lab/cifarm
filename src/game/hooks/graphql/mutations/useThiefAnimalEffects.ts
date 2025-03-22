@@ -1,18 +1,18 @@
-import { GRAPHQL_MUTATION_THIEF_ANIMAL_PRODUCT_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationThiefAnimalProductSwrMutation } from "@/hooks"
+import { GRAPHQL_MUTATION_THIEF_ANIMAL_SWR_MUTATION } from "@/app/constants"
+import { useGraphQLMutationThiefAnimalSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
-import { ThiefAnimalProductRequest } from "@/modules/apollo"
+import { ThiefAnimalRequest } from "@/modules/apollo"
 
-export const useThiefAnimalProductEffects = () => {
+export const useThiefAnimalEffects = () => {
     //authentication useEffect
     const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationThiefAnimalProductSwrMutation>
-      >(GRAPHQL_MUTATION_THIEF_ANIMAL_PRODUCT_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationThiefAnimalSwrMutation>
+      >(GRAPHQL_MUTATION_THIEF_ANIMAL_SWR_MUTATION)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestThiefAnimalProduct, async (message: ThiefAnimalProductRequest) => {
+        EventBus.on(EventName.RequestThiefAnimal, async (message: ThiefAnimalRequest) => {
             let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
@@ -25,11 +25,11 @@ export const useThiefAnimalProductEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.ThiefAnimalProductResponsed, completedMessage)
+            EventBus.emit(EventName.ThiefAnimalResponsed, completedMessage)
         })
     
         return () => {
-            EventBus.removeListener(EventName.RequestThiefAnimalProduct)
+            EventBus.removeListener(EventName.RequestThiefAnimal)
         }
     }, [swrMutation])
 }

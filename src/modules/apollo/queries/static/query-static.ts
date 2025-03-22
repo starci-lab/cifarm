@@ -70,7 +70,7 @@ const query = gql`
         experiencesGain
         energyConsume
       }
-      thiefAnimalProduct {
+      thiefAnimal {
         experiencesGain
         energyConsume
       }

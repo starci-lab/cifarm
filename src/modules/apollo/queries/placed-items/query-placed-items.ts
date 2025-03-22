@@ -29,6 +29,7 @@ const query1 = gql`
         currentGrowthTime
         currentHungryTime
         currentYieldTime
+        currentState
         harvestQuantityRemaining
         isAdult
         isQuality

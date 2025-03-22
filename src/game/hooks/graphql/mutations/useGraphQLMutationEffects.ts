@@ -27,7 +27,6 @@ import { useBuyToolEffects } from "./useBuyToolEffects"
 import { useSellEffects } from "./useSellEffects"
 import { useBuyFruitEffects } from "./useBuyFruit"
 import { useHarvestAnimalEffects } from "./useHarvestAnimalEffects"
-import { useThiefAnimalProductEffects } from "./useThiefAnimalProductEffects"
 import { useHelpCureAnimalEffects } from "./useHelpCureAnimalEffects"
 import { useHarvestFruitEffects } from "./useHarvestFruitEffects"
 import { useHelpFeedAnimalEffects } from "./useHelpFeedAnimalEffects"
@@ -38,7 +37,7 @@ import { useUseBugNetEffects } from "./useUseBugNetEffects"
 import { useUseFruitFertilizerEffects } from "./useUseFruitFertilizerEffects"
 import { useHelpUsePesticideEffects } from "./useHelpUsePesticideEffects"
 import { useHelpWaterCropEffects } from "./useHelpWaterCropEffects"
-
+import { useThiefAnimalEffects } from "./useThiefAnimalEffects"
 export const useGraphQLMutationEffects = () => {
     useBuySeedsEffects()
     usePlantSeedEffects()
@@ -71,7 +70,6 @@ export const useGraphQLMutationEffects = () => {
     useSellEffects()
     useBuyFruitEffects()
     useHarvestAnimalEffects()
-    useThiefAnimalProductEffects()
     useHelpCureAnimalEffects()
     useHelpFeedAnimalEffects()
     useHarvestFruitEffects()
@@ -80,4 +78,5 @@ export const useGraphQLMutationEffects = () => {
     useHelpUseBugNetEffects()
     useUseFruitFertilizerEffects()
     useHelpUseFruitFertilizerEffects()
+    useThiefAnimalEffects()
 }
