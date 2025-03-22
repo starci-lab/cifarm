@@ -187,7 +187,9 @@ const query = gql`
     fruits {
       id
       displayId
-      growthStageDuration
+      youngGrowthStageDuration
+      matureGrowthStageDuration
+      fertilizerTime
       price
       unlockLevel
       minHarvestQuantity
@@ -301,11 +303,11 @@ const query = gql`
       randomness {
         thief3
         thief2
-        needFertilizer
         hasCaterpillar
       }
       nextGrowthStageAfterHarvest
       growthStages
+      matureGrowthStage
     }
     cropInfo {
       randomness {

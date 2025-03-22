@@ -2,7 +2,9 @@ import { FruitId } from "../enums"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface FruitSchema extends StaticAbstractSchema<FruitId> {
-    growthStageDuration: number
+    youngGrowthStageDuration: number
+    matureGrowthStageDuration: number
+    fertilizerTime: number
     growthStages: number
     price: number
     unlockLevel: number

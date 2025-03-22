@@ -6,6 +6,7 @@ import {
     CropCurrentState,
     CropSchema,
     FruitCurrentState,
+    FruitInfo,
     FruitSchema,
     PlacedItemSchema,
     PlacedItemType,
@@ -59,6 +60,7 @@ export class PlacedItemObject extends ContainerLite {
     private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema>
     private fruits: Array<FruitSchema>
+    private fruitInfo: FruitInfo
     private timerIsShown = false
     
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -71,6 +73,7 @@ export class PlacedItemObject extends ContainerLite {
         this.tiles = scene.cache.obj.get(CacheKey.Tiles)
         this.buildings = scene.cache.obj.get(CacheKey.Buildings)
         this.fruits = scene.cache.obj.get(CacheKey.Fruits)
+        this.fruitInfo = scene.cache.obj.get(CacheKey.FruitInfo)
     }
 
     public showTimer() {
@@ -357,61 +360,62 @@ export class PlacedItemObject extends ContainerLite {
             this.nextPlacedItem.fruitInfo.currentState !=
       FruitCurrentState.FullyMatured
         ) {
-            if (
-                this.nextPlacedItem.fruitInfo.currentStageTimeElapsed !==
-        this.currentPlacedItem?.fruitInfo?.currentStageTimeElapsed
-            ) {
-                if (!this.timer) {
-                    this.timer = new Text({
-                        baseParams: {
-                            scene: this.scene,
-                            x: 0,
-                            y: -50,
-                            text: "",
-                        },
-                        options: {
-                            fontSize: 32,
-                            enableStroke: true,
-                        },
-                    })
-                        .setVisible(false)
-                        .setOrigin(0.5, 1)
-                        .setDepth(
-                            calculateGameplayDepth({
-                                layer: GameplayLayer.Effects,
-                            })
-                        )
-                    this.scene.add.existing(this.timer)
-                    this.pinLocal(this.timer, {
-                        syncScale: false,
-                    })
-                }
-                const fruit = this.fruits.find((fruit) => {
-                    if (!this.nextPlacedItem) {
-                        throw new Error("Current placed item not found")
-                    }
-                    const placedItemType = this.placedItemTypes.find(
-                        (placedItemType) => placedItemType.id === this.nextPlacedItem?.placedItemType
-                    )
-                    if (!placedItemType) {
-                        throw new Error("Placed item type not found")
-                    }
-                    return fruit.id === placedItemType.fruit
+            if (!this.timer) {
+                this.timer = new Text({
+                    baseParams: {
+                        scene: this.scene,
+                        x: 0,
+                        y: -50,
+                        text: "",
+                    },
+                    options: {
+                        fontSize: 32,
+                        enableStroke: true,
+                    },
                 })
-                if (fruit?.growthStageDuration === undefined) {
-                    throw new Error("Fruit growth stage duration not found")
-                }
-                const formattedTime = formatTime(
-                    Math.round(
-                        fruit.growthStageDuration -
-              this.nextPlacedItem.fruitInfo.currentStageTimeElapsed
+                    .setVisible(false)
+                    .setOrigin(0.5, 1)
+                    .setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
                     )
-                )
-                this.timer.setText(formattedTime)
+                this.scene.add.existing(this.timer)
+                this.pinLocal(this.timer, {
+                    syncScale: false,
+                })
             }
+            const fruit = this.fruits.find((fruit) => {
+                if (!this.nextPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.id === this.nextPlacedItem?.placedItemType
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                return fruit.id === placedItemType.fruit
+            })
+            if (fruit?.youngGrowthStageDuration === undefined) {
+                throw new Error("Fruit young growth stage duration not found")
+            }
+            if (fruit?.matureGrowthStageDuration === undefined) {
+                throw new Error("Fruit mature growth stage duration not found")
+            }
+            const isMature = this.nextPlacedItem.fruitInfo.currentStage >= this.fruitInfo.matureGrowthStage - 1
+            const growthStageDuration = isMature ? fruit.matureGrowthStageDuration : fruit.youngGrowthStageDuration
+
+            const formattedTime = formatTime(
+                Math.round(
+                    growthStageDuration -
+                        this.nextPlacedItem.fruitInfo.currentStageTimeElapsed
+                )
+            )
+            this.timer.setText(formattedTime)
         } else {
             if (this.timer) {
-                this.timer.destroy()
+                this.remove(this.timer, true)
                 this.timer = undefined
             }
         }
@@ -721,55 +725,50 @@ export class PlacedItemObject extends ContainerLite {
             this.nextPlacedItem.seedGrowthInfo.currentState !=
       CropCurrentState.FullyMatured
         ) {
-            if (
-                this.nextPlacedItem.seedGrowthInfo.currentStageTimeElapsed !==
-        this.currentPlacedItem?.seedGrowthInfo?.currentStageTimeElapsed
-            ) {
-                if (!this.timer) {
-                    this.timer = new Text({
-                        baseParams: {
-                            scene: this.scene,
-                            x: 0,
-                            y: -25,
-                            text: "",
-                        },
-                        options: {
-                            fontSize: 32,
-                            enableStroke: true,
-                        },
-                    })
-                        .setVisible(false)
-                        .setOrigin(0.5, 1)
-                        .setDepth(
-                            calculateGameplayDepth({
-                                layer: GameplayLayer.Effects,
-                            })
-                        )
-                    this.scene.add.existing(this.timer)
-                    this.pinLocal(this.timer, {
-                        syncScale: false,
-                    })
-                }
-                const crop = this.crops.find((crop) => {
-                    if (!this.nextPlacedItem) {
-                        throw new Error("Current placed item not found")
-                    }
-                    return crop.id === this.nextPlacedItem.seedGrowthInfo?.crop
+            if (!this.timer) {
+                this.timer = new Text({
+                    baseParams: {
+                        scene: this.scene,
+                        x: 0,
+                        y: -25,
+                        text: "",
+                    },
+                    options: {
+                        fontSize: 32,
+                        enableStroke: true,
+                    },
                 })
-                if (crop?.growthStageDuration === undefined) {
-                    throw new Error("Crop growth stage duration not found")
-                }
-                const formattedTime = formatTime(
-                    Math.round(
-                        crop.growthStageDuration -
-              this.nextPlacedItem.seedGrowthInfo.currentStageTimeElapsed
+                    .setVisible(false)
+                    .setOrigin(0.5, 1)
+                    .setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
                     )
-                )
-                this.timer.setText(formattedTime)
+                this.scene.add.existing(this.timer)
+                this.pinLocal(this.timer, {
+                    syncScale: false,
+                })
             }
+            const crop = this.crops.find((crop) => {
+                if (!this.nextPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                return crop.id === this.nextPlacedItem.seedGrowthInfo?.crop
+            })
+            if (crop?.growthStageDuration === undefined) {
+                throw new Error("Crop growth stage duration not found")
+            }
+            const formattedTime = formatTime(
+                Math.round(
+                    crop.growthStageDuration -
+              this.nextPlacedItem.seedGrowthInfo.currentStageTimeElapsed
+                )
+            )
+            this.timer.setText(formattedTime)
         } else {
             if (this.timer) {
-                this.timer.destroy()
+                this.remove(this.timer, true)
                 this.timer = undefined
             }
         }
@@ -1006,68 +1005,63 @@ export class PlacedItemObject extends ContainerLite {
         if (
             this.nextPlacedItem.animalInfo.currentState != AnimalCurrentState.Yield
         ) {
-            if (
-                this.nextPlacedItem.animalInfo.currentGrowthTime !==
-        this.currentPlacedItem?.animalInfo?.currentGrowthTime
-            ) {
-                if (!this.timer) {
-                    const text = new Text({
-                        baseParams: {
-                            scene: this.scene,
-                            x: 0,
-                            y: -25,
-                            text: "",
-                        },
-                        options: {
-                            fontSize: 32,
-                            enableStroke: true,
-                        },
-                    })
-                        .setVisible(false)
-                        .setOrigin(0.5, 1)
-                        .setDepth(
-                            calculateGameplayDepth({
-                                layer: GameplayLayer.Effects,
-                            })
-                        )
-                    this.scene.add.existing(text)
-                    this.timer = text
-                    this.pinLocal(this.timer, {
-                        syncScale: false,
-                        syncPosition: true,
-                    })
-                }
+            if (!this.timer) {
+                const text = new Text({
+                    baseParams: {
+                        scene: this.scene,
+                        x: 0,
+                        y: -25,
+                        text: "",
+                    },
+                    options: {
+                        fontSize: 32,
+                        enableStroke: true,
+                    },
+                })
+                    .setVisible(false)
+                    .setOrigin(0.5, 1)
+                    .setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                        })
+                    )
+                this.scene.add.existing(text)
+                this.timer = text
+                this.pinLocal(this.timer, {
+                    syncScale: false,
+                    syncPosition: true,
+                })
+            }
 
-                const animal = this.animals.find((animal) => {
+            const animal = this.animals.find((animal) => {
+                if (!this.nextPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                const placedItemType = this.placedItemTypes.find((placedItemType) => {
                     if (!this.nextPlacedItem) {
                         throw new Error("Current placed item not found")
                     }
-                    const placedItemType = this.placedItemTypes.find((placedItemType) => {
-                        if (!this.nextPlacedItem) {
-                            throw new Error("Current placed item not found")
-                        }
-                        return placedItemType.id === this.nextPlacedItem.placedItemType
-                    })  
-                    if (!placedItemType) {
-                        throw new Error("Placed item type not found")
-                    }
-                    return animal.id === placedItemType.animal
-                })
-
-                if (animal?.growthTime == undefined) {
-                    throw new Error("Animal growth time not found")
+                    return placedItemType.id === this.nextPlacedItem.placedItemType
+                })  
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
                 }
+                return animal.id === placedItemType.animal
+            })
 
-                const formattedTime = formatTime(
-                    Math.round(
-                        animal.growthTime - this.nextPlacedItem.animalInfo.currentGrowthTime
-                    )
-                )
-                this.timer.setText(formattedTime)
+            if (animal?.growthTime == undefined) {
+                throw new Error("Animal growth time not found")
             }
+
+            const formattedTime = formatTime(
+                Math.round(
+                    animal.growthTime - this.nextPlacedItem.animalInfo.currentGrowthTime
+                )
+            )
+            this.timer.setText(formattedTime)
         } else {
             if (this.timer) {
-                this.timer.destroy()
+                this.remove(this.timer, true)
                 this.timer = undefined
             }
         }

@@ -1708,7 +1708,7 @@ export class InputTilemap extends ItemTilemap {
             // return if seed growth info is not need water
                 if (
                     currentPlacedItem.fruitInfo?.currentState !==
-              FruitCurrentState.IsInfested
+              FruitCurrentState.HasCaterpillar
                 ) {
                     return
                 }

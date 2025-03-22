@@ -19,6 +19,7 @@ export enum CacheKey {
     InventoryTypes = "inventory-types",
     DailyRewardInfo = "daily-reward-info",
     User = "user",
+    FruitInfo = "fruit-info",
     Tools = "tools",
     Products = "products",
     SelectedTileId = "selected-tile-id",

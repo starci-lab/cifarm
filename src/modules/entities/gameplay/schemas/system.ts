@@ -38,6 +38,7 @@ export interface Activities {
 export interface CropInfo {
   randomness: CropRandomness;
   nextGrowthStageAfterHarvest: number
+  growthStages: number
 }
 
 export interface CropRandomness {
@@ -60,13 +61,14 @@ export interface AnimalInfo {
 export interface FruitRandomness {
   thief3: number
   thief2: number
-  needFertilizer: number
   hasCaterpillar: number
 }
 
 export interface FruitInfo {
   randomness: FruitRandomness;
   nextGrowthStageAfterHarvest: number
+  matureGrowthStage: number
+  growthStages: number
 }
 
 export interface Positions {
