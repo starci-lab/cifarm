@@ -2,10 +2,12 @@ import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../assets"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
-import { EventBus, EventName } from "@/game/event-bus"
+import { EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
 
 export class NeighborRightHorizontalButtons extends HorizontalButtons {
     private nextButton: Sizer
+    private inventoryButton: Sizer
+    
     constructor(baseParams: ButtonsBaseConstructorParams) {
         super({
             baseParams: {
@@ -31,6 +33,20 @@ export class NeighborRightHorizontalButtons extends HorizontalButtons {
             },
         })
         this.addButton(this.nextButton)
+
+        // add inventory button
+        this.inventoryButton = this.createButton({
+            iconKey: BaseAssetKey.UIIconInventory,
+            text: "Inventory",
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Inventory
+                }
+                EventBus.emit(EventName.OpenModal, eventMessage)
+            },
+        })
+        this.addButton(this.inventoryButton)
+
 
         EventBus.on(EventName.HideNeighborButtons, () => {
             this.setVisible(false).setActive(false)
