@@ -38,7 +38,7 @@ export const QuestCard: FC<QuestCardProps> = ({ description, title, rewards, pro
                                         <Link color="success">
                                             <CheckIcon className="w-5 h-5" />
                                         </Link>
-                                        <div className="text-sm text-success">Completed</div>
+                                        <div className="text-sm text-success">Responsed</div>
                                     </div>
                                 </>
                                 : ((progress) &&

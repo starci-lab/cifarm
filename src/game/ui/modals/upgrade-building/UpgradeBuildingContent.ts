@@ -41,7 +41,7 @@ export class UpgradeBuildingContent extends BaseSizer {
                             placedItemBuildingId: this.currentPlacedItemId
                         }
 
-                        EventBus.once(EventName.UpgradeBuildingCompleted, () => {
+                        EventBus.once(EventName.UpgradeBuildingResponsed, () => {
                             EventBus.emit(EventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
                         })
                         EventBus.emit(EventName.RequestUpgradeBuilding, eventName)

@@ -52,7 +52,7 @@ import {
     SelectTabMessage,
 } from "../../../event-bus"
 import { getPlacedItemsByType } from "../../../queries"
-import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
+import { BaseSizerBaseConstructorParams, CacheKey, PlacedItemsData } from "../../../types"
 import {
     Background,
     Text,
@@ -246,9 +246,10 @@ export class ShopContent extends BaseSizer {
         EventBus.on(
             EventName.PlacedItemsRefreshed,
             () => {
-                this.placedItems = this.scene.cache.obj.get(
+                const placedItemsData = this.scene.cache.obj.get(
                     CacheKey.PlacedItems
-                ) as Array<PlacedItemSchema>
+                ) as PlacedItemsData
+                this.placedItems = placedItemsData.placedItems
                 this.updateGridTables()
             }
         )
@@ -921,7 +922,7 @@ export class ShopContent extends BaseSizer {
     }
 
     private onBuySeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuySeedsCompleted, () => {
+        EventBus.once(EventName.BuySeedsResponsed, () => {
         })
         const eventMessage: BuySeedsRequest = {
             cropId: displayId,
@@ -952,7 +953,7 @@ export class ShopContent extends BaseSizer {
 
     //onBuySupplyPress
     private onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuySuppliesCompleted, () => {
+        EventBus.once(EventName.BuySuppliesResponsed, () => {
         })
         const eventMessage: BuySuppliesRequest = {
             supplyId: displayId,
@@ -979,7 +980,7 @@ export class ShopContent extends BaseSizer {
     }
 
     private onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuyToolCompleted, () => {
+        EventBus.once(EventName.BuyToolResponsed, () => {
         })
         const eventMessage: BuyToolRequest = {
             toolId: displayId,

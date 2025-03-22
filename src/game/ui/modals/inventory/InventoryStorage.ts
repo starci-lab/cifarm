@@ -271,7 +271,7 @@ export class InventoryStorage extends BaseSizer {
             })
         }
         if (index !== -1) {
-            EventBus.once(EventName.MoveInventoryCompleted, () => {
+            EventBus.once(EventName.MoveInventoryResponsed, () => {
                 if (!item) {
                     throw new Error("Badge label not found")
                 }

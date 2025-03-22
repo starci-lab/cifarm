@@ -3,7 +3,7 @@ import { useGraphQLMutationSellSwrMutation } from "@/hooks"
 import { SellRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useSellEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useSellEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestSell, async (message: SellRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useSellEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.SellCompleted, completedMessage)
+            EventBus.emit(EventName.SellResponsed, completedMessage)
         })
         
         return () => {

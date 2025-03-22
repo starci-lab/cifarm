@@ -1,3 +1,5 @@
+import { PlacedItemSchema } from "@/modules/entities"
+
 export enum CacheKey {
     PlacedItems = "placed-items",
     PlacedItemTypes = "placed-item-types",
@@ -24,10 +26,16 @@ export enum CacheKey {
     SelectedTool = "selected-tool",
     DefaultInfo = "default-info",
     DeliveryData = "delivery-data",
-    VisitedNeighbor = "visited-neighbor",
+    WatchingUser = "watching-user",
 }
 
 export interface DeliveryData {
     index: number;
     isMore: boolean;
 }
+
+export interface PlacedItemsData {
+    placedItems: Array<PlacedItemSchema>;
+    userId?: string;
+}
+

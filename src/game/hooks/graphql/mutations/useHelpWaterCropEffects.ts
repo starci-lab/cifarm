@@ -3,7 +3,7 @@ import { useGraphQLMutationHelpWaterCropSwrMutation } from "@/hooks"
 import { HelpUsePesticideRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useHelpWaterCropEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useHelpWaterCropEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestHelpWaterCrop, async (message: HelpUsePesticideRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useHelpWaterCropEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.HelpWaterCropCompleted, completedMessage)
+            EventBus.emit(EventName.HelpWaterCropResponsed, completedMessage)
         })
     
         return () => {

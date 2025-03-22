@@ -33,7 +33,7 @@ import { DeepPartial } from "react-hook-form"
 import { BaseAssetKey, productAssetMap } from "../assets"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { EventBus, EventName, Position } from "../event-bus"
-import { CacheKey, TilemapBaseConstructorParams } from "../types"
+import { CacheKey, PlacedItemsData, TilemapBaseConstructorParams } from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { LayerName, ObjectLayerName } from "./types"
@@ -44,14 +44,10 @@ const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
 const COIN_KEY = BaseAssetKey.UICommonIconCoin
 
 export abstract class ItemTilemap extends GroundTilemap {
-    // tileset map
-    private readonly tilesetMap: Record<string, Phaser.Tilemaps.Tileset> = {}
-    private fading = false
-    private isWaiting = false
     // item layer
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
-    private previousPlacedItems: Array<PlacedItemSchema> | undefined
+    private previousPlacedItemsData: PlacedItemsData | undefined
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
@@ -89,30 +85,33 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
 
-        EventBus.on(EventName.ShowFade, async (toNeighbor: boolean) => {
-            console.log("showing fade...")
-            this.fading = true
+        EventBus.on(EventName.Visit, (user: UserSchema) => {
+            // save to cache
+            this.scene.cache.obj.add(CacheKey.WatchingUser, user)
+            EventBus.emit(EventName.ProcessVisiting, true)
+        })
+
+        EventBus.on(EventName.ProcessVisiting, async () => {
             // console.log(toNeighbor)
             EventBus.emit(EventName.FadeIn)
             await sleep(FADE_TIME)
-            EventBus.emit(toNeighbor ? EventName.Visit : EventName.Return)
+            EventBus.emit(EventName.UpdateWatchingStatus)
+            // re-sync the placed items
+            const watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined 
+            const userId = watchingUser?.id ?? undefined
+            EventBus.emit(EventName.LoadPlacedItems1, userId)
             EventBus.emit(EventName.CenterCamera)
-            this.fading = false
             await sleep(FADE_HOLD_TIME)
             EventBus.emit(EventName.FadeOut)
         })
 
         EventBus.on(EventName.PlacedItemsRefreshed, () => {
             //console.log("update placed items")
-            const cachedPlacedItems = this.scene.cache.obj.get(
-                CacheKey.PlacedItems
-            ) as Array<PlacedItemSchema>
-            // create a new array from the cached placed items
-            const placedItems = _.cloneDeep<Array<PlacedItemSchema>>(cachedPlacedItems)
+            const currentPlaceItemsData = this.getCurrentPlacedItemsData()
             // handle the placed items update
-            this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
+            this.handlePlacedItemsUpdate(currentPlaceItemsData, this.previousPlacedItemsData)
             // update the previous placed items
-            this.previousPlacedItems = placedItems
+            this.previousPlacedItemsData = currentPlaceItemsData
         })
 
         EventBus.on(
@@ -122,14 +121,12 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         )
 
-        const placedItems = _.cloneDeep<Array<PlacedItemSchema>>(this.scene.cache.obj.get(
-            CacheKey.PlacedItems
-        ))
-        if (placedItems) {
+        const placedItemsData = this.getCurrentPlacedItemsData()
+        if (placedItemsData) {
             // handle the placed items update
-            this.handlePlacedItemsUpdate(placedItems, this.previousPlacedItems)
+            this.handlePlacedItemsUpdate(placedItemsData, this.previousPlacedItemsData)
             // update the previous placed items
-            this.previousPlacedItems = placedItems
+            this.previousPlacedItemsData = placedItemsData
         }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
@@ -766,24 +763,24 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // methods to handle changes in the placed items
     private handlePlacedItemsUpdate(
-        current: Array<PlacedItemSchema>,
-        previous: Array<PlacedItemSchema> = []
+        current: PlacedItemsData,
+        previous?: PlacedItemsData
     ) {
-    // if current.userId doesn't match previous.userId, treat all placed items as new
-    // if (!previous || (previous && current.userId !== previous.userId)) {
-    //     // if user ids are different, create all placed items (treat as new)
-    //     this.clearAllPlacedItems()
-    //     this.createAllPlacedItems(current.placedItems)
-    //     return // exit early to avoid redundant checks later
-    // }
+        //if current.userId doesn't match previous.userId, treat all placed items as new
+        if (!previous || (previous && current.userId !== previous.userId)) {
+            // if user ids are different, create all placed items (treat as new)
+            this.clearAllPlacedItems()
+            this.createAllPlacedItems(current.placedItems)
+            return // exit early to avoid redundant checks later
+        }
         console.log(_.isEqual(current, previous))
 
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
-        for (const placedItem of current) {
+        for (const placedItem of current.placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
-            const found = previous.find((item) => item.id === placedItem.id)
+            const found = previous.placedItems.find((item) => item.id === placedItem.id)
             if (found) {
                 checkedPreviousPlacedItems.push(placedItem)
                 if (placedItem.x !== found.x || placedItem.y !== found.y) {
@@ -813,7 +810,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         // remove the unchecked previous placed items that are no longer in the current placed items
         // Loop through previous placed items to remove any that are no longer present
-        for (const placedItem of previous) {
+        for (const placedItem of previous.placedItems) {
             // Check if this item exists in the checked items list
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
@@ -856,7 +853,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         placedItemId,
         position,
     }: HandlePlacedItemUpdatePositionParams) {
-        const placedItem = this.previousPlacedItems?.find(
+        const placedItem = this.previousPlacedItemsData?.placedItems.find(
             (item) => item.id === placedItemId
         )
         if (!placedItem) {
@@ -998,6 +995,19 @@ export abstract class ItemTilemap extends GroundTilemap {
         return !_.some(dragTiles, (tile) =>
             _.some(occupiedTiles, (occupiedTile) => _.isEqual(occupiedTile, tile))
         )
+    }
+
+    private getCurrentPlacedItemsData(): PlacedItemsData {
+        const placedItemsData = this.scene.cache.obj.get(
+            CacheKey.PlacedItems
+        ) as PlacedItemsData
+        const { placedItems: cachedPlacedItems, userId } = placedItemsData
+        const placedItems = _.cloneDeep<Array<PlacedItemSchema>>(cachedPlacedItems)
+        console.log(placedItems)
+        return {
+            placedItems,
+            userId,
+        }
     }
 
     // method to get the object at a given tile

@@ -24,6 +24,6 @@ export class BootstrapScene extends Scene {
         //  Move to the next Scene
         this.scene.start(SceneName.Loading)
 
-        this.cache.obj.add(CacheKey.VisitedNeighbor, gameState?.data?.visitedUser)
+        this.cache.obj.add(CacheKey.WatchingUser, gameState?.data?.watchingUser)
     }
 }

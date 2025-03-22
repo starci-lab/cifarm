@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationFollowSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { FollowRequest } from "@/modules/apollo"
 
 export const useFollowEffects = () => {
@@ -13,7 +13,7 @@ export const useFollowEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestFollow, async (message: FollowRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useFollowEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.FollowCompleted, completedMessage)
+            EventBus.emit(EventName.FollowResponsed, completedMessage)
         })
     
         return () => {

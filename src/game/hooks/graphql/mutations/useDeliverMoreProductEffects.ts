@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_DELIVER_MORE_PRODUCT_SWR_MUTATION } from "@/app/consta
 import { useGraphQLMutationDeliverMoreProductSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { DeliverMoreProductRequest } from "@/modules/apollo"
 
 export const useDeliverMoreProductEffects = () => {
@@ -15,7 +15,7 @@ export const useDeliverMoreProductEffects = () => {
         EventBus.on(
             EventName.RequestDeliverMoreProduct,
             async (message: DeliverMoreProductRequest) => {
-                let completedMessage: CompletedMessage
+                let completedMessage: ResponsedMessage
                 try {
                     await swrMutation.trigger({ request: message })
                     completedMessage = {
@@ -28,7 +28,7 @@ export const useDeliverMoreProductEffects = () => {
                     }
                 }
                 // return the user to the phaser game
-                EventBus.emit(EventName.DeliverMoreProductCompleted, completedMessage)
+                EventBus.emit(EventName.DeliverMoreProductResponsed, completedMessage)
             }
         )
 

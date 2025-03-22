@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_THIEF_ANIMAL_PRODUCT_SWR_MUTATION } from "@/app/consta
 import { useGraphQLMutationThiefAnimalProductSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { ThiefAnimalProductRequest } from "@/modules/apollo"
 
 export const useThiefAnimalProductEffects = () => {
@@ -13,7 +13,7 @@ export const useThiefAnimalProductEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestThiefAnimalProduct, async (message: ThiefAnimalProductRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useThiefAnimalProductEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.ThiefAnimalProductCompleted, completedMessage)
+            EventBus.emit(EventName.ThiefAnimalProductResponsed, completedMessage)
         })
     
         return () => {

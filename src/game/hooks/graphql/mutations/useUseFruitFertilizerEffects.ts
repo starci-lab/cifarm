@@ -3,7 +3,7 @@ import { useGraphQLMutationUseFruitFertilizerSwrMutation } from "@/hooks"
 import { UseFruitFertilizerRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useUseFruitFertilizerEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useUseFruitFertilizerEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestUseFruitFertilizer, async (message: UseFruitFertilizerRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useUseFruitFertilizerEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.UseFruitFertilizerCompleted, completedMessage)
+            EventBus.emit(EventName.UseFruitFertilizerResponsed, completedMessage)
         })
     
         return () => {

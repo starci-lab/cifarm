@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_USE_PESTICIDE_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationHelpUsePesticideSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { HelpUsePesticideRequest } from "@/modules/apollo"
 
 export const useUsePesticideEffects = () => {
@@ -13,7 +13,7 @@ export const useUsePesticideEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestUsePesticide, async (message: HelpUsePesticideRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useUsePesticideEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.UsePesticideCompleted, completedMessage)
+            EventBus.emit(EventName.UsePesticideResponsed, completedMessage)
         })
     
         return () => {

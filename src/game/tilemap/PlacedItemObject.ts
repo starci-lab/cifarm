@@ -655,6 +655,7 @@ export class PlacedItemObject extends ContainerLite {
         this.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining !==
           this.nextPlacedItem.seedGrowthInfo.harvestQuantityRemaining
             ) {
+                console.log(this.nextPlacedItem.seedGrowthInfo.harvestQuantityRemaining)
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
@@ -664,7 +665,6 @@ export class PlacedItemObject extends ContainerLite {
                             this.nextPlacedItem.seedGrowthInfo?.harvestQuantityRemaining || 0
                         }/${crop.maxHarvestQuantity || 0}`
                     )
-                    .setDepth(this.depth + 30)
             }
         } else {
             // if bubble state is present, remove it

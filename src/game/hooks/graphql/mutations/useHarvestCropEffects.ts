@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_HARVEST_CROP_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationHarvestCropSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { HarvestCropRequest } from "@/modules/apollo"
 
 export const useHarvestCropEffects = () => {
@@ -13,7 +13,7 @@ export const useHarvestCropEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestHarvestCrop, async (message: HarvestCropRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 // Call API
                 await swrMutation.trigger({ request: message })
@@ -29,7 +29,7 @@ export const useHarvestCropEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.HarvestCropCompleted, completedMessage)
+            EventBus.emit(EventName.HarvestCropResponsed, completedMessage)
         })
     
         return () => {

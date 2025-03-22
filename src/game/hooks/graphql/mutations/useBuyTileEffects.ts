@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_BUY_TILE_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationBuyTileSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { BuyTileRequest } from "@/modules/apollo"
 
 export const useBuyTileEffects = () => {
@@ -13,7 +13,7 @@ export const useBuyTileEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestBuyTile, async (message: BuyTileRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useBuyTileEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.BuyTileCompleted, completedMessage)
+            EventBus.emit(EventName.BuyTileResponsed, completedMessage)
         })
     
         return () => {

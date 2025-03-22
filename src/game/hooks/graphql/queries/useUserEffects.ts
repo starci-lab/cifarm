@@ -21,17 +21,4 @@ export const useUserEffects = () => {
             EventBus.removeListener(EventName.LoadUser)
         }
     }, [swr])
-
-    // refresh user data
-    useEffect(() => {
-        EventBus.on(EventName.RefreshUser, async () => {
-            const response = await swr.mutate()
-            //load user data
-            EventBus.emit(EventName.UserRefreshed, response?.data?.user)
-        })
-
-        return () => {
-            EventBus.removeListener(EventName.RefreshUser)
-        }
-    }, [swr])
 }

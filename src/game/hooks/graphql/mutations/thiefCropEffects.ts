@@ -1,5 +1,5 @@
 import { GRAPHQL_MUTATION_THIEF_CROP_SWR_MUTATION } from "@/app/constants"
-import { CompletedMessage, EventBus, EventName } from "@/game/event-bus"
+import { ResponsedMessage, EventBus, EventName } from "@/game/event-bus"
 import { useGraphQLMutationThiefCropSwrMutation } from "@/hooks"
 import { ThiefCropRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -13,7 +13,7 @@ export const useThiefCropEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestThiefCrop, async (message: ThiefCropRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 // return the user to the phaser game
@@ -26,7 +26,7 @@ export const useThiefCropEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.ThiefCropCompleted, completedMessage)
+            EventBus.emit(EventName.ThiefCropResponsed, completedMessage)
         })
     
         return () => {

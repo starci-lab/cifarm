@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_MOVE_INVENTORY_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationMoveInventorySwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { MoveInventoryRequest } from "@/modules/apollo"
 
 export const useMoveInventoryEffects = () => {
@@ -14,7 +14,7 @@ export const useMoveInventoryEffects = () => {
     //user swr
     useEffect(() => {
         EventBus.on(EventName.RequestMoveInventory, async (message: MoveInventoryRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -27,7 +27,7 @@ export const useMoveInventoryEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.MoveInventoryCompleted, completedMessage)
+            EventBus.emit(EventName.MoveInventoryResponsed, completedMessage)
         })
     
         return () => {

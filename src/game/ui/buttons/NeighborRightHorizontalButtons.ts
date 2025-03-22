@@ -40,7 +40,7 @@ export class NeighborRightHorizontalButtons extends HorizontalButtons {
             this.setVisible(true).setActive(true)
         })
                 
-        if (!this.scene.cache.obj.get(CacheKey.VisitedNeighbor)) {
+        if (!this.scene.cache.obj.get(CacheKey.WatchingUser)) {
             this.setVisible(false).setActive(false)
         }
     }

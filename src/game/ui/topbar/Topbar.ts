@@ -19,7 +19,7 @@ export class Topbar extends BaseSizer {
     private tokenLabel: Label | undefined
     private goldLabel: Label | undefined
     private visited: boolean = false
-    private neighbor: UserSchema | undefined
+    private watchingUser: UserSchema | undefined
     constructor({
         scene,
         x,
@@ -41,37 +41,27 @@ export class Topbar extends BaseSizer {
             this.updateContent()
         })
 
-        EventBus.on(EventName.Visit, async () => {
-            this.neighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
-            this.visited = true
-            await this.loadAvatar()
-            this.updateContent()
-            EventBus.emit(EventName.HideButtons)
-            EventBus.emit(EventName.ShowNeighborButtons)
+        EventBus.on(EventName.UpdateWatchingStatus, async () => {
+            this.watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+            this.visited = !!this.watchingUser
+            if (this.visited) {
+                await this.loadAvatar()
+                EventBus.emit(EventName.HideButtons)
+                EventBus.emit(EventName.ShowNeighborButtons)
+            } else {
+                EventBus.emit(EventName.ShowButtons)
+                EventBus.emit(EventName.HideNeighborButtons)
+            }
+            this.updateContent()    
         })
 
-        EventBus.on(EventName.Return, () => {
-            this.neighbor = undefined
-            this.visited = false
-            this.scene.cache.obj.add(CacheKey.VisitedNeighbor, undefined)
-            this.updateContent()
-            EventBus.emit(EventName.ShowButtons)
-            EventBus.emit(EventName.HideNeighborButtons)
-        })
-
-        const visitedNeighbor = this.scene.cache.obj.get(CacheKey.VisitedNeighbor)
-        if (visitedNeighbor) {
-            this.visited = true
-            this.neighbor = visitedNeighbor
-            this.updateContent()
-        }
-
+        this.watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+        this.visited = !!this.watchingUser
         this.updateContent()
 
         EventBus.on(EventName.HideTopbar,  () => {
             this.setVisible(false).setActive(false)
         })
-
         EventBus.on(EventName.ShowTopbar,  () => {
             this.setVisible(true).setActive(true)
         })
@@ -83,8 +73,7 @@ export class Topbar extends BaseSizer {
     }
 
     private async loadAvatar() {
-        
-        const user = this.visited ? this.neighbor : this.user
+        const user = this.watchingUser ?? this.user
         if (!user) {
             throw new Error("User not found")
         }
@@ -112,7 +101,7 @@ export class Topbar extends BaseSizer {
         if (this.profileContainer) {
             this.remove(this.profileContainer, true)
         }
-        const user = this.visited ? this.neighbor : this.user
+        const user = this.watchingUser ?? this.user
         if (!user) {
             throw new Error("User not found")
         }
@@ -213,65 +202,63 @@ export class Topbar extends BaseSizer {
     }
 
     private updateResourcesContainer() {
-        if (this.resourcesContainer) {
-            if (!this.goldLabel) {
-                throw new Error("Gold label not found")
-            } 
-            if (!this.tokenLabel) {
-                throw new Error("Token label not found")
-            }
-            if (!this.visited) {
-                this.goldLabel.show()
-                this.tokenLabel.show()
-            } else {
-                this.goldLabel.hide()
-                this.tokenLabel.hide()
-            }
-
-            //update resources
-            if (this.energyLabel) {
-                this.energyLabel.text = `${this.user.energy}/${this.getMaxEnergy(this.user.level)}`
-            }
-            if (this.goldLabel) {
-                this.goldLabel.text = `${this.user.golds ?? 0}`
-            }
-            if (this.tokenLabel) {
-                this.tokenLabel.text = `${this.user.tokens ?? 0}`
-            }
-
-            this.resourcesContainer.layout()
-            return
-        }
-        this.energyLabel = this.addLabel({
-            iconKey: BaseAssetKey.UITopbarIconEnergy,
-            text: `${this.user.energy}/${this.getMaxEnergy(
-                this.user.level
-            )}`,
-            scale: 0.8,
-        })
-        this.goldLabel = this.addLabel({
-            iconKey: BaseAssetKey.UICommonIconCoin,
-            text: `${this.user.golds ?? 0}`,
-        }).setVisible(!this.visited)
-        this.tokenLabel = this.addLabel({
-            iconKey: BaseAssetKey.UICommonIconCarrot,
-            text: `${this.user.tokens ?? 0}`,
-            scale: 0.9,
-        }).setVisible(!this.visited)
-        this.resourcesContainer = this.scene.rexUI.add
-            .sizer({
-                x: this.background.width / 2 - 20,
-                y: this.background.height / 2,
-                originX: 1,
-                originY: 0.5,
-                orientation: "h",
+        if (!this.resourcesContainer) {
+            this.energyLabel = this.addLabel({
+                iconKey: BaseAssetKey.UITopbarIconEnergy,
+                text: "",
+                scale: 0.8,
             })
-            .add(this.energyLabel)
-            .add(this.goldLabel)
-            .add(this.tokenLabel)
-            .setItemSpacing(50)
-            .layout()
-        this.addLocal(this.resourcesContainer)
+            this.goldLabel = this.addLabel({
+                iconKey: BaseAssetKey.UICommonIconCoin,
+                text: "",
+            })
+            this.tokenLabel = this.addLabel({
+                iconKey: BaseAssetKey.UICommonIconCarrot,
+                text: "",
+                scale: 0.9,
+            })
+            this.resourcesContainer = this.scene.rexUI.add
+                .sizer({
+                    x: this.background.width / 2 - 20,
+                    y: this.background.height / 2,
+                    originX: 1,
+                    originY: 0.5,
+                    orientation: "h",
+                })
+                .add(this.energyLabel)
+                .add(this.goldLabel)
+                .add(this.tokenLabel)
+                .setItemSpacing(50)
+                .layout()
+            this.addLocal(this.resourcesContainer)
+        }
+        if (!this.goldLabel) {
+            throw new Error("Gold label not found")
+        } 
+        if (!this.tokenLabel) {
+            throw new Error("Token label not found")
+        }
+        if (!this.visited) {
+            this.goldLabel.show()
+            this.tokenLabel.show()
+        } else {
+            this.goldLabel.hide()
+            this.tokenLabel.hide()
+        }
+
+        //update resources
+        if (this.energyLabel) {
+            this.energyLabel.text = `${this.user.energy}/${this.getMaxEnergy(this.user.level)}`
+        }
+        if (this.goldLabel) {
+            this.goldLabel.text = `${this.user.golds ?? 0}`
+        }
+        if (this.tokenLabel) {
+            this.tokenLabel.text = `${this.user.tokens ?? 0}`
+        }
+
+        this.resourcesContainer.layout()
+        return
     }
 
     private addLabel({ iconKey, text, scale = 1 }: AddLabelParams) {

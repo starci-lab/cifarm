@@ -65,7 +65,7 @@ export const startGame = (parent?: string) => {
 }
 
 export interface GameData {
-    visitedUser?: UserSchema
+    watchingUser?: UserSchema
 }
 export interface GameState {
     data?: GameData

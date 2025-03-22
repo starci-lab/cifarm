@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_BUY_BUILDING_SWR_MUTATION } from "@/app/constants"
 import { BuyBuildingRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { useGraphQLMutationBuyBuildingSwrMutation } from "@/hooks"
 
 export const useBuyBuildingEffects = () => {
@@ -15,7 +15,7 @@ export const useBuyBuildingEffects = () => {
         EventBus.on(
             EventName.RequestBuyBuilding,
             async (message: BuyBuildingRequest) => {
-                let completedMessage: CompletedMessage
+                let completedMessage: ResponsedMessage
                 try {
                     await swrMutation.trigger({ request: message })
                     // return the user to the phaser game
@@ -29,7 +29,7 @@ export const useBuyBuildingEffects = () => {
                     }
                 }
                 // return the user to the phaser game
-                EventBus.emit(EventName.BuyBuildingCompleted, completedMessage)
+                EventBus.emit(EventName.BuyBuildingResponsed, completedMessage)
             }
         )
 

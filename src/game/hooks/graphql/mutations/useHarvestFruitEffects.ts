@@ -3,7 +3,7 @@ import { useGraphQLMutationHarvestFruitSwrMutation } from "@/hooks"
 import { HarvestFruitRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useHarvestFruitEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useHarvestFruitEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestHarvestFruit, async (message: HarvestFruitRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useHarvestFruitEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.HarvestFruitCompleted, completedMessage)
+            EventBus.emit(EventName.HarvestFruitResponsed, completedMessage)
         })
     
         return () => {

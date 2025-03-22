@@ -28,8 +28,9 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
             iconKey: BaseAssetKey.UIIconReturn,
             text: "Return",
             onPress: () => {
-                this.scene.cache.obj.remove(CacheKey.VisitedNeighbor)
-                EventBus.emit(EventName.RequestReturn)
+                this.scene.cache.obj.remove(CacheKey.WatchingUser)
+                EventBus.emit(EventName.EmitReturn)
+                EventBus.emit(EventName.ProcessVisiting)
             },
         })
         this.addButton(this.returnButton)
@@ -55,7 +56,7 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
             this.setVisible(true).setActive(true)
         })
 
-        if (!this.scene.cache.obj.get(CacheKey.VisitedNeighbor)) {
+        if (!this.scene.cache.obj.get(CacheKey.WatchingUser)) {
             this.setVisible(false).setActive(false)
         }
     }

@@ -3,7 +3,7 @@ import { useGraphQLMutationHelpUseBugNetSwrMutation } from "@/hooks"
 import { HelpUseBugNetRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useHelpUseBugNetEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useHelpUseBugNetEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestHelpUseBugNet, async (message: HelpUseBugNetRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useHelpUseBugNetEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.HelpUseBugNetCompleted, completedMessage)
+            EventBus.emit(EventName.HelpUseBugNetResponsed, completedMessage)
         })
     
         return () => {

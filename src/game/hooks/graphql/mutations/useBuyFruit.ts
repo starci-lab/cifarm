@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_BUY_FRUIT_SWR_MUTATION } from "@/app/constants"
 import { BuyFruitRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { useGraphQLMutationBuyFruitSwrMutation } from "@/hooks"
 
 export const useBuyFruitEffects = () => {
@@ -13,7 +13,7 @@ export const useBuyFruitEffects = () => {
 
     useEffect(() => {
         EventBus.on(EventName.RequestBuyFruit, async (message: BuyFruitRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 // return the user to the phaser game
@@ -27,7 +27,7 @@ export const useBuyFruitEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.BuyFruitCompleted, completedMessage)
+            EventBus.emit(EventName.BuyFruitResponsed, completedMessage)
         })
 
         return () => {

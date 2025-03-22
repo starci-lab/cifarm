@@ -3,7 +3,7 @@ import { useGraphQLMutationHelpUsePesticideSwrMutation } from "@/hooks"
 import { HelpUseHerbicideRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useHelpUseHerbicideEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useHelpUseHerbicideEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestHelpUseHerbicide, async (message: HelpUseHerbicideRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useHelpUseHerbicideEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.HelpUseHerbicideCompleted, completedMessage)
+            EventBus.emit(EventName.HelpUseHerbicideResponsed, completedMessage)
         })
     
         return () => {

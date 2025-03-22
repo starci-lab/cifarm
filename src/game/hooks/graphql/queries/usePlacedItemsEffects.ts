@@ -29,4 +29,37 @@ export const usePlacedItemsEffects = () => {
             EventBus.removeListener(EventName.LoadPlacedItems)
         }
     }, [swrMutation])
+
+    // load inventory data
+    useEffect(() => {
+        EventBus.on(EventName.LoadPlacedItems, async (userId?: string) => {
+            const response = await swrMutation.trigger({
+                request: {
+                    userId,
+                },
+            })
+            EventBus.emit(EventName.PlacedItemsLoaded, response.data?.placedItems)
+        })
+
+        return () => {
+            EventBus.removeListener(EventName.LoadPlacedItems)
+        }
+    }, [swrMutation])
+
+    // load inventory data
+    useEffect(() => {
+        EventBus.on(EventName.LoadPlacedItems1, async (userId?: string) => {
+            const response = await swrMutation.trigger({
+                request: {
+                    userId,
+                },
+            })
+            console.log(response)
+            EventBus.emit(EventName.PlacedItemsLoaded1, response.data?.placedItems)
+        })
+
+        return () => {
+            EventBus.removeListener(EventName.LoadPlacedItems1)
+        }
+    }, [swrMutation])
 }

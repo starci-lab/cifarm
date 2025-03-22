@@ -20,11 +20,10 @@ import {
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
-import { CacheKey } from "../types"
+import { CacheKey, PlacedItemsData } from "../types"
 import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
-import { VisitRequest } from "@/modules/apollo"
 
 export enum LoadingPhase {
   DataFetching = "dataFetching",
@@ -110,19 +109,19 @@ export class LoadingScene extends Scene {
                 })
             }
             // load the image
-            const visitedUser = this.cache.obj.get(CacheKey.VisitedNeighbor)
-            if (visitedUser) {
-                if (visitedUser.avatarUrl) {
+            const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+            if (watchingUser) {
+                if (watchingUser.avatarUrl) {
                     await loadImageAwait({
-                        key: visitedUser.id,
-                        imageUrl: visitedUser.avatarUrl,
+                        key: watchingUser.id,
+                        imageUrl: watchingUser.avatarUrl,
                         scene: this,
                     })
                 } else {
                     // create jazzicon blob url
-                    const imageUrl = createJazziconBlobUrl(visitedUser.id)
+                    const imageUrl = createJazziconBlobUrl(watchingUser.id)
                     await loadSvgAwait({
-                        key: visitedUser.id,
+                        key: watchingUser.id,
                         svgUrl: imageUrl,
                         scene: this,
                         scale: 16,
@@ -131,10 +130,6 @@ export class LoadingScene extends Scene {
                 EventBus.once(EventName.WatchUserChanged, () => {
                     this.handleFetchData("Loading user...")
                 })
-                const visitMessage: VisitRequest = {
-                    neighborUserId: visitedUser.id,
-                }
-                EventBus.emit(EventName.RequestVisit, visitMessage)
             } else {
                 // create the image by the url
                 this.handleFetchData("Loading user...")
@@ -155,12 +150,18 @@ export class LoadingScene extends Scene {
         EventBus.once(
             EventName.PlacedItemsLoaded,
             (placedItems: Array<PlacedItemSchema>) => {
-                this.cache.obj.add(CacheKey.PlacedItems, placedItems)
+                const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+                const userId = watchingUser?.id ?? undefined
+                const placedItemsData: PlacedItemsData = {
+                    placedItems,
+                    userId,
+                }
+                this.cache.obj.add(CacheKey.PlacedItems, placedItemsData)
                 this.handleFetchData("Loading placed items...")
             }
         )
 
-        this.events.once(EventName.LoadCompleted, () => {
+        this.events.once(EventName.LoadResponsed, () => {
             //load the main game scene
             this.scene.start(SceneName.Gameplay)
         })
@@ -238,7 +239,7 @@ export class LoadingScene extends Scene {
             if (this.waitForQueueEmpty && this.loadingProgressBar.queueEmpty()) {
                 // emit the event that the loading is done
                 await sleep(100)
-                this.events.emit(EventName.LoadCompleted)
+                this.events.emit(EventName.LoadResponsed)
             }
         }
     }

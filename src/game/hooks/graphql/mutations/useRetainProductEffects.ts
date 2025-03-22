@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_RETAIN_PRODUCT_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationRetainProductSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { RetainProductRequest } from "@/modules/apollo"
 
 export const useRetainProductEffects = () => {
@@ -13,7 +13,7 @@ export const useRetainProductEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestRetainProduct, async (message: RetainProductRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useRetainProductEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.RetainProductCompleted, completedMessage)
+            EventBus.emit(EventName.RetainProductResponsed, completedMessage)
         })
     
         return () => {

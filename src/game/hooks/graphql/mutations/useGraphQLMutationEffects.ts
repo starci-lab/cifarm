@@ -18,12 +18,10 @@ import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
 import { useUsePesticideEffects } from "./usePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
 import { useRetainProductEffects } from "./useRetainProductEffects"
-import { useReturnEffects } from "./useReturnEffects"
 import { useUnfollowEffects } from "./useUnfollowEffects"
 import { useUpdateFollowXEffects } from "./useUpdateFollowXEffects"
 import { useUpgradeBuildingEffects } from "./useUpgradeBuildingEffects"
 import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
-import { useVisitEffects } from "./useVisitEffects"
 import { useWaterCropEffects } from "./useWaterCropEffects"
 import { useBuyToolEffects } from "./useBuyToolEffects"
 import { useSellEffects } from "./useSellEffects"
@@ -55,8 +53,6 @@ export const useGraphQLMutationEffects = () => {
     useRetainProductEffects()
     useFollowEffects()
     useUnfollowEffects()
-    useVisitEffects()
-    useReturnEffects()
     useHelpUseHerbicideEffects()
     useHelpUsePesticideEffects()
     useHelpWaterCropEffects()

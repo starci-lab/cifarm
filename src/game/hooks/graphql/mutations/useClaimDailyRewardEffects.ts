@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_CLAIM_DAILY_REWARD_SWR_MUTATION } from "@/app/constant
 import { useGraphQLMutationClaimDailyRewardSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useClaimDailyRewardEffects = () => {
     //get the singleton instance of the claim daily reward mutation
@@ -12,7 +12,7 @@ export const useClaimDailyRewardEffects = () => {
 
     useEffect(() => {
         EventBus.on(EventName.RequestClaimDailyReward, async () => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({})
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useClaimDailyRewardEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.ClaimDailyRewardCompleted, completedMessage)
+            EventBus.emit(EventName.ClaimDailyRewardResponsed, completedMessage)
         })
 
         return () => {

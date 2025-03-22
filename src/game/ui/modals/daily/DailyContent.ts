@@ -89,7 +89,7 @@ export class DailyContent extends BaseSizer {
                                 }
                             }
                         }
-                        EventBus.once(EventName.ClaimDailyRewardCompleted, () => {
+                        EventBus.once(EventName.ClaimDailyRewardResponsed, () => {
                             const items : Array<ClaimItem> = [{
                                 assetKey: this.goldBaseAssetKey,
                                 quantity: this.dailyRewardInfo[id].golds,

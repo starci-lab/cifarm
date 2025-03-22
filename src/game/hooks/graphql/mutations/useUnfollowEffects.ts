@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationUnfollowSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { UnfollowRequest } from "@/modules/apollo"
 
 export const useUnfollowEffects = () => {
@@ -13,7 +13,7 @@ export const useUnfollowEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestUnfollow, async (message: UnfollowRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useUnfollowEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.UnfollowCompleted, completedMessage)
+            EventBus.emit(EventName.UnfollowResponsed, completedMessage)
         })
     
         return () => {

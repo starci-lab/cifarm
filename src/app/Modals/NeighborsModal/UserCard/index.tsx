@@ -2,16 +2,16 @@
 import {
     GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
-    GRAPHQL_MUTATION_VISIT_SWR_MUTATION,
     EXPERIENCE_IMAGE_URL,
     GOLD_IMAGE_URL,
     NEIGHBORS_DISCLOSURE,
     WARNING_DISCLOSURE,
+    GAMEPLAY_IO,
 } from "@/app/constants"
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
-import { useGraphQLMutationFollowSwrMutation, useGraphQLMutationVisitSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams } from "@/hooks"
+import { useGameplayIo, useGraphQLMutationFollowSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams, VISIT_EVENT } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -44,12 +44,12 @@ export const UserCard: FC<UserCardProps> = ({
     ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
   >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
 
-    const { swrMutation: visitSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationVisitSwrMutation>
-  >(GRAPHQL_MUTATION_VISIT_SWR_MUTATION)
-
     const { onClose } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NEIGHBORS_DISCLOSURE
+    )
+
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(
+        GAMEPLAY_IO
     )
 
     const { onOpen: onWarningOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
@@ -185,19 +185,20 @@ export const UserCard: FC<UserCardProps> = ({
                     if (pathname !== pathConstants.play) {
                         router.push(pathConstants.play)
                         gameState.data = {
-                            visitedUser: user,
+                            watchingUser: user,
                         }       
                     } else {
                         // set visited user
-                        EventBus.emit(EventName.UpdateVisitedNeighbor, user)
                         EventBus.emit(EventName.CloseModal, {
                             modalName: ModalName.Neighbors,
                         })
-                        await visitSwrMutation.trigger({
-                            request: {
-                                neighborUserId: user.id,
-                            },
+                        if (!socket) {
+                            throw new Error("Socket is not connected")
+                        }
+                        socket.emit(VISIT_EVENT, {
+                            neighborUserId: user.id,
                         })
+                        EventBus.emit(EventName.Visit, user)
                     }
                 }} isIconOnly color="primary">
                     <HomeIcon className="light text-background w-5 h-5" />

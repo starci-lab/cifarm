@@ -12,6 +12,7 @@ import {
     USER_SYNCED_EVENT,
     UserSyncedMessage,
     SYNC_PLACED_ITEMS_EVENT,
+    RETURN_EVENT,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
@@ -57,6 +58,10 @@ export const useSyncPlacedItemsEffects = () => {
             })
         })
 
+        EventBus.on(EventName.EmitReturn, () => {
+            socket.emit(RETURN_EVENT)
+        })
+
         return () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
             socket.off(ACTION_EMITTED_EVENT)
@@ -66,6 +71,4 @@ export const useSyncPlacedItemsEffects = () => {
             socket.off(PLACED_ITEMS_SYNCED_EVENT)
         }
     }, [socket])
-
-
 }

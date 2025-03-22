@@ -3,7 +3,7 @@ import { useGraphQLMutationUseBugNetSwrMutation } from "@/hooks"
 import { UseBugNetRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useUseBugNetEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useUseBugNetEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestUseBugNet, async (message: UseBugNetRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useUseBugNetEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.UseBugNetCompleted, completedMessage)
+            EventBus.emit(EventName.UseBugNetResponsed, completedMessage)
         })
     
         return () => {

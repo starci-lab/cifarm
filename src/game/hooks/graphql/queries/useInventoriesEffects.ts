@@ -21,20 +21,4 @@ export const useInventoriesEffects = () => {
             EventBus.removeListener(EventName.LoadInventories)
         }
     }, [swr])
-
-    // refresh inventory data
-    useEffect(() => {
-        EventBus.on(EventName.RefreshInventories, async () => {
-            //load inventory data
-            const response = await swr.mutate()
-            EventBus.emit(
-                EventName.InventoriesRefreshed,
-                response?.data?.inventories
-            )
-        })
-
-        return () => {
-            EventBus.removeListener(EventName.RefreshInventories)
-        }
-    }, [swr])
 }

@@ -13,7 +13,7 @@ export const useUpdateFollowXEffects = () => {
     useEffect(() => {
         EventBus.on(EventName.RequestUpdateFollowX, async () => {
             await swrMutation.trigger({})
-            EventBus.emit(EventName.UpdateFollowXCompleted)
+            EventBus.emit(EventName.UpdateFollowXResponsed)
         })
     
         return () => {

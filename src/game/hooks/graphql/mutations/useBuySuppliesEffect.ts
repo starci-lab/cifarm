@@ -3,7 +3,7 @@ import { useGraphQLMutationBuySuppliesSwrMutation } from "@/hooks"
 import { BuySuppliesRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useBuySuppliesEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useBuySuppliesEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestBuySupplies, async (message: BuySuppliesRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 // return the user to the phaser game
@@ -27,7 +27,7 @@ export const useBuySuppliesEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.BuySuppliesCompleted, completedMessage)
+            EventBus.emit(EventName.BuySuppliesResponsed, completedMessage)
         })  
     
         return () => {

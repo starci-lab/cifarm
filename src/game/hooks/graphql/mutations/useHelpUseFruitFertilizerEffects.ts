@@ -3,7 +3,7 @@ import { useGraphQLMutationHelpUseFruitFertilizerSwrMutation } from "@/hooks"
 import { HelpUseFruitFertilizerRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useHelpUseFruitFertilizerEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useHelpUseFruitFertilizerEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestHelpUseFruitFertilizer, async (message: HelpUseFruitFertilizerRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useHelpUseFruitFertilizerEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.HelpUseFruitFertilizerCompleted, completedMessage)
+            EventBus.emit(EventName.HelpUseFruitFertilizerResponsed, completedMessage)
         })
     
         return () => {

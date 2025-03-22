@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_PLANT_SEED_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationPlantSeedSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { PlantSeedRequest } from "@/modules/apollo"
 
 export const usePlantSeedEffects = () => {
@@ -15,7 +15,7 @@ export const usePlantSeedEffects = () => {
         EventBus.on(
             EventName.RequestPlantSeed,
             async (message: PlantSeedRequest) => {
-                let completedMessage: CompletedMessage
+                let completedMessage: ResponsedMessage
                 try {
                     await swrMutation.trigger({ request: message })
                     completedMessage = {
@@ -27,7 +27,7 @@ export const usePlantSeedEffects = () => {
                         success: false,
                     }
                 }
-                EventBus.emit(EventName.PlantSeedCompleted, completedMessage)
+                EventBus.emit(EventName.PlantSeedResponsed, completedMessage)
             }
         )
         return () => {

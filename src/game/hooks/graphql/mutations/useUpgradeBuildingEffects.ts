@@ -3,7 +3,7 @@ import { useGraphQLMutationUpgradeBuildingSwrMutation } from "@/hooks"
 import { UpgradeBuildingRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useUpgradeBuildingEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useUpgradeBuildingEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestUpgradeBuilding, async (message: UpgradeBuildingRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useUpgradeBuildingEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.UpgradeBuildingCompleted, completedMessage)
+            EventBus.emit(EventName.UpgradeBuildingResponsed, completedMessage)
         })
     
         return () => {

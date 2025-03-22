@@ -1,7 +1,7 @@
 import { GRAPHQL_MUTATION_CURE_ANIMAL_SWR_MUTATION } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { useGraphQLMutationCureAnimalSwrMutation } from "@/hooks"
 import { CureAnimalRequest } from "@/modules/apollo"
 
@@ -15,7 +15,7 @@ export const useCureAnimalEffects = () => {
         EventBus.on(
             EventName.RequestCureAnimal,
             async (message: CureAnimalRequest) => {
-                let completedMessage: CompletedMessage
+                let completedMessage: ResponsedMessage
                 try {
                     await swrMutation.trigger({ request: message })
                     completedMessage = {
@@ -28,7 +28,7 @@ export const useCureAnimalEffects = () => {
                     }
                 }
                 // return the user to the phaser game
-                EventBus.emit(EventName.CureAnimalCompleted, completedMessage)
+                EventBus.emit(EventName.CureAnimalResponsed, completedMessage)
             }
         )
 

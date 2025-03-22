@@ -2,7 +2,7 @@ import { GRAPHQL_MUTATION_BUY_SEEDS_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationBuySeedsSwrMutation } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 import { BuySeedsRequest } from "@/modules/apollo"
 
 export const useBuySeedsEffects = () => {
@@ -13,7 +13,7 @@ export const useBuySeedsEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestBuySeeds, async (message: BuySeedsRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useBuySeedsEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.BuySeedsCompleted, completedMessage)
+            EventBus.emit(EventName.BuySeedsResponsed, completedMessage)
         })
     
         return () => {

@@ -345,8 +345,8 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Invalid placed item type")
         }
 
-        const visitedNeighbor = this.scene.cache.obj.get(
-            CacheKey.VisitedNeighbor
+        const watchingUser = this.scene.cache.obj.get(
+            CacheKey.WatchingUser
         ) as UserSchema
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
@@ -382,7 +382,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             // do nothing if neighbor user id is found
-            if (visitedNeighbor) {
+            if (watchingUser) {
                 return
             }
 
@@ -408,7 +408,7 @@ export class InputTilemap extends ItemTilemap {
                 )
             }
 
-            EventBus.once(EventName.PlantSeedCompleted, () => {
+            EventBus.once(EventName.PlantSeedResponsed, () => {
                 data.pressBlocked = false
             })
             // emit the event to plant seed
@@ -445,7 +445,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -456,7 +456,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     //emit the event to water the plant
-                    EventBus.once(EventName.HelpWaterCropCompleted, () => {
+                    EventBus.once(EventName.HelpWaterCropResponsed, () => {
                         data.pressBlocked = true
                     })
 
@@ -475,7 +475,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     //emit the event to water the plant
-                    EventBus.once(EventName.WaterCropCompleted, () => {
+                    EventBus.once(EventName.WaterCropResponsed, () => {
                         data.pressBlocked = true
                     })
                     // emit the event to plant seed
@@ -495,7 +495,7 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     return
                 }
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -504,7 +504,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HelpUsePesticideCompleted, () => {
+                    EventBus.once(EventName.HelpUsePesticideResponsed, () => {
                         data.pressBlocked = false
                     })
 
@@ -525,7 +525,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to water the plant
-                    EventBus.once(EventName.UsePesticideCompleted, () => {
+                    EventBus.once(EventName.UsePesticideResponsed, () => {
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -547,7 +547,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -557,7 +557,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.HelpUseHerbicideCompleted, () => {
+                    EventBus.once(EventName.HelpUseHerbicideResponsed, () => {
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -577,7 +577,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.UseHerbicideCompleted, () => {
+                    EventBus.once(EventName.UseHerbicideResponsed, () => {
                         // reset the isPressed flag
                         data.pressBlocked = false
                     })
@@ -614,7 +614,7 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.thiefCropQuantityReactMinimum({
                             data,
@@ -638,7 +638,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefCropCompleted, async () => {
+                    EventBus.once(EventName.ThiefCropResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -657,7 +657,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HarvestCropCompleted, async () => {
+                    EventBus.once(EventName.HarvestCropResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -709,7 +709,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                EventBus.once(EventName.UseFertilizerCompleted, () => {
+                EventBus.once(EventName.UseFertilizerResponsed, () => {
                     data.pressBlocked = false
                 })
 
@@ -733,8 +733,8 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Invalid placed item type")
         }
 
-        const visitedNeighbor = this.scene.cache.obj.get(
-            CacheKey.VisitedNeighbor
+        const watchingUser = this.scene.cache.obj.get(
+            CacheKey.WatchingUser
         ) as UserSchema
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
@@ -776,7 +776,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
                 // do nothing if neighbor user id is found
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -785,7 +785,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HelpFeedAnimalCompleted, () => {
+                    EventBus.once(EventName.HelpFeedAnimalResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -805,7 +805,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    EventBus.once(EventName.FeedAnimalCompleted, () => {
+                    EventBus.once(EventName.FeedAnimalResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -834,7 +834,7 @@ export class InputTilemap extends ItemTilemap {
                 if (!currentPlacedItem?.animalInfo) {
                     return
                 }
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -844,7 +844,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    EventBus.once(EventName.HelpCureAnimalCompleted, () => {
+                    EventBus.once(EventName.HelpCureAnimalResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -863,7 +863,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    EventBus.once(EventName.CureAnimalCompleted, () => {
+                    EventBus.once(EventName.CureAnimalResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -901,7 +901,7 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.thiefAnimalProductQuantityReactMinimum({
                             data,
@@ -926,7 +926,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefAnimalProductCompleted, async () => {
+                    EventBus.once(EventName.ThiefAnimalProductResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -945,7 +945,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HarvestAnimalCompleted, async () => {
+                    EventBus.once(EventName.HarvestAnimalResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1196,7 +1196,7 @@ export class InputTilemap extends ItemTilemap {
                 message: "Are you sure you want to sell this item?",
                 quantity: sellPrice,
                 callback: () => {
-                    EventBus.once(EventName.SellCompleted, () => {})
+                    EventBus.once(EventName.SellResponsed, () => {})
                     const eventMessage: SellRequest = {
                         placedItemId: placedItem.id,
                     }
@@ -1356,7 +1356,7 @@ export class InputTilemap extends ItemTilemap {
                     const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
                         message: "Are you sure you want to buy this building?",
                         callback: () => {
-                            EventBus.once(EventName.BuyBuildingCompleted, () => {})
+                            EventBus.once(EventName.BuyBuildingResponsed, () => {})
                             const building = this.buildings.find(
                                 (building) => building.id === placedItemType.building
                             )
@@ -1395,7 +1395,7 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Tile: {
-                    EventBus.once(EventName.BuyTileCompleted, () => {})
+                    EventBus.once(EventName.BuyTileResponsed, () => {})
                     const tile = this._tiles.find(
                         (tile) => tile.id === placedItemType.tile
                     )
@@ -1413,7 +1413,7 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Animal: {
-                    EventBus.once(EventName.BuyAnimalCompleted, () => {})
+                    EventBus.once(EventName.BuyAnimalResponsed, () => {})
                     const animal = this.animals.find(
                         (animal) => animal.id === placedItemType.animal
                     )
@@ -1433,7 +1433,7 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Fruit: {
-                    EventBus.once(EventName.BuyFruitCompleted, () => {})
+                    EventBus.once(EventName.BuyFruitResponsed, () => {})
                     const fruit = this.fruits.find(
                         (fruit) => fruit.id === placedItemType.fruit
                     )
@@ -1535,7 +1535,7 @@ export class InputTilemap extends ItemTilemap {
                 }
                 EventBus.emit(EventName.RequestMove, moveRequest)
 
-                EventBus.once(EventName.MoveCompleted, () => {
+                EventBus.once(EventName.MoveResponsed, () => {
                     this.cancelPlacement()
                     EventBus.emit(EventName.PlacedItemsRefreshed)
                     const handlePlacedItemUpdatePosition: HandlePlacedItemUpdatePositionParams =
@@ -1683,8 +1683,8 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Invalid placed item type")
         }
 
-        const visitedNeighbor = this.scene.cache.obj.get(
-            CacheKey.VisitedNeighbor
+        const watchingUser = this.scene.cache.obj.get(
+            CacheKey.WatchingUser   
         ) as UserSchema
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
@@ -1737,7 +1737,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -1748,7 +1748,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     //emit the event to water the plant
-                    EventBus.once(EventName.HelpUseBugNetCompleted, () => {
+                    EventBus.once(EventName.HelpUseBugNetResponsed, () => {
                         data.pressBlocked = false
                     })
 
@@ -1768,7 +1768,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     //emit the event to water the plant
-                    EventBus.once(EventName.UseBugNetCompleted, () => {
+                    EventBus.once(EventName.UseBugNetResponsed, () => {
                         data.pressBlocked = false
                     })
 
@@ -1804,7 +1804,7 @@ export class InputTilemap extends ItemTilemap {
                 if (!product) {
                     throw new Error("Product not found")
                 }
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.thiefFruitQuantityReactMinimum({
                             data,
@@ -1828,7 +1828,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefFruitCompleted, async () => {
+                    EventBus.once(EventName.ThiefFruitResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1847,7 +1847,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HarvestFruitCompleted, async () => {
+                    EventBus.once(EventName.HarvestFruitResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1875,7 +1875,7 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
                 // do nothing if neighbor user id is found
-                if (visitedNeighbor) {
+                if (watchingUser) {
                     if (
                         !this.energyNotEnough({
                             data,
@@ -1885,7 +1885,7 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HelpUseFruitFertilizerCompleted, () => {
+                    EventBus.once(EventName.HelpUseFruitFertilizerResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
@@ -1909,7 +1909,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    EventBus.once(EventName.UseFruitFertilizerCompleted, () => {
+                    EventBus.once(EventName.UseFruitFertilizerResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed

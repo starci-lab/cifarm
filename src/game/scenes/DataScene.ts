@@ -1,7 +1,7 @@
 import { Scene } from "phaser"
 import { EventBus, EventName } from "../event-bus"
 import { InventorySchema, UserSchema, PlacedItemSchema } from "@/modules/entities"
-import { CacheKey } from "../types"
+import { CacheKey, PlacedItemsData } from "../types"
 import { SceneName } from "../scene"
 import { WithStatus, SchemaStatus } from "@/modules/common"
 
@@ -11,14 +11,11 @@ export class DataScene extends Scene {
     }
     
     create() {
-        EventBus.on(EventName.UpdateVisitedNeighbor, (user: UserSchema) => {
-            this.cache.obj.add(CacheKey.VisitedNeighbor, user)
-        })
-
         EventBus.on(
             EventName.PlacedItemsSynced,
             async (placedItemsWithStatus: Array<WithStatus<PlacedItemSchema>>) => {
-                const placedItems = this.cache.obj.get(CacheKey.PlacedItems) as Array<PlacedItemSchema>
+                const previousPlacedItemsData = this.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsData
+                const { placedItems } = previousPlacedItemsData
                 // loop through the placed items and update the placed item
                 for (let i = 0; i < placedItemsWithStatus.length; i++) {
                     const placedItemWithStatus = placedItemsWithStatus[i]
@@ -55,9 +52,16 @@ export class DataScene extends Scene {
                     }
                     }
                 }   
-                //
+                // get the user id
+                const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+                const userId = watchingUser?.id ?? undefined
+                // create the placed items data
+                const placedItemsData: PlacedItemsData = {
+                    placedItems,
+                    userId,
+                }
                 // store the placed items in the cache
-                this.cache.obj.add(CacheKey.PlacedItems, placedItems)
+                this.cache.obj.add(CacheKey.PlacedItems, placedItemsData)
                 // emit the event to update the placed items
                 EventBus.emit(EventName.PlacedItemsRefreshed)
             }
@@ -115,5 +119,18 @@ export class DataScene extends Scene {
             // emit the event to update the user
             EventBus.emit(EventName.UserRefreshed)
         })
+
+        EventBus.on(EventName.PlacedItemsLoaded1, (placedItems: Array<PlacedItemSchema>) => {
+            const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+            const userId = watchingUser?.id ?? undefined
+            const placedItemsData: PlacedItemsData = {
+                placedItems,
+                userId,
+            }
+            this.cache.obj.add(CacheKey.PlacedItems, placedItemsData)
+            // emit the event to update the placed items
+            EventBus.emit(EventName.PlacedItemsRefreshed)
+        })
     }
 }
+

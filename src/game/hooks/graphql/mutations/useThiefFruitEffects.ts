@@ -3,7 +3,7 @@ import { useGraphQLMutationThiefFruitSwrMutation } from "@/hooks"
 import { ThiefFruitRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useThiefFruitEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useThiefFruitEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestThiefFruit, async (message: ThiefFruitRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -25,7 +25,7 @@ export const useThiefFruitEffects = () => {
                     success: false,
                 }
             }
-            EventBus.emit(EventName.ThiefFruitCompleted, completedMessage)
+            EventBus.emit(EventName.ThiefFruitResponsed, completedMessage)
         })
     
         return () => {

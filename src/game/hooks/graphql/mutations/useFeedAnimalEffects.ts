@@ -3,7 +3,7 @@ import { useGraphQLMutationFeedAnimalSwrMutation } from "@/hooks"
 import { FeedAnimalRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { CompletedMessage, EventBus, EventName } from "../../../event-bus"
+import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
 
 export const useFeedAnimalEffects = () => {
     //authentication useEffect
@@ -13,7 +13,7 @@ export const useFeedAnimalEffects = () => {
     
     useEffect(() => {
         EventBus.on(EventName.RequestFeedAnimal, async (message: FeedAnimalRequest) => {
-            let completedMessage: CompletedMessage
+            let completedMessage: ResponsedMessage
             try {
                 await swrMutation.trigger({ request: message })
                 completedMessage = {
@@ -26,7 +26,7 @@ export const useFeedAnimalEffects = () => {
                 }
             }
             // return the user to the phaser game
-            EventBus.emit(EventName.FeedAnimalCompleted, completedMessage)
+            EventBus.emit(EventName.FeedAnimalResponsed, completedMessage)
         })
     
         return () => {
