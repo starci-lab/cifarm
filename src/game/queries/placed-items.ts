@@ -14,10 +14,10 @@ export const getPlacedItemsWithSeedGrowthInfo = ({
     // if placedItems is not provided, get from cache
     if (!placedItems) {
     // get the placedItems from cache
-        const { placedItems: _placedItems } = scene.cache.obj.get(
+        const { data } = scene.cache.obj.get(
             CacheKey.PlacedItems
         ) as PlacedItemsSyncedMessage
-        placedItems = _placedItems
+        placedItems = data
     }
     // get the first two planted placed items
     return placedItems.filter((placedItem) => placedItem.seedGrowthInfo)
@@ -39,10 +39,10 @@ export const getPlacedItemsByType = ({
     // If placedItems is not provided, get from cache
     if (!placedItems) {
         // Get the placedItems from cache
-        const { placedItems: _placedItems } = scene.cache.obj.get(
+        const { data } = scene.cache.obj.get(
             CacheKey.PlacedItems
         ) as PlacedItemsSyncedMessage
-        placedItems = _placedItems
+        placedItems = data
     }
 
     // Get the placedItemTypes from cache
