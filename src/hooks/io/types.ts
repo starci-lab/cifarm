@@ -36,7 +36,10 @@ export interface ThiefCropData {
 
 export interface BuyTileData {
   price: number;
-  placedItemTileId: string;
+}
+
+export interface BuyFruitData {
+  price: number;
 }
 
 export interface BuyAnimalData {
@@ -100,6 +103,10 @@ export enum ActionName {
   HelpUseFruitFertilizer = "help_use_fruit_fertilizer",
   HarvestFruit = "harvest_fruit",
   ThiefFruit = "thief_fruit",
+}
+
+export interface BuyBuildingData {
+  price: number;
 }
 
 export interface ShowFadeMessage {

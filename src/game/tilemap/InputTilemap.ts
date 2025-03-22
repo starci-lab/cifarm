@@ -68,7 +68,6 @@ import {
     ModalName,
     OpenModalMessage,
     Position,
-    UpdateConfirmModalMessage,
     UpdateConfirmSellModalMessage,
 } from "../event-bus"
 import { calculateGameplayDepth, GameplayLayer } from "../layers"
@@ -115,7 +114,6 @@ export class InputTilemap extends ItemTilemap {
 
     // input mode
     private inputMode = InputMode.Normal
-    private disableDrag = false
 
     private minZoom = 0.5
     private maxZoom = 5
@@ -889,8 +887,14 @@ export class InputTilemap extends ItemTilemap {
                 if (!placedItem) {
                     throw new Error("Placed item not found")
                 }
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.id === placedItem.placedItemType
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
                 const animal = this.animals.find(
-                    (animal) => animal.id === placedItem.animalInfo?.animal
+                    (animal) => animal.id === placedItemType.animal
                 )
                 if (!animal) {
                     throw new Error("Animal not found")
@@ -1220,9 +1224,6 @@ export class InputTilemap extends ItemTilemap {
     public update() {
     //check current mouse position is in which tile
         if (this.inputMode === InputMode.Buy) {
-            if (this.disableDrag) {
-                return
-            }
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
                 camera
@@ -1351,47 +1352,23 @@ export class InputTilemap extends ItemTilemap {
                 // show modal
                 switch (placedItemType.type) {
                 case PlacedItemType.Building: {
-                    // disable drag
-                    this.disableDrag = true
-                    const updateConfirmSellModalMessage: UpdateConfirmModalMessage = {
-                        message: "Are you sure you want to buy this building?",
-                        callback: () => {
-                            EventBus.once(EventName.BuyBuildingResponsed, () => {})
-                            const building = this.buildings.find(
-                                (building) => building.id === placedItemType.building
-                            )
-                            if (!building) {
-                                throw new Error(
-                                    `Building not found for id: ${placedItemType.building}`
-                                )
-                            }
-                            const eventMessage: BuyBuildingRequest = {
-                                buildingId: building.displayId,
-                                position: {
-                                    x: tileX,
-                                    y: tileY,
-                                },
-                            }
-                            EventBus.emit(EventName.RequestBuyBuilding, eventMessage)
-                            // turn off disable drag
-                            this.disableDrag = false
-                            // cancel placement
-                            this.cancelPlacement()
-                        },
-                        secondaryCallback: () => {
-                            // turn off disable drag
-                            this.disableDrag = false
-                            // cancel placement
-                            this.cancelPlacement()
+                    EventBus.once(EventName.BuyBuildingResponsed, () => {})
+                    const building = this.buildings.find(
+                        (building) => building.id === placedItemType.building
+                    )
+                    if (!building) {
+                        throw new Error(
+                            `Building not found for id: ${placedItemType.building}`
+                        )
+                    }
+                    const eventMessage: BuyBuildingRequest = {
+                        buildingId: building.displayId,
+                        position: {
+                            x: tileX,
+                            y: tileY,
                         },
                     }
-                    EventBus.emit(
-                        EventName.UpdateConfirmModal,
-                        updateConfirmSellModalMessage
-                    )
-                    EventBus.emit(EventName.OpenModal, {
-                        modalName: ModalName.Confirm,
-                    })
+                    EventBus.emit(EventName.RequestBuyBuilding, eventMessage)
                     break
                 }
                 case PlacedItemType.Tile: {
@@ -1792,8 +1769,15 @@ export class InputTilemap extends ItemTilemap {
                 if (!placedItem) {
                     throw new Error("Placed item not found")
                 }
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) =>
+                        placedItem.placedItemType === placedItemType.id
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
                 const fruit = this.fruits.find(
-                    (fruit) => fruit.id === placedItem.fruitInfo?.fruit
+                    (fruit) => fruit.id === placedItemType.fruit
                 )
                 if (!fruit) {
                     throw new Error("Fruit not found")
@@ -2025,9 +2009,15 @@ export class InputTilemap extends ItemTilemap {
     private thiefAnimalProductQuantityReactMinimum({
         data,
     }: ThiefAnimalProductQuantityReactMinimumParams): boolean {
+        const placedItemType = this.placedItemTypes.find(   
+            (placedItemType) => placedItemType.id === data.object.currentPlacedItem?.placedItemType
+        )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
         const animal = this.animals.find(
             (animal) =>
-                animal.id === data.object.currentPlacedItem?.animalInfo?.animal
+                animal.id === placedItemType.animal
         )
         if (!animal) {
             throw new Error("Animal not found")
@@ -2053,8 +2043,14 @@ export class InputTilemap extends ItemTilemap {
     private thiefFruitQuantityReactMinimum({
         data,
     }: ThiefFruitQuantityReactMinimumParams): boolean {
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === data.object.currentPlacedItem?.placedItemType
+        )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
         const fruit = this.fruits.find(
-            (fruit) => fruit.id === data.object.currentPlacedItem?.fruitInfo?.fruit
+            (fruit) => fruit.id === placedItemType.fruit
         )
         if (!fruit) {
             throw new Error("Fruit not found")

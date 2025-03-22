@@ -1,6 +1,9 @@
 import {
     ActionEmittedMessage,
     ActionName,
+    BuyAnimalData,
+    BuyBuildingData,
+    BuyFruitData,
     BuyTileData,
     HarvestAnimalData,
     HarvestCropData,
@@ -340,11 +343,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             case ActionName.BuyTile:
                 if (data.success) {
-                    const { price, placedItemTileId } = data.data as BuyTileData
+                    const { price } = data.data as BuyTileData
                     // get the tile position
-                    console.log(placedItemTileId)
-                    const position =
-              this.placedItemObjectMap[placedItemTileId].object.getCenter()
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: COIN_KEY,
@@ -359,6 +359,60 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
+            case ActionName.BuyAnimal:
+                if (data.success) {
+                    const { price } = data.data as BuyAnimalData
+                    // get the tile position
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: COIN_KEY,
+                            position,
+                            quantity: -price,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.BuyAnimal,
+                    })
+                }
+                break  
+            case ActionName.BuyFruit:
+                if (data.success) {
+                    const { price } = data.data as BuyFruitData
+                    // get the tile position
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: COIN_KEY,
+                            position,
+                            quantity: -price,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.BuyFruit,
+                    })
+                }
+                break  
+            case ActionName.BuyBuilding:
+                if (data.success) {
+                    const { price } = data.data as BuyBuildingData
+                    // get the tile position
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: COIN_KEY,
+                            position,
+                            quantity: -price,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.BuyBuilding,
+                    })
+                }
+                break    
             case ActionName.ThiefCrop:
                 if (data.success) {
                     const { quantity, cropId } = data.data as ThiefCropData
@@ -773,8 +827,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             this.createAllPlacedItems(current.placedItems)
             return // exit early to avoid redundant checks later
         }
-        console.log(_.isEqual(current, previous))
-
         // store the unchecked previous placed items
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
@@ -911,7 +963,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         if (!tile) {
             throw new Error("Tile not found")
         }
-
+        console.log(placedItem)
         // get the placed item type
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === placedItem.placedItemType

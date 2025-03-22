@@ -219,10 +219,13 @@ export class PlacedItemObject extends ContainerLite {
         ) {
             // use the product icon
             const fruit = this.fruits.find((fruit) => {
-                if (!this.nextPlacedItem?.fruitInfo) {
-                    throw new Error("Placed item not found")
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.id === this.nextPlacedItem?.placedItemType
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
                 }
-                return fruit.id === this.nextPlacedItem.fruitInfo.fruit
+                return fruit.id === placedItemType.fruit
             })
             if (!fruit) {
                 throw new Error("Fruit not found")
@@ -387,7 +390,13 @@ export class PlacedItemObject extends ContainerLite {
                     if (!this.nextPlacedItem) {
                         throw new Error("Current placed item not found")
                     }
-                    return fruit.id === this.nextPlacedItem.fruitInfo?.fruit
+                    const placedItemType = this.placedItemTypes.find(
+                        (placedItemType) => placedItemType.id === this.nextPlacedItem?.placedItemType
+                    )
+                    if (!placedItemType) {
+                        throw new Error("Placed item type not found")
+                    }
+                    return fruit.id === placedItemType.fruit
                 })
                 if (fruit?.growthStageDuration === undefined) {
                     throw new Error("Fruit growth stage duration not found")
@@ -862,10 +871,16 @@ export class PlacedItemObject extends ContainerLite {
             this.nextPlacedItem.animalInfo.currentState !== AnimalCurrentState.Normal
         ) {
             const animal = this.animals.find((animal) => {
-                if (!this.nextPlacedItem?.animalInfo) {
-                    throw new Error("Placed item not found")
+                const placedItemType = this.placedItemTypes.find((placedItemType) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
+                    }
+                    return placedItemType.id === this.nextPlacedItem.placedItemType
+                })  
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
                 }
-                return animal.id === this.nextPlacedItem.animalInfo.animal
+                return animal.id === placedItemType.animal
             })
 
             if (!animal) {
@@ -1025,7 +1040,16 @@ export class PlacedItemObject extends ContainerLite {
                     if (!this.nextPlacedItem) {
                         throw new Error("Current placed item not found")
                     }
-                    return animal.id === this.nextPlacedItem.animalInfo?.animal
+                    const placedItemType = this.placedItemTypes.find((placedItemType) => {
+                        if (!this.nextPlacedItem) {
+                            throw new Error("Current placed item not found")
+                        }
+                        return placedItemType.id === this.nextPlacedItem.placedItemType
+                    })  
+                    if (!placedItemType) {
+                        throw new Error("Placed item type not found")
+                    }
+                    return animal.id === placedItemType.animal
                 })
 
                 if (animal?.growthTime == undefined) {

@@ -15,7 +15,6 @@ export interface AnimalInfoSchema {
     currentState: AnimalCurrentState
     harvestQuantityRemaining?: number
     thieves: Array<string>
-    animal: string
     immunized: boolean
     placedItemId: string
     placedItem?: PlacedItemSchema
