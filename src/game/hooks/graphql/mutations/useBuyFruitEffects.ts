@@ -3,7 +3,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EventBus, EventName } from "../../../event-bus"
 import { BuyFruitMessage, useGameplayIo } from "@/hooks"
-import { EmitterEventName } from "@/hooks/io/events"
+import { EmitterEventName } from "@/hooks"
 
 export const useBuyFruitEffects = () => {
     const { socket } =

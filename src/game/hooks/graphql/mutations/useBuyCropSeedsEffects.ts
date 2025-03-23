@@ -3,7 +3,7 @@ import { BuyCropSeedsMessage, useGameplayIo } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EventBus, EventName } from "../../../event-bus"
-import { EmitterEventName } from "@/hooks/io/events"
+import { EmitterEventName } from "@/hooks"
 
 export const useBuyCropSeedsEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)

@@ -63,10 +63,10 @@ export class PlacedItemObject extends ContainerLite {
     private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema>
     private fruits: Array<FruitSchema>
-    private flowers: Array<FlowerSchema>    
+    private flowers: Array<FlowerSchema>
     private fruitInfo: FruitInfo
     private timerIsShown = false
-    
+
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
 
@@ -228,7 +228,8 @@ export class PlacedItemObject extends ContainerLite {
             // use the product icon
             const fruit = this.fruits.find((fruit) => {
                 const placedItemType = this.placedItemTypes.find(
-                    (placedItemType) => placedItemType.id === this.nextPlacedItem?.placedItemType
+                    (placedItemType) =>
+                        placedItemType.id === this.nextPlacedItem?.placedItemType
                 )
                 if (!placedItemType) {
                     throw new Error("Placed item type not found")
@@ -395,7 +396,8 @@ export class PlacedItemObject extends ContainerLite {
                     throw new Error("Current placed item not found")
                 }
                 const placedItemType = this.placedItemTypes.find(
-                    (placedItemType) => placedItemType.id === this.nextPlacedItem?.placedItemType
+                    (placedItemType) =>
+                        placedItemType.id === this.nextPlacedItem?.placedItemType
                 )
                 if (!placedItemType) {
                     throw new Error("Placed item type not found")
@@ -408,13 +410,17 @@ export class PlacedItemObject extends ContainerLite {
             if (fruit?.matureGrowthStageDuration === undefined) {
                 throw new Error("Fruit mature growth stage duration not found")
             }
-            const isMature = this.nextPlacedItem.fruitInfo.currentStage >= this.fruitInfo.matureGrowthStage - 1
-            const growthStageDuration = isMature ? fruit.matureGrowthStageDuration : fruit.youngGrowthStageDuration
+            const isMature =
+        this.nextPlacedItem.fruitInfo.currentStage >=
+        this.fruitInfo.matureGrowthStage - 1
+            const growthStageDuration = isMature
+                ? fruit.matureGrowthStageDuration
+                : fruit.youngGrowthStageDuration
 
             const formattedTime = formatTime(
                 Math.round(
                     growthStageDuration -
-                        this.nextPlacedItem.fruitInfo.currentStageTimeElapsed
+            this.nextPlacedItem.fruitInfo.currentStageTimeElapsed
                 )
             )
             this.timer.setText(formattedTime)
@@ -519,6 +525,7 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updatePlantInfoTexture() {
+        console.log(this.nextPlacedItem?.plantInfo)
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
@@ -541,7 +548,10 @@ export class PlacedItemObject extends ContainerLite {
                 if (!crop) {
                     throw new Error("Crop not found")
                 }
-                assetData = cropAssetMap[crop.displayId].map?.[this.nextPlacedItem.plantInfo.currentStage].textureConfig
+                assetData =
+            cropAssetMap[crop.displayId].map?.[
+                this.nextPlacedItem.plantInfo.currentStage
+            ].textureConfig
                 break
             }
             case PlantType.Flower: {
@@ -551,19 +561,20 @@ export class PlacedItemObject extends ContainerLite {
                 if (!flower) {
                     throw new Error("Flower not found")
                 }
-                assetData = flowerAssetMap[flower.displayId].map?.[this.nextPlacedItem.plantInfo.currentStage].textureConfig
+                assetData =
+            flowerAssetMap[flower.displayId].map?.[
+                this.nextPlacedItem.plantInfo.currentStage
+            ].textureConfig
                 break
             }
-        
+
             default:
                 break
             }
             if (!assetData) {
                 throw new Error("Asset data not found")
             }
-            const {
-                key, extraOffsets ,
-            } = assetData
+            const { key, extraOffsets } = assetData
             const { x = 0, y = 0 } = { ...extraOffsets }
             if (this.plantInfoSprite) {
                 // destroy the previous sprite
@@ -585,8 +596,7 @@ export class PlacedItemObject extends ContainerLite {
             throw new Error("Plant info not found")
         }
         if (
-            this.nextPlacedItem.plantInfo.currentState !==
-      PlantCurrentState.Normal
+            this.nextPlacedItem.plantInfo.currentState !== PlantCurrentState.Normal
         ) {
             let maxHarvestQuantity = 0
             switch (this.nextPlacedItem.plantInfo.plantType) {
@@ -604,14 +614,12 @@ export class PlacedItemObject extends ContainerLite {
                 break
             }
             case PlantType.Flower: {
-                const flower = this.flowers.find(
-                    (flower) => {
-                        if (!this.nextPlacedItem) {
-                            throw new Error("Current placed item not found")
-                        }
-                        return flower.id === this.nextPlacedItem.plantInfo?.flower
+                const flower = this.flowers.find((flower) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
                     }
-                )
+                    return flower.id === this.nextPlacedItem.plantInfo?.flower
+                })
                 if (!flower) {
                     throw new Error("Flower not found")
                 }
@@ -706,12 +714,11 @@ export class PlacedItemObject extends ContainerLite {
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
-                this.quantityText
-                    .setText(
-                        `${
-                            this.nextPlacedItem.plantInfo?.harvestQuantityRemaining || 0
-                        }/${maxHarvestQuantity || 0}`
-                    )
+                this.quantityText.setText(
+                    `${this.nextPlacedItem.plantInfo?.harvestQuantityRemaining || 0}/${
+                        maxHarvestQuantity || 0
+                    }`
+                )
             }
         } else {
             // if bubble state is present, remove it
@@ -799,32 +806,32 @@ export class PlacedItemObject extends ContainerLite {
                     throw new Error("Crop not found")
                 }
                 growthStageDuration = crop.growthStageDuration
-                currentStageTimeElapsed = this.nextPlacedItem.plantInfo.currentStageTimeElapsed
+                currentStageTimeElapsed =
+            this.nextPlacedItem.plantInfo.currentStageTimeElapsed
                 break
-            }   
+            }
             case PlantType.Flower: {
-                const flower = this.flowers.find(
-                    (flower) => {
-                        if (!this.nextPlacedItem) {
-                            throw new Error("Current placed item not found")
-                        }
-                        return flower.id === this.nextPlacedItem.plantInfo?.flower
+                const flower = this.flowers.find((flower) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
                     }
-                )
+                    return flower.id === this.nextPlacedItem.plantInfo?.flower
+                })
                 if (!flower) {
                     throw new Error("Flower not found")
                 }
                 growthStageDuration = flower.growthStageDuration
-                currentStageTimeElapsed = this.nextPlacedItem.plantInfo.currentStageTimeElapsed
+                currentStageTimeElapsed =
+            this.nextPlacedItem.plantInfo.currentStageTimeElapsed
                 break
             }
             }
-            
+
             const formattedTime = formatTime(
                 Math.round(
                     //         crop.growthStageDuration -
                     //   this.nextPlacedItem.plantInfo.currentStageTimeElapsed
-                    growthStageDuration - currentStageTimeElapsed   
+                    growthStageDuration - currentStageTimeElapsed
                 )
             )
             this.timer.setText(formattedTime)
@@ -937,7 +944,7 @@ export class PlacedItemObject extends ContainerLite {
                         throw new Error("Current placed item not found")
                     }
                     return placedItemType.id === this.nextPlacedItem.placedItemType
-                })  
+                })
                 if (!placedItemType) {
                     throw new Error("Placed item type not found")
                 }
@@ -1104,7 +1111,7 @@ export class PlacedItemObject extends ContainerLite {
                         throw new Error("Current placed item not found")
                     }
                     return placedItemType.id === this.nextPlacedItem.placedItemType
-                })  
+                })
                 if (!placedItemType) {
                     throw new Error("Placed item type not found")
                 }

@@ -1,10 +1,10 @@
 import {
-    ActionEmittedMessage,
     ActionName,
     BuyAnimalData,
     BuyBuildingData,
     BuyFruitData,
     BuyTileData,
+    EmitActionPayload,
     HarvestAnimalData,
     HarvestFruitData,
     HarvestPlantData,
@@ -148,7 +148,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             this.previousPlacedItemsData = placedItemsData
         }
 
-        EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
+        EventBus.on(EventName.ActionEmitted, (data: EmitActionPayload) => {
             const {
                 placedItem: { x, y },
             } = data

@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { EventBus, EventName } from "../../../event-bus"
 import { GAMEPLAY_IO } from "@/app/constants"
 import { BuySuppliesMessage, useGameplayIo } from "@/hooks"
-import { EmitterEventName } from "@/hooks/io/events"
+import { EmitterEventName } from "@/hooks"
 
 export const useBuySuppliesEffects = () => {
     const { socket } =

@@ -1,37 +1,26 @@
-import { GRAPHQL_MUTATION_PLANT_SEED_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationPlantSeedSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { PlantSeedMessage, useGameplayIo } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
-import { PlantSeedRequest } from "@/modules/apollo"
+import { EventBus, EventName } from "../../../event-bus"
+import { EmitterEventName } from "@/hooks"
 
 export const usePlantSeedEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationPlantSeedSwrMutation>
-  >(GRAPHQL_MUTATION_PLANT_SEED_SWR_MUTATION)
+    const { socket } =
+    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
 
     useEffect(() => {
         EventBus.on(
             EventName.RequestPlantSeed,
-            async (message: PlantSeedRequest) => {
-                let completedMessage: ResponsedMessage
-                try {
-                    await swrMutation.trigger({ request: message })
-                    completedMessage = {
-                        success: true,
-                    }
-                } catch (error) {
-                    console.error(error)
-                    completedMessage = {
-                        success: false,
-                    }
+            async (message: PlantSeedMessage) => {
+                if (!socket) {
+                    return
                 }
-                EventBus.emit(EventName.PlantSeedResponsed, completedMessage)
+                socket.emit(EmitterEventName.PlantSeed, message)
             }
         )
         return () => {
             EventBus.removeListener(EventName.RequestPlantSeed)
         }
-    }, [swrMutation])
+    }, [socket])
 }

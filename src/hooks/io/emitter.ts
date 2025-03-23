@@ -1,4 +1,4 @@
-import { AnimalId, BuildingId, CropId, FlowerId, FruitId, Position, SupplyId, ToolId } from "@/modules/entities"
+import { AnimalId, BuildingId, CropId, FlowerId, FruitId, Position, SupplyId, TileId, ToolId } from "@/modules/entities"
 
 export interface BuySuppliesMessage {
     supplyId: SupplyId
@@ -33,3 +33,14 @@ export interface BuyBuildingMessage {
     buildingId: BuildingId
     position: Position
 }
+
+export interface BuyTileMessage {
+    tileId: TileId
+    position: Position
+}
+
+export interface PlantSeedMessage {
+    inventorySeedId: string
+    placedItemTileId: string
+}   
+
