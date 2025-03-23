@@ -44,3 +44,6 @@ export interface PlantSeedMessage {
     placedItemTileId: string
 }   
 
+export interface HarvestPlantMessage {
+    placedItemTileId: string
+}

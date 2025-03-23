@@ -9,7 +9,7 @@ export interface StaticAbstractSchema<TId extends string> extends AbstractSchema
    displayId: TId
 }
 
-export interface AbstractPlantSchema<TId extends string> extends StaticAbstractSchema<TId> {
+export interface AbstractPlantSchema<TId extends string = string> extends StaticAbstractSchema<TId > {
     growthStageDuration: number
     price: number
     unlockLevel: number

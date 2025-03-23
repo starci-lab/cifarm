@@ -405,17 +405,12 @@ export class InputTilemap extends ItemTilemap {
                 )
             }
 
-            EventBus.once(EventName.PlantSeedResponsed, () => {
-                data.pressBlocked = false
-            })
             // emit the event to plant seed
             const eventMessage: PlantSeedRequest = {
                 inventorySeedId: selectedTool.id,
                 placedItemTileId: placedItemId,
             }
             EventBus.emit(EventName.RequestPlantSeed, eventMessage)
-            data.pressBlocked = true
-
             break
         }
         case InventoryType.Tool: {
@@ -452,11 +447,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    //emit the event to water the plant
-                    EventBus.once(EventName.HelpUseWateringCanResponsed, () => {
-                        data.pressBlocked = true
-                    })
-
                     // emit the event to plant seed
                     const eventMessage: HelpUseWateringCanRequest = {
                         placedItemTileId: placedItemId,
@@ -471,16 +461,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    //emit the event to water the plant
-                    EventBus.once(EventName.UseWateringCanResponsed, () => {
-                        data.pressBlocked = true
-                    })
                     // emit the event to plant seed
                     const eventMessage: UseWateringCanRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUseWateringCan, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }
@@ -501,16 +486,12 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HelpUsePesticideResponsed, () => {
-                        data.pressBlocked = false
-                    })
 
                     // emit the event to help use pesticide
                     const eventMessage: HelpUsePesticideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
-                    data.pressBlocked = true
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -520,18 +501,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-
-                    // emit the event to water the plant
-                    EventBus.once(EventName.UsePesticideResponsed, () => {
-                        // reset the isPressed flag
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: UsePesticideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUsePesticide, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }
@@ -553,17 +527,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    // emit the event to water the plant
-                    EventBus.once(EventName.HelpUseHerbicideResponsed, () => {
-                        // reset the isPressed flag
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: HelpUseHerbicideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpUseHerbicide, eventMessage)
-                    data.pressBlocked = true
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -573,17 +541,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    // emit the event to water the plant
-                    EventBus.once(EventName.UseHerbicideResponsed, () => {
-                        // reset the isPressed flag
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: UseHerbicideRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUseHerbicide, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }
@@ -598,18 +560,6 @@ export class InputTilemap extends ItemTilemap {
                 const placedItem = object.currentPlacedItem
                 if (!placedItem) {
                     throw new Error("Placed item not found")
-                }
-                const crop = this.crops.find(
-                    (crop) => crop.id === placedItem.plantInfo?.crop
-                )
-                if (!crop) {
-                    throw new Error("Crop not found")
-                }
-                const product = this.products.find(
-                    (product) => product.crop === crop.id
-                )
-                if (!product) {
-                    throw new Error("Product not found")
                 }
                 if (watchingUser) {
                     if (
@@ -634,16 +584,12 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    // emit the event to water the plant
-                    EventBus.once(EventName.ThiefPlantResponsed, async () => {
-                        data.pressBlocked = false
-                    })
+
                     // emit the event to plant seed
                     const eventMessage: ThiefPlantRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestThiefPlant, eventMessage)
-                    data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
                     if (
@@ -654,15 +600,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HarvestPlantResponsed, async () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: HarvestPlantRequest = {
                         placedItemTileId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHarvestPlant, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }
@@ -706,17 +648,12 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
 
-                EventBus.once(EventName.UseFertilizerResponsed, () => {
-                    data.pressBlocked = false
-                })
-
                 // emit the event to plant seed
                 const eventMessage: UseFertilizerRequest = {
                     placedItemTileId: placedItemId,
                     inventorySupplyId: selectedTool.id,
                 }
                 EventBus.emit(EventName.RequestUseFertilizer, eventMessage)
-                data.pressBlocked = true
                 break
             }
             }
@@ -786,16 +723,12 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    EventBus.once(EventName.UseAnimalFeedResponsed, () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: UseAnimalFeedRequest = {
                         inventorySupplyId: selectedTool.id,
                         placedItemAnimalId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUseAnimalFeed, eventMessage)
-                    data.pressBlocked = true
                 }
 
                 break
@@ -825,15 +758,11 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    EventBus.once(EventName.HelpUseAnimalMedicineResponsed, () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: HelpUseAnimalMedicineRequest = {
                         placedItemAnimalId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpUseAnimalMedicine, eventMessage)
-                    data.pressBlocked = true
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -843,16 +772,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-
-                    EventBus.once(EventName.HelpUseAnimalMedicineResponsed, () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: UseAnimalMedicineRequest = {
                         placedItemAnimalId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUseAnimalMedicine, eventMessage)
-                    data.pressBlocked = true
                 }
 
                 break
@@ -912,15 +836,11 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefAnimalResponsed, async () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: ThiefAnimalRequest = {
                         placedItemAnimalId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestThiefAnimal, eventMessage)
-                    data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
                     if (
@@ -931,15 +851,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HarvestAnimalResponsed, async () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: HarvestAnimalRequest = {
                         placedItemAnimalId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHarvestAnimal, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }
@@ -1182,7 +1098,6 @@ export class InputTilemap extends ItemTilemap {
                 message: "Are you sure you want to sell this item?",
                 quantity: sellPrice,
                 callback: () => {
-                    EventBus.once(EventName.SellResponsed, () => {})
                     const eventMessage: SellRequest = {
                         placedItemId: placedItem.id,
                     }
@@ -1706,17 +1621,11 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    //emit the event to water the plant
-                    EventBus.once(EventName.HelpUseBugNetResponsed, () => {
-                        data.pressBlocked = false
-                    })
-
                     // emit the event to plant seed
                     const eventMessage: HelpUseBugNetRequest = {
                         placedItemFruitId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHelpUseBugNet, eventMessage)
-                    data.pressBlocked = true
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -1726,17 +1635,12 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    //emit the event to water the plant
-                    EventBus.once(EventName.UseBugNetResponsed, () => {
-                        data.pressBlocked = false
-                    })
 
                     // emit the event to plant seed
                     const eventMessage: UseBugNetRequest = {
                         placedItemFruitId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestUseBugNet, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }
@@ -1794,15 +1698,11 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefFruitResponsed, async () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: ThiefFruitRequest = {
                         placedItemFruitId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestThiefFruit, eventMessage)
-                    data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
                     if (
@@ -1813,15 +1713,11 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HarvestFruitResponsed, async () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: HarvestFruitRequest = {
                         placedItemFruitId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHarvestFruit, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }
@@ -1851,9 +1747,6 @@ export class InputTilemap extends ItemTilemap {
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HelpUseFruitFertilizerResponsed, () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: HelpUseFruitFertilizerRequest = {
                         placedItemFruitId: placedItemId,
@@ -1863,7 +1756,6 @@ export class InputTilemap extends ItemTilemap {
                         EventName.RequestHelpUseFruitFertilizer,
                         eventMessage
                     )
-                    data.pressBlocked = true
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -1875,16 +1767,12 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
-                    EventBus.once(EventName.UseFruitFertilizerResponsed, () => {
-                        data.pressBlocked = false
-                    })
                     // emit the event to plant seed
                     const eventMessage: UseFruitFertilizerRequest = {
                         placedItemFruitId: placedItemId,
                         inventorySupplyId: selectedTool.id,
                     }
                     EventBus.emit(EventName.RequestUseFruitFertilizer, eventMessage)
-                    data.pressBlocked = true
                 }
                 break
             }

@@ -29,6 +29,9 @@ export enum EmitterEventName {
   UseWateringCan = "use_watering_can",
   UsePesticide = "use_pesticide", 
   UseHerbicide = "use_herbicide",
+  HarvestPlant = "harvest_plant",
+  HarvestFruit = "harvest_fruit",
+  HarvestAnimal = "harvest_animal",
 }
 
 // sync placed items
