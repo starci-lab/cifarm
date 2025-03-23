@@ -50,7 +50,7 @@ import { LayerName, ObjectLayerName } from "./types"
 const DEPTH_MULTIPLIER = 100
 const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
 const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
-const COIN_KEY = BaseAssetKey.UICommonIconCoin
+const GOLD_KEY = BaseAssetKey.UICommonIconCoin
 
 export abstract class ItemTilemap extends GroundTilemap {
     // item layer
@@ -389,7 +389,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
-                            assetKey: COIN_KEY,
+                            assetKey: GOLD_KEY,
                             position,
                             quantity: -price,
                         },
@@ -407,7 +407,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
-                            assetKey: COIN_KEY,
+                            assetKey: GOLD_KEY,
                             position,
                             quantity: -price,
                         },
@@ -425,7 +425,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
-                            assetKey: COIN_KEY,
+                            assetKey: GOLD_KEY,
                             position,
                             quantity: -price,
                         },
@@ -443,7 +443,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
-                            assetKey: COIN_KEY,
+                            assetKey: GOLD_KEY,
                             position,
                             quantity: -price,
                         },
@@ -645,7 +645,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     const { quantity } = data.data as SellData
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
-                            assetKey: COIN_KEY,
+                            assetKey: GOLD_KEY,
                             position,
                             quantity: quantity,
                         },
