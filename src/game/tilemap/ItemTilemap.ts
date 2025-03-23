@@ -385,13 +385,20 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             case ActionName.BuyTile:
                 if (data.success) {
-                    const { price } = data.data as BuyTileData
+                    const { tileId } = data.data as BuyTileData
+                    const tile = this._tiles.find((tile) => tile.id === tileId)
+                    if (!tile) {
+                        throw new Error("Tile not found")
+                    }
+                    if (!tile.price) {
+                        throw new Error("Tile price not found")
+                    }
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: GOLD_KEY,
                             position,
-                            quantity: -price,
+                            quantity: -tile.price,
                         },
                     ])
                 } else {
@@ -403,13 +410,20 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             case ActionName.BuyAnimal:
                 if (data.success) {
-                    const { price } = data.data as BuyAnimalData
+                    const { animalId } = data.data as BuyAnimalData
+                    const animal = this.animals.find((animal) => animal.id === animalId)
+                    if (!animal) {
+                        throw new Error("Animal not found")
+                    }
+                    if (!animal.price) {
+                        throw new Error("Animal price not found")
+                    }
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: GOLD_KEY,
                             position,
-                            quantity: -price,
+                            quantity: -animal.price,
                         },
                     ])
                 } else {
@@ -421,13 +435,20 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             case ActionName.BuyFruit:
                 if (data.success) {
-                    const { price } = data.data as BuyFruitData
+                    const { fruitId } = data.data as BuyFruitData
+                    const fruit = this.fruits.find((fruit) => fruit.id === fruitId)
+                    if (!fruit) {
+                        throw new Error("Fruit not found")
+                    }
+                    if (!fruit.price) {
+                        throw new Error("Fruit price not found")
+                    }
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: GOLD_KEY,
                             position,
-                            quantity: -price,
+                            quantity: -fruit.price,
                         },
                     ])
                 } else {
@@ -439,13 +460,22 @@ export abstract class ItemTilemap extends GroundTilemap {
                 break
             case ActionName.BuyBuilding:
                 if (data.success) {
-                    const { price } = data.data as BuyBuildingData
+                    const { buildingId } = data.data as BuyBuildingData
+                    const building = this.buildings.find(
+                        (building) => building.id === buildingId
+                    )
+                    if (!building) {
+                        throw new Error("Building not found")
+                    }
+                    if (!building.price) {
+                        throw new Error("Building price not found")
+                    }
                     // get the tile position
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: GOLD_KEY,
                             position,
-                            quantity: -price,
+                            quantity: -building.price,
                         },
                     ])
                 } else {

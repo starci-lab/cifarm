@@ -1,37 +1,23 @@
-import { GRAPHQL_MUTATION_BUY_TOOL_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationBuyToolSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { useGameplayIo } from "@/hooks"
 import { BuyToolRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
+import { EventBus, EventName } from "../../../event-bus"
+import { EmitterEventName } from "@/hooks/io/events"
 
 export const useBuyToolEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationBuyToolSwrMutation>
-      >(GRAPHQL_MUTATION_BUY_TOOL_SWR_MUTATION)
-    
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     useEffect(() => {
         EventBus.on(EventName.RequestBuyTool, async (message: BuyToolRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                // return the user to the phaser game
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false
-                }
+            if (!socket) {
+                return
             }
-            // return the user to the phaser game
-            EventBus.emit(EventName.BuyToolResponsed, completedMessage)
+            socket.emit(EmitterEventName.BuyTool, message) 
         })
 
         return () => {
             EventBus.removeListener(EventName.RequestBuyTool)
         }
-    }, [swrMutation])
+    }, [socket])
 }

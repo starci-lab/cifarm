@@ -1,37 +1,26 @@
-import { GRAPHQL_MUTATION_BUY_SUPPLIES_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationBuySuppliesSwrMutation } from "@/hooks"
-import { BuySuppliesRequest } from "@/modules/apollo"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
+import { EventBus, EventName } from "../../../event-bus"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { BuySuppliesMessage, useGameplayIo } from "@/hooks"
+import { EmitterEventName } from "@/hooks/io/events"
 
 export const useBuySuppliesEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationBuySuppliesSwrMutation>
-      >(GRAPHQL_MUTATION_BUY_SUPPLIES_SWR_MUTATION)
-    
+    const { socket } =
+    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     useEffect(() => {
-        EventBus.on(EventName.RequestBuySupplies, async (message: BuySuppliesRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                // return the user to the phaser game
-                completedMessage = {
-                    success: true,
+        EventBus.on(
+            EventName.RequestBuySupplies,
+            async (message: BuySuppliesMessage) => {
+                if (!socket) {
+                    return
                 }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false
-                }
+                socket.emit(EmitterEventName.BuySupplies, message)
             }
-            // return the user to the phaser game
-            EventBus.emit(EventName.BuySuppliesResponsed, completedMessage)
-        })  
-    
+        )
+
         return () => {
             EventBus.removeListener(EventName.RequestBuySupplies)
         }
-    }, [swrMutation])
+    }, [socket])
 }

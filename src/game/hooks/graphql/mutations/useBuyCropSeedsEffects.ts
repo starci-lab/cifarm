@@ -1,36 +1,24 @@
-import { GRAPHQL_MUTATION_BUY_CROP_SEEDS_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationBuyCropSeedsSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { BuyCropSeedsMessage, useGameplayIo } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
-import { BuyCropSeedsRequest } from "@/modules/apollo"
+import { EventBus, EventName } from "../../../event-bus"
+import { EmitterEventName } from "@/hooks/io/events"
 
 export const useBuyCropSeedsEffects = () => {
-    //get the singleton instance of the buy seeds mutation
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationBuyCropSeedsSwrMutation>
-      >(GRAPHQL_MUTATION_BUY_CROP_SEEDS_SWR_MUTATION)
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestBuyCropSeeds, async (message: BuyCropSeedsRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+        EventBus.on(EventName.RequestBuyCropSeeds, async (message: BuyCropSeedsMessage) => {
+            if (!socket) {
+                return
             }
+            socket.emit(EmitterEventName.BuyCropSeeds, message)
             // return the user to the phaser game
-            EventBus.emit(EventName.BuyCropSeedsResponsed, completedMessage)
         })
     
         return () => {
             EventBus.removeListener(EventName.RequestBuyCropSeeds)
         }
-    }, [swrMutation])
+    }, [socket])
 }

@@ -1,36 +1,24 @@
-import { GRAPHQL_MUTATION_BUY_FLOWER_SEEDS_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationBuyFlowerSeedsSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { BuyFlowerSeedsMessage, useGameplayIo } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
-import { BuyFlowerSeedsRequest } from "@/modules/apollo"
+import { EventBus, EventName } from "../../../event-bus"
+import { EmitterEventName } from "@/hooks/io/events"
 
 export const useBuyFlowerSeedsEffects = () => {
     //get the singleton instance of the buy seeds mutation
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationBuyFlowerSeedsSwrMutation>
-      >(GRAPHQL_MUTATION_BUY_FLOWER_SEEDS_SWR_MUTATION)
-    
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     useEffect(() => {
-        EventBus.on(EventName.RequestBuyFlowerSeeds, async (message: BuyFlowerSeedsRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+        EventBus.on(EventName.RequestBuyFlowerSeeds, async (message: BuyFlowerSeedsMessage) => {
+            if (!socket) {
+                return
             }
-            // return the user to the phaser game
-            EventBus.emit(EventName.BuyFlowerSeedsResponsed, completedMessage)
+            socket.emit(EmitterEventName.BuyFlowerSeeds, message)
+            // return the user to the phaser
         })
     
         return () => {
             EventBus.removeListener(EventName.RequestBuyCropSeeds)
         }
-    }, [swrMutation])
+    }, [socket])
 }

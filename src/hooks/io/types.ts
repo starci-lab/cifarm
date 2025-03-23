@@ -35,15 +35,15 @@ export interface ThiefPlantData {
 }
 
 export interface BuyTileData {
-  price: number;
+  tileId: string;
 }
 
 export interface BuyFruitData {
-  price: number;
+  fruitId: string;
 }
 
 export interface BuyAnimalData {
-  price: number;
+  animalId: string;
 }
 
 export interface HarvestPlantData {
@@ -105,7 +105,7 @@ export enum ActionName {
 }
 
 export interface BuyBuildingData {
-  price: number;
+  buildingId: string;
 }
 
 export interface ShowFadeMessage {
