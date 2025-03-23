@@ -117,7 +117,7 @@ export class PlacedItemObject extends ContainerLite {
         this.updateMainVisual()
         switch (placedItemType.type) {
         case PlacedItemType.Tile: {
-            this.updateSeedGrowthInfo()
+            this.updatePlantInfo()
             break
         }
         case PlacedItemType.Building: {
@@ -143,7 +143,7 @@ export class PlacedItemObject extends ContainerLite {
     // do nothing
     }
 
-    private updateSeedGrowthInfo() {
+    private updatePlantInfo() {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
