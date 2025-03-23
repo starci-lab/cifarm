@@ -11,7 +11,7 @@ const query1 = gql`
       x
       y
       placedItemType
-      seedGrowthInfo {
+      plantInfo {
         currentPerennialCount
         crop
         currentStage
@@ -21,6 +21,8 @@ const query1 = gql`
         isQuality
         thieves
         currentStageTimeElapsed
+        plantType
+        flower
       }
       buildingInfo {
         currentUpgrade

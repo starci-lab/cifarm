@@ -1,6 +1,7 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import {
-    BuySeedsRequest,
+    BuyCropSeedsRequest,
+    BuyFlowerSeedsRequest,
     BuySuppliesRequest,
     BuyToolRequest,
 } from "@/modules/apollo"
@@ -11,6 +12,8 @@ import {
     CropId,
     CropSchema,
     DefaultInfo,
+    FlowerId,
+    FlowerSchema,
     FruitSchema,
     InventorySchema,
     InventoryTypeSchema,
@@ -42,6 +45,7 @@ import {
     supplyAssetMap,
     tileAssetMap,
     toolAssetMap,
+    flowerAssetMap
 } from "../../../assets"
 import {
     CloseModalMessage,
@@ -67,45 +71,9 @@ import {
     TextColor,
 } from "../../elements"
 import { onGameObjectPress } from "../../utils"
-import { ITEM_DATA_KEY, tabsConfig } from "./constants"
-import { ShopTab } from "./types"
-
+import { ITEM_DATA_KEY, tabsConfig, ShopTab } from "./constants"
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
-
-export interface ShopTabData {
-  showLimitText?: boolean;
-}
-
-export const shopTabData: Record<ShopTab, ShopTabData> = {
-    [ShopTab.Seeds]: {
-        showLimitText: false,
-    },
-    [ShopTab.Animals]: {
-        showLimitText: false,
-    },
-    [ShopTab.Buildings]: {
-        showLimitText: true,
-    },
-    [ShopTab.Fruits]: {
-        showLimitText: true,
-    },
-    [ShopTab.Tiles]: {
-        showLimitText: true,
-    },
-    [ShopTab.Supplies]: {
-        showLimitText: false,
-    },
-    [ShopTab.Tools]: {
-        showLimitText: false,
-    },
-    [ShopTab.Pets]: {
-        showLimitText: false,
-    },
-    [ShopTab.Decorations]: {
-        showLimitText: false,
-    },
-}
 
 export interface LimitData {
   limitReached: boolean;
@@ -129,6 +97,7 @@ export class ShopContent extends BaseSizer {
     private inventoryTypes: Array<InventoryTypeSchema>
     private pets: Array<PetSchema>
     private tools: Array<ToolSchema>
+    private flowers: Array<FlowerSchema> 
     //default
     private defaultItemCard: ContainerLite | undefined
     private defaultSeedButton: Label | undefined
@@ -179,9 +148,9 @@ export class ShopContent extends BaseSizer {
                     options: {
                         tabs: Object.values(ShopTab).map((tab) => ({
                             tabKey: tab,
-                            iconKey: tabsConfig[tab].iconKey,
-                            scale: tabsConfig[tab].scale,
-                            offsets: tabsConfig[tab].offsets,
+                            iconKey: tabsConfig[tab].tabData.iconKey,
+                            scale: tabsConfig[tab].tabData.scale,
+                            offsets: tabsConfig[tab].tabData.offsets,
                         })),
                         name: ShopContent.name,
                         defaultTab: defaultShopTab,
@@ -234,6 +203,10 @@ export class ShopContent extends BaseSizer {
         // load pets
         this.pets = this.scene.cache.obj.get(CacheKey.Pets)
         this.pets = this.pets.filter((pet) => pet.availableInShop)
+
+        // load flowers
+        this.flowers = this.scene.cache.obj.get(CacheKey.Flowers)
+        this.flowers = this.flowers.filter((flower) => flower.availableInShop)
 
         // load inventory types
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
@@ -344,14 +317,14 @@ export class ShopContent extends BaseSizer {
     }
 
     private getGridTable(shopTab: ShopTab) {
-        const { showLimitText } = shopTabData[shopTab] 
+        const { showLimitText } = tabsConfig[shopTab] 
         return this.gridTableMap[shopTab]?.getChildren()[showLimitText ? 1 : 0] as GridTable
     }
     
     private updateGridTable(shopTab: ShopTab) {
         // get the item cards
         const items = this.createItems(shopTab)
-        const { showLimitText } = shopTabData[shopTab]
+        const { showLimitText } = tabsConfig[shopTab]
         if (this.gridTableMap[shopTab]) {
             if (showLimitText) {
                 const limitText = this.gridTableMap[shopTab].getChildren()[0] as Text
@@ -420,10 +393,6 @@ export class ShopContent extends BaseSizer {
                             const _cellContainer = cellContainer as Sizer
                             const params = cell.item as ExtendedCreateItemCardParams
                             const itemCard = this.createItemCard(params)
-                            if (params.defaultSeed) {
-                                this.defaultItemCard = itemCard
-                                this.defaultSeedButton = itemCard.getChildren()[2] as Label
-                            }
                             _cellContainer.add(itemCard).setDepth(depth + 1)
                             cellContainer.setData(ITEM_DATA_KEY, params)
                         }
@@ -488,12 +457,12 @@ export class ShopContent extends BaseSizer {
         if (!this.gridTableMap[shopTab]) {
             throw new Error("Grid table is not found")
         }
-        const { showLimitText } = shopTabData[shopTab]
+        const { showLimitText } = tabsConfig[shopTab]
         if (!showLimitText) {
             return
         }
         const limitText = this.gridTableMap[shopTab].getChildren()[0] as Text
-        if (!shopTabData[shopTab].showLimitText) {
+        if (!tabsConfig[shopTab].showLimitText) {
             limitText.setVisible(false)
             return
         }
@@ -538,7 +507,26 @@ export class ShopContent extends BaseSizer {
                     },
                     prepareCloseShop: true,
                     price,
-                    defaultSeed: displayId === this.defaultInfo.defaultCropId,
+                })
+            }
+            break
+        }
+        case ShopTab.Flowers: {
+            for (const { displayId, price, unlockLevel } of this.flowers) {
+                if (!flowerAssetMap[displayId].shop) {
+                    throw new Error("Price is not found.")
+                }
+                // get the image
+                items.push({
+                    assetKey: flowerAssetMap[displayId].shop.textureConfig.key,
+                    locked: !this.checkUnlock(unlockLevel),
+                    disabled: this.user.golds < price,
+                    unlockLevel,
+                    onPress: (pointer: Phaser.Input.Pointer) => {
+                        this.onBuyFlowerPress(displayId, pointer)
+                    },
+                    prepareCloseShop: true,
+                    price,
                 })
             }
             break
@@ -922,14 +910,14 @@ export class ShopContent extends BaseSizer {
     }
 
     private onBuySeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuySeedsResponsed, () => {
+        EventBus.once(EventName.BuyCropSeedsResponsed, () => {
         })
-        const eventMessage: BuySeedsRequest = {
+        const eventMessage: BuyCropSeedsRequest = {
             cropId: displayId,
             quantity: 1,
         }
         // send request to buy seeds
-        EventBus.emit(EventName.RequestBuySeeds, eventMessage)
+        EventBus.emit(EventName.RequestBuyCropSeeds, eventMessage)
         if (!cropAssetMap[displayId].shop) {
             throw new Error("Shop asset is not found.")
         }
@@ -939,6 +927,36 @@ export class ShopContent extends BaseSizer {
             },
             options: {
                 assetKey: cropAssetMap[displayId].shop.textureConfig.key,
+                x: pointer.x,
+                y: pointer.y,
+                quantity: 1,
+                depth: calculateUiDepth({
+                    layer: UILayer.Overlay,
+                    layerDepth: 1,
+                }),
+            },
+        })
+        this.scene.add.existing(flyItem)
+    }
+
+    private onBuyFlowerPress(displayId: FlowerId, pointer: Phaser.Input.Pointer) {
+        EventBus.once(EventName.BuyFlowerSeedsResponsed, () => {
+        })
+        const eventMessage: BuyFlowerSeedsRequest = {
+            flowerId: displayId,
+            quantity: 1,
+        }
+        // send request to buy seeds
+        EventBus.emit(EventName.RequestBuyFlowerSeeds, eventMessage)
+        if (!flowerAssetMap[displayId].shop) {
+            throw new Error("Shop asset is not found.")
+        }
+        const flyItem = new FlyItem({
+            baseParams: {
+                scene: this.scene,
+            },
+            options: {
+                assetKey: flowerAssetMap[displayId].shop.textureConfig.key,
                 x: pointer.x,
                 y: pointer.y,
                 quantity: 1,
@@ -1103,8 +1121,6 @@ export interface CreateItemCardParams {
   unlockLevel?: number;
   // prepare close shop
   prepareCloseShop?: boolean;
-  // default seed
-  defaultSeed?: boolean;
   // Maximum ownership limit (only for applicable items)
   maxOwnership?: number;
   // Current ownership count

@@ -1,5 +1,5 @@
 // Crop Current State Enum
-export enum CropCurrentState {
+export enum PlantCurrentState {
     Normal = "normal",
     NeedWater = "needWater",
     IsWeedy = "isWeedy",

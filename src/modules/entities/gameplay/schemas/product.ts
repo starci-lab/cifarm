@@ -9,4 +9,5 @@ export interface ProductSchema extends StaticAbstractSchema<ProductId> {
     crop: string
     animal: string
     fruit: string
+    flower: string
 }

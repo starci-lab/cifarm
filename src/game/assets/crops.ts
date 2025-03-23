@@ -52,7 +52,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
             3: {
                 textureConfig: {
                     key: "crop-turnip-4",
-                    assetUrl: "crops/turnip/4.png",
+                    assetUrl: "crops/turnip/4-old.png",
                     extraOffsets: {
                         x: -8,
                         y: -40,
@@ -62,7 +62,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
             4: {
                 textureConfig: {
                     key: "crop-turnip-5",
-                    assetUrl: "crops/turnip/5.png",
+                    assetUrl: "crops/turnip/5-old.png",
                     extraOffsets: {
                         x: -10,
                         y: -35,

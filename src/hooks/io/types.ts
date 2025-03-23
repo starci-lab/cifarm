@@ -29,9 +29,9 @@ export interface EmitActionPayload {
 
 export type ActionEmittedMessage = Omit<EmitActionPayload, "userId">;
 
-export interface ThiefCropData {
+export interface ThiefPlantData {
   quantity: number;
-  cropId: string;
+  productId: string;
 }
 
 export interface BuyTileData {
@@ -46,9 +46,9 @@ export interface BuyAnimalData {
   price: number;
 }
 
-export interface HarvestCropData {
+export interface HarvestPlantData {
   quantity: number;
-  cropId: string;
+  productId: string;
 }
 
 export interface ThiefAnimalProductData {
@@ -75,22 +75,21 @@ export interface SellData {
 }
 
 export enum ActionName {
-  WaterCrop = "water_crop",
+  UseWateringCan = "use_watering_can",
   UsePesticide = "use_pesticide",
   UseHerbicide = "use_herbicide",
   UseFertilizer = "use_fertilizer",
-  HarvestCrop = "harvest_crop",
+  HarvestPlant = "harvest_plant",
   PlantSeed = "plant_seed",
-  CureAnimal = "cure_animal",
-  FeedAnimal = "feed_animal",
-  HelpFeedAnimal = "help_feed_animal",
+  UseAnimalMedicine = "use_animal_medicine",
+  HelpUseAnimalMedicine = "help_use_animal_medicine",
+  UseAnimalFeed = "use_animal_feed",
   HarvestAnimal = "harvest_animal",
-  HelpCureAnimal = "help_cure_animal",
   HelpUseHerbicide = "help_use_herbicide",
   HelpUsePesticide = "help_use_pesticide",
-  HelpWaterCrop = "help_water_crop",
+  HelpUseWateringCan = "help_use_watering_can",
   ThiefAnimalProduct = "thief_animal_product",
-  ThiefCrop = "thief_crop",
+  ThiefPlant = "thief_plant",
   BuyTile = "buy_tile",
   BuyAnimal = "buy_animal",
   BuyBuilding = "buy_building",

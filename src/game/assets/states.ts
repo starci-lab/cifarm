@@ -1,6 +1,6 @@
 import {
     AnimalCurrentState,
-    CropCurrentState,
+    PlantCurrentState,
     FruitCurrentState,
 } from "@/modules/entities"
 import { TextureConfig } from "./types"
@@ -10,35 +10,35 @@ export interface CropStateAssetData {
   textureConfig: TextureConfig;
 }
 
-export const cropStateAssetMap: Partial<
-  Record<CropCurrentState, CropStateAssetData>
+export const plantStateAssetMap: Partial<
+  Record<PlantCurrentState, CropStateAssetData>
 > = {
-    [CropCurrentState.NeedWater]: {
+    [PlantCurrentState.NeedWater]: {
         textureConfig: { key: "need-water", assetUrl: "states/need-water.png" },
     },
-    [CropCurrentState.IsWeedy]: {
+    [PlantCurrentState.IsWeedy]: {
         textureConfig: { key: "is-weedy", assetUrl: "states/is-weedy.png" },
     },
-    [CropCurrentState.IsInfested]: {
+    [PlantCurrentState.IsInfested]: {
         textureConfig: { key: "is-infested", assetUrl: "states/is-infested.png" },
     },
-    [CropCurrentState.FullyMatured]: {
+    [PlantCurrentState.FullyMatured]: {
         textureConfig: { key: "fully-mature", assetUrl: "states/is-ready.png" },
     },
 }
 
 // Function to load animal assets in Phaser scene
-export const loadCropStateAssets = (scene: Scene) => {
-    Object.keys(cropStateAssetMap).forEach((state) => {
-        const _state = state as CropCurrentState
-        const cropStateData = cropStateAssetMap[_state]
+export const loadPlantStateAssets = (scene: Scene) => {
+    Object.keys(plantStateAssetMap).forEach((state) => {
+        const _state = state as PlantCurrentState
+        const plantStateData = plantStateAssetMap[_state]
 
-        if (!cropStateData) {
-            throw new Error(`Crop state data not found for state: ${state}`)
+        if (!plantStateData) {
+            throw new Error(`Plant state data not found for state: ${state}`)
         }
         scene.load.image(
-            cropStateData.textureConfig.key,
-            cropStateData.textureConfig.assetUrl
+            plantStateData.textureConfig.key,
+            plantStateData.textureConfig.assetUrl
         )
     })
 }

@@ -28,6 +28,7 @@ export enum CacheKey {
     DefaultInfo = "default-info",
     DeliveryData = "delivery-data",
     WatchingUser = "watching-user",
+    Flowers = "flowers",
 }
 
 export interface DeliveryData {

@@ -6,12 +6,12 @@ import {
     BuyFruitData,
     BuyTileData,
     HarvestAnimalData,
-    HarvestCropData,
     HarvestFruitData,
+    HarvestPlantData,
     SellData,
     ThiefAnimalProductData,
-    ThiefCropData,
     ThiefFruitData,
+    ThiefPlantData,
 } from "@/hooks"
 import { sleep } from "@/modules/common"
 import {
@@ -19,6 +19,7 @@ import {
     AnimalSchema,
     BuildingSchema,
     CropSchema,
+    FlowerSchema,
     FruitSchema,
     InventoryTypeSchema,
     PlacedItemSchema,
@@ -26,6 +27,7 @@ import {
     PlacedItemTypeId,
     PlacedItemTypeSchema,
     ProductSchema,
+    ProductType,
     SupplySchema,
     TileSchema,
     ToolSchema,
@@ -36,7 +38,11 @@ import { DeepPartial } from "react-hook-form"
 import { BaseAssetKey, productAssetMap } from "../assets"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { EventBus, EventName, Position } from "../event-bus"
-import { CacheKey, PlacedItemsData, TilemapBaseConstructorParams } from "../types"
+import {
+    CacheKey,
+    PlacedItemsData,
+    TilemapBaseConstructorParams,
+} from "../types"
 import { GroundTilemap } from "./GroundTilemap"
 import { PlacedItemObject } from "./PlacedItemObject"
 import { LayerName, ObjectLayerName } from "./types"
@@ -66,6 +72,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected tools: Array<ToolSchema>
     protected placedItemTypes: Array<PlacedItemTypeSchema>
     protected inventoryTypes: Array<InventoryTypeSchema>
+    protected flowers: Array<FlowerSchema>
 
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -87,6 +94,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes)
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
+        this.flowers = this.scene.cache.obj.get(CacheKey.Flowers)
 
         EventBus.on(EventName.Visit, (user: UserSchema) => {
             // save to cache
@@ -100,7 +108,9 @@ export abstract class ItemTilemap extends GroundTilemap {
             await sleep(FADE_TIME)
             EventBus.emit(EventName.UpdateWatchingStatus)
             // re-sync the placed items
-            const watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined 
+            const watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as
+        | UserSchema
+        | undefined
             const userId = watchingUser?.id ?? undefined
             EventBus.emit(EventName.LoadPlacedItems1, userId)
             EventBus.emit(EventName.CenterCamera)
@@ -112,7 +122,10 @@ export abstract class ItemTilemap extends GroundTilemap {
             //console.log("update placed items")
             const currentPlaceItemsData = this.getCurrentPlacedItemsData()
             // handle the placed items update
-            this.handlePlacedItemsUpdate(currentPlaceItemsData, this.previousPlacedItemsData)
+            this.handlePlacedItemsUpdate(
+                currentPlaceItemsData,
+                this.previousPlacedItemsData
+            )
             // update the previous placed items
             this.previousPlacedItemsData = currentPlaceItemsData
         })
@@ -127,13 +140,18 @@ export abstract class ItemTilemap extends GroundTilemap {
         const placedItemsData = this.getCurrentPlacedItemsData()
         if (placedItemsData) {
             // handle the placed items update
-            this.handlePlacedItemsUpdate(placedItemsData, this.previousPlacedItemsData)
+            this.handlePlacedItemsUpdate(
+                placedItemsData,
+                this.previousPlacedItemsData
+            )
             // update the previous placed items
             this.previousPlacedItemsData = placedItemsData
         }
 
         EventBus.on(EventName.ActionEmitted, (data: ActionEmittedMessage) => {
-            const { placedItem: { x, y} } = data
+            const {
+                placedItem: { x, y },
+            } = data
             if (x === undefined) {
                 throw new Error("X is not found")
             }
@@ -153,24 +171,24 @@ export abstract class ItemTilemap extends GroundTilemap {
                 y: tile.getCenterY() - this.tileHeight / 2,
             }
             switch (data.action) {
-            case ActionName.WaterCrop:
+            case ActionName.UseWateringCan:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.waterCrop.energyConsume,
+                            quantity: -this.activities.useWateringCan.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.waterCrop.experiencesGain,
+                            quantity: this.activities.useWateringCan.experiencesGain,
                         },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.WaterCrop,
+                        text: "Failed to " + ActionName.UseWateringCan,
                     })
                 }
                 break
@@ -302,31 +320,55 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            case ActionName.HarvestCrop:
+            case ActionName.HarvestPlant:
                 if (data.success) {
-                    const { quantity, cropId } = data.data as HarvestCropData
-                    const crop = this.crops.find((crop) => crop.id === cropId)
-                    if (!crop) {
-                        throw new Error("Crop not found")
-                    }
+                    const { quantity, productId } = data.data as HarvestPlantData
                     const product = this.products.find(
-                        (product) => product.crop === crop.id
+                        (product) => product.id === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")
                     }
                     const assetKey =
               productAssetMap[product.displayId].textureConfig.key
+                    let experiencesGain = 0
+                    switch (product.type) {
+                    case ProductType.Crop: {
+                        const crop = this.crops.find(
+                            (crop) => crop.id === product.crop
+                        )
+                        if (!crop) {
+                            throw new Error("Crop not found")
+                        }
+                        experiencesGain = product.isQuality
+                            ? crop.qualityHarvestExperiences
+                            : crop.basicHarvestExperiences
+
+                        break
+                    }
+                    case ProductType.Flower: {
+                        const flower = this.flowers.find(
+                            (flower) => flower.id === product.flower
+                        )
+                        if (!flower) {
+                            throw new Error("Flower not found")
+                        }
+                        experiencesGain = product.isQuality
+                            ? flower.qualityHarvestExperiences
+                            : flower.basicHarvestExperiences
+                        break
+                    }
+                    }
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.harvestCrop.energyConsume,
+                            quantity: -this.activities.harvestPlant.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.harvestCrop.experiencesGain,
+                            quantity: experiencesGain,
                         },
                         {
                             assetKey,
@@ -337,7 +379,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.HarvestCrop,
+                        text: "Failed to " + ActionName.HarvestPlant,
                     })
                 }
                 break
@@ -376,7 +418,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         text: "Failed to " + ActionName.BuyAnimal,
                     })
                 }
-                break  
+                break
             case ActionName.BuyFruit:
                 if (data.success) {
                     const { price } = data.data as BuyFruitData
@@ -394,7 +436,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         text: "Failed to " + ActionName.BuyFruit,
                     })
                 }
-                break  
+                break
             case ActionName.BuyBuilding:
                 if (data.success) {
                     const { price } = data.data as BuyBuildingData
@@ -412,16 +454,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                         text: "Failed to " + ActionName.BuyBuilding,
                     })
                 }
-                break    
-            case ActionName.ThiefCrop:
+                break
+            case ActionName.ThiefPlant:
                 if (data.success) {
-                    const { quantity, cropId } = data.data as ThiefCropData
-                    const crop = this.crops.find((crop) => crop.id === cropId)
-                    if (!crop) {
-                        throw new Error("Crop not found")
-                    }
+                    const { quantity, productId } = data.data as ThiefPlantData
                     const product = this.products.find(
-                        (product) => product.crop === crop.id
+                        (product) => product.displayId === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")
@@ -432,12 +470,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.thiefCrop.energyConsume,
+                            quantity: -this.activities.thiefPlant.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.thiefCrop.experiencesGain,
+                            quantity: this.activities.thiefPlant.experiencesGain,
                         },
                         {
                             assetKey,
@@ -456,45 +494,45 @@ export abstract class ItemTilemap extends GroundTilemap {
                     }
                 }
                 break
-            case ActionName.CureAnimal:
+            case ActionName.UseAnimalMedicine:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.cureAnimal.energyConsume,
+                            quantity: -this.activities.useAnimalMedicine.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.cureAnimal.experiencesGain,
+                            quantity: this.activities.useAnimalMedicine.experiencesGain,
                         },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.CureAnimal,
+                        text: "Failed to " + ActionName.UseAnimalMedicine,
                     })
                 }
                 break
-            case ActionName.FeedAnimal:
+            case ActionName.UseAnimalFeed:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.feedAnimal.energyConsume,
+                            quantity: -this.activities.useAnimalFeed.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.feedAnimal.experiencesGain,
+                            quantity: this.activities.useAnimalFeed.experiencesGain,
                         },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.FeedAnimal,
+                        text: "Failed to " + ActionName.UseAnimalFeed,
                     })
                 }
                 break
@@ -506,6 +544,17 @@ export abstract class ItemTilemap extends GroundTilemap {
                     )
                     if (!product) {
                         throw new Error("Product not found")
+                    }
+                    let experiencesGain = 0
+                    switch (product.type) {
+                    case ProductType.Animal: {
+                        const animal = this.animals.find((animal) => animal.id === product.animal)
+                        if (!animal) {
+                            throw new Error("Animal not found")
+                        }
+                        experiencesGain = product.isQuality ? animal.qualityHarvestExperiences : animal.basicHarvestExperiences
+                        break
+                    }
                     }
                     const assetKey =
               productAssetMap[product.displayId].textureConfig.key
@@ -519,7 +568,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.harvestAnimal.experiencesGain,
+                            quantity: experiencesGain,
                         },
                         {
                             assetKey,
@@ -534,24 +583,24 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            case ActionName.HelpFeedAnimal:
+            case ActionName.HelpUseAnimalMedicine:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
                             position,
-                            quantity: -this.activities.feedAnimal.energyConsume,
+                            quantity: -this.activities.helpUseAnimalMedicine.energyConsume,
                         },
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.feedAnimal.experiencesGain,
+                            quantity: this.activities.helpUseAnimalMedicine.experiencesGain,
                         },
                     ])
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.HelpFeedAnimal,
+                        text: "Failed to " + ActionName.HelpUseAnimalMedicine,
                     })
                 }
                 break
@@ -591,48 +640,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            case ActionName.HelpCureAnimal:
-                if (data.success) {
-                    this.scene.events.emit(EventName.CreateFlyItems, [
-                        {
-                            assetKey: ENERGY_KEY,
-                            position,
-                            quantity: -this.activities.helpCureAnimal.energyConsume,
-                        },
-                        {
-                            assetKey: EXPERIENCE_KEY,
-                            position,
-                            quantity: this.activities.helpCureAnimal.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.scene.events.emit(EventName.CreateFlyItem, {
-                        position,
-                        text: "Failed to " + ActionName.HelpCureAnimal,
-                    })
-                }
-                break
-            case ActionName.HelpWaterCrop:
-                if (data.success) {
-                    this.scene.events.emit(EventName.CreateFlyItems, [
-                        {
-                            assetKey: ENERGY_KEY,
-                            position,
-                            quantity: -this.activities.helpWaterCrop.energyConsume,
-                        },
-                        {
-                            assetKey: EXPERIENCE_KEY,
-                            position,
-                            quantity: this.activities.helpWaterCrop.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.scene.events.emit(EventName.CreateFlyItem, {
-                        position,
-                        text: "Failed to " + ActionName.HelpWaterCrop,
-                    })
-                }
-                break
             case ActionName.Sell:
                 if (data.success) {
                     const { quantity } = data.data as SellData
@@ -662,6 +669,20 @@ export abstract class ItemTilemap extends GroundTilemap {
                     }
                     const assetKey =
               productAssetMap[product.displayId].textureConfig.key
+
+                    const fruit = this.fruits.find(
+                        (fruit) => fruit.id === product.fruit
+                    )
+                    if (!fruit) {
+                        throw new Error("Fruit not found")
+                    }
+                    let experiencesGain = 0
+                    switch (product.type) {
+                    case ProductType.Fruit: {
+                        experiencesGain = product.isQuality ? fruit.qualityHarvestExperiences : fruit.basicHarvestExperiences
+                        break
+                    }
+                    }
                     this.scene.events.emit(EventName.CreateFlyItems, [
                         {
                             assetKey: ENERGY_KEY,
@@ -671,7 +692,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         {
                             assetKey: EXPERIENCE_KEY,
                             position,
-                            quantity: this.activities.harvestFruit.experiencesGain,
+                            quantity: experiencesGain,
                         },
                         {
                             assetKey,
@@ -820,7 +841,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         current: PlacedItemsData,
         previous?: PlacedItemsData
     ) {
-        //if current.userId doesn't match previous.userId, treat all placed items as new
+    //if current.userId doesn't match previous.userId, treat all placed items as new
         if (!previous || (previous && current.userId !== previous.userId)) {
             // if user ids are different, create all placed items (treat as new)
             this.clearAllPlacedItems()
@@ -832,7 +853,9 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         for (const placedItem of current.placedItems) {
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
-            const found = previous.placedItems.find((item) => item.id === placedItem.id)
+            const found = previous.placedItems.find(
+                (item) => item.id === placedItem.id
+            )
             if (found) {
                 checkedPreviousPlacedItems.push(placedItem)
                 if (placedItem.x !== found.x || placedItem.y !== found.y) {
@@ -895,7 +918,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
         gameObject.update(placedItemType.type, {
             ...placedItem,
-            seedGrowthInfo: undefined,
+            plantInfo: undefined,
             animalInfo: undefined,
             buildingInfo: undefined,
         })
@@ -946,7 +969,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // reusable method to place a tile for a given placed item
     protected placeTileForItem(placedItem: PlacedItemSchema) {
-        // get the tile
+    // get the tile
         const tile = this.getTileCenteredAt({
             tileX: placedItem.x,
             tileY: placedItem.y,
@@ -1053,6 +1076,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         const placedItemsData = this.scene.cache.obj.get(
             CacheKey.PlacedItems
         ) as PlacedItemsData
+        console.log(placedItemsData)
         const { placedItems: cachedPlacedItems, userId } = placedItemsData
         const placedItems = _.cloneDeep<Array<PlacedItemSchema>>(cachedPlacedItems)
         console.log(placedItems)

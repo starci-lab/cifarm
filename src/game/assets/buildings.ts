@@ -26,7 +26,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         map: {
             textureConfig: {
                 key: "buildings-home",
-                assetUrl: "buildings/home.png",
+                assetUrl: "buildings/home/home.png",
                 extraOffsets: { x: -10, y: -65 },
             }, 
         },
@@ -38,7 +38,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             textureConfig: {
                 extraOffsets: { x: 0, y: -65 },
                 key: "buildings-coop",
-                assetUrl: "buildings/coop.png",
+                assetUrl: "buildings/coop/coop.png",
             },
             starsConfig: {
                 extraOffsets: {
@@ -61,7 +61,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         map: {
             textureConfig: {
                 key: "buildings-barn",
-                assetUrl: "buildings/barn.png",
+                assetUrl: "buildings/barn/barn.png",
                 extraOffsets: { x: 0, y: -60 },
             },
             starsConfig: {
@@ -80,6 +80,58 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             }
         }
     },
+    [BuildingId.BeeHouse]: {
+        name: "Bee House",
+        map: {
+            textureConfig: {
+                extraOffsets: { x: 0, y: -65 },
+                key: "buildings-bee-house",
+                assetUrl: "buildings/bee-house/bee-house.png",
+                spineConfig: {
+                    atlas: {
+                        key: "buildings-bee-house-atlas",
+                        assetUrl: "buildings/bee-house/spine/bee-house.atlas",
+                    },
+                    json: {
+                        key: "buildings-bee-house-json",
+                        assetUrl: "buildings/bee-house/spine/bee-house.json",
+                    },
+                }
+            },
+            starsConfig: {
+                extraOffsets: {
+                    x: -50,
+                    y: -300
+                }
+            },
+        },
+        shop: {
+            textureConfig: {
+                key: "buildings-bee-house",
+                useExisting: true,
+                scaleWidth: 0.35,
+                scaleHeight: 0.35
+            }
+        }
+    },
+    [BuildingId.PetHouse]: {
+        name: "Pet House",
+        map: {
+            textureConfig: {
+                key: "buildings-pet-house",
+                assetUrl: "buildings/pet-house/pet-house.png",
+                extraOffsets: { x: 0, y: -65 },
+            },
+        },
+        shop: {
+            textureConfig: {
+                key: "buildings-pet-house",
+                useExisting: true,
+                scaleWidth: 0.35,
+                scaleHeight: 0.35
+            }
+        }
+    },   
 }
 
 // function to load animals assets (images) for each animal

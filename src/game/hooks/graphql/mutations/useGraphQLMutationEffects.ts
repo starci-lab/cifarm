@@ -1,17 +1,17 @@
 import { useHelpUseHerbicideEffects } from "./helpUseHerbicideEffects"
-import { useThiefCropEffects } from "./thiefCropEffects"
+import { useThiefPlantEffects } from "./useThiefPlantEffects"
 import { useBuyAnimalEffects } from "./useBuyAnimalEffects"
-import { useBuySeedsEffects } from "./useBuySeedsEffects"
+import { useBuyCropSeedsEffects } from "./useBuyCropSeedsEffects"
 import { useBuySuppliesEffects } from "./useBuySuppliesEffect"
 import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
 import { useBuyBuildingEffects } from "./useBuyBuilding"
-import { useCureAnimalEffects } from "./useCureAnimalEffects"
+import { useUseAnimalMedicineEffects } from "./useUseAnimalMedicineEffects"
 import { useDeliverMoreProductEffects } from "./useDeliverMoreProductEffects"
 import { useDeliverProductEffects } from "./useDeliverProductEffects"
-import { useFeedAnimalEffects } from "./useFeedAnimalEffects"
+import { useUseAnimalFeedEffects } from "./useUseAnimalFeedEffects"
 import { useFollowEffects } from "./useFollowEffects"
-import { useHarvestCropEffects } from "./useHarvestCropEffects"
+import { useHarvestPlantEffects } from "./useHarvestPlantEffects"
 import { useUseHerbicideEffects } from "./useHerbicideEffects"
 import { useMoveEffects } from "./useMoveEffects"
 import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
@@ -22,29 +22,31 @@ import { useUnfollowEffects } from "./useUnfollowEffects"
 import { useUpdateFollowXEffects } from "./useUpdateFollowXEffects"
 import { useUpgradeBuildingEffects } from "./useUpgradeBuildingEffects"
 import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
-import { useWaterCropEffects } from "./useWaterCropEffects"
+import { useWaterCropEffects } from "./useUseWateringCanEffects"
 import { useBuyToolEffects } from "./useBuyToolEffects"
 import { useSellEffects } from "./useSellEffects"
 import { useBuyFruitEffects } from "./useBuyFruit"
-import { useHarvestAnimalEffects } from "./useHarvestAnimalEffects"
-import { useHelpCureAnimalEffects } from "./useHelpCureAnimalEffects"
+import { useHarvestAnimalEffects } from "./useHarvestAnimalEffects" 
 import { useHarvestFruitEffects } from "./useHarvestFruitEffects"
-import { useHelpFeedAnimalEffects } from "./useHelpFeedAnimalEffects"
 import { useHelpUseBugNetEffects } from "./useHelpUseBugNetEffects"
 import { useHelpUseFruitFertilizerEffects } from "./useHelpUseFruitFertilizerEffects"
 import { useThiefFruitEffects } from "./useThiefFruitEffects"
 import { useUseBugNetEffects } from "./useUseBugNetEffects"
 import { useUseFruitFertilizerEffects } from "./useUseFruitFertilizerEffects"
 import { useHelpUsePesticideEffects } from "./useHelpUsePesticideEffects"
-import { useHelpWaterCropEffects } from "./useHelpWaterCropEffects"
+import { useHelpUseWateringCanEffects } from "./useHelpUseWateringCanEffects"
 import { useThiefAnimalEffects } from "./useThiefAnimalEffects"
+import { useHelpUseAnimalMedicineEffects } from "./useHelpUseAnimalMedicineEffects"
+import { useBuyFlowerSeedsEffects } from "./useBuyFlowerSeedsEffects"
+
 export const useGraphQLMutationEffects = () => {
-    useBuySeedsEffects()
+    useBuyCropSeedsEffects()
+    useBuyFlowerSeedsEffects()  
     usePlantSeedEffects()
     useWaterCropEffects()
     useUseHerbicideEffects()
     useUsePesticideEffects()
-    useHarvestCropEffects()
+    useHarvestPlantEffects()
     useBuyBuildingEffects()
     useBuyTileEffects()
     useMoveInventoryEffects()
@@ -54,13 +56,12 @@ export const useGraphQLMutationEffects = () => {
     useUnfollowEffects()
     useHelpUseHerbicideEffects()
     useHelpUsePesticideEffects()
-    useHelpWaterCropEffects()
-    useThiefCropEffects()
+    useHelpUseWateringCanEffects()
+    useThiefPlantEffects()
     useBuyAnimalEffects()
     useClaimDailyRewardEffects()
     useBuySuppliesEffects()
-    useFeedAnimalEffects()
-    useCureAnimalEffects()
+    useUseAnimalFeedEffects()
     useUseFertilizerEffects()
     useUpdateFollowXEffects()
     useUpgradeBuildingEffects()
@@ -70,8 +71,6 @@ export const useGraphQLMutationEffects = () => {
     useSellEffects()
     useBuyFruitEffects()
     useHarvestAnimalEffects()
-    useHelpCureAnimalEffects()
-    useHelpFeedAnimalEffects()
     useHarvestFruitEffects()
     useThiefFruitEffects()
     useUseBugNetEffects()
@@ -79,4 +78,6 @@ export const useGraphQLMutationEffects = () => {
     useUseFruitFertilizerEffects()
     useHelpUseFruitFertilizerEffects()
     useThiefAnimalEffects()
+    useUseAnimalMedicineEffects()
+    useHelpUseAnimalMedicineEffects()
 }

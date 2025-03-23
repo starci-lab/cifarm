@@ -20,17 +20,18 @@ import {
     AnimalInfo,
     CropInfo,
     FruitInfo,
+    FlowerSchema
 } from "@/modules/entities"
 
 //long query for querying all the static data
 const query = gql`
   query Static {  
     activities {
-      waterCrop {
+      useWateringCan {
         experiencesGain
         energyConsume
       }
-      feedAnimal {
+      useAnimalFeed {
         experiencesGain
         energyConsume
       }
@@ -43,7 +44,6 @@ const query = gql`
         energyConsume
       }
       harvestAnimal {
-        experiencesGain
         energyConsume
       }
       useFertilizer {
@@ -62,11 +62,11 @@ const query = gql`
         experiencesGain
         energyConsume
       }
-      helpWaterCrop {
+      helpUseWateringCan {
         experiencesGain
         energyConsume
       }
-      thiefCrop {
+      thiefPlant {
         experiencesGain
         energyConsume
       }
@@ -74,19 +74,18 @@ const query = gql`
         experiencesGain
         energyConsume
       }
-      cureAnimal {
+      useAnimalMedicine {
         experiencesGain
         energyConsume
       }
-      helpCureAnimal {
+      helpUseAnimalMedicine {
         experiencesGain
         energyConsume
       }
-      harvestCrop {
-        experiencesGain
+      harvestPlant {
         energyConsume
       }
-      helpFeedAnimal {
+      helpUseFruitFertilizer {
         experiencesGain
         energyConsume
       }
@@ -183,6 +182,20 @@ const query = gql`
       basicHarvestExperiences
       qualityHarvestExperiences
       availableInShop
+    }
+    flowers {
+      id
+      displayId
+      growthStageDuration
+      price
+      unlockLevel
+      minHarvestQuantity
+      maxHarvestQuantity
+      basicHarvestExperiences
+      qualityHarvestExperiences
+      availableInShop
+      honeyYieldCoefficient
+      honeyQualityChancePlus
     }
     fruits {
       id
@@ -289,6 +302,7 @@ const query = gql`
       crop
       animal
       fruit
+      flower
     }
     supplies {
       displayId
@@ -377,6 +391,7 @@ export interface QueryStaticResponse {
   inventoryTypes: Array<InventoryTypeSchema>;
   products: Array<ProductSchema>
   supplies: Array<SupplySchema>
+  flowers: Array<FlowerSchema>
   fruits: Array<FruitSchema>
   fruitInfo: FruitInfo
   cropInfo: CropInfo

@@ -6,13 +6,13 @@ export interface SystemSchema {
 }
 
 export interface ActivityInfo {
-  experiencesGain: number;
+  experiencesGain?: number;
   energyConsume: number;
 }
 
 export interface Activities {
-  waterCrop: ActivityInfo;
-  feedAnimal: ActivityInfo;
+  useWateringCan: ActivityInfo;
+  useAnimalFeed: ActivityInfo;
   plantSeed: ActivityInfo;
   harvestAnimal: ActivityInfo;
   usePesticide: ActivityInfo;
@@ -20,12 +20,12 @@ export interface Activities {
   useHerbicide: ActivityInfo;
   helpUseHerbicide: ActivityInfo;
   helpUsePesticide: ActivityInfo;
-  helpWaterCrop: ActivityInfo;
-  thiefCrop: ActivityInfo;
+  helpUseWateringCan: ActivityInfo;
+  thiefPlant: ActivityInfo;
   thiefAnimal: ActivityInfo;
-  cureAnimal: ActivityInfo;
-  helpCureAnimal: ActivityInfo;
-  harvestCrop: ActivityInfo;
+  useAnimalMedicine: ActivityInfo;
+  helpUseAnimalMedicine: ActivityInfo;
+  harvestPlant: ActivityInfo;
   helpFeedAnimal: ActivityInfo
   useFruitFertilizer: ActivityInfo
   useBugNet: ActivityInfo

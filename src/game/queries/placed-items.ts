@@ -20,7 +20,7 @@ export const getPlacedItemsWithSeedGrowthInfo = ({
         placedItems = data
     }
     // get the first two planted placed items
-    return placedItems.filter((placedItem) => placedItem.seedGrowthInfo)
+    return placedItems.filter((placedItem) => placedItem.plantInfo)
 }
 
 export interface GetPlacedItemsWithSeedGrowthInfoParams {

@@ -3,8 +3,8 @@ import {
     AnimalCurrentState,
     AnimalSchema,
     BuildingSchema,
-    CropCurrentState,
     CropSchema,
+    FlowerSchema,
     FruitCurrentState,
     FruitInfo,
     FruitSchema,
@@ -12,6 +12,8 @@ import {
     PlacedItemType,
     PlacedItemTypeId,
     PlacedItemTypeSchema,
+    PlantCurrentState,
+    PlantType,
     ProductSchema,
     TileSchema,
 } from "@/modules/entities"
@@ -32,8 +34,8 @@ import {
 } from "../assets"
 import {
     animalStateAssetMap,
-    cropStateAssetMap,
     fruitStateAssetMap,
+    plantStateAssetMap,
 } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
@@ -42,9 +44,10 @@ import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { EventName } from "../event-bus"
 import { EventBus } from "../event-bus"
+import { flowerAssetMap } from "../assets"
 
 export class PlacedItemObject extends ContainerLite {
-    private seedGrowthInfoSprite: Phaser.GameObjects.Sprite | undefined
+    private plantInfoSprite: Phaser.GameObjects.Sprite | undefined
     private mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
     private bubbleState: OverlapSizer | undefined
     private quantityText: Text | undefined
@@ -60,6 +63,7 @@ export class PlacedItemObject extends ContainerLite {
     private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema>
     private fruits: Array<FruitSchema>
+    private flowers: Array<FlowerSchema>    
     private fruitInfo: FruitInfo
     private timerIsShown = false
     
@@ -74,6 +78,7 @@ export class PlacedItemObject extends ContainerLite {
         this.buildings = scene.cache.obj.get(CacheKey.Buildings)
         this.fruits = scene.cache.obj.get(CacheKey.Fruits)
         this.fruitInfo = scene.cache.obj.get(CacheKey.FruitInfo)
+        this.flowers = scene.cache.obj.get(CacheKey.Flowers)
     }
 
     public showTimer() {
@@ -145,21 +150,21 @@ export class PlacedItemObject extends ContainerLite {
         if (!this) {
             throw new Error("Container not found")
         }
-        if (!this.nextPlacedItem.seedGrowthInfo) {
+        if (!this.nextPlacedItem.plantInfo) {
             // remove everything in the container
             this.destroyAll(true)
         } else {
             // Update the texture
-            this.updateSeedGrowthInfoTexture()
+            this.updatePlantInfoTexture()
 
             // Update the bubble state
-            this.updateSeedGrowthInfoBubble()
+            this.updatePlantInfoBubble()
 
             // Update the timer
-            this.updateSeedGrowthInfoTimer()
+            this.updatePlantInfoTimer()
 
             // Update the fertilizer
-            this.updateSeedGrowthInfoFertilizer()
+            this.updatePlantInfoFertilizer()
         }
     }
 
@@ -488,9 +493,9 @@ export class PlacedItemObject extends ContainerLite {
             this.remove(this.mainVisual, true)
             this.mainVisual = undefined
         }
-        if (this.seedGrowthInfoSprite) {
-            this.remove(this.seedGrowthInfoSprite, true)
-            this.seedGrowthInfoSprite = undefined
+        if (this.plantInfoSprite) {
+            this.remove(this.plantInfoSprite, true)
+            this.plantInfoSprite = undefined
         }
         if (this.bubbleState) {
             this.bubbleState.removeAll(true)
@@ -513,82 +518,111 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
-    private updateSeedGrowthInfoTexture() {
+    private updatePlantInfoTexture() {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        if (!this.nextPlacedItem.seedGrowthInfo) {
-            throw new Error("Seed growth info not found")
+        if (!this.nextPlacedItem.plantInfo) {
+            throw new Error("Plant info info not found")
         }
         if (
-            this.currentPlacedItem?.seedGrowthInfo?.currentStage !==
-      this.nextPlacedItem.seedGrowthInfo.currentStage
+            this.currentPlacedItem?.plantInfo?.currentStage !==
+      this.nextPlacedItem.plantInfo.currentStage
         ) {
-            const crop = this.crops.find((crop) => {
-                if (!this.nextPlacedItem?.seedGrowthInfo) {
-                    throw new Error("Placed item not found")
+            let assetData: TextureConfig | undefined
+            switch (this.nextPlacedItem.plantInfo.plantType) {
+            case PlantType.Crop: {
+                const crop = this.crops.find((crop) => {
+                    if (!this.nextPlacedItem?.plantInfo) {
+                        throw new Error("Placed item not found")
+                    }
+                    return crop.id === this.nextPlacedItem.plantInfo.crop
+                })
+                if (!crop) {
+                    throw new Error("Crop not found")
                 }
-                return crop.id === this.nextPlacedItem.seedGrowthInfo.crop
-            })
-            if (!crop) {
-                throw new Error("Crop not found")
+                assetData = cropAssetMap[crop.displayId].map?.[this.nextPlacedItem.plantInfo.currentStage].textureConfig
+                break
             }
-
-            const data = cropAssetMap[crop.displayId]
-            if (!data) {
-                throw new Error("Crop data not found")
+            case PlantType.Flower: {
+                const flower = this.flowers.find(
+                    (flower) => flower.id === this.nextPlacedItem?.plantInfo?.flower
+                )
+                if (!flower) {
+                    throw new Error("Flower not found")
+                }
+                assetData = flowerAssetMap[flower.displayId].map?.[this.nextPlacedItem.plantInfo.currentStage].textureConfig
+                break
             }
-            const assetData =
-        data.map?.[this.nextPlacedItem.seedGrowthInfo.currentStage]
+        
+            default:
+                break
+            }
             if (!assetData) {
                 throw new Error("Asset data not found")
             }
             const {
-                textureConfig: { key, extraOffsets },
+                key, extraOffsets ,
             } = assetData
             const { x = 0, y = 0 } = { ...extraOffsets }
-            if (this.seedGrowthInfoSprite) {
+            if (this.plantInfoSprite) {
                 // destroy the previous sprite
-                this.remove(this.seedGrowthInfoSprite, true)
+                this.remove(this.plantInfoSprite, true)
             }
-            this.seedGrowthInfoSprite = this.scene.add
+            this.plantInfoSprite = this.scene.add
                 .sprite(x, y, key)
                 .setOrigin(0.5, 1)
                 .setDepth(this.depth + 20)
-            this.addLocal(this.seedGrowthInfoSprite)
+            this.addLocal(this.plantInfoSprite)
         }
     }
 
-    private updateSeedGrowthInfoBubble() {
+    private updatePlantInfoBubble() {
         if (!this) {
             throw new Error("Container not found")
         }
-        if (!this.nextPlacedItem?.seedGrowthInfo) {
-            throw new Error("Seed growth info not found")
+        if (!this.nextPlacedItem?.plantInfo) {
+            throw new Error("Plant info not found")
         }
         if (
-            this.nextPlacedItem.seedGrowthInfo.currentState !==
-      CropCurrentState.Normal
+            this.nextPlacedItem.plantInfo.currentState !==
+      PlantCurrentState.Normal
         ) {
-            // use the product icon
-            const crop = this.crops.find((crop) => {
-                if (!this.nextPlacedItem?.seedGrowthInfo) {
-                    throw new Error("Placed item not found")
+            let maxHarvestQuantity = 0
+            switch (this.nextPlacedItem.plantInfo.plantType) {
+            case PlantType.Crop: {
+                const crop = this.crops.find((crop) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
+                    }
+                    return crop.id === this.nextPlacedItem.plantInfo?.crop
+                })
+                if (!crop) {
+                    throw new Error("Crop not found")
                 }
-                return crop.id === this.nextPlacedItem.seedGrowthInfo.crop
-            })
-            if (!crop) {
-                throw new Error("Crop not found")
+                maxHarvestQuantity = crop.maxHarvestQuantity
+                break
             }
-            const product = this.products.find((product) => product.crop === crop.id)
-            if (!product) {
-                throw new Error("Product not found")
+            case PlantType.Flower: {
+                const flower = this.flowers.find(
+                    (flower) => {
+                        if (!this.nextPlacedItem) {
+                            throw new Error("Current placed item not found")
+                        }
+                        return flower.id === this.nextPlacedItem.plantInfo?.flower
+                    }
+                )
+                if (!flower) {
+                    throw new Error("Flower not found")
+                }
+                maxHarvestQuantity = flower.maxHarvestQuantity
+                break
             }
-
+            }
             // if the current state is different from the previous state
             if (
-                this.currentPlacedItem?.seedGrowthInfo?.currentState !==
-        this.nextPlacedItem.seedGrowthInfo.currentState
+                this.currentPlacedItem?.plantInfo?.currentState !==
+        this.nextPlacedItem.plantInfo.currentState
             ) {
                 if (!this.bubbleState) {
                     const background = this.scene.add.image(
@@ -613,11 +647,11 @@ export class PlacedItemObject extends ContainerLite {
                 // update the icon
                 // for state 0-3, use the icon in the crop asset map
                 if (
-                    this.nextPlacedItem.seedGrowthInfo.currentState !==
-          CropCurrentState.FullyMatured
+                    this.nextPlacedItem.plantInfo.currentState !==
+          PlantCurrentState.FullyMatured
                 ) {
                     const stateKey =
-            cropStateAssetMap[this.nextPlacedItem.seedGrowthInfo.currentState]
+            plantStateAssetMap[this.nextPlacedItem.plantInfo.currentState]
                 ?.textureConfig.key
                     if (!stateKey) {
                         throw new Error("State key not found")
@@ -636,8 +670,8 @@ export class PlacedItemObject extends ContainerLite {
                     }
                 } else {
                     const text = `${
-                        this.nextPlacedItem.seedGrowthInfo.harvestQuantityRemaining || 0
-                    }/${crop.maxHarvestQuantity || 0}`
+                        this.nextPlacedItem.plantInfo.harvestQuantityRemaining || 0
+                    }/${maxHarvestQuantity || 0}`
 
                     this.quantityText = new Text({
                         baseParams: {
@@ -663,20 +697,20 @@ export class PlacedItemObject extends ContainerLite {
                 }
             } else if (
             // for fully matured state, update the quantity text if the crop is thiefed
-                this.currentPlacedItem?.seedGrowthInfo?.currentState ===
-          CropCurrentState.FullyMatured &&
-        this.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining !==
-          this.nextPlacedItem.seedGrowthInfo.harvestQuantityRemaining
+                this.currentPlacedItem?.plantInfo?.currentState ===
+          PlantCurrentState.FullyMatured &&
+        this.currentPlacedItem?.plantInfo?.harvestQuantityRemaining !==
+          this.nextPlacedItem.plantInfo.harvestQuantityRemaining
             ) {
-                console.log(this.nextPlacedItem.seedGrowthInfo.harvestQuantityRemaining)
+                console.log(this.nextPlacedItem.plantInfo.harvestQuantityRemaining)
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
                 this.quantityText
                     .setText(
                         `${
-                            this.nextPlacedItem.seedGrowthInfo?.harvestQuantityRemaining || 0
-                        }/${crop.maxHarvestQuantity || 0}`
+                            this.nextPlacedItem.plantInfo?.harvestQuantityRemaining || 0
+                        }/${maxHarvestQuantity || 0}`
                     )
             }
         } else {
@@ -689,14 +723,14 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
-    private updateSeedGrowthInfoFertilizer() {
+    private updatePlantInfoFertilizer() {
         if (!this) {
             throw new Error("Container not found")
         }
-        if (!this.nextPlacedItem?.seedGrowthInfo) {
+        if (!this.nextPlacedItem?.plantInfo) {
             throw new Error("Seed growth info not found")
         }
-        if (this.nextPlacedItem.seedGrowthInfo.isFertilized) {
+        if (this.nextPlacedItem.plantInfo.isFertilized) {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
                 this.fertilizerParticle = this.scene.add
@@ -714,16 +748,16 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
-    private updateSeedGrowthInfoTimer() {
+    private updatePlantInfoTimer() {
         if (!this) {
             throw new Error("Container not found")
         }
-        if (!this.nextPlacedItem?.seedGrowthInfo) {
-            throw new Error("Seed growth info not found")
+        if (!this.nextPlacedItem?.plantInfo) {
+            throw new Error("Plant info not found")
         }
         if (
-            this.nextPlacedItem.seedGrowthInfo.currentState !=
-      CropCurrentState.FullyMatured
+            this.nextPlacedItem.plantInfo.currentState !=
+      PlantCurrentState.FullyMatured
         ) {
             if (!this.timer) {
                 this.timer = new Text({
@@ -750,19 +784,47 @@ export class PlacedItemObject extends ContainerLite {
                     syncScale: false,
                 })
             }
-            const crop = this.crops.find((crop) => {
-                if (!this.nextPlacedItem) {
-                    throw new Error("Current placed item not found")
+            let growthStageDuration = 0
+            let currentStageTimeElapsed = 0
+
+            switch (this.nextPlacedItem.plantInfo.plantType) {
+            case PlantType.Crop: {
+                const crop = this.crops.find((crop) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
+                    }
+                    return crop.id === this.nextPlacedItem.plantInfo?.crop
+                })
+                if (!crop) {
+                    throw new Error("Crop not found")
                 }
-                return crop.id === this.nextPlacedItem.seedGrowthInfo?.crop
-            })
-            if (crop?.growthStageDuration === undefined) {
-                throw new Error("Crop growth stage duration not found")
+                growthStageDuration = crop.growthStageDuration
+                currentStageTimeElapsed = this.nextPlacedItem.plantInfo.currentStageTimeElapsed
+                break
+            }   
+            case PlantType.Flower: {
+                const flower = this.flowers.find(
+                    (flower) => {
+                        if (!this.nextPlacedItem) {
+                            throw new Error("Current placed item not found")
+                        }
+                        return flower.id === this.nextPlacedItem.plantInfo?.flower
+                    }
+                )
+                if (!flower) {
+                    throw new Error("Flower not found")
+                }
+                growthStageDuration = flower.growthStageDuration
+                currentStageTimeElapsed = this.nextPlacedItem.plantInfo.currentStageTimeElapsed
+                break
             }
+            }
+            
             const formattedTime = formatTime(
                 Math.round(
-                    crop.growthStageDuration -
-              this.nextPlacedItem.seedGrowthInfo.currentStageTimeElapsed
+                    //         crop.growthStageDuration -
+                    //   this.nextPlacedItem.plantInfo.currentStageTimeElapsed
+                    growthStageDuration - currentStageTimeElapsed   
                 )
             )
             this.timer.setText(formattedTime)
@@ -1149,8 +1211,8 @@ export class PlacedItemObject extends ContainerLite {
                 })
             }
         }
-        if (this.seedGrowthInfoSprite) {
-            this.seedGrowthInfoSprite.setTint(tintColor)
+        if (this.plantInfoSprite) {
+            this.plantInfoSprite.setTint(tintColor)
         }
     }
 
@@ -1164,8 +1226,8 @@ export class PlacedItemObject extends ContainerLite {
                 })
             }
         }
-        if (this.seedGrowthInfoSprite) {
-            this.seedGrowthInfoSprite.clearTint()
+        if (this.plantInfoSprite) {
+            this.plantInfoSprite.clearTint()
         }
     }
 }

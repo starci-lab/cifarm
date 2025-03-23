@@ -10,7 +10,9 @@ export enum AnimalId {
 export enum BuildingId {
     Coop = "coop",
     Barn = "barn",
-    Home = "home"
+    Home = "home",
+    BeeHouse = "beeHouse",
+    PetHouse = "petHouse",
 }
 
 // Upgrade Enum
@@ -105,6 +107,8 @@ export enum ProductId {
     BananaQuality = "bananaQuality",
     Apple = "apple",
     AppleQuality = "appleQuality",
+    Daisy = "daisy",
+    DaisyQuality = "daisyQuality",
 }
 
 export enum SystemId {
@@ -164,6 +168,9 @@ export enum InventoryTypeId {
     Hammer = "hammer",
     AnimalMedicine = "animalMedicine",
     BugNet = "bugNet",
+    Daisy = "daisy",
+    DaisyQuality = "daisyQuality",
+    DaisySeed = "daisySeed",
 }
 
 export enum PlacedItemTypeId {
@@ -182,3 +189,9 @@ export enum PetId {
     Dog = "dog",
     Cat = "cat",
 }
+
+export enum FlowerId {
+    Daisy = "daisy",
+}
+
+

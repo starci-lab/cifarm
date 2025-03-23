@@ -3,6 +3,7 @@ import { TextureConfig } from "./types"
 import { cropAssetMap } from "./crops"
 import {
     CropId,
+    FlowerId,
     InventoryTypeId,
     ProductId,
     SupplyId,
@@ -11,6 +12,7 @@ import {
 import { toolAssetMap } from "./tools"
 import { productAssetMap } from "./products"
 import { supplyAssetMap } from "./supply"
+import { flowerAssetMap } from "./flowers"
 
 export interface InventoryAssetData {
   name: string;
@@ -260,6 +262,32 @@ export const inventoryTypeAssetMap: Record<
             useExisting: true,
         }
     },
+    [InventoryTypeId.Daisy]: {
+        name: "Daisy",
+        textureConfig: {
+            ...productAssetMap[ProductId.Daisy].textureConfig,
+            useExisting: true,
+        },
+    },
+    [InventoryTypeId.DaisyQuality]: {
+        name: "Daisy Quality",
+        textureConfig: {
+            ...productAssetMap[ProductId.DaisyQuality].textureConfig,
+            useExisting: true,
+        }
+    },
+    [InventoryTypeId.DaisySeed]: {
+        name: "Daisy Seed",
+        textureConfig: (() => {
+            if (!flowerAssetMap[FlowerId.Daisy].shop) {
+                throw new Error("Daisy Seed shop texture not found")
+            }
+            return {
+                ...flowerAssetMap[FlowerId.Daisy].shop.textureConfig,
+                useExisting: true,
+            }
+        })(),
+    },
     [InventoryTypeId.BasicFertilizer]: {
         name: "Basic Fertilizer",
         textureConfig: {
@@ -337,6 +365,7 @@ export const inventoryTypeAssetMap: Record<
             useExisting: true,
         },
     },
+
 }
 
 // Function to load inventory assets in Phaser scene

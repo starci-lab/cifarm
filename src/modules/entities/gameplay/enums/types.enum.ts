@@ -3,8 +3,8 @@ export enum ProductType {
     Animal = "animal",
     Crop = "crop",
     Fruit = "fruit",
+    Flower = "flower",
 }
-
 
 // Animal Type Enum
 export enum AnimalType {
@@ -66,4 +66,10 @@ export enum InventoryKind {
     Storage = "storage",
     Tool = "tool",
     Delivery = "delivery"
+}
+
+// Plant Type Enum
+export enum PlantType {
+    Crop = "crop",
+    Flower = "flower"
 }

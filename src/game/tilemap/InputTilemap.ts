@@ -3,34 +3,33 @@ import {
     BuyBuildingRequest,
     BuyFruitRequest,
     BuyTileRequest,
-    CureAnimalRequest,
-    FeedAnimalRequest,
     HarvestAnimalRequest,
-    HarvestCropRequest,
     HarvestFruitRequest,
-    HelpCureAnimalRequest,
-    HelpFeedAnimalRequest,
+    HarvestPlantRequest,
+    HelpUseAnimalMedicineRequest,
     HelpUseBugNetRequest,
     HelpUseFruitFertilizerRequest,
     HelpUseHerbicideRequest,
     HelpUsePesticideRequest,
-    HelpWaterCropRequest,
+    HelpUseWateringCanRequest,
     MoveRequest,
+    UseAnimalFeedRequest,
     PlantSeedRequest,
     SellRequest,
     ThiefAnimalRequest,
-    ThiefCropRequest,
     ThiefFruitRequest,
     UseBugNetRequest,
     UseFertilizerRequest,
     UseFruitFertilizerRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
-    WaterCropRequest,
+    UseWateringCanRequest,
+    UseAnimalMedicineRequest,
+    ThiefPlantRequest,
 } from "@/modules/apollo"
 import {
     AnimalCurrentState,
-    CropCurrentState,
+    PlantCurrentState,
     FruitCurrentState,
     InventorySchema,
     InventoryType,
@@ -375,7 +374,7 @@ export class InputTilemap extends ItemTilemap {
         switch (inventoryType.type) {
         case InventoryType.Seed: {
         // return if seed growth info is found
-            if (currentPlacedItem?.seedGrowthInfo) {
+            if (currentPlacedItem?.plantInfo) {
                 return
             }
 
@@ -437,8 +436,8 @@ export class InputTilemap extends ItemTilemap {
             case ToolId.WateringCan: {
             // return if seed growth info is not need water
                 if (
-                    currentPlacedItem.seedGrowthInfo?.currentState !==
-              CropCurrentState.NeedWater
+                    currentPlacedItem.plantInfo?.currentState !==
+              PlantCurrentState.NeedWater
                 ) {
                     return
                 }
@@ -447,40 +446,40 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.helpWaterCrop.energyConsume,
+                            actionEnergy: this.activities.helpUseWateringCan.energyConsume,
                         })
                     ) {
                         return
                     }
 
                     //emit the event to water the plant
-                    EventBus.once(EventName.HelpWaterCropResponsed, () => {
+                    EventBus.once(EventName.HelpUseWateringCanResponsed, () => {
                         data.pressBlocked = true
                     })
 
                     // emit the event to plant seed
-                    const eventMessage: HelpWaterCropRequest = {
+                    const eventMessage: HelpUseWateringCanRequest = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpWaterCrop, eventMessage)
+                    EventBus.emit(EventName.RequestHelpUseWateringCan, eventMessage)
                 } else {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.waterCrop.energyConsume,
+                            actionEnergy: this.activities.useWateringCan.energyConsume,
                         })
                     ) {
                         return
                     }
                     //emit the event to water the plant
-                    EventBus.once(EventName.WaterCropResponsed, () => {
+                    EventBus.once(EventName.UseWateringCanResponsed, () => {
                         data.pressBlocked = true
                     })
                     // emit the event to plant seed
-                    const eventMessage: WaterCropRequest = {
+                    const eventMessage: UseWateringCanRequest = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestWaterCrop, eventMessage)
+                    EventBus.emit(EventName.RequestUseWateringCan, eventMessage)
                     data.pressBlocked = true
                 }
                 break
@@ -488,8 +487,8 @@ export class InputTilemap extends ItemTilemap {
             case ToolId.Pesticide: {
             // return if seed growth info is not need water
                 if (
-                    currentPlacedItem.seedGrowthInfo?.currentState !==
-              CropCurrentState.IsInfested
+                    currentPlacedItem.plantInfo?.currentState !==
+              PlantCurrentState.IsInfested
                 ) {
                     return
                 }
@@ -539,8 +538,8 @@ export class InputTilemap extends ItemTilemap {
             case ToolId.Herbicide: {
             // return if seed growth info is not need water
                 if (
-                    currentPlacedItem.seedGrowthInfo?.currentState !==
-              CropCurrentState.IsWeedy
+                    currentPlacedItem.plantInfo?.currentState !==
+              PlantCurrentState.IsWeedy
                 ) {
                     return
                 }
@@ -591,8 +590,8 @@ export class InputTilemap extends ItemTilemap {
             case ToolId.Crate: {
             // return if seed growth info is not need water
                 if (
-                    currentPlacedItem.seedGrowthInfo?.currentState !==
-              CropCurrentState.FullyMatured
+                    currentPlacedItem.plantInfo?.currentState !==
+              PlantCurrentState.FullyMatured
                 ) {
                     return
                 }
@@ -601,7 +600,7 @@ export class InputTilemap extends ItemTilemap {
                     throw new Error("Placed item not found")
                 }
                 const crop = this.crops.find(
-                    (crop) => crop.id === placedItem.seedGrowthInfo?.crop
+                    (crop) => crop.id === placedItem.plantInfo?.crop
                 )
                 if (!crop) {
                     throw new Error("Crop not found")
@@ -630,39 +629,39 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.thiefCrop.energyConsume,
+                            actionEnergy: this.activities.thiefPlant.energyConsume,
                         })
                     ) {
                         return
                     }
                     // emit the event to water the plant
-                    EventBus.once(EventName.ThiefCropResponsed, async () => {
+                    EventBus.once(EventName.ThiefPlantResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
-                    const eventMessage: ThiefCropRequest = {
+                    const eventMessage: ThiefPlantRequest = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestThiefCrop, eventMessage)
+                    EventBus.emit(EventName.RequestThiefPlant, eventMessage)
                     data.pressBlocked = true
                 } else {
                     // emit the event to water the plant
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.harvestCrop.energyConsume,
+                            actionEnergy: this.activities.harvestPlant.energyConsume,
                         })
                     ) {
                         return
                     }
-                    EventBus.once(EventName.HarvestCropResponsed, async () => {
+                    EventBus.once(EventName.HarvestPlantResponsed, async () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
-                    const eventMessage: HarvestCropRequest = {
+                    const eventMessage: HarvestPlantRequest = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHarvestCrop, eventMessage)
+                    EventBus.emit(EventName.RequestHarvestPlant, eventMessage)
                     data.pressBlocked = true
                 }
                 break
@@ -690,11 +689,11 @@ export class InputTilemap extends ItemTilemap {
             switch (supply.displayId) {
             case SupplyId.BasicFertilizer: {
             // return if seed growth info is not need water
-                if (currentPlacedItem.seedGrowthInfo == null) {
+                if (currentPlacedItem.plantInfo == null) {
                     return
                 }
 
-                if (currentPlacedItem.seedGrowthInfo?.isFertilized) {
+                if (currentPlacedItem.plantInfo?.isFertilized) {
                     return
                 }
 
@@ -775,43 +774,27 @@ export class InputTilemap extends ItemTilemap {
                 }
                 // do nothing if neighbor user id is found
                 if (watchingUser) {
-                    if (
-                        !this.energyNotEnough({
-                            data,
-                            actionEnergy: this.activities.helpFeedAnimal.energyConsume,
-                        })
-                    ) {
-                        return
-                    }
-                    EventBus.once(EventName.HelpFeedAnimalResponsed, () => {
-                        data.pressBlocked = false
-                    })
-                    // emit the event to plant seed
-                    const eventMessage: HelpFeedAnimalRequest = {
-                        placedItemAnimalId: placedItemId,
-                        inventorySupplyId: selectedTool.id,
-                    }
-                    EventBus.emit(EventName.RequestHelpFeedAnimal, eventMessage)
-                    data.pressBlocked = true
+                    // do nothing in neighbor mode
+                    return
                 } else {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.feedAnimal.energyConsume,
+                            actionEnergy: this.activities.useAnimalFeed.energyConsume,
                         })
                     ) {
                         return
                     }
 
-                    EventBus.once(EventName.FeedAnimalResponsed, () => {
+                    EventBus.once(EventName.UseAnimalFeedResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
-                    const eventMessage: FeedAnimalRequest = {
+                    const eventMessage: UseAnimalFeedRequest = {
                         inventorySupplyId: selectedTool.id,
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestFeedAnimal, eventMessage)
+                    EventBus.emit(EventName.RequestUseAnimalFeed, eventMessage)
                     data.pressBlocked = true
                 }
 
@@ -836,39 +819,39 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.helpCureAnimal.energyConsume,
+                            actionEnergy: this.activities.helpUseAnimalMedicine.energyConsume,
                         })
                     ) {
                         return
                     }
 
-                    EventBus.once(EventName.HelpCureAnimalResponsed, () => {
+                    EventBus.once(EventName.HelpUseAnimalMedicineResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
-                    const eventMessage: HelpCureAnimalRequest = {
+                    const eventMessage: HelpUseAnimalMedicineRequest = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpCureAnimal, eventMessage)
+                    EventBus.emit(EventName.RequestHelpUseAnimalMedicine, eventMessage)
                     data.pressBlocked = true
                 } else {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.cureAnimal.energyConsume,
+                            actionEnergy: this.activities.helpUseAnimalMedicine.energyConsume,
                         })
                     ) {
                         return
                     }
 
-                    EventBus.once(EventName.CureAnimalResponsed, () => {
+                    EventBus.once(EventName.HelpUseAnimalMedicineResponsed, () => {
                         data.pressBlocked = false
                     })
                     // emit the event to plant seed
-                    const eventMessage: CureAnimalRequest = {
+                    const eventMessage: UseAnimalMedicineRequest = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestCureAnimal, eventMessage)
+                    EventBus.emit(EventName.RequestUseAnimalMedicine, eventMessage)
                     data.pressBlocked = true
                 }
 
@@ -1929,7 +1912,7 @@ export class InputTilemap extends ItemTilemap {
 
     private hasThievedCrop({ data }: HasThievedCropParams): boolean {
         if (
-            data.object.currentPlacedItem?.seedGrowthInfo?.thieves.includes(
+            data.object.currentPlacedItem?.plantInfo?.thieves.includes(
                 this.user.id
             )
         ) {
@@ -1980,19 +1963,19 @@ export class InputTilemap extends ItemTilemap {
         data,
     }: ThiefCropQuantityReactMinimumParams): boolean {
         const crop = this.crops.find(
-            (crop) => crop.id === data.object.currentPlacedItem?.seedGrowthInfo?.crop
+            (crop) => crop.id === data.object.currentPlacedItem?.plantInfo?.crop
         )
         if (!crop) {
             throw new Error("Crop not found")
         }
         if (
-            !data.object.currentPlacedItem?.seedGrowthInfo?.harvestQuantityRemaining
+            !data.object.currentPlacedItem?.plantInfo?.harvestQuantityRemaining
         ) {
             throw new Error("Harvest quantity remaining not found")
         }
         if (
             crop.minHarvestQuantity >=
-      data.object.currentPlacedItem.seedGrowthInfo.harvestQuantityRemaining
+      data.object.currentPlacedItem.plantInfo.harvestQuantityRemaining
         ) {
             this.scene.events.emit(EventName.CreateFlyItems, [
                 {

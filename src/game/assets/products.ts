@@ -196,6 +196,23 @@ export const productAssetMap: Record<
             isQuality: true,
         },
     },
+    [ProductId.Daisy]: {
+        name: "Daisy",
+        textureConfig: {
+            assetUrl: "products/daisy.png",
+            key: "daisy",
+            isQuality: false,
+        },
+    },
+    [ProductId.DaisyQuality]: {
+        name: "Daisy Quality",
+        textureConfig: {
+            assetUrl: "products/daisy.png",
+            key: "daisy",
+            useExisting: true,
+            isQuality: true,
+        },
+    },
 }
 
 // Function to load inventory assets in Phaser scene

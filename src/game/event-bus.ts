@@ -161,8 +161,11 @@ export enum EventName {
   RequestUpdateReferral = "request_update_referral",
   UpdateReferralResponsed = "update_referral_completed",
 
-  RequestBuySeeds = "request_buy_seeds",
-  BuySeedsResponsed = "buy_seeds_completed",
+  RequestBuyCropSeeds = "request_buy_crop_seeds",
+  BuyCropSeedsResponsed = "buy_crop_seeds_completed",
+
+  RequestBuyFlowerSeeds = "request_buy_flower_seeds",
+  BuyFlowerSeedsResponsed = "buy_flower_seeds_completed",
 
   RequestUsePesticide = "request_use_pesticide",
   UsePesticideResponsed = "use_pesticide_completed",
@@ -173,11 +176,11 @@ export enum EventName {
   RequestPlantSeed = "request_plant_seed",
   PlantSeedResponsed = "plant_seed_completed",
 
-  RequestWaterCrop = "request_water_crop",
-  WaterCropResponsed = "water_crop_completed",
+  RequestUseWateringCan = "request_use_watering_can",
+  UseWateringCanResponsed = "use_watering_can_completed",
 
-  RequestHarvestCrop = "request_harvest_crop",
-  HarvestCropResponsed = "harvest_crop_completed",
+  RequestHarvestPlant = "request_harvest_plant",
+  HarvestPlantResponsed = "harvest_plant_completed",
 
   RequestHarvestAnimal = "request_harvest_animal",
   HarvestAnimalResponsed = "harvest_animal_completed",
@@ -223,11 +226,11 @@ export enum EventName {
   RequestReturn = "request_return",
   ReturnResponsed = "return_completed",
 
-  RequestHelpWaterCrop = "request_help_water_crop",
-  HelpWaterCropResponsed = "help_water_crop_completed",
+  RequestHelpUseWateringCan = "request_help_use_watering_can",
+  HelpUseWateringCanResponsed = "help_use_watering_can_completed",
 
-  RequestHelpCureAnimal = "request_help_cure_animal",
-  HelpCureAnimalResponsed = "help_cure_animal_completed",
+  RequestHelpUseAnimalMedicine = "request_help_use_animal_medicine",
+  HelpUseAnimalMedicineResponsed = "help_use_animal_medicine_completed",
 
   RequestHelpUsePesticide = "request_help_pesticide",
   HelpUsePesticideResponsed = "help_pesticide_completed",
@@ -235,8 +238,8 @@ export enum EventName {
   RequestHelpUseHerbicide = "request_help_herbicide",
   HelpUseHerbicideResponsed = "help_herbicide_completed",
 
-  RequestThiefCrop = "request_thief_crop",
-  ThiefCropResponsed = "thief_crop_completed",
+  RequestThiefPlant = "request_thief_plant",
+  ThiefPlantResponsed = "thief_plant_completed",
 
   ThiefAnimalResponsed = "thief_animal_completed",
   RequestThiefAnimal = "request_thief_animal",
@@ -250,11 +253,11 @@ export enum EventName {
   RequestClaimDailyReward = "request_claim_daily_reward",
   ClaimDailyRewardResponsed = "claim_daily_reward_completed",
 
-  RequestFeedAnimal = "request_feed_animal",
-  FeedAnimalResponsed = "feed_animal_completed",
+  RequestUseAnimalFeed = "request_use_animal_feed",
+  UseAnimalFeedResponsed = "use_animal_feed_completed",
 
-  RequestCureAnimal = "request_cure_animal",
-  CureAnimalResponsed = "cure_animal_completed",
+  RequestUseAnimalMedicine = "request_use_animal_medicine",
+  UseAnimalMedicineResponsed = "use_animal_medicine_completed",
 
   RequestBuySupplies = "request_buy_supplies",
   BuySuppliesResponsed = "buy_supplies_completed",

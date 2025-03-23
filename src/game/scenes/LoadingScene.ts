@@ -14,7 +14,7 @@ import {
     loadToolsAssets,
     loadFruitAssets,
     loadAnimalStateAssets,
-    loadCropStateAssets,
+    loadPlantStateAssets,
     loadFruitStateAssets,
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
@@ -24,6 +24,7 @@ import { CacheKey, PlacedItemsData } from "../types"
 import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
 import { sleep } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
+import { loadFlowerAssets } from "../assets/flowers"
 
 export enum LoadingPhase {
   DataFetching = "dataFetching",
@@ -66,7 +67,8 @@ export class LoadingScene extends Scene {
                 supplies,
                 pets,
                 fruits,
-                fruitInfo
+                fruitInfo,
+                flowers,
             }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItemTypes, placedItemTypes)
@@ -84,6 +86,7 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.Pets, pets)
                 this.cache.obj.add(CacheKey.Fruits, fruits)
                 this.cache.obj.add(CacheKey.FruitInfo, fruitInfo)
+                this.cache.obj.add(CacheKey.Flowers, flowers)
                 //load the static data
                 this.handleFetchData("Loading static data...")
             }
@@ -218,13 +221,14 @@ export class LoadingScene extends Scene {
         loadCropAssets(this)
         loadAnimalAssets(this)
         loadBuildingAssets(this)
+        loadFlowerAssets(this)  
         loadSupplyAssets(this)
         loadProductAssets(this)
         loadTileAssets(this)
         loadPetAssets(this)
         loadToolsAssets(this)
         loadInventoryTypesAssets(this)
-        loadCropStateAssets(this)
+        loadPlantStateAssets(this)
         loadAnimalStateAssets(this)
         loadFruitStateAssets(this)
         loadFruitAssets(this)
