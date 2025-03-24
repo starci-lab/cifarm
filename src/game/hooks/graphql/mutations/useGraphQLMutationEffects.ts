@@ -12,17 +12,17 @@ import { useDeliverProductEffects } from "./useDeliverProductEffects"
 import { useUseAnimalFeedEffects } from "./useUseAnimalFeedEffects"
 import { useFollowEffects } from "./useFollowEffects"
 import { useHarvestPlantEffects } from "./useHarvestPlantEffects"
-import { useUseHerbicideEffects } from "./useHerbicideEffects"
+import { useUseHerbicideEffects } from "./useUseHerbicideEffects"
 import { useMoveEffects } from "./useMoveEffects"
 import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
-import { useUsePesticideEffects } from "./usePesticideEffects"
+import { useUsePesticideEffects } from "./useUsePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
 import { useRetainProductEffects } from "./useRetainProductEffects"
 import { useUnfollowEffects } from "./useUnfollowEffects"
 import { useUpdateFollowXEffects } from "./useUpdateFollowXEffects"
 import { useUpgradeBuildingEffects } from "./useUpgradeBuildingEffects"
 import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
-import { useWaterCropEffects } from "./useUseWateringCanEffects"
+import { useUseWateringCanEffects } from "./useUseWateringCanEffects"
 import { useBuyToolEffects } from "./useBuyToolEffects"
 import { useSellEffects } from "./useSellEffects"
 import { useBuyFruitEffects } from "./useBuyFruitEffects"
@@ -43,7 +43,7 @@ export const useGraphQLMutationEffects = () => {
     useBuyCropSeedsEffects()
     useBuyFlowerSeedsEffects()  
     usePlantSeedEffects()
-    useWaterCropEffects()
+    useUseWateringCanEffects()
     useUseHerbicideEffects()
     useUsePesticideEffects()
     useHarvestPlantEffects()

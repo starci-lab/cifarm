@@ -4,8 +4,9 @@ import { InventorySchema, UserSchema, PlacedItemSchema } from "@/modules/entitie
 import { CacheKey, PlacedItemsData } from "../types"
 import { SceneName } from "../scene"
 import { WithStatus, SchemaStatus } from "@/modules/common"
-import { mergeObjects } from "swr/_internal"
+import { mergeObjects } from "@/modules/common"
 import { DeepPartial } from "react-hook-form"
+import _ from "lodash"
 
 export class DataScene extends Scene {
     constructor() {
@@ -34,11 +35,18 @@ export class DataScene extends Scene {
                     }
                     case SchemaStatus.Updated: {
                         // update the placed item with partial data
-                        const foundIndex = placedItems.findIndex(item => item.id === placedItemWithStatus.id)
+                        const foundIndex = placedItems.findIndex(placedItem => placedItem.id === placedItemWithStatus.id)
                         if (foundIndex === -1) {
                             throw new Error("Placed item not found")
                         }
-                        placedItems[foundIndex] = mergeObjects(placedItems[foundIndex], placedItemWithStatus)
+                        console.log("Original")
+                        console.log(_.cloneDeep(placedItems[foundIndex]))
+                        console.log("Changes")
+                        console.log(_.cloneDeep(placedItemWithStatus))
+                        placedItems[foundIndex] = mergeObjects(
+                            _.cloneDeep(placedItems[foundIndex]),
+                            _.cloneDeep(placedItemWithStatus))
+                        console.log(placedItems[foundIndex])
                         break
                     }
                     case SchemaStatus.Deleted: {
@@ -88,7 +96,9 @@ export class DataScene extends Scene {
                     if (foundIndex === -1) {
                         throw new Error("Inventory not found")
                     }
-                    inventories[foundIndex] = mergeObjects(inventories[foundIndex], inventoryWithStatus)
+                    inventories[foundIndex] = mergeObjects(
+                        _.cloneDeep(inventories[foundIndex]),
+                        _.cloneDeep(inventoryWithStatus))
                     break
                 }
                 case SchemaStatus.Deleted:
@@ -115,7 +125,6 @@ export class DataScene extends Scene {
             this.cache.obj.add(CacheKey.User, mergedUser)
             // emit the event to update the user
             EventBus.emit(EventName.UserRefreshed)
-            console.log(mergedUser)
         })
 
         EventBus.on(EventName.PlacedItemsLoaded1, (placedItems: Array<PlacedItemSchema>) => {

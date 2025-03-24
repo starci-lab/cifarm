@@ -15,25 +15,6 @@ export enum ReceiverEventName {
   InventoriesSynced = "inventories_synced",
 }
 
-export enum EmitterEventName {
-  SyncPlacedItems = "sync_placed_items",
-  BuyCropSeeds = "buy_crop_seeds",
-  BuyFlowerSeeds = "buy_flower_seeds",
-  BuyTool = "buy_tool",
-  BuySupplies = "buy_supplies",
-  BuyAnimal = "buy_animal",
-  BuyFruit = "buy_fruit",
-  BuyTile = "buy_tile",
-  BuyBuilding = "buy_building",
-  PlantSeed = "plant_seed",
-  UseWateringCan = "use_watering_can",
-  UsePesticide = "use_pesticide", 
-  UseHerbicide = "use_herbicide",
-  HarvestPlant = "harvest_plant",
-  HarvestFruit = "harvest_fruit",
-  HarvestAnimal = "harvest_animal",
-}
-
 // sync placed items
 export interface SyncPlacedItemsMessage {
   placedItemIds: Array<string>;

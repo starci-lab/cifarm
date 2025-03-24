@@ -525,7 +525,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updatePlantInfoTexture() {
-        console.log(this.nextPlacedItem?.plantInfo)
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }

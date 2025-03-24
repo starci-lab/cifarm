@@ -3,7 +3,6 @@ import {
     BuyBuildingRequest,
     BuyFruitRequest,
     BuyTileRequest,
-    HarvestAnimalRequest,
     HarvestFruitRequest,
     HarvestPlantRequest,
     HelpUseAnimalMedicineRequest,
@@ -13,8 +12,6 @@ import {
     HelpUsePesticideRequest,
     HelpUseWateringCanRequest,
     MoveRequest,
-    UseAnimalFeedRequest,
-    PlantSeedRequest,
     SellRequest,
     ThiefAnimalRequest,
     ThiefFruitRequest,
@@ -78,6 +75,7 @@ import {
     PlacedItemObjectData,
 } from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
+import { HarvestAnimalMessage, PlantSeedMessage, UseAnimalFeedMessage } from "@/hooks/io/emitter"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -406,7 +404,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             // emit the event to plant seed
-            const eventMessage: PlantSeedRequest = {
+            const eventMessage: PlantSeedMessage = {
                 inventorySeedId: selectedTool.id,
                 placedItemTileId: placedItemId,
             }
@@ -724,7 +722,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
-                    const eventMessage: UseAnimalFeedRequest = {
+                    const eventMessage: UseAnimalFeedMessage = {
                         inventorySupplyId: selectedTool.id,
                         placedItemAnimalId: placedItemId,
                     }
@@ -789,28 +787,6 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     return
                 }
-                const placedItem = object.currentPlacedItem
-                if (!placedItem) {
-                    throw new Error("Placed item not found")
-                }
-                const placedItemType = this.placedItemTypes.find(
-                    (placedItemType) => placedItemType.id === placedItem.placedItemType
-                )
-                if (!placedItemType) {
-                    throw new Error("Placed item type not found")
-                }
-                const animal = this.animals.find(
-                    (animal) => animal.id === placedItemType.animal
-                )
-                if (!animal) {
-                    throw new Error("Animal not found")
-                }
-                const product = this.products.find(
-                    (product) => product.animal === animal.id
-                )
-                if (!product) {
-                    throw new Error("Product not found")
-                }
                 if (watchingUser) {
                     if (
                         !this.thiefAnimalQuantityReactMinimum({
@@ -852,7 +828,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
-                    const eventMessage: HarvestAnimalRequest = {
+                    const eventMessage: HarvestAnimalMessage = {
                         placedItemAnimalId: placedItemId,
                     }
                     EventBus.emit(EventName.RequestHarvestAnimal, eventMessage)
@@ -1650,29 +1626,6 @@ export class InputTilemap extends ItemTilemap {
               FruitCurrentState.FullyMatured
                 ) {
                     return
-                }
-                const placedItem = object.currentPlacedItem
-                if (!placedItem) {
-                    throw new Error("Placed item not found")
-                }
-                const placedItemType = this.placedItemTypes.find(
-                    (placedItemType) =>
-                        placedItem.placedItemType === placedItemType.id
-                )
-                if (!placedItemType) {
-                    throw new Error("Placed item type not found")
-                }
-                const fruit = this.fruits.find(
-                    (fruit) => fruit.id === placedItemType.fruit
-                )
-                if (!fruit) {
-                    throw new Error("Fruit not found")
-                }
-                const product = this.products.find(
-                    (product) => product.fruit === fruit.id
-                )
-                if (!product) {
-                    throw new Error("Product not found")
                 }
                 if (watchingUser) {
                     if (

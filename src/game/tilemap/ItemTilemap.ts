@@ -570,7 +570,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 if (data.success) {
                     const { quantity, productId } = data.data as HarvestAnimalData
                     const product = this.products.find(
-                        (product) => product.displayId === productId
+                        (product) => product.id === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")

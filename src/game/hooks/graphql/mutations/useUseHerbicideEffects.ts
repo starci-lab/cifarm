@@ -1,23 +1,22 @@
 import { GAMEPLAY_IO } from "@/app/constants"
-import { useGameplayIo, EmitterEventName, HarvestAnimalMessage } from "@/hooks"
+import { EmitterEventName, useGameplayIo, UseHerbicideMessage } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EventBus, EventName } from "../../../event-bus"
 
-export const useHarvestAnimalEffects = () => {
+export const useUseHerbicideEffects = () => {
     const { socket } =
                useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)  
-    
     useEffect(() => {
-        EventBus.on(EventName.RequestHarvestAnimal, async (message: HarvestAnimalMessage) => {
+        EventBus.on(EventName.RequestUseHerbicide, async (message: UseHerbicideMessage) => {
             if (!socket) {
                 return
             }
-            socket.emit(EmitterEventName.HarvestAnimal, message)
+            socket.emit(EmitterEventName.UseHerbicide, message) 
         })
-        
+    
         return () => {
-            EventBus.removeListener(EventName.RequestHarvestAnimal)
+            EventBus.removeListener(EventName.RequestUseHerbicide)
         }
     }, [socket])
 }

@@ -12,7 +12,6 @@ export const useHarvestPlantEffects = () => {
             if (!socket) {
                 return
             }
-            console.log("useHarvestPlantEffects")
             socket.emit(EmitterEventName.HarvestPlant, message) 
         })
     
