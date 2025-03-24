@@ -1,4 +1,4 @@
-import { useHelpUseHerbicideEffects } from "./helpUseHerbicideEffects"
+import { useHelpUseHerbicideEffects } from "./useHelpUseHerbicideEffects"
 import { useThiefPlantEffects } from "./useThiefPlantEffects"
 import { useBuyAnimalEffects } from "./useBuyAnimalEffects"
 import { useBuyCropSeedsEffects } from "./useBuyCropSeedsEffects"
@@ -30,14 +30,14 @@ import { useHarvestAnimalEffects } from "./useHarvestAnimalEffects"
 import { useHarvestFruitEffects } from "./useHarvestFruitEffects"
 import { useHelpUseBugNetEffects } from "./useHelpUseBugNetEffects"
 import { useHelpUseFruitFertilizerEffects } from "./useHelpUseFruitFertilizerEffects"
-import { useThiefFruitEffects } from "./useThiefFruitEffects"
 import { useUseBugNetEffects } from "./useUseBugNetEffects"
 import { useUseFruitFertilizerEffects } from "./useUseFruitFertilizerEffects"
 import { useHelpUsePesticideEffects } from "./useHelpUsePesticideEffects"
-import { useHelpUseWateringCanEffects } from "./useHelpUseWateringCanEffects"
-import { useThiefAnimalEffects } from "./useThiefAnimalEffects"
+import { useHelpUseWateringCanEffects } from "./useHelpUseWateringCanEffects"   
 import { useHelpUseAnimalMedicineEffects } from "./useHelpUseAnimalMedicineEffects"
 import { useBuyFlowerSeedsEffects } from "./useBuyFlowerSeedsEffects"
+import { useThiefFruitEffects } from "./useThiefFruitEffects"
+import { useThiefAnimalEffects } from "./useThiefAnimalEffects"
 
 export const useGraphQLMutationEffects = () => {
     useBuyCropSeedsEffects()
@@ -57,7 +57,6 @@ export const useGraphQLMutationEffects = () => {
     useHelpUseHerbicideEffects()
     useHelpUsePesticideEffects()
     useHelpUseWateringCanEffects()
-    useThiefPlantEffects()
     useBuyAnimalEffects()
     useClaimDailyRewardEffects()
     useBuySuppliesEffects()
@@ -72,12 +71,13 @@ export const useGraphQLMutationEffects = () => {
     useBuyFruitEffects()
     useHarvestAnimalEffects()
     useHarvestFruitEffects()
-    useThiefFruitEffects()
     useUseBugNetEffects()
     useHelpUseBugNetEffects()
     useUseFruitFertilizerEffects()
     useHelpUseFruitFertilizerEffects()
-    useThiefAnimalEffects()
     useUseAnimalMedicineEffects()
     useHelpUseAnimalMedicineEffects()
+    useThiefFruitEffects()
+    useThiefPlantEffects()
+    useThiefAnimalEffects()
 }

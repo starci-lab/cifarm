@@ -17,7 +17,6 @@ import {
     ThiefFruitRequest,
     UseBugNetRequest,
     UseFertilizerRequest,
-    UseFruitFertilizerRequest,
     UseHerbicideRequest,
     UsePesticideRequest,
     UseWateringCanRequest,
@@ -39,6 +38,8 @@ import {
     ToolId,
     ToolSchema,
     UserSchema,
+    AbstractPlantSchema,
+    PlantType,
 } from "@/modules/entities"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
@@ -75,7 +76,12 @@ import {
     PlacedItemObjectData,
 } from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
-import { HarvestAnimalMessage, PlantSeedMessage, UseAnimalFeedMessage } from "@/hooks/io/emitter"
+import {
+    HarvestAnimalMessage,
+    PlantSeedMessage,
+    UseAnimalFeedMessage,
+    UseFruitFertilizerMessage,
+} from "@/hooks"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -427,7 +433,6 @@ export class InputTilemap extends ItemTilemap {
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.WateringCan: {
-            // return if seed growth info is not need water
                 if (
                     currentPlacedItem.plantInfo?.currentState !==
               PlantCurrentState.NeedWater
@@ -439,7 +444,8 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.helpUseWateringCan.energyConsume,
+                            actionEnergy:
+                    this.activities.helpUseWateringCan.energyConsume,
                         })
                     ) {
                         return
@@ -561,14 +567,14 @@ export class InputTilemap extends ItemTilemap {
                 }
                 if (watchingUser) {
                     if (
-                        !this.thiefCropQuantityReactMinimum({
+                        !this.thiefPlantQuantityReactMinimum({
                             data,
                         })
                     ) {
                         return
                     }
                     if (
-                        !this.hasThievedCrop({
+                        !this.hasThievedPlant({
                             data,
                         })
                     ) {
@@ -750,7 +756,8 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.helpUseAnimalMedicine.energyConsume,
+                            actionEnergy:
+                    this.activities.helpUseAnimalMedicine.energyConsume,
                         })
                     ) {
                         return
@@ -760,12 +767,16 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpUseAnimalMedicineRequest = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpUseAnimalMedicine, eventMessage)
+                    EventBus.emit(
+                        EventName.RequestHelpUseAnimalMedicine,
+                        eventMessage
+                    )
                 } else {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.helpUseAnimalMedicine.energyConsume,
+                            actionEnergy:
+                    this.activities.helpUseAnimalMedicine.energyConsume,
                         })
                     ) {
                         return
@@ -805,8 +816,7 @@ export class InputTilemap extends ItemTilemap {
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy:
-                    this.activities.thiefAnimal.energyConsume,
+                            actionEnergy: this.activities.thiefAnimal.energyConsume,
                         })
                     ) {
                         return
@@ -1534,7 +1544,7 @@ export class InputTilemap extends ItemTilemap {
         }
 
         const watchingUser = this.scene.cache.obj.get(
-            CacheKey.WatchingUser   
+            CacheKey.WatchingUser
         ) as UserSchema
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
@@ -1582,7 +1592,7 @@ export class InputTilemap extends ItemTilemap {
             // return if seed growth info is not need water
                 if (
                     currentPlacedItem.fruitInfo?.currentState !==
-              FruitCurrentState.HasCaterpillar
+              FruitCurrentState.IsBuggy
                 ) {
                     return
                 }
@@ -1721,7 +1731,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
-                    const eventMessage: UseFruitFertilizerRequest = {
+                    const eventMessage: UseFruitFertilizerMessage = {
                         placedItemFruitId: placedItemId,
                         inventorySupplyId: selectedTool.id,
                     }
@@ -1751,11 +1761,9 @@ export class InputTilemap extends ItemTilemap {
     // remove the temporary object from the temporary layer
     }
 
-    private hasThievedCrop({ data }: HasThievedCropParams): boolean {
+    private hasThievedPlant({ data }: HasThievedPlantParams): boolean {
         if (
-            data.object.currentPlacedItem?.plantInfo?.thieves.includes(
-                this.user.id
-            )
+            data.object.currentPlacedItem?.plantInfo?.thieves.includes(this.user.id)
         ) {
             this.scene.events.emit(EventName.CreateFlyItems, [
                 {
@@ -1800,23 +1808,31 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private thiefCropQuantityReactMinimum({
+    private thiefPlantQuantityReactMinimum({
         data,
-    }: ThiefCropQuantityReactMinimumParams): boolean {
-        const crop = this.crops.find(
-            (crop) => crop.id === data.object.currentPlacedItem?.plantInfo?.crop
-        )
-        if (!crop) {
-            throw new Error("Crop not found")
+    }: ThiefPlantQuantityReactMinimumParams): boolean {
+        let plant: AbstractPlantSchema | undefined
+        switch (data.object.currentPlacedItem?.plantInfo?.plantType) {
+        case PlantType.Crop: {
+            plant = this.crops.find(
+                (crop) => crop.id === data.object.currentPlacedItem?.plantInfo?.crop
+            )
+            break
+        }
+        case PlantType.Flower: {
+            plant = this.flowers.find(
+                (flower) =>
+                    flower.id === data.object.currentPlacedItem?.plantInfo?.flower
+            )
+            break
+        }
+        }
+        if (!plant) {
+            throw new Error("Plant not found")
         }
         if (
-            !data.object.currentPlacedItem?.plantInfo?.harvestQuantityRemaining
-        ) {
-            throw new Error("Harvest quantity remaining not found")
-        }
-        if (
-            crop.minHarvestQuantity >=
-      data.object.currentPlacedItem.plantInfo.harvestQuantityRemaining
+            plant.minHarvestQuantity >=
+      (data.object?.currentPlacedItem?.plantInfo?.harvestQuantityRemaining || 0)
         ) {
             this.scene.events.emit(EventName.CreateFlyItems, [
                 {
@@ -1832,15 +1848,15 @@ export class InputTilemap extends ItemTilemap {
     private thiefAnimalQuantityReactMinimum({
         data,
     }: ThiefAnimalQuantityReactMinimumParams): boolean {
-        const placedItemType = this.placedItemTypes.find(   
-            (placedItemType) => placedItemType.id === data.object.currentPlacedItem?.placedItemType
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) =>
+                placedItemType.id === data.object.currentPlacedItem?.placedItemType
         )
         if (!placedItemType) {
             throw new Error("Placed item type not found")
         }
         const animal = this.animals.find(
-            (animal) =>
-                animal.id === placedItemType.animal
+            (animal) => animal.id === placedItemType.animal
         )
         if (!animal) {
             throw new Error("Animal not found")
@@ -1867,7 +1883,8 @@ export class InputTilemap extends ItemTilemap {
         data,
     }: ThiefFruitQuantityReactMinimumParams): boolean {
         const placedItemType = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.id === data.object.currentPlacedItem?.placedItemType
+            (placedItemType) =>
+                placedItemType.id === data.object.currentPlacedItem?.placedItemType
         )
         if (!placedItemType) {
             throw new Error("Placed item type not found")
@@ -1928,9 +1945,10 @@ export class InputTilemap extends ItemTilemap {
 export interface PlacedItemTintParams {
   placedItem: PlacedItemSchema;
 }
-export interface HasThievedCropParams {
+export interface HasThievedPlantParams {
   data: PlacedItemObjectData;
 }
+
 export interface HasThievedAnimalProductParams {
   data: PlacedItemObjectData;
 }
@@ -1939,7 +1957,7 @@ export interface HasThievedFruitParams {
   data: PlacedItemObjectData;
 }
 
-export interface ThiefCropQuantityReactMinimumParams {
+export interface ThiefPlantQuantityReactMinimumParams {
   data: PlacedItemObjectData;
 }
 

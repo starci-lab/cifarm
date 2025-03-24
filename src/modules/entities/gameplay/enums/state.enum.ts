@@ -19,6 +19,6 @@ export enum AnimalCurrentState {
 export enum FruitCurrentState {
     Normal = "normal",
     NeedFertilizer = "needFertilizer",
-    HasCaterpillar = "hasCaterpillar",
+    IsBuggy = "isBuggy",
     FullyMatured = "fullyMatured",
 }

@@ -9,7 +9,7 @@ import {
     HarvestFruitData,
     HarvestPlantData,
     SellData,
-    ThiefAnimalProductData,
+    ThiefAnimalData,
     ThiefFruitData,
     ThiefPlantData,
 } from "@/hooks"
@@ -489,7 +489,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 if (data.success) {
                     const { quantity, productId } = data.data as ThiefPlantData
                     const product = this.products.find(
-                        (product) => product.displayId === productId
+                        (product) => product.id === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")
@@ -634,11 +634,11 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
-            case ActionName.ThiefAnimalProduct:
+            case ActionName.ThiefAnimal:
                 if (data.success) {
-                    const { quantity, productId } = data.data as ThiefAnimalProductData
+                    const { quantity, productId } = data.data as ThiefAnimalData
                     const product = this.products.find(
-                        (product) => product.displayId === productId
+                        (product) => product.id === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")
@@ -666,7 +666,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 } else {
                     this.scene.events.emit(EventName.CreateFlyItem, {
                         position,
-                        text: "Failed to " + ActionName.ThiefAnimalProduct,
+                        text: "Failed to " + ActionName.ThiefAnimal,
                     })
                 }
                 break
@@ -741,7 +741,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 if (data.success) {
                     const { quantity, productId } = data.data as ThiefFruitData
                     const product = this.products.find(
-                        (product) => product.displayId === productId
+                        (product) => product.id === productId
                     )
                     if (!product) {
                         throw new Error("Product not found")
@@ -793,6 +793,28 @@ export abstract class ItemTilemap extends GroundTilemap {
                     })
                 }
                 break
+            case ActionName.HelpUseWateringCan: {
+                if (data.success) {
+                    this.scene.events.emit(EventName.CreateFlyItems, [
+                        {
+                            assetKey: ENERGY_KEY,
+                            position,
+                            quantity: -this.activities.helpUseWateringCan.energyConsume,
+                        },
+                        {
+                            assetKey: EXPERIENCE_KEY,
+                            position,
+                            quantity: this.activities.helpUseWateringCan.experiencesGain,
+                        },
+                    ])
+                } else {
+                    this.scene.events.emit(EventName.CreateFlyItem, {
+                        position,
+                        text: "Failed to " + ActionName.HelpUseWateringCan,
+                    })
+                }
+                break
+            }
             case ActionName.HelpUseFruitFertilizer:
                 if (data.success) {
                     this.scene.events.emit(EventName.CreateFlyItems, [

@@ -1,36 +1,22 @@
-import { GRAPHQL_MUTATION_HELP_USE_PESTICIDE_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationHelpUsePesticideSwrMutation } from "@/hooks"
-import { HelpUsePesticideRequest } from "@/modules/apollo"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { useGameplayIo, HelpUsePesticideMessage, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
+import { EventBus, EventName } from "../../../event-bus"
 
 export const useHelpUsePesticideEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationHelpUsePesticideSwrMutation>
-      >(GRAPHQL_MUTATION_HELP_USE_PESTICIDE_SWR_MUTATION)
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestHelpUsePesticide, async (message: HelpUsePesticideRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+        EventBus.on(EventName.RequestHelpUsePesticide, async (message: HelpUsePesticideMessage) => {
+            if (!socket) {
+                return
             }
-            // return the user to the phaser game
-            EventBus.emit(EventName.HelpUsePesticideResponsed, completedMessage)
-        })
+            socket.emit(EmitterEventName.HelpUsePesticide, message)
+        })  
     
         return () => {
             EventBus.removeListener(EventName.RequestHelpUsePesticide)
         }
-    }, [swrMutation])
+    }, [socket])
 }

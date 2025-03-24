@@ -1,35 +1,23 @@
-import { GRAPHQL_MUTATION_THIEF_PLANT_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationThiefPlantSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { useGameplayIo, ThiefPlantMessage, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
-import { ThiefPlantRequest } from "@/modules/apollo"
+import { EventBus, EventName } from "../../../event-bus"
 
 export const useThiefPlantEffects = () => {
     //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationThiefPlantSwrMutation>
-      >(GRAPHQL_MUTATION_THIEF_PLANT_SWR_MUTATION)
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestThiefPlant, async (message: ThiefPlantRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+        EventBus.on(EventName.RequestThiefPlant, async (message: ThiefPlantMessage) => {
+            if (!socket) {
+                return
             }
-            EventBus.emit(EventName.ThiefPlantResponsed, completedMessage)
+            socket.emit(EmitterEventName.ThiefPlant, message)
         })
     
         return () => {
             EventBus.removeListener(EventName.RequestThiefPlant)
         }
-    }, [swrMutation])
+    }, [socket])
 }

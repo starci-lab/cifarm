@@ -1,35 +1,24 @@
-import { GRAPHQL_MUTATION_USE_FRUIT_FERTILIZER_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationUseFruitFertilizerSwrMutation } from "@/hooks"
-import { UseFruitFertilizerRequest } from "@/modules/apollo"
+import { useGameplayIo, UseFruitFertilizerMessage } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
+import { EventBus, EventName } from "../../../event-bus"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { EmitterEventName } from "@/hooks/io/emitter"
+
 
 export const useUseFruitFertilizerEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationUseFruitFertilizerSwrMutation>
-      >(GRAPHQL_MUTATION_USE_FRUIT_FERTILIZER_SWR_MUTATION)
-    
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+
     useEffect(() => {
-        EventBus.on(EventName.RequestUseFruitFertilizer, async (message: UseFruitFertilizerRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+        EventBus.on(EventName.RequestUseFruitFertilizer, async (message: UseFruitFertilizerMessage) => {
+            if (!socket) {
+                return
             }
-            EventBus.emit(EventName.UseFruitFertilizerResponsed, completedMessage)
+            socket.emit(EmitterEventName.UseFruitFertilizer, message)
         })
     
         return () => {
             EventBus.removeListener(EventName.RequestUseFruitFertilizer)
         }
-    }, [swrMutation])
+    }, [socket])
 }

@@ -61,7 +61,7 @@ export interface AnimalInfo {
 export interface FruitRandomness {
   thief3: number
   thief2: number
-  hasCaterpillar: number
+  isBuggy: number
 }
 
 export interface FruitInfo {

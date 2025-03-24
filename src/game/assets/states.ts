@@ -98,7 +98,7 @@ export const fruitStateAssetMap: Partial<
             scaleWidth: 0.8,
         },
     },
-    [FruitCurrentState.HasCaterpillar]: {
+    [FruitCurrentState.IsBuggy]: {
         textureConfig: {
             key: "caterpillar-infested",
             assetUrl: "states/caterpillar-infested.png",

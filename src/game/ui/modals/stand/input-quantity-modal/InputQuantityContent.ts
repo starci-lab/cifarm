@@ -6,7 +6,7 @@ import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Background, ModalBackground, NumberInput } from "../../../elements"
-import { DeliverMoreProductRequest, DeliverProductRequest } from "@/modules/apollo"
+import { DeliverMoreProductMessage, DeliverProductMessage } from "@/hooks"
 
 export class InputQuantityContent extends BaseSizer {
     private background: ModalBackground
@@ -49,32 +49,27 @@ export class InputQuantityContent extends BaseSizer {
                         }
                         const { index, isMore } = this.scene.cache.obj.get(CacheKey.DeliveryData) as DeliveryData
                         if (!isMore) {
-                            const eventName: DeliverProductRequest = {
+                            const eventName: DeliverProductMessage = {
                                 quantity: this.quantity,
                                 inventoryId: this.inventory.id,
                                 index
                             }
-
-                            EventBus.once(EventName.DeliverProductResponsed, () => {
-                                const eventMessage: CloseModalMessage = { 
-                                    modalName: ModalName.InputQuantity
-                                }
-                                EventBus.emit(EventName.CloseModal, eventMessage)
-                            })
                             EventBus.emit(EventName.RequestDeliverProduct, eventName)
+                            const eventMessage: CloseModalMessage = { 
+                                modalName: ModalName.InputQuantity
+                            }
+                            EventBus.emit(EventName.CloseModal, eventMessage)
                         } else {
-                            const eventName: DeliverMoreProductRequest = {
+                            const eventName: DeliverMoreProductMessage = {
                                 quantity: this.quantity,
                                 inventoryId: this.inventory.id,
                                 index,
                             }
-                            EventBus.once(EventName.DeliverMoreProductResponsed, () => {
-                                const eventMessage: CloseModalMessage = { 
-                                    modalName: ModalName.InputQuantity
-                                }
-                                EventBus.emit(EventName.CloseModal, eventMessage)
-                            })
                             EventBus.emit(EventName.RequestDeliverMoreProduct, eventName)
+                            const eventMessage: CloseModalMessage = { 
+                                modalName: ModalName.InputQuantity
+                            }
+                            EventBus.emit(EventName.CloseModal, eventMessage)
                         }
                     },
                     text: "Confirm",

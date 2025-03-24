@@ -503,7 +503,7 @@ export class ShopContent extends BaseSizer {
                     disabled: this.user.golds < price,
                     unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
-                        this.onBuySeedPress(displayId, pointer)
+                        this.onBuyCropSeedPress(displayId, pointer)
                     },
                     prepareCloseShop: true,
                     price,
@@ -909,7 +909,7 @@ export class ShopContent extends BaseSizer {
         return container
     }
 
-    private onBuySeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
+    private onBuyCropSeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuyCropSeedsResponsed, () => {
         })
         const eventMessage: BuyCropSeedsRequest = {

@@ -1,36 +1,22 @@
-import { GRAPHQL_MUTATION_RETAIN_PRODUCT_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationRetainProductSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { EmitterEventName, RetainProductMessage, useGameplayIo } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
-import { RetainProductRequest } from "@/modules/apollo"
+import { EventBus, EventName } from "../../../event-bus"
 
 export const useRetainProductEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationRetainProductSwrMutation>
-      >(GRAPHQL_MUTATION_RETAIN_PRODUCT_SWR_MUTATION)
-    
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+
     useEffect(() => {
-        EventBus.on(EventName.RequestRetainProduct, async (message: RetainProductRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
-            }
-            // return the user to the phaser game
-            EventBus.emit(EventName.RetainProductResponsed, completedMessage)
+        EventBus.on(EventName.RequestRetainProduct, async (message: RetainProductMessage) => {
+            if (!socket) {
+                return
+            }   
+            socket.emit(EmitterEventName.RetainProduct, message)
         })
-    
+
         return () => {
             EventBus.removeListener(EventName.RequestRetainProduct)
         }
-    }, [swrMutation])
+    }, [socket])
 }

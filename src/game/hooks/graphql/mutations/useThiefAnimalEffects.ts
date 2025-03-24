@@ -1,35 +1,23 @@
-import { GRAPHQL_MUTATION_THIEF_ANIMAL_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationThiefAnimalSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { useGameplayIo, ThiefAnimalMessage, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
-import { ThiefAnimalRequest } from "@/modules/apollo"
+import { EventBus, EventName } from "../../../event-bus"
 
 export const useThiefAnimalEffects = () => {
     //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationThiefAnimalSwrMutation>
-      >(GRAPHQL_MUTATION_THIEF_ANIMAL_SWR_MUTATION)
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestThiefAnimal, async (message: ThiefAnimalRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+        EventBus.on(EventName.RequestThiefAnimal, async (message: ThiefAnimalMessage) => {
+            if (!socket) {
+                return
             }
-            EventBus.emit(EventName.ThiefAnimalResponsed, completedMessage)
+            socket.emit(EmitterEventName.ThiefAnimal, message)
         })
     
         return () => {
             EventBus.removeListener(EventName.RequestThiefAnimal)
         }
-    }, [swrMutation])
+    }, [socket])
 }

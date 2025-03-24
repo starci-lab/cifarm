@@ -29,6 +29,17 @@ export enum EmitterEventName {
   HarvestAnimal = "harvest_animal",
   UseAnimalFeed = "use_animal_feed",
   UseAnimalMedicine = "use_animal_medicine",
+  UseFruitFertilizer = "use_fruit_fertilizer",
+  UseBugNet = "use_bug_net",
+  HelpUseHerbicide = "help_use_herbicide",
+  HelpUsePesticide = "help_use_pesticide",
+  HelpUseWateringCan = "help_use_watering_can",
+  ThiefFruit = "thief_fruit",
+  ThiefPlant = "thief_plant",
+  ThiefAnimal = "thief_animal",
+  DeliverProduct = "deliver_product",
+  DeliverMoreProduct = "deliver_more_product",
+  RetainProduct = "retain_product"
 }
 
 export interface BuySuppliesMessage {
@@ -102,5 +113,58 @@ export interface UseAnimalMedicineMessage {
 
 export interface HarvestAnimalMessage {
   placedItemAnimalId: string;
+}
+
+export interface UseFruitFertilizerMessage {
+  placedItemFruitId: string;
+  inventorySupplyId: string;
+}
+
+export interface UseBugNetMessage {
+  placedItemFruitId: string;
+}
+
+export interface HarvestFruitMessage {
+  placedItemFruitId: string;
+}
+
+export interface HelpUseHerbicideMessage {
+  placedItemTileId: string;
+}
+
+export interface HelpUsePesticideMessage {
+  placedItemTileId: string;
+}   
+
+export interface HelpUseWateringCanMessage {
+  placedItemTileId: string;
+}
+
+export interface ThiefFruitMessage {
+  placedItemFruitId: string;
+}
+
+export interface ThiefPlantMessage {
+  placedItemPlantId: string;
+}
+
+export interface ThiefAnimalMessage {
+  placedItemAnimalId: string;
+}
+
+export interface DeliverProductMessage {
+    index: number;
+    inventoryId: string;
+    quantity: number;
+}
+
+export interface DeliverMoreProductMessage {
+    index: number;
+    inventoryId: string;
+    quantity: number;
+}
+
+export interface RetainProductMessage {
+    index: number;
 }
 

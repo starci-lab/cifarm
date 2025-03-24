@@ -317,7 +317,7 @@ const query = gql`
       randomness {
         thief3
         thief2
-        hasCaterpillar
+        isBuggy
       }
       nextGrowthStageAfterHarvest
       growthStages

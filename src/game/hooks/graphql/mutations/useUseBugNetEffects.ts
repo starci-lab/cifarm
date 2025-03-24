@@ -1,35 +1,23 @@
-import { GRAPHQL_MUTATION_USE_BUG_NET_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationUseBugNetSwrMutation } from "@/hooks"
-import { UseBugNetRequest } from "@/modules/apollo"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { useGameplayIo, UseBugNetMessage, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
+import { EventBus, EventName } from "../../../event-bus"
 
 export const useUseBugNetEffects = () => {
     //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationUseBugNetSwrMutation>
-      >(GRAPHQL_MUTATION_USE_BUG_NET_SWR_MUTATION)
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     
     useEffect(() => {
-        EventBus.on(EventName.RequestUseBugNet, async (message: UseBugNetRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+        EventBus.on(EventName.RequestUseBugNet, async (message: UseBugNetMessage) => {
+            if (!socket) {
+                return
             }
-            EventBus.emit(EventName.UseBugNetResponsed, completedMessage)
+            socket.emit(EmitterEventName.UseBugNet, message)
         })
     
         return () => {
             EventBus.removeListener(EventName.RequestUseBugNet)
         }
-    }, [swrMutation])
+    }, [socket])
 }
