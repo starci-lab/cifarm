@@ -13,6 +13,10 @@ export enum ReceiverEventName {
   PlacedItemsSynced = "placed_items_synced",
   ActionEmitted = "action_emitted",
   InventoriesSynced = "inventories_synced",
+  CropSeedsBought = "crop_seeds_bought",
+  FlowerSeedsBought = "flower_seeds_bought",
+  SuppliesBought = "supplies_bought",
+  ToolBought = "tool_bought",
 }
 
 // sync placed items

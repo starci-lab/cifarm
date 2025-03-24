@@ -10,13 +10,6 @@ import {
     ToolId,
 } from "@/modules/entities"
 
-export enum ReceiverEventName {
-  CropSeedsBought = "crop_seeds_bought",
-  FlowerSeedsBought = "flower_seeds_bought",
-  SuppliesBought = "supplies_bought",
-  ToolBought = "tool_bought",
-}
-
 export enum EmitterEventName {
   SyncPlacedItems = "sync_placed_items",
   BuyCropSeeds = "buy_crop_seeds",
