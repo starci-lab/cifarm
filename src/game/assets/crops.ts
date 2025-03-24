@@ -25,7 +25,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/turnip/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -60,
                     },
                 },
             },
@@ -35,7 +35,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/turnip/2.png",
                     extraOffsets: {
                         x: 0,
-                        y: -45,
+                        y: -90,
                     },
                 },
             },
@@ -44,28 +44,28 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-turnip-3",
                     assetUrl: "crops/turnip/3.png",
                     extraOffsets: {
-                        x: -8,
-                        y: -48,
+                        x: -20,
+                        y: -90,
                     },
                 },
             },
             3: {
                 textureConfig: {
                     key: "crop-turnip-4",
-                    assetUrl: "crops/turnip/4-old.png",
+                    assetUrl: "crops/turnip/4.png",
                     extraOffsets: {
-                        x: -8,
-                        y: -40,
+                        x: -20,
+                        y: -80,
                     },
                 },
             },
             4: {
                 textureConfig: {
                     key: "crop-turnip-5",
-                    assetUrl: "crops/turnip/5-old.png",
+                    assetUrl: "crops/turnip/5.png",
                     extraOffsets: {
-                        x: -10,
-                        y: -35,
+                        x: -20,
+                        y: -70,
                     },
                 },
             },
@@ -81,34 +81,54 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
         name: "Carrot",
         map: {
             0: {
-                textureConfig: { key: "crop-carrot-1", assetUrl: "crops/carrot/1.png",  extraOffsets: {
-                    x: 0,
-                    y: -30,
-                }, },
+                textureConfig: {
+                    key: "crop-carrot-1",
+                    assetUrl: "crops/carrot/1.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30,
+                    },
+                },
             },
             1: {
-                textureConfig: { key: "crop-carrot-2", assetUrl: "crops/carrot/2.png",  extraOffsets: {
-                    x: 0,
-                    y: -48,
-                }, },
+                textureConfig: {
+                    key: "crop-carrot-2",
+                    assetUrl: "crops/carrot/2.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -48,
+                    },
+                },
             },
             2: {
-                textureConfig: { key: "crop-carrot-3", assetUrl: "crops/carrot/3.png",  extraOffsets: {
-                    x: 5,
-                    y: -45,
-                }, },
+                textureConfig: {
+                    key: "crop-carrot-3",
+                    assetUrl: "crops/carrot/3.png",
+                    extraOffsets: {
+                        x: 15,
+                        y: -90,
+                    },
+                },
             },
             3: {
-                textureConfig: { key: "crop-carrot-4", assetUrl: "crops/carrot/4.png", extraOffsets: {
-                    x: 5,
-                    y: -44,
-                }, },
+                textureConfig: {
+                    key: "crop-carrot-4",
+                    assetUrl: "crops/carrot/4.png",
+                    extraOffsets: {
+                        x: 15,
+                        y: -85,
+                    },
+                },
             },
             4: {
-                textureConfig: { key: "crop-carrot-5", assetUrl: "crops/carrot/5.png", extraOffsets: {
-                    x: 5,
-                    y: -43,
-                }, },
+                textureConfig: {
+                    key: "crop-carrot-5",
+                    assetUrl: "crops/carrot/5.png",
+                    extraOffsets: {
+                        x: 15,
+                        y: -80,
+                    },
+                },
             },
         },
         shop: {
@@ -198,8 +218,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-2",
                     assetUrl: "crops/cucumber/2.png",
                     extraOffsets: {
-                        x: -5,
-                        y: -30,
+                        x: 0,
+                        y: -60,
                     },
                 },
             },
@@ -208,8 +228,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-3",
                     assetUrl: "crops/cucumber/3.png",
                     extraOffsets: {
-                        x: 10,
-                        y: -20,
+                        x: 20,
+                        y: -40,
                     },
                 },
             },
@@ -218,8 +238,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-4",
                     assetUrl: "crops/cucumber/4.png",
                     extraOffsets: {
-                        x: 10,
-                        y: -20,
+                        x: 20,
+                        y: -40,
                     },
                 },
             },
@@ -228,8 +248,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-5",
                     assetUrl: "crops/cucumber/5.png",
                     extraOffsets: {
-                        x: 10,
-                        y: -20,
+                        x: 20,
+                        y: -40,
                     },
                 },
             },
@@ -245,34 +265,54 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
         name: "Potato",
         map: {
             0: {
-                textureConfig: { key: "crop-potato-1", assetUrl: "crops/potato/1.png", extraOffsets: {
-                    x: 0,
-                    y: -30,
-                }, },
+                textureConfig: {
+                    key: "crop-potato-1",
+                    assetUrl: "crops/potato/1.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30,
+                    },
+                },
             },
             1: {
-                textureConfig: { key: "crop-potato-2", assetUrl: "crops/potato/2.png",   extraOffsets: {
-                    x: 0,
-                    y: -35,
-                }, },
+                textureConfig: {
+                    key: "crop-potato-2",
+                    assetUrl: "crops/potato/2.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -35,
+                    },
+                },
             },
             2: {
-                textureConfig: { key: "crop-potato-3", assetUrl: "crops/potato/3.png", extraOffsets: {
-                    x: 0,
-                    y: -25,
-                }, },
+                textureConfig: {
+                    key: "crop-potato-3",
+                    assetUrl: "crops/potato/3.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -25,
+                    },
+                },
             },
             3: {
-                textureConfig: { key: "crop-potato-4", assetUrl: "crops/potato/4.png",  extraOffsets: {
-                    x: 0,
-                    y: -25,
-                }, },
+                textureConfig: {
+                    key: "crop-potato-4",
+                    assetUrl: "crops/potato/4.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -25,
+                    },
+                },
             },
             4: {
-                textureConfig: { key: "crop-potato-5", assetUrl: "crops/potato/5.png",  extraOffsets: {
-                    x: 5,
-                    y: -25,
-                }, },
+                textureConfig: {
+                    key: "crop-potato-5",
+                    assetUrl: "crops/potato/5.png",
+                    extraOffsets: {
+                        x: 5,
+                        y: -25,
+                    },
+                },
             },
         },
         shop: {
@@ -301,7 +341,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/2.png",
                     extraOffsets: {
                         x: 0,
-                        y: -32,
+                        y: -50,
                     },
                 },
             },
@@ -311,7 +351,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/3.png",
                     extraOffsets: {
                         x: -0,
-                        y: -20,
+                        y: -40,
                     },
                 },
             },
@@ -321,7 +361,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/4.png",
                     extraOffsets: {
                         x: -0,
-                        y: -20,
+                        y: -40,
                     },
                 },
             },
@@ -331,7 +371,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/5.png",
                     extraOffsets: {
                         x: -0,
-                        y: -20,
+                        y: -40,
                     },
                 },
             },
@@ -364,7 +404,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                         x: 5,
                         y: -40,
                     },
-                }
+                },
             },
             2: {
                 textureConfig: {

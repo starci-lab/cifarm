@@ -67,7 +67,7 @@ export class GroundTilemap extends BaseTilemap {
             const actualX = centerX - this.tileWidth / 2
             const actualY = centerY - this.tileHeight / 2
             const diamond = this.scene.add.graphics()
-            diamond.fillStyle(0x388a28, 1)
+            diamond.fillStyle(0x6DB830, 1)
             diamond.fillPoints([
                 { x: actualX, y: actualY - this.tileHeight / 2 },
                 { x: actualX - this.tileWidth / 2, y: actualY },

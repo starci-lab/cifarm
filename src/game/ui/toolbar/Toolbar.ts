@@ -49,7 +49,7 @@ export interface ToolLike {
 
 const defaultSelectedIndex = 0
 // selected size of the tool
-export const SELECTED_SIZE = 1.1
+export const SELECTED_SIZE = 1.4
 export const UNSELECTED_SIZE = 1
 
 export class Toolbar extends ContainerLite {
@@ -281,7 +281,7 @@ export class Toolbar extends ContainerLite {
         const rightSlots = this.scene.rexUI.add.sizer({
             orientation: "x",
             space: {
-                item: 15,
+                item: 0,
             },
         })
         const slot = this.scene.rexUI.add
@@ -294,7 +294,7 @@ export class Toolbar extends ContainerLite {
             .sizer({
                 orientation: "x",
                 space: {
-                    item: 40,
+                    item: 0,
                 },
             })
             .add(leftSlots)
