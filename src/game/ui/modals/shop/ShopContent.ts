@@ -32,7 +32,6 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
     GridTable,
-    Label,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
@@ -98,9 +97,6 @@ export class ShopContent extends BaseSizer {
     private pets: Array<PetSchema>
     private tools: Array<ToolSchema>
     private flowers: Array<FlowerSchema> 
-    //default
-    private defaultItemCard: ContainerLite | undefined
-    private defaultSeedButton: Label | undefined
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
     private inventories: Array<InventorySchema> = []
@@ -916,31 +912,52 @@ export class ShopContent extends BaseSizer {
             cropId: displayId,
             quantity: 1,
         }
+        EventBus.once(EventName.BuyCropSeedsResponsed, () => {
+            if (!cropAssetMap[displayId].shop) {
+                throw new Error("Shop asset is not found.")
+            }
+            const flyItem = new FlyItem({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    assetKey: cropAssetMap[displayId].shop.textureConfig.key,
+                    x: pointer.x,
+                    y: pointer.y,
+                    quantity: 1,
+                    depth: calculateUiDepth({
+                        layer: UILayer.Overlay,
+                        layerDepth: 1,
+                    }),
+                },
+            })
+            this.scene.add.existing(flyItem)
+        })
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuyCropSeeds, eventMessage)
-        if (!cropAssetMap[displayId].shop) {
-            throw new Error("Shop asset is not found.")
-        }
-        const flyItem = new FlyItem({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                assetKey: cropAssetMap[displayId].shop.textureConfig.key,
-                x: pointer.x,
-                y: pointer.y,
-                quantity: 1,
-                depth: calculateUiDepth({
-                    layer: UILayer.Overlay,
-                    layerDepth: 1,
-                }),
-            },
-        })
-        this.scene.add.existing(flyItem)
     }
 
     private onBuyFlowerPress(displayId: FlowerId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuyFlowerSeedsResponsed, () => {
+            if (!flowerAssetMap[displayId].shop) {
+                throw new Error("Shop asset is not found.")
+            }
+            const flyItem = new FlyItem({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    assetKey: flowerAssetMap[displayId].shop.textureConfig.key,
+                    x: pointer.x,
+                    y: pointer.y,
+                    quantity: 1,
+                    depth: calculateUiDepth({
+                        layer: UILayer.Overlay,
+                        layerDepth: 1,
+                    }),
+                },
+            })
+            this.scene.add.existing(flyItem)
         })
         const eventMessage: BuyFlowerSeedsRequest = {
             flowerId: displayId,
@@ -948,25 +965,6 @@ export class ShopContent extends BaseSizer {
         }
         // send request to buy seeds
         EventBus.emit(EventName.RequestBuyFlowerSeeds, eventMessage)
-        if (!flowerAssetMap[displayId].shop) {
-            throw new Error("Shop asset is not found.")
-        }
-        const flyItem = new FlyItem({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                assetKey: flowerAssetMap[displayId].shop.textureConfig.key,
-                x: pointer.x,
-                y: pointer.y,
-                quantity: 1,
-                depth: calculateUiDepth({
-                    layer: UILayer.Overlay,
-                    layerDepth: 1,
-                }),
-            },
-        })
-        this.scene.add.existing(flyItem)
     }
 
     //onBuySupplyPress

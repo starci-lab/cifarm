@@ -205,14 +205,14 @@ export enum EventName {
   RequestMoveInventoryLocal = "request_move_inventory_local",
   MoveInventoryResponsed = "move_inventory_completed",
 
-  RequestDeliverProduct = "request_deliver_product",
-  DeliverProductResponsed = "deliver_product_completed",
+  RequestDeliverInventory = "request_deliver_inventory",
+  DeliverInventoryResponsed = "deliver_inventory_completed",
 
-  RequestDeliverMoreProduct = "request_deliver_more_product",
-  DeliverMoreProductResponsed = "deliver_more_product_completed",
+  RequestDeliverAdditionalInventory = "request_deliver_additional_inventory",
+  DeliverAdditionalInventoryResponsed = "deliver_additional_inventory_completed",
 
-  RequestRetainProduct = "request_retain_product",
-  RetainProductResponsed = "retain_product_completed",
+  RequestRetainInventory = "request_retain_inventory",
+  RetainInventoryResponsed = "retain_inventory_completed",
 
   RequestFollow = "request_follow",
   FollowResponsed = "follow_completed",

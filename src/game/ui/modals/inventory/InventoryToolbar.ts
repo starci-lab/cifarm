@@ -209,24 +209,17 @@ export class InventoryToolbar extends ContainerLite {
                 this.scene.events.emit(EventName.RequestStorageInventoryIndex, eventMessage)
             })
         }
+        
+        //  destroy the badge label
+        item.destroy()
         if (index !== -1) {
-            EventBus.once(EventName.MoveInventoryResponsed, () => {
-                if (!item) {
-                    throw new Error("Badge label not found")
-                }
-                //  destroy the badge label
-                item.destroy()
-            })
             const eventMessage: MoveInventoryRequest = {
                 index,
                 isTool,
                 inventoryId: data.id,
             }
             EventBus.emit(EventName.RequestMoveInventory, eventMessage)
-            EventBus.emit(EventName.RequestMoveInventoryLocal, eventMessage)
         } else {
-            //  destroy the badge label
-            item.destroy()
             this.updateGridSizer()
         }
     }

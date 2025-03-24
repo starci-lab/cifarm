@@ -10,6 +10,13 @@ import {
     ToolId,
 } from "@/modules/entities"
 
+export enum ReceiverEventName {
+  CropSeedsBought = "crop_seeds_bought",
+  FlowerSeedsBought = "flower_seeds_bought",
+  SuppliesBought = "supplies_bought",
+  ToolBought = "tool_bought",
+}
+
 export enum EmitterEventName {
   SyncPlacedItems = "sync_placed_items",
   BuyCropSeeds = "buy_crop_seeds",
@@ -37,9 +44,10 @@ export enum EmitterEventName {
   ThiefFruit = "thief_fruit",
   ThiefPlant = "thief_plant",
   ThiefAnimal = "thief_animal",
-  DeliverProduct = "deliver_product",
-  DeliverMoreProduct = "deliver_more_product",
-  RetainProduct = "retain_product"
+  DeliverInventory = "deliver_inventory",
+  DeliverAdditionalInventory = "deliver_additional_inventory",
+  RetainInventory = "retain_inventory",
+  MoveInventory = "move_inventory",
 }
 
 export interface BuySuppliesMessage {
@@ -103,7 +111,7 @@ export interface UseHerbicideMessage {
 }
 
 export interface UseAnimalFeedMessage {
-placedItemAnimalId: string;
+  placedItemAnimalId: string;
   inventorySupplyId: string;
 }
 
@@ -134,7 +142,7 @@ export interface HelpUseHerbicideMessage {
 
 export interface HelpUsePesticideMessage {
   placedItemTileId: string;
-}   
+}
 
 export interface HelpUseWateringCanMessage {
   placedItemTileId: string;
@@ -152,19 +160,24 @@ export interface ThiefAnimalMessage {
   placedItemAnimalId: string;
 }
 
-export interface DeliverProductMessage {
-    index: number;
-    inventoryId: string;
-    quantity: number;
+export interface DeliverInventoryMessage {
+  index: number;
+  inventoryId: string;
+  quantity: number;
 }
 
-export interface DeliverMoreProductMessage {
-    index: number;
-    inventoryId: string;
-    quantity: number;
+export interface DeliverAdditionalInventoryMessage {
+  index: number;
+  inventoryId: string;
+  quantity: number;
 }
 
-export interface RetainProductMessage {
-    index: number;
+export interface RetainInventoryMessage {
+  inventoryId: string;
 }
 
+export interface MoveInventoryMessage {
+  inventoryId: string;
+  index: number;
+  isTool: boolean;
+}

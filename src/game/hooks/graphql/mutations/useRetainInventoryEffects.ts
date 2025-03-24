@@ -1,22 +1,22 @@
 import { GAMEPLAY_IO } from "@/app/constants"
-import { EmitterEventName, RetainProductMessage, useGameplayIo } from "@/hooks"
+import { EmitterEventName, RetainInventoryMessage, useGameplayIo } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EventBus, EventName } from "../../../event-bus"
 
-export const useRetainProductEffects = () => {
+export const useRetainInventoryEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
 
     useEffect(() => {
-        EventBus.on(EventName.RequestRetainProduct, async (message: RetainProductMessage) => {
+        EventBus.on(EventName.RequestRetainInventory, async (message: RetainInventoryMessage) => {
             if (!socket) {
                 return
             }   
-            socket.emit(EmitterEventName.RetainProduct, message)
+            socket.emit(EmitterEventName.RetainInventory, message)
         })
 
         return () => {
-            EventBus.removeListener(EventName.RequestRetainProduct)
+            EventBus.removeListener(EventName.RequestRetainInventory)
         }
     }, [socket])
 }

@@ -6,7 +6,7 @@ import { BaseAssetKey, inventoryTypeAssetMap } from "../../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Background, ModalBackground, NumberInput } from "../../../elements"
-import { DeliverMoreProductMessage, DeliverProductMessage } from "@/hooks"
+import { DeliverAdditionalInventoryMessage, DeliverInventoryMessage } from "@/hooks"
 
 export class InputQuantityContent extends BaseSizer {
     private background: ModalBackground
@@ -49,27 +49,27 @@ export class InputQuantityContent extends BaseSizer {
                         }
                         const { index, isMore } = this.scene.cache.obj.get(CacheKey.DeliveryData) as DeliveryData
                         if (!isMore) {
-                            const eventName: DeliverProductMessage = {
+                            const deliverInventoryEventMessage: DeliverInventoryMessage = {
                                 quantity: this.quantity,
                                 inventoryId: this.inventory.id,
                                 index
                             }
-                            EventBus.emit(EventName.RequestDeliverProduct, eventName)
-                            const eventMessage: CloseModalMessage = { 
+                            EventBus.emit(EventName.RequestDeliverInventory, deliverInventoryEventMessage)
+                            const closeModalEventMessage: CloseModalMessage = { 
                                 modalName: ModalName.InputQuantity
                             }
-                            EventBus.emit(EventName.CloseModal, eventMessage)
+                            EventBus.emit(EventName.CloseModal, closeModalEventMessage)
                         } else {
-                            const eventName: DeliverMoreProductMessage = {
+                            const eventMessage: DeliverAdditionalInventoryMessage = {
                                 quantity: this.quantity,
                                 inventoryId: this.inventory.id,
                                 index,
                             }
-                            EventBus.emit(EventName.RequestDeliverMoreProduct, eventName)
-                            const eventMessage: CloseModalMessage = { 
+                            EventBus.emit(EventName.RequestDeliverAdditionalInventory, eventMessage)
+                            const closeModalEventMessage: CloseModalMessage = { 
                                 modalName: ModalName.InputQuantity
                             }
-                            EventBus.emit(EventName.CloseModal, eventMessage)
+                            EventBus.emit(EventName.CloseModal, closeModalEventMessage)
                         }
                     },
                     text: "Confirm",

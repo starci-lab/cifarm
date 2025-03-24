@@ -10,6 +10,7 @@ export interface ShopTabData {
 
 export enum ShopTab {
     Seeds = "Seeds",
+    Flowers = "Flowers",
     Animals = "Animals",
     Buildings = "Buildings",
     Fruits = "Fruits",
@@ -18,7 +19,6 @@ export enum ShopTab {
     Tools = "Tools",
     Pets = "Pets",
     Decorations = "Decorations",
-    Flowers = "Flowers",
 }   
   
 export const tabsConfig: Record<ShopTab, ShopTabData> = {

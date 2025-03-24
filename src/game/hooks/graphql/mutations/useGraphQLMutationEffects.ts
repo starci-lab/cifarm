@@ -7,8 +7,8 @@ import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
 import { useBuyBuildingEffects } from "./useBuyBuildingEffects"
 import { useUseAnimalMedicineEffects } from "./useUseAnimalMedicineEffects"
-import { useDeliverMoreProductEffects } from "./useDeliverMoreProductEffects"
-import { useDeliverProductEffects } from "./useDeliverProductEffects"
+import { useDeliverAdditionalInventoryEffects } from "./useDeliverAdditionalProductEffects"
+import { useDeliverInventoryEffects } from "./useDeliverInventoryEffects"
 import { useUseAnimalFeedEffects } from "./useUseAnimalFeedEffects"
 import { useFollowEffects } from "./useFollowEffects"
 import { useHarvestPlantEffects } from "./useHarvestPlantEffects"
@@ -17,7 +17,7 @@ import { useMoveEffects } from "./useMoveEffects"
 import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
 import { useUsePesticideEffects } from "./useUsePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
-import { useRetainProductEffects } from "./useRetainProductEffects"
+import { useRetainInventoryEffects } from "./useRetainInventoryEffects"
 import { useUnfollowEffects } from "./useUnfollowEffects"
 import { useUpdateFollowXEffects } from "./useUpdateFollowXEffects"
 import { useUpgradeBuildingEffects } from "./useUpgradeBuildingEffects"
@@ -50,8 +50,8 @@ export const useGraphQLMutationEffects = () => {
     useBuyBuildingEffects()
     useBuyTileEffects()
     useMoveInventoryEffects()
-    useDeliverProductEffects()
-    useRetainProductEffects()
+    useDeliverInventoryEffects()
+    useRetainInventoryEffects()
     useFollowEffects()
     useUnfollowEffects()
     useHelpUseHerbicideEffects()
@@ -64,7 +64,7 @@ export const useGraphQLMutationEffects = () => {
     useUseFertilizerEffects()
     useUpdateFollowXEffects()
     useUpgradeBuildingEffects()
-    useDeliverMoreProductEffects()
+    useDeliverAdditionalInventoryEffects()
     useMoveEffects()
     useBuyToolEffects()
     useSellEffects()

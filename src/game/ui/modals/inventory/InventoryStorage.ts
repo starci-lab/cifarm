@@ -27,9 +27,9 @@ import {
     RequestStorageInventoryIndexMessage,
     RequestToolbarInventoryIndexMessage,
 } from "@/game/event-bus"
-import { MoveInventoryRequest } from "@/modules/apollo"
 import { CELL_STORAGE_DATA_KEY } from "./constants"
 import { DragItemParams } from "./types"
+import { MoveInventoryMessage } from "@/hooks"
 
 // part of the inventory that holds the inventory items
 export class InventoryStorage extends BaseSizer {
@@ -270,24 +270,21 @@ export class InventoryStorage extends BaseSizer {
                 this.scene.events.emit(EventName.RequestToolbarInventoryIndex, eventMessage)
             })
         }
+        item.destroy()
         if (index !== -1) {
             EventBus.once(EventName.MoveInventoryResponsed, () => {
                 if (!item) {
                     throw new Error("Badge label not found")
                 }
-                //  destroy the badge label
-                item.destroy()
+                //  destroy the badge label 
             })
-            const eventMessage: MoveInventoryRequest = {
+            const eventMessage: MoveInventoryMessage = {
                 index,
                 isTool,
                 inventoryId: data.id,
             }
             EventBus.emit(EventName.RequestMoveInventory, eventMessage)
-            EventBus.emit(EventName.RequestMoveInventoryLocal, eventMessage)
         } else {
-            //  destroy the badge label
-            item.destroy()
             this.updateGridTable()
         }
         this.enableScroller()

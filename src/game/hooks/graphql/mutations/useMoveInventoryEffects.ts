@@ -1,37 +1,22 @@
-import { GRAPHQL_MUTATION_MOVE_INVENTORY_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationMoveInventorySwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { useGameplayIo, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
+import { EventBus, EventName } from "../../../event-bus"
 import { MoveInventoryRequest } from "@/modules/apollo"
 
 export const useMoveInventoryEffects = () => {
-    //authentication useEffect
-    const { swrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationMoveInventorySwrMutation>
-      >(GRAPHQL_MUTATION_MOVE_INVENTORY_SWR_MUTATION)
-    
-    //user swr
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     useEffect(() => {
         EventBus.on(EventName.RequestMoveInventory, async (message: MoveInventoryRequest) => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({ request: message })
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+            if (!socket) {
+                return
             }
-            // return the user to the phaser game
-            EventBus.emit(EventName.MoveInventoryResponsed, completedMessage)
+            socket.emit(EmitterEventName.MoveInventory, message)
         })
     
         return () => {
             EventBus.removeListener(EventName.RequestMoveInventory)
         }
-    }, [swrMutation])
+    }, [socket])
 }

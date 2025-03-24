@@ -8,7 +8,7 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "@/game/queries"
 import { Text, XButton, XButtonColor } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { RetainProductMessage } from "@/hooks"
+import { RetainInventoryMessage } from "@/hooks"
 
 const ROW_COUNT = 3
 const COLUMN_COUNT = 3
@@ -187,10 +187,10 @@ export class StandContent extends BaseSizer {
                 onPress: () => {
                     console.log("XButton pressed!")
                     // call retain method
-                    const eventName: RetainProductMessage = {
-                        index: inventory.index,
+                    const eventMessage: RetainInventoryMessage = {
+                        inventoryId: inventory.id,
                     }
-                    EventBus.emit(EventName.RequestRetainProduct, eventName)
+                    EventBus.emit(EventName.RequestRetainInventory, eventMessage)
                 }
             }
         })
