@@ -17,6 +17,7 @@ export enum ReceiverEventName {
   FlowerSeedsBought = "flower_seeds_bought",
   SuppliesBought = "supplies_bought",
   ToolBought = "tool_bought",
+  DailyRewardClaimed = "daily_reward_claimed",
 }
 
 // sync placed items

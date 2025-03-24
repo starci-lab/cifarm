@@ -42,6 +42,7 @@ export enum EmitterEventName {
   RetainInventory = "retain_inventory",
   MoveInventory = "move_inventory",
   Move = "move",
+  ClaimDailyReward = "claim_daily_reward",
 }
 
 export interface BuySuppliesMessage {

@@ -5,7 +5,6 @@ import {
     TILE_HEIGHT,
     GRASS_GID,
     SCALE,
-    FLOWER_GRASS_GID,
 } from "./constants"
 import { BaseTilemap } from "./BaseTilemap"
 import { LayerName, ObjectLayerName, TilesetName } from "./types"
@@ -41,16 +40,9 @@ export class GroundTilemap extends BaseTilemap {
             key: BaseAssetKey.Grass,
             gid: GRASS_GID,
         })
-        const flowerGrassTileset = this.createSingleTileTileset({
-            tilesetName: TilesetName.FlowerGrass,
-            key: BaseAssetKey.FlowerGrass,
-            gid: FLOWER_GRASS_GID,
-        })
-
         // create ground layer
         const groundLayer = this.createBlankLayer(LayerName.Ground, [
             grassTileset,
-            flowerGrassTileset,
         ])
         if (!groundLayer) {
             throw new Error("Layer not found")
@@ -59,8 +51,7 @@ export class GroundTilemap extends BaseTilemap {
 
         // fill the layer with random tiles
         this.groundLayer.randomize(0, 0, this.width, this.height, [
-            ...Array.from({ length: 20 }, () => GRASS_GID),
-            FLOWER_GRASS_GID,
+            GRASS_GID
         ])
 
         for (const tile of this.groundLayer.getTilesWithin(
@@ -72,18 +63,20 @@ export class GroundTilemap extends BaseTilemap {
             // draw a diamond shape of the game object
             const centerX = tile.getCenterX()
             const centerY = tile.getCenterY()
-            // draw the diamond shape
+            //draw the diamond shape
+            const actualX = centerX - this.tileWidth / 2
+            const actualY = centerY - this.tileHeight / 2
             const diamond = this.scene.add.graphics()
             diamond.fillStyle(0x388a28, 1)
             diamond.fillPoints([
-                { x: centerX, y: centerY - (this.tileHeight * this.scale) / 2 },
-                { x: centerX + (this.tileWidth * this.scale) / 2, y: centerY },
-                { x: centerX, y: centerY + (this.tileHeight * this.scale) / 2 },
-                { x: centerX - (this.tileWidth * this.scale) / 2, y: centerY },
+                { x: actualX, y: actualY - this.tileHeight / 2 },
+                { x: actualX - this.tileWidth / 2, y: actualY },
+                { x: actualX, y: actualY + this.tileHeight / 2 },
+                { x: actualX + this.tileWidth / 2, y: actualY },
             ])
             diamond.closePath()
             // add the diamond shape to the tile
-            diamond.setPosition(tile.pixelX, tile.pixelY).setDepth(-1)
+            diamond.setDepth(-1)
         }
 
         // scale the layer

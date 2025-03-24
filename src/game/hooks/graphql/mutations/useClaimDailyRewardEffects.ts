@@ -1,35 +1,24 @@
-import { GRAPHQL_MUTATION_CLAIM_DAILY_REWARD_SWR_MUTATION } from "@/app/constants"
-import { useGraphQLMutationClaimDailyRewardSwrMutation } from "@/hooks"
+import { GAMEPLAY_IO } from "@/app/constants"
+import { EmitterEventName, ReceiverEventName, useGameplayIo } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { ResponsedMessage, EventBus, EventName } from "../../../event-bus"
+import { EventBus, EventName } from "../../../event-bus"
 
 export const useClaimDailyRewardEffects = () => {
-    //get the singleton instance of the claim daily reward mutation
-    const { swrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationClaimDailyRewardSwrMutation>
-  >(GRAPHQL_MUTATION_CLAIM_DAILY_REWARD_SWR_MUTATION)
-
+    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
     useEffect(() => {
         EventBus.on(EventName.RequestClaimDailyReward, async () => {
-            let completedMessage: ResponsedMessage
-            try {
-                await swrMutation.trigger({})
-                completedMessage = {
-                    success: true,
-                }
-            } catch (error) {
-                console.error(error)
-                completedMessage = {
-                    success: false,
-                }
+            if (!socket) {
+                return
             }
-            // return the user to the phaser game
-            EventBus.emit(EventName.ClaimDailyRewardResponsed, completedMessage)
+            socket.on(ReceiverEventName.DailyRewardClaimed, () => {
+                EventBus.emit(EventName.ClaimDailyRewardResponsed)
+            })
+            socket.emit(EmitterEventName.ClaimDailyReward)
         })
 
         return () => {
             EventBus.removeListener(EventName.RequestClaimDailyReward)
         }
-    }, [swrMutation])
+    }, [socket])
 }
