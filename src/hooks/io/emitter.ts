@@ -41,6 +41,7 @@ export enum EmitterEventName {
   DeliverAdditionalInventory = "deliver_additional_inventory",
   RetainInventory = "retain_inventory",
   MoveInventory = "move_inventory",
+  Move = "move",
 }
 
 export interface BuySuppliesMessage {
@@ -174,3 +175,10 @@ export interface MoveInventoryMessage {
   index: number;
   isTool: boolean;
 }
+
+export interface MoveMessage {
+  placedItemId: string;
+  position: Position;
+}
+
+

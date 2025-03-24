@@ -71,7 +71,6 @@ import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
 import { FlyItem, FlyItems, ToolLike } from "../ui"
 import {
-    HandlePlacedItemUpdatePositionParams,
     ItemTilemap,
     PlacedItemObjectData,
 } from "./ItemTilemap"
@@ -1394,23 +1393,7 @@ export class InputTilemap extends ItemTilemap {
                     },
                 }
                 EventBus.emit(EventName.RequestMove, moveRequest)
-
-                EventBus.once(EventName.MoveResponsed, () => {
-                    this.cancelPlacement()
-                    EventBus.emit(EventName.PlacedItemsRefreshed)
-                    const handlePlacedItemUpdatePosition: HandlePlacedItemUpdatePositionParams =
-            {
-                placedItemId: placedItem.id,
-                position: {
-                    x: tileX,
-                    y: tileY,
-                },
-            }
-                    EventBus.emit(
-                        EventName.HandlePlacedItemUpdatePosition,
-                        handlePlacedItemUpdatePosition
-                    )
-                })
+                this.cancelPlacement()
             },
         })
 

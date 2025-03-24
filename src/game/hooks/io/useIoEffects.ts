@@ -1,5 +1,5 @@
-import { useSyncPlacedItemsEffects } from "./useIoGameplayEffects"
+import { useIoGameplayEffects } from "./useIoGameplayEffects"
 
 export const useIoEffects = () => {
-    useSyncPlacedItemsEffects()
+    useIoGameplayEffects()
 }

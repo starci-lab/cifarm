@@ -8,7 +8,7 @@ export const mergeObjects = <TObject extends object>(
     // track the keys of the objects 2, if object 2
     Object.keys(object2).forEach((key) => {
         // If the key exists in object1
-        if (object2[key]) {
+        if (object2[key] !== undefined) {
             // if object2[key] is a plain object, recurse
             if (_.isPlainObject(object2[key]) && _.isPlainObject(object1[key])) {
                 object1[key] = mergeObjects(object1[key], object2[key])

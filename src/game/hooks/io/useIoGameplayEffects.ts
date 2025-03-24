@@ -13,11 +13,12 @@ import {
     UserSyncedMessage,
     SYNC_PLACED_ITEMS_EVENT,
     RETURN_EVENT,
+    ReceiverEventName,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 
-export const useSyncPlacedItemsEffects = () => {
+export const useIoGameplayEffects = () => {
     //get the singleton instance of the thief crop mutation
     const { socket, connect } =
     useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
@@ -28,25 +29,25 @@ export const useSyncPlacedItemsEffects = () => {
         //if socket is null do nothing
         if (!socket) return
         // listen for action emitted
-        socket.on(ACTION_EMITTED_EVENT, (data: ActionEmittedMessage) => {
+        socket.on(ReceiverEventName.ActionEmitted, (data: ActionEmittedMessage) => {
             EventBus.emit(EventName.ActionEmitted, data)
         })
 
         // listen for energy synced
-        socket.on(USER_SYNCED_EVENT, ({ data }: UserSyncedMessage) => {
+        socket.on(ReceiverEventName.UserSynced, ({ data }: UserSyncedMessage) => {
             EventBus.emit(EventName.UserSynced, data)
         })
 
         // listen for inventories synced
         socket.on(
-            INVENTORIES_SYNCED_EVENT,
+            ReceiverEventName.InventoriesSynced,
             ({ data }: InventorySyncedMessage) => {
                 EventBus.emit(EventName.InventorySynced, data)
             }
         )
 
         socket.on(
-            PLACED_ITEMS_SYNCED_EVENT,
+            ReceiverEventName.PlacedItemsSynced,
             ({ data }: PlacedItemsSyncedMessage) => {
                 EventBus.emit(EventName.PlacedItemsSynced, data)
             }
