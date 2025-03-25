@@ -365,7 +365,32 @@ export const inventoryTypeAssetMap: Record<
             useExisting: true,
         },
     },
-
+    [InventoryTypeId.StrawberrySeed]: {
+        name: "Strawberry Seed",
+        textureConfig: (() => {
+            if (!cropAssetMap[CropId.Strawberry].shop) {
+                throw new Error("Strawberry Seed shop texture not found")
+            }
+            return {
+                ...cropAssetMap[CropId.Strawberry].shop.textureConfig,
+                useExisting: true,
+            }
+        })(),
+    },
+    [InventoryTypeId.Strawberry]: {
+        name: "Strawberry",
+        textureConfig: {
+            ...productAssetMap[ProductId.Strawberry].textureConfig,
+            useExisting: true,
+        },
+    },
+    [InventoryTypeId.StrawberryQuality]: {
+        name: "Strawberry Quality",
+        textureConfig: {
+            ...productAssetMap[ProductId.StrawberryQuality].textureConfig,
+            useExisting: true,
+        }
+    },
 }
 
 // Function to load inventory assets in Phaser scene

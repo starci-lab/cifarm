@@ -1,20 +1,18 @@
 "use client"
 import { NEIGHBORS_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import {
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalHeader,
-    Spacer,
-    Tab,
-    Tabs,
-    useDisclosure,
-} from "@heroui/react"
+import { useDisclosure } from "@/hooks"
 import React, { FC, ReactNode, useState } from "react"
 import { WorldTab } from "./WorldTab"
 import { FolloweesTab } from "./FolloweesTab"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+
+export enum NeighborsTab {
+    World = "World",
+    Followees = "Followees"
+}
 
 export const NeighborsModal: FC = () => {
     const { onOpenChange, isOpen, onClose } =
@@ -33,47 +31,38 @@ export const NeighborsModal: FC = () => {
     }
     
     return (
-        <Modal
-            disableAnimation={true}
-            placement="bottom"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            onClose={async () => {
-                onClose()
-                EventBus.emit(EventName.CloseModal, {
-                    modalName: ModalName.Neighbors,
-                })
+        <Dialog 
+            open={isOpen} 
+            onOpenChange={(value) => {
+                onOpenChange(value)
+                if (!value) {
+                    onClose()
+                    EventBus.emit(EventName.CloseModal, {
+                        modalName: ModalName.Neighbors,
+                    })
+                }
             }}
         >
-            <ModalContent>
-                <ModalHeader>Neighbors</ModalHeader>
-                <ModalBody>
-                    <div>
-                        <Tabs
-                            disableAnimation={true}
-                            color="primary"
-                            classNames={{
-                                base: "w-full",
-                                tabList: "w-full",
-                                tabContent:
-                  "group-data-[selected=true]:light group-data-[selected=true]:text-background",
-                            }}
-                            selectedKey={selectedTab}
-                            onSelectionChange={(tab) => setSelectedTab(tab as NeighborsTab)}
-                        >
-                            <Tab key={NeighborsTab.World} title="Worlds" />
-                            <Tab key={NeighborsTab.Followees} title="Followees" />
-                        </Tabs>
-                        <Spacer y={4} />
-                        {renderTab()}
-                    </div>
-                </ModalBody>
-            </ModalContent>
-        </Modal>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Neighbors</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <Tabs
+                        defaultValue={selectedTab}
+                        onValueChange={(value) => setSelectedTab(value as NeighborsTab)}
+                        className="w-full"
+                    >
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value={NeighborsTab.World}>Worlds</TabsTrigger>
+                            <TabsTrigger value={NeighborsTab.Followees}>Followees</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={selectedTab}>
+                            {renderTab()}
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
-}
-
-export enum NeighborsTab {
-    World = "world",
-    Followees = "followees",
 }

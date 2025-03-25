@@ -1,6 +1,5 @@
 "use client"
 
-import { Spacer, Button, Image } from "@heroui/react"
 import { useRouterWithSearchParams } from "@/hooks"
 import { Container } from "@/components"
 import React, { FC } from "react"
@@ -15,6 +14,9 @@ import {
 import { ChainKey, createAccount, Network } from "@/modules/blockchain"
 import { setMnemonic, triggerLoadAccounts } from "@/redux"
 import { useDispatch } from "react-redux"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
     const dispatch = useDispatch()
@@ -23,21 +25,28 @@ const Page: FC = () => {
         <Container centerContent hasPadding>
             <div className="w-full">
                 <div className="grid place-items-center gap-4 w-full">
-                    <Image radius="full" removeWrapper src="/logo.png" height={150} />
-                </div>
-                <Spacer y={4} />
-                <div className="text-center">
-                    <div className="text-4xl font-bold">CiFarm</div>
-                    <div className="text-foreground-400 text-sm">
-            The leading play-to-earn farming game on Telegram
+                    <div className="relative w-[150px] h-[150px] rounded-full overflow-hidden">
+                        <Image 
+                            src="/logo.png" 
+                            alt="CiFarm Logo"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
                 </div>
-                <Spacer y={9} />
+                <div className="h-16" /> {/* Spacer */}
+                <div className="text-center">
+                    <div className="text-4xl font-bold">CiFarm</div>
+                    <div className="text-muted-foreground text-sm">
+                        The leading play-to-earn farming game on Telegram
+                    </div>
+                </div>
+                <div className="h-36" /> {/* Spacer */}
                 <div className="grid gap-4 w-full">
                     <Button
-                        color="primary"
                         size="lg"
-                        onPress={async () => {
+                        className="w-full"
+                        onClick={async () => {
                             const mnemonic = generateMnemonic(256)
                             // put mnemonic to key-value store in IndexedDB
                             await sessionDb.keyValueStore.put({
@@ -63,8 +72,8 @@ const Page: FC = () => {
                                                 .filter(
                                                     (account) =>
                                                         account.chainKey === chainKey &&
-                            account.network === network &&
-                            account.accountNumber === 0
+                                                        account.network === network &&
+                                                        account.accountNumber === 0
                                                 )
                                                 .first()
                                             if (found) {
@@ -107,15 +116,15 @@ const Page: FC = () => {
                             }
                         }}
                     >
-            Create new account
+                        Create new account
                     </Button>
                     <Button
-                        color="primary"
-                        variant="flat"
+                        variant="outline"
                         size="lg"
-                        onPress={() => router.push(pathConstants.home)}
+                        className="w-full"
+                        onClick={() => router.push(pathConstants.home)}
                     >
-            Import existing account
+                        Import existing account
                     </Button>
                 </div>
             </div>

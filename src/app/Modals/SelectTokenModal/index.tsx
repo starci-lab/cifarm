@@ -1,21 +1,20 @@
 import { valuesWithKey } from "@/modules/common"
 import { useAppSelector } from "@/redux"
-import {
-    Button,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    Spacer,
-    useDisclosure,
-} from "@heroui/react"
 import React, { useMemo, useState } from "react"
 import { Token } from "./Token"
 import { ScrollableList } from "@/components/ScrollableList"
 import { FilterBar } from "@/components"
 import { SELECT_TOKEN_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog"
+import { useDisclosure } from "@/hooks"
 
 export const SelectTokenModal = () => {
     const { isOpen, onOpenChange, onClose } = useSingletonHook<
@@ -32,40 +31,33 @@ export const SelectTokenModal = () => {
     }, [searchString])
     
     return (
-        <Modal
-            placement="bottom"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        >
-            <ModalContent>
-                <ModalHeader>
-                    <div className="text-xl font-bold">Select Token</div>
-                </ModalHeader>
-                <ModalBody>
-                    <div>
-                        <FilterBar
-                            handleSearchResult={({ searchString }) => {
-                                setSearchString(searchString)
-                            }}
-                            disableDebounce={true}
-                        />
-                        <Spacer y={4} />
-                        <ScrollableList
-                            items={filteredTokensArray}
-                            contentCallback={(token) => <Token token={token} />}
-                        />
-                    </div>
-                </ModalBody>
-                <ModalFooter>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="text-xl font-bold">Select Token</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <FilterBar
+                        handleSearchResult={({ searchString }) => {
+                            setSearchString(searchString)
+                        }}
+                        disableDebounce={true}
+                    />
+                    <ScrollableList
+                        items={filteredTokensArray}
+                        contentCallback={(token) => <Token token={token} />}
+                    />
+                </div>
+                <DialogFooter>
                     <Button
-                        variant="light"
-                        onPress={onClose}
-                        className="text-foreground-400"
+                        variant="ghost"
+                        onClick={onClose}
+                        className="text-muted-foreground"
                     >
-            Cancel
+                        Cancel
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

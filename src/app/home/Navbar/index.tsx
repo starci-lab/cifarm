@@ -1,13 +1,15 @@
 "use client"
 
 import React, { FC } from "react"
-import { Avatar, Card, CardBody, Navbar as HeroUiNavbar, Link, NavbarContent, Snippet } from "@heroui/react"
 import { truncateString } from "@/modules/common"
 import { useAppSelector } from "@/redux"
 import { MagnifyingGlassIcon, Cog6ToothIcon } from "@heroicons/react/24/outline"
 import { SelectChainButton } from "../SelectChainButton"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 export const Navbar: FC = () => {
     //get all the data from the Redux store
@@ -21,35 +23,39 @@ export const Navbar: FC = () => {
     }
     const { imageUrl, address, username } = account
     return (
-        <HeroUiNavbar isBlurred={false} classNames={{
-            base: "bg-transparent",
-            wrapper: "px-4 max-w-full",
-        }}>
-            <NavbarContent justify="start">
+        <nav className="w-full px-4 py-2 bg-transparent">
+            <div className="flex justify-between items-center max-w-full">
                 <div className="flex gap-2 items-center">
-                    <Card radius="none" disableRipple={true} shadow="none" className="bg-inhenrit" isPressable>
-                        <CardBody className="p-0">
+                    <Card className="bg-inherit border-0 shadow-none">
+                        <CardContent className="p-0">
                             <div className="flex gap-2 items-center">
-                                <Avatar size="sm" src={imageUrl}/>
+                                <Avatar className="h-8 w-8">
+                                    <AvatarImage src={imageUrl} alt={username} />
+                                </Avatar>
                                 <div>
-                                    <div className="text-sm dark text-background font-bold">{truncateString(username, 8, 0)}</div>
-                                    <div className="text-xs dark text-foreground-400">{truncateString(address, 4)}</div>
+                                    <div className="text-sm font-bold text-background">{truncateString(username, 8, 0)}</div>
+                                    <div className="text-xs text-muted-foreground">{truncateString(address, 4)}</div>
                                 </div>
                             </div>
-                        </CardBody>
+                        </CardContent>
                     </Card>
-                    <Snippet codeString={address} size="sm" hideSymbol classNames={{
-                        base: "gap-0 dark text-background bg-inherit p-0",
-                    }}/>
+                    <code className="text-sm text-background bg-inherit">{address}</code>
                 </div>
-            </NavbarContent>
-            <NavbarContent justify="end">
                 <div className="flex gap-2">
                     <SelectChainButton/>
-                    <Link className="dark text-background" color="foreground" as="button"><MagnifyingGlassIcon className="w-5 h-5"/></Link>
-                    <Link className="dark text-background" onPress={() => router.push(pathConstants.settings)} color="foreground" as="button"><Cog6ToothIcon className="w-5 h-5"/></Link>
+                    <Button variant="ghost" size="icon" className="text-background">
+                        <MagnifyingGlassIcon className="w-5 h-5"/>
+                    </Button>
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-background"
+                        onClick={() => router.push(pathConstants.settings)}
+                    >
+                        <Cog6ToothIcon className="w-5 h-5"/>
+                    </Button>
                 </div>
-            </NavbarContent>
-        </HeroUiNavbar>
+            </div>
+        </nav>
     )
 }

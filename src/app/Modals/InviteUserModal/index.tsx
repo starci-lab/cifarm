@@ -3,17 +3,15 @@ import { INVITE_USER_DISCLOSURE, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
 import { useGraphQLQueryUserSwr } from "@/hooks"
 import { REFERRAL_USER_ID } from "@/hooks/use-effects/referral"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import {
-    Alert,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalHeader,
-    Snippet,
-    Spacer,
-    useDisclosure,
-} from "@heroui/react"
 import React, { FC, useEffect, useState } from "react"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useDisclosure } from "@/hooks"
 
 export const InviteUserModal: FC = () => {
     const { isOpen, onOpenChange } = useSingletonHook<
@@ -30,55 +28,31 @@ export const InviteUserModal: FC = () => {
 
     const telegramUrl = `https://t.me/cifarm_bot?startapp=${swr.data?.data.user.id}`
     return (
-        <Modal
-            size="sm"
-            disableAnimation={true}
-            placement="bottom"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        >
-            <ModalContent>
-                <ModalHeader>Invite User</ModalHeader>
-                <ModalBody>
-                    <div>
-                        <Alert color="success">
-                            <div className="text-sm">Share the link through your social network; users with the referral code will receive bonus tokens, and you will earn extra tokens as well.</div>
-                        </Alert>
-                        <Spacer y={4}/>
-                        <div className="w-full">
-                            <div className="text-sm">Web URL</div>
-                            <Spacer y={1.5} />
-                            <Snippet
-                                fullWidth
-                                hideSymbol
-                                codeString={webUrl}
-                                className="max-w-full whitespace-pre-wrap"
-                                classNames={{
-                                    pre: "text-justify !break-all !whitespace-pre-line !line-clamp-5",
-                                }}
-                            >
-                                {webUrl}
-                            </Snippet>
-                        </div>
-                        <Spacer y={4}/>
-                        <div className="w-full">
-                            <div className="text-sm">Telegram URL</div>
-                            <Spacer y={1.5} />
-                            <Snippet
-                                fullWidth
-                                hideSymbol
-                                codeString={telegramUrl}
-                                className="max-w-full whitespace-pre-wrap"
-                                classNames={{
-                                    pre: "text-justify !break-all !whitespace-pre-line !line-clamp-5",
-                                }}
-                            >
-                                {telegramUrl}
-                            </Snippet>
-                        </div>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Invite User</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <Alert>
+                        <AlertDescription>
+                            Share the link through your social network; users with the referral code will receive bonus tokens, and you will earn extra tokens as well.
+                        </AlertDescription>
+                    </Alert>
+                    <div className="w-full">
+                        <div className="text-sm mb-1.5">Web URL</div>
+                        <code className="block w-full p-2 bg-muted rounded-md text-sm break-all whitespace-pre-wrap line-clamp-5">
+                            {webUrl}
+                        </code>
                     </div>
-                </ModalBody>
-            </ModalContent>
-        </Modal>
+                    <div className="w-full">
+                        <div className="text-sm mb-1.5">Telegram URL</div>
+                        <code className="block w-full p-2 bg-muted rounded-md text-sm break-all whitespace-pre-wrap line-clamp-5">
+                            {telegramUrl}
+                        </code>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
 }

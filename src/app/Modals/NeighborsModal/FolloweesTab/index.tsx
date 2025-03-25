@@ -2,11 +2,15 @@
 import { GRAPHQL_QUERY_FOLLOWEES_SWR, GRAPHQL_QUERY_NEIGHBORS_SWR } from "@/app/constants"
 import { DEFAULT_LIMIT, DEFAULT_OFFSET, useGraphQLQueryFolloweesSwr, useGraphQLQueryNeighborsSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Button, Card, Divider, Link, Pagination, ScrollShadow, Spacer } from "@heroui/react"
 import React, { FC } from "react"
 import { UserCard } from "../UserCard"
 import { FilterBar } from "@/components"
 import { RefreshCcw } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Pagination } from "@/components/ui/pagination"
 
 export const FolloweesTab: FC = () => {
     const {
@@ -40,8 +44,9 @@ export const FolloweesTab: FC = () => {
             },
         })
     }
+
     return (
-        <div className="relative">
+        <div className="space-y-4">
             <div className="flex gap-2">
                 <FilterBar
                     handleSearchResult={
@@ -57,52 +62,48 @@ export const FolloweesTab: FC = () => {
                         }
                     }
                 />
-                <Button variant="light" isIconOnly onPress={() => followeesMutate()}>
-                    <Link color="primary">
-                        <RefreshCcw className="w-5 h-5" />
-                    </Link>
+                <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => followeesMutate()}
+                    className="shrink-0"
+                >
+                    <RefreshCcw className="h-4 w-4" />
                 </Button>
             </div>
-            <Spacer y={4} />
-            <ScrollShadow
-                hideScrollBar
-                className="h-[300px] relative -top-4 -left-4 p-4 w-[calc(100%+32px)]"
-            >
+            
+            <ScrollArea className="h-[300px] rounded-md border">
                 <Card>
-                    {followees.map((followee, index) => {
-                        const last = index === followees.length - 1
-                        return (
-                            <>
-                                <UserCard
-                                    key={followee.id}
-                                    user={followee}
-                                    onFollowCallback={async () => {
-                                        await neighborsMutate()
-                                        await followeesMutate()
-                                    }}
-                                    onUnfollowCallback={async () => {
-                                        await neighborsMutate()
-                                        await followeesMutate()
-                                    }}
-                                    followed
-                                />
-                                {!last && <Divider />}
-                            </>
-                        )
-                    })}
+                    <CardContent className="p-0">
+                        {followees.map((followee, index) => {
+                            const last = index === followees.length - 1
+                            return (
+                                <div key={followee.id}>
+                                    <UserCard
+                                        user={followee}
+                                        onFollowCallback={async () => {
+                                            await neighborsMutate()
+                                            await followeesMutate()
+                                        }}
+                                        onUnfollowCallback={async () => {
+                                            await neighborsMutate()
+                                            await followeesMutate()
+                                        }}
+                                        followed
+                                    />
+                                    {!last && <Separator />}
+                                </div>
+                            )
+                        })}
+                    </CardContent>
                 </Card>
-            </ScrollShadow>
-            <Spacer y={4} />
-            <div className="w-full flex justify-center">
+            </ScrollArea>
+
+            <div className="flex justify-center">
                 <Pagination
-                    classNames={{
-                        cursor: "light text-background",
-                    }}
-                    color="primary"
-                    showControls
-                    page={currentPage}
-                    total={totalPage}
-                    onChange={setPage}
+                    currentPage={currentPage}
+                    totalPages={totalPage}
+                    onPageChange={setPage}
                 />
             </div>
         </div>

@@ -2,28 +2,24 @@
 import { PROFILE_DISCLOSURE, GRAPHQL_QUERY_USER_SWR  } from "@/app/constants"
 import { ExclamationTooltip } from "@/components"
 import { pathConstants } from "@/constants"
-import { useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
+import { useDisclosure, useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { computeExperiencesQuota, truncateString } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import {
-    Avatar,
-    Button,
-    Chip,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    Skeleton,
-    Snippet,
-    Spacer,
-    useDisclosure,
-    Image,
-    Progress,
-} from "@heroui/react"
 import React, { FC } from "react"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export const ProfileModal: FC = () => {
     const { isOpen, onOpenChange, onClose } =
@@ -36,121 +32,103 @@ export const ProfileModal: FC = () => {
         : ""
     const quota = user ? computeExperiencesQuota(user.level) : 0
     const router = useRouterWithSearchParams()
+
     return (
-        <Modal
-            disableAnimation={true}
-            placement="bottom"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        >
-            <ModalContent>
-                <ModalHeader>
-                    <div className="text-xl font-bold">Profile</div>
-                </ModalHeader>
-                <ModalBody>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="text-xl font-bold">Profile</DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
                     <div>
                         <div className="flex gap-4 items-center">
-                            <Avatar
-                                isBordered
-                                src={avatarUrl}
-                                radius="full"
-                                classNames={{
-                                    base: "w-20 h-20 min-w-20",
-                                }}
-                            />
+                            <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-primary">
+                                <Image
+                                    src={avatarUrl}
+                                    alt="Profile"
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
                             <div>
                                 {user ? (
                                     <>
                                         <div className="flex gap-2 items-center">
                                             <div className="text-xl font-bold">{user.username}</div>
                                             {user ? (
-                                                <Chip
-                                                    classNames={{
-                                                        content: "pr-0",
-                                                    }}
-                                                    className="px-2 flex-1 sm:flex-none sm:w-1/2"
-                                                    startContent={
-                                                        <Image
-                                                            radius="none"
-                                                            className="w-5 h-5"
-                                                            removeWrapper
-                                                            src={blockchainMap[user.chainKey].imageUrl}
-                                                        />
-                                                    }
-                                                    variant="flat"
-                                                    color="primary"
-                                                >
+                                                <Badge variant="secondary" className="flex items-center gap-1">
+                                                    <Image
+                                                        src={blockchainMap[user.chainKey].imageUrl}
+                                                        alt={blockchainMap[user.chainKey].name}
+                                                        width={20}
+                                                        height={20}
+                                                        className="rounded-none"
+                                                    />
                                                     {blockchainMap[user.chainKey].name}
-                                                </Chip>
+                                                </Badge>
                                             ) : null}
                                         </div>
-                                        <Spacer y={2} />
+                                        <div className="h-2" /> {/* Spacer */}
                                         <div className="flex gap-2 items-center">
                                             <div className="text-sm">{`UID: ${truncateString(
                                                 user.id
                                             )}`}</div>
-                                            <Snippet
-                                                codeString={user.id}
-                                                hideSymbol
-                                                classNames={{
-                                                    symbol: "text-foreground-400",
-                                                    base: "p-0 gap-0 bg-transparent",
-                                                }}
-                                            />
+                                            <code className="text-sm text-muted-foreground">{user.id}</code>
                                         </div>
                                         <div className="flex gap-2 items-center">
                                             <div className="text-sm">{`Address: ${truncateString(
                                                 user.accountAddress
                                             )}`}</div>
-                                            <Snippet
-                                                hideSymbol
-                                                codeString={user.accountAddress}
-                                                classNames={{
-                                                    symbol: "text-foreground-400",
-                                                    base: "p-0 gap-0 bg-transparent",
-                                                }}
-                                            />
+                                            <code className="text-sm text-muted-foreground">{user.accountAddress}</code>
                                         </div>
                                     </>
                                 ) : (
                                     <>
-                                        <Skeleton />
-                                        <Skeleton />
+                                        <Skeleton className="h-6 w-32" />
+                                        <Skeleton className="h-4 w-24 mt-2" />
                                     </>
                                 )}
                             </div>
                         </div>
-                        <Spacer y={4} />
+                        <div className="h-4" /> {/* Spacer */}
                         <div>
                             {user ? (
-                                <Progress
-                                    label={`Lv.${user.level} (${user.experiences}/${quota})`}
-                                    value={(user.experiences * 100) / quota}
-                                />
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-sm">
+                                        <span>Lv.{user.level}</span>
+                                        <span>{user.experiences}/{quota}</span>
+                                    </div>
+                                    <Progress value={(user.experiences * 100) / quota} />
+                                </div>
                             ) : (
-                                <Skeleton />
+                                <Skeleton className="h-4 w-full" />
                             )}
                         </div>
-                        <Spacer y={6} />
+                        <div className="h-6" /> {/* Spacer */}
                         <div>
                             <div className="flex gap-2 items-center">
                                 <div className="text-lg font-bold">Achievements</div>
                                 <ExclamationTooltip message="Achievements and badges earned by the user." />
                             </div>
-                            <Spacer y={4} />
-              Currently, there are no achievements.
+                            <div className="h-4" /> {/* Spacer */}
+                            <div className="text-muted-foreground">
+                                Currently, there are no achievements.
+                            </div>
                         </div>
                     </div>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="danger" onPress={() => {
-                        onClose()
-                        router.push(pathConstants.home)
-                    }}>
-            Quit
+                </div>
+                <DialogFooter>
+                    <Button 
+                        variant="destructive" 
+                        onClick={() => {
+                            onClose()
+                            router.push(pathConstants.home)
+                        }}
+                    >
+                        Quit
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

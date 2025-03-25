@@ -3,22 +3,21 @@ import { MNEMONIC_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline"
-import {
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalHeader,
-    useDisclosure,
-    ModalFooter,
-    Button,
-    cn,
-    Chip,
-    Card,
-    CardBody,
-} from "@heroui/react"
-import { CopyIcon } from "lucide-react"
 import React, { FC, useState } from "react"
-import { EyeSlashIcon as EyeSlashSolidIcon } from "@heroicons/react/24/solid"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { useDisclosure } from "@/hooks"
+import { cn } from "@/lib/utils"
+import { CopyIcon } from "lucide-react"
+
 export const MnemonicModal: FC = () => {
     const { isOpen, onOpenChange } = useSingletonHook<
     ReturnType<typeof useDisclosure>
@@ -28,58 +27,56 @@ export const MnemonicModal: FC = () => {
         (state) => state.sessionReducer.mnemonic
     )
     return (
-        <Modal
-            placement="bottom-center"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        >
-            <ModalContent>
-                <ModalHeader>Mnemonic</ModalHeader>
-                <ModalBody>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Mnemonic</DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
                     <Card>
-                        <CardBody className="relative p-0">
+                        <CardContent className="relative p-0">
                             {
                                 isBlurred && (
                                     <div className="absolute z-50 w-full h-full -top-1.5 -left-1.5 grid place-items-center">
-                                        <EyeSlashSolidIcon className="w-10 h-10 text-foreground-400" />
+                                        <EyeSlashIcon className="w-10 h-10 text-muted-foreground" />
                                     </div>
                                 )
                             }
                             <div className={cn(isBlurred ? "blur" : "", "grid grid-cols-3 gap-2 p-3")}>
                                 {mnemonic.split(" ").map((word, index) => (
                                     <div key={index} className="col-span-1">
-                                        <Chip variant="flat">{`${index+1}.${word}`}</Chip>
+                                        <Badge variant="secondary" className="w-full justify-center">
+                                            {`${index+1}.${word}`}
+                                        </Badge>
                                     </div>
                                 ))}
                             </div>
-                        </CardBody>
+                        </CardContent>
                     </Card>  
-                </ModalBody>
-                <ModalFooter>
+                </div>
+                <DialogFooter className="gap-2">
                     <Button
-                        variant="flat"
-                        startContent={
-                            isBlurred ? (
-                                <EyeIcon className="w-5 h-5" />
-                            ) : (
-                                <EyeSlashIcon className="w-5 h-5" />
-                            )
-                        }
-                        onPress={() => setIsBlurred(!isBlurred)}
+                        variant="outline"
+                        onClick={() => setIsBlurred(!isBlurred)}
+                        className="gap-2"
                     >
-                        {" "}
-                        {isBlurred ? "Show" : "Hide"}{" "}
+                        {isBlurred ? (
+                            <EyeIcon className="w-5 h-5" />
+                        ) : (
+                            <EyeSlashIcon className="w-5 h-5" />
+                        )}
+                        {isBlurred ? "Show" : "Hide"}
                     </Button>
                     <Button
-                        startContent={<CopyIcon className="w-5 h-5" strokeWidth={3 / 2} />}
-                        variant="flat"
-                        onPress={() => navigator.clipboard.writeText(mnemonic)}
+                        variant="outline"
+                        onClick={() => navigator.clipboard.writeText(mnemonic)}
+                        className="gap-2"
                     >
-                        {" "}
-            Copy{" "}
+                        <CopyIcon className="w-5 h-5" strokeWidth={3 / 2} />
+                        Copy
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

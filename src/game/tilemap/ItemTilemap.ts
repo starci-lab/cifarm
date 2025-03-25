@@ -150,13 +150,17 @@ export abstract class ItemTilemap extends GroundTilemap {
 
         EventBus.on(EventName.ActionEmitted, (data: EmitActionPayload) => {
             const {
-                placedItem: { x, y },
+                placedItem: { x, y, placedItemType: placedItemTypeId },
             } = data
             if (x === undefined) {
                 throw new Error("X is not found")
             }
             if (y === undefined) {
                 throw new Error("Y is not found")
+            }
+            const placedItemType = this.placedItemTypes.find((placedItemType) => placedItemType.id === placedItemTypeId)
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
             }
             const tile = this.getTileCenteredAt({
                 tileX: x,
@@ -167,8 +171,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                 throw new Error("Tile not found")
             }
             const position = {
-                x: tile.getCenterX() - this.tileWidth / 2,
-                y: tile.getCenterY() - this.tileHeight / 2,
+                x: tile.getCenterX() - (placedItemType.sizeX - 0.5) * this.tileWidth,
+                y: tile.getCenterY() - (placedItemType.sizeY - 0.5) * this.tileHeight,
             }
             switch (data.action) {
             case ActionName.UseWateringCan:
@@ -1011,7 +1015,8 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     private clearAllPlacedItems() {
         for (const [, value] of Object.entries(this.placedItemObjectMap)) {
-            value.object.destroyAll()
+            value.object.destroyAllChildren()
+            value.object.destroy()
         }
         this.placedItemObjectMap = {}
     }
@@ -1038,7 +1043,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         if (!tile) {
             throw new Error("Tile not found")
         }
-        console.log(placedItem)
         // get the placed item type
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === placedItem.placedItemType
@@ -1077,7 +1081,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         object
             .setOrigin(1, 0.5)
             .setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER)
-            .setScale(this.scale)
         // store the object in the placed item objects map
         this.placedItemObjectMap[placedItem.id] = {
             object,
@@ -1112,7 +1115,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         tileSizeHeight,
     }: CanPlaceItemAtTileParams): boolean {
         const occupiedTiles: Array<Position> = _.flatMap(
-            Object.values(this.placedItemObjectMap),
+            Object.values(this.placedItemObjectMap).filter((item) => !item.ignoreCollision),
             (item) => item.occupiedTiles
         )
         const dragTiles: Array<Position> = _.range(tileSizeWidth).flatMap((dx) =>
@@ -1128,10 +1131,8 @@ export abstract class ItemTilemap extends GroundTilemap {
         const placedItemsData = this.scene.cache.obj.get(
             CacheKey.PlacedItems
         ) as PlacedItemsData
-        console.log(placedItemsData)
         const { placedItems: cachedPlacedItems, userId } = placedItemsData
         const placedItems = _.cloneDeep<Array<PlacedItemSchema>>(cachedPlacedItems)
-        console.log(placedItems)
         return {
             placedItems,
             userId,
@@ -1192,6 +1193,7 @@ export interface PlacedItemObjectData {
   placedItemType: PlacedItemTypeSchema;
   occupiedTiles: Array<Position>;
   pressBlocked?: boolean;
+  ignoreCollision?: boolean;
 }
 
 export interface CanPlaceItemAtTileParams {

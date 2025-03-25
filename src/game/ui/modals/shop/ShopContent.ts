@@ -47,11 +47,11 @@ import {
     flowerAssetMap
 } from "../../../assets"
 import {
+    BuyingDragModeOnMessage,
     CloseModalMessage,
     EventBus,
     EventName,
     ModalName,
-    BuyingModeOnMessage,
     SelectTabMessage,
 } from "../../../event-bus"
 import { getPlacedItemsByType } from "../../../queries"
@@ -211,7 +211,11 @@ export class ShopContent extends BaseSizer {
         this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
-
+        const placedItemsData = this.scene.cache.obj.get(
+            CacheKey.PlacedItems
+        ) as PlacedItemsData
+        this.placedItems = placedItemsData.placedItems
+        
         EventBus.on(
             EventName.PlacedItemsRefreshed,
             () => {
@@ -254,6 +258,8 @@ export class ShopContent extends BaseSizer {
         EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
             this.updateGridTables()
         })
+
+        console.log(this.gridTableMap)
     }
 
     // handle the selected shop tab
@@ -354,7 +360,6 @@ export class ShopContent extends BaseSizer {
                     fontSize: 40,
                 },
             })
-                .setVisible(false)
                 .setOrigin(0, 0)
             this.scene.add.existing(limitText)
             const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
@@ -465,7 +470,6 @@ export class ShopContent extends BaseSizer {
         const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
         limitText
             .setText(`Limit: ${currentOwnership}/${maxOwnership}`)
-            .setVisible(true)
         if (currentOwnership >= maxOwnership) {
             this.limitMap[shopTab] = {
                 limitReached: true,
@@ -559,7 +563,7 @@ export class ShopContent extends BaseSizer {
                         }
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingModeOnMessage = {
+                        const message: BuyingDragModeOnMessage = {
                             id,
                             type: PlacedItemType.Animal,
                         }
@@ -610,7 +614,7 @@ export class ShopContent extends BaseSizer {
                         }
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingModeOnMessage = {
+                        const message: BuyingDragModeOnMessage = {
                             id,
                             type: PlacedItemType.Building,
                         }
@@ -649,7 +653,7 @@ export class ShopContent extends BaseSizer {
                         }
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingModeOnMessage = {
+                        const message: BuyingDragModeOnMessage = {
                             id,
                             type: PlacedItemType.Fruit,
                         }
@@ -694,7 +698,7 @@ export class ShopContent extends BaseSizer {
                         }
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingModeOnMessage = {
+                        const message: BuyingDragModeOnMessage = {
                             id,
                             type: PlacedItemType.Tile,
                         }

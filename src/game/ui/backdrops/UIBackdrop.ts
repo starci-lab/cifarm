@@ -4,7 +4,7 @@ import { ContainerLiteBaseConstructorParams } from "../../types"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 
-const DEFAULT_OPACITY_LEVEL = 0.75
+const OPACITY_LEVEL = 0.75
 export class UIBackdrop extends ContainerLite {
     private backdrop: Phaser.GameObjects.Rectangle
 
@@ -19,20 +19,21 @@ export class UIBackdrop extends ContainerLite {
                 getScreenCenterY(this.scene),
                 gameWidth,
                 gameHeight,
-                BLACK_COLOR,
-                DEFAULT_OPACITY_LEVEL
+                BLACK_COLOR
             )
             .setInteractive()
         this.add(this.backdrop)
 
-        EventBus.on(EventName.ShowUIBackdrop, ({ depth, opacityLevel }: ShowUIBackdropMessage) => {
+        EventBus.on(EventName.ShowUIBackdrop, ({ depth, transparency }: ShowUIBackdropMessage) => {
             this.show()
-            this.backdrop.setAlpha(opacityLevel).setDepth(depth)
+            this.backdrop.setDepth(depth).setAlpha(!transparency ? OPACITY_LEVEL : 0.01)
         })
         
         EventBus.on(EventName.HideUIBackdrop, () => {
-            this.backdrop.setAlpha(DEFAULT_OPACITY_LEVEL)
-            this.hide()
+            // short delay to prevent flickering
+            this.scene.time.delayedCall(10, () => {
+                this.hide()
+            })
         })
 
         EventBus.on(EventName.UpdateUIBackdrop, ({ depth }: UpdateUIBackdropMessage) => {
@@ -44,10 +45,10 @@ export class UIBackdrop extends ContainerLite {
     }
 
     private hide() {
-        this.backdrop.setVisible(false).setActive(false)
+        this.backdrop.setVisible(false)
     }
 
     private show() {
-        this.backdrop.setVisible(true).setActive(true)
+        this.backdrop.setVisible(true)
     }
 }

@@ -33,7 +33,8 @@ export enum CropId {
     Pineapple = "pineapple",
     Watermelon = "watermelon",
     Cucumber = "cucumber",
-    BellPepper = "bellPepper"
+    BellPepper = "bellPepper",
+    Strawberry = "strawberry",
 }
 
 export enum FruitId {
@@ -109,6 +110,8 @@ export enum ProductId {
     AppleQuality = "appleQuality",
     Daisy = "daisy",
     DaisyQuality = "daisyQuality",
+    Strawberry = "strawberry",
+    StrawberryQuality = "strawberryQuality",
 }
 
 export enum SystemId {
@@ -171,6 +174,9 @@ export enum InventoryTypeId {
     Daisy = "daisy",
     DaisyQuality = "daisyQuality",
     DaisySeed = "daisySeed",
+    StrawberrySeed = "strawberrySeed",
+    Strawberry = "strawberry",
+    StrawberryQuality = "strawberryQuality",
 }
 
 export enum PlacedItemTypeId {

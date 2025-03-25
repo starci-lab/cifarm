@@ -38,8 +38,6 @@ export const MODAL_DEPTH_2 = calculateUiDepth({
     additionalDepth: 11,
 })
 
-const EXTERNAL_MODAL_OPACITY_LEVEL = 0.67
-
 export class ModalManager extends ContainerLite {
     // the shop modal
     private shopModal: ShopModal | undefined
@@ -193,6 +191,7 @@ export class ModalManager extends ContainerLite {
         this.scene.add.existing(this.confirmSellModal)
 
         EventBus.on(EventName.OpenModal, (message: OpenModalMessage) => {
+            // check if modal is external
             this.onOpen(message)
         })
 
@@ -205,7 +204,7 @@ export class ModalManager extends ContainerLite {
     // show method, to show the modal
     private showBackdrop({
         modalName,
-        opacityLevel = 1,
+        transparency = false,
     }: ShowBackdropParams = {}) {
         let depth = MODAL_BACKDROP_DEPTH_1
 
@@ -218,7 +217,7 @@ export class ModalManager extends ContainerLite {
         }
         EventBus.emit(EventName.ShowUIBackdrop, {
             depth,
-            opacityLevel,
+            transparency,
         })
     }
 
@@ -332,7 +331,7 @@ export class ModalManager extends ContainerLite {
             })
             this.showBackdrop({
                 modalName,
-                opacityLevel: EXTERNAL_MODAL_OPACITY_LEVEL,
+                transparency: true,
             })
             return
         }
@@ -360,6 +359,8 @@ export class ModalManager extends ContainerLite {
             const modal = this.getModal(modalName)
             // hide the modal
             modal.hide()
+        } else {
+            EventBus.emit(EventName.EnableInputs)
         }
         this.hideBackdrop({ modalName })
     }
@@ -367,7 +368,7 @@ export class ModalManager extends ContainerLite {
 
 interface ShowBackdropParams {
   modalName?: ModalName;
-  opacityLevel?: number;
+  transparency?: boolean;
 }
 
 interface HideBackdropParams {

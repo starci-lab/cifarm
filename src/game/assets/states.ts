@@ -55,8 +55,6 @@ export const animalStateAssetMap: Partial<
             key: "animal-feed",
             assetUrl: "supplies/animal-feed.png",
             useExisting: true,
-            scaleHeight: 0.8,
-            scaleWidth: 0.8,
         },
     },
     [AnimalCurrentState.Sick]: {
@@ -100,8 +98,8 @@ export const fruitStateAssetMap: Partial<
     },
     [FruitCurrentState.IsBuggy]: {
         textureConfig: {
-            key: "caterpillar-infested",
-            assetUrl: "states/caterpillar-infested.png",
+            key: "is-buggy",
+            assetUrl: "states/is-buggy.png",
         },
     },
 }

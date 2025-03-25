@@ -2,8 +2,9 @@ import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap, networkMap } from "@/modules/blockchain"
 import { useAppSelector } from "@/redux"
-import { Button, Image } from "@heroui/react"
 import React, { FC } from "react"
+import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export const SelectChainButton: FC = () => {
     const router = useRouterWithSearchParams()
@@ -17,11 +18,18 @@ export const SelectChainButton: FC = () => {
     const networkName = networkMap[network].name
     return (
         <Button
+            variant="outline"
             size="sm"
             className="bg-background"
-            onPress={() => router.push(pathConstants.selectChain)}
-            startContent={<Image src={imageUrl} radius="none" className="w-4 h-4" />}
+            onClick={() => router.push(pathConstants.selectChain)}
         >
+            <Image 
+                src={imageUrl} 
+                alt={networkName}
+                width={16}
+                height={16}
+                className="mr-2"
+            />
             {networkName}
         </Button>
     )

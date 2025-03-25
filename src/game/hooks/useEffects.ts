@@ -1,11 +1,10 @@
-import { useGraphQLMutationEffects, useGraphQLQueryEffects } from "./graphql"
+import { useMutationEffects, useQueryEffects } from "./gameplay"
 import { useIoEffects } from "./io"
-import { useModalsEffects } from "./modals"
 import { useStatesEffects } from "./states"
+
 export const useEffects = () => {
-    useGraphQLMutationEffects()
-    useGraphQLQueryEffects()
-    useModalsEffects()
+    useMutationEffects()
+    useQueryEffects()
     useStatesEffects()
     useIoEffects()
 }

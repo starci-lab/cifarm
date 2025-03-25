@@ -2,17 +2,17 @@
 import { WARNING_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
-import {
-    Alert,
-    Button,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    useDisclosure,
-} from "@heroui/react"
 import React, { FC } from "react"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useDisclosure } from "@/hooks"
 
 export const WarningModal: FC = () => {
     const { isOpen, onOpenChange, onClose } =
@@ -37,41 +37,42 @@ export const WarningModal: FC = () => {
     useSingletonHook<ReturnType<typeof useDisclosure>>(nextModalToken ?? "")
  
     return (
-        <Modal
-            placement="bottom"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        >
-            <ModalContent>
-                <ModalHeader>Warning</ModalHeader>
-                <ModalBody>
-                    <Alert color="danger">{message}</Alert>
-                </ModalBody>
-                <ModalFooter>
-                    <Button variant="light" onPress={onClose} className="text-foreground-400">
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Warning</DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
+                    <Alert variant="destructive">
+                        <AlertDescription>{message}</AlertDescription>
+                    </Alert>
+                </div>
+                <DialogFooter>
+                    <Button 
+                        variant="ghost" 
+                        onClick={onClose}
+                        className="text-muted-foreground"
+                    >
                         Cancel
                     </Button>
                     <Button
-                        color="danger"
-                        className="light text-background"
-                        onPress={
-                            () => {
-                                //close the current modal
-                                onClose()
-                                //open the next modal
-                                if (callback) {
-                                    callback()
-                                }
-                                if (nextModalDisclosure) {
-                                    nextModalDisclosure.onOpen()
-                                }
+                        variant="destructive"
+                        onClick={() => {
+                            //close the current modal
+                            onClose()
+                            //open the next modal
+                            if (callback) {
+                                callback()
                             }
-                        }
+                            if (nextModalDisclosure) {
+                                nextModalDisclosure.onOpen()
+                            }
+                        }}
                     >
-            Continue
+                        Continue
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

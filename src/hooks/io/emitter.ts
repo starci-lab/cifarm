@@ -43,6 +43,7 @@ export enum EmitterEventName {
   MoveInventory = "move_inventory",
   Move = "move",
   ClaimDailyReward = "claim_daily_reward",
+  UseFertilizer = "use_fertilizer",
 }
 
 export interface BuySuppliesMessage {
@@ -111,7 +112,11 @@ export interface UseAnimalFeedMessage {
 }
 
 export interface UseAnimalMedicineMessage {
-  placedItemTileId: string;
+  placedItemAnimalId: string;
+}
+
+export interface HelpUseAnimalMedicineMessage {
+  placedItemAnimalId: string;
 }
 
 export interface HarvestAnimalMessage {
@@ -148,7 +153,7 @@ export interface ThiefFruitMessage {
 }
 
 export interface ThiefPlantMessage {
-  placedItemPlantId: string;
+  placedItemTileId: string;
 }
 
 export interface ThiefAnimalMessage {
@@ -182,4 +187,11 @@ export interface MoveMessage {
   position: Position;
 }
 
+export interface UseFertilizerMessage {
+  placedItemTileId: string;
+  inventorySupplyId: string;
+}
 
+export interface HelpUseBugNetMessage {
+  placedItemFruitId: string;
+}

@@ -44,7 +44,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-turnip-3",
                     assetUrl: "crops/turnip/3.png",
                     extraOffsets: {
-                        x: -20,
+                        x: -10,
                         y: -90,
                     },
                 },
@@ -54,7 +54,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-turnip-4",
                     assetUrl: "crops/turnip/4.png",
                     extraOffsets: {
-                        x: -20,
+                        x: -10,
                         y: -80,
                     },
                 },
@@ -64,7 +64,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-turnip-5",
                     assetUrl: "crops/turnip/5.png",
                     extraOffsets: {
-                        x: -20,
+                        x: -10,
                         y: -70,
                     },
                 },
@@ -116,7 +116,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/carrot/4.png",
                     extraOffsets: {
                         x: 15,
-                        y: -85,
+                        y: -80,
                     },
                 },
             },
@@ -126,7 +126,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/carrot/5.png",
                     extraOffsets: {
                         x: 15,
-                        y: -80,
+                        y: -75,
                     },
                 },
             },
@@ -229,7 +229,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/cucumber/3.png",
                     extraOffsets: {
                         x: 20,
-                        y: -40,
+                        y: -60,
                     },
                 },
             },
@@ -239,7 +239,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/cucumber/4.png",
                     extraOffsets: {
                         x: 20,
-                        y: -40,
+                        y: -60,
                     },
                 },
             },
@@ -248,8 +248,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-cucumber-5",
                     assetUrl: "crops/cucumber/5.png",
                     extraOffsets: {
-                        x: 20,
-                        y: -40,
+                        x: 0,
+                        y: -60,
                     },
                 },
             },
@@ -270,7 +270,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/potato/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -90,
                     },
                 },
             },
@@ -279,8 +279,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-potato-2",
                     assetUrl: "crops/potato/2.png",
                     extraOffsets: {
-                        x: 0,
-                        y: -35,
+                        x: -10,
+                        y: -90,
                     },
                 },
             },
@@ -290,7 +290,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/potato/3.png",
                     extraOffsets: {
                         x: 0,
-                        y: -25,
+                        y: -50,
                     },
                 },
             },
@@ -300,7 +300,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/potato/4.png",
                     extraOffsets: {
                         x: 0,
-                        y: -25,
+                        y: -50,
                     },
                 },
             },
@@ -309,8 +309,8 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     key: "crop-potato-5",
                     assetUrl: "crops/potato/5.png",
                     extraOffsets: {
-                        x: 5,
-                        y: -25,
+                        x: 0,
+                        y: -70,
                     },
                 },
             },
@@ -341,7 +341,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/2.png",
                     extraOffsets: {
                         x: 0,
-                        y: -50,
+                        y: -70,
                     },
                 },
             },
@@ -351,7 +351,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/3.png",
                     extraOffsets: {
                         x: -0,
-                        y: -40,
+                        y: -45,
                     },
                 },
             },
@@ -361,7 +361,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/4.png",
                     extraOffsets: {
                         x: -0,
-                        y: -40,
+                        y: -45,
                     },
                 },
             },
@@ -371,7 +371,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/5.png",
                     extraOffsets: {
                         x: -0,
-                        y: -40,
+                        y: -45,
                     },
                 },
             },
@@ -432,7 +432,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/watermelon/5.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -60,
                     },
                 },
             },
@@ -441,6 +441,67 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
             textureConfig: {
                 key: "crop-watermelon-seed",
                 assetUrl: "crops/watermelon/seed.png",
+            },
+        },
+    },
+    [CropId.Strawberry]: {
+        name: "Strawberry",
+        map: {
+            0: {
+                textureConfig: {
+                    key: "crop-strawberry-1",
+                    assetUrl: "crops/strawberry/1.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30,
+                    },
+                },
+            },
+            1: {
+                textureConfig: {
+                    key: "crop-strawberry-2",
+                    assetUrl: "crops/strawberry/2.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30,
+                    },
+                },
+            },
+            2: {
+                textureConfig: {
+                    key: "crop-strawberry-3",
+                    assetUrl: "crops/strawberry/3.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30,
+                    },
+                },
+            },
+            3: {
+                textureConfig: {
+                    key: "crop-strawberry-4",
+                    assetUrl: "crops/strawberry/4.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30,
+                    },
+                },
+            },
+            4: {
+                textureConfig: {
+                    key: "crop-strawberry-5",
+                    assetUrl: "crops/strawberry/5.png",
+                    extraOffsets: {
+                        x: 0,
+                        y: -30,
+                    },
+                },
+            },
+        },
+        shop: {
+            textureConfig: {
+                key: "crop-strawberry-seed",
+                assetUrl: "crops/strawberry/seed.png",
             },
         },
     },

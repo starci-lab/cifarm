@@ -24,8 +24,8 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     key: "fruit-banana-1",
                     assetUrl: "fruits/banana/1.png",
                     extraOffsets: {
-                        x: -13,
-                        y: -90,
+                        x: -5,
+                        y: -170,
                     },
                 },
             },
@@ -34,8 +34,8 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     key: "fruit-banana-2",
                     assetUrl: "fruits/banana/2.png",
                     extraOffsets: {
-                        x: -2,
-                        y: -83,
+                        x: -10,
+                        y: -175,
                     },
                 },
             },
@@ -44,8 +44,8 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     key: "fruit-banana-3",
                     assetUrl: "fruits/banana/3.png",
                     extraOffsets: {
-                        x: -2,
-                        y: -83,
+                        x: 0,
+                        y: -170,
                     },
                 },
             },
@@ -54,8 +54,8 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     key: "fruit-banana-4",
                     assetUrl: "fruits/banana/4.png",
                     extraOffsets: {
-                        x: -2,
-                        y: -83,
+                        x: 0,
+                        y: -170,
                     },
                 },
             },
@@ -64,8 +64,8 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     key: "fruit-banana-5",
                     assetUrl: "fruits/banana/5.png",
                     extraOffsets: {
-                        x: -2,
-                        y: -83,
+                        x: 0,
+                        y: -170,
                     },
                 },
             },
@@ -89,7 +89,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     assetUrl: "fruits/apple/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -95,
+                        y: -190,
                     },
                 },
             },
@@ -98,8 +98,8 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     key: "fruit-apple-2",
                     assetUrl: "fruits/apple/2.png",
                     extraOffsets: {
-                        x: 5,
-                        y: -83,
+                        x: 10,
+                        y: -170,
                     },
                 },
             },
@@ -109,7 +109,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     assetUrl: "fruits/apple/3.png",
                     extraOffsets: {
                         x: 0,
-                        y: -75,
+                        y: -150,
                     },
                 },
             },
@@ -119,7 +119,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     assetUrl: "fruits/apple/4.png",
                     extraOffsets: {
                         x: 0,
-                        y: -75,
+                        y: -150,
                     },
                 },
             },
@@ -129,7 +129,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     assetUrl: "fruits/apple/5.png",
                     extraOffsets: {
                         x: 0,
-                        y: -75,
+                        y: -150,
                     },
                 },
             },

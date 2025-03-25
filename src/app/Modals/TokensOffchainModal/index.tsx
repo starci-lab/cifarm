@@ -1,18 +1,17 @@
 "use client"
 import { MINT_AMOUNT_DISCLOSURE, TOKEN_IMAGE_URL, TOKENS_OFFCHAIN_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import {
-    Image,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalHeader,
-    Spacer,
-    useDisclosure,
-    Alert,
-    Button,
-} from "@heroui/react"
 import React, { FC } from "react"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useDisclosure } from "@/hooks"
+import Image from "next/image"
 
 export const TokensOffchainModal: FC = () => {
     const { isOpen, onOpenChange } = useSingletonHook<
@@ -20,28 +19,32 @@ export const TokensOffchainModal: FC = () => {
   >(TOKENS_OFFCHAIN_DISCLOSURE)
     const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(MINT_AMOUNT_DISCLOSURE)
     return (
-        <Modal
-            disableAnimation={true}
-            placement="bottom"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        >
-            <ModalContent>
-                <ModalHeader><div className="text-xl font-bold">$CARROT (Offchain)</div></ModalHeader>
-                <ModalBody>
-                    <div>
-                        <Image radius="none" removeWrapper src={TOKEN_IMAGE_URL} className="w-20 h-20" />
-                        <Spacer y={4} />
-                        <Alert color="warning">
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="text-xl font-bold">$CARROT (Offchain)</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <div className="w-20 h-20 relative">
+                        <Image
+                            src={TOKEN_IMAGE_URL}
+                            alt="Token"
+                            fill
+                            className="object-contain"
+                        />
+                    </div>
+                    <Alert variant="destructive">
+                        <AlertDescription>
                             Offchain-issued tokens are not stored on the blockchain. But you can mint to claim the tokens on-chain.
-                        </Alert>
-                        <Spacer y={4} />
-                        <Button color="primary" onPress={async () => {
-                            onOpen()
-                        }}>Mint</Button>
-                    </div>        
-                </ModalBody>
-            </ModalContent>
-        </Modal>
+                        </AlertDescription>
+                    </Alert>
+                    <Button
+                        onClick={() => onOpen()}
+                    >
+                        Mint
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
     )
 }

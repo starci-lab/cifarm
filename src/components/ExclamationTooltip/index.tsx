@@ -1,15 +1,21 @@
 import React, { FC } from "react"
-import { cn, Tooltip } from "@heroui/react"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline"
 
 interface ExclamationTooltipProps {
     message: string
     className?: string
 }
-export const ExclamationTooltip : FC<ExclamationTooltipProps> = ({ message, className }: ExclamationTooltipProps) => {
+
+export const ExclamationTooltip: FC<ExclamationTooltipProps> = ({ message, className }) => {
     return (
-        <Tooltip content={message}>
-            <ExclamationCircleIcon className={cn("w-5 h-5", className, "text-primary")}/> 
+        <Tooltip>
+            <TooltipTrigger>
+                <ExclamationCircleIcon className={`w-5 h-5 text-primary ${className}`} />
+            </TooltipTrigger>
+            <TooltipContent>
+                {message}
+            </TooltipContent>
         </Tooltip>
     )
 }

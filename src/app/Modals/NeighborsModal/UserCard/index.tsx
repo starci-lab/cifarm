@@ -19,17 +19,22 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { toastError, toastSuccess } from "@/modules/toast"
 import { setWarningModal, useAppDispatch } from "@/redux"
 import { HomeIcon } from "@heroicons/react/24/outline"
-import { Avatar, Button, Chip, Image, Spacer, useDisclosure } from "@heroui/react"
+import { useDisclosure } from "@/hooks"
 import { UserMinus2, UserPlus2 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React, { FC } from "react"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import Image from "next/image"
 
 export interface UserCardProps {
-  user: UserSchema;
-  onFollowCallback?: () => void | Promise<void>;
-  onUnfollowCallback?: () => void | Promise<void>;
-  followed?: boolean;
+    user: UserSchema;
+    onFollowCallback?: () => void | Promise<void>;
+    onUnfollowCallback?: () => void | Promise<void>;
+    followed?: boolean;
 }
+
 export const UserCard: FC<UserCardProps> = ({
     user,
     onFollowCallback,
@@ -37,12 +42,12 @@ export const UserCard: FC<UserCardProps> = ({
     followed: baseFollowed,
 }: UserCardProps) => {
     const { swrMutation: followSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationFollowSwrMutation>
-  >(GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationFollowSwrMutation>
+    >(GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION)
 
     const { swrMutation: unfollowSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
-  >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
+    >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
 
     const { onClose } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NEIGHBORS_DISCLOSURE
@@ -64,72 +69,49 @@ export const UserCard: FC<UserCardProps> = ({
     return (
         <div className="p-3 flex justify-between items-center">
             <div className="flex gap-2 items-center">
-                <Avatar src={avatarUrl} className="min-w-10 w-10 h-10"/>
-                <div>
-                    <div>{user.username}</div>
-                    <Spacer y={1}/>
+                <Avatar className="h-10 w-10">
+                    <AvatarImage src={avatarUrl} alt={user.username} />
+                </Avatar>
+                <div className="space-y-1">
+                    <div className="font-medium">{user.username}</div>
                     <div className="flex flex-wrap gap-2">
-                        <Chip
-                            classNames={{
-                                content: "pr-0",
-                            }}
-                            className="px-2 flex-1 sm:flex-none sm:w-1/2"
-                            startContent={
-                                <Image
-                                    radius="none"
-                                    className="w-5 h-5"
-                                    removeWrapper
-                                    src={EXPERIENCE_IMAGE_URL}
-                                />
-                            }
-                            variant="flat"
-                            color="primary"
-                        >
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                            <Image
+                                src={EXPERIENCE_IMAGE_URL}
+                                alt="Experience"
+                                width={20}
+                                height={20}
+                                className="w-5 h-5"
+                            />
                             {user.level}
-                        </Chip>
-                        <Chip
-                            classNames={{
-                                content: "pr-0",
-                            }}
-                            className="px-2 flex-1 sm:flex-none sm:w-1/2"
-                            startContent={
-                                <Image
-                                    radius="none"
-                                    className="w-5 h-5"
-                                    removeWrapper
-                                    src={blockchainMap[user.chainKey].imageUrl}
-                                />
-                            }
-                            variant="flat"
-                            color="primary"
-                        >
+                        </Badge>
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                            <Image
+                                src={blockchainMap[user.chainKey].imageUrl}
+                                alt={blockchainMap[user.chainKey].name}
+                                width={20}
+                                height={20}
+                                className="w-5 h-5"
+                            />
                             {blockchainMap[user.chainKey].name}
-                        </Chip>
-                        <Chip
-                            classNames={{
-                                content: "pr-0",
-                            }}
-                            className="px-2 flex-1 sm:flex-none sm:w-1/2"
-                            startContent={
-                                <Image
-                                    radius="none"
-                                    className="w-5 h-5"
-                                    removeWrapper
-                                    src={GOLD_IMAGE_URL}
-                                />
-                            }
-                            variant="flat"
-                            color="primary"
-                        >
+                        </Badge>
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                            <Image
+                                src={GOLD_IMAGE_URL}
+                                alt="Gold"
+                                width={20}
+                                height={20}
+                                className="w-5 h-5"
+                            />
                             {user.golds}
-                        </Chip>
+                        </Badge>
                     </div>
                 </div>
             </div>
             <div className="flex gap-2">
                 {baseFollowed || user.followed ? (
                     <Button
-                        onPress={() => {
+                        onClick={() => {
                             dispatch(setWarningModal({
                                 message: "Are you sure you want to unfollow this user?",
                                 callback: async () => {
@@ -148,17 +130,16 @@ export const UserCard: FC<UserCardProps> = ({
                                 }
                             }))
                             onWarningOpen()
-                        }
-                        }
-                        isIconOnly
-                        variant="light"
-                        color="danger"
-                    >   
-                        <UserMinus2 className="w-5 h-5" strokeWidth={3 / 2} />
+                        }}
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:text-destructive"
+                    >
+                        <UserMinus2 className="h-5 w-5" />
                     </Button>
                 ) : (
                     <Button
-                        onPress={async () => {
+                        onClick={async () => {
                             try {
                                 await followSwrMutation.trigger({
                                     request: {
@@ -171,37 +152,39 @@ export const UserCard: FC<UserCardProps> = ({
                                 console.error(error)
                                 toastError("Failed to unfollow user")
                             }
-                        }
-                        }   
-                        isIconOnly
-                        variant="light"
-                        color="primary"
+                        }}
+                        variant="ghost"
+                        size="icon"
                     >
-                        <UserPlus2 className="w-5 h-5" strokeWidth={3 / 2} />
+                        <UserPlus2 className="h-5 w-5" />
                     </Button>
                 )}
-                <Button onPress={async () => {
-                    onClose()
-                    if (pathname !== pathConstants.play) {
-                        router.push(pathConstants.play)
-                        gameState.data = {
-                            watchingUser: user,
-                        }       
-                    } else {
-                        // set visited user
-                        EventBus.emit(EventName.CloseModal, {
-                            modalName: ModalName.Neighbors,
-                        })
-                        if (!socket) {
-                            throw new Error("Socket is not connected")
+                <Button 
+                    onClick={async () => {
+                        onClose()
+                        if (pathname !== pathConstants.play) {
+                            router.push(pathConstants.play)
+                            gameState.data = {
+                                watchingUser: user,
+                            }       
+                        } else {
+                            // set visited user
+                            EventBus.emit(EventName.CloseModal, {
+                                modalName: ModalName.Neighbors,
+                            })
+                            if (!socket) {
+                                throw new Error("Socket is not connected")
+                            }
+                            socket.emit(VISIT_EVENT, {
+                                neighborUserId: user.id,
+                            })
+                            EventBus.emit(EventName.Visit, user)
                         }
-                        socket.emit(VISIT_EVENT, {
-                            neighborUserId: user.id,
-                        })
-                        EventBus.emit(EventName.Visit, user)
-                    }
-                }} isIconOnly color="primary">
-                    <HomeIcon className="light text-background w-5 h-5" />
+                    }}
+                    variant="ghost"
+                    size="icon"
+                >
+                    <HomeIcon className="h-5 w-5" />
                 </Button>
             </div>
         </div>

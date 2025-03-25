@@ -4,8 +4,12 @@ import { useNativeCoinGeckoSWR } from "@/hooks"
 import { blockchainMap, DefaultToken } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
-import { Card, CardBody, Chip, Divider, Image, Spacer } from "@heroui/react"
 import React, { FC, useEffect } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import Image from "next/image"
+import { cn } from "@/lib/utils"
 
 export const Market: FC = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
@@ -33,28 +37,25 @@ export const Market: FC = () => {
                 <div className="text-lg font-bold">Market</div>
                 <ExclamationTooltip message="The current market prices and trends are based on the last 24 hours." />
             </div>
-            <Spacer y={4} />
+            <div className="h-4" />
             <Card>
                 <div className="grid">
-                    <Card
-                        radius="none"
-                        shadow="none"
-                        isPressable={true}
-                        disableRipple={true}
-                        onPress={() => {
-                            console.log("pressed")
-                        }}
-                    >
-                        <CardBody>
+                    <Card className="border-0 shadow-none cursor-pointer hover:bg-accent/50 transition-colors">
+                        <CardContent className="p-4">
                             <div className="flex justify-between items-center w-full">
                                 <div className="flex gap-2 items-center">
                                     <Image
-                                        className="w-8 h-8"
+                                        width={32}
+                                        height={32}
+                                        className="rounded-full"
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.Native
                                             ].imageUrl
                                         }
+                                        alt={blockchainMap[chainKey].defaultTokens[network][
+                                            DefaultToken.Native
+                                        ].name}
                                     />
                                     <div>
                                         <div className="text-sm">
@@ -64,7 +65,7 @@ export const Market: FC = () => {
                                                 ].name
                                             }
                                         </div>
-                                        <div className="text-xs text-foreground-400">
+                                        <div className="text-xs text-muted-foreground">
                                             {`${
                                                 blockchainMap[chainKey].defaultTokens[network][
                                                     DefaultToken.Native
@@ -75,38 +76,40 @@ export const Market: FC = () => {
                                 </div>
                                 <div className="flex gap-2 items-center">
                                     <div className="text-sm">{`${data?.price} USD`}</div>
-                                    <Chip
-                                        classNames={{
-                                            content: "text-light",
-                                        }}
-                                        color={(data?.priceChange ?? 0) >= 0 ? "success" : "danger"}
-                                    >{`${(data?.priceChange ?? 0) >= 0 ? "+" : ""}${
+                                    <Badge 
+                                        variant="secondary" 
+                                        className={cn(
+                                            "border-0",
+                                            (data?.priceChange ?? 0) >= 0 
+                                                ? "bg-green-500 hover:bg-green-600" 
+                                                : "bg-red-500 hover:bg-red-600"
+                                        )}
+                                    >
+                                        {`${(data?.priceChange ?? 0) >= 0 ? "+" : ""}${
                                             data?.priceChange
-                                        }%`}</Chip>
+                                        }%`}
+                                    </Badge>
                                 </div>
                             </div>
-                        </CardBody>
+                        </CardContent>
                     </Card>
-                    <Divider />
-                    <Card
-                        radius="none"
-                        shadow="none"
-                        isPressable={true}
-                        disableRipple={true}
-                        onPress={() => {
-                            console.log("pressed")
-                        }}
-                    >
-                        <CardBody>
+                    <Separator />
+                    <Card className="border-0 shadow-none cursor-pointer hover:bg-accent/50 transition-colors">
+                        <CardContent className="p-4">
                             <div className="flex justify-between items-center w-full">
                                 <div className="flex gap-2 items-center">
                                     <Image
-                                        className="w-8 h-8"
+                                        width={32}
+                                        height={32}
+                                        className="rounded-full"
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.$CARROT
                                             ].imageUrl
                                         }
+                                        alt={blockchainMap[chainKey].defaultTokens[network][
+                                            DefaultToken.$CARROT
+                                        ].name}
                                     />
                                     <div>
                                         <div className="text-sm">
@@ -116,7 +119,7 @@ export const Market: FC = () => {
                                                 ].name
                                             }
                                         </div>
-                                        <div className="text-xs text-foreground-400">
+                                        <div className="text-xs text-muted-foreground">
                                             {`${
                                                 blockchainMap[chainKey].defaultTokens[network][
                                                     DefaultToken.$CARROT
@@ -127,35 +130,36 @@ export const Market: FC = () => {
                                 </div>
                                 <div className="flex gap-2 items-center">
                                     <div className="text-sm">{"0 USD"}</div>
-                                    <Chip
-                                        classNames={{
-                                            content: "text-light",
-                                        }}
-                                        color="success">{"+0%"}</Chip>
+                                    <Badge 
+                                        variant="secondary" 
+                                        className={cn(
+                                            "border-0",
+                                            "bg-green-500 hover:bg-green-600"
+                                        )}
+                                    >
+                                        {"+0%"}
+                                    </Badge>
                                 </div>
                             </div>
-                        </CardBody>
+                        </CardContent>
                     </Card>
-                    <Divider />
-                    <Card
-                        radius="none"
-                        shadow="none"
-                        isPressable={true}
-                        disableRipple={true}
-                        onPress={() => {
-                            console.log("pressed")
-                        }}
-                    >
-                        <CardBody>
+                    <Separator />
+                    <Card className="border-0 shadow-none cursor-pointer hover:bg-accent/50 transition-colors">
+                        <CardContent className="p-4">
                             <div className="flex justify-between items-center w-full">
                                 <div className="flex gap-2 items-center">
                                     <Image
-                                        className="w-8 h-8"
+                                        width={32}
+                                        height={32}
+                                        className="rounded-full"
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.$CAULI
                                             ].imageUrl
                                         }
+                                        alt={blockchainMap[chainKey].defaultTokens[network][
+                                            DefaultToken.$CAULI
+                                        ].name}
                                     />
                                     <div>
                                         <div className="text-sm">
@@ -165,7 +169,7 @@ export const Market: FC = () => {
                                                 ].name
                                             }
                                         </div>
-                                        <div className="text-xs text-foreground-400">
+                                        <div className="text-xs text-muted-foreground">
                                             {`${
                                                 blockchainMap[chainKey].defaultTokens[network][
                                                     DefaultToken.$CAULI
@@ -176,14 +180,18 @@ export const Market: FC = () => {
                                 </div>
                                 <div className="flex gap-2 items-center">
                                     <div className="text-sm">{"0 USD"}</div>
-                                    <Chip
-                                        classNames={{
-                                            content: "text-light",
-                                        }}
-                                        color="success">{"+0%"}</Chip>
+                                    <Badge 
+                                        variant="secondary" 
+                                        className={cn(
+                                            "border-0",
+                                            "bg-green-500 hover:bg-green-600"
+                                        )}
+                                    >
+                                        {"+0%"}
+                                    </Badge>
                                 </div>
                             </div>
-                        </CardBody>
+                        </CardContent>
                     </Card>
                 </div>
             </Card>

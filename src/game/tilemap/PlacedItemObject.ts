@@ -152,7 +152,7 @@ export class PlacedItemObject extends ContainerLite {
         }
         if (!this.nextPlacedItem.plantInfo) {
             // remove everything in the container
-            this.destroyAll(true)
+            this.destroyAllChildren(true)
         } else {
             // Update the texture
             this.updatePlantInfoTexture()
@@ -192,7 +192,7 @@ export class PlacedItemObject extends ContainerLite {
         }
         if (!this.nextPlacedItem.buildingInfo) {
             // remove everything in the container
-            this.destroyAll()
+            this.destroyAllChildren()
         } else {
             // Update the star based on level
             this.updateBuildingUpgrade()
@@ -264,7 +264,6 @@ export class PlacedItemObject extends ContainerLite {
                             originY: 1,
                         })
                         .addBackground(background)
-                        .setScale(0.5)
                         .setDepth(this.depth + 30)
                         .setPosition(-TILE_WIDTH / 4, -2 * TILE_HEIGHT)
                     this.addLocal(this.bubbleState)
@@ -491,7 +490,7 @@ export class PlacedItemObject extends ContainerLite {
         this.addLocal(this.starsSizer)
     }
 
-    public destroyAll(exceptMainVisual = false) {
+    public destroyAllChildren(exceptMainVisual = false) {
         if (!exceptMainVisual) {
             if (!this.mainVisual) {
                 throw new Error("Main visual not found")
@@ -644,7 +643,6 @@ export class PlacedItemObject extends ContainerLite {
                             originY: 1,
                         })
                         .addBackground(background)
-                        .setScale(0.5)
                         .setDepth(this.depth + 30)
                         .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)
@@ -971,7 +969,6 @@ export class PlacedItemObject extends ContainerLite {
                             originY: 1,
                         })
                         .addBackground(background)
-                        .setScale(0.5)
                         .setDepth(this.depth + 30)
                         .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
                     this.addLocal(this.bubbleState)

@@ -12,29 +12,26 @@ import {
     TransferTokenData,
     useAppSelector,
 } from "@/redux"
-import {
-    Button,
-    Chip,
-    Snippet,
-    Image,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    Spacer,
-    useDisclosure,
-    Card,
-    Divider,
-    CardBody,
-    addToast,
-    Link,
-} from "@heroui/react"
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
 import { useHoneycombSendTransactionSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
 import { CopyText, Title } from "@/components"
 import useSWRMutation from "swr/mutation"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { useToast } from "@/hooks/use-toast"
+import { useDisclosure } from "@/hooks"
+import Image from "next/image"
+import Link from "next/link"
 
 interface ProviderInfo {
   name: string;
@@ -65,25 +62,32 @@ export const SignTransactionModal: FC = () => {
 
     const network = useAppSelector((state) => state.sessionReducer.network)
 
+    const { toast } = useToast()
 
-
-    const addTxHashToast = (txHash: string) => addToast({
+    const addTxHashToast = (txHash: string) => toast({
         title: "Tx Hash",
-        endContent: <Link color="foreground" isExternal showAnchorIcon href={explorerUrl({
-            chainKey,
-            network,
-            value: txHash,
-            type: "tx",
-        })}>
-            {truncateString(txHash, 10, 4)}
-        </Link>,
-        color: "success",
+        description: (
+            <Link 
+                href={explorerUrl({
+                    chainKey,
+                    network,
+                    value: txHash,
+                    type: "tx",
+                })}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground hover:underline"
+            >
+                {truncateString(txHash, 10, 4)} ↗
+            </Link>
+        ),
+        variant: "default",
     })
     
-    const addErrorToast = () => addToast({
+    const addErrorToast = () => toast({
         title: "Error",
-        endContent: <div className="text-sm">Failed to sign transaction</div>,
-        color: "danger",
+        description: "Failed to sign transaction",
+        variant: "destructive",
     })
 
     const balances = useAppSelector((state) => state.sessionReducer.balances)
@@ -154,55 +158,53 @@ export const SignTransactionModal: FC = () => {
           data as TransferTokenData
             return (
                 <Card>
-                    <CardBody className="p-3">
+                    <CardContent className="p-3">
                         <div className="flex items-center justify-between">
                             <div className="text-sm font-semibold">Token</div>
                             <div className="flex gap-2 items-center">
-                                <Image radius="none" src={tokens[tokenKey].imageUrl} alt={tokens[tokenKey].name} className="w-5 h-5" />
+                                <Image 
+                                    src={tokens[tokenKey].imageUrl} 
+                                    alt={tokens[tokenKey].name} 
+                                    width={20} 
+                                    height={20}
+                                    className="rounded-none" 
+                                />
                                 <div className="text-sm">{tokens[tokenKey].name}</div>
                             </div>
                         </div>
-                    </CardBody>
-                    <Divider/>
-                    <CardBody className="p-3">
+                    </CardContent>
+                    <Separator />
+                    <CardContent className="p-3">
                         <div className="flex items-center justify-between">
                             <div className="text-sm font-semibold">Amount</div>
                             <div className="flex gap-2 items-center">
                                 <div className="text-sm">{amount}</div>
                             </div>
                         </div>
-                    </CardBody>
-                    <Divider/>
-                    <CardBody className="p-3">
+                    </CardContent>
+                    <Separator />
+                    <CardContent className="p-3">
                         <div className="flex items-center justify-between">
                             <div className="text-sm font-semibold">Recipient Address</div>
                             <div className="flex gap-2 items-center">
                                 <CopyText text={truncateString(recipientAddress, 15,4)} copyString={recipientAddress} />
                             </div>
                         </div>
-                    </CardBody>
+                    </CardContent>
                 </Card>
             )
         }
         case TransactionType.HoneycombProtocolRawTx: {
             const { serializedTx } = data as HoneycombProtocolRawTxData
             return (
-                <div>
+                <div className="space-y-4">
                     <Title
                         title="Serialized Tx"
                         tooltipString="Serialized Tx is the raw transaction data that will be sent to the blockchain. It is a hex string that represents the transaction data."
                     />
-                    <Spacer y={1.5} />
-                    <Snippet
-                        hideSymbol
-                        codeString={serializedTx}
-                        className="max-w-full whitespace-pre-wrap"
-                        classNames={{
-                            pre: "text-justify !break-all !whitespace-pre-line !line-clamp-5",
-                        }}
-                    >
+                    <code className="block w-full p-2 bg-muted rounded-md text-sm break-all whitespace-pre-wrap line-clamp-5">
                         {truncateString(serializedTx, 60, 4)}
-                    </Snippet>
+                    </code>
                 </div>
             )
         }
@@ -210,60 +212,45 @@ export const SignTransactionModal: FC = () => {
     }
 
     return (
-        <Modal placement="bottom" isOpen={isOpen} onOpenChange={onOpenChange}>
-            <ModalContent>
-                <ModalHeader>
-                    <div className="text-lg font-bold">Sign Transaction</div>
-                </ModalHeader>
-                <ModalBody>
-                    <div>
-                        <div className="flex gap-2 items-center">
-                            <Chip
-                                classNames={{
-                                    content: "pr-0",
-                                }}
-                                className="px-2 flex-1 sm:flex-none sm:w-1/2"
-                                startContent={
-                                    <Image
-                                        radius="none"
-                                        className="w-5 h-5"
-                                        removeWrapper
-                                        src={blockchainMap[chainKey].imageUrl}
-                                    />
-                                }
-                                variant="flat"
-                                color="primary"
-                            >
-                                {blockchainMap[chainKey].name}
-                            </Chip>
-                            <Chip variant="flat" color="primary">
-                                {providers[type].name}
-                            </Chip>
-                        </div>
-                        <Spacer y={4} />
-                        {renderContent()}
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle className="text-lg font-bold">Sign Transaction</DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <div className="flex gap-2 items-center">
+                        <Badge variant="secondary" className="px-2 flex-1 sm:flex-none sm:w-1/2 flex items-center gap-2">
+                            <Image
+                                src={blockchainMap[chainKey].imageUrl}
+                                alt={blockchainMap[chainKey].name}
+                                width={20}
+                                height={20}
+                                className="rounded-none"
+                            />
+                            {blockchainMap[chainKey].name}
+                        </Badge>
+                        <Badge variant="secondary">
+                            {providers[type].name}
+                        </Badge>
                     </div>
-                </ModalBody>
-                <ModalFooter>
+                    {renderContent()}
+                </div>
+                <DialogFooter>
                     <Button
-                        variant="light"
-                        onPress={onClose}
-                        className="text-foreground-400"
+                        variant="ghost"
+                        onClick={onClose}
+                        className="text-muted-foreground"
                     >
-            Cancel
+                        Cancel
                     </Button>
                     <Button
-                        isLoading={isMutating}
-                        color="primary"
-                        className="light text-background"
-                        onPress={async () => {
-                            await trigger()
-                        }}
+                        onClick={() => trigger()}
+                        disabled={isMutating}
                     >
-            Sign
+                        Sign
                     </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

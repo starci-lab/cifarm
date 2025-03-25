@@ -1,5 +1,7 @@
-import { Divider, ScrollShadow, Card } from "@heroui/react"
 import React from "react"
+import { Card } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export interface ScrollableListProps<TItem extends object> {
   items: Array<TItem>;
@@ -11,21 +13,18 @@ export const ScrollableList = <TItem extends object>({
     contentCallback,
 }: ScrollableListProps<TItem>) => {
     return (
-        <ScrollShadow
-            hideScrollBar
-            className="h-[300px] relative -top-4 -left-4 p-4 w-[calc(100%+32px)]"
-        >
+        <ScrollArea className="h-[300px] relative -top-4 -left-4 p-4 w-[calc(100%+32px)]">
             <Card>
                 {items.map((item, index) => {
                     const last = index === items.length - 1
                     return (
-                        <>
+                        <React.Fragment key={index}>
                             {contentCallback(item)}
-                            {!last && <Divider />}
-                        </>
+                            {!last && <Separator />}
+                        </React.Fragment>
                     )
                 })}
             </Card>
-        </ScrollShadow>
+        </ScrollArea>
     )
 }

@@ -21,7 +21,6 @@ export const productAssetMap: Record<
     [ProductId.EggQuality]: {
         name: "Egg Quality",
         textureConfig: {
-            assetUrl: "products/egg.png",
             key: "egg",
             useExisting: true,
             isQuality: true,
@@ -39,7 +38,6 @@ export const productAssetMap: Record<
     [ProductId.MilkQuality]: {
         name: "Milk Quality",
         textureConfig: {
-            assetUrl: "products/milk.png",
             key: "milk",
             useExisting: true,
             isQuality: true,
@@ -56,7 +54,6 @@ export const productAssetMap: Record<
     [ProductId.TurnipQuality]: {
         name: "Turnip Quality",
         textureConfig: {
-            assetUrl: "products/turnip.png",
             key: "turnip",
             useExisting: true,
             isQuality: true,
@@ -73,7 +70,6 @@ export const productAssetMap: Record<
     [ProductId.CarrotQuality]: {
         name: "Carrot Quality",
         textureConfig: {
-            assetUrl: "products/carrot.png",
             key: "carrot",
             useExisting: true,
             isQuality: true,
@@ -90,7 +86,6 @@ export const productAssetMap: Record<
     [ProductId.PotatoQuality]: {
         name: "Potato Quality",
         textureConfig: {
-            assetUrl: "products/potato.png",
             key: "potato",
             useExisting: true,
             isQuality: true,
@@ -107,7 +102,6 @@ export const productAssetMap: Record<
     [ProductId.CucumberQuality]: {
         name: "Cucumber Quality",
         textureConfig: {
-            assetUrl: "products/cucumber.png",
             key: "cucumber",
             useExisting: true,
             isQuality: true,
@@ -124,7 +118,6 @@ export const productAssetMap: Record<
     [ProductId.PineappleQuality]: {
         name: "Pineapple Quality",
         textureConfig: {
-            assetUrl: "products/pineapple.png",
             key: "pineapple",
             isQuality: true,
         },
@@ -140,7 +133,6 @@ export const productAssetMap: Record<
     [ProductId.WatermelonQuality]: {
         name: "Watermelon Quality",
         textureConfig: {
-            assetUrl: "products/watermelon.png",
             key: "watermelon",
             isQuality: true,
         },
@@ -156,7 +148,6 @@ export const productAssetMap: Record<
     [ProductId.BellPepperQuality]: {
         name: "Bell Pepper Quality",
         textureConfig: {
-            assetUrl: "products/bell-pepper.png",
             key: "bell-pepper",
             useExisting: true,
             isQuality: true,
@@ -173,7 +164,6 @@ export const productAssetMap: Record<
     [ProductId.BananaQuality]: {
         name: "Banana Quality",
         textureConfig: {
-            assetUrl: "products/banana.png",
             key: "banana",
             useExisting: true,
             isQuality: true,
@@ -190,7 +180,6 @@ export const productAssetMap: Record<
     [ProductId.AppleQuality]: {
         name: "Apple Quality",
         textureConfig: {
-            assetUrl: "products/apple.png",
             key: "apple",
             useExisting: true,
             isQuality: true,
@@ -207,8 +196,23 @@ export const productAssetMap: Record<
     [ProductId.DaisyQuality]: {
         name: "Daisy Quality",
         textureConfig: {
-            assetUrl: "products/daisy.png",
             key: "daisy",
+            useExisting: true,
+            isQuality: true,
+        },
+    },
+    [ProductId.Strawberry]: {
+        name: "Strawberry",
+        textureConfig: {
+            assetUrl: "products/strawberry.png",
+            key: "strawberry",
+            isQuality: false,
+        },
+    },
+    [ProductId.StrawberryQuality]: {
+        name: "Strawberry Quality",
+        textureConfig: {
+            key: "strawberry",
             useExisting: true,
             isQuality: true,
         },

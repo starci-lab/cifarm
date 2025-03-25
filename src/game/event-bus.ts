@@ -83,6 +83,7 @@ export enum EventName {
 
   EmitReturn = "emit_return",
 
+  EnableInputs = "enable_inputs",
   // open shop
   OpenShop = "open_shop",
   CloseShop = "close_shop",
@@ -340,7 +341,7 @@ export interface Position {
   y: number;
 }
 
-export interface BuyingModeOnMessage {
+export interface BuyingDragModeOnMessage {
   // placed item
   id: string;
   type: PlacedItemType;

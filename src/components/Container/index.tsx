@@ -1,6 +1,5 @@
-
-import { cn } from "@heroui/react"
 import React, { FC, PropsWithChildren } from "react"
+import { cn } from "@/lib/utils"
 
 interface ContainerProps extends PropsWithChildren {
   hasPadding?: boolean;
