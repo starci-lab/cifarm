@@ -1,7 +1,7 @@
-import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import { Button, Spacer } from "@/components"
 import React from "react"
 import { useRouterWithSearchParams } from "@/hooks"
+import { ArrowLeftIcon } from "lucide-react"
 
 export interface HeaderProps {
   title: string

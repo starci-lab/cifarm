@@ -9,7 +9,7 @@ import { blockchainMap } from "@/modules/blockchain"
 import { computeExperiencesQuota, truncateString } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Avatar, Chip, Progress, Skeleton, Snippet, Spacer, Image, Card, CardBody, useDisclosure } from "@heroui/react"
+
 import React, { FC } from "react"
 
 export const Profile : FC = () => {
@@ -25,7 +25,7 @@ export const Profile : FC = () => {
     const { onOpen: onQuestsOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
     return (
         <div>
-            <div className="flex gap-4 items-center">
+            {/* <div className="flex gap-4 items-center">
                 <Avatar
                     isBordered
                     src={avatarUrl}
@@ -143,7 +143,7 @@ export const Profile : FC = () => {
                         </CardBody>
                     </Card>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
