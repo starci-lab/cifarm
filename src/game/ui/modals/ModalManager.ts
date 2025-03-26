@@ -215,7 +215,7 @@ export class ModalManager extends ContainerLite {
             depth = MODAL_BACKDROP_DEPTH_2
             break
         }
-        EventBus.emit(EventName.ShowUIBackdrop, {
+        EventBus.emit(EventName.ShowBackdrop, {
             depth,
             transparency,
         })
@@ -229,12 +229,12 @@ export class ModalManager extends ContainerLite {
         case ModalName.SelectProduct:
         case ModalName.InputQuantity:
         case ModalName.Claim:
-            EventBus.emit(EventName.UpdateUIBackdrop, {
+            EventBus.emit(EventName.UpdateBackdrop, {
                 depth: MODAL_BACKDROP_DEPTH_1,
             })
             return
         }
-        EventBus.emit(EventName.HideUIBackdrop)
+        EventBus.emit(EventName.HideBackdrop)
     }
 
     private getModal(name: ModalName) {

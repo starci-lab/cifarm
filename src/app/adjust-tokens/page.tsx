@@ -1,15 +1,5 @@
 "use client"
 import { useRouterWithSearchParams } from "@/hooks"
-import {
-    Button,
-    Card,
-    CardBody,
-    Divider,
-    Image,
-    Link,
-    Spacer,
-    Switch,
-} from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import { Container } from "@/components"
 import React, { FC } from "react"
@@ -24,7 +14,7 @@ const Page: FC = () => {
     const dispatch = useAppDispatch()
     return (
         <Container hasPadding>
-            <div className="h-full">
+            {/* <div className="h-full">
                 <div>
                     <div className="flex gap-2 items-center">
                         <Link as="button" onPress={() => router.back()} color="foreground">
@@ -81,7 +71,7 @@ const Page: FC = () => {
                 >
             Import
                 </Button>
-            </div>
+            </div> */}
         </Container>
     )
 }

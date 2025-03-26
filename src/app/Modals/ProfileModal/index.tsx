@@ -9,7 +9,7 @@ import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components"
 import {
     Dialog,
     DialogContent,

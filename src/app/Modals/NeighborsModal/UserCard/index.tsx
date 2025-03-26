@@ -23,7 +23,7 @@ import { useDisclosure } from "@/hooks"
 import { UserMinus2, UserPlus2 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React, { FC } from "react"
-import { Button } from "@/components/ui/button"
+import { EnhancedButton } from "@/components"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
@@ -110,7 +110,7 @@ export const UserCard: FC<UserCardProps> = ({
             </div>
             <div className="flex gap-2">
                 {baseFollowed || user.followed ? (
-                    <Button
+                    <EnhancedButton
                         onClick={() => {
                             dispatch(setWarningModal({
                                 message: "Are you sure you want to unfollow this user?",
@@ -136,9 +136,9 @@ export const UserCard: FC<UserCardProps> = ({
                         className="text-destructive hover:text-destructive"
                     >
                         <UserMinus2 className="h-5 w-5" />
-                    </Button>
+                    </EnhancedButton>
                 ) : (
-                    <Button
+                    <EnhancedButton
                         onClick={async () => {
                             try {
                                 await followSwrMutation.trigger({
@@ -157,9 +157,9 @@ export const UserCard: FC<UserCardProps> = ({
                         size="icon"
                     >
                         <UserPlus2 className="h-5 w-5" />
-                    </Button>
+                    </EnhancedButton>
                 )}
-                <Button 
+                <EnhancedButton 
                     onClick={async () => {
                         onClose()
                         if (pathname !== pathConstants.play) {
@@ -185,7 +185,7 @@ export const UserCard: FC<UserCardProps> = ({
                     size="icon"
                 >
                     <HomeIcon className="h-5 w-5" />
-                </Button>
+                </EnhancedButton>
             </div>
         </div>
     )

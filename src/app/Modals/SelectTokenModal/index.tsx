@@ -2,11 +2,9 @@ import { valuesWithKey } from "@/modules/common"
 import { useAppSelector } from "@/redux"
 import React, { useMemo, useState } from "react"
 import { Token } from "./Token"
-import { ScrollableList } from "@/components/ScrollableList"
-import { FilterBar } from "@/components"
+import { ScrollableList, FilterBar, Spacer, EnhancedButton } from "@/components"
 import { SELECT_TOKEN_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -17,7 +15,7 @@ import {
 import { useDisclosure } from "@/hooks"
 
 export const SelectTokenModal = () => {
-    const { isOpen, onOpenChange, onClose } = useSingletonHook<
+    const { isOpen, onOpenChange } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(SELECT_TOKEN_DISCLOSURE)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -36,26 +34,27 @@ export const SelectTokenModal = () => {
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold">Select Token</DialogTitle>
                 </DialogHeader>
-                <div className="py-4 space-y-4">
+                <div>
                     <FilterBar
                         handleSearchResult={({ searchString }) => {
                             setSearchString(searchString)
                         }}
                         disableDebounce={true}
                     />
+                    <Spacer y={4} />
                     <ScrollableList
                         items={filteredTokensArray}
                         contentCallback={(token) => <Token token={token} />}
                     />
                 </div>
                 <DialogFooter>
-                    <Button
+                    <EnhancedButton
                         variant="ghost"
-                        onClick={onClose}
+                        onClick={() => onOpenChange(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </Button>
+                    </EnhancedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

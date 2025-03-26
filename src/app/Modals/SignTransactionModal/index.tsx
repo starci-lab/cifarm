@@ -6,6 +6,7 @@ import {
 } from "@/app/constants"
 import { truncateString } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
+import { Image, Snippet, Spacer } from "@/components"
 import {
     HoneycombProtocolRawTxData,
     TransactionType,
@@ -15,9 +16,9 @@ import {
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
 import { useHoneycombSendTransactionSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
-import { CopyText, Title } from "@/components"
+import { Title } from "@/components"
 import useSWRMutation from "swr/mutation"
-import { Button } from "@/components/ui/button"
+import { EnhancedButton } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -30,18 +31,16 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { useDisclosure } from "@/hooks"
-import Image from "next/image"
-import Link from "next/link"
 
 interface ProviderInfo {
   name: string;
 }
 
 export const SignTransactionModal: FC = () => {
-    const { isOpen, onOpenChange, onClose } = useSingletonHook<
+    const { isOpen, onOpenChange } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(SIGN_TRANSACTION_DISCLOSURE)
-
+  
     const { swrMutation: honeycombSendTransactionSwrMutation } = useSingletonHook<
     ReturnType<typeof useHoneycombSendTransactionSwrMutation>
   >(HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION)
@@ -65,22 +64,18 @@ export const SignTransactionModal: FC = () => {
     const { toast } = useToast()
 
     const addTxHashToast = (txHash: string) => toast({
-        title: "Tx Hash",
-        description: (
-            <Link 
-                href={explorerUrl({
-                    chainKey,
-                    network,
-                    value: txHash,
-                    type: "tx",
-                })}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground hover:underline"
-            >
-                {truncateString(txHash, 10, 4)} ↗
-            </Link>
-        ),
+        title: "Tx hash",
+        description: truncateString(txHash, 10, 4),
+        action: <EnhancedButton variant="outline" onClick={() => {
+            window.open(explorerUrl({
+                chainKey,
+                network,
+                value: txHash,
+                type: "tx",
+            }), "_blank")
+        }}>
+            View
+        </EnhancedButton>,
         variant: "default",
     })
     
@@ -129,7 +124,7 @@ export const SignTransactionModal: FC = () => {
                 console.log(error)
                 addErrorToast()
             } finally {
-                onClose()
+                onOpenChange(false)
             }
         }
     )
@@ -164,10 +159,7 @@ export const SignTransactionModal: FC = () => {
                             <div className="flex gap-2 items-center">
                                 <Image 
                                     src={tokens[tokenKey].imageUrl} 
-                                    alt={tokens[tokenKey].name} 
-                                    width={20} 
-                                    height={20}
-                                    className="rounded-none" 
+                                    className="rounded-none w-5 h-5" 
                                 />
                                 <div className="text-sm">{tokens[tokenKey].name}</div>
                             </div>
@@ -187,7 +179,8 @@ export const SignTransactionModal: FC = () => {
                         <div className="flex items-center justify-between">
                             <div className="text-sm font-semibold">Recipient Address</div>
                             <div className="flex gap-2 items-center">
-                                <CopyText text={truncateString(recipientAddress, 15,4)} copyString={recipientAddress} />
+                                <div className="text-sm">{truncateString(recipientAddress, 15,4)}</div>
+                                <Snippet code={recipientAddress} />
                             </div>
                         </div>
                     </CardContent>
@@ -215,17 +208,14 @@ export const SignTransactionModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="text-lg font-bold">Sign Transaction</DialogTitle>
+                    <DialogTitle className="text-xl font-bold">Sign Transaction</DialogTitle>
                 </DialogHeader>
-                <div className="py-4 space-y-4">
+                <div>
                     <div className="flex gap-2 items-center">
-                        <Badge variant="secondary" className="px-2 flex-1 sm:flex-none sm:w-1/2 flex items-center gap-2">
+                        <Badge variant="secondary" className="flex gap-1">
                             <Image
                                 src={blockchainMap[chainKey].imageUrl}
-                                alt={blockchainMap[chainKey].name}
-                                width={20}
-                                height={20}
-                                className="rounded-none"
+                                className="rounded-none w-4 h-4"
                             />
                             {blockchainMap[chainKey].name}
                         </Badge>
@@ -233,22 +223,23 @@ export const SignTransactionModal: FC = () => {
                             {providers[type].name}
                         </Badge>
                     </div>
+                    <Spacer y={4} />
                     {renderContent()}
                 </div>
                 <DialogFooter>
-                    <Button
+                    <EnhancedButton
                         variant="ghost"
-                        onClick={onClose}
+                        onClick={() => onOpenChange(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </Button>
-                    <Button
+                    </EnhancedButton>
+                    <EnhancedButton
+                        isLoading={isMutating}
                         onClick={() => trigger()}
-                        disabled={isMutating}
                     >
                         Sign
-                    </Button>
+                    </EnhancedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

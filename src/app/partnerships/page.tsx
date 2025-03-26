@@ -4,11 +4,10 @@ import { Container, ExclamationTooltip } from "@/components"
 import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
 import { valuesWithKey } from "@/modules/common"
-import { Card, CardBody,Divider, Image, Link, Spacer } from "@heroui/react"
+
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
 import { Partnership, PartnershipKey } from "./types"
-
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
 
@@ -24,25 +23,25 @@ const Page: FC = () => {
     }
 
     return (
-        <Container hasPadding >
-            <div className="h-full">
+        <Container hasPadding>
+            {/* <div className="h-full">
                 <div>
                     <div className="flex gap-2 items-center">
-                        <Link as="button" onPress={() => router.back()} color="foreground">
+                        <Link as="button" onClick={() => router.back()} color="foreground">
                             <ArrowLeftIcon className="w-6 h-6" />
                         </Link>
                         <div className="text-2xl font-bold">Partnerships</div>
                     </div>
                     <Spacer y={4} />
                     <div className="text-xs text-foreground-400">
-                    The partnerships of CiFarm engage in integration and simplify the platform, also boosting the user experience.
+                        The partnerships of CiFarm engage in integration and simplify the platform, also boosting the user experience.
                     </div>
                 </div>
                 <Spacer y={6} />
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Available Partnerships</div>
-                        <ExclamationTooltip message="Select the chain you want to use."  />
+                        <ExclamationTooltip message="Select the chain you want to use." />
                     </div>
                     <Spacer y={4} />
                     <Card>
@@ -50,14 +49,13 @@ const Page: FC = () => {
                             {valuesWithKey(partnerships).map(({ key, name, description, logo, onPress }, index) => {
                                 const last = index === Object.values(partnerships).length - 1
                                 return (
-                                    <>
+                                    <React.Fragment key={key}>
                                         <Card
                                             radius="none"
                                             shadow="none"
-                                            key={key}
                                             isPressable={true}
                                             disableRipple={true}
-                                            onPress={onPress}
+                                            onClick={onPress}
                                         >
                                             <CardBody className="flex gap-2">
                                                 <div className="w-full flex gap-2">
@@ -73,14 +71,14 @@ const Page: FC = () => {
                                                 </div>
                                             </CardBody>
                                         </Card>
-                                        {!last && <Divider/>}
-                                    </>
+                                        {!last && <Divider />}
+                                    </React.Fragment>
                                 )
                             })}
                         </div>
                     </Card>
                 </div>
-            </div>
+            </div> */}
         </Container>
     )
 }

@@ -104,9 +104,9 @@ export enum EventName {
   // backdrops
   ShowGameplayBackdrop = "show_gameplay_backdrop",
   HideGameplayBackdrop = "hide_gameplay_backdrop",
-  ShowUIBackdrop = "show_ui_backdrop",
-  HideUIBackdrop = "hide_ui_backdrop",
-  UpdateUIBackdrop = "update_ui_backdrop",
+  ShowBackdrop = "show_backdrop",
+  HideBackdrop = "hide_backdrop",
+  UpdateBackdrop = "update_backdrop",
 
   // hide press here arrow
   ShowPressHereArrow = "show_press_here_arrow",
@@ -352,13 +352,7 @@ export interface ShowGameplayBackdropMessage {
   depth: number;
 }
 
-export interface ShowUIBackdropMessage {
-  // depth of the backdrop
-  depth: number;
-  opacityLevel?: number;
-}
-
-export interface UpdateUIBackdropMessage {
+export interface UpdateBackdropMessage {
   // position of the backdrop
   depth: number;
 }
@@ -474,4 +468,11 @@ export interface PlacedItemsRefreshedMessage {
   // userId to compare with the placed items
   userId?: string;
 }
+
+export interface ShowBackdropMessage {
+  // depth of the backdrop
+  depth: number;
+  transparency?: number;
+}
+
 

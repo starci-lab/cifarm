@@ -49,10 +49,8 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         },
         shop: {
             textureConfig: {
-                key: "buildings-coop",
-                useExisting: true,
-                scaleWidth: 0.35,
-                scaleHeight: 0.35
+                key: "buildings-coop-shop",
+                assetUrl: "buildings/coop/shop.png",
             }
         }
     },
@@ -73,10 +71,8 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         },
         shop: {
             textureConfig: {
-                key: "buildings-barn",
-                useExisting: true,
-                scaleWidth: 0.35,
-                scaleHeight: 0.35
+                key: "buildings-barn-shop",
+                assetUrl: "buildings/barn/shop.png",
             }
         }
     },
@@ -107,10 +103,8 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         },
         shop: {
             textureConfig: {
-                key: "buildings-bee-house",
-                useExisting: true,
-                scaleWidth: 0.35,
-                scaleHeight: 0.35
+                key: "buildings-bee-house-shop",
+                assetUrl: "buildings/bee-house/shop.png",
             }
         }
     },
@@ -125,10 +119,8 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         },
         shop: {
             textureConfig: {
-                key: "buildings-pet-house",
-                useExisting: true,
-                scaleWidth: 0.35,
-                scaleHeight: 0.35
+                key: "buildings-pet-house-shop",
+                assetUrl: "buildings/pet-house/shop.png",
             }
         }
     },   
@@ -142,25 +134,29 @@ export const loadBuildingAssets = (scene: Scene) => {
         const buildingData = buildingAssetMap[_buildingId]
 
         if (!buildingData) {
-            throw new Error(`Building data not found for buildingId: ${buildingId}`)
+            throw new Error(`Building asset data not found for buildingId: ${buildingId}`)
         }
 
-        // Load the asset for the building
-        const { key, assetUrl, useExisting } = buildingData.map.textureConfig
-        if (!useExisting) {
-            scene.load.image(
-                key,
-                assetUrl
+        const { key, assetUrl, useExisting, spineConfig } = buildingData.map.textureConfig
+        if (spineConfig) {
+            scene.load.spineJson(
+                spineConfig.json.key,
+                spineConfig.json.assetUrl
+            )
+            scene.load.spineAtlas(
+                spineConfig.atlas.key,
+                spineConfig.atlas.assetUrl
             )
         }
-        
-        // Load the asset for the shop
+        if (!useExisting) {
+            scene.load.image(key, assetUrl)
+        }    
+
         if (buildingData.shop) {
             const { key, useExisting, assetUrl } = buildingData.shop.textureConfig
-            if (useExisting) {
+            if (!useExisting) {
                 scene.load.image(key, assetUrl)
             }
-            
         }
     })
 }

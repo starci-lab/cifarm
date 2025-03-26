@@ -3,7 +3,7 @@ import { Container, ExclamationTooltip } from "@/components"
 import { useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap, ChainKey, Network, networkMap } from "@/modules/blockchain"
 import { setChainKey, setNetwork, useAppDispatch, useAppSelector } from "@/redux"
-import { Alert, Button, Card, CardBody, CheckboxIcon, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Spacer } from "@heroui/react"
+// import { Alert, Button, Card, CardBody, CheckboxIcon, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Spacer } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
 
@@ -20,7 +20,7 @@ const Page: FC = () => {
     const isTestnet = network === Network.Testnet
     return (
         <Container hasPadding>
-            <div className="h-full">
+            {/* <div className="h-full">
                 <div>
                     <div className="flex gap-2 items-center">
                         <Link as="button" onPress={() => router.back()} color="foreground">
@@ -118,7 +118,7 @@ const Page: FC = () => {
                         )
                     }
                 </div>
-            </div>
+            </div> */}
         </Container>
     )
 }

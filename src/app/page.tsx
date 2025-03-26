@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouterWithSearchParams } from "@/hooks"
-import { Container } from "@/components"
+import { Container, EnhancedButton } from "@/components"
 import React, { FC } from "react"
 import { pathConstants } from "@/constants"
 import { generateMnemonic } from "bip39"
@@ -15,7 +15,6 @@ import { ChainKey, createAccount, Network } from "@/modules/blockchain"
 import { setMnemonic, triggerLoadAccounts } from "@/redux"
 import { useDispatch } from "react-redux"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
@@ -43,7 +42,7 @@ const Page: FC = () => {
                 </div>
                 <div className="h-36" /> {/* Spacer */}
                 <div className="grid gap-4 w-full">
-                    <Button
+                    <EnhancedButton
                         size="lg"
                         className="w-full"
                         onClick={async () => {
@@ -117,15 +116,15 @@ const Page: FC = () => {
                         }}
                     >
                         Create new account
-                    </Button>
-                    <Button
+                    </EnhancedButton>
+                    <EnhancedButton
                         variant="outline"
                         size="lg"
                         className="w-full"
                         onClick={() => router.push(pathConstants.home)}
                     >
                         Import existing account
-                    </Button>
+                    </EnhancedButton>
                 </div>
             </div>
         </Container>

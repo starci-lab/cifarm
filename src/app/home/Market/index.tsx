@@ -1,14 +1,10 @@
 import { NATIVE_COINGEKCO_SWR } from "@/app/constants"
-import { ExclamationTooltip } from "@/components"
+import { ExclamationTooltip, Image, Badge, ScrollableList  } from "@/components"
 import { useNativeCoinGeckoSWR } from "@/hooks"
 import { blockchainMap, DefaultToken } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import React, { FC, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 export const Market: FC = () => {
@@ -38,24 +34,22 @@ export const Market: FC = () => {
                 <ExclamationTooltip message="The current market prices and trends are based on the last 24 hours." />
             </div>
             <div className="h-4" />
-            <Card>
-                <div className="grid">
-                    <Card className="border-0 shadow-none cursor-pointer hover:bg-accent/50 transition-colors">
-                        <CardContent className="p-4">
-                            <div className="flex justify-between items-center w-full">
+            <ScrollableList
+                enableScroll={false}
+                items={Object.keys(blockchainMap[chainKey].defaultTokens[network])}
+                contentCallback={(item) => {
+                    switch (item) {
+                    case DefaultToken.Native: {
+                        return (
+                            <div className="flex justify-between items-center w-full p-3">
                                 <div className="flex gap-2 items-center">
                                     <Image
-                                        width={32}
-                                        height={32}
-                                        className="rounded-full"
+                                        className="w-8 h-8"
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.Native
                                             ].imageUrl
                                         }
-                                        alt={blockchainMap[chainKey].defaultTokens[network][
-                                            DefaultToken.Native
-                                        ].name}
                                     />
                                     <div>
                                         <div className="text-sm">
@@ -91,25 +85,19 @@ export const Market: FC = () => {
                                     </Badge>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                    <Separator />
-                    <Card className="border-0 shadow-none cursor-pointer hover:bg-accent/50 transition-colors">
-                        <CardContent className="p-4">
-                            <div className="flex justify-between items-center w-full">
+                        )
+                    }
+                    case DefaultToken.$CARROT: {
+                        return (
+                            <div className="flex justify-between items-center w-full p-3">
                                 <div className="flex gap-2 items-center">
                                     <Image
-                                        width={32}
-                                        height={32}
-                                        className="rounded-full"
+                                        className="w-8 h-8"
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.$CARROT
                                             ].imageUrl
                                         }
-                                        alt={blockchainMap[chainKey].defaultTokens[network][
-                                            DefaultToken.$CARROT
-                                        ].name}
                                     />
                                     <div>
                                         <div className="text-sm">
@@ -141,17 +129,14 @@ export const Market: FC = () => {
                                     </Badge>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                    <Separator />
-                    <Card className="border-0 shadow-none cursor-pointer hover:bg-accent/50 transition-colors">
-                        <CardContent className="p-4">
-                            <div className="flex justify-between items-center w-full">
+                        )
+                    }
+                    case DefaultToken.$CAULI: {
+                        return (
+                            <div className="flex justify-between items-center w-full p-3">
                                 <div className="flex gap-2 items-center">
                                     <Image
-                                        width={32}
-                                        height={32}
-                                        className="rounded-full"
+                                        className="rounded-full w-8 h-8"
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.$CAULI
@@ -191,10 +176,11 @@ export const Market: FC = () => {
                                     </Badge>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </Card>
+                        )
+                    }
+                    }
+                }}
+            />
         </div>
     )
 }

@@ -5,9 +5,8 @@ import {
     TOKENS_OFFCHAIN_DISCLOSURE,
 } from "@/app/constants"
 import { ExclamationTooltip } from "@/components"
-import { useGraphQLQueryUserSwr } from "@/hooks"
+import { useDisclosure, useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Card, CardBody, Spacer, Image, useDisclosure } from "@heroui/react"
 import React, { FC } from "react"
 
 export const GameAssets : FC = () => {
@@ -16,7 +15,7 @@ export const GameAssets : FC = () => {
     const user = swr.data?.data.user
     return (
         <div>
-            <div>
+            {/* <div>
                 <div className="flex gap-2 items-center">
                     <div className="text-lg font-bold">Assets</div>
                     <ExclamationTooltip message="Achievements and badges earned by the user." />
@@ -71,7 +70,7 @@ export const GameAssets : FC = () => {
                         </Card>
                     </div>
                 </Card>
-            </div>
+            </div> */}
         </div>
     )
 }

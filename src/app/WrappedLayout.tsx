@@ -13,6 +13,7 @@ import dynamic from "next/dynamic"
 import { SingletonHook2Provider, SingletonHookProvider } from "./SingletonHookProviders"
 import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { ThemeProvider as NextThemesProvider } from "next-themes"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -26,10 +27,17 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                 <SWRConfig value={{ provider: () => new Map() }}>
                     <SingletonHookProvider>
                         <SingletonHook2Provider>
-                            {loaded ? children : <LoadingScreen />}
-                            <UseEffects />
-                            <Modals /> 
-                            <Toaster />
+                            <NextThemesProvider
+                                attribute="class"
+                                defaultTheme="system"
+                                enableSystem
+                                disableTransitionOnChange
+                            >
+                                {loaded ? children : <LoadingScreen />}
+                                <UseEffects />
+                                <Modals /> 
+                                <Toaster />
+                            </NextThemesProvider>
                         </SingletonHook2Provider>
                     </SingletonHookProvider>
                 </SWRConfig>

@@ -185,7 +185,7 @@ export const loadAnimalAssets = (scene: Scene) => {
 
         if (animalData.shop) {
             const { key, useExisting, assetUrl } = animalData.shop.textureConfig
-            if (useExisting) {
+            if (!useExisting) {
                 scene.load.image(key, assetUrl)
             }
         }

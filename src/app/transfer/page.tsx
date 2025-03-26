@@ -1,12 +1,13 @@
 "use client"
-import { Container, Header } from "@/components"
+import { Container, Header, TabsList } from "@/components"
 import {
+    AssetTab,
     setTransferTab,
     TransferTab,
     useAppDispatch,
     useAppSelector,
 } from "@/redux"
-import { Spacer, Tab, Tabs } from "@heroui/react"
+import { Spacer, Tabs, TabsTrigger } from "@/components"
 import React, { FC } from "react"
 import { Tokens } from "./Tokens"
 
@@ -26,23 +27,15 @@ const Page: FC = () => {
                 <div>
                     <Header title="Transfer" description="Transfer your tokens" />
                     <Spacer y={6} />
-                    <Tabs
-                        size="lg"
-                        color="primary"
-                        classNames={{
-                            base: "w-full",
-                            tabList: "w-full",
-                            tabContent:
-            "group-data-[selected=true]:light group-data-[selected=true]:text-background",
-                        }}
-                        selectedKey={transferTab}
-                        onSelectionChange={(transferTab) =>
-                            dispatch(setTransferTab(transferTab))
-                        }
-                        aria-label="Options"
-                    >
-                        <Tab key={TransferTab.Token} title="Token" />
-                        <Tab key={TransferTab.NFTs} title="NFT" />
+                    <Tabs className="w-full" value={transferTab} onValueChange={(value) => dispatch(setTransferTab(value as AssetTab))}>
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value={TransferTab.Token}>
+                                Tokens
+                            </TabsTrigger>
+                            <TabsTrigger value={TransferTab.NFTs}>
+                                NFTs
+                            </TabsTrigger>
+                        </TabsList>
                     </Tabs>
                 </div>
 

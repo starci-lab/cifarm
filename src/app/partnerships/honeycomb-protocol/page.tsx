@@ -7,7 +7,6 @@ import { TxResponse } from "@/modules/honeycomb"
 import { deserialize, serialize } from "@/modules/serialization"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
-import { Spacer, Link, Card, CardBody, Divider, Image, Button, useDisclosure } from "@heroui/react"
 import { ArrowLeftIcon } from "lucide-react"
 import React, { FC } from "react"
 
@@ -22,7 +21,7 @@ const Page: FC = () => {
     >(SIGN_TRANSACTION_DISCLOSURE)
     return (
         <Container hasPadding>
-            <div className="h-full">
+            {/* <div className="h-full">
                 <div className="flex gap-2 items-center">
                     <Link as="button" onPress={() => router.back()} color="foreground">
                         <ArrowLeftIcon className="w-6 h-6" />
@@ -104,7 +103,7 @@ const Page: FC = () => {
                         </div>
                     </Card>
                 </div>
-            </div>
+            </div> */}
         </Container>
     )
 }

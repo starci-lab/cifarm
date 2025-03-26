@@ -2,7 +2,7 @@ import { FormikProps, useFormik } from "formik"
 import * as Yup from "yup" // Import Yup
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
-import { useDisclosure } from "@heroui/react"
+import { useDisclosure } from "@/hooks"
 import {
     setSignTransactionModal,
     TransactionType,
@@ -17,7 +17,7 @@ export interface TransferFormikValues {
 }
 
 export const useTransferTokenFormik = (): FormikProps<TransferFormikValues> => {
-    const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { onOpenChange } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
     )
     const dispatch = useAppDispatch()
@@ -61,7 +61,7 @@ export const useTransferTokenFormik = (): FormikProps<TransferFormikValues> => {
                     },
                 })
             )
-            onOpen()
+            onOpenChange(true)
         },
     })
 

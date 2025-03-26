@@ -3,7 +3,7 @@ import { WARNING_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
-import { Button } from "@/components/ui/button"
+import { EnhancedButton } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useDisclosure } from "@/hooks"
 
 export const WarningModal: FC = () => {
-    const { isOpen, onOpenChange, onClose } =
+    const { isOpen, onOpenChange } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(WARNING_DISCLOSURE)
     const message = useAppSelector(
         (state) => state.modalReducer.warningModal.message
@@ -48,18 +48,18 @@ export const WarningModal: FC = () => {
                     </Alert>
                 </div>
                 <DialogFooter>
-                    <Button 
+                    <EnhancedButton 
                         variant="ghost" 
-                        onClick={onClose}
+                        onClick={() => onOpenChange(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </Button>
-                    <Button
+                    </EnhancedButton>
+                    <EnhancedButton
                         variant="destructive"
                         onClick={() => {
                             //close the current modal
-                            onClose()
+                            onOpenChange(false)
                             //open the next modal
                             if (callback) {
                                 callback()
@@ -70,7 +70,7 @@ export const WarningModal: FC = () => {
                         }}
                     >
                         Continue
-                    </Button>
+                    </EnhancedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

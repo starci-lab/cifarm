@@ -11,7 +11,7 @@ import React, { FC } from "react"
 import { UserCard } from "../UserCard"
 import { FilterBar } from "@/components"
 import { RefreshCcw } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { EnhancedButton } from "@/components"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -67,14 +67,14 @@ export const WorldTab: FC = () => {
                             })
                         }}
                 />
-                <Button 
+                <EnhancedButton 
                     variant="outline" 
                     size="icon"
                     onClick={() => neighborsMutate()}
                     className="shrink-0"
                 >
                     <RefreshCcw className="h-4 w-4" />
-                </Button>
+                </EnhancedButton>
             </div>
             
             <ScrollArea className="h-[300px] rounded-md border">

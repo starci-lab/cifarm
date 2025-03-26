@@ -2,7 +2,7 @@
 import { MINT_AMOUNT_DISCLOSURE, TOKEN_IMAGE_URL, TOKENS_OFFCHAIN_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
-import { Button } from "@/components/ui/button"
+import { EnhancedButton } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -38,11 +38,11 @@ export const TokensOffchainModal: FC = () => {
                             Offchain-issued tokens are not stored on the blockchain. But you can mint to claim the tokens on-chain.
                         </AlertDescription>
                     </Alert>
-                    <Button
+                    <EnhancedButton
                         onClick={() => onOpen()}
                     >
                         Mint
-                    </Button>
+                    </EnhancedButton>
                 </div>
             </DialogContent>
         </Dialog>

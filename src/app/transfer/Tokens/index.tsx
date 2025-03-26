@@ -1,21 +1,28 @@
 "use client"
 import React, { FC, useEffect } from "react"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
-import { Button, Image, Input, Link, Spacer } from "@heroui/react"
+import {
+    Spacer,
+    Title,
+    Image,
+    EnhancedNumberInput,
+    EnhancedInput,
+    Link,
+    EnhancedButton,
+} from "@/components"
 import { setSelectTokenModal, useAppDispatch, useAppSelector } from "@/redux"
-import { useDisclosure } from "@heroui/react"
 import {
     SELECT_TOKEN_DISCLOSURE,
     TRANSFER_TOKEN_FORMIK,
 } from "@/app/constants"
 import { valuesWithKey } from "@/modules/common"
-import { NumberInput, Title } from "@/components"
 import { useTransferTokenFormik } from "@/hooks"
+import { useDisclosure } from "@/hooks"
 import { AtSymbolIcon } from "@heroicons/react/24/outline"
 
 export const Tokens: FC = () => {
     const balances = useAppSelector((state) => state.sessionReducer.balances)
-    
+
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
     )
@@ -23,7 +30,7 @@ export const Tokens: FC = () => {
     const tokensArray = valuesWithKey(tokens)
     const selectedTokenKey = formik.values.tokenKey || tokensArray[0].key
     const balanceSwr = balances[selectedTokenKey]
-    const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { onOpenChange } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_TOKEN_DISCLOSURE
     )
 
@@ -35,9 +42,7 @@ export const Tokens: FC = () => {
 
     const dispatch = useAppDispatch()
     return (
-        <form
-            onSubmit={formik.handleSubmit}
-            onReset={formik.handleReset}
+        <div
             className="flex flex-col justify-between h-full"
         >
             <div>
@@ -45,19 +50,16 @@ export const Tokens: FC = () => {
                     <Title
                         title="Token"
                         tooltipString="Select the token you want to transfer"
+                        classNames={{
+                            title: "text-sm",
+                            tooltip: "w-[14px] h-[14px]",
+                        }}
                     />
                     <Spacer y={1.5} />
-                    <Button
-                        className="justify-start bg-default-100"
-                        fullWidth
-                        startContent={
-                            <Image
-                                src={tokens[selectedTokenKey].imageUrl}
-                                alt={tokens[selectedTokenKey].name}
-                                className="w-5 h-5"
-                            />
-                        }
-                        onPress={() => {
+                    <EnhancedButton 
+                        variant="outline"
+                        className="w-full justify-start"
+                        onClick={() => {
                             dispatch(
                                 setSelectTokenModal({
                                     tokenKey: selectedTokenKey,
@@ -66,11 +68,15 @@ export const Tokens: FC = () => {
                                     },
                                 })
                             )
-                            onOpen()
+                            onOpenChange(true)
                         }}
                     >
+                        <Image
+                            src={tokens[selectedTokenKey].imageUrl}
+                            className="w-5 h-5"
+                        />
                         {tokens[selectedTokenKey].name}
-                    </Button>
+                    </EnhancedButton>
                 </div>
                 <Spacer y={4} />
                 <div>
@@ -78,14 +84,17 @@ export const Tokens: FC = () => {
                         <Title
                             title="Amount"
                             tooltipString="Enter the amount you want to transfer"
+                            classNames={{
+                                title: "text-sm",
+                                tooltip: "w-[14px] h-[14px]",
+                            }}
                         />
                         <div className="text-sm text-gray-400">{`Balance: ${balanceSwr.data}`}</div>
                     </div>
                     <Spacer y={1.5} />
-                    <NumberInput
+                    <EnhancedNumberInput
+                        className="w-full"
                         id="stringAmount"
-                        labelPlacement="outside"
-                        label=""
                         value={formik.values.stringAmount}
                         onValueChange={(value) => {
                             formik.setFieldValue("stringAmount", value)
@@ -95,7 +104,8 @@ export const Tokens: FC = () => {
                             !!(formik.touched.stringAmount && formik.errors.stringAmount)
                         }
                         errorMessage={
-                            formik.touched.stringAmount && formik.errors.stringAmount
+                            (formik.touched.stringAmount && formik.errors.stringAmount) ||
+              undefined
                         }
                     />
                 </div>
@@ -104,9 +114,14 @@ export const Tokens: FC = () => {
                     <Title
                         title="Recipient"
                         tooltipString="Enter the recipient address"
+                        classNames={{
+                            title: "text-sm",
+                            tooltip: "w-[14px] h-[14px]",
+                        }}
                     />
                     <Spacer y={1.5} />
-                    <Input
+                    <EnhancedInput
+                        className="w-full"
                         id="recipientAddress"
                         value={formik.values.recipientAddress}
                         onValueChange={(value) => {
@@ -120,7 +135,9 @@ export const Tokens: FC = () => {
                             )
                         }
                         errorMessage={
-                            formik.touched.recipientAddress && formik.errors.recipientAddress
+                            (formik.touched.recipientAddress &&
+                formik.errors.recipientAddress) ||
+              undefined
                         }
                         endContent={
                             <Link>
@@ -131,9 +148,12 @@ export const Tokens: FC = () => {
                 </div>
                 <Spacer y={6} />
             </div>
-            <Button size="lg" color="primary" type="submit" fullWidth>
-                <div className="text-secondary-foreground">Transfer</div>
-            </Button>
-        </form>
+            <EnhancedButton 
+                onClick={() => formik.submitForm()}
+                size="lg"
+            >
+                Transfer
+            </EnhancedButton>
+        </div>
     )
 }

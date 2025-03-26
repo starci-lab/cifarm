@@ -2,11 +2,6 @@
 
 import React, { FC } from "react"
 import {
-    BuildingStorefrontIcon,
-    UserCircleIcon,
-} from "@heroicons/react/24/outline"
-import { CiGift } from "react-icons/ci"
-import {
     useGraphQLQueryInventoriesSwr,
     useGraphQLQueryStaticSwr,
     useGraphQLQueryUserSwr,
@@ -20,7 +15,8 @@ import {
     GRAPHQL_QUERY_USER_SWR,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Button } from "@/components/ui/button"
+import { EnhancedButton } from "@/components"
+import { BlocksIcon, GiftIcon, TwitterIcon, UserCircleIcon } from "lucide-react"
 
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
@@ -41,48 +37,55 @@ export const BottomNavbar: FC = () => {
     const allDataLoaded = inventoriesSwr.data && staticSwr.data && userSwr.data
 
     return (
-        <div className="m-auto fixed top-auto bottom-0 border-t h-16 z-50 max-w-[500px] w-full">
+        <div className="m-auto fixed top-auto bottom-0 border-t h-16 z-50 max-w-[500px] w-full bg-background">
             <nav className="m-auto w-full h-full flex items-center justify-between px-4">
                 <div className="flex-1 flex justify-between">
-                    <Button
+                    <EnhancedButton
                         variant="ghost"
-                        className="flex-1 flex flex-col items-center justify-center h-full"
+                        className="flex-1 flex flex-col items-center justify-center h-full gap-1"
                         onClick={() => router.push(pathConstants.profile)}
                     >
-                        <UserCircleIcon className="w-6 h-6" />
-                        <div className="text-[10px] h-4 flex items-center">Profile</div>
-                    </Button>
-                    <Button
+                        <UserCircleIcon className="w-5 h-5 min-w-5 min-h-5" />
+                        <div className="text-xs h-4 flex items-center">Profile</div>
+                    </EnhancedButton>
+                    <EnhancedButton
                         variant="ghost"
-                        className="flex-1 flex flex-col items-center justify-center h-full"
+                        className="flex-1 flex flex-col items-center justify-center h-full gap-1"
                         onClick={() => router.push(pathConstants.partnerships)}
                     >
-                        <CiGift className="w-6 h-6" />
-                        <div className="text-[10px] h-4 flex items-center">
-                            Partnerships
-                        </div>
-                    </Button>
+                        <GiftIcon className="w-5 h-5 min-h-5 min-w-5" />
+                        <div className="text-xs h-4 flex items-center">Partnerships</div>
+                    </EnhancedButton>
                 </div>
                 <div className="flex-1 flex justify-center">
-                    <Button
+                    <EnhancedButton
                         disabled={!(authenticated && allDataLoaded)}
                         size="lg"
                         className="text-background"
                         onClick={() => router.push(pathConstants.play)}
                     >
                         Play
-                    </Button>
+                    </EnhancedButton>
                 </div>
                 <div className="flex-1 flex justify-end">
-                    <Button
+                    <EnhancedButton
                         variant="ghost"
                         className="flex-1 flex flex-col items-center justify-center h-full"
                     >
-                        <BuildingStorefrontIcon className="w-6 h-6" strokeWidth={1} />
+                        <BlocksIcon className="w-5 h-5 min-w-5 min-h-5" />
                         <div className="text-[10px] h-4 flex items-center">
-                            Marketplace
+                            DApps
                         </div>
-                    </Button>
+                    </EnhancedButton>
+                    <EnhancedButton
+                        variant="ghost"
+                        className="flex-1 flex flex-col items-center justify-center h-full"
+                    >
+                        <TwitterIcon className="w-5 h-5 min-w-5 min-h-5" />
+                        <div className="text-[10px] h-4 flex items-center">
+                            Social
+                        </div>
+                    </EnhancedButton>
                 </div>
             </nav>
         </div>

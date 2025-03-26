@@ -15,7 +15,7 @@ export enum NeighborsTab {
 }
 
 export const NeighborsModal: FC = () => {
-    const { onOpenChange, isOpen, onClose } =
+    const { onOpenChange, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
     
     const [selectedTab, setSelectedTab] = useState<NeighborsTab>(
@@ -36,7 +36,6 @@ export const NeighborsModal: FC = () => {
             onOpenChange={(value) => {
                 onOpenChange(value)
                 if (!value) {
-                    onClose()
                     EventBus.emit(EventName.CloseModal, {
                         modalName: ModalName.Neighbors,
                     })

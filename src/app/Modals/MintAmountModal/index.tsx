@@ -4,7 +4,7 @@ import { useMintOffchainTokensRhf } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import { Controller } from "react-hook-form"
-import { Button } from "@/components/ui/button"
+import { EnhancedButton } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -60,7 +60,7 @@ export const MintAmountModal: FC = () => {
                     />
                 </div>
                 <DialogFooter>
-                    <Button
+                    <EnhancedButton
                         onClick={async () => {
                             await handleSubmit(onSubmit)()
                         }}
@@ -68,7 +68,7 @@ export const MintAmountModal: FC = () => {
                         className="w-full"
                     >
                         {isSubmitting ? "Minting..." : "Mint"}
-                    </Button>
+                    </EnhancedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
