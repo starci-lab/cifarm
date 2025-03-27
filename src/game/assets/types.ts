@@ -1,4 +1,3 @@
-
 export interface ExtraOffsets {
   x?: number;
   y?: number;
@@ -29,6 +28,9 @@ export interface TextureConfig {
     extraOffsets?: ExtraOffsets;
     scaleWidth?: number;
     scaleHeight?: number;
+    packageId?: number;
+    // 0 is default, load from first join game
+    // 1,2,3 is the package id, which is triggered when download package
 }
 
 export interface ShopAssetData {

@@ -2,35 +2,35 @@
 import { BuildingId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ExtraOffsets, ShopAssetData, TextureConfig } from "./types"
+import { fetchAsset } from "./fetch"
 
-export interface BuildingAssetData {
-  name: string;
-  map: BuildingMapAssetData;
-  shop?: ShopAssetData;
-}
-
-
-export interface StarsConfig {
-    extraOffsets?: ExtraOffsets;
-  }
-  
-export interface BuildingMapAssetData {
+// Building Asset Data Interface
+export interface BuildingStageAssetData {
     textureConfig: TextureConfig;
     starsConfig?: StarsConfig;
 }
 
-// Crop asset data map with the GID and asset URL for each crop using CropId as the key
+export interface BuildingAssetData {
+    name: string;
+    map: BuildingStageAssetData;
+    shop?: ShopAssetData;
+}
+
+export interface StarsConfig {
+    extraOffsets?: ExtraOffsets;
+}
+
+// Building asset data map with the GID and asset URL for each building using BuildingId as the key
 export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
     [BuildingId.Home]: {
         name: "Home",
         map: {
             textureConfig: {
                 key: "buildings-home",
-                assetUrl: "buildings/home/home.png",
+                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/buildings/home/home.png",
                 extraOffsets: { x: -10, y: -65 },
             }, 
         },
-
     },
     [BuildingId.Coop]: {
         name: "Coop",
@@ -38,7 +38,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             textureConfig: {
                 extraOffsets: { x: 0, y: -65 },
                 key: "buildings-coop",
-                assetUrl: "buildings/coop/coop.png",
+                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/buildings/coop/coop.png",
             },
             starsConfig: {
                 extraOffsets: {
@@ -50,9 +50,10 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         shop: {
             textureConfig: {
                 key: "buildings-coop-shop",
-                assetUrl: "buildings/coop/shop.png",
-            }
-        }
+                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/buildings/coop/shop.png",
+                extraOffsets: { x: 0, y: -65 },
+            },
+        },
     },
     [BuildingId.Barn]: {
         name: "Barn",
@@ -126,37 +127,26 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
     },   
 }
 
-// function to load animals assets (images) for each animal
-export const loadBuildingAssets = (scene: Scene) => {
-    // Iterate over each animalId in the animalAssetDataMap
-    Object.keys(buildingAssetMap).forEach((buildingId) => {
-        const _buildingId = buildingId as BuildingId
-        const buildingData = buildingAssetMap[_buildingId]
-
-        if (!buildingData) {
-            throw new Error(`Building asset data not found for buildingId: ${buildingId}`)
+// Function to load all building assets
+export const loadBuildingAssets = async (scene: Scene) => {
+    // Load all building assets
+    for (const buildingData of Object.values(buildingAssetMap)) {
+        // Load shop asset if exists
+        if (buildingData.shop?.textureConfig.assetUrl) {
+            await fetchAsset({
+                key: buildingData.shop.textureConfig.key,
+                assetUrl: buildingData.shop.textureConfig.assetUrl,
+                scene,
+            })
         }
 
-        const { key, assetUrl, useExisting, spineConfig } = buildingData.map.textureConfig
-        if (spineConfig) {
-            scene.load.spineJson(
-                spineConfig.json.key,
-                spineConfig.json.assetUrl
-            )
-            scene.load.spineAtlas(
-                spineConfig.atlas.key,
-                spineConfig.atlas.assetUrl
-            )
+        // Load map asset
+        if (buildingData.map.textureConfig.assetUrl) {
+            await fetchAsset({
+                key: buildingData.map.textureConfig.key,
+                assetUrl: buildingData.map.textureConfig.assetUrl,
+                scene,
+            })
         }
-        if (!useExisting) {
-            scene.load.image(key, assetUrl)
-        }    
-
-        if (buildingData.shop) {
-            const { key, useExisting, assetUrl } = buildingData.shop.textureConfig
-            if (!useExisting) {
-                scene.load.image(key, assetUrl)
-            }
-        }
-    })
+    }
 }

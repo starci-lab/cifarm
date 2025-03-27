@@ -5,92 +5,61 @@ import {
 } from "@/modules/entities"
 import { TextureConfig } from "./types"
 import { Scene } from "phaser"
+import { fetchAsset } from "./fetch"
 
-export interface CropStateAssetData {
-  textureConfig: TextureConfig;
+// State Asset Data Interface
+export interface StateAssetData {
+    textureConfig: TextureConfig
 }
 
-export const plantStateAssetMap: Partial<
-  Record<PlantCurrentState, CropStateAssetData>
-> = {
+// Plant State Assets
+const plantStateAssets: Record<PlantCurrentState, StateAssetData> = {
+    [PlantCurrentState.Normal]: {
+        textureConfig: { key: "plant-normal", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/plant-normal.png" },
+    },
     [PlantCurrentState.NeedWater]: {
-        textureConfig: { key: "need-water", assetUrl: "states/need-water.png" },
+        textureConfig: { key: "need-water", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/need-water.png" },
     },
     [PlantCurrentState.IsWeedy]: {
-        textureConfig: { key: "is-weedy", assetUrl: "states/is-weedy.png" },
+        textureConfig: { key: "is-weedy", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/is-weedy.png" },
     },
     [PlantCurrentState.IsInfested]: {
-        textureConfig: { key: "is-infested", assetUrl: "states/is-infested.png" },
+        textureConfig: { key: "is-infested", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/is-infested.png" },
     },
     [PlantCurrentState.FullyMatured]: {
-        textureConfig: { key: "fully-mature", assetUrl: "states/is-ready.png" },
+        textureConfig: { key: "fully-mature", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/is-ready.png" },
     },
 }
 
-// Function to load animal assets in Phaser scene
-export const loadPlantStateAssets = (scene: Scene) => {
-    Object.keys(plantStateAssetMap).forEach((state) => {
-        const _state = state as PlantCurrentState
-        const plantStateData = plantStateAssetMap[_state]
-
-        if (!plantStateData) {
-            throw new Error(`Plant state data not found for state: ${state}`)
-        }
-        scene.load.image(
-            plantStateData.textureConfig.key,
-            plantStateData.textureConfig.assetUrl
-        )
-    })
-}
-
-export interface AnimalStateAssetData {
-  textureConfig: TextureConfig;
-}
-
-export const animalStateAssetMap: Partial<
-  Record<AnimalCurrentState, AnimalStateAssetData>
-> = {
+// Animal State Assets
+const animalStateAssets: Record<AnimalCurrentState, StateAssetData> = {
+    [AnimalCurrentState.Normal]: {
+        textureConfig: { key: "animal-normal", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/animal-normal.png" },
+    },
     [AnimalCurrentState.Hungry]: {
         textureConfig: {
             key: "animal-feed",
-            assetUrl: "supplies/animal-feed.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/animal-feed.png",
             useExisting: true,
         },
     },
     [AnimalCurrentState.Sick]: {
-        textureConfig: { key: "animal-sick", assetUrl: "states/sick.png" },
+        textureConfig: { key: "animal-sick", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/sick.png" },
+    },
+    [AnimalCurrentState.Yield]: {
+        textureConfig: { key: "animal-yield", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/animal-yield.png" },
     },
 }
 
-// Function to load animal assets in Phaser scene
-export const loadAnimalStateAssets = (scene: Scene) => {
-    Object.keys(animalStateAssetMap).forEach((state) => {
-        const _state = state as AnimalCurrentState
-        const animalStateData = animalStateAssetMap[_state]
-
-        if (!animalStateData) {
-            throw new Error(`Animal state data not found for state: ${state}`)
-        }
-        if (!animalStateData.textureConfig.useExisting) {
-            scene.load.image(
-                animalStateData.textureConfig.key,
-                animalStateData.textureConfig.assetUrl
-            )
-        }
-    })
-}
-
-export interface FruitStateAssetData {
-  textureConfig: TextureConfig;
-}
-
-export const fruitStateAssetMap: Partial<
-  Record<FruitCurrentState, FruitStateAssetData>
-> = {
+// Fruit State Assets
+const fruitStateAssets: Record<FruitCurrentState, StateAssetData> = {
+    [FruitCurrentState.Normal]: {
+        textureConfig: { key: "fruit-normal", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/fruit-normal.png" },
+    },
     [FruitCurrentState.NeedFertilizer]: {
         textureConfig: {
             key: "fruit-fertilizer",
-            assetUrl: "supplies/fruit-fertilizer.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/fruit-fertilizer.png",
             useExisting: true,
             scaleHeight: 0.8,
             scaleWidth: 0.8,
@@ -99,23 +68,33 @@ export const fruitStateAssetMap: Partial<
     [FruitCurrentState.IsBuggy]: {
         textureConfig: {
             key: "is-buggy",
-            assetUrl: "states/is-buggy.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/is-buggy.png",
         },
+    },
+    [FruitCurrentState.FullyMatured]: {
+        textureConfig: { key: "fruit-mature", assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/states/fruit-mature.png" },
     },
 }
 
-// Function to load fruit assets in Phaser scene
-export const loadFruitStateAssets = (scene: Scene) => {
-    Object.keys(fruitStateAssetMap).forEach((state) => {
-        const _state = state as FruitCurrentState
-        const fruitStateData = fruitStateAssetMap[_state]
+// Combined state asset map
+export const stateAssetMap = {
+    plant: plantStateAssets,
+    animal: animalStateAssets,
+    fruit: fruitStateAssets,
+} as const
 
-        if (!fruitStateData) {
-            throw new Error(`Fruit state data not found for state: ${state}`)
+// Function to load all state assets
+export const loadStateAssets = async (scene: Scene) => {
+    for (const stateType of Object.values(stateAssetMap)) {
+        for (const stateData of Object.values(stateType)) {
+            const { textureConfig } = stateData
+            if (textureConfig.assetUrl && !textureConfig.useExisting) {
+                await fetchAsset({
+                    key: textureConfig.key,
+                    assetUrl: textureConfig.assetUrl,
+                    scene,
+                })
+            }
         }
-        scene.load.image(
-            fruitStateData.textureConfig.key,
-            fruitStateData.textureConfig.assetUrl
-        )
-    })
+    }
 }

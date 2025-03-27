@@ -1,6 +1,7 @@
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
 import { ProductId } from "@/modules/entities"
+import { fetchAsset } from "./fetch"
 
 export interface ProductAssetData {
   name: string;
@@ -14,7 +15,7 @@ export const productAssetMap: Record<
     [ProductId.Egg]: {
         name: "Egg",
         textureConfig: {
-            assetUrl: "products/egg.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/products/egg.png",
             key: "egg",
         },
     },
@@ -29,7 +30,7 @@ export const productAssetMap: Record<
     [ProductId.Milk]: {
         name: "Milk",
         textureConfig: {
-            assetUrl: "products/milk.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/products/milk.png",
             key: "milk",
             isQuality: false,
         },
@@ -46,7 +47,7 @@ export const productAssetMap: Record<
     [ProductId.Turnip]: {
         name: "Turnip",
         textureConfig: {
-            assetUrl: "products/turnip.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/products/turnip.png",
             key: "turnip",
             isQuality: false,
         },
@@ -219,22 +220,20 @@ export const productAssetMap: Record<
     },
 }
 
-// Function to load inventory assets in Phaser scene
-export const loadProductAssets = (scene: Scene) => {
-    Object.keys(productAssetMap).forEach((productId) => {
-        const _productId = productId as ProductId
-        const productData = productAssetMap[_productId]
-
-        if (!productData) {
-            throw new Error(
-                `Product data not found for productId: ${productId}`
-            )
+// Function to load all product assets
+export const loadProductAssets = async (scene: Scene) => {
+    // Load all product assets
+    for (const productData of Object.values(productAssetMap)) {
+        const { key, useExisting, assetUrl } = productData.textureConfig
+        if (!useExisting) {
+            if (!assetUrl) {
+                throw new Error("Asset URL not found")
+            }
+            await fetchAsset({
+                key,
+                assetUrl,
+                scene,
+            })
         }
-
-        const { key, assetUrl, useExisting } = productData.textureConfig
-        if (useExisting) {
-            return
-        }
-        scene.load.image(key, assetUrl)
-    })
+    }
 }

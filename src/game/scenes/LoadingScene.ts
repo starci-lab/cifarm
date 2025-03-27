@@ -166,7 +166,7 @@ export class LoadingScene extends Scene {
             }
         )
 
-        this.events.once(EventName.LoadResponsed, () => {
+        this.events.once(EventName.LoadResponsed, async () => {
             //load the main game scene
             this.scene.start(SceneName.Gameplay)
         })
@@ -176,7 +176,7 @@ export class LoadingScene extends Scene {
         this.load.setPath("assets")
     }
 
-    create() {
+    async create() {
     // get the width and height of the game
         const { width, height } = this.game.scale
 
@@ -208,20 +208,16 @@ export class LoadingScene extends Scene {
         this.add.existing(this.loadingProgressBar)
 
         this.fetchData()
-
         // listen for the complete event
         this.load.on("progress", async (progress: number) => {
             const assetLoaded = progress - this.previousAssetLoaded
             this.previousAssetLoaded = progress
             this.loadAssets(assetLoaded)
         })
-
         // load all the assets
         loadBaseAssets(this)
-        loadCropAssets(this)
-        loadAnimalAssets(this)
-        loadBuildingAssets(this)
-        loadFlowerAssets(this)  
+        await loadCropAssets(this)
+        loadFlowerAssets(this) 
         loadSupplyAssets(this)
         loadProductAssets(this)
         loadTileAssets(this)
@@ -232,8 +228,10 @@ export class LoadingScene extends Scene {
         loadAnimalStateAssets(this)
         loadFruitStateAssets(this)
         loadFruitAssets(this)
-
+        loadAnimalAssets(this)
+        loadBuildingAssets(this)
         this.load.setPath()
+        this.load.start()
     }
 
     async update() {
@@ -244,7 +242,6 @@ export class LoadingScene extends Scene {
             // check if the queue is empty
             if (this.waitForQueueEmpty && this.loadingProgressBar.queueEmpty()) {
                 // emit the event that the loading is done
-                await sleep(100)
                 this.events.emit(EventName.LoadResponsed)
             }
         }
@@ -278,7 +275,9 @@ export class LoadingScene extends Scene {
 
         if (this.dataFetchingLoaded === this.totalDataFetching) {
             // start the asset loading
-            this.load.start()
+            // sleep(3000).then(() => {
+            //     this.load.start()
+            // })
         }
     }
 
@@ -296,7 +295,6 @@ export class LoadingScene extends Scene {
             steps: 3,
         })
         this.assetLoaded += assetLoaded
-
         if (this.assetLoaded === 1) {
             // emit the event that the loading is done
             this.waitForQueueEmpty = true

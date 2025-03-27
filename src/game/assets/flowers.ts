@@ -1,9 +1,10 @@
-// Crop Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
+// Flower Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
 import { FlowerId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ShopAssetData, TextureConfig } from "./types"
+import { fetchAsset } from "./fetch"
 
-// Crop Asset Data Interface
+// Flower Asset Data Interface
 export interface FlowerStageAssetData {
   textureConfig: TextureConfig;
 }
@@ -14,7 +15,7 @@ export interface FlowerAssetData {
   shop?: ShopAssetData;
 }
 
-// Crop asset data map with the GID and asset URL for each crop using CropId as the key
+// Flower asset data map with the GID and asset URL for each flower using FlowerId as the key
 export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
     [FlowerId.Daisy]: {
         name: "Daisy",
@@ -22,7 +23,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
             0: {
                 textureConfig: {
                     key: "flowers-daisy-1",
-                    assetUrl: "flowers/daisy/1.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/1.png",
                     extraOffsets: {
                         x: 0,
                         y: -30,
@@ -32,7 +33,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
             1: {
                 textureConfig: {
                     key: "flowers-daisy-2",
-                    assetUrl: "flowers/daisy/2.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/2.png",
                     extraOffsets: {
                         x: 0,
                         y: -45,
@@ -42,7 +43,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
             2: {
                 textureConfig: {
                     key: "flowers-daisy-3",
-                    assetUrl: "flowers/daisy/3.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/3.png",
                     extraOffsets: {
                         x: 0,
                         y: -45,
@@ -72,37 +73,39 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
         },
         shop: {
             textureConfig: {
-                key: "flowers-daisy-seed",
-                assetUrl: "flowers/daisy/seed.png",
+                key: "flowers-daisy-shop",
+                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/shop.png",
+                extraOffsets: {
+                    x: 0,
+                    y: -45,
+                },
             },
         },
     },
 }
 
-// Function to load crop assets (images) for each crop and growth stage
-export const loadFlowerAssets = (scene: Scene) => {
-    Object.keys(flowerAssetMap).forEach((flowerId) => {
-        const _flowerId = flowerId as FlowerId
-        const flowerData = flowerAssetMap[_flowerId]
-
-        if (!flowerData) {
-            throw new Error(`Flower data not found for flowerId: ${flowerId}`)
-        }
-        // Load the seed asset
-        if (flowerData.shop) {
-            const { key, useExisting, assetUrl } = flowerData.shop.textureConfig
-            if (!useExisting) {
-                scene.load.image(key, assetUrl)
-            }
+// Function to load all flower assets
+export const loadFlowerAssets = async (scene: Scene) => {
+    // Load all flower assets
+    for (const flowerData of Object.values(flowerAssetMap)) {
+        // Load shop asset if exists
+        if (flowerData.shop?.textureConfig.assetUrl) {
+            await fetchAsset({
+                key: flowerData.shop.textureConfig.key,
+                assetUrl: flowerData.shop.textureConfig.assetUrl,
+                scene,
+            })
         }
 
-        // Load the asset for each growth stage
-        for (const stage of Object.keys(flowerData.map)) {
-            const stageData = flowerData.map[parseInt(stage)]
-            const { key, assetUrl, useExisting } = stageData.textureConfig
-            if (!useExisting) {
-                scene.load.image(key, assetUrl)
+        // Load all stage assets
+        for (const stageData of Object.values(flowerData.map)) {
+            if (stageData.textureConfig.assetUrl) {
+                await fetchAsset({
+                    key: stageData.textureConfig.key,
+                    assetUrl: stageData.textureConfig.assetUrl,
+                    scene,
+                })
             }
         }
-    })
+    }
 }

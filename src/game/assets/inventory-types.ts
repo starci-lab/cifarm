@@ -13,6 +13,7 @@ import { toolAssetMap } from "./tools"
 import { productAssetMap } from "./products"
 import { supplyAssetMap } from "./supply"
 import { flowerAssetMap } from "./flowers"
+import { fetchAsset } from "./fetch"
 
 export interface InventoryAssetData {
   name: string;
@@ -393,22 +394,16 @@ export const inventoryTypeAssetMap: Record<
     },
 }
 
-// Function to load inventory assets in Phaser scene
-export const loadInventoryTypesAssets = (scene: Scene) => {
-    Object.keys(inventoryTypeAssetMap).forEach((inventoryTypeId) => {
-        const _inventoryTypeId = inventoryTypeId as InventoryTypeId
-        const inventoryData = inventoryTypeAssetMap[_inventoryTypeId]
-
-        if (!inventoryData) {
-            throw new Error(
-                `Inventory asset data not found for inventoryTypeId: ${inventoryTypeId}`
-            )
+// Function to load all inventory type assets
+export const loadInventoryTypesAssets = async (scene: Scene) => {
+    // Load all inventory type assets
+    for (const inventoryData of Object.values(inventoryTypeAssetMap)) {
+        if (inventoryData.textureConfig.assetUrl) {
+            await fetchAsset({
+                key: inventoryData.textureConfig.key,
+                assetUrl: inventoryData.textureConfig.assetUrl,
+                scene,
+            })
         }
-
-        const { key, assetUrl, useExisting } = inventoryData.textureConfig
-        if (useExisting) {
-            return
-        }
-        scene.load.image(key, assetUrl)
-    })
+    }
 }

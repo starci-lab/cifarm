@@ -2,6 +2,7 @@
 import { TileId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
+import { fetchAsset } from "./fetch"
 
 
 export interface TileAssetData {
@@ -16,27 +17,26 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
         name: "Basic Tile 1",
         textureConfig: {
             key: "tiles-basic-tile",
-            assetUrl: "tiles/starter-tile.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tiles/starter-tile.png",
         },
     },
 }
 
-// Function to load animals assets (images) for each animal
-export const loadTileAssets = (scene: Scene) => {
-    // Iterate over each animalId in the animalAssetDataMap
-    Object.keys(tileAssetMap).forEach((tileId) => {
-        const _tileId = tileId as TileId
-        const tileData = tileAssetMap[_tileId]
-
-        if (!tileData) {
-            throw new Error(`Tile data not found for tileId: ${tileId}`)
+// Function to load all tile assets
+export const loadTileAssets = async (scene: Scene) => {
+    // Load all tile assets
+    for (const tileData of Object.values(tileAssetMap)) {
+        const { key, assetUrl, useExisting } = tileData.textureConfig
+        if (!useExisting) {
+            if (!assetUrl) {
+                throw new Error("Asset URL not found")
+            }
+            await fetchAsset({
+                key,
+                assetUrl,
+                scene,
+            })
         }
-
-        // Load the asset for the building
-        scene.load.image(
-            tileData.textureConfig.key,
-            tileData.textureConfig.assetUrl
-        )
-    })
+    }
 }
 

@@ -2,6 +2,7 @@
 import { ToolId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
+import { fetchAsset } from "./fetch"
 
 export interface ToolAssetData {
   name: string;
@@ -15,42 +16,42 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
         name: "Hand",
         textureConfig: {
             key: "hand",
-            assetUrl: "tools/hand.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tools/hand.png",
         }
     },
     [ToolId.WateringCan]: {
         name: "Watering Can",
         textureConfig: {
             key: "watering-can",
-            assetUrl: "tools/watering-can.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tools/watering-can.png",
         }
     },
     [ToolId.Herbicide]: {
         name: "Herbicide",
         textureConfig: {
             key: "herbicide",
-            assetUrl: "tools/herbicide.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tools/herbicide.png",
         }
     },
     [ToolId.Pesticide]: {
         name: "Pesticide",
         textureConfig: {
             key: "pesticide",
-            assetUrl: "tools/pesticide.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tools/pesticide.png",
         }
     },
     [ToolId.Crate]: {
         name: "Crate",
         textureConfig: {
             key: "crate",
-            assetUrl: "tools/crate.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tools/crate.png",
         }
     },
     [ToolId.Hammer]: {
         name: "Hammer",
         textureConfig: {
             key: "hammer",
-            assetUrl: "tools/hammer.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tools/hammer.png",
         }
     },
     [ToolId.AnimalMedicine]: {
@@ -70,21 +71,19 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
 }
 
 // function to load the tools assets
-export const loadToolsAssets = (scene: Scene) => {
-    // Iterate over each animalId in the animalAssetDataMap
-    Object.keys(toolAssetMap).forEach((toolId) => {
-        const _toolId = toolId as ToolId
-        const buildingData = toolAssetMap[_toolId]
-
-        if (!buildingData) {
-            throw new Error(`Tool asset data not found for toolId: ${toolId}`)
+export const loadToolAssets = async (scene: Scene) => {
+    // Load all tool assets
+    for (const toolData of Object.values(toolAssetMap)) {
+        const { key, assetUrl, useExisting } = toolData.textureConfig
+        if (!useExisting) {
+            if (!assetUrl) {
+                throw new Error("Asset URL not found")
+            }
+            await fetchAsset({
+                key,
+                assetUrl,
+                scene,
+            })
         }
-
-        // Load the asset for the building
-        const { key, assetUrl} = buildingData.textureConfig
-        scene.load.image(
-            key,
-            assetUrl
-        )
-    })
+    }
 }

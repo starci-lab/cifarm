@@ -1,9 +1,10 @@
-// Crop Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
+// Fruit Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
 import { FruitId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ShopAssetData, TextureConfig } from "./types"
+import { fetchAsset } from "./fetch"
 
-// Crop Asset Data Interface
+// Fruit Asset Data Interface
 export interface FruitStageAssetData {
   textureConfig: TextureConfig;
 }
@@ -14,7 +15,7 @@ export interface FruitAssetData {
   shop?: ShopAssetData;
 }
 
-// Crop asset data map with the GID and asset URL for each crop using CropId as the key
+// Fruit asset data map with the GID and asset URL for each fruit using FruitId as the key
 export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
     [FruitId.Banana]: {
         name: "Banana",
@@ -22,7 +23,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             0: {
                 textureConfig: {
                     key: "fruit-banana-1",
-                    assetUrl: "fruits/banana/1.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/1.png",
                     extraOffsets: {
                         x: -20,
                         y: -173,
@@ -32,7 +33,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             1: {
                 textureConfig: {
                     key: "fruit-banana-2",
-                    assetUrl: "fruits/banana/2.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/2.png",
                     extraOffsets: {
                         x: -10,
                         y: -175,
@@ -42,7 +43,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             2: {
                 textureConfig: {
                     key: "fruit-banana-3",
-                    assetUrl: "fruits/banana/3.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/3.png",
                     extraOffsets: {
                         x: 0,
                         y: -170,
@@ -72,10 +73,11 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
         },
         shop: {
             textureConfig: {
-                key: "fruit-banana-sapling",
-                assetUrl: "fruits/banana/sapling.png",
+                key: "fruit-banana-shop",
+                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/shop.png",
                 extraOffsets: {
-                    y: -10,
+                    x: 0,
+                    y: -170,
                 },
             },
         },
@@ -143,30 +145,28 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
     },
 }
 
-// Function to load crop assets (images) for each crop and growth stage
-export const loadFruitAssets = (scene: Scene) => {
-    Object.keys(fruitAssetMap).forEach((fruitId) => {
-        const _fruitId = fruitId as FruitId
-        const fruitData = fruitAssetMap[_fruitId]
-
-        if (!fruitData) {
-            throw new Error(`Fruit asset data not found for fruitId: ${fruitId}`)
-        }
-        // Load the seed asset
-        if (fruitData.shop) {
-            scene.load.image(
-                fruitData.shop.textureConfig.key,
-                fruitData.shop.textureConfig.assetUrl
-            )
+// Function to load all fruit assets
+export const loadFruitAssets = async (scene: Scene) => {
+    // Load all fruit assets
+    for (const fruitData of Object.values(fruitAssetMap)) {
+        // Load shop asset if exists
+        if (fruitData.shop?.textureConfig.assetUrl) {
+            await fetchAsset({
+                key: fruitData.shop.textureConfig.key,
+                assetUrl: fruitData.shop.textureConfig.assetUrl,
+                scene,
+            })
         }
 
-        // Load the asset for each growth stage
-        for (const stage of Object.keys(fruitData.map)) {
-            const stageData = fruitData.map[parseInt(stage)]
-            const { key, assetUrl, useExisting } = stageData.textureConfig
-            if (!useExisting) {
-                scene.load.image(key, assetUrl)
+        // Load all stage assets
+        for (const stageData of Object.values(fruitData.map)) {
+            if (stageData.textureConfig.assetUrl) {
+                await fetchAsset({
+                    key: stageData.textureConfig.key,
+                    assetUrl: stageData.textureConfig.assetUrl,
+                    scene,
+                })
             }
         }
-    })
+    }
 }

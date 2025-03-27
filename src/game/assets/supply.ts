@@ -1,6 +1,7 @@
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
 import { SupplyId } from "@/modules/entities"
+import { fetchAsset } from "./fetch"
 
 export interface SupplyAssetData {
   name: string;
@@ -14,42 +15,40 @@ export const supplyAssetMap: Record<
     [SupplyId.BasicFertilizer]: {
         name: "Basic Fertilizer",
         textureConfig: {
-            assetUrl: "supplies/basic-fertilizer.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/basic-fertilizer.png",
             key: "basic-fertilizer",
         },
     },
     [SupplyId.AnimalFeed]: {
         name: "Animal Feed",
         textureConfig: {
-            assetUrl: "supplies/animal-feed.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/animal-feed.png",
             key: "animal-feed",
         },
     },
     [SupplyId.FruitFertilizer]: {
         name: "Fruit Fertilizer",
         textureConfig: {
-            assetUrl: "supplies/fruit-fertilizer.png",
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/fruit-fertilizer.png",
             key: "fruit-fertilizer",
         },
     },
 }
 
-// Function to load inventory assets in Phaser scene
-export const loadSupplyAssets = (scene: Scene) => {
-    Object.keys(supplyAssetMap).forEach((supplyId) => {
-        const _supplyId = supplyId as SupplyId 
-        const supplyData = supplyAssetMap[_supplyId]
-
-        if (!supplyData) {
-            throw new Error(
-                `Supply asset data not found for supplyId: ${supplyId}`
-            )
-        }
-
+// Function to load all supply assets
+export const loadSupplyAssets = async (scene: Scene) => {
+    // Load all supply assets
+    for (const supplyData of Object.values(supplyAssetMap)) {
         const { key, assetUrl, useExisting } = supplyData.textureConfig
-        if (useExisting) {
-            return
+        if (!useExisting) {
+            if (!assetUrl) {
+                throw new Error("Asset URL not found")
+            }
+            await fetchAsset({
+                key,
+                assetUrl,
+                scene,
+            })
         }
-        scene.load.image(key, assetUrl)
-    })
+    }
 }

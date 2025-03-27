@@ -1,6 +1,7 @@
-import { PetId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
+import { PetId } from "@/modules/entities"
+import { fetchAsset } from "./fetch"
 
 export interface PetAssetData {
     name: string;
@@ -10,28 +11,28 @@ export interface PetAssetData {
 export const petAssetMap: Record<PetId, PetAssetData> = {
     [PetId.Dog]: {
         name: "Dog",
-        textureConfig: { key: "pets-dog", assetUrl: "pets/dog.png" },
+        textureConfig: { 
+            key: "pets-dog", 
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/pets/dog.png" 
+        },
     },
     [PetId.Cat]: {
         name: "Cat",
-        textureConfig: { key: "pets-cat", assetUrl: "pets/cat.png" },
+        textureConfig: { 
+            key: "pets-cat", 
+            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/pets/cat.png" 
+        },
     },
 }
 
-// Function to load animal assets in Phaser scene
-export const loadPetAssets = (scene: Scene) => {
-    Object.keys(petAssetMap).forEach((petId) => {
-        const _petId = petId as PetId
-        const petData = petAssetMap[_petId]
-
-        if (!petData) {
-            throw new Error(`Pet asset data not found for petId: ${petId}`)
+export const loadPetAssets = async (scene: Scene) => {
+    for (const petData of Object.values(petAssetMap)) {
+        if (petData.textureConfig.assetUrl) {
+            await fetchAsset({
+                key: petData.textureConfig.key,
+                assetUrl: petData.textureConfig.assetUrl,
+                scene,
+            })
         }
-
-        const { key, assetUrl, useExisting } = petData.textureConfig
-        if (useExisting) {
-            return
-        }
-        scene.load.image(key, assetUrl)
-    })
+    }
 }

@@ -1,19 +1,20 @@
 import { AnimalId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ShopAssetData, TextureConfig } from "./types"
+import { fetchAsset } from "./fetch"
 
 export enum AnimalAge {
   Baby = "baby",
   Adult = "adult",
 }
 
-export interface AnimalMapAssetData {
+export interface AnimalStageAssetData {
   textureConfig: TextureConfig;
 }
 
 export interface AnimalAssetData {
+  map: Record<AnimalAge, AnimalStageAssetData>;
   name: string;
-  map: Record<AnimalAge, AnimalMapAssetData>;
   shop?: ShopAssetData;
 }
 
@@ -24,15 +25,15 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
             [AnimalAge.Baby]: {
                 textureConfig: {
                     key: "animals-cow-baby",
-                    assetUrl: "animals/cow/baby/baby.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/animals/cow/baby/baby.png",
                     spineConfig: {
                         atlas: {
                             key: "animals-cow-baby-atlas",
-                            assetUrl: "animals/cow/baby/spine/baby.atlas",
+                            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/animals/cow/baby/spine/baby.atlas",
                         },
                         json: {
                             key: "animals-cow-baby-json",
-                            assetUrl: "animals/cow/baby/spine/baby.json",
+                            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/animals/cow/baby/spine/baby.json",
                         },
                     },
                     extraOffsets: { x: 0, y: -30 },
@@ -41,27 +42,28 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
             [AnimalAge.Adult]: {
                 textureConfig: {
                     key: "animals-cow-adult",
-                    assetUrl: "animals/cow/adult/adult.png",
+                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/animals/cow/adult/adult.png",
                     spineConfig: {
                         atlas: {
                             key: "animals-cow-adult-atlas",
-                            assetUrl: "animals/cow/adult/spine/adult.atlas",
+                            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/animals/cow/adult/spine/adult.atlas",
                         },
                         json: {
                             key: "animals-cow-adult-json",
-                            assetUrl: "animals/cow/adult/spine/adult.json",
+                            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/animals/cow/adult/spine/adult.json",
                         },
                     },
-                    extraOffsets: { x: 0, y: -28 },
+                    extraOffsets: { x: 0, y: -30 },
                 },
             },
         },
         shop: {
             textureConfig: {
-                key: "animals-cow-adult",
-                useExisting: true,
+                key: "animals-cow-shop",
+                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/animals/cow/shop.png",
+                extraOffsets: { x: 0, y: -30 },
             },
-        }
+        },
     },
     [AnimalId.Chicken]: {
         name: "Chicken",
@@ -156,38 +158,50 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
     },
 }
 
-// Function to load animal assets in Phaser scene
-export const loadAnimalAssets = (scene: Scene) => {
-    Object.keys(animalAssetMap).forEach((animalId) => {
-        const _animalId = animalId as AnimalId
-        const animalData = animalAssetMap[_animalId]
-
-        if (!animalData) {
-            throw new Error(`Animal asset data not found for animalId: ${animalId}`)
-        }
-
-        for (const age of Object.values(AnimalAge)) {
-            const { key, assetUrl, useExisting, spineConfig } = animalData.map[age].textureConfig
-            if (spineConfig) {
-                scene.load.spineJson(
-                    spineConfig.json.key,
-                    spineConfig.json.assetUrl
-                )
-                scene.load.spineAtlas(
-                    spineConfig.atlas.key,
-                    spineConfig.atlas.assetUrl
-                )
-            }
-            if (!useExisting) {
-                scene.load.image(key, assetUrl)
-            }    
-        }
-
+export const loadAnimalAssets = async (scene: Scene) => {
+    for (const animalData of Object.values(animalAssetMap)) {
         if (animalData.shop) {
-            const { key, useExisting, assetUrl } = animalData.shop.textureConfig
+            const { key, assetUrl, useExisting } = animalData.shop.textureConfig
             if (!useExisting) {
-                scene.load.image(key, assetUrl)
+                if (!assetUrl) {
+                    throw new Error("Asset URL not found")
+                }
+                await fetchAsset({
+                    key,
+                    assetUrl,
+                    scene,
+                })
+            }
+
+            for (const stageData of Object.values(animalData.map)) {
+                if (stageData.textureConfig) {
+                    const { key, assetUrl, useExisting } = stageData.textureConfig
+                    if (!useExisting) {
+                        if (!assetUrl) {
+                            throw new Error("Asset URL not found")
+                        }
+                        await fetchAsset({
+                            key,
+                            assetUrl,
+                            scene,
+                        })
+                    }
+                }
+
+                if (stageData.textureConfig.spineConfig) {
+                        const { atlas, json } = stageData.textureConfig.spineConfig
+                    if (!atlas.useExisting) {
+                        if (!atlas.assetUrl) {
+                            throw new Error("Asset URL not found")
+                        }
+                        await fetchAsset({
+                            key: atlas.key,
+                            assetUrl: atlas.assetUrl,
+                            scene,
+                        })
+                    }
+                }
             }
         }
-    })
+    }
 }
