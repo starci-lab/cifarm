@@ -26,16 +26,16 @@ import {
     AnimalAge,
     animalAssetMap,
     BaseAssetKey,
+    baseAssetMap,
     buildingAssetMap,
     cropAssetMap,
     fruitAssetMap,
+    SpineConfig,
     TextureConfig,
     tileAssetMap,
 } from "../assets"
 import {
-    animalStateAssetMap,
-    fruitStateAssetMap,
-    plantStateAssetMap,
+    stateAssetMap
 } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
@@ -255,7 +255,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        BaseAssetKey.BubbleState
+                        baseAssetMap[BaseAssetKey.BubbleState].key
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -277,7 +277,7 @@ export class PlacedItemObject extends ContainerLite {
           FruitCurrentState.FullyMatured
                 ) {
                     const textureConfig =
-            fruitStateAssetMap[this.nextPlacedItem.fruitInfo.currentState]
+            stateAssetMap.fruit[this.nextPlacedItem.fruitInfo.currentState]
                 ?.textureConfig
                     if (!textureConfig) {
                         throw new Error("Texture config not found")
@@ -448,7 +448,7 @@ export class PlacedItemObject extends ContainerLite {
         }
 
         const stars = this.nextPlacedItem.buildingInfo.currentUpgrade || 0
-        const starKey = BaseAssetKey.UIModalStandPurpleStar
+        const starKey = baseAssetMap[BaseAssetKey.UIModalStandPurpleStar].key
 
         const placedItemTypes = this.placedItemTypes.find(
             (placedItemType) =>
@@ -634,7 +634,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        BaseAssetKey.BubbleState
+                        baseAssetMap[BaseAssetKey.BubbleState].key
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -656,8 +656,8 @@ export class PlacedItemObject extends ContainerLite {
           PlantCurrentState.FullyMatured
                 ) {
                     const stateKey =
-            plantStateAssetMap[this.nextPlacedItem.plantInfo.currentState]
-                ?.textureConfig.key
+            stateAssetMap.plant[this.nextPlacedItem.plantInfo.currentState]
+                ?.textureConfig?.key
                     if (!stateKey) {
                         throw new Error("State key not found")
                     }
@@ -738,7 +738,7 @@ export class PlacedItemObject extends ContainerLite {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
                 this.fertilizerParticle = this.scene.add
-                    .sprite(0, 0, BaseAssetKey.FertilizerParticle) // Using sprite instead of image
+                    .sprite(0, 0, baseAssetMap[BaseAssetKey.FertilizerParticle].key) // Using sprite instead of image
                     .setDepth(this.depth + 11)
                     .setOrigin(0.5, 1)
                 this.addLocal(this.fertilizerParticle)
@@ -895,11 +895,12 @@ export class PlacedItemObject extends ContainerLite {
             throw new Error("Asset data not found")
         }
         const {
-            textureConfig: { key, spineConfig, extraOffsets },
+            textureConfig,
+            spineConfig,
         } = assetData
 
-        const { x = 0, y = 0 } = { ...extraOffsets }
         if (spineConfig) {
+            const { x = 0, y = 0 } = { ...spineConfig.extraOffsets }
             //render spine animation
             if (this.mainVisual) {
                 this.remove(this.mainVisual, true)
@@ -910,14 +911,16 @@ export class PlacedItemObject extends ContainerLite {
                 .setOrigin(0.5, 1)
             this.mainVisual.animationState.setAnimation(0, "idle", true)
             this.addLocal(this.mainVisual)
-        } else {
+        } 
+        if (textureConfig) {
+            const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
             //render sprite
             if (this.mainVisual) {
                 // destroy the previous sprite
                 this.remove(this.mainVisual, true)
             }
             this.mainVisual = this.scene.add
-                .sprite(x, y, key)
+                .sprite(x, y, textureConfig.key)
                 .setDepth(this.depth + 10)
                 .setOrigin(0.5, 1)
             this.addLocal(this.mainVisual)
@@ -960,7 +963,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        BaseAssetKey.BubbleState
+                        baseAssetMap[BaseAssetKey.BubbleState].key
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -981,10 +984,8 @@ export class PlacedItemObject extends ContainerLite {
           AnimalCurrentState.Yield
                 ) {
                     const textureConfig =
-            animalStateAssetMap[this.nextPlacedItem.animalInfo.currentState]
+            stateAssetMap.animal[this.nextPlacedItem.animalInfo.currentState]
                 ?.textureConfig
-                    console.log(this.nextPlacedItem.animalInfo.currentState)
-                    console.log(textureConfig)
                     if (!textureConfig) {
                         throw new Error("Texture config not found")
                     }
@@ -1236,5 +1237,6 @@ export class PlacedItemObject extends ContainerLite {
 }
 
 export interface AssetData {
-  textureConfig: TextureConfig;
+  textureConfig?: TextureConfig;
+  spineConfig?: SpineConfig;
 }

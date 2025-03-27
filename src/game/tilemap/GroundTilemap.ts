@@ -8,7 +8,7 @@ import {
 } from "./constants"
 import { BaseTilemap } from "./BaseTilemap"
 import { LayerName, ObjectLayerName, TilesetName } from "./types"
-import { BaseAssetKey } from "../assets"
+import { BaseAssetKey, baseAssetMap } from "../assets"
 import { TilemapBaseConstructorParams } from "../types"
 
 export class GroundTilemap extends BaseTilemap {
@@ -37,7 +37,7 @@ export class GroundTilemap extends BaseTilemap {
     // create the ground layer
         const grassTileset = this.createSingleTileTileset({
             tilesetName: TilesetName.Grass,
-            key: BaseAssetKey.Grass,
+            key: baseAssetMap[BaseAssetKey.Grass].key,
             gid: GRASS_GID,
         })
         // create ground layer

@@ -2,7 +2,7 @@
 import { FruitId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ShopAssetData, TextureConfig } from "./types"
-import { fetchAsset } from "./fetch"
+import { loadTexture } from "./utils"
 
 // Fruit Asset Data Interface
 export interface FruitStageAssetData {
@@ -23,7 +23,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             0: {
                 textureConfig: {
                     key: "fruit-banana-1",
-                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/1.png",
+                    assetUrl: "fruits/banana/1.png",
                     extraOffsets: {
                         x: -20,
                         y: -173,
@@ -33,7 +33,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             1: {
                 textureConfig: {
                     key: "fruit-banana-2",
-                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/2.png",
+                    assetUrl: "fruits/banana/2.png",
                     extraOffsets: {
                         x: -10,
                         y: -175,
@@ -43,7 +43,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             2: {
                 textureConfig: {
                     key: "fruit-banana-3",
-                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/3.png",
+                    assetUrl: "fruits/banana/3.png",
                     extraOffsets: {
                         x: 0,
                         y: -170,
@@ -74,7 +74,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
         shop: {
             textureConfig: {
                 key: "fruit-banana-shop",
-                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/fruits/banana/shop.png",
+                assetUrl: "fruits/banana/sapling.png",
                 extraOffsets: {
                     x: 0,
                     y: -170,
@@ -150,22 +150,14 @@ export const loadFruitAssets = async (scene: Scene) => {
     // Load all fruit assets
     for (const fruitData of Object.values(fruitAssetMap)) {
         // Load shop asset if exists
-        if (fruitData.shop?.textureConfig.assetUrl) {
-            await fetchAsset({
-                key: fruitData.shop.textureConfig.key,
-                assetUrl: fruitData.shop.textureConfig.assetUrl,
-                scene,
-            })
+        if (fruitData.shop?.textureConfig) {
+            await loadTexture(scene, fruitData.shop.textureConfig)
         }
 
         // Load all stage assets
         for (const stageData of Object.values(fruitData.map)) {
-            if (stageData.textureConfig.assetUrl) {
-                await fetchAsset({
-                    key: stageData.textureConfig.key,
-                    assetUrl: stageData.textureConfig.assetUrl,
-                    scene,
-                })
+            if (stageData.textureConfig) {
+                await loadTexture(scene, stageData.textureConfig)
             }
         }
     }

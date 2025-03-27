@@ -35,7 +35,7 @@ import {
 } from "@/modules/entities"
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
-import { BaseAssetKey, productAssetMap } from "../assets"
+import { BaseAssetKey, baseAssetMap, productAssetMap } from "../assets"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import { EventBus, EventName, Position } from "../event-bus"
 import {
@@ -48,9 +48,9 @@ import { PlacedItemObject } from "./PlacedItemObject"
 import { LayerName, ObjectLayerName } from "./types"
 
 const DEPTH_MULTIPLIER = 100
-const EXPERIENCE_KEY = BaseAssetKey.UICommonExperience
-const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
-const GOLD_KEY = BaseAssetKey.UICommonIconCoin
+const EXPERIENCE_KEY = baseAssetMap[BaseAssetKey.UICommonExperience].key
+const ENERGY_KEY = baseAssetMap[BaseAssetKey.UITopbarIconEnergy].key
+const GOLD_KEY = baseAssetMap[BaseAssetKey.UICommonIconCoin].key
 
 export abstract class ItemTilemap extends GroundTilemap {
     // item layer

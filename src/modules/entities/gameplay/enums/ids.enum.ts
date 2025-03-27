@@ -2,8 +2,6 @@
 export enum AnimalId {
     Chicken = "chicken",
     Cow = "cow",
-    Pig = "pig",
-    Sheep = "sheep"
 }
 
 // Building Enum

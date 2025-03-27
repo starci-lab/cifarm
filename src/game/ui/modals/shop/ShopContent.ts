@@ -1,11 +1,5 @@
 import { calculateUiDepth, UILayer } from "@/game/layers"
 import {
-    BuyCropSeedsRequest,
-    BuyFlowerSeedsRequest,
-    BuySuppliesRequest,
-    BuyToolRequest,
-} from "@/modules/apollo"
-import {
     AnimalId,
     AnimalSchema,
     BuildingSchema,
@@ -44,7 +38,8 @@ import {
     supplyAssetMap,
     tileAssetMap,
     toolAssetMap,
-    flowerAssetMap
+    flowerAssetMap,
+    baseAssetMap
 } from "../../../assets"
 import {
     BuyingDragModeOnMessage,
@@ -71,6 +66,7 @@ import {
 } from "../../elements"
 import { onGameObjectPress } from "../../utils"
 import { ITEM_DATA_KEY, tabsConfig, ShopTab } from "./constants"
+import { BuyCropSeedsMessage, BuyFlowerSeedsMessage, BuySuppliesMessage, BuyToolMessage } from "@/hooks"
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
 
@@ -118,7 +114,7 @@ export class ShopContent extends BaseSizer {
         super(scene, x, y, width, height, config)
 
         const cellSourceImage = this.scene.textures
-            .get(BaseAssetKey.UIModalShopCard)
+            .get(baseAssetMap[BaseAssetKey.UIModalShopCard].key)
             .getSourceImage()
         this.cellWidth = cellSourceImage.width
         this.cellHeight = cellSourceImage.height
@@ -774,17 +770,17 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Decorations:
-            for (const { displayId, price } of this.buildings) {
-                // get the image
-                items.push({
-                    assetKey: buildingAssetMap[displayId].map.textureConfig.key,
-                    onPress: () => {
-                        console.log("Clicked on building", displayId)
-                    },
-                    price,
-                })
-                // add the item card to the scrollable panel
-            }
+            // for (const { displayId, price } of this.buildings) {
+            //     // get the image
+            //     // items.push({
+            //     //     assetKey: buildingAssetMap[displayId].map.textureConfig.key,
+            //     //     onPress: () => {
+            //     //         console.log("Clicked on building", displayId)
+            //     //     },
+            //     //     price,
+            //     // })
+            //     // add the item card to the scrollable panel
+            // }
             break
         }
         return items
@@ -912,7 +908,7 @@ export class ShopContent extends BaseSizer {
     private onBuyCropSeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuyCropSeedsResponsed, () => {
         })
-        const eventMessage: BuyCropSeedsRequest = {
+        const eventMessage: BuyCropSeedsMessage = {
             cropId: displayId,
             quantity: 1,
         }
@@ -963,7 +959,7 @@ export class ShopContent extends BaseSizer {
             })
             this.scene.add.existing(flyItem)
         })
-        const eventMessage: BuyFlowerSeedsRequest = {
+        const eventMessage: BuyFlowerSeedsMessage = {
             flowerId: displayId,
             quantity: 1,
         }
@@ -975,7 +971,7 @@ export class ShopContent extends BaseSizer {
     private onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuySuppliesResponsed, () => {
         })
-        const eventMessage: BuySuppliesRequest = {
+        const eventMessage: BuySuppliesMessage = {
             supplyId: displayId,
             quantity: 1,
         }
@@ -1002,7 +998,7 @@ export class ShopContent extends BaseSizer {
     private onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
         EventBus.once(EventName.BuyToolResponsed, () => {
         })
-        const eventMessage: BuyToolRequest = {
+        const eventMessage: BuyToolMessage = {
             toolId: displayId,
         }
         // send request to buy seeds

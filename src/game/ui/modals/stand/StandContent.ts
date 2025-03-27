@@ -1,4 +1,4 @@
-import { BaseAssetKey, inventoryTypeAssetMap } from "../../../assets"
+import { BaseAssetKey, inventoryTypeAssetMap, baseAssetMap } from "../../../assets"
 import { CacheKey, BaseSizerBaseConstructorParams, DeliveryData } from "../../../types"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -71,7 +71,7 @@ export class StandContent extends BaseSizer {
             this.remove(this.gridSizer, true)
         }
         const items = this.getItems()
-        const background = this.scene.add.image(0, 0, BaseAssetKey.UIModalStand)
+        const background = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStand].key)
         // Create Fixed Grid Table
         this.gridSizer = this.scene.rexUI.add
             .gridSizer({
@@ -94,7 +94,7 @@ export class StandContent extends BaseSizer {
                         hasItem: !!item,
                         container
                     }
-                    const tagBackground = scene.add.image(0, 0, BaseAssetKey.UIModalStandTag)
+                    const tagBackground = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStandTag].key)
                     
                     let tagText: Text | undefined
                     if (item) {

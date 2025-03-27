@@ -11,18 +11,15 @@ import {
     loadProductAssets,
     loadSupplyAssets,
     loadTileAssets,
-    loadToolsAssets,
+    loadToolAssets,
     loadFruitAssets,
-    loadAnimalStateAssets,
-    loadPlantStateAssets,
-    loadFruitStateAssets,
+    loadStateAssets,
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { EventBus, EventName } from "../event-bus"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey, PlacedItemsData } from "../types"
 import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
-import { sleep } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { loadFlowerAssets } from "../assets/flowers"
 
@@ -39,10 +36,6 @@ export class LoadingScene extends Scene {
     constructor() {
         super(SceneName.Loading)
     }
-
-    // asset loading
-    private assetLoaded = 0
-    private previousAssetLoaded = 0
 
     // data fetching
     private dataFetchingLoaded = 0
@@ -88,7 +81,7 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.FruitInfo, fruitInfo)
                 this.cache.obj.add(CacheKey.Flowers, flowers)
                 //load the static data
-                this.handleFetchData("Loading static data...")
+                this.handleFetchData()
             }
         )
 
@@ -132,13 +125,9 @@ export class LoadingScene extends Scene {
                         scale: 16,
                     })
                 }
-                EventBus.once(EventName.WatchUserChanged, () => {
-                    this.handleFetchData("Loading user...")
-                })
-            } else {
-                // create the image by the url
-                this.handleFetchData("Loading user...")
             }
+            // create the image by the url
+            this.handleFetchData()
         })
 
         //listen for load inventory event
@@ -147,7 +136,7 @@ export class LoadingScene extends Scene {
             (inventories: Array<InventorySchema>) => {
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, inventories)
-                this.handleFetchData("Loading inventories...")
+                this.handleFetchData()
             }
         )
 
@@ -162,18 +151,20 @@ export class LoadingScene extends Scene {
                     userId,
                 }
                 this.cache.obj.add(CacheKey.PlacedItems, placedItemsData)
-                this.handleFetchData("Loading placed items...")
+                this.handleFetchData()
             }
         )
-
-        this.events.once(EventName.LoadResponsed, async () => {
-            //load the main game scene
-            this.scene.start(SceneName.Gameplay)
-        })
     }
 
     preload() {
         this.load.setPath("assets")
+    }
+
+    private handleFetchData() {
+        this.dataFetchingLoaded++
+        if (this.dataFetchingLoaded === this.totalDataFetching) {
+            this.load.start()
+        }
     }
 
     async create() {
@@ -198,61 +189,48 @@ export class LoadingScene extends Scene {
 
         // create the loading progress container
         this.loadingProgressBar = new LoadingProgressBar({
-            baseParams: {
-                scene: this,
-                x: width / 2,
-                y: height * 0.85,
-            },
+            scene: this,
+            x: width / 2,
+            y: height * 0.85,
         })
         // add the loading progress container to the scene
         this.add.existing(this.loadingProgressBar)
 
-        this.fetchData()
-        // listen for the complete event
         this.load.on("progress", async (progress: number) => {
-            const assetLoaded = progress - this.previousAssetLoaded
-            this.previousAssetLoaded = progress
-            this.loadAssets(assetLoaded)
+            this.loadAssets(progress)
         })
-        // load all the assets
-        loadBaseAssets(this)
-        await loadCropAssets(this)
-        loadFlowerAssets(this) 
-        loadSupplyAssets(this)
-        loadProductAssets(this)
-        loadTileAssets(this)
-        loadPetAssets(this)
-        loadToolsAssets(this)
-        loadInventoryTypesAssets(this)
-        loadPlantStateAssets(this)
-        loadAnimalStateAssets(this)
-        loadFruitStateAssets(this)
-        loadFruitAssets(this)
-        loadAnimalAssets(this)
-        loadBuildingAssets(this)
+
+        this.load.on("complete", () => {
+            this.scene.start(SceneName.Gameplay)
+        })
+
+        await Promise.all([
+            // listen for the complete event
+            loadBaseAssets(this),
+            loadCropAssets(this),
+            loadFlowerAssets(this),
+            loadSupplyAssets(this),
+            loadProductAssets(this),
+            loadTileAssets(this),
+            loadPetAssets(this),
+            loadFruitAssets(this),
+            loadToolAssets(this),
+            loadInventoryTypesAssets(this),
+            loadAnimalAssets(this),
+            loadStateAssets(this),
+            loadBuildingAssets(this),
+        ])
+
         this.load.setPath()
-        this.load.start()
+
+        // fetch the data
+        this.fetchData()
     }
 
-    async update() {
-    // use the loading progress container to update the loading progress
-        if (this.loadingProgressBar) {
-            await this.loadingProgressBar.update()
-
-            // check if the queue is empty
-            if (this.waitForQueueEmpty && this.loadingProgressBar.queueEmpty()) {
-                // emit the event that the loading is done
-                this.events.emit(EventName.LoadResponsed)
-            }
-        }
-    }
-
-    async fetchData() {
+    public fetchData() {
         if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
-        // sleep 0.1 seconds to ensure the hook is updated
-        await sleep(100)
         // start fetching the data
         EventBus.emit(EventName.LoadStaticData)
         EventBus.emit(EventName.LoadUser)
@@ -260,44 +238,14 @@ export class LoadingScene extends Scene {
         EventBus.emit(EventName.LoadPlacedItems)
     }
 
-    private handleFetchData(message: string) {
-        if (!this.loadingProgressBar) {
-            throw new Error("Loading progress container not found")
-        }
-        const to = this.dataFetchingLoaded + 1
-        this.loadingProgressBar.addLoadingQueue({
-            from: this.dataFetchingLoaded / this.totalDataFetching,
-            to: to / this.totalDataFetching,
-            text: message,
-            steps: 20, // 20 x 0.02 = 0.04s
-        })
-        this.dataFetchingLoaded = to
-
-        if (this.dataFetchingLoaded === this.totalDataFetching) {
-            // start the asset loading
-            // sleep(3000).then(() => {
-            //     this.load.start()
-            // })
-        }
-    }
-
-    private waitForQueueEmpty = false
-
     loadAssets(assetLoaded: number) {
         if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
         // add the asset loaded
-        this.loadingProgressBar.addLoadingQueue({
-            from: this.assetLoaded,
-            to: this.assetLoaded + assetLoaded,
-            text: "Loading assets...",
-            steps: 3,
+        this.loadingProgressBar.updateLoadingProgress({
+            progress: assetLoaded,
+            text: `Loading assets... (${(assetLoaded * 100).toFixed(2)}%)`,
         })
-        this.assetLoaded += assetLoaded
-        if (this.assetLoaded === 1) {
-            // emit the event that the loading is done
-            this.waitForQueueEmpty = true
-        }
     }
 }

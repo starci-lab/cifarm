@@ -19,9 +19,10 @@ import {
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
-    AnimalAge,
-    animalAssetMap,
+    // AnimalAge,
+    // animalAssetMap,
     BaseAssetKey,
+    baseAssetMap,
     buildingAssetMap,
     fruitAssetMap,
     TextureConfig,
@@ -93,7 +94,7 @@ interface DragData {
 }
 
 // key for experience
-const ENERGY_KEY = BaseAssetKey.UITopbarIconEnergy
+const ENERGY_KEY = baseAssetMap[BaseAssetKey.UITopbarIconEnergy].key
 // tilemap for handling input events
 export class InputTilemap extends ItemTilemap {
     // pinch instance
@@ -843,9 +844,8 @@ export class InputTilemap extends ItemTilemap {
             if (!animal) {
                 throw new Error("Animal not found")
             }
-            const { textureConfig } =
-              animalAssetMap[animal.displayId].map[AnimalAge.Baby]
-            _textureConfig = textureConfig  
+            // const { spineConfig } = animalAssetMap[animal.displayId].map[AnimalAge.Baby]
+            //_textureConfig = spineConfig  
             break
         }
         case PlacedItemType.Fruit: {
@@ -916,10 +916,10 @@ export class InputTilemap extends ItemTilemap {
             if (!placedItemType) {
                 throw new Error("Placed item type not found")
             }
-            const { textureConfig } =
-          animalAssetMap[animal.displayId].map[AnimalAge.Baby]
-            _textureConfig = textureConfig  
-            _placedItemType = placedItemType
+            //     const { textureConfig } =
+            //   animalAssetMap[animal.displayId].map[AnimalAge.Baby]
+            //     _textureConfig = textureConfig  
+            //     _placedItemType = placedItemType
             break
         }
         case PlacedItemType.Fruit: {

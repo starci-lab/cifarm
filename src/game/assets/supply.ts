@@ -1,7 +1,7 @@
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
 import { SupplyId } from "@/modules/entities"
-import { fetchAsset } from "./fetch"
+import { loadTexture } from "./utils"
 
 export interface SupplyAssetData {
   name: string;
@@ -15,21 +15,21 @@ export const supplyAssetMap: Record<
     [SupplyId.BasicFertilizer]: {
         name: "Basic Fertilizer",
         textureConfig: {
-            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/basic-fertilizer.png",
+            assetUrl: "supplies/basic-fertilizer.png",
             key: "basic-fertilizer",
         },
     },
     [SupplyId.AnimalFeed]: {
         name: "Animal Feed",
         textureConfig: {
-            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/animal-feed.png",
+            assetUrl: "supplies/animal-feed.png",
             key: "animal-feed",
         },
     },
     [SupplyId.FruitFertilizer]: {
         name: "Fruit Fertilizer",
         textureConfig: {
-            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/supplies/fruit-fertilizer.png",
+            assetUrl: "supplies/fruit-fertilizer.png",
             key: "fruit-fertilizer",
         },
     },
@@ -39,16 +39,6 @@ export const supplyAssetMap: Record<
 export const loadSupplyAssets = async (scene: Scene) => {
     // Load all supply assets
     for (const supplyData of Object.values(supplyAssetMap)) {
-        const { key, assetUrl, useExisting } = supplyData.textureConfig
-        if (!useExisting) {
-            if (!assetUrl) {
-                throw new Error("Asset URL not found")
-            }
-            await fetchAsset({
-                key,
-                assetUrl,
-                scene,
-            })
-        }
+        await loadTexture(scene, supplyData.textureConfig)
     }
 }

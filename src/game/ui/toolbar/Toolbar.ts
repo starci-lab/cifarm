@@ -9,6 +9,7 @@ import {
 import { CacheKey, ContainerLiteBaseConstructorParams } from "../../types"
 import {
     BaseAssetKey,
+    baseAssetMap,
     inventoryTypeAssetMap,
     toolAssetMap,
 } from "../../assets"
@@ -79,7 +80,7 @@ export class Toolbar extends ContainerLite {
         this.cellSize = getCellSize(this.scene)
         // create the toolbar background
         this.background = this.scene.add
-            .image(0, 0, BaseAssetKey.UIToolbarBackground)
+            .image(0, 0, baseAssetMap[BaseAssetKey.UIToolbarBackground].key)
             .setOrigin(0.5, 1)
         this.addLocal(this.background)
 
@@ -171,9 +172,9 @@ export class Toolbar extends ContainerLite {
         const background = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UICommonPrevAvatar
+            baseAssetMap[BaseAssetKey.UICommonPrevAvatar].key
         )
-        const icon = this.scene.add.image(0, 0, BaseAssetKey.UICommonPrevIcon)
+        const icon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonPrevIcon].key)
         const prevButton = this.scene.rexUI.add
             .label({
                 originX: 0,
@@ -224,9 +225,9 @@ export class Toolbar extends ContainerLite {
         const background = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UICommonNextAvatar
+            baseAssetMap[BaseAssetKey.UICommonNextAvatar].key
         )
-        const icon = this.scene.add.image(0, 0, BaseAssetKey.UICommonNextIcon)
+        const icon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonNextIcon].key)
         const nextButton = this.scene.rexUI.add
             .label({
                 align: "center",
@@ -387,7 +388,7 @@ export class Toolbar extends ContainerLite {
                     this.selectTool(i, true)
                 })
                 item.layout()
-                const arrow = this.scene.add.image(0, -(item.height/2 + 20), BaseAssetKey.UIToolbarSelectedArrow)
+                const arrow = this.scene.add.image(0, -(item.height/2 + 20), baseAssetMap[BaseAssetKey.UIToolbarSelectedArrow].key)
                 const itemContainer = this.scene.rexUI.add.container(0, 0)
                 itemContainer.addLocal(item)
                 itemContainer.addLocal(arrow)

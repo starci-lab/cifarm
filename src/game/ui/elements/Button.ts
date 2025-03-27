@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { ConstructorParams, LabelBaseConstructorParams } from "../../types"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { Text } from "./Text"
@@ -33,9 +33,9 @@ export class Button extends Label {
         }
         const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, syncTextScale, height, width, fontSize = 48, scale = 1 } = options
 
-        const backgroundKeyMap: Record<ButtonBackground, BaseAssetKey> = {
-            [ButtonBackground.Primary]: BaseAssetKey.UICommonButtonGreen,
-            [ButtonBackground.Secondary]: BaseAssetKey.UICommonButtonRed,
+        const backgroundKeyMap: Record<ButtonBackground, string> = {
+            [ButtonBackground.Primary]: baseAssetMap[BaseAssetKey.UICommonButtonGreen].key,
+            [ButtonBackground.Secondary]: baseAssetMap[BaseAssetKey.UICommonButtonRed].key,
         }
         const buttonBackground = new NinePatch3x3({
             baseParams: {

@@ -22,8 +22,8 @@ const sessionDb = new Dexie("SessionDB") as Dexie & {
   StoredAddress,
     "id" // primary key "id" (for the typings only)
   >;
-  assets: EntityTable<
-  Asset,
+  packages: EntityTable<
+  Package,
     "id" // primary key "id" (for the typings only)
   >;
 }
@@ -39,6 +39,11 @@ export enum SessionDbKey {
 export interface KeyValueStore {
     key: SessionDbKey // enum
     value: string
+}
+
+export interface Package {
+    id: number
+    packageId: number
 }
 
 export interface Account {
@@ -89,6 +94,7 @@ export interface Asset {
   id: number
   key: string
   data: Blob
+  versionName?: number
 }
 
 //store all sessions
@@ -104,7 +110,7 @@ sessionDb.version(1).stores({
     //stored addresses
     storedAddresses: "++id, chainKey, network, accountAddress, type",
     //assets
-    assets: "++id, key, data",
+    packages: "++id, packageId",
 })
 
 export { sessionDb } 

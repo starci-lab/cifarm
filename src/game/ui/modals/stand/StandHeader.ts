@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "../../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../../assets"
 import { CloseModalMessage, EventBus, EventName, ModalName } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
@@ -13,7 +13,7 @@ export class StandHeader extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         // Background header covering the full width
-        this.header = this.scene.add.image(0, 0, BaseAssetKey.UIModalStandHeader)
+        this.header = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStandHeader].key)
             .setOrigin(0.5, 0)
         this.addLocal(this.header)
 

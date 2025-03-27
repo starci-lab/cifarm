@@ -1,5 +1,5 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { ButtonsBaseConstructorParams, CacheKey } from "@/game/types"
@@ -30,7 +30,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
         })
 
         this.settingButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconSetting,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconSetting].key,
             text: "Settings",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -43,7 +43,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add inventory button
         this.inventoryButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconInventory,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconInventory].key,
             text: "Inventory",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -56,7 +56,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add daily button
         this.dailyButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconDaily,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconDaily].key,
             text: "Daily",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -69,7 +69,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add quest button
         this.questButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconQuests,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconQuests].key,
             text: "Quest",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -82,7 +82,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add move button
         this.moveButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconMove,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconMove].key,
             text: "Move",
             onPress: () => {
                 EventBus.emit(EventName.MovingModeOn)
@@ -92,7 +92,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add move button
         this.sellButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconSell,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconSell].key,
             text: "Sell",
             onPress: () => {
                 EventBus.emit(EventName.SellingModeOn)

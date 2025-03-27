@@ -2,7 +2,7 @@
 import { FlowerId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { ShopAssetData, TextureConfig } from "./types"
-import { fetchAsset } from "./fetch"
+import { loadTexture } from "./utils"
 
 // Flower Asset Data Interface
 export interface FlowerStageAssetData {
@@ -23,7 +23,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
             0: {
                 textureConfig: {
                     key: "flowers-daisy-1",
-                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/1.png",
+                    assetUrl: "flowers/daisy/1.png",
                     extraOffsets: {
                         x: 0,
                         y: -30,
@@ -33,7 +33,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
             1: {
                 textureConfig: {
                     key: "flowers-daisy-2",
-                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/2.png",
+                    assetUrl: "flowers/daisy/2.png",
                     extraOffsets: {
                         x: 0,
                         y: -45,
@@ -43,7 +43,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
             2: {
                 textureConfig: {
                     key: "flowers-daisy-3",
-                    assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/3.png",
+                    assetUrl: "flowers/daisy/3.png",
                     extraOffsets: {
                         x: 0,
                         y: -45,
@@ -74,7 +74,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
         shop: {
             textureConfig: {
                 key: "flowers-daisy-shop",
-                assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/flowers/daisy/shop.png",
+                assetUrl: "flowers/daisy/seed.png",
                 extraOffsets: {
                     x: 0,
                     y: -45,
@@ -89,22 +89,14 @@ export const loadFlowerAssets = async (scene: Scene) => {
     // Load all flower assets
     for (const flowerData of Object.values(flowerAssetMap)) {
         // Load shop asset if exists
-        if (flowerData.shop?.textureConfig.assetUrl) {
-            await fetchAsset({
-                key: flowerData.shop.textureConfig.key,
-                assetUrl: flowerData.shop.textureConfig.assetUrl,
-                scene,
-            })
+        if (flowerData.shop) {
+            await loadTexture(scene, flowerData.shop.textureConfig)
         }
 
         // Load all stage assets
         for (const stageData of Object.values(flowerData.map)) {
-            if (stageData.textureConfig.assetUrl) {
-                await fetchAsset({
-                    key: stageData.textureConfig.key,
-                    assetUrl: stageData.textureConfig.assetUrl,
-                    scene,
-                })
+            if (stageData.textureConfig) {
+                await loadTexture(scene, stageData.textureConfig)
             }
         }
     }

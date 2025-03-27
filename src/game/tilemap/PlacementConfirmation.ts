@@ -1,5 +1,5 @@
 import { ButtonsBaseConstructorParams, ConstructorParams } from "@/game/types"
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 
 export interface PlacementConfirmationOptions {
@@ -36,7 +36,7 @@ export class PlacementConfirmation extends Buttons {
         const yesButtonBackground = scene.add.image(
             0,
             0,
-            BaseAssetKey.UICommonCheckRound
+            baseAssetMap[BaseAssetKey.UICommonCheckRound].key
         )
         this.yesButton = scene.rexUI.add
             .sizer({
@@ -48,7 +48,7 @@ export class PlacementConfirmation extends Buttons {
         const noButtonBackground = scene.add.image(
             0,
             0,
-            BaseAssetKey.UICommonXRound
+            baseAssetMap[BaseAssetKey.UICommonXRound].key
         )
         this.noButton = scene.rexUI.add
             .sizer({

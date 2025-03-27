@@ -1,5 +1,5 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
@@ -9,7 +9,6 @@ export class LeftHorizontalButtons extends HorizontalButtons {
     private shopButton : Sizer
     private roadsideStandButton : Sizer
     private neighborsButton : Sizer
-    private spinButton: Sizer
     
     constructor(baseParams: ButtonsBaseConstructorParams) {
         super({
@@ -29,7 +28,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.nftMarketplaceButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconNFTMarketplace,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNFTMarketplace].key,
             text: "NFT Marketplace",
             onPress: () => {
                 console.log("NFT")
@@ -39,7 +38,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add shop button
         this.shopButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconShop,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconShop].key,
             text: "Shop",
             onPress: () => {
                 EventBus.emit(EventName.RefreshPlaceItemsCacheKey)
@@ -51,23 +50,9 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             },
         })
         this.addButton(this.shopButton)
-
-        // add spin button
-        this.spinButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconSpin,
-            text: "Spin",
-            onPress: () => {
-                const eventMessage: OpenModalMessage = {
-                    modalName: ModalName.Spin
-                }
-                EventBus.emit(EventName.OpenModal, eventMessage)
-            },
-        })
-        this.addButton(this.spinButton)
-
         // add roadside stand button
         this.roadsideStandButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconRoadsideStand,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconRoadsideStand].key,
             text: "Roadside Stand",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -80,7 +65,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add neighbors button
         this.neighborsButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconNeighbors,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNeighbors].key,
             text: "Neighbors",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {

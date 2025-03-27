@@ -1,5 +1,5 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { OpenModalMessage, ModalName, EventBus, EventName } from "@/game/event-bus"
@@ -25,7 +25,7 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.returnButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconReturn,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconReturn].key,
             text: "Return",
             onPress: () => {
                 this.scene.cache.obj.remove(CacheKey.WatchingUser)
@@ -37,7 +37,7 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
 
         // add neighbors button
         this.neighborsButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconNeighbors,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNeighbors].key,
             text: "Neighbors",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {

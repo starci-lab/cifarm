@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { TabData } from "../../elements"
 
 export const ITEM_DATA_KEY = "item-data"
@@ -25,61 +25,61 @@ export const tabsConfig: Record<ShopTab, ShopTabData> = {
     [ShopTab.Seeds]: {
         showLimitText: false,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopSeedsTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopSeedsTab].key,
         },
     },
     [ShopTab.Flowers]: {
         showLimitText: false,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopFlowersTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopFlowersTab].key,
         },
     },
     [ShopTab.Animals]: {
         showLimitText: false,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopAnimalsTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopAnimalsTab].key,
         },
     },
     [ShopTab.Fruits]: {
         showLimitText: true,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopFruitsTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopFruitsTab].key,
         },
     },
     [ShopTab.Buildings]: {
         showLimitText: true,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopBuildingTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopBuildingTab].key,
         },
     },
     [ShopTab.Tiles]: {
         showLimitText: true,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopTilesTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopTilesTab].key,
         },
     },
     [ShopTab.Supplies]: {
         showLimitText: false,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopSuppliesTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopSuppliesTab].key,
         },
     },
     [ShopTab.Decorations]: {
         showLimitText: false,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopDecorationTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopDecorationTab].key,
         },
     },
     [ShopTab.Pets]: {
         showLimitText: false,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopPetsTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopPetsTab].key,
         },
     },
     [ShopTab.Tools]: {
         showLimitText: false,
         tabData: {
-            iconKey: BaseAssetKey.UIModalShopToolsTab,
+            iconKey: baseAssetMap[BaseAssetKey.UIModalShopToolsTab].key,
         },
     },
 }

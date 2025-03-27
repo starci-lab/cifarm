@@ -1,5 +1,5 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
@@ -26,7 +26,7 @@ export class NeighborRightHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.nextButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconNext,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNext].key,
             text: "Next",
             onPress: () => {
                 console.log("NFT")
@@ -36,7 +36,7 @@ export class NeighborRightHorizontalButtons extends HorizontalButtons {
 
         // add inventory button
         this.inventoryButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconInventory,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconInventory].key,
             text: "Inventory",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {

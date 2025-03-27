@@ -2,8 +2,7 @@
 import { TileId } from "@/modules/entities"
 import { Scene } from "phaser"
 import { TextureConfig } from "./types"
-import { fetchAsset } from "./fetch"
-
+import { loadTexture } from "./utils"
 
 export interface TileAssetData {
     name: string;
@@ -17,7 +16,7 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
         name: "Basic Tile 1",
         textureConfig: {
             key: "tiles-basic-tile",
-            assetUrl: "https://cifarm.s3.ap-southeast-1.amazonaws.com/assets/tiles/starter-tile.png",
+            assetUrl: "tiles/starter-tile.png",
         },
     },
 }
@@ -26,17 +25,7 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
 export const loadTileAssets = async (scene: Scene) => {
     // Load all tile assets
     for (const tileData of Object.values(tileAssetMap)) {
-        const { key, assetUrl, useExisting } = tileData.textureConfig
-        if (!useExisting) {
-            if (!assetUrl) {
-                throw new Error("Asset URL not found")
-            }
-            await fetchAsset({
-                key,
-                assetUrl,
-                scene,
-            })
-        }
+        await loadTexture(scene, tileData.textureConfig)
     }
 }
 

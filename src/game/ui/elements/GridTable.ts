@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import {
     ConstructorParams,
     GridTableBaseConstructorParams,
@@ -21,7 +21,7 @@ export interface GridTableOptions<TItem> {
 
 export class GridTableFrame extends Phaser.GameObjects.Image {
     constructor({ scene, x, y }: ImageBaseConstructorParams) {
-        super(scene, x, y, BaseAssetKey.UIModalCommonFrame)
+        super(scene, x, y, baseAssetMap[BaseAssetKey.UIModalCommonFrame].key)
     }
 }
 
@@ -32,7 +32,7 @@ export interface CellSize {
 
 export const getCellSize = (scene: Phaser.Scene): CellSize => {
     const sourceImage = scene.textures
-        .get(BaseAssetKey.UIModalCommonFrame)
+        .get(baseAssetMap[BaseAssetKey.UIModalCommonFrame].key)
         .getSourceImage()
     return {
         width: sourceImage.width,
@@ -53,7 +53,7 @@ export class GridTable<TItem> extends RexGridTable {
         }
 
         const frameSourceImage = scene.textures
-            .get(BaseAssetKey.UIModalCommonFrame)
+            .get(baseAssetMap[BaseAssetKey.UIModalCommonFrame].key)
             .getSourceImage()
         const cellWidth = frameSourceImage.width + MARGIN
         const cellHeight = frameSourceImage.height + MARGIN
@@ -78,13 +78,12 @@ export class GridTable<TItem> extends RexGridTable {
                 interactive: true, // Allow scrolling
             },
             slider: {
-                thumb: scene.add.image(0, 0, BaseAssetKey.UIModalCommonThumb),
+                thumb: scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalCommonThumb].key),
             },
             mouseWheelScroller: { focus: false, speed: 2 },
             createCellContainerCallback,
             items,
             ...config,
         })
-        console.log(this)
     }
 }

@@ -1,6 +1,6 @@
 import { EventBus, EventName } from "@/game/event-bus"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ButtonsBaseConstructorParams } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
 
@@ -24,7 +24,7 @@ export class PlacementModeLeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.returnButton = this.createButton({
-            iconKey: BaseAssetKey.UIIconPrevious,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconPrevious].key,
             text: "Return",
             onPress: () => {
                 EventBus.emit(EventName.NormalModeOn)

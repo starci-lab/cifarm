@@ -13,7 +13,7 @@ import { toolAssetMap } from "./tools"
 import { productAssetMap } from "./products"
 import { supplyAssetMap } from "./supply"
 import { flowerAssetMap } from "./flowers"
-import { fetchAsset } from "./fetch"
+import { loadTexture } from "./utils"
 
 export interface InventoryAssetData {
   name: string;
@@ -398,12 +398,8 @@ export const inventoryTypeAssetMap: Record<
 export const loadInventoryTypesAssets = async (scene: Scene) => {
     // Load all inventory type assets
     for (const inventoryData of Object.values(inventoryTypeAssetMap)) {
-        if (inventoryData.textureConfig.assetUrl) {
-            await fetchAsset({
-                key: inventoryData.textureConfig.key,
-                assetUrl: inventoryData.textureConfig.assetUrl,
-                scene,
-            })
+        if (inventoryData.textureConfig) {
+            await loadTexture(scene, inventoryData.textureConfig)
         }
     }
 }
