@@ -86,18 +86,20 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
 
 // Function to load all flower assets
 export const loadFlowerAssets = async (scene: Scene) => {
+    const promises: Promise<void>[] = []
     // Load all flower assets
     for (const flowerData of Object.values(flowerAssetMap)) {
         // Load shop asset if exists
         if (flowerData.shop) {
-            await loadTexture(scene, flowerData.shop.textureConfig)
+            promises.push(loadTexture(scene, flowerData.shop.textureConfig))
         }
 
         // Load all stage assets
         for (const stageData of Object.values(flowerData.map)) {
             if (stageData.textureConfig) {
-                await loadTexture(scene, stageData.textureConfig)
+                promises.push(loadTexture(scene, stageData.textureConfig))
             }
         }
     }
+    await Promise.all(promises)
 }

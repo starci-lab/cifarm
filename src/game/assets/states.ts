@@ -85,10 +85,12 @@ export const stateAssetMap = {
 
 // Function to load all state assets
 export const loadStateAssets = async (scene: Scene) => {
+    const promises: Promise<void>[] = []
     for (const stateType of Object.values(stateAssetMap)) {
         for (const stateData of Object.values(stateType)) {
             const { textureConfig } = stateData
-            await loadTexture(scene, textureConfig)
+            promises.push(loadTexture(scene, textureConfig))
         }
     }
+    await Promise.all(promises)
 }

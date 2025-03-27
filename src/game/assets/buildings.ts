@@ -129,22 +129,23 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
 
 // Function to load all building assets
 export const loadBuildingAssets = async (scene: Scene) => {
+    const promises: Promise<void>[] = []
     // Load all building assets
     for (const buildingData of Object.values(buildingAssetMap)) {
     // Load shop asset if exists
         if (buildingData.shop?.textureConfig) {
-            await loadTexture(scene, buildingData.shop.textureConfig)   
+            promises.push(loadTexture(scene, buildingData.shop.textureConfig))
         }
 
         // Load map asset
         if (buildingData.map.textureConfig) {
-            const textureConfig = buildingData.map.textureConfig
-            await loadTexture(scene, textureConfig)
+            promises.push(loadTexture(scene, buildingData.map.textureConfig))
         }
 
         // load spine asset if exists
         if (buildingData.map.spineConfig) {
-            await loadSpine(scene, buildingData.map.spineConfig)
+            promises.push(loadSpine(scene, buildingData.map.spineConfig))
         }
     }
+    await Promise.all(promises)
 }

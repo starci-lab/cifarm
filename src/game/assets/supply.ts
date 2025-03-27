@@ -38,7 +38,9 @@ export const supplyAssetMap: Record<
 // Function to load all supply assets
 export const loadSupplyAssets = async (scene: Scene) => {
     // Load all supply assets
+    const promises: Promise<void>[] = []
     for (const supplyData of Object.values(supplyAssetMap)) {
-        await loadTexture(scene, supplyData.textureConfig)
+        promises.push(loadTexture(scene, supplyData.textureConfig))
     }
+    await Promise.all(promises)
 }

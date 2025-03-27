@@ -225,7 +225,9 @@ export const productAssetMap: Record<
 // Function to load all product assets
 export const loadProductAssets = async (scene: Scene) => {
     // Load all product assets
+    const promises: Promise<void>[] = []
     for (const productData of Object.values(productAssetMap)) {
-        await loadTexture(scene, productData.textureConfig)
+        promises.push(loadTexture(scene, productData.textureConfig))
     }
+    await Promise.all(promises)
 }

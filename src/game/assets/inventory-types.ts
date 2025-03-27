@@ -396,10 +396,12 @@ export const inventoryTypeAssetMap: Record<
 
 // Function to load all inventory type assets
 export const loadInventoryTypesAssets = async (scene: Scene) => {
+    const promises: Promise<void>[] = []
     // Load all inventory type assets
     for (const inventoryData of Object.values(inventoryTypeAssetMap)) {
         if (inventoryData.textureConfig) {
-            await loadTexture(scene, inventoryData.textureConfig)
+            promises.push(loadTexture(scene, inventoryData.textureConfig))
         }
     }
+    await Promise.all(promises)
 }

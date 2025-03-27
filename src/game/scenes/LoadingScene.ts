@@ -32,7 +32,7 @@ export class LoadingScene extends Scene {
     // loading part in phase data fetching
     // loading fill width and height
     private loadingProgressBar: LoadingProgressBar | undefined
-
+    private prevAssetsLoaded = 0
     constructor() {
         super(SceneName.Loading)
     }
@@ -195,9 +195,14 @@ export class LoadingScene extends Scene {
         })
         // add the loading progress container to the scene
         this.add.existing(this.loadingProgressBar)
+        this.updateLoadingProgress(0)
 
-        this.load.on("progress", async (progress: number) => {
-            this.loadAssets(progress)
+        EventBus.on(EventName.AssetsLoaded, async (progress: number) => {
+            const totalAssetsLoaded = Number.parseInt(this.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
+            const prevAssetsLoaded = this.prevAssetsLoaded
+            const currentAssetsLoaded = progress + prevAssetsLoaded
+            this.prevAssetsLoaded = currentAssetsLoaded
+            this.loadAssets(currentAssetsLoaded/totalAssetsLoaded)
         })
 
         this.load.on("complete", () => {
@@ -243,9 +248,17 @@ export class LoadingScene extends Scene {
             throw new Error("Loading progress container not found")
         }
         // add the asset loaded
+        this.updateLoadingProgress(assetLoaded)
+    }
+
+    private updateLoadingProgress(progress: number) {
+        const actual = Math.min(progress, 1)
+        if (!this.loadingProgressBar) {
+            throw new Error("Loading progress container not found")
+        }
         this.loadingProgressBar.updateLoadingProgress({
-            progress: assetLoaded,
-            text: `Loading assets... (${(assetLoaded * 100).toFixed(2)}%)`,
+            progress: actual,
+            text: `Loading assets... (${(actual * 100).toFixed(2)}%)`,
         })
     }
 }

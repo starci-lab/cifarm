@@ -73,7 +73,9 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
 // function to load the tools assets
 export const loadToolAssets = async (scene: Scene) => {
     // Load all tool assets
+    const promises: Promise<void>[] = []
     for (const toolData of Object.values(toolAssetMap)) {
-        await loadTexture(scene, toolData.textureConfig)
+        promises.push(loadTexture(scene, toolData.textureConfig))
     }
+    await Promise.all(promises)
 }

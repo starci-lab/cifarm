@@ -510,6 +510,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
 
 // Function to load crop assets (images) for each crop and growth stage
 export const loadCropAssets = async (scene: Scene) => {
+    const promises: Promise<void>[] = []
     // Load the asset for each growth stage
     for (const cropId of Object.keys(cropAssetMap)) {
         const _cropId = cropId as CropId
@@ -520,12 +521,13 @@ export const loadCropAssets = async (scene: Scene) => {
         }
         // Load the seed asset
         if (cropData.shop) {
-            await loadTexture(scene, cropData.shop.textureConfig)
+            promises.push(loadTexture(scene, cropData.shop.textureConfig))
         }
 
         for (const stage of Object.keys(cropData.map)) {
             const stageData = cropData.map[parseInt(stage)]
-            await loadTexture(scene, stageData.textureConfig)
+            promises.push(loadTexture(scene, stageData.textureConfig))
         }
     }
+    await Promise.all(promises)
 }

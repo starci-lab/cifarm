@@ -24,8 +24,10 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
 // Function to load all tile assets
 export const loadTileAssets = async (scene: Scene) => {
     // Load all tile assets
+    const promises: Promise<void>[] = []
     for (const tileData of Object.values(tileAssetMap)) {
-        await loadTexture(scene, tileData.textureConfig)
+        promises.push(loadTexture(scene, tileData.textureConfig))
     }
+    await Promise.all(promises)
 }
 

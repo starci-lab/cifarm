@@ -727,7 +727,7 @@ export const baseAssetMap: Record<BaseAssetKey, TextureConfig> = {
 }
 
 // preload, for loading screen
-export const loadBootstrapAssets = (scene: Phaser.Scene) => {
+export const loadBootstrapAssets = async (scene: Phaser.Scene) => {
     for (const value of Object.values(bootstrapAssetMap)) {
         const { key, assetUrl, useExisting } = value
         if (!useExisting) {
@@ -741,7 +741,9 @@ export const loadBootstrapAssets = (scene: Phaser.Scene) => {
 
 // asset Loading Function for `baseAssetMap`
 export const loadBaseAssets = async (scene: Phaser.Scene) => {
+    const promises: Promise<void>[] = []
     for (const value of Object.values(baseAssetMap)) {
-        await loadTexture(scene, value)
+        promises.push(loadTexture(scene, value))
     }
+    await Promise.all(promises)
 }

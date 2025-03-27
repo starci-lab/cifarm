@@ -26,9 +26,11 @@ export const petAssetMap: Record<PetId, PetAssetData> = {
 }
 
 export const loadPetAssets = async (scene: Scene) => {
+    const promises: Promise<void>[] = []
     for (const petData of Object.values(petAssetMap)) {
         if (petData.textureConfig) {
-            await loadTexture(scene, petData.textureConfig)
+            promises.push(loadTexture(scene, petData.textureConfig))
         }
     }
+    await Promise.all(promises)
 }

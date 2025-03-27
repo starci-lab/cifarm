@@ -148,17 +148,19 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
 // Function to load all fruit assets
 export const loadFruitAssets = async (scene: Scene) => {
     // Load all fruit assets
+    const promises: Promise<void>[] = []
     for (const fruitData of Object.values(fruitAssetMap)) {
         // Load shop asset if exists
         if (fruitData.shop?.textureConfig) {
-            await loadTexture(scene, fruitData.shop.textureConfig)
+            promises.push(loadTexture(scene, fruitData.shop.textureConfig))
         }
 
         // Load all stage assets
         for (const stageData of Object.values(fruitData.map)) {
             if (stageData.textureConfig) {
-                await loadTexture(scene, stageData.textureConfig)
+                promises.push(loadTexture(scene, stageData.textureConfig))
             }
         }
     }
+    await Promise.all(promises)
 }

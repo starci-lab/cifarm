@@ -12,6 +12,7 @@ export const EventBus = new Events.EventEmitter()
 
 // events
 export enum EventName {
+  AssetsLoaded = "assets_loaded",
   CloseGame = "close_game",
   Dragging = "dragging",
   DragEnd = "dragend",

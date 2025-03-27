@@ -100,14 +100,16 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
 }
 
 export const loadAnimalAssets = async (scene: Scene) => {
+    const promises: Promise<void>[] = []
     for (const animalData of Object.values(animalAssetMap)) {
         if (animalData.shop) {
-            await loadTexture(scene, animalData.shop.textureConfig)
+            promises.push(loadTexture(scene, animalData.shop.textureConfig))
         }
         for (const stageData of Object.values(animalData.map)) {
             if (stageData.spineConfig) {
-                await loadSpine(scene, stageData.spineConfig)
+                promises.push(loadSpine(scene, stageData.spineConfig))
             }
         }
     }
+    await Promise.all(promises)
 }

@@ -29,6 +29,8 @@ export enum CacheKey {
     DeliveryData = "delivery-data",
     WatchingUser = "watching-user",
     Flowers = "flowers",
+    TotalAssetsLoaded = "total-assets-loaded",
+    AssetsLoaded = "assets-loaded",
 }
 
 export interface DeliveryData {
