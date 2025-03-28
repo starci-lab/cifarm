@@ -33,6 +33,8 @@ export enum EmitterEventName {
   UseBugNet = "use_bug_net",
   HelpUseHerbicide = "help_use_herbicide",
   HelpUsePesticide = "help_use_pesticide",
+  HelpUseAnimalMedicine = "help_use_animal_medicine",
+  HelpUseBugNet = "help_use_bug_net",
   HelpUseWateringCan = "help_use_watering_can",
   ThiefFruit = "thief_fruit",
   ThiefPlant = "thief_plant",
@@ -44,6 +46,10 @@ export enum EmitterEventName {
   Move = "move",
   ClaimDailyReward = "claim_daily_reward",
   UseFertilizer = "use_fertilizer",
+  Sell = "sell",
+  UpgradeBuilding = "upgrade_building",
+  Return = "return",
+  Visit = "visit",
 }
 
 export interface BuySuppliesMessage {

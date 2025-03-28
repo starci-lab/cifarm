@@ -3,12 +3,12 @@ import { DailyRewardId, DailyRewardInfo, UserSchema } from "@/modules/entities"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import { Background, Text, ModalBackground, XButton } from "../../elements"
 import { onGameObjectPress } from "../../utils"
-import { ClaimItem, EventBus, EventName, ModalName, UpdateClaimModalMessage } from "@/game/event-bus"
+import { ClaimItem, SceneEventEmitter, SceneEventName, ModalName, ExternalEventEmitter, ExternalEventName } from "../../../events"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { GRAY_TINT_COLOR } from "@/game/constants"
-import { MODAL_DEPTH_1 } from "../ModalManager"
 import dayjs from "dayjs"
+import { ClaimData } from "../claim/ClaimContent"
 
 export interface DailyRewardData {
     baseAssetKey: BaseAssetKey
@@ -68,7 +68,7 @@ export class DailyContent extends BaseSizer {
                     onGameObjectPress({
                         gameObject: button,
                         onPress: () => {
-                            EventBus.emit(EventName.CloseModal, {
+                            SceneEventEmitter.emit(SceneEventName.CloseModal, {
                                 modalName: ModalName.Daily
                             })
                         },
@@ -89,7 +89,7 @@ export class DailyContent extends BaseSizer {
                                 }
                             }
                         }
-                        EventBus.once(EventName.ClaimDailyRewardResponsed, () => {
+                        ExternalEventEmitter.once(ExternalEventName.ClaimDailyRewardResponsed, () => {
                             const items : Array<ClaimItem> = [{
                                 assetKey: this.goldBaseAssetKey,
                                 quantity: this.dailyRewardInfo[id].golds,
@@ -103,18 +103,17 @@ export class DailyContent extends BaseSizer {
                                     stackable: true,
                                     scale: TOKEN_SCALE,
                                 })
-                            }      
-                            const eventMessage: UpdateClaimModalMessage = {
-                                data: {
-                                    items
-                                }
+                            }  
+                            const claimData: ClaimData = {
+                                items
                             }
-                            this.scene.events.emit(EventName.UpdateClaimModal, eventMessage)
-                            EventBus.emit(EventName.OpenModal, {
+                            this.scene.cache.obj.add(CacheKey.ClaimData, claimData)
+                            SceneEventEmitter.emit(SceneEventName.UpdateClaimModal)
+                            SceneEventEmitter.emit(SceneEventName.OpenModal, {
                                 modalName: ModalName.Claim
                             })
                         })
-                        EventBus.emit(EventName.RequestClaimDailyReward)
+                        ExternalEventEmitter.emit(ExternalEventName.RequestClaimDailyReward)
                     },
                     text: "Claim",
                 }
@@ -131,7 +130,7 @@ export class DailyContent extends BaseSizer {
             throw new Error("Reward container sizer is not defined")
         }
 
-        EventBus.on(EventName.UserRefreshed, () => {
+        SceneEventEmitter.on(SceneEventName.UserRefreshed, () => {
             this.user = this.scene.cache.obj.get(CacheKey.User)
             this.updateSizer()
         })
@@ -166,7 +165,7 @@ export class DailyContent extends BaseSizer {
             })
             .add(this.createBaseDayRewardContainers())
             .add(this.createLastDayRewardContainer())
-            .layout().setDepth(MODAL_DEPTH_1 + 1)
+            .layout().setDepth(this.depth + 1)
         if (!this.background.container) {
             throw new Error("Background container is not defined")
         }

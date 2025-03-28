@@ -3,12 +3,18 @@ import { BaseAssetKey } from "../../assets"
 import { ResourceLabel, Text, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
-import { EventBus, EventName, ModalName } from "@/game/event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { truncateString } from "@/modules/common"
 import { loadImageAwait, loadSvgAwait } from "../utils"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import Button from "phaser3-rex-plugins/plugins/button"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+    ModalName,
+    SceneEventEmitter,
+    SceneEventName,
+} from "../../events"
 
 export class Topbar extends BaseSizer {
     private background: Phaser.GameObjects.Image
@@ -20,13 +26,7 @@ export class Topbar extends BaseSizer {
     private goldLabel: Label | undefined
     private visited: boolean = false
     private watchingUser: UserSchema | undefined
-    constructor({
-        scene,
-        x,
-        y,
-        width,
-        height,
-    }: BaseSizerBaseConstructorParams) {
+    constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         const background = scene.add
             .image(0, 0, BaseAssetKey.UITopbarHeader)
             .setOrigin(0.5, 0)
@@ -36,33 +36,37 @@ export class Topbar extends BaseSizer {
 
         this.user = this.scene.cache.obj.get(CacheKey.User)
 
-        EventBus.on(EventName.UserRefreshed, () => {
+        SceneEventEmitter.on(SceneEventName.UserRefreshed, () => {
             this.user = this.scene.cache.obj.get(CacheKey.User)
             this.updateContent()
         })
 
-        EventBus.on(EventName.UpdateWatchingStatus, async () => {
-            this.watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+        SceneEventEmitter.on(SceneEventName.UpdateWatchingStatus, async () => {
+            this.watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as
+        | UserSchema
+        | undefined
             this.visited = !!this.watchingUser
             if (this.visited) {
                 await this.loadAvatar()
-                EventBus.emit(EventName.HideButtons)
-                EventBus.emit(EventName.ShowNeighborButtons)
+                SceneEventEmitter.emit(SceneEventName.HideButtons)
+                SceneEventEmitter.emit(SceneEventName.ShowNeighborButtons)
             } else {
-                EventBus.emit(EventName.ShowButtons)
-                EventBus.emit(EventName.HideNeighborButtons)
+                SceneEventEmitter.emit(SceneEventName.ShowButtons)
+                SceneEventEmitter.emit(SceneEventName.HideNeighborButtons)
             }
-            this.updateContent()    
+            this.updateContent()
         })
 
-        this.watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+        this.watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as
+      | UserSchema
+      | undefined
         this.visited = !!this.watchingUser
         this.updateContent()
 
-        EventBus.on(EventName.HideTopbar,  () => {
+        SceneEventEmitter.on(SceneEventName.HideTopbar, () => {
             this.setVisible(false).setActive(false)
         })
-        EventBus.on(EventName.ShowTopbar,  () => {
+        SceneEventEmitter.on(SceneEventName.ShowTopbar, () => {
             this.setVisible(true).setActive(true)
         })
     }
@@ -85,14 +89,14 @@ export class Topbar extends BaseSizer {
             await loadImageAwait({
                 scene: this.scene,
                 key: user.id,
-                imageUrl: user.avatarUrl
+                imageUrl: user.avatarUrl,
             })
         } else {
             await loadSvgAwait({
                 scene: this.scene,
                 key: user.id,
                 scale: 16,
-                svgUrl: createJazziconBlobUrl(user.accountAddress)
+                svgUrl: createJazziconBlobUrl(user.accountAddress),
             })
         }
     }
@@ -105,7 +109,11 @@ export class Topbar extends BaseSizer {
         if (!user) {
             throw new Error("User not found")
         }
-        const nameBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarName)
+        const nameBackground = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UITopbarName
+        )
         const nameText = new Text({
             baseParams: {
                 scene: this.scene,
@@ -124,32 +132,50 @@ export class Topbar extends BaseSizer {
             align: "left",
             space: {
                 left: 50,
-                top: -2
+                top: -2,
             },
             background: nameBackground,
             width: nameBackground.width,
             height: nameBackground.height,
         })
-        const avatarWrapperBackground = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarWrapper)
+        const avatarWrapperBackground = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UITopbarAvatarWrapper
+        )
         const avatarImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatar)
-        const avatarMask = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatarMask).setVisible(false)
-        const image = this.scene.add.image(0, 0, user.id).setDisplaySize(avatarMask.width, avatarMask.height)
+        const avatarMask = this.scene.add
+            .image(0, 0, BaseAssetKey.UITopbarAvatarMask)
+            .setVisible(false)
+        const image = this.scene.add
+            .image(0, 0, user.id)
+            .setDisplaySize(avatarMask.width, avatarMask.height)
         image.setMask(avatarMask.createBitmapMask())
-        const imageWithMask = this.scene.rexUI.add.label({
-            background: avatarMask,
-            icon: image,
-            width: avatarMask.width,
-            height: avatarMask.height,
-            align: "center",
-        }).layout()
-        const avatarSizer = this.scene.rexUI.add.overlapSizer({
-            height: avatarImage.height,
-            width: avatarImage.width,
-        }).addBackground(avatarImage).add(imageWithMask, {
-            align: "center-bottom",
-            expand: false
-        }).layout()
-        const levelBoxImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarLevelBox)
+        const imageWithMask = this.scene.rexUI.add
+            .label({
+                background: avatarMask,
+                icon: image,
+                width: avatarMask.width,
+                height: avatarMask.height,
+                align: "center",
+            })
+            .layout()
+        const avatarSizer = this.scene.rexUI.add
+            .overlapSizer({
+                height: avatarImage.height,
+                width: avatarImage.width,
+            })
+            .addBackground(avatarImage)
+            .add(imageWithMask, {
+                align: "center-bottom",
+                expand: false,
+            })
+            .layout()
+        const levelBoxImage = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UITopbarLevelBox
+        )
         const levelText = new Text({
             baseParams: {
                 scene: this.scene,
@@ -159,7 +185,7 @@ export class Topbar extends BaseSizer {
             },
             options: {
                 fontSize: 24,
-            }
+            },
         })
         this.scene.add.existing(levelText)
         const levelBoxLabel = this.scene.rexUI.add.label({
@@ -170,30 +196,36 @@ export class Topbar extends BaseSizer {
             align: "center",
         })
         // Left column - Avatar
-        const avatar = this.scene.rexUI.add.badgeLabel({
-            background: avatarWrapperBackground,
-            width: avatarWrapperBackground.width,
-            height: avatarWrapperBackground.height,
-            rightBottom: levelBoxLabel,
-            center: avatarSizer,
-        }).layout()
+        const avatar = this.scene.rexUI.add
+            .badgeLabel({
+                background: avatarWrapperBackground,
+                width: avatarWrapperBackground.width,
+                height: avatarWrapperBackground.height,
+                rightBottom: levelBoxLabel,
+                center: avatarSizer,
+            })
+            .layout()
         this.profileContainer = this.scene.rexUI.add
             .sizer({
                 orientation: "x",
                 originX: this.visited ? 0.5 : 0,
                 originY: 0,
-                x: this.visited ? 0 : (- this.background.width / 2 + 20),
-            }).add(avatar).add(name, {
+                x: this.visited ? 0 : -this.background.width / 2 + 20,
+            })
+            .add(avatar)
+            .add(name, {
                 align: "left-center",
-                offsetY: (this.background.height / 2 - avatarWrapperBackground.height / 2),
+                offsetY:
+          this.background.height / 2 - avatarWrapperBackground.height / 2,
                 offsetX: -30,
-            }).layout()
+            })
+            .layout()
         this.addLocal(this.profileContainer)
         // if not visited, allow to click on the avatar to open the profile modal
         if (!this.visited) {
             const button = new Button(this.profileContainer)
             button.on("click", () => {
-                EventBus.emit(EventName.OpenExternalModal, {
+                ExternalEventEmitter.emit(ExternalEventName.OpenExternalModal, {
                     modalName: ModalName.Profile,
                 })
             })
@@ -234,7 +266,7 @@ export class Topbar extends BaseSizer {
         }
         if (!this.goldLabel) {
             throw new Error("Gold label not found")
-        } 
+        }
         if (!this.tokenLabel) {
             throw new Error("Token label not found")
         }
@@ -248,7 +280,9 @@ export class Topbar extends BaseSizer {
 
         //update resources
         if (this.energyLabel) {
-            this.energyLabel.text = `${this.user.energy}/${this.getMaxEnergy(this.user.level)}`
+            this.energyLabel.text = `${this.user.energy}/${this.getMaxEnergy(
+                this.user.level
+            )}`
         }
         if (this.goldLabel) {
             this.goldLabel.text = `${this.user.golds ?? 0}`

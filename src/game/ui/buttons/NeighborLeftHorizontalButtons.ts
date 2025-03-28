@@ -2,7 +2,14 @@ import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
-import { OpenModalMessage, ModalName, EventBus, EventName } from "@/game/event-bus"
+import {
+    SceneEventEmitter,
+    SceneEventName,
+    OpenModalMessage,
+    ModalName,
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "../../events"
 
 export class NeighborLeftHorizontalButtons extends HorizontalButtons {
     private returnButton: Sizer
@@ -15,12 +22,12 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
                     ...baseParams.config,
                     originX: 0,
                     originY: 0,
-                }
+                },
             },
             options: {
                 orientation: "y",
                 space: 36,
-            }
+            },
         })
 
         // add nft button
@@ -29,8 +36,8 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
             text: "Return",
             onPress: () => {
                 this.scene.cache.obj.remove(CacheKey.WatchingUser)
-                EventBus.emit(EventName.EmitReturn)
-                EventBus.emit(EventName.ProcessVisiting)
+                ExternalEventEmitter.emit(ExternalEventName.RequestReturn)
+                ExternalEventEmitter.emit(ExternalEventName.Visit)
             },
         })
         this.addButton(this.returnButton)
@@ -41,18 +48,18 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
             text: "Neighbors",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
-                    modalName: ModalName.Neighbors
+                    modalName: ModalName.Neighbors,
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.neighborsButton)
 
-        EventBus.on(EventName.HideNeighborButtons, () => {
+        SceneEventEmitter.on(SceneEventName.HideNeighborButtons, () => {
             this.setVisible(false).setActive(false)
         })
-        
-        EventBus.on(EventName.ShowNeighborButtons, () => {
+
+        SceneEventEmitter.on(SceneEventName.ShowNeighborButtons, () => {
             this.setVisible(true).setActive(true)
         })
 

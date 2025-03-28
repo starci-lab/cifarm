@@ -5,11 +5,17 @@ import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CellSize, getCellSize, ItemQuantity } from "../../elements"
 import { CacheKey } from "../../../types"
 import { getToolInventories } from "../../../queries"
-import { MODAL_BACKDROP_DEPTH_1 } from "../ModalManager"
-import { EventBus, EventName, RequestStorageInventoryIndexMessage, RequestToolbarInventoryIndexMessage } from "@/game/event-bus"
+import {
+    SceneEventEmitter,
+    SceneEventName,
+    RequestStorageInventoryIndexMessage,
+    RequestToolbarInventoryIndexMessage,
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "../../../events"
 import { DragItemParams } from "./types"
 import { CELL_TOOLBAR_DATA_KEY } from "./constants"
-import { MoveInventoryRequest } from "@/modules/apollo"
+import { MoveInventoryMessage } from "@/hooks"
 
 const TOOLBAR_COLUMN_COUNT = 4
 const TOOLBAR_ROW_COUNT = 2
@@ -23,19 +29,31 @@ export class InventoryToolbar extends ContainerLite {
     private cellSize: CellSize
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        // add toolbar
-        const toolbarImage = scene.add.image(0,0, BaseAssetKey.UIModalInventoryToolbar).setOrigin(0.5, 1)
+    // add toolbar
+        const toolbarImage = scene.add
+            .image(0, 0, BaseAssetKey.UIModalInventoryToolbar)
+            .setOrigin(0.5, 1)
         // add chain
-        const chainImage = scene.add.image(0, -(toolbarImage.height - 70), BaseAssetKey.UIModalInventoryChain).setOrigin(0.5, 1)
+        const chainImage = scene.add
+            .image(0, -(toolbarImage.height - 70), BaseAssetKey.UIModalInventoryChain)
+            .setOrigin(0.5, 1)
         // swap the chain and toolbar
-        super(scene, x, y, toolbarImage.width, toolbarImage.height + chainImage.height - 70)
+        super(
+            scene,
+            x,
+            y,
+            toolbarImage.width,
+            toolbarImage.height + chainImage.height - 70
+        )
         this.cellSize = getCellSize(this.scene)
 
         this.addLocal(toolbarImage)
         this.addLocal(chainImage)
         this.bringChildToTop(toolbarImage)
         // add grass
-        const grassImage = this.scene.add.image(0,0, BaseAssetKey.UIModalCommonGrass).setOrigin(0.5, 1)
+        const grassImage = this.scene.add
+            .image(0, 0, BaseAssetKey.UIModalCommonGrass)
+            .setOrigin(0.5, 1)
         this.addLocal(grassImage)
 
         // fetch the inventories
@@ -44,17 +62,20 @@ export class InventoryToolbar extends ContainerLite {
 
         this.updateGridSizer()
 
-        EventBus.on(
-            EventName.InventoriesRefreshed,
-            () => {
-                this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
-                this.updateGridSizer()
-            }
-        ) 
-
-        this.scene.events.on(EventName.RequestToolbarInventoryIndex, ({ pointer }: RequestToolbarInventoryIndexMessage) => {
-            this.scene.events.emit(EventName.ToolbarInventoryIndexResponsed,  this.getPositionIndex(pointer))
+        SceneEventEmitter.on(SceneEventName.InventoriesRefreshed, () => {
+            this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+            this.updateGridSizer()
         })
+
+        SceneEventEmitter.on(
+            SceneEventName.RequestToolbarInventoryIndex,
+            ({ pointer }: RequestToolbarInventoryIndexMessage) => {
+                SceneEventEmitter.emit(
+                    SceneEventName.ToolbarInventoryIndexResponsed,
+                    this.getPositionIndex(pointer)
+                )
+            }
+        )
     }
 
     private computeIndex(x: number, y: number) {
@@ -66,7 +87,11 @@ export class InventoryToolbar extends ContainerLite {
             this.remove(this.gridSizer, true)
         }
         const items = this.getToolItems()
-        const background = this.scene.add.image(0, 0, BaseAssetKey.UIModalInventoryToolbarContainer)
+        const background = this.scene.add.image(
+            0,
+            0,
+            BaseAssetKey.UIModalInventoryToolbarContainer
+        )
         this.gridSizer = this.scene.rexUI.add
             .gridSizer({
                 y: -140,
@@ -74,9 +99,9 @@ export class InventoryToolbar extends ContainerLite {
                 space: {
                     column: 10,
                     row: 10,
-                    top: 20, 
-                    bottom: 20, 
-                    left: 20, 
+                    top: 20,
+                    bottom: 20,
+                    left: 20,
                     right: 20,
                 },
                 width: background.width,
@@ -90,7 +115,8 @@ export class InventoryToolbar extends ContainerLite {
                     let gridTableCell: ItemQuantity | undefined
                     const inventory = items[y * TOOLBAR_COLUMN_COUNT + x]
                     const container = scene.rexUI.add
-                        .container().setDepth(this.depth + 1)
+                        .container()
+                        .setDepth(this.depth + 1)
                     if (inventory) {
                         const inventoryType = this.inventoryTypes.find(
                             (inventoryType) => inventoryType.id === inventory.inventoryType
@@ -103,7 +129,7 @@ export class InventoryToolbar extends ContainerLite {
                         const {
                             textureConfig: { key },
                         } = inventoryTypeAssetMap[inventoryType.displayId]
-                                    
+
                         const itemQuantity = new ItemQuantity({
                             baseParams: {
                                 scene: this.scene,
@@ -118,7 +144,7 @@ export class InventoryToolbar extends ContainerLite {
                         }).layout()
                         this.scene.add.existing(itemQuantity)
                         gridTableCell = itemQuantity
-                        
+
                         // add drag to cell
                         const press = scene.rexGestures.add.press(itemQuantity)
                         press.on("pressstart", () => {
@@ -151,8 +177,10 @@ export class InventoryToolbar extends ContainerLite {
                     this.containers[this.computeIndex(x, y)] = container
                     return container
                 },
-            }).addBackground(background)
-            .layout().setDepth(MODAL_BACKDROP_DEPTH_1 + 1)
+            })
+            .addBackground(background)
+            .layout()
+            .setDepth(this.depth + 1)
         this.addLocal(this.gridSizer)
         return this.gridSizer
     }
@@ -176,15 +204,20 @@ export class InventoryToolbar extends ContainerLite {
 
     // -1 indicate not found
     private getPositionIndex(pointer: Phaser.Input.Pointer) {
-        for (let index = 0; index < Object.values(this.containers).length; index++) {
+        for (
+            let index = 0;
+            index < Object.values(this.containers).length;
+            index++
+        ) {
             const indexedCellContainer = this.containers[index]
-            const inside = indexedCellContainer &&
-            (indexedCellContainer as ContainerLite)
-                .getBounds()
-                .contains(pointer.x, pointer.y)
+            const inside =
+        indexedCellContainer &&
+        (indexedCellContainer as ContainerLite)
+            .getBounds()
+            .contains(pointer.x, pointer.y)
             if (!inside) continue
             // call api to move the inventory
-            return index 
+            return index
         }
         return -1
     }
@@ -195,30 +228,39 @@ export class InventoryToolbar extends ContainerLite {
         if (index === -1) {
             // Wrap the event in a Promise to use async/await
             index = await new Promise<number>((resolve) => {
-                this.scene.events.once(EventName.StorageInventoryIndexResponsed, (result: number) => {
-                    if (result !== -1) {
-                        isTool = false
+                SceneEventEmitter.once(
+                    SceneEventName.StorageInventoryIndexResponsed,
+                    (result: number) => {
+                        if (result !== -1) {
+                            isTool = false
+                        }
+                        resolve(result) // Resolve the promise with the result
                     }
-                    resolve(result) // Resolve the promise with the result
-                })
-                
+                )
+
                 const eventMessage: RequestStorageInventoryIndexMessage = {
-                    pointer
+                    pointer,
                 }
                 // Emit the event to request the toolbar inventory index
-                this.scene.events.emit(EventName.RequestStorageInventoryIndex, eventMessage)
+                SceneEventEmitter.emit(
+                    SceneEventName.RequestStorageInventoryIndex,
+                    eventMessage
+                )
             })
         }
-        
+
         //  destroy the badge label
         item.destroy()
         if (index !== -1) {
-            const eventMessage: MoveInventoryRequest = {
+            const eventMessage: MoveInventoryMessage = {
                 index,
                 isTool,
                 inventoryId: data.id,
             }
-            EventBus.emit(EventName.RequestMoveInventory, eventMessage)
+            ExternalEventEmitter.emit(
+                ExternalEventName.RequestMoveInventory,
+                eventMessage
+            )
         } else {
             this.updateGridSizer()
         }

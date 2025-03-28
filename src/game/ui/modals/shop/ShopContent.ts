@@ -1,4 +1,3 @@
-import { calculateUiDepth, UILayer } from "@/game/layers"
 import {
     AnimalId,
     AnimalSchema,
@@ -41,14 +40,6 @@ import {
     flowerAssetMap,
     baseAssetMap,
 } from "../../../assets"
-import {
-    BuyingDragModeOnMessage,
-    CloseModalMessage,
-    EventBus,
-    EventName,
-    ModalName,
-    SelectTabMessage,
-} from "../../../event-bus"
 import { getPlacedItemsByType } from "../../../queries"
 import {
     BaseSizerBaseConstructorParams,
@@ -76,6 +67,17 @@ import {
     BuySuppliesMessage,
     BuyToolMessage,
 } from "@/hooks"
+import { uiDepth } from "../../../depth"
+import {
+    SceneEventEmitter,
+    SceneEventName,
+    ModalName,
+    ExternalEventEmitter,
+    ExternalEventName,
+    CloseModalMessage,
+    SelectTabMessage,
+    BuyingModeOnMessage,
+} from "../../../events"
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
 
@@ -140,7 +142,7 @@ export class ShopContent extends BaseSizer {
             options: {
                 background: Background.XLarge,
                 onXButtonPress: () => {
-                    EventBus.emit(EventName.CloseModal, {
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, {
                         modalName: ModalName.Shop,
                     })
                 },
@@ -221,7 +223,7 @@ export class ShopContent extends BaseSizer {
         ) as PlacedItemsData
         this.placedItems = placedItemsData.placedItems
 
-        EventBus.on(EventName.PlacedItemsRefreshed, () => {
+        SceneEventEmitter.on(SceneEventName.PlacedItemsRefreshed, () => {
             const placedItemsData = this.scene.cache.obj.get(
                 CacheKey.PlacedItems
             ) as PlacedItemsData
@@ -234,8 +236,8 @@ export class ShopContent extends BaseSizer {
 
         //this.layout()
         // listen for the select shop tab event
-        this.scene.events.on(
-            EventName.SelectTab,
+        SceneEventEmitter.on(
+            SceneEventName.SelectTab,
             ({ name, tabKey }: SelectTabMessage<ShopTab>) => {
                 if (name !== ShopContent.name) {
                     return
@@ -244,21 +246,23 @@ export class ShopContent extends BaseSizer {
             }
         )
 
-        EventBus.on(EventName.UserRefreshed, () => {
+        SceneEventEmitter.on(SceneEventName.UserRefreshed, () => {
             this.user = this.scene.cache.obj.get(CacheKey.User)
             this.updateGridTables()
         })
 
-        EventBus.on(EventName.InventoriesRefreshed, () => {
+        SceneEventEmitter.on(SceneEventName.InventoriesRefreshed, () => {
             this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
             this.updateGridTables()
         })
 
-        EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
+        SceneEventEmitter.on(SceneEventName.PlacedItemsRefreshed, () => {
+            const { placedItems } = this.scene.cache.obj.get(
+                CacheKey.PlacedItems
+            ) as PlacedItemsData
+            this.placedItems = placedItems
             this.updateGridTables()
         })
-
-        console.log(this.gridTableMap)
     }
 
     // handle the selected shop tab
@@ -435,10 +439,6 @@ export class ShopContent extends BaseSizer {
                         },
                         scene: this.scene,
                     })
-                    this.scene.events.emit(EventName.CreateFlyItem, {
-                        position: pointer.position,
-                        text: "Max ownership reached.11",
-                    })
                 }
             }
         )
@@ -571,13 +571,13 @@ export class ShopContent extends BaseSizer {
                         const eventMessage: CloseModalMessage = {
                             modalName: ModalName.Shop,
                         }
-                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingDragModeOnMessage = {
-                            id: placedItemType.id,
+                        const message: BuyingModeOnMessage = {
+                            placedItemTypeId: placedItemType.id,
                         }
-                        EventBus.emit(EventName.BuyingModeOn, message)
-                        EventBus.emit(EventName.HideButtons)
+                        SceneEventEmitter.emit(SceneEventName.BuyingModeOn, message)
+                        SceneEventEmitter.emit(SceneEventName.HideButtons)
                     },
                     price,
                     maxOwnership,
@@ -612,7 +612,7 @@ export class ShopContent extends BaseSizer {
                     throw new Error("Shop asset is not found.")
                 }
                 const placedItemType = this.placedItemTypes.find(
-                    (placedItemType) => placedItemType.building === id  
+                    (placedItemType) => placedItemType.building === id
                 )
                 if (!placedItemType) {
                     throw new Error("Placed item type is not found.")
@@ -627,13 +627,13 @@ export class ShopContent extends BaseSizer {
                         const eventMessage: CloseModalMessage = {
                             modalName: ModalName.Shop,
                         }
-                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingDragModeOnMessage = {
-                            id: placedItemType.id,
+                        const message: BuyingModeOnMessage = {
+                            placedItemTypeId: placedItemType.id,
                         }
-                        EventBus.emit(EventName.HideButtons)
-                        EventBus.emit(EventName.BuyingModeOn, message)
+                        SceneEventEmitter.emit(SceneEventName.HideButtons)
+                        SceneEventEmitter.emit(SceneEventName.BuyingModeOn, message)
                     },
                     price,
                     scaleWidth:
@@ -671,13 +671,13 @@ export class ShopContent extends BaseSizer {
                         const eventMessage: CloseModalMessage = {
                             modalName: ModalName.Shop,
                         }
-                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingDragModeOnMessage = {
-                            id: placedItemType.id,
+                        const message: BuyingModeOnMessage = {
+                            placedItemTypeId: placedItemType.id,
                         }
-                        EventBus.emit(EventName.HideButtons)
-                        EventBus.emit(EventName.BuyingModeOn, message)
+                        SceneEventEmitter.emit(SceneEventName.HideButtons)
+                        SceneEventEmitter.emit(SceneEventName.BuyingModeOn, message)
                     },
                     prepareCloseShop: true,
                     price,
@@ -722,17 +722,16 @@ export class ShopContent extends BaseSizer {
                         const eventMessage: CloseModalMessage = {
                             modalName: ModalName.Shop,
                         }
-                        EventBus.emit(EventName.CloseModal, eventMessage)
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
                         // then turn on the building mode
-                        const message: BuyingDragModeOnMessage = {
-                            id: placedItemType.id,
+                        const message: BuyingModeOnMessage = {
+                            placedItemTypeId: placedItemType.id,
                         }
-                        EventBus.emit(EventName.BuyingModeOn, message)
-                        EventBus.emit(EventName.HideButtons)
+                        SceneEventEmitter.emit(SceneEventName.BuyingModeOn, message)
+                        SceneEventEmitter.emit(SceneEventName.HideButtons)
                     },
                     price,
                 })
-                // add the item card to the scrollable panel
             }
             break
         }
@@ -935,12 +934,15 @@ export class ShopContent extends BaseSizer {
     }
 
     private onBuyCropSeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuyCropSeedsResponsed, () => {})
+        ExternalEventEmitter.once(
+            ExternalEventName.BuyCropSeedsResponsed,
+            () => {}
+        )
         const eventMessage: BuyCropSeedsMessage = {
             cropId: displayId,
             quantity: 1,
         }
-        EventBus.once(EventName.BuyCropSeedsResponsed, () => {
+        ExternalEventEmitter.once(ExternalEventName.BuyCropSeedsResponsed, () => {
             if (!cropAssetMap[displayId].shop) {
                 throw new Error("Shop asset is not found.")
             }
@@ -949,24 +951,24 @@ export class ShopContent extends BaseSizer {
                     scene: this.scene,
                 },
                 options: {
-                    assetKey: cropAssetMap[displayId].shop.textureConfig.key,
+                    iconAssetKey: cropAssetMap[displayId].shop.textureConfig.key,
                     x: pointer.x,
                     y: pointer.y,
                     quantity: 1,
-                    depth: calculateUiDepth({
-                        layer: UILayer.Overlay,
-                        layerDepth: 1,
-                    }),
+                    depth: uiDepth.modal.fly,
                 },
             })
             this.scene.add.existing(flyItem)
         })
         // send request to buy seeds
-        EventBus.emit(EventName.RequestBuyCropSeeds, eventMessage)
+        ExternalEventEmitter.emit(
+            ExternalEventName.RequestBuyCropSeeds,
+            eventMessage
+        )
     }
 
     private onBuyFlowerPress(displayId: FlowerId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuyFlowerSeedsResponsed, () => {
+        ExternalEventEmitter.once(ExternalEventName.BuyFlowerSeedsResponsed, () => {
             if (!flowerAssetMap[displayId].shop) {
                 throw new Error("Shop asset is not found.")
             }
@@ -975,14 +977,11 @@ export class ShopContent extends BaseSizer {
                     scene: this.scene,
                 },
                 options: {
-                    assetKey: flowerAssetMap[displayId].shop.textureConfig.key,
+                    iconAssetKey: flowerAssetMap[displayId].shop.textureConfig.key,
                     x: pointer.x,
                     y: pointer.y,
                     quantity: 1,
-                    depth: calculateUiDepth({
-                        layer: UILayer.Overlay,
-                        layerDepth: 1,
-                    }),
+                    depth: uiDepth.modal.fly,
                 },
             })
             this.scene.add.existing(flyItem)
@@ -992,59 +991,60 @@ export class ShopContent extends BaseSizer {
             quantity: 1,
         }
         // send request to buy seeds
-        EventBus.emit(EventName.RequestBuyFlowerSeeds, eventMessage)
+        ExternalEventEmitter.emit(
+            ExternalEventName.RequestBuyFlowerSeeds,
+            eventMessage
+        )
     }
 
     //onBuySupplyPress
     private onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuySuppliesResponsed, () => {})
+        ExternalEventEmitter.once(ExternalEventName.BuySuppliesResponsed, () => {})
         const eventMessage: BuySuppliesMessage = {
             supplyId: displayId,
             quantity: 1,
         }
         // send request to buy seeds
-        EventBus.emit(EventName.RequestBuySupplies, eventMessage)
+        ExternalEventEmitter.emit(
+            ExternalEventName.RequestBuySupplies,
+            eventMessage
+        )
         const flyItem = new FlyItem({
             baseParams: {
                 scene: this.scene,
             },
             options: {
-                assetKey: supplyAssetMap[displayId].textureConfig.key,
+                iconAssetKey: supplyAssetMap[displayId].textureConfig.key,
                 x: pointer.x,
                 y: pointer.y,
                 quantity: 1,
-                depth: calculateUiDepth({
-                    layer: UILayer.Overlay,
-                    layerDepth: 1,
-                }),
+                depth: uiDepth.modal.fly,
             },
         })
         this.scene.add.existing(flyItem)
     }
 
     private onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuyToolResponsed, () => {})
+        ExternalEventEmitter.once(ExternalEventName.BuyToolResponsed, () => {
+            const flyItem = new FlyItem({
+                baseParams: {
+                    scene: this.scene,
+                },
+                options: {
+                    iconAssetKey: toolAssetMap[displayId].textureConfig.key,
+                    x: pointer.x,
+                    y: pointer.y,
+                    quantity: 1,
+                    depth: uiDepth.modal.fly,
+                },
+            })
+            this.scene.add.existing(flyItem)
+        })
         const eventMessage: BuyToolMessage = {
             toolId: displayId,
         }
         // send request to buy seeds
-        EventBus.emit(EventName.RequestBuyTool, eventMessage)
-        const flyItem = new FlyItem({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                assetKey: toolAssetMap[displayId].textureConfig.key,
-                x: pointer.x,
-                y: pointer.y,
-                quantity: 1,
-                depth: calculateUiDepth({
-                    layer: UILayer.Overlay,
-                    layerDepth: 1,
-                }),
-            },
-        })
-        this.scene.add.existing(flyItem)
+        ExternalEventEmitter.emit(ExternalEventName.RequestBuyTool, eventMessage)
     }
 
     private getCurrentOwnership({

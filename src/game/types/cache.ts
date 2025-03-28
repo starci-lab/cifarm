@@ -27,10 +27,12 @@ export enum CacheKey {
     SelectedTool = "selected-tool",
     DefaultInfo = "default-info",
     DeliveryData = "delivery-data",
+    InputQuantityModalData = "input-quantity-modal-data",
     WatchingUser = "watching-user",
     Flowers = "flowers",
     TotalAssetsLoaded = "total-assets-loaded",
     AssetsLoaded = "assets-loaded",
+    ClaimData = "claim-data",
 }
 
 export interface DeliveryData {

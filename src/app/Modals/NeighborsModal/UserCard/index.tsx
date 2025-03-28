@@ -10,7 +10,7 @@ import {
 } from "@/app/constants"
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
-import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { ModalName, SceneEventName, ExternalEventEmitter, ExternalEventName, SceneEventEmitter } from "@/game"
 import { useGameplayIo, useGraphQLMutationFollowSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams, VISIT_EVENT } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
@@ -169,7 +169,7 @@ export const UserCard: FC<UserCardProps> = ({
                             }       
                         } else {
                             // set visited user
-                            EventBus.emit(EventName.CloseModal, {
+                            SceneEventEmitter.emit(SceneEventName.CloseModal, {
                                 modalName: ModalName.Neighbors,
                             })
                             if (!socket) {
@@ -178,7 +178,7 @@ export const UserCard: FC<UserCardProps> = ({
                             socket.emit(VISIT_EVENT, {
                                 neighborUserId: user.id,
                             })
-                            EventBus.emit(EventName.Visit, user)
+                            ExternalEventEmitter.emit(ExternalEventName.Visit, user)
                         }
                     }}
                     variant="ghost"

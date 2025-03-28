@@ -1,9 +1,8 @@
-import { UpgradeBuildingRequest } from "@/modules/apollo"
 import { BuildingSchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey } from "../../../assets"
-import { EventBus, EventName, ModalName } from "../../../event-bus"
+import { SceneEventEmitter, SceneEventName, ModalName } from "../../../events"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import { Background, Text, ModalBackground, TextColor } from "../../elements"
 import { createObjectId } from "@/modules/common"
@@ -33,18 +32,18 @@ export class UpgradeBuildingContent extends BaseSizer {
                 background: Background.Small,
                 title: "Upgrade",
                 onXButtonPress: () => {
-                    EventBus.emit(EventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
                 },
                 mainButton: {
                     onPress: () => {
-                        const eventName: UpgradeBuildingRequest = {
-                            placedItemBuildingId: this.currentPlacedItemId
-                        }
+                        // const eventName: UpgradeBuildingRequest = {
+                        //     placedItemBuildingId: this.currentPlacedItemId
+                        // }
 
-                        EventBus.once(EventName.UpgradeBuildingResponsed, () => {
-                            EventBus.emit(EventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
-                        })
-                        EventBus.emit(EventName.RequestUpgradeBuilding, eventName)
+                        // SceneEventEmitter.once(SceneEventName.UpgradeBuildingResponsed, () => {
+                        //     SceneEventEmitter.emit(SceneEventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
+                        // })
+                        // SceneEventEmitter.emit(SceneEventName.RequestUpgradeBuilding, eventName)
                     },
                     text: "Upgrade",
                 }
@@ -90,10 +89,10 @@ export class UpgradeBuildingContent extends BaseSizer {
         this.buildings = this.scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
         this.currentUser = this.scene.cache.obj.get(CacheKey.User)
 
-        EventBus.on(EventName.UpdateUpgadeBuildingModal, (placedItem: PlacedItemSchema) => {
-            console.log("UpdateUpgadeBuildingModal", placedItem)
-            this.render(placedItem) 
-        })
+        // SceneEventEmitter.on(SceneEventName.UpdateUpgadeBuildingModal, (placedItem: PlacedItemSchema) => {
+        //     console.log("UpdateUpgadeBuildingModal", placedItem)
+        //     this.render(placedItem) 
+        // })
     }
 
     private render(placedItem: PlacedItemSchema) {

@@ -147,10 +147,11 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         recalculateFaces,
         layer,
     }: PutTileCenteredAtParams) {
+        const { x, y } = this.getCenteredTileCoordinates(tileX, tileY)
         return this.putTileAt(
             tile,
-            tileX + Math.floor(WIDTH / 2),
-            tileY + Math.floor(HEIGHT / 2),
+            x,
+            y,
             recalculateFaces,
             layer
         )
@@ -163,9 +164,10 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
         nonNull,
         layer,
     }: GetTileCenteredAtParams) {
+        const { x, y } = this.getCenteredTileCoordinates(tileX, tileY)
         return this.getTileAt(
-            tileX + Math.floor(WIDTH / 2),
-            tileY + Math.floor(HEIGHT / 2),
+            x,
+            y,
             nonNull,
             layer
         )
@@ -173,12 +175,23 @@ export abstract class BaseTilemap extends Phaser.Tilemaps.Tilemap {
 
     // getTileCenteredAt method using the new GetTileCenteredAtParams interface
     public getActualTileCoordinates(
-        actualTileX: number, 
-        actualTileY: number
+        tileX: number, 
+        tileY: number
     ): Phaser.Math.Vector2 {
         return new Phaser.Math.Vector2(
-            actualTileX - Math.floor(WIDTH / 2),
-            actualTileY - Math.floor(HEIGHT / 2)
+            tileX - Math.floor(WIDTH / 2),
+            tileY - Math.floor(HEIGHT / 2)
+        )
+    }
+    
+    // getTileFromActualTileCoordinates method using the new GetTileFromActualTileCoordinatesParams interface
+    public getCenteredTileCoordinates(
+        tileX: number, 
+        tileY: number
+    ): Phaser.Math.Vector2 {
+        return new Phaser.Math.Vector2(
+            tileX + Math.floor(WIDTH / 2),
+            tileY + Math.floor(HEIGHT / 2)
         )
     }
 

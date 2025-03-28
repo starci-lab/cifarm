@@ -4,13 +4,6 @@ import {
     BaseSizerBaseConstructorParams,
     DeliveryData,
 } from "../../../../types"
-import {
-    CloseModalMessage,
-    EventBus,
-    EventName,
-    ModalName,
-    UpdateInputQuantityModalMessage,
-} from "../../../../event-bus"
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import {
     BaseAssetKey,
@@ -24,6 +17,14 @@ import {
     DeliverAdditionalInventoryMessage,
     DeliverInventoryMessage,
 } from "@/hooks"
+import {
+    SceneEventEmitter,
+    SceneEventName,
+    ModalName,
+    ExternalEventEmitter,
+    CloseModalMessage,
+    ExternalEventName,
+} from "../../../../events"
 
 export class InputQuantityContent extends BaseSizer {
     private background: ModalBackground
@@ -62,7 +63,7 @@ export class InputQuantityContent extends BaseSizer {
                 background: Background.Small,
                 title: "Quantity",
                 onXButtonPress: () => {
-                    EventBus.emit(EventName.CloseModal, {
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, {
                         modalName: ModalName.InputQuantity,
                     })
                 },
@@ -80,28 +81,34 @@ export class InputQuantityContent extends BaseSizer {
                                 inventoryId: this.inventory.id,
                                 index,
                             }
-                            EventBus.emit(
-                                EventName.RequestDeliverInventory,
+                            ExternalEventEmitter.emit(
+                                ExternalEventName.RequestDeliverInventory,
                                 deliverInventoryEventMessage
                             )
                             const closeModalEventMessage: CloseModalMessage = {
                                 modalName: ModalName.InputQuantity,
                             }
-                            EventBus.emit(EventName.CloseModal, closeModalEventMessage)
+                            SceneEventEmitter.emit(
+                                SceneEventName.CloseModal,
+                                closeModalEventMessage
+                            )
                         } else {
                             const eventMessage: DeliverAdditionalInventoryMessage = {
                                 quantity: this.quantity,
                                 inventoryId: this.inventory.id,
                                 index,
                             }
-                            EventBus.emit(
-                                EventName.RequestDeliverAdditionalInventory,
+                            ExternalEventEmitter.emit(
+                                ExternalEventName.RequestDeliverAdditionalInventory,
                                 eventMessage
                             )
                             const closeModalEventMessage: CloseModalMessage = {
                                 modalName: ModalName.InputQuantity,
                             }
-                            EventBus.emit(EventName.CloseModal, closeModalEventMessage)
+                            SceneEventEmitter.emit(
+                                SceneEventName.CloseModal,
+                                closeModalEventMessage
+                            )
                         }
                     },
                     text: "Confirm",
@@ -163,9 +170,12 @@ export class InputQuantityContent extends BaseSizer {
         }
         this.background.container.add(this.mainContainer)
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
-        this.scene.events.on(
-            EventName.UpdateInputQuantityModal,
-            ({ inventory }: UpdateInputQuantityModalMessage) => {
+        SceneEventEmitter.on(
+            SceneEventName.UpdateInputQuantityModal,
+            () => {
+                const inventory = this.scene.cache.obj.get(
+                    CacheKey.InputQuantityModalData
+                ) as InventorySchema
                 this.render(inventory)
             }
         )

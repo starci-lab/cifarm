@@ -11,7 +11,7 @@ import {
     TextColor,
     Checkbox,
 } from "../../elements"
-import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { SceneEventEmitter, SceneEventName, ModalName } from "../../../events"
 
 export class SettingsContent extends BaseSizer {
     private background: ModalBackground
@@ -38,7 +38,7 @@ export class SettingsContent extends BaseSizer {
                     },
                 },
                 onXButtonPress: () => {
-                    EventBus.emit(EventName.CloseModal, {
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, {
                         modalName: ModalName.Settings,
                     })
                 },
@@ -76,7 +76,7 @@ export class SettingsContent extends BaseSizer {
             },
             options: {
                 valuechangeCallback: (value: number) => {
-                    EventBus.emit(EventName.UpdateVolume, {
+                    SceneEventEmitter.emit(SceneEventName.UpdateVolume, {
                         volume: value,
                     })
                 },
@@ -113,7 +113,7 @@ export class SettingsContent extends BaseSizer {
             },
             options: {
                 valuechangeCallback: (value: number) => {
-                    EventBus.emit(EventName.UpdateVolume, {
+                    SceneEventEmitter.emit(SceneEventName.UpdateVolume, {
                         volume: value,
                     })
                 },

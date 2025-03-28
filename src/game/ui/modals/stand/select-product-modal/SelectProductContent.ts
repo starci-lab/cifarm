@@ -23,11 +23,14 @@ import {
     getDeliveryInventories,
     getProductInventories,
 } from "../../../../queries"
-import { EventBus, EventName, ModalName } from "../../../../event-bus"
-import { onGameObjectPress } from "@/game/ui/utils"
-import { MODAL_DEPTH_2 } from "../../ModalManager"
+import {
+    SceneEventEmitter,
+    SceneEventName,
+    ModalName,
+} from "../../../../events"
+import { onGameObjectPress } from "../../../utils"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { inventoryTypeAssetMap } from "@/game/assets"
+import { inventoryTypeAssetMap } from "../../../../assets"
 import { CELL_SELECT_PRODUCT_DATA_KEY } from "./constants"
 
 export class SelectProductContent extends BaseSizer {
@@ -42,9 +45,7 @@ export class SelectProductContent extends BaseSizer {
         super(scene, x, y, width, height)
         this.cellSize = getCellSize(this.scene)
 
-        this.inventories =  this.scene.cache.obj.get(
-            CacheKey.Inventories
-        )
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         this.background = new ModalBackground({
             baseParams: {
                 scene: this.scene,
@@ -65,7 +66,7 @@ export class SelectProductContent extends BaseSizer {
                         gameObject: xButton,
                         scene: this.scene,
                         onPress: () => {
-                            EventBus.emit(EventName.CloseModal, {
+                            SceneEventEmitter.emit(SceneEventName.CloseModal, {
                                 modalName: ModalName.SelectProduct,
                             })
                         },
@@ -78,7 +79,7 @@ export class SelectProductContent extends BaseSizer {
         this.addLocal(this.background)
 
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
-        this.scene.events.on(EventName.UpdateSelectProductModal, () => {
+        SceneEventEmitter.on(SceneEventName.UpdateSelectProductModal, () => {
             const { index, isMore } = this.scene.cache.obj.get(
                 CacheKey.DeliveryData
             ) as DeliveryData
@@ -106,7 +107,7 @@ export class SelectProductContent extends BaseSizer {
         if (!this.gridTable) {
             throw new Error("Grid table not found")
         }
-        this.gridTable.setDepth(MODAL_DEPTH_2 + 1)
+        this.gridTable.setDepth(this.depth + 1)
     }
 
     private _updateGridTable(inventoryTypeId?: string) {
@@ -179,7 +180,7 @@ export class SelectProductContent extends BaseSizer {
                                 background,
                                 icon: itemQuantity,
                             })
-                            .setDepth(MODAL_DEPTH_2 + 2)
+                            .setDepth(this.depth + 2)
                         cellContainer.setData(CELL_SELECT_PRODUCT_DATA_KEY, cell.item)
                     }
                     return cellContainer
@@ -195,15 +196,14 @@ export class SelectProductContent extends BaseSizer {
             const inventory = container.getData(
                 CELL_SELECT_PRODUCT_DATA_KEY
             ) as InventorySchema
-            EventBus.emit(EventName.CloseModal, {
+            SceneEventEmitter.emit(SceneEventName.CloseModal, {
                 modalName: ModalName.SelectProduct,
             })
-            EventBus.emit(EventName.OpenModal, {
+            SceneEventEmitter.emit(SceneEventName.OpenModal, {
                 modalName: ModalName.InputQuantity,
             })
-            this.scene.events.emit(EventName.UpdateInputQuantityModal, {
-                inventory,
-            })
+            this.scene.cache.obj.add(CacheKey.InputQuantityModalData, inventory)
+            SceneEventEmitter.emit(SceneEventName.UpdateInputQuantityModal)
         })
         this.scene.add.existing(this.gridTable)
         if (!this.background.container) {

@@ -1,4 +1,4 @@
-import { EventBus, EventName } from "@/game/event-bus"
+import { SceneEventEmitter, SceneEventName } from "../../events"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ButtonsBaseConstructorParams } from "../../types"
@@ -27,16 +27,16 @@ export class PlacementModeLeftHorizontalButtons extends HorizontalButtons {
             iconKey: baseAssetMap[BaseAssetKey.UIIconPrevious].key,
             text: "Return",
             onPress: () => {
-                EventBus.emit(EventName.NormalModeOn)
+                SceneEventEmitter.emit(SceneEventName.NormalModeOn)
             },
         })
         this.addButton(this.returnButton)
 
-        EventBus.on(EventName.HidePlacementModeButtons, () => {
+        SceneEventEmitter.on(SceneEventName.HidePlacementModeButtons, () => {
             this.setVisible(false).setActive(false)
         })
         
-        EventBus.on(EventName.ShowPlacementModeButtons, () => {
+        SceneEventEmitter.on(SceneEventName.ShowPlacementModeButtons, () => {
             this.setVisible(true).setActive(true)
         })
 

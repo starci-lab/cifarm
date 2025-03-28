@@ -1,9 +1,7 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Background, GridTable, GridTableFrame, CellSize, getCellSize, ItemQuantity, ModalBackground } from "../../elements"
-import { BaseSizerBaseConstructorParams } from "../../../types"
-import { ClaimData, ClaimItem, EventBus, EventName, ModalName, UpdateClaimModalMessage } from "../../../event-bus"
-import { MODAL_DEPTH_2 } from "../ModalManager"
-import { CELL_SELECT_PRODUCT_DATA_KEY } from "../stand/select-product-modal/constants"
+import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
+import { SceneEventEmitter, SceneEventName, ModalName, ClaimItem } from "../../../events"
 
 export class ClaimContent extends BaseSizer {
     private background: ModalBackground
@@ -29,14 +27,14 @@ export class ClaimContent extends BaseSizer {
                 background: Background.Small,
                 title: "Claim",
                 onXButtonPress: () => {
-                    EventBus.emit(EventName.CloseModal, {
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, {
                         modalName: ModalName.Claim,
                     })
                 },
                 mainButton: {
                     text: "OK",
                     onPress: () => {
-                        EventBus.emit(EventName.CloseModal, {
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, {
                             modalName: ModalName.Claim,
                         })
                     }
@@ -46,7 +44,8 @@ export class ClaimContent extends BaseSizer {
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
 
-        this.scene.events.on(EventName.UpdateClaimModal, ({ data }: UpdateClaimModalMessage) => {
+        SceneEventEmitter.on(SceneEventName.UpdateClaimModal, () => {
+            const data = this.scene.cache.obj.get(CacheKey.ClaimData) as ClaimData
             this.render(data)
         })
     }
@@ -110,7 +109,7 @@ export class ClaimContent extends BaseSizer {
                                                 icon: itemQuantity,
                                                 align: "center",
                                             })
-                                            .setDepth(MODAL_DEPTH_2 + 2)
+                                            .setDepth(this.depth+ 2)
                         cellContainer.setData(CELL_SELECT_PRODUCT_DATA_KEY, cell.item)
                     }
                     return cellContainer
@@ -118,7 +117,7 @@ export class ClaimContent extends BaseSizer {
                 items,
             },
         })
-            .setDepth(MODAL_DEPTH_2 + 1)
+            .setDepth(this.depth + 1)
             .layout()
         this.scene.add.existing(this.gridTable)
         if (!this.background.container) {
@@ -128,3 +127,9 @@ export class ClaimContent extends BaseSizer {
         return this.gridTable
     }
 }
+
+export interface ClaimData {
+    items: Array<ClaimItem>;
+}
+
+export const CELL_SELECT_PRODUCT_DATA_KEY = "cell_select_product_data_key"

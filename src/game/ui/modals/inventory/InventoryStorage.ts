@@ -21,12 +21,14 @@ import {
 } from "../../elements"
 import {
     CloseModalMessage,
-    EventBus,
-    EventName,
+    SceneEventEmitter,
+    SceneEventName,
     ModalName,
     RequestStorageInventoryIndexMessage,
     RequestToolbarInventoryIndexMessage,
-} from "@/game/event-bus"
+    ExternalEventName,
+    ExternalEventEmitter,
+} from "../../../events"
 import { CELL_STORAGE_DATA_KEY } from "./constants"
 import { DragItemParams } from "./types"
 import { MoveInventoryMessage } from "@/hooks"
@@ -64,7 +66,7 @@ export class InventoryStorage extends BaseSizer {
                     const eventMessage: CloseModalMessage = {
                         modalName: ModalName.Inventory,
                     }
-                    EventBus.emit(EventName.CloseModal, eventMessage)
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
                 },
                 title: "Inventory",
             },
@@ -76,16 +78,16 @@ export class InventoryStorage extends BaseSizer {
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.updateGridTable()
 
-        EventBus.on(
-            EventName.InventoriesRefreshed,
+        SceneEventEmitter.on(
+            SceneEventName.InventoriesRefreshed,
             () => {
                 this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
                 this.updateGridTable()
             }
         )
 
-        this.scene.events.on(EventName.RequestStorageInventoryIndex, ({ pointer }: RequestStorageInventoryIndexMessage) => {
-            this.scene.events.emit(EventName.StorageInventoryIndexResponsed,  this.getPositionIndex(pointer))
+        SceneEventEmitter.on(SceneEventName.RequestStorageInventoryIndex, ({ pointer }: RequestStorageInventoryIndexMessage) => {
+            SceneEventEmitter.emit(SceneEventName.StorageInventoryIndexResponsed,  this.getPositionIndex(pointer))
         })
     }
 
@@ -256,7 +258,7 @@ export class InventoryStorage extends BaseSizer {
         if (index === -1) {
             // Wrap the event in a Promise to use async/await
             index = await new Promise<number>((resolve) => {
-                this.scene.events.once(EventName.ToolbarInventoryIndexResponsed, (result: number) => {
+                SceneEventEmitter.once(SceneEventName.ToolbarInventoryIndexResponsed, (result: number) => {
                     if (result !== -1) {
                         isTool = true
                     }
@@ -267,23 +269,17 @@ export class InventoryStorage extends BaseSizer {
                     pointer
                 }
                 // Emit the event to request the toolbar inventory index
-                this.scene.events.emit(EventName.RequestToolbarInventoryIndex, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.RequestToolbarInventoryIndex, eventMessage)
             })
         }
         item.destroy()
         if (index !== -1) {
-            EventBus.once(EventName.MoveInventoryResponsed, () => {
-                if (!item) {
-                    throw new Error("Badge label not found")
-                }
-                //  destroy the badge label 
-            })
             const eventMessage: MoveInventoryMessage = {
                 index,
                 isTool,
                 inventoryId: data.id,
             }
-            EventBus.emit(EventName.RequestMoveInventory, eventMessage)
+            ExternalEventEmitter.emit(ExternalEventName.RequestMoveInventory, eventMessage)
         } else {
             this.updateGridTable()
         }

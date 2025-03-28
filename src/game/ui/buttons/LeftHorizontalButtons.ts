@@ -1,6 +1,6 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, baseAssetMap } from "../../assets"
-import { EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import { SceneEventEmitter, SceneEventName, ModalName, OpenModalMessage } from "../../events"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
 
@@ -41,12 +41,10 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             iconKey: baseAssetMap[BaseAssetKey.UIIconShop].key,
             text: "Shop",
             onPress: () => {
-                EventBus.emit(EventName.RefreshPlaceItemsCacheKey)
-                
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Shop
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.shopButton)
@@ -58,7 +56,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Stand
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.roadsideStandButton)
@@ -71,16 +69,16 @@ export class LeftHorizontalButtons extends HorizontalButtons {
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Neighbors
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.neighborsButton)
 
-        EventBus.on(EventName.HideButtons, () => {
+        SceneEventEmitter.on(SceneEventName.HideButtons, () => {
             this.setVisible(false).setActive(false)
         })
         
-        EventBus.on(EventName.ShowButtons, () => {
+        SceneEventEmitter.on(SceneEventName.ShowButtons, () => {
             this.setVisible(true).setActive(true)
         })
 

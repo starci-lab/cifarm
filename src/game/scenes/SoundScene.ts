@@ -1,7 +1,7 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import { AUDIO_GAME_MUSIC, DEFAULT_VOLUME } from "../constants"
-import { EventBus, EventName, UpdateVolumeMessage } from "../event-bus"
+import { SceneEventEmitter, SceneEventName, UpdateVolumeMessage } from "../events"
 
 export class SoundScene extends Scene {
     constructor() {
@@ -15,7 +15,7 @@ export class SoundScene extends Scene {
     create() {
         const audio = this.sound.add(AUDIO_GAME_MUSIC, { loop: true, volume: DEFAULT_VOLUME })
         audio.play()
-        EventBus.on(EventName.UpdateVolume, ({ volume }: UpdateVolumeMessage) => {
+        SceneEventEmitter.on(SceneEventName.UpdateVolume, ({ volume }: UpdateVolumeMessage) => {
             audio.setVolume(volume)
         })
     }

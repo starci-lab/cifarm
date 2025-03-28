@@ -3,7 +3,7 @@ import { SpineConfig, TextureConfig } from "./types"
 import { sessionDb } from "@/modules/dexie"
 import axios from "axios"
 import { CacheKey } from "../types"
-import { EventBus, EventName } from "../event-bus"
+import { ExternalEventEmitter, ExternalEventName } from "../events"
 export const BASE_URL = "https://cifarm.s3.ap-southeast-1.amazonaws.com/"
 export const PATH = "assets"
 
@@ -26,7 +26,7 @@ export const downloadTexture = async (
         .filter((asset) => asset.key === key)
         .first()
     if (asset) {
-        EventBus.emit(EventName.AssetsLoaded, 1)
+        ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
     const url = getAssetUrl(assetUrl)
@@ -35,7 +35,7 @@ export const downloadTexture = async (
         onDownloadProgress: (progress) => {
             console.log(url, progress.progress)
             if (progress.progress) {
-                EventBus.emit(EventName.AssetsLoaded, progress.progress)
+                ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
             }
         },
     })
@@ -79,13 +79,13 @@ export const downloadJson = async (scene: Scene, spineConfig: SpineConfig) => {
         .filter((asset) => asset.key === key)
         .first()
     if (asset) {
-        EventBus.emit(EventName.AssetsLoaded, 1)
+        ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
     const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
-            EventBus.emit(EventName.AssetsLoaded, progress.progress)
+            ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
         },
     })
     await sessionDb.assets.add({ key, data })
@@ -108,13 +108,13 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
         .filter((asset) => asset.key === textureKey)
         .first()
     if (textureAsset) {
-        EventBus.emit(EventName.AssetsLoaded, 1)
+        ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         textureData = textureAsset.data
     } else {
         const { data } = await axios.get(getAssetUrl(textureUrl), {
             responseType: "blob",
             onDownloadProgress: (progress) => {
-                EventBus.emit(EventName.AssetsLoaded, progress.progress)
+                ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
             },
         })
         await sessionDb.assets.add({ key: textureKey, data })
@@ -128,13 +128,13 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
         .filter((asset) => asset.key === key)
         .first()
     if (asset) {
-        EventBus.emit(EventName.AssetsLoaded, 1)
+        ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         atlasText = await asset.data.text()
     } else {
         const { data } = await axios.get(getAssetUrl(assetUrl), {
             responseType: "text",
             onDownloadProgress: (progress) => {
-                EventBus.emit(EventName.AssetsLoaded, progress.progress)
+                ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
             },
         })
         atlasText = data

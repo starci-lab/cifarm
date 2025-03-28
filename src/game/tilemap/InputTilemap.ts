@@ -15,6 +15,7 @@ import {
     UserSchema,
     AbstractPlantSchema,
     PlantType,
+    Position,
 } from "@/modules/entities"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
@@ -33,19 +34,8 @@ import {
     tileAssetMap,
 } from "../assets"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
-import {
-    CreateFlyItemMessage,
-    BuyingDragModeOnMessage,
-    EventBus,
-    EventName,
-    ModalName,
-    OpenModalMessage,
-    Position,
-    UpdateConfirmSellModalMessage,
-} from "../event-bus"
-import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { CacheKey, TilemapBaseConstructorParams } from "../types"
-import { FlyItem, FlyItems, ToolLike } from "../ui"
+import { ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
 import {
@@ -76,6 +66,16 @@ import {
     UseWateringCanMessage,
 } from "@/hooks"
 import { setTintColorForSpriteOrSpine } from "./utils"
+import {
+    BuyingModeOnMessage,
+    ExternalEventName,
+    ModalName,
+    OpenModalMessage,
+    SceneEventEmitter,
+    SceneEventName,
+} from "../events"
+import { ExternalEventEmitter } from "../events"
+import { gameplayDepth } from "../depth"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -92,7 +92,11 @@ interface DragData {
   textureConfig?: TextureConfig;
   spineConfig?: SpineConfig;
   placedItemType: PlacedItemTypeSchema;
-  objectData?: PlacedItemObjectData;
+}
+
+export type BuyingDragData = DragData;
+export interface MovingDragData extends DragData {
+  objectData: PlacedItemObjectData;
 }
 
 // key for experience
@@ -109,7 +113,9 @@ export class InputTilemap extends ItemTilemap {
     private minZoom = 0.5
     private maxZoom = 5
     // place item data
-    private dragData: DragData | undefined
+    private buyingDragData: BuyingDragData | undefined
+    private movingDragData: MovingDragData | undefined
+
     private isDragging = false
     private dragBuyVisual:
     | Phaser.GameObjects.Sprite
@@ -120,78 +126,25 @@ export class InputTilemap extends ItemTilemap {
         super(baseParams)
 
         // listen for place in progress event
-        EventBus.on(EventName.NormalModeOn, () => {
+        SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {
             this.cancelPlacement()
         })
-        EventBus.on(EventName.BuyingModeOn, (data: BuyingDragModeOnMessage) => {
+
+        SceneEventEmitter.on(SceneEventName.BuyingModeOn, (data: BuyingModeOnMessage) => {
             this.hideEverything()
             this.inputMode = InputMode.Buy
-            this.handleBuyingDragMode(data)
+            this.handleBuyingMode(data)
         })
-        EventBus.on(EventName.MovingModeOn, () => {
+        SceneEventEmitter.on(SceneEventName.MovingModeOn, () => {
             this.hideEverything()
             this.inputMode = InputMode.Move
         })
-        EventBus.on(EventName.SellingModeOn, () => {
+        SceneEventEmitter.on(SceneEventName.SellingModeOn, () => {
             this.hideEverything()
             this.inputMode = InputMode.Sell
         })
 
         this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
-
-        this.scene.events.on(
-            EventName.CreateFlyItem,
-            ({
-                assetKey,
-                position,
-                quantity,
-                text,
-                showIcon,
-            }: CreateFlyItemMessage) => {
-                const flyItem = new FlyItem({
-                    baseParams: {
-                        scene: this.scene,
-                    },
-                    options: {
-                        assetKey,
-                        quantity,
-                        x: position.x,
-                        y: position.y,
-                        depth: calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                            layerDepth: 1,
-                        }),
-                        text,
-                        showIcon,
-                    },
-                })
-                this.scene.add.existing(flyItem)
-            }
-        )
-
-        this.scene.events.on(
-            EventName.CreateFlyItems,
-            (items: Array<CreateFlyItemMessage>) => {
-                const flyItems = new FlyItems({
-                    baseParams: {
-                        scene: this.scene,
-                    },
-                    options: {
-                        items: items.map((item) => ({
-                            ...item,
-                            x: item.position.x,
-                            y: item.position.y,
-                            depth: calculateGameplayDepth({
-                                layer: GameplayLayer.Effects,
-                                layerDepth: 1,
-                            }),
-                        })),
-                        delay: 500,
-                    },
-                })
-                this.scene.add.existing(flyItems)
-            }
-        )
 
         this.addInputs()
     }
@@ -258,10 +211,11 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
+            console.log(tile.x, tile.y)
             const data = this.findPlacedItemRoot(tile.x, tile.y)
 
             if (!data) {
-                console.error("No placed item found for position")
+                console.log("No placed item found for position")
                 return
             }
 
@@ -273,9 +227,8 @@ export class InputTilemap extends ItemTilemap {
                     if (!data.object.currentPlacedItem?.id) {
                         throw new Error("Placed item id not found")
                     }
-                    EventBus.emit(EventName.HidePlacementModeButtons)
-                    data.ignoreCollision = true
-                    this.handleDragModeFromObject(data)
+                    data.object.ignoreCollision = true
+                    this.handleMovingDragMode(data)
                     return
                 }
             }
@@ -293,12 +246,21 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            switch (data.placedItemType.type) {
+            if (!data.object.placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+
+            // return if object is pressed for action
+            if (data.object.isPressedForAction) {
+                return
+            }
+            switch (data.object.placedItemType.type) {
             case PlacedItemType.Tile:
                 this.handlePressOnTile(data)
                 break
             case PlacedItemType.Building:
-                if (data.placedItemType.displayId == PlacedItemTypeId.Home) return
+                if (data.object.placedItemType.displayId == PlacedItemTypeId.Home)
+                    return
                 this.handlePressOnBuilding(data)
                 break
             case PlacedItemType.Animal:
@@ -313,10 +275,12 @@ export class InputTilemap extends ItemTilemap {
     // method to handle press on tile
     private async handlePressOnTile(data: PlacedItemObjectData) {
     // check if current is visited or not
-        if (data.placedItemType.type !== PlacedItemType.Tile) {
+        if (!data.object.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        if (data.object.placedItemType.type !== PlacedItemType.Tile) {
             throw new Error("Invalid placed item type")
         }
-
         const watchingUser = this.scene.cache.obj.get(
             CacheKey.WatchingUser
         ) as UserSchema
@@ -385,7 +349,11 @@ export class InputTilemap extends ItemTilemap {
                 inventorySeedId: selectedTool.id,
                 placedItemTileId: placedItemId,
             }
-            EventBus.emit(EventName.RequestPlantSeed, eventMessage)
+            ExternalEventEmitter.emit(
+                ExternalEventName.RequestPlantSeed,
+                eventMessage
+            )
+            object.setIsPressedForAction()
             break
         }
         case InventoryType.Tool: {
@@ -426,7 +394,10 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpUseWateringCanMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpUseWateringCan, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHelpUseWateringCan,
+                        eventMessage
+                    )
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -440,7 +411,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: UseWateringCanMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestUseWateringCan, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestUseWateringCan,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -466,7 +441,10 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpUsePesticideMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpUsePesticide, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHelpUsePesticide,
+                        eventMessage
+                    )
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -480,7 +458,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: UsePesticideMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestUsePesticide, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestUsePesticide,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -506,7 +488,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpUseHerbicideMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpUseHerbicide, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHelpUseHerbicide,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -520,7 +506,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: UseHerbicideMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestUseHerbicide, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestUseHerbicide,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -564,7 +554,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: ThiefPlantMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestThiefPlant, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestThiefPlant,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 } else {
                     // emit the event to water the plant
                     if (
@@ -579,7 +573,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HarvestPlantMessage = {
                         placedItemTileId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHarvestPlant, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHarvestPlant,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -628,7 +626,11 @@ export class InputTilemap extends ItemTilemap {
                     placedItemTileId: placedItemId,
                     inventorySupplyId: selectedTool.id,
                 }
-                EventBus.emit(EventName.RequestUseFertilizer, eventMessage)
+                ExternalEventEmitter.emit(
+                    ExternalEventName.RequestUseFertilizer,
+                    eventMessage
+                )
+                object.setIsPressedForAction()
                 break
             }
             }
@@ -638,10 +640,12 @@ export class InputTilemap extends ItemTilemap {
 
     //handlePressOnAnimal
     private async handlePressOnAnimal(data: PlacedItemObjectData) {
-        if (data.placedItemType.type !== PlacedItemType.Animal) {
+        if (!data.object.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        if (data.object.placedItemType.type !== PlacedItemType.Animal) {
             throw new Error("Invalid placed item type")
         }
-
         const watchingUser = this.scene.cache.obj.get(
             CacheKey.WatchingUser
         ) as UserSchema
@@ -703,7 +707,11 @@ export class InputTilemap extends ItemTilemap {
                         inventorySupplyId: selectedTool.id,
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestUseAnimalFeed, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestUseAnimalFeed,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
 
                 break
@@ -738,10 +746,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpUseAnimalMedicineMessage = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(
-                        EventName.RequestHelpUseAnimalMedicine,
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHelpUseAnimalMedicine,
                         eventMessage
                     )
+                    object.setIsPressedForAction()
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -756,7 +765,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: UseAnimalMedicineMessage = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestUseAnimalMedicine, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestUseAnimalMedicine,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
 
                 break
@@ -797,7 +810,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: ThiefAnimalMessage = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestThiefAnimal, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestThiefAnimal,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 } else {
                     // emit the event to water the plant
                     if (
@@ -812,7 +829,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HarvestAnimalMessage = {
                         placedItemAnimalId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHarvestAnimal, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHarvestAnimal,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -898,12 +919,16 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    private handleDragModeFromObject(data: PlacedItemObjectData) {
-        const { placedItemType } = data
+    private handleMovingDragMode(data: PlacedItemObjectData) {
+        const { object } = data
+        const { placedItemType } = object
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
         const { mainVisualType, textureConfig, spineConfig } =
       this.getAssetConfigFromPlacedItem(placedItemType)
 
-        this.dragData = {
+        this.movingDragData = {
             type: mainVisualType,
             textureConfig,
             spineConfig,
@@ -912,9 +937,9 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    private handleBuyingDragMode({ id }: BuyingDragModeOnMessage) {
+    private handleBuyingMode({ placedItemTypeId }: BuyingModeOnMessage) {
         const placedItemType = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.id === id
+            (placedItemType) => placedItemType.id === placedItemTypeId
         )
         if (!placedItemType) {
             throw new Error("Placed item type not found")
@@ -923,7 +948,7 @@ export class InputTilemap extends ItemTilemap {
         const { mainVisualType, textureConfig, spineConfig } =
       this.getAssetConfigFromPlacedItem(placedItemType)
 
-        this.dragData = {
+        this.buyingDragData = {
             type: mainVisualType,
             textureConfig,
             spineConfig,
@@ -931,100 +956,92 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    private handleSellingMode({ placedItem }: HandleSellingModeParams) {
-        if (!placedItem) {
-            throw new Error("Placed item not found")
-        }
-        const data = this.placedItemObjectMap[placedItem.id]
-        if (!data) {
-            return
-        }
-        const currentPlacedItem = data.object.currentPlacedItem
-        if (!currentPlacedItem) {
-            throw new Error("Current placed item not found")
-        }
-        const placedItemType = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.id === currentPlacedItem.placedItemType
-        )
-
-        if (!placedItemType) {
-            throw new Error("Placed item type not found")
-        }
-
-        let sellPrice: number = 0
-
-        if (!placedItemType.sellable) {
-            EventBus.emit(EventName.CreateFlyItem, {})
-            return
-        }
-
-        switch (placedItemType.type) {
-        case PlacedItemType.Building: {
-            const building = this.buildings.find(
-                (building) =>
-                    building.displayId.toString() ===
-            placedItemType.displayId.toString()
-            )
-            if (!building) {
-                throw new Error("Building not found")
-            }
-            const upgradeLevel =
-          currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
-            const upgradePrice =
-          building.upgrades?.find(
-              (upgrade) => upgrade.upgradeLevel === upgradeLevel
-          )?.sellPrice ?? 0
-            sellPrice = upgradePrice
-            break
-        }
-        case PlacedItemType.Tile: {
-            const tile = this._tiles.find(
-                (tile) =>
-                    tile.displayId.toString() === placedItemType.displayId.toString()
-            )
-            if (!tile) {
-                throw new Error("Tile not found")
-            }
-            sellPrice = tile.sellPrice ?? 0
-            break
-        }
-        case PlacedItemType.Animal: {
-            const animal = this.animals.find(
-                (animal) =>
-                    animal.displayId.toString() === placedItemType.displayId.toString()
-            )
-            if (!animal) {
-                throw new Error("Animal not found")
-            }
-            sellPrice = animal.sellPrice ?? 0
-            break
-        }
-        }
-
-        if (placedItemType.sellable) {
-            const updateConfirmSellModalMessage: UpdateConfirmSellModalMessage = {
-                message: "Are you sure you want to sell this item?",
-                quantity: sellPrice,
-                callback: () => {
-                    const eventMessage = {
-                        placedItemId: placedItem.id,
-                    }
-                    EventBus.emit(EventName.RequestSell, eventMessage)
-                },
-            }
-            EventBus.emit(
-                EventName.UpdateConfirmSellModal,
-                updateConfirmSellModalMessage
-            )
-            EventBus.emit(EventName.OpenModal, {
-                modalName: ModalName.ConfirmSell,
-            })
-        } else {
-            console.error("Not sellable")
-            return
-        }
+    private handleSellingMode({ 
+        placedItem }: HandleSellingModeParams) {
+        console.log(placedItem)
+    //     if (!placedItem) {
+    //         throw new Error("Placed item not found")
+    //     }
+    //     const data = this.placedItemObjectMap[placedItem.id]
+    //     if (!data) {
+    //         return
+    //     }
+    //     const currentPlacedItem = data.object.currentPlacedItem
+    //     if (!currentPlacedItem) {
+    //         throw new Error("Current placed item not found")
+    //     }
+    //     const placedItemType = this.placedItemTypes.find(
+    //         (placedItemType) => placedItemType.id === currentPlacedItem.placedItemType
+    //     )
+    //     if (!placedItemType) {
+    //         throw new Error("Placed item type not found")
+    //     }
+    //     let sellPrice: number = 0
+    //     if (!placedItemType.sellable) {
+    //         return
+    //     }
+    //     switch (placedItemType.type) {
+    //     case PlacedItemType.Building: {
+    //         const building = this.buildings.find(
+    //             (building) =>
+    //                 building.displayId.toString() ===
+    //         placedItemType.displayId.toString()
+    //         )
+    //         if (!building) {
+    //             throw new Error("Building not found")
+    //         }
+    //         const upgradeLevel =
+    //       currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
+    //         const upgradePrice =
+    //       building.upgrades?.find(
+    //           (upgrade) => upgrade.upgradeLevel === upgradeLevel
+    //       )?.sellPrice ?? 0
+    //         sellPrice = upgradePrice
+    //         break
+    //     }
+    //     case PlacedItemType.Tile: {
+    //         const tile = this._tiles.find(
+    //             (tile) =>
+    //                 tile.displayId.toString() === placedItemType.displayId.toString()
+    //         )
+    //         if (!tile) {
+    //             throw new Error("Tile not found")
+    //         }
+    //         sellPrice = tile.sellPrice ?? 0
+    //         break
+    //     }
+    //     case PlacedItemType.Animal: {
+    //         const animal = this.animals.find(
+    //             (animal) =>
+    //                 animal.displayId.toString() === placedItemType.displayId.toString()
+    //         )
+    //         if (!animal) {
+    //             throw new Error("Animal not found")
+    //         }
+    //         sellPrice = animal.sellPrice ?? 0
+    //         break
+    //     }
+    //     }
+    //     if (placedItemType.sellable) {
+    //         // const updateConfirmSellModalMessage: UpdateConfirmSellModalMessage = {
+    //         //     message: "Are you sure you want to sell this item?",
+    //         //     quantity: sellPrice,
+    //         //     callback: () => {
+    //         //         const eventMessage = {
+    //         //             placedItemId: placedItem.id,
+    //         //         }
+    //         //         ExternalEventEmitter.emit(ExternalEventName.RequestSell, eventMessage)
+    //         //     },
+    //         // }
+    //         // SceneEventEmitter.emit(
+    //         //     SceneEventName.UpdateConfirmSellModal,
+    //         //     updateConfirmSellModalMessage
+    //         // )
+    //     } else {
+    //         console.error("Not sellable")
+    //         return
+    //     }
     }
-
     // update method to handle input events
     public update() {
     // console.log(this.pinch?.pointers.map(x => `${x.x} ${x.y}`))
@@ -1057,66 +1074,16 @@ export class InputTilemap extends ItemTilemap {
             }
             this.dragMovingObjectOnTile(tile)
         }
-        if (this.inputMode === InputMode.Sell) {
-            // const camera = this.scene.cameras.main
-            // const { x, y } = this.scene.input.activePointer.positionToCamera(
-            //     camera
-            // ) as Phaser.Math.Vector2
-            // const tile = this.getTileAtWorldXY(x, y)
-            // // do nothing if tile is not found
-            // if (!tile) {
-            //     if (this.sellingDragSpriteData) {
-            //         this.applyPlacedItemTint({
-            //             placedItem: this.sellingDragSpriteData.placedItem,
-            //         })
-            //     }
-            //     return
-            // }
-            // //check if it is sellable - set green tint - set red tint
-            // const data = this.findPlacedItemRoot(tile.x, tile.y)
-            // this.updatePlacedItemColor({
-            //     placedItem: data?.object.currentPlacedItem,
-            // })
-        }
     }
-
-    // private updatePlacedItemColor({ placedItem }: UpdatePlacedItemColorParams) {
-    //     if (!this.sellidrngDragSpriteData) {
-    //         if (placedItem) {
-    //             this.sellingDragSpriteData = { placedItem }
-    //         }
-    //         return
-    //     }
-
-    //     this.removePlacedItemTint({
-    //         placedItem: this.sellingDragSpriteData.placedItem,
-    //     })
-
-    //     if (placedItem) {
-    //         this.sellingDragSpriteData = { placedItem }
-    //         this.applyPlacedItemTint({ placedItem })
-    //     } else {
-    //         this.sellingDragSpriteData = undefined
-    //     }
-    // }
-
-    // private applyPlacedItemTint({ placedItem }: PlacedItemTintParams) {
-    //     const object = this.placedItemObjectMap[placedItem.id].object
-    //     const placedItemObjectData = this.placedItemObjectMap[placedItem.id]
-    //     if (placedItemObjectData.placedItemType.sellable) {
-    //         object.setTintColor(GREEN_TINT_COLOR)
-    //     } else {
-    //         object.setTintColor(RED_TINT_COLOR)
-    //     }
-    // }
 
     // drag sprite on tile
     private dragBuyingSpriteOnTile(tile: Phaser.Tilemaps.Tile) {
     // throw error if drag sprite data is not found
-        if (!this.dragData) {
+        if (!this.buyingDragData) {
             throw new Error("No drag sprite data found")
         }
-        const { placedItemType, textureConfig, spineConfig, type } = this.dragData
+        const { placedItemType, textureConfig, spineConfig, type } =
+      this.buyingDragData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
@@ -1126,19 +1093,6 @@ export class InputTilemap extends ItemTilemap {
             tileSizeWidth: placedItemType.sizeX,
             tileSizeHeight: placedItemType.sizeY,
         })
-        // if temporary place item object is already created
-        // if (!this.dragBuyVisual) {
-        //     this.dragBuyVisual = this.scene.add
-        //         .sprite(0, 0, textureConfig.key)
-        //         .setOrigin(0.5, 1)
-        //         .setDepth(
-        //             calculateGameplayDepth({
-        //                 layer: GameplayLayer.Effects,
-        //                 layerDepth: 2,
-        //             })
-        //         )
-        //         .setScale(this.scale)
-        // }
         switch (type) {
         case MainVisualType.Spine: {
             const { x = 0, y = 0 } = { ...spineConfig?.extraOffsets }
@@ -1149,12 +1103,7 @@ export class InputTilemap extends ItemTilemap {
             if (!this.dragBuyVisual) {
                 this.dragBuyVisual = this.scene.add
                     .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
-                    .setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                            layerDepth: 2,
-                        })
-                    )
+                    .setDepth(gameplayDepth.drag)
                     .setOrigin(0.5, 1)
                 this.dragBuyVisual.animationState.setAnimation(0, "idle", true)
             }
@@ -1168,12 +1117,7 @@ export class InputTilemap extends ItemTilemap {
             if (!this.dragBuyVisual) {
                 this.dragBuyVisual = this.scene.add
                     .sprite(x, y, textureConfig.key)
-                    .setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                            layerDepth: 2,
-                        })
-                    )
+                    .setDepth(gameplayDepth.drag)
                     .setOrigin(0.5, 1)
             }
             break
@@ -1188,13 +1132,12 @@ export class InputTilemap extends ItemTilemap {
             tile,
             onCancel: () => {
                 this.cancelPlacement()
-                EventBus.emit(EventName.PlacedItemsRefreshed)
+                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
             onConfirm: (tileX: number, tileY: number) => {
                 // show modal
                 switch (placedItemType.type) {
                 case PlacedItemType.Building: {
-                    EventBus.once(EventName.BuyBuildingResponsed, () => {})
                     const building = this.buildings.find(
                         (building) => building.id === placedItemType.building
                     )
@@ -1210,11 +1153,13 @@ export class InputTilemap extends ItemTilemap {
                             y: tileY,
                         },
                     }
-                    EventBus.emit(EventName.RequestBuyBuilding, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestBuyBuilding,
+                        eventMessage
+                    )
                     break
                 }
                 case PlacedItemType.Tile: {
-                    EventBus.once(EventName.BuyTileResponsed, () => {})
                     const tile = this._tiles.find(
                         (tile) => tile.id === placedItemType.tile
                     )
@@ -1228,11 +1173,13 @@ export class InputTilemap extends ItemTilemap {
                             y: tileY,
                         },
                     }
-                    EventBus.emit(EventName.RequestBuyTile, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestBuyTile,
+                        eventMessage
+                    )
                     break
                 }
                 case PlacedItemType.Animal: {
-                    EventBus.once(EventName.BuyAnimalResponsed, () => {})
                     const animal = this.animals.find(
                         (animal) => animal.id === placedItemType.animal
                     )
@@ -1248,11 +1195,13 @@ export class InputTilemap extends ItemTilemap {
                             y: tileY,
                         },
                     }
-                    EventBus.emit(EventName.RequestBuyAnimal, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestBuyAnimal,
+                        eventMessage
+                    )
                     break
                 }
                 case PlacedItemType.Fruit: {
-                    EventBus.once(EventName.BuyFruitResponsed, () => {})
                     const fruit = this.fruits.find(
                         (fruit) => fruit.id === placedItemType.fruit
                     )
@@ -1268,7 +1217,10 @@ export class InputTilemap extends ItemTilemap {
                             y: tileY,
                         },
                     }
-                    EventBus.emit(EventName.RequestBuyFruit, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestBuyFruit,
+                        eventMessage
+                    )
                     break
                 }
                 }
@@ -1299,10 +1251,10 @@ export class InputTilemap extends ItemTilemap {
 
     private dragMovingObjectOnTile(tile: Phaser.Tilemaps.Tile) {
     // throw error if drag sprite data is not found
-        if (!this.dragData) {
+        if (!this.movingDragData) {
             throw new Error("No drag sprite data found")
         }
-        const { placedItemType, objectData } = this.dragData
+        const { placedItemType, objectData } = this.movingDragData
         if (!objectData) {
             throw new Error("Object data not found")
         }
@@ -1318,14 +1270,7 @@ export class InputTilemap extends ItemTilemap {
         })
 
         // set the depth of the object
-        object
-            .setDepth(
-                calculateGameplayDepth({
-                    layer: GameplayLayer.Effects,
-                    layerDepth: 2,
-                })
-            )
-            .setScale(this.scale)
+        object.setDepth(gameplayDepth.drag)
 
         // update the temporary place item object position
         const tilePosition = this.tileToWorldXY(tile.x, tile.y)
@@ -1341,7 +1286,7 @@ export class InputTilemap extends ItemTilemap {
                     throw new Error("Placed item id not found")
                 }
                 this.deleteObject(objectData.object.currentPlacedItem.id)
-                EventBus.emit(EventName.PlacedItemsRefreshed)
+                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
             onConfirm: (tileX: number, tileY: number) => {
                 // this.movingDragSpriteData = undefined
@@ -1350,8 +1295,11 @@ export class InputTilemap extends ItemTilemap {
                 }
                 this.deleteObject(objectData.object.currentPlacedItem.id)
                 // check if the object is same position
-                if (objectData.object.currentPlacedItem?.x === tileX && objectData.object.currentPlacedItem?.y === tileY) {
-                    EventBus.emit(EventName.PlacedItemsRefreshed)
+                if (
+                    objectData.object.currentPlacedItem?.x === tileX &&
+          objectData.object.currentPlacedItem?.y === tileY
+                ) {
+                    SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
                 } else {
                     const moveRequest: MoveMessage = {
                         placedItemId: objectData.object.currentPlacedItem?.id,
@@ -1360,7 +1308,7 @@ export class InputTilemap extends ItemTilemap {
                             y: tileY,
                         },
                     }
-                    EventBus.emit(EventName.RequestMove, moveRequest)
+                    ExternalEventEmitter.emit(ExternalEventName.RequestMove, moveRequest)
                 }
                 this.cancelPlacement()
             },
@@ -1376,15 +1324,7 @@ export class InputTilemap extends ItemTilemap {
         )
         this.placementConfirmation.updateTileXY(centeredX, centeredY)
         // set tint based on can place
-
-        if (object) {
-            // this.dragBuyVisual.setTint(isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR)
-            object.setTintColor(isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR)
-        } else {
-            // object.setTint(
-            //     isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
-            // )
-        }
+        object.setTint(isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR)
         object.setPosition(tilePosition.x, tilePosition.y + this.tileHeight / 2)
     }
 
@@ -1409,10 +1349,7 @@ export class InputTilemap extends ItemTilemap {
                     onConfirm,
                 },
             }).setDepth(
-                calculateGameplayDepth({
-                    layer: GameplayLayer.Effects,
-                    layerDepth: 3,
-                })
+                gameplayDepth.placementConfirmation
             )
             this.scene.add.existing(this.placementConfirmation)
         }
@@ -1420,7 +1357,10 @@ export class InputTilemap extends ItemTilemap {
     }
 
     private handlePressOnBuilding(data: PlacedItemObjectData) {
-        if (data.placedItemType.type !== PlacedItemType.Building) {
+        if (!data.object.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        if (data.object.placedItemType.type !== PlacedItemType.Building) {
             throw new Error("Invalid placed item type")
         }
 
@@ -1467,19 +1407,14 @@ export class InputTilemap extends ItemTilemap {
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.Hammer: {
-                EventBus.emit(EventName.SyncDelayStarted)
-                // update the placed item in client
-                // EventBus.emit(EventName.RequestUpgradeBuilding, updatePlacedItemLocal)
-
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.UpgradeBuilding,
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
-
-                EventBus.emit(
-                    EventName.UpdateUpgadeBuildingModal,
-                    currentPlacedItem
-                )
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
+            // SceneEventEmitter.emit(
+            //     SceneEventName.UpdateUpgadeBuildingModal,
+            //     currentPlacedItem
+            // )
             }
             }
         }
@@ -1487,10 +1422,12 @@ export class InputTilemap extends ItemTilemap {
     }
 
     private handlePressOnFruit(data: PlacedItemObjectData) {
-        if (data.placedItemType.type !== PlacedItemType.Fruit) {
+        if (!data.object.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        if (data.object.placedItemType.type !== PlacedItemType.Fruit) {
             throw new Error("Invalid placed item type")
         }
-
         const watchingUser = this.scene.cache.obj.get(
             CacheKey.WatchingUser
         ) as UserSchema
@@ -1559,7 +1496,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HelpUseBugNetMessage = {
                         placedItemFruitId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHelpUseBugNet, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHelpUseBugNet,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 } else {
                     if (
                         !this.energyNotEnough({
@@ -1574,7 +1515,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: UseBugNetMessage = {
                         placedItemFruitId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestUseBugNet, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestUseBugNet,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -1613,7 +1558,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: ThiefFruitMessage = {
                         placedItemFruitId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestThiefFruit, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestThiefFruit,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 } else {
                     // emit the event to water the plant
                     if (
@@ -1628,7 +1577,11 @@ export class InputTilemap extends ItemTilemap {
                     const eventMessage: HarvestFruitMessage = {
                         placedItemFruitId: placedItemId,
                     }
-                    EventBus.emit(EventName.RequestHarvestFruit, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHarvestFruit,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -1666,7 +1619,11 @@ export class InputTilemap extends ItemTilemap {
                         placedItemFruitId: placedItemId,
                         inventorySupplyId: selectedTool.id,
                     }
-                    EventBus.emit(EventName.RequestUseFruitFertilizer, eventMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestUseFruitFertilizer,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 }
                 break
             }
@@ -1697,9 +1654,12 @@ export class InputTilemap extends ItemTilemap {
         if (
             data.object.currentPlacedItem?.plantInfo?.thieves.includes(this.user.id)
         ) {
-            this.scene.events.emit(EventName.CreateFlyItems, [
+            const position = data.object.getCenter()
+            this.createFlyItems([
                 {
-                    position: data.object.getCenter(),
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
                     text: "You are already thieved",
                 },
             ])
@@ -1714,9 +1674,12 @@ export class InputTilemap extends ItemTilemap {
         if (
             data.object.currentPlacedItem?.animalInfo?.thieves.includes(this.user.id)
         ) {
-            this.scene.events.emit(EventName.CreateFlyItems, [
+            const position = data.object.getCenter()
+            this.createFlyItems([
                 {
-                    position: data.object.getCenter(),
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
                     text: "You are already thieved",
                 },
             ])
@@ -1729,9 +1692,12 @@ export class InputTilemap extends ItemTilemap {
         if (
             data.object.currentPlacedItem?.fruitInfo?.thieves.includes(this.user.id)
         ) {
-            this.scene.events.emit(EventName.CreateFlyItems, [
+            const position = data.object.getCenter()
+            this.createFlyItems([
                 {
-                    position: data.object.getCenter(),
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
                     text: "You are already thieved",
                 },
             ])
@@ -1766,9 +1732,11 @@ export class InputTilemap extends ItemTilemap {
             plant.minHarvestQuantity >=
       (data.object?.currentPlacedItem?.plantInfo?.harvestQuantityRemaining || 0)
         ) {
-            this.scene.events.emit(EventName.CreateFlyItems, [
+            const position = data.object.getCenter()
+            this.createFlyItems([
                 {
-                    position: data.object.getCenter(),
+                    x: position.x,
+                    y: position.y,
                     text: "Minimum quantity reached",
                 },
             ])
@@ -1800,9 +1768,12 @@ export class InputTilemap extends ItemTilemap {
             animal.minHarvestQuantity >=
       data.object.currentPlacedItem.animalInfo.harvestQuantityRemaining
         ) {
-            this.scene.events.emit(EventName.CreateFlyItems, [
+            const position = data.object.getCenter()
+            this.createFlyItems([
                 {
-                    position: data.object.getCenter(),
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
                     text: "Minimum quantity reached",
                 },
             ])
@@ -1834,9 +1805,12 @@ export class InputTilemap extends ItemTilemap {
             fruit.minHarvestQuantity >=
       data.object.currentPlacedItem.fruitInfo.harvestQuantityRemaining
         ) {
-            this.scene.events.emit(EventName.CreateFlyItems, [
+            const position = data.object.getCenter()
+            this.createFlyItems([
                 {
-                    position: data.object.getCenter(),
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
                     text: "Minimum quantity reached",
                 },
             ])
@@ -1850,10 +1824,12 @@ export class InputTilemap extends ItemTilemap {
         actionEnergy = 0,
     }: EnergyNotEnoughParams): boolean {
         if (this.user.energy < actionEnergy) {
-            this.scene.events.emit(EventName.CreateFlyItems, [
+            const position = data.object.getCenter()
+            this.createFlyItems([
                 {
-                    assetKey: ENERGY_KEY,
-                    position: data.object.getCenter(),
+                    iconAssetKey: ENERGY_KEY,
+                    x: position.x,
+                    y: position.y,
                     text: "Not enough",
                 },
             ])
@@ -1862,15 +1838,15 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private hideEverything() {
-        EventBus.emit(EventName.ShowPlacementModeButtons)
-        EventBus.emit(EventName.HideToolbar)
-        EventBus.emit(EventName.HideButtons)
+    private hideEverything() {  
+        SceneEventEmitter.emit(SceneEventName.ShowPlacementModeButtons)
+        SceneEventEmitter.emit(SceneEventName.HideToolbar)
+        SceneEventEmitter.emit(SceneEventName.HideButtons)
     }
     private showEverything() {
-        EventBus.emit(EventName.HidePlacementModeButtons)
-        EventBus.emit(EventName.ShowToolbar)
-        EventBus.emit(EventName.ShowButtons)
+        SceneEventEmitter.emit(SceneEventName.HidePlacementModeButtons)
+        SceneEventEmitter.emit(SceneEventName.ShowToolbar)
+        SceneEventEmitter.emit(SceneEventName.ShowButtons)
     }
 }
 

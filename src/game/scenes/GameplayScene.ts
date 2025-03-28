@@ -1,5 +1,5 @@
 import { Scene } from "phaser"
-import { EventBus, EventName } from "../event-bus"
+import { SceneEventEmitter, SceneEventName } from "../events"
 import { SceneName } from "../scene"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
 
@@ -12,17 +12,9 @@ export class GameplayScene extends Scene
     }
 
     init () {
-        // Listen to the shutdown event
-        this.events.on("shutdown", this.shutdown, this)
-        EventBus.on(EventName.CenterCamera, () => {
+        SceneEventEmitter.on(SceneEventName.CenterCamera, () => {
             this.setCameraCenter()
         })
-    }
-
-    // shutdown method
-    shutdown() {
-        // call all shutdown methods of game objects
-        this.tilemap?.shutdown()
     }
 
     private setCameraCenter() {

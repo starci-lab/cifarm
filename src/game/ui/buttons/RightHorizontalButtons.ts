@@ -1,6 +1,6 @@
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, baseAssetMap } from "../../assets"
-import { EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import { SceneEventEmitter, SceneEventName, ModalName, OpenModalMessage } from "../../events"
 import { HorizontalButtons } from "./HorizontalButtons"
 import { ButtonsBaseConstructorParams, CacheKey } from "@/game/types"
 
@@ -36,7 +36,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Settings
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.settingButton)
@@ -49,7 +49,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Inventory
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.inventoryButton)
@@ -62,7 +62,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Daily
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.dailyButton)
@@ -75,7 +75,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Quests
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.questButton)
@@ -85,7 +85,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: baseAssetMap[BaseAssetKey.UIIconMove].key,
             text: "Move",
             onPress: () => {
-                EventBus.emit(EventName.MovingModeOn)
+                SceneEventEmitter.emit(SceneEventName.MovingModeOn)
             },
         })
         this.addButton(this.moveButton)
@@ -95,16 +95,16 @@ export class RightHorizontalButtons extends HorizontalButtons {
             iconKey: baseAssetMap[BaseAssetKey.UIIconSell].key,
             text: "Sell",
             onPress: () => {
-                EventBus.emit(EventName.SellingModeOn)
+                SceneEventEmitter.emit(SceneEventName.SellingModeOn)
             },
         })
         this.addButton(this.sellButton)
 
-        EventBus.on(EventName.HideButtons, () => {
+        SceneEventEmitter.on(SceneEventName.HideButtons, () => {
             this.setVisible(false).setActive(false)
         })
         
-        EventBus.on(EventName.ShowButtons, () => {
+        SceneEventEmitter.on(SceneEventName.ShowButtons, () => {
             this.setVisible(true).setActive(true)
         })
 

@@ -14,6 +14,7 @@ import {
     PlacedItemTypeSchema,
     PlantCurrentState,
     PlantType,
+    Position,
     ProductSchema,
     TileSchema,
 } from "@/modules/entities"
@@ -41,11 +42,10 @@ import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
-import { calculateGameplayDepth, GameplayLayer } from "../layers"
-import { EventName } from "../event-bus"
-import { EventBus } from "../event-bus"
 import { flowerAssetMap } from "../assets"
 import { clearTintColorForSpriteOrSpine, setTintColorForSpriteOrSpine } from "./utils"
+import { ExternalEventEmitter, ExternalEventName } from "../events"
+import { gameplayDepth } from "../depth"
 
 export class PlacedItemObject extends ContainerLite {
     private plantInfoSprite: Phaser.GameObjects.Sprite | undefined
@@ -68,6 +68,11 @@ export class PlacedItemObject extends ContainerLite {
     private fruitInfo: FruitInfo
     private timerIsShown = false
 
+    public ignoreCollision?: boolean
+    public isPressedForAction = false
+    public isPressedForTimer = false
+    public placedItemType: PlacedItemTypeSchema | undefined
+    
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
 
@@ -82,6 +87,31 @@ export class PlacedItemObject extends ContainerLite {
         this.flowers = scene.cache.obj.get(CacheKey.Flowers)
     }
 
+    public setIsPressedForAction() {
+        if (this.isPressedForAction) {
+            return
+        }
+        this.isPressedForAction = true
+        this.scene.time.delayedCall(1000, () => {
+            this.isPressedForAction = false
+        })
+    }
+    public getOccupiedTiles() {
+        const occupiedTiles: Array<Position> = []
+        if (!this.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        if (!this.currentPlacedItem) {
+            throw new Error("Placed item not found")
+        }
+        for (let dx = 0; dx < this.placedItemType.sizeX; dx++) {
+            for (let dy = 0; dy < this.placedItemType.sizeY; dy++) {
+                occupiedTiles.push({ x: this.currentPlacedItem.x - dx, y: this.currentPlacedItem.y - dy })
+            }
+        }
+        return occupiedTiles
+    }
+
     public showTimer() {
         if (!this.timer) {
             return
@@ -90,7 +120,7 @@ export class PlacedItemObject extends ContainerLite {
             return
         }
         this.timerIsShown = true
-        EventBus.emit(EventName.SyncPlacedItems, {
+        ExternalEventEmitter.emit(ExternalEventName.EmitSyncPlacedItems, {
             placedItemIds: [this.currentPlacedItem?.id],
         })
         this.timer.setVisible(true)
@@ -104,19 +134,18 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     public updateContent(placedItem: PlacedItemSchema) {
-        this.nextPlacedItem = placedItem
-        const placedItemType = this.placedItemTypes.find(
+        this.placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === placedItem.placedItemType
         )
-        if (!placedItemType) {
+        this.nextPlacedItem = placedItem
+        if (!this.placedItemType) {
             throw new Error("Placed item type not found")
         }
-        if (!placedItem) {
+        if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-
         this.updateMainVisual()
-        switch (placedItemType.type) {
+        switch (this.placedItemType.type) {
         case PlacedItemType.Tile: {
             this.updatePlantInfo()
             break
@@ -382,9 +411,7 @@ export class PlacedItemObject extends ContainerLite {
                     .setVisible(false)
                     .setOrigin(0.5, 1)
                     .setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
+                        gameplayDepth.placementConfirmation
                     )
                 this.scene.add.existing(this.timer)
                 this.pinLocal(this.timer, {
@@ -780,9 +807,7 @@ export class PlacedItemObject extends ContainerLite {
                     .setVisible(false)
                     .setOrigin(0.5, 1)
                     .setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
+                        gameplayDepth.placementConfirmation
                     )
                 this.scene.add.existing(this.timer)
                 this.pinLocal(this.timer, {
@@ -1088,9 +1113,7 @@ export class PlacedItemObject extends ContainerLite {
                     .setVisible(false)
                     .setOrigin(0.5, 1)
                     .setDepth(
-                        calculateGameplayDepth({
-                            layer: GameplayLayer.Effects,
-                        })
+                        gameplayDepth.placementConfirmation
                     )
                 this.scene.add.existing(text)
                 this.timer = text
@@ -1202,7 +1225,7 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
-    public setTintColor(tintColor: number) {
+    public setTint(tintColor: number) {
         if (this.mainVisual) {
             setTintColorForSpriteOrSpine(this.mainVisual, tintColor)
         }

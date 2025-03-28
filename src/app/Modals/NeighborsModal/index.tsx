@@ -4,7 +4,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "@/hooks"
 import React, { FC, ReactNode } from "react"
 import { FolloweesTab } from "./FolloweesTab"
-import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { ExternalEventEmitter, ExternalEventName, ModalName, SceneEventEmitter, SceneEventName } from "@/game"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ModalHeader } from "@/components"
@@ -31,7 +31,7 @@ export const NeighborsModal: FC = () => {
             onOpenChange={(value) => {
                 onOpenChange(value)
                 if (!value) {
-                    EventBus.emit(EventName.CloseModal, {
+                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
                         modalName: ModalName.Neighbors,
                     })
                 }

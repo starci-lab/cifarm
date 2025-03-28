@@ -2,7 +2,7 @@ import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ButtonsBaseConstructorParams, CacheKey } from "../../types"
 import { HorizontalButtons } from "./HorizontalButtons"
-import { EventBus, EventName, ModalName, OpenModalMessage } from "../../event-bus"
+import { SceneEventEmitter, SceneEventName, ModalName, OpenModalMessage } from "../../events"
 
 export class NeighborRightHorizontalButtons extends HorizontalButtons {
     private nextButton: Sizer
@@ -42,17 +42,17 @@ export class NeighborRightHorizontalButtons extends HorizontalButtons {
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Inventory
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
         })
         this.addButton(this.inventoryButton)
 
 
-        EventBus.on(EventName.HideNeighborButtons, () => {
+        SceneEventEmitter.on(SceneEventName.HideNeighborButtons, () => {
             this.setVisible(false).setActive(false)
         })
                 
-        EventBus.on(EventName.ShowNeighborButtons, () => {
+        SceneEventEmitter.on(SceneEventName.ShowNeighborButtons, () => {
             this.setVisible(true).setActive(true)
         })
                 

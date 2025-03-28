@@ -1,5 +1,5 @@
 import { Scene } from "phaser"
-import { EventBus, EventName } from "../event-bus"
+import { ExternalEventEmitter, ExternalEventName, SceneEventEmitter, SceneEventName } from "../events"
 import { InventorySchema, UserSchema, PlacedItemSchema } from "@/modules/entities"
 import { CacheKey, PlacedItemsData } from "../types"
 import { SceneName } from "../scene"
@@ -14,8 +14,8 @@ export class DataScene extends Scene {
     }
     
     create() {
-        EventBus.on(
-            EventName.PlacedItemsSynced,
+        ExternalEventEmitter.on(
+            ExternalEventName.PlacedItemsSynced,
             async (placedItemsWithStatus: Array<WithStatus<PlacedItemSchema>>) => {
                 const previousPlacedItemsData = this.cache.obj.get(CacheKey.PlacedItems) as PlacedItemsData
                 const { placedItems } = previousPlacedItemsData
@@ -69,11 +69,11 @@ export class DataScene extends Scene {
                 // store the placed items in the cache
                 this.cache.obj.add(CacheKey.PlacedItems, placedItemsData)
                 // emit the event to update the placed items
-                EventBus.emit(EventName.PlacedItemsRefreshed)
+                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             }
         )
 
-        EventBus.on(EventName.InventorySynced, (inventoriesWithStatus: Array<WithStatus<InventorySchema>>) => {
+        ExternalEventEmitter.on(ExternalEventName.InventoriesSynced, (inventoriesWithStatus: Array<WithStatus<InventorySchema>>) => {
             const inventories = this.cache.obj.get(CacheKey.Inventories) as Array<InventorySchema>
             // loop through the inventories and update the inventory
             for (let i = 0; i < inventoriesWithStatus.length; i++) {
@@ -122,19 +122,19 @@ export class DataScene extends Scene {
 
             // emit the event to update the inventories
             this.cache.obj.add(CacheKey.Inventories, inventories)
-            EventBus.emit(EventName.InventoriesRefreshed)
+            SceneEventEmitter.emit(SceneEventName.InventoriesRefreshed)
         })
 
-        EventBus.on(EventName.UserSynced, (user: DeepPartial<UserSchema>) => {
+        ExternalEventEmitter.on(ExternalEventName.UserSynced, (user: DeepPartial<UserSchema>) => {
             // merge the user with the existing user
             const existingUser = this.cache.obj.get(CacheKey.User) as UserSchema
             const mergedUser = mergeObjects(existingUser, user)
             this.cache.obj.add(CacheKey.User, mergedUser)
             // emit the event to update the user
-            EventBus.emit(EventName.UserRefreshed)
+            SceneEventEmitter.emit(SceneEventName.UserRefreshed)
         })
 
-        EventBus.on(EventName.PlacedItemsLoaded1, (placedItems: Array<PlacedItemSchema>) => {
+        ExternalEventEmitter.on(ExternalEventName.PlacedItemsLoaded, (placedItems: Array<PlacedItemSchema>) => {
             const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
             const userId = watchingUser?.id ?? undefined
             const placedItemsData: PlacedItemsData = {
@@ -143,7 +143,7 @@ export class DataScene extends Scene {
             }
             this.cache.obj.add(CacheKey.PlacedItems, placedItemsData)
             // emit the event to update the placed items
-            EventBus.emit(EventName.PlacedItemsRefreshed)
+            SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
         })
     }
 }

@@ -14,7 +14,7 @@ import {
     toolAssetMap,
 } from "../../assets"
 import { SCALE_TIME } from "../../constants"
-import { EventBus, EventName } from "@/game/event-bus"
+import { SceneEventEmitter, SceneEventName } from "../../events"
 import {
     onGameObjectPress,
 } from "../utils"
@@ -107,7 +107,7 @@ export class Toolbar extends ContainerLite {
         this.updateItemSizer()
         this.controlArrowVisibility()
 
-        EventBus.on(EventName.InventoriesRefreshed, () => {
+        SceneEventEmitter.on(SceneEventName.InventoriesRefreshed, () => {
             this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
             this.toolItems = this.getToolItems()
             // check if the selected index is still valid
@@ -119,11 +119,11 @@ export class Toolbar extends ContainerLite {
             this.updateContent()
         })
 
-        EventBus.on(EventName.ShowToolbar, () => {
+        SceneEventEmitter.on(SceneEventName.ShowToolbar, () => {
             this.setVisible(true).setActive(true)
             this.updateContent()
         })
-        EventBus.on(EventName.HideToolbar, () => {
+        SceneEventEmitter.on(SceneEventName.HideToolbar, () => {
             this.setVisible(false).setActive(false)
         })
     }

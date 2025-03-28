@@ -16,7 +16,7 @@ import {
     loadStateAssets,
 } from "../assets"
 import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
-import { EventBus, EventName } from "../event-bus"
+import { ExternalEventEmitter, ExternalEventName } from "../events"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey, PlacedItemsData } from "../types"
 import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
@@ -43,8 +43,8 @@ export class LoadingScene extends Scene {
 
     async init() {
         //listen for static data loaded event
-        EventBus.once(
-            EventName.StaticDataLoaded,
+        ExternalEventEmitter.once(
+            ExternalEventName.StaticDataLoaded,
             ({
                 placedItemTypes,
                 crops,
@@ -85,8 +85,16 @@ export class LoadingScene extends Scene {
             }
         )
 
+        ExternalEventEmitter.on(ExternalEventName.AssetsLoaded, (progress: number) => {
+            const totalAssetsLoaded = Number.parseInt(this.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
+            const prevAssetsLoaded = this.prevAssetsLoaded
+            const currentAssetsLoaded = progress + prevAssetsLoaded
+            this.prevAssetsLoaded = currentAssetsLoaded
+            this.loadAssets(currentAssetsLoaded/totalAssetsLoaded)  
+        })
+
         //listen for load user data event
-        EventBus.once(EventName.UserLoaded, async (user: UserSchema) => {
+        ExternalEventEmitter.once(ExternalEventName.UserLoaded, async (user: UserSchema) => {
             //load the user data
             this.cache.obj.add(CacheKey.User, user)
             // get the image url
@@ -131,8 +139,8 @@ export class LoadingScene extends Scene {
         })
 
         //listen for load inventory event
-        EventBus.once(
-            EventName.InventoriesLoaded,
+        ExternalEventEmitter.once(
+            ExternalEventName.InventoriesLoaded,
             (inventories: Array<InventorySchema>) => {
                 //load the user inventory
                 this.cache.obj.add(CacheKey.Inventories, inventories)
@@ -141,8 +149,8 @@ export class LoadingScene extends Scene {
         )
 
         //listen for load placed items event
-        EventBus.once(
-            EventName.PlacedItemsLoaded,
+        ExternalEventEmitter.once(
+            ExternalEventName.PlacedItemsLoaded,
             (placedItems: Array<PlacedItemSchema>) => {
                 const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
                 const userId = watchingUser?.id ?? undefined
@@ -197,14 +205,6 @@ export class LoadingScene extends Scene {
         this.add.existing(this.loadingProgressBar)
         this.updateLoadingProgress(0)
 
-        EventBus.on(EventName.AssetsLoaded, async (progress: number) => {
-            const totalAssetsLoaded = Number.parseInt(this.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
-            const prevAssetsLoaded = this.prevAssetsLoaded
-            const currentAssetsLoaded = progress + prevAssetsLoaded
-            this.prevAssetsLoaded = currentAssetsLoaded
-            this.loadAssets(currentAssetsLoaded/totalAssetsLoaded)
-        })
-
         this.load.on("complete", () => {
             this.scene.start(SceneName.Gameplay)
         })
@@ -232,15 +232,16 @@ export class LoadingScene extends Scene {
         this.fetchData()
     }
 
+
     public fetchData() {
         if (!this.loadingProgressBar) {
             throw new Error("Loading progress container not found")
         }
         // start fetching the data
-        EventBus.emit(EventName.LoadStaticData)
-        EventBus.emit(EventName.LoadUser)
-        EventBus.emit(EventName.LoadInventories)
-        EventBus.emit(EventName.LoadPlacedItems)
+        ExternalEventEmitter.emit(ExternalEventName.LoadStaticData)
+        ExternalEventEmitter.emit(ExternalEventName.LoadUser)
+        ExternalEventEmitter.emit(ExternalEventName.LoadInventories)
+        ExternalEventEmitter.emit(ExternalEventName.LoadPlacedItems)
     }
 
     loadAssets(assetLoaded: number) {

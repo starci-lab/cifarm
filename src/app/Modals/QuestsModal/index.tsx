@@ -2,7 +2,7 @@
 import { QUESTS_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, ReactNode } from "react"
-import { EventBus, EventName, ModalName } from "@/game/event-bus"
+import { ModalName, ExternalEventEmitter, ExternalEventName } from "@/game"
 import { DailyTab } from "./DailyTab"
 import { GameTab } from "./GameTab"
 import { PartnershipTab } from "./PartnershipTab"
@@ -40,7 +40,7 @@ export const QuestsModal: FC = () => {
             onOpenChange={(open) => {
                 onOpenChange(open)
                 if (!open) {
-                    EventBus.emit(EventName.CloseModal, {
+                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
                         modalName: ModalName.Quests,
                     })
                 }

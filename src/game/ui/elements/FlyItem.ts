@@ -4,8 +4,8 @@ import { Text } from "./Text"
 
 export interface FlyItemOptions {
   scale?: number;
-  assetKey: string;
-  quantity: number;
+  iconAssetKey?: string;
+  quantity?: number;
   text?: string;
   duration?: number;
   depth?: number;
@@ -18,7 +18,7 @@ export interface FlyItemOptions {
 export class FlyItem extends Sizer {
     constructor({
         baseParams: { scene, config },
-        options
+        options,
     }: ConstructorParams<SizerBaseConstructorParams, FlyItemOptions>) {
         if (!options) {
             throw new Error("FlyItem requires options")
@@ -28,7 +28,7 @@ export class FlyItem extends Sizer {
             ...config,
         })
         const {
-            assetKey,
+            iconAssetKey,
             quantity = 0,
             scale = 1,
             duration = 2000,
@@ -39,11 +39,13 @@ export class FlyItem extends Sizer {
             flyHeight = 200,
             showIcon = true,
         } = options
-        
+
         const flyItemText = new Text({
             baseParams: {
                 scene,
-                text: `${text.length > 0 ? `${text} ` : ""}${quantity != 0 ? `${quantity > 0 ? "+" + quantity : quantity}` : ""}`,
+                text: `${text.length > 0 ? `${text} ` : ""}${
+                    quantity != 0 ? `${quantity > 0 ? "+" + quantity : quantity}` : ""
+                }`,
                 x: 0,
                 y: 0,
             },
@@ -52,13 +54,15 @@ export class FlyItem extends Sizer {
                 fontSize: +`${text.length > 0 ? 32 : 48}`,
             },
         })
-
         scene.add.existing(flyItemText)
         this.add(flyItemText, {
             align: "center",
         })
-        if(showIcon) {
-            const productImage = scene.add.image(0, 0, assetKey)
+        if (showIcon) {
+            if (!iconAssetKey) {
+                throw new Error("FlyItem requires iconAssetKey")
+            }
+            const productImage = scene.add.image(0, 0, iconAssetKey)
             this.add(productImage, {
                 align: "center",
             })

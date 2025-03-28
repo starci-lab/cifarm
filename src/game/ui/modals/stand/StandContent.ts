@@ -3,12 +3,19 @@ import { CacheKey, BaseSizerBaseConstructorParams, DeliveryData } from "../../..
 import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { onGameObjectPress } from "../../utils"
-import { EventBus, EventName, ModalName, OpenModalMessage } from "../../../event-bus"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { getDeliveryInventories } from "@/game/queries"
+import { getDeliveryInventories } from "../../../queries"
 import { Text, XButton, XButtonColor } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { RetainInventoryMessage } from "@/hooks"
+import {
+    SceneEventEmitter,
+    SceneEventName,
+    ModalName,
+    OpenModalMessage,
+    ExternalEventName,
+    ExternalEventEmitter,
+} from "../../../events"
 
 const ROW_COUNT = 3
 const COLUMN_COUNT = 3
@@ -45,7 +52,7 @@ export class StandContent extends BaseSizer {
 
         this.updateStandGridSizer()
 
-        EventBus.on(EventName.InventoriesRefreshed, () => {
+        SceneEventEmitter.on(SceneEventName.InventoriesRefreshed, () => {
             this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
             this.updateStandGridSizer()
         })
@@ -148,12 +155,12 @@ export class StandContent extends BaseSizer {
                     isMore: false,
                 }
                 this.scene.cache.obj.add(CacheKey.DeliveryData, data)
-                this.scene.events.emit(EventName.UpdateSelectProductModal)
+                SceneEventEmitter.emit(SceneEventName.UpdateSelectProductModal)
                 // open the select product modal
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.SelectProduct,
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             }
         })
         addButton.setPosition(0, -addButton.height / 2 - 10)
@@ -190,7 +197,7 @@ export class StandContent extends BaseSizer {
                     const eventMessage: RetainInventoryMessage = {
                         inventoryId: inventory.id,
                     }
-                    EventBus.emit(EventName.RequestRetainInventory, eventMessage)
+                    ExternalEventEmitter.emit(ExternalEventName.RequestRetainInventory, eventMessage)
                 }
             }
         })
@@ -204,14 +211,12 @@ export class StandContent extends BaseSizer {
                     isMore: true,
                 }
                 this.scene.cache.obj.add(CacheKey.DeliveryData, data)
-                this.scene.events.emit(EventName.UpdateSelectProductModal)
+                SceneEventEmitter.emit(SceneEventName.UpdateSelectProductModal)
                 // open the select product modal
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.SelectProduct,
                 }
-                EventBus.emit(EventName.OpenModal, eventMessage)
-                // close the arrow
-                this.scene.events.emit(EventName.HidePressHereArrow)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
             },
             percentHeight: ADD_BUTTON_SCALE,
             percentWidth: ADD_BUTTON_SCALE

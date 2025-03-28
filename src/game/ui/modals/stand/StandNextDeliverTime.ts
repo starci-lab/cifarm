@@ -6,7 +6,8 @@ import { getNextDayMidnightUtc, getNowUtc, formatTime } from "@/modules/common"
 export class StandNextDeliverTime extends Sizer {
     private nextDeliverTimeText: Text
     private timeText: Text
-
+    private nextDeliverTimeinterval: NodeJS.Timeout | undefined 
+    
     //secondly update
     private updateNextDeliverTime() {
         const now = getNowUtc()
@@ -17,8 +18,12 @@ export class StandNextDeliverTime extends Sizer {
 
     private updateNextDeliverTimeSecondly() {
         this.updateNextDeliverTime()
-        setInterval(() => {
-            this.updateNextDeliverTime()
+        this.nextDeliverTimeinterval = setInterval(() => {
+            try {
+                this.updateNextDeliverTime()
+            } catch (error) {
+                console.error(error)
+            }
         }, 1000)
     }
 

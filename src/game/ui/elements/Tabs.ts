@@ -10,7 +10,7 @@ import {
     ScrollablePanel,
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { EventName, SelectTabMessage } from "@/game/event-bus"
+import { SceneEventEmitter, SceneEventName, SelectTabMessage } from "../../events"
 import { IconOffsets } from "./types"
 
 export interface BaseTab {
@@ -102,7 +102,7 @@ export class Tabs extends ContainerLite {
                 "child.click",
                 (child: ContainerLite, pointer: Phaser.Input.Pointer) => {
                     const tabKey = child.getData(TabDataKey.Tab)
-                    this.scene.events.emit(EventName.SelectTab, {
+                    SceneEventEmitter.emit(SceneEventName.SelectTab, {
                         tabKey,
                         name: tabsName,
                     })
@@ -118,8 +118,8 @@ export class Tabs extends ContainerLite {
         this.slat = scene.add.image(center.x, center.y, BaseAssetKey.UITabSlat).setOrigin(0.5, 1)
         this.addLocal(this.slat)
 
-        this.scene.events.on(
-            EventName.SelectTab,
+        SceneEventEmitter.on(
+            SceneEventName.SelectTab,
             ({ tabKey, name }: SelectTabMessage) => {
                 if (tabsName !== name) {
                     return

@@ -1,9 +1,4 @@
-import { useGameplayEffects } from "./gameplay"
-import { useIoEffects } from "./io"
-import { useStatesEffects } from "./states"
-
+import { useExternalEffects } from "./external"
 export const useEffects = () => {
-    useGameplayEffects()
-    useStatesEffects()
-    useIoEffects()
+    useExternalEffects()    
 }

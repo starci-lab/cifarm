@@ -2,8 +2,10 @@
 import React, { FC, useLayoutEffect, useRef } from "react"
 import { gameState, startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
-import { EventBus } from "./event-bus"
 import { useEffects } from "./hooks"
+import { ExternalEventEmitter, SceneEventEmitter } from "./events"
+
+export * from "./events"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
@@ -16,7 +18,8 @@ export const Game: FC = () => {
         return () => {
             if (game.current) {
                 game.current.destroy(true, false)
-                EventBus.removeAllListeners()
+                ExternalEventEmitter.removeAllListeners()
+                SceneEventEmitter.removeAllListeners()
                 game.current = null
                 gameState.data = undefined
             }

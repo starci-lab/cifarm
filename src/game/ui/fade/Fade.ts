@@ -2,8 +2,8 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { ContainerLiteBaseConstructorParams } from "../../types"
 import { BLACK_COLOR, FADE_TIME } from "../../constants"
-import { calculateUiDepth, UILayer } from "../../layers"
-import { EventBus, EventName } from "@/game/event-bus"
+import { SceneEventEmitter, SceneEventName } from "../../events"
+import { uiDepth } from "@/game/depth"
 
 export class Fade extends ContainerLite {
     private fade: Phaser.GameObjects.Rectangle
@@ -32,18 +32,15 @@ export class Fade extends ContainerLite {
             .setActive(false)
             .setAlpha(0)
             .setDepth(
-                calculateUiDepth({
-                    layer: UILayer.Overlay,
-                    layerDepth: 3,
-                })
+                uiDepth.fade
             )
         this.add(this.fade)
 
-        EventBus.on(EventName.FadeIn, () => {
+        SceneEventEmitter.on(SceneEventName.FadeIn, () => {
             this.fadeIn()
         })
 
-        EventBus.on(EventName.FadeOut, () => {
+        SceneEventEmitter.on(SceneEventName.FadeOut, () => {
             this.fadeOut()
         })
     }

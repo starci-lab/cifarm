@@ -1,9 +1,9 @@
 import { BaseAssetKey, baseAssetMap } from "../../../assets"
-import { CloseModalMessage, EventBus, EventName, ModalName } from "../../../event-bus"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
 import { getScreenRightX, onGameObjectPress } from "../../utils"
 import { XButton } from "../../elements"
+import { SceneEventEmitter, SceneEventName, CloseModalMessage, ModalName } from "../../../events"
 
 export class StandHeader extends ContainerLite {
     private header: Phaser.GameObjects.Image
@@ -34,7 +34,7 @@ export class StandHeader extends ContainerLite {
                             const eventMessage: CloseModalMessage = {
                                 modalName: ModalName.Stand,
                             }
-                            EventBus.emit(EventName.CloseModal, eventMessage)
+                            SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
                         },
                     })
                 }
