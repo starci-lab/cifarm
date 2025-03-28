@@ -219,7 +219,9 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            data.object.showTimer()
+            if (this.inputMode === InputMode.Normal) {
+                data.object.showTimer()
+            }
 
             if (this.inputMode === InputMode.Move) {
                 if (!this.isDragging) {
