@@ -39,7 +39,7 @@ import {
     tileAssetMap,
     toolAssetMap,
     flowerAssetMap,
-    baseAssetMap
+    baseAssetMap,
 } from "../../../assets"
 import {
     BuyingDragModeOnMessage,
@@ -50,7 +50,11 @@ import {
     SelectTabMessage,
 } from "../../../event-bus"
 import { getPlacedItemsByType } from "../../../queries"
-import { BaseSizerBaseConstructorParams, CacheKey, PlacedItemsData } from "../../../types"
+import {
+    BaseSizerBaseConstructorParams,
+    CacheKey,
+    PlacedItemsData,
+} from "../../../types"
 import {
     Background,
     Text,
@@ -66,7 +70,12 @@ import {
 } from "../../elements"
 import { onGameObjectPress } from "../../utils"
 import { ITEM_DATA_KEY, tabsConfig, ShopTab } from "./constants"
-import { BuyCropSeedsMessage, BuyFlowerSeedsMessage, BuySuppliesMessage, BuyToolMessage } from "@/hooks"
+import {
+    BuyCropSeedsMessage,
+    BuyFlowerSeedsMessage,
+    BuySuppliesMessage,
+    BuyToolMessage,
+} from "@/hooks"
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
 
@@ -92,7 +101,7 @@ export class ShopContent extends BaseSizer {
     private inventoryTypes: Array<InventoryTypeSchema>
     private pets: Array<PetSchema>
     private tools: Array<ToolSchema>
-    private flowers: Array<FlowerSchema> 
+    private flowers: Array<FlowerSchema>
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
     private inventories: Array<InventorySchema> = []
@@ -211,17 +220,14 @@ export class ShopContent extends BaseSizer {
             CacheKey.PlacedItems
         ) as PlacedItemsData
         this.placedItems = placedItemsData.placedItems
-        
-        EventBus.on(
-            EventName.PlacedItemsRefreshed,
-            () => {
-                const placedItemsData = this.scene.cache.obj.get(
-                    CacheKey.PlacedItems
-                ) as PlacedItemsData
-                this.placedItems = placedItemsData.placedItems
-                this.updateGridTables()
-            }
-        )
+
+        EventBus.on(EventName.PlacedItemsRefreshed, () => {
+            const placedItemsData = this.scene.cache.obj.get(
+                CacheKey.PlacedItems
+            ) as PlacedItemsData
+            this.placedItems = placedItemsData.placedItems
+            this.updateGridTables()
+        })
 
         // create the scrollable panel
         this.updateGridTables()
@@ -243,13 +249,10 @@ export class ShopContent extends BaseSizer {
             this.updateGridTables()
         })
 
-        EventBus.on(
-            EventName.InventoriesRefreshed,
-            () => {
-                this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
-                this.updateGridTables()
-            }
-        )
+        EventBus.on(EventName.InventoriesRefreshed, () => {
+            this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
+            this.updateGridTables()
+        })
 
         EventBus.on(EventName.RefreshPlaceItemsCacheKey, () => {
             this.updateGridTables()
@@ -315,12 +318,14 @@ export class ShopContent extends BaseSizer {
     }
 
     private getGridTable(shopTab: ShopTab) {
-        const { showLimitText } = tabsConfig[shopTab] 
-        return this.gridTableMap[shopTab]?.getChildren()[showLimitText ? 1 : 0] as GridTable
+        const { showLimitText } = tabsConfig[shopTab]
+        return this.gridTableMap[shopTab]?.getChildren()[
+            showLimitText ? 1 : 0
+        ] as GridTable
     }
-    
+
     private updateGridTable(shopTab: ShopTab) {
-        // get the item cards
+    // get the item cards
         const items = this.createItems(shopTab)
         const { showLimitText } = tabsConfig[shopTab]
         if (this.gridTableMap[shopTab]) {
@@ -340,8 +345,11 @@ export class ShopContent extends BaseSizer {
             throw new Error("Size not found")
         }
 
-        this.gridTableMap[shopTab] = this.scene.rexUI.add
-            .sizer({ orientation: "y", space: { item: 40 }, originY: 0 })
+        this.gridTableMap[shopTab] = this.scene.rexUI.add.sizer({
+            orientation: "y",
+            space: { item: 40 },
+            originY: 0,
+        })
 
         if (showLimitText) {
             const limitText = new Text({
@@ -355,8 +363,7 @@ export class ShopContent extends BaseSizer {
                     textColor: TextColor.White,
                     fontSize: 40,
                 },
-            })
-                .setOrigin(0, 0)
+            }).setOrigin(0, 0)
             this.scene.add.existing(limitText)
             const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
             limitText.setText(`Limit: ${currentOwnership}/${maxOwnership}`)
@@ -464,8 +471,7 @@ export class ShopContent extends BaseSizer {
             return
         }
         const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
-        limitText
-            .setText(`Limit: ${currentOwnership}/${maxOwnership}`)
+        limitText.setText(`Limit: ${currentOwnership}/${maxOwnership}`)
         if (currentOwnership >= maxOwnership) {
             this.limitMap[shopTab] = {
                 limitReached: true,
@@ -546,6 +552,14 @@ export class ShopContent extends BaseSizer {
                 if (!animalAssetMap[displayId].shop) {
                     throw new Error("Shop asset is not found.")
                 }
+
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.animal === id
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type is not found.")
+                }
+
                 items.push({
                     assetKey: animalAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
@@ -560,8 +574,7 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
                         const message: BuyingDragModeOnMessage = {
-                            id,
-                            type: PlacedItemType.Animal,
+                            id: placedItemType.id,
                         }
                         EventBus.emit(EventName.BuyingModeOn, message)
                         EventBus.emit(EventName.HideButtons)
@@ -598,6 +611,12 @@ export class ShopContent extends BaseSizer {
                 if (!buildingAssetMap[displayId].shop) {
                     throw new Error("Shop asset is not found.")
                 }
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.building === id  
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type is not found.")
+                }
                 items.push({
                     assetKey: buildingAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
@@ -611,8 +630,7 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
                         const message: BuyingDragModeOnMessage = {
-                            id,
-                            type: PlacedItemType.Building,
+                            id: placedItemType.id,
                         }
                         EventBus.emit(EventName.HideButtons)
                         EventBus.emit(EventName.BuyingModeOn, message)
@@ -637,6 +655,12 @@ export class ShopContent extends BaseSizer {
                 const goldsEnough = this.user.golds >= price
                 const disabled =
             !goldsEnough || this.limitMap[ShopTab.Fruits]?.limitReached
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.fruit === id
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type is not found.")
+                }
                 // get the image
                 items.push({
                     assetKey: fruitAssetMap[displayId].shop.textureConfig.key,
@@ -650,8 +674,7 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
                         const message: BuyingDragModeOnMessage = {
-                            id,
-                            type: PlacedItemType.Fruit,
+                            id: placedItemType.id,
                         }
                         EventBus.emit(EventName.HideButtons)
                         EventBus.emit(EventName.BuyingModeOn, message)
@@ -681,6 +704,13 @@ export class ShopContent extends BaseSizer {
                 const disabled =
             !(goldsEnough && ownershipSastified) ||
             this.limitMap[ShopTab.Tiles]?.limitReached
+
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.tile === id
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type is not found.")
+                }
                 // get the image
                 items.push({
                     assetKey: tileAssetMap[displayId].textureConfig.key,
@@ -695,8 +725,7 @@ export class ShopContent extends BaseSizer {
                         EventBus.emit(EventName.CloseModal, eventMessage)
                         // then turn on the building mode
                         const message: BuyingDragModeOnMessage = {
-                            id,
-                            type: PlacedItemType.Tile,
+                            id: placedItemType.id,
                         }
                         EventBus.emit(EventName.BuyingModeOn, message)
                         EventBus.emit(EventName.HideButtons)
@@ -770,17 +799,17 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Decorations:
-            // for (const { displayId, price } of this.buildings) {
-            //     // get the image
-            //     // items.push({
-            //     //     assetKey: buildingAssetMap[displayId].map.textureConfig.key,
-            //     //     onPress: () => {
-            //     //         console.log("Clicked on building", displayId)
-            //     //     },
-            //     //     price,
-            //     // })
-            //     // add the item card to the scrollable panel
-            // }
+        // for (const { displayId, price } of this.buildings) {
+        //     // get the image
+        //     // items.push({
+        //     //     assetKey: buildingAssetMap[displayId].map.textureConfig.key,
+        //     //     onPress: () => {
+        //     //         console.log("Clicked on building", displayId)
+        //     //     },
+        //     //     price,
+        //     // })
+        //     // add the item card to the scrollable panel
+        // }
             break
         }
         return items
@@ -906,8 +935,7 @@ export class ShopContent extends BaseSizer {
     }
 
     private onBuyCropSeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuyCropSeedsResponsed, () => {
-        })
+        EventBus.once(EventName.BuyCropSeedsResponsed, () => {})
         const eventMessage: BuyCropSeedsMessage = {
             cropId: displayId,
             quantity: 1,
@@ -969,8 +997,7 @@ export class ShopContent extends BaseSizer {
 
     //onBuySupplyPress
     private onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuySuppliesResponsed, () => {
-        })
+        EventBus.once(EventName.BuySuppliesResponsed, () => {})
         const eventMessage: BuySuppliesMessage = {
             supplyId: displayId,
             quantity: 1,
@@ -996,8 +1023,7 @@ export class ShopContent extends BaseSizer {
     }
 
     private onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
-        EventBus.once(EventName.BuyToolResponsed, () => {
-        })
+        EventBus.once(EventName.BuyToolResponsed, () => {})
         const eventMessage: BuyToolMessage = {
             toolId: displayId,
         }
@@ -1088,7 +1114,7 @@ export class ShopContent extends BaseSizer {
 
     private updateGridTables() {
         for (const shop of Object.values(ShopTab)) {
-            this.updateGridTable(shop) 
+            this.updateGridTable(shop)
         }
     }
 }

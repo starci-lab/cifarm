@@ -19,20 +19,20 @@ import {
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
+    AnimalAge,
+    animalAssetMap,
     // AnimalAge,
     // animalAssetMap,
     BaseAssetKey,
     baseAssetMap,
     buildingAssetMap,
     fruitAssetMap,
+    MainVisualType,
+    SpineConfig,
     TextureConfig,
     tileAssetMap,
 } from "../assets"
-import {
-    GREEN_TINT_COLOR,
-    RED_TINT_COLOR,
-    WHITE_TINT_COLOR,
-} from "../constants"
+import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 import {
     CreateFlyItemMessage,
     BuyingDragModeOnMessage,
@@ -74,8 +74,8 @@ import {
     UseHerbicideMessage,
     UsePesticideMessage,
     UseWateringCanMessage,
-
 } from "@/hooks"
+import { setTintColorForSpriteOrSpine } from "./utils"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -88,7 +88,9 @@ export enum InputMode {
 }
 
 interface DragData {
-  textureConfig: TextureConfig;
+  type: MainVisualType;
+  textureConfig?: TextureConfig;
+  spineConfig?: SpineConfig;
   placedItemType: PlacedItemTypeSchema;
   objectData?: PlacedItemObjectData;
 }
@@ -109,7 +111,10 @@ export class InputTilemap extends ItemTilemap {
     // place item data
     private dragData: DragData | undefined
     private isDragging = false
-    private dragBuyVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
+    private dragBuyVisual:
+    | Phaser.GameObjects.Sprite
+    | SpineGameObject
+    | undefined
     private placementConfirmation: PlacementConfirmation | undefined
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -187,10 +192,10 @@ export class InputTilemap extends ItemTilemap {
                 this.scene.add.existing(flyItems)
             }
         )
-        
+
         this.addInputs()
     }
-    
+
     private addInputs() {
         this.pinch = new Pinch(this.scene)
         const camera = this.scene.cameras.main
@@ -238,7 +243,7 @@ export class InputTilemap extends ItemTilemap {
                 }
             }
         )
-    
+
         // click on empty tile to plant seed
         this.tap = new Tap(this.scene)
         this.tap.on("tap", (pointer: Phaser.Input.Pointer) => {
@@ -272,7 +277,7 @@ export class InputTilemap extends ItemTilemap {
                     data.ignoreCollision = true
                     this.handleDragModeFromObject(data)
                     return
-                }        
+                }
             }
 
             if (this.inputMode === InputMode.Sell) {
@@ -817,137 +822,112 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    private handleDragModeFromObject(data: PlacedItemObjectData) {
-        const { placedItemType } = data
+    private getAssetConfigFromPlacedItem(placedItemType: PlacedItemTypeSchema) {
+        let _mainVisualType: MainVisualType | undefined
         let _textureConfig: TextureConfig | undefined
+        let _spineConfig: SpineConfig | undefined
         switch (placedItemType.type) {
         case PlacedItemType.Building: {
-            const building = this.buildings.find((building) => building.id === placedItemType?.building)
+            const building = this.buildings.find(
+                (building) => building.id === placedItemType?.building
+            )
             if (!building) {
                 throw new Error("Building not found")
             }
-            const { textureConfig } = buildingAssetMap[building.displayId].map
-            _textureConfig = textureConfig  
+            const { textureConfig, spineConfig, mainVisualType } =
+          buildingAssetMap[building.displayId].map
+            switch (mainVisualType) {
+            case MainVisualType.Spine:
+                _mainVisualType = MainVisualType.Spine
+                _spineConfig = spineConfig
+                break
+            default:
+                _mainVisualType = MainVisualType.Sprite
+                _textureConfig = textureConfig
+                break
+            }
             break
         }
         case PlacedItemType.Tile: {
-            const tile = this._tiles.find((tile) => tile.id === placedItemType?.tile)
+            const tile = this._tiles.find(
+                (tile) => tile.id === placedItemType?.tile
+            )
             if (!tile) {
                 throw new Error("Tile not found")
             }
             const { textureConfig } = tileAssetMap[tile.displayId]
-            _textureConfig = textureConfig  
+            _mainVisualType = MainVisualType.Sprite
+            _textureConfig = textureConfig
             break
         }
         case PlacedItemType.Animal: {
-            const animal = this.animals.find((animal) => animal.id === placedItemType?.animal)
+            const animal = this.animals.find(
+                (animal) => animal.id === placedItemType?.animal
+            )
             if (!animal) {
                 throw new Error("Animal not found")
             }
-            // const { spineConfig } = animalAssetMap[animal.displayId].map[AnimalAge.Baby]
-            //_textureConfig = spineConfig  
+            const { spineConfig, mainVisualType } =
+          animalAssetMap[animal.displayId].map[AnimalAge.Baby]
+            _spineConfig = spineConfig
+            _mainVisualType = mainVisualType
             break
         }
         case PlacedItemType.Fruit: {
-            const fruit = this.fruits.find((fruit) => fruit.id === placedItemType?.fruit)
+            const fruit = this.fruits.find(
+                (fruit) => fruit.id === placedItemType?.fruit
+            )
             if (!fruit) {
                 throw new Error("Fruit not found")
             }
             const { textureConfig } = fruitAssetMap[fruit.displayId].map[0]
-            _textureConfig = textureConfig  
+            _mainVisualType = MainVisualType.Sprite
+            _textureConfig = textureConfig
             break
         }
         }
-        if (!_textureConfig) {
-            throw new Error("Texture config not found")
+
+        if (!_mainVisualType) {
+            throw new Error("Main visual type not found")
         }
-        this.dragData = {
-            objectData: data,
+
+        return {
+            mainVisualType: _mainVisualType,
             textureConfig: _textureConfig,
-            placedItemType,
+            spineConfig: _spineConfig,
         }
     }
 
-    // method called to handle the buying mode
-    private handleBuyingDragMode({ id, type }: BuyingDragModeOnMessage) {
-        let _textureConfig: TextureConfig | undefined
-        let _placedItemType: PlacedItemTypeSchema | undefined
-        switch (type) {
-        case PlacedItemType.Building: {
-            const building = this.buildings.find((building) => building.id === id)
-            if (!building) {
-                throw new Error(`Building not found for id: ${id}`)
-            }
-            const placedItemType = this.placedItemTypes.find(
-                (placedItemType) => placedItemType.building === building.id
-            )
-            if (!placedItemType) {
-                throw new Error("Placed item type not found")
-            }
-            const { textureConfig } = buildingAssetMap[building.displayId].map
-            _textureConfig = textureConfig  
-            _placedItemType = placedItemType
-            break
+    private handleDragModeFromObject(data: PlacedItemObjectData) {
+        const { placedItemType } = data
+        const { mainVisualType, textureConfig, spineConfig } =
+      this.getAssetConfigFromPlacedItem(placedItemType)
+
+        this.dragData = {
+            type: mainVisualType,
+            textureConfig,
+            spineConfig,
+            placedItemType,
+            objectData: data,
         }
-        case PlacedItemType.Tile: {
-            const tile = this._tiles.find((tile) => tile.id === id)
-            if (!tile) {
-                throw new Error(`Tile not found for id: ${id}`)
-            }
-            const placedItemType = this.placedItemTypes.find(
-                (placedItemType) => placedItemType.tile === tile.id
-            )
-            if (!placedItemType) {
-                throw new Error("Placed item type not found")
-            }
-            const { textureConfig } = tileAssetMap[tile.displayId]
-            _textureConfig = textureConfig  
-            _placedItemType = placedItemType
-            break
-        }
-        case PlacedItemType.Animal: {
-            const animal = this.animals.find((animal) => animal.id === id)
-            if (!animal) {
-                throw new Error(`Animal not found for id: ${id}`)
-            }
-            const placedItemType = this.placedItemTypes.find(
-                (placedItemType) => placedItemType.animal === animal.id
-            )
-            if (!placedItemType) {
-                throw new Error("Placed item type not found")
-            }
-            //     const { textureConfig } =
-            //   animalAssetMap[animal.displayId].map[AnimalAge.Baby]
-            //     _textureConfig = textureConfig  
-            //     _placedItemType = placedItemType
-            break
-        }
-        case PlacedItemType.Fruit: {
-            const fruit = this.fruits.find((fruit) => fruit.id === id)
-            if (!fruit) {
-                throw new Error(`Fruit not found for id: ${id}`)
-            }
-            const placedItemType = this.placedItemTypes.find(
-                (placedItemType) => placedItemType.fruit === fruit.id
-            )
-            if (!placedItemType) {
-                throw new Error("Fruid placed item type not found")
-            }
-            const { textureConfig } = fruitAssetMap[fruit.displayId].map[0]
-            _textureConfig = textureConfig  
-            _placedItemType = placedItemType
-            break
-        }
-        }
-        if (!_textureConfig) {
-            throw new Error("Texture config  not found")
-        }
-        if (!_placedItemType) {
+    }
+
+    private handleBuyingDragMode({ id }: BuyingDragModeOnMessage) {
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === id
+        )
+        if (!placedItemType) {
             throw new Error("Placed item type not found")
         }
+
+        const { mainVisualType, textureConfig, spineConfig } =
+      this.getAssetConfigFromPlacedItem(placedItemType)
+
         this.dragData = {
-            textureConfig: _textureConfig,
-            placedItemType: _placedItemType,
+            type: mainVisualType,
+            textureConfig,
+            spineConfig,
+            placedItemType,
         }
     }
 
@@ -1047,8 +1027,8 @@ export class InputTilemap extends ItemTilemap {
 
     // update method to handle input events
     public update() {
-        // console.log(this.pinch?.pointers.map(x => `${x.x} ${x.y}`))
-        //check current mouse position is in which tile
+    // console.log(this.pinch?.pointers.map(x => `${x.x} ${x.y}`))
+    //check current mouse position is in which tile
         if (this.inputMode === InputMode.Buy) {
             const camera = this.scene.cameras.main
             const { x, y } = this.scene.input.activePointer.positionToCamera(
@@ -1094,7 +1074,6 @@ export class InputTilemap extends ItemTilemap {
             // }
             // //check if it is sellable - set green tint - set red tint
             // const data = this.findPlacedItemRoot(tile.x, tile.y)
-
             // this.updatePlacedItemColor({
             //     placedItem: data?.object.currentPlacedItem,
             // })
@@ -1133,11 +1112,11 @@ export class InputTilemap extends ItemTilemap {
 
     // drag sprite on tile
     private dragBuyingSpriteOnTile(tile: Phaser.Tilemaps.Tile) {
-        // throw error if drag sprite data is not found
+    // throw error if drag sprite data is not found
         if (!this.dragData) {
             throw new Error("No drag sprite data found")
         }
-        const { placedItemType, textureConfig } = this.dragData
+        const { placedItemType, textureConfig, spineConfig, type } = this.dragData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
@@ -1147,21 +1126,59 @@ export class InputTilemap extends ItemTilemap {
             tileSizeWidth: placedItemType.sizeX,
             tileSizeHeight: placedItemType.sizeY,
         })
-
         // if temporary place item object is already created
-        if (!this.dragBuyVisual) {
-            this.dragBuyVisual = this.scene.add
-                .sprite(0, 0, textureConfig.key)
-                .setOrigin(0.5, 1)
-                .setDepth(
-                    calculateGameplayDepth({
-                        layer: GameplayLayer.Effects,
-                        layerDepth: 2,
-                    })
-                )
-                .setScale(this.scale)
+        // if (!this.dragBuyVisual) {
+        //     this.dragBuyVisual = this.scene.add
+        //         .sprite(0, 0, textureConfig.key)
+        //         .setOrigin(0.5, 1)
+        //         .setDepth(
+        //             calculateGameplayDepth({
+        //                 layer: GameplayLayer.Effects,
+        //                 layerDepth: 2,
+        //             })
+        //         )
+        //         .setScale(this.scale)
+        // }
+        switch (type) {
+        case MainVisualType.Spine: {
+            const { x = 0, y = 0 } = { ...spineConfig?.extraOffsets }
+            if (!spineConfig) {
+                throw new Error("Spine config not found")
+            }
+            //render spine animation
+            if (!this.dragBuyVisual) {
+                this.dragBuyVisual = this.scene.add
+                    .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
+                    .setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                            layerDepth: 2,
+                        })
+                    )
+                    .setOrigin(0.5, 1)
+                this.dragBuyVisual.animationState.setAnimation(0, "idle", true)
+            }
+            break
         }
-
+        case MainVisualType.Sprite: {
+            const { x = 0, y = 0 } = { ...textureConfig?.extraOffsets }
+            if (!textureConfig) {
+                throw new Error("Texture config not found")
+            }
+            if (!this.dragBuyVisual) {
+                this.dragBuyVisual = this.scene.add
+                    .sprite(x, y, textureConfig.key)
+                    .setDepth(
+                        calculateGameplayDepth({
+                            layer: GameplayLayer.Effects,
+                            layerDepth: 2,
+                        })
+                    )
+                    .setOrigin(0.5, 1)
+            }
+            break
+        }
+        }
         // update the temporary place item object position
         const tilePosition = this.tileToWorldXY(tile.x, tile.y)
         if (!tilePosition) {
@@ -1267,16 +1284,13 @@ export class InputTilemap extends ItemTilemap {
         )
         this.placementConfirmation.updateTileXY(centeredX, centeredY)
 
-        const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
+        const { x = 0, y = 0 } = { ...textureConfig?.extraOffsets }
         // set tint based on can place
 
-        if (this.dragBuyVisual instanceof SpineGameObject) {
-            // this.dragBuyVisual.setTint(isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR)
-        } else {
-            this.dragBuyVisual.setTint(
-                isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
-            )
-        }
+        setTintColorForSpriteOrSpine(
+            this.dragBuyVisual,
+            isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
+        )
         this.dragBuyVisual.setPosition(
             tilePosition.x + x * this.scale,
             tilePosition.y + (this.tileHeight / 2) * this.scale + y * this.scale
@@ -1284,7 +1298,7 @@ export class InputTilemap extends ItemTilemap {
     }
 
     private dragMovingObjectOnTile(tile: Phaser.Tilemaps.Tile) {
-        // throw error if drag sprite data is not found
+    // throw error if drag sprite data is not found
         if (!this.dragData) {
             throw new Error("No drag sprite data found")
         }
@@ -1302,14 +1316,15 @@ export class InputTilemap extends ItemTilemap {
             tileSizeWidth: placedItemType.sizeX,
             tileSizeHeight: placedItemType.sizeY,
         })
-    
+
         // set the depth of the object
-        object.setDepth(
-            calculateGameplayDepth({
-                layer: GameplayLayer.Effects,
-                layerDepth: 2,
-            })
-        )
+        object
+            .setDepth(
+                calculateGameplayDepth({
+                    layer: GameplayLayer.Effects,
+                    layerDepth: 2,
+                })
+            )
             .setScale(this.scale)
 
         // update the temporary place item object position
@@ -1320,14 +1335,12 @@ export class InputTilemap extends ItemTilemap {
         this.showPlacmentConfirmation({
             tile,
             onCancel: () => {
-                // cancel state by 
-                this.cancelPlacement() 
+                // cancel state by
+                this.cancelPlacement()
                 if (!objectData.object.currentPlacedItem?.id) {
                     throw new Error("Placed item id not found")
                 }
-                object.destroyAllChildren()
-                object.destroy()
-                delete this.placedItemObjectMap[objectData.object.currentPlacedItem.id]
+                this.deleteObject(objectData.object.currentPlacedItem.id)
                 EventBus.emit(EventName.PlacedItemsRefreshed)
             },
             onConfirm: (tileX: number, tileY: number) => {
@@ -1335,14 +1348,20 @@ export class InputTilemap extends ItemTilemap {
                 if (!objectData.object.currentPlacedItem?.id) {
                     throw new Error("Placed item id not found")
                 }
-                const moveRequest: MoveMessage = {
-                    placedItemId: objectData.object.currentPlacedItem?.id,
-                    position: {
-                        x: tileX,
-                        y: tileY,
-                    },
+                this.deleteObject(objectData.object.currentPlacedItem.id)
+                // check if the object is same position
+                if (objectData.object.currentPlacedItem?.x === tileX && objectData.object.currentPlacedItem?.y === tileY) {
+                    EventBus.emit(EventName.PlacedItemsRefreshed)
+                } else {
+                    const moveRequest: MoveMessage = {
+                        placedItemId: objectData.object.currentPlacedItem?.id,
+                        position: {
+                            x: tileX,
+                            y: tileY,
+                        },
+                    }
+                    EventBus.emit(EventName.RequestMove, moveRequest)
                 }
-                EventBus.emit(EventName.RequestMove, moveRequest)
                 this.cancelPlacement()
             },
         })
@@ -1366,10 +1385,7 @@ export class InputTilemap extends ItemTilemap {
             //     isPlacementValid ? WHITE_TINT_COLOR : RED_TINT_COLOR
             // )
         }
-        object.setPosition(
-            tilePosition.x,
-            tilePosition.y + this.tileHeight/2
-        )
+        object.setPosition(tilePosition.x, tilePosition.y + this.tileHeight / 2)
     }
 
     private showPlacmentConfirmation({

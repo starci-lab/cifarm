@@ -9,11 +9,9 @@ import {
     Size,
     SizeStyle,
     TextColor,
-    XButton,
     Checkbox,
 } from "../../elements"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
-import { onGameObjectPress } from "../../utils"
 
 export class SettingsContent extends BaseSizer {
     private background: ModalBackground
@@ -33,15 +31,15 @@ export class SettingsContent extends BaseSizer {
                     showWrapperContainer: false,
                     showContainer: true,
                 },
-                onXButtonPress: (button: XButton) => {
-                    onGameObjectPress({
-                        gameObject: button,
-                        onPress: () => {
-                            EventBus.emit(EventName.CloseModal, {
-                                modalName: ModalName.Settings,
-                            })
-                        },
-                        scene: this.scene,
+                mainButton: {
+                    text: "Save",
+                    onPress: () => {
+                        console.log("Save")
+                    },
+                },
+                onXButtonPress: () => {
+                    EventBus.emit(EventName.CloseModal, {
+                        modalName: ModalName.Settings,
                     })
                 },
                 title: "Settings",

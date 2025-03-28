@@ -1,7 +1,6 @@
 import {
     InventorySchema,
     PlacedItemSchema,
-    PlacedItemType,
     UserSchema,
 } from "@/modules/entities"
 import { Events } from "phaser"
@@ -345,7 +344,6 @@ export interface Position {
 export interface BuyingDragModeOnMessage {
   // placed item
   id: string;
-  type: PlacedItemType;
 }
 
 export interface ShowGameplayBackdropMessage {

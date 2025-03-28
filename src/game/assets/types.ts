@@ -46,3 +46,9 @@ export interface TextureConfig {
 export interface ShopAssetData {
   textureConfig: TextureConfig;
 }
+
+export enum MainVisualType {
+  Sprite = "sprite",
+  Spine = "spine",
+}
+

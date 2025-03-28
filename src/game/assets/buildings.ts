@@ -6,6 +6,7 @@ import {
     ShopAssetData,
     SpineConfig,
     TextureConfig,
+    MainVisualType,
 } from "./types"
 import { loadSpine, loadTexture } from "./utils"
 // Building Asset Data Interface
@@ -13,6 +14,7 @@ export interface BuildingStageAssetData {
   textureConfig?: TextureConfig;
   spineConfig?: SpineConfig;
   starsConfig?: StarsConfig;
+  mainVisualType?: MainVisualType;
 }
 
 export interface BuildingAssetData {
@@ -35,6 +37,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                 assetUrl: "buildings/home/home.png",
                 extraOffsets: { x: -10, y: -65 },
             },
+            mainVisualType: MainVisualType.Sprite,
         },
     },
     [BuildingId.Coop]: {
@@ -51,6 +54,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     y: -300,
                 },
             },
+            mainVisualType: MainVisualType.Sprite,
         },
         shop: {
             textureConfig: {
@@ -73,6 +77,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     y: -370,
                 },
             },
+            mainVisualType: MainVisualType.Sprite,
         },
         shop: {
             textureConfig: {
@@ -95,6 +100,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     assetUrl: "buildings/bee-house/spine/bee-house.json",
                 },
             },
+            mainVisualType: MainVisualType.Spine,
             starsConfig: {
                 extraOffsets: {
                     x: -50,
@@ -117,6 +123,7 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                 assetUrl: "buildings/pet-house/pet-house.png",
                 extraOffsets: { x: 0, y: -65 },
             },
+            mainVisualType: MainVisualType.Sprite,
         },
         shop: {
             textureConfig: {

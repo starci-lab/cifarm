@@ -1,6 +1,6 @@
 import { AnimalId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, SpineConfig } from "./types"
+import { ShopAssetData, SpineConfig, MainVisualType } from "./types"
 import { loadSpine, loadTexture } from "./utils"
 
 export enum AnimalAge {
@@ -10,6 +10,7 @@ export enum AnimalAge {
 
 export interface AnimalStageAssetData {
   spineConfig?: SpineConfig;
+  mainVisualType?: MainVisualType;
 }
 
 export interface AnimalAssetData {
@@ -35,6 +36,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                     },
                     extraOffsets: { x: 0, y: -30 },
                 },
+                mainVisualType: MainVisualType.Spine,
             },
             [AnimalAge.Adult]: {
                 spineConfig: {
@@ -49,6 +51,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                     },
                     extraOffsets: { x: 0, y: -30 },
                 },
+                mainVisualType: MainVisualType.Spine,
             },
         },
         shop: {
@@ -74,6 +77,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                     },
                     extraOffsets: { x: 0, y: -40 },
                 },
+                mainVisualType: MainVisualType.Spine,
             },
             [AnimalAge.Adult]: {
                 spineConfig: {
@@ -88,6 +92,7 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
                     },
                     extraOffsets: { x: -0, y: -30 },
                 },
+                mainVisualType: MainVisualType.Spine,
             },
         },
         shop: {

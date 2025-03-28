@@ -45,6 +45,7 @@ import { calculateGameplayDepth, GameplayLayer } from "../layers"
 import { EventName } from "../event-bus"
 import { EventBus } from "../event-bus"
 import { flowerAssetMap } from "../assets"
+import { clearTintColorForSpriteOrSpine, setTintColorForSpriteOrSpine } from "./utils"
 
 export class PlacedItemObject extends ContainerLite {
     private plantInfoSprite: Phaser.GameObjects.Sprite | undefined
@@ -1203,17 +1204,7 @@ export class PlacedItemObject extends ContainerLite {
 
     public setTintColor(tintColor: number) {
         if (this.mainVisual) {
-            if (this.mainVisual instanceof Phaser.GameObjects.Sprite) {
-                this.mainVisual.setTint(tintColor)
-            } else if (this.mainVisual instanceof SpineGameObject) {
-                const r = ((tintColor >> 16) & 0xff) / 255
-                const g = ((tintColor >> 8) & 0xff) / 255
-                const b = (tintColor & 0xff) / 255
-
-                this.mainVisual.skeleton.slots.forEach((slot) => {
-                    slot.color.set(r, g, b, 1)
-                })
-            }
+            setTintColorForSpriteOrSpine(this.mainVisual, tintColor)
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.setTint(tintColor)
@@ -1222,13 +1213,7 @@ export class PlacedItemObject extends ContainerLite {
 
     public clearTintColor() {
         if (this.mainVisual) {
-            if (this.mainVisual instanceof Phaser.GameObjects.Sprite) {
-                this.mainVisual.clearTint()
-            } else if (this.mainVisual instanceof SpineGameObject) {
-                this.mainVisual.skeleton.slots.forEach((slot) => {
-                    slot.color.set(1, 1, 1, 1)
-                })
-            }
+            clearTintColorForSpriteOrSpine(this.mainVisual)  
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.clearTint()

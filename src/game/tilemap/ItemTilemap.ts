@@ -56,7 +56,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     // item layer
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
-    private previousPlacedItemsData: PlacedItemsData | undefined
+    protected previousPlacedItemsData: PlacedItemsData | undefined
 
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
@@ -897,7 +897,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         current: PlacedItemsData,
         previous?: PlacedItemsData
     ) {
-    //if current.userId doesn't match previous.userId, treat all placed items as new
+        //if current.userId doesn't match previous.userId, treat all placed items as new
         if (!previous || (previous && current.userId !== previous.userId)) {
             // if user ids are different, create all placed items (treat as new)
             this.clearAllPlacedItems()
@@ -908,10 +908,12 @@ export abstract class ItemTilemap extends GroundTilemap {
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
         for (const placedItem of current.placedItems) {
+            console.log(placedItem.id)
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
             const found = previous.placedItems.find(
                 (item) => item.id === placedItem.id
             )
+            console.log(found)
             if (found) {
                 checkedPreviousPlacedItems.push(placedItem)
                 if (placedItem.x !== found.x || placedItem.y !== found.y) {
@@ -923,6 +925,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 } else {
                     // if the placed item is in the previous placed items, update the item
                     const gameObject = this.placedItemObjectMap[placedItem.id]?.object
+                    console.log(placedItem.id)
                     if (!gameObject) {
                         this.placeTileForItem(placedItem)
                         continue
@@ -962,6 +965,17 @@ export abstract class ItemTilemap extends GroundTilemap {
                 object.destroy()
             }
         }
+    }
+
+    // immidiate delete the object
+    public deleteObject(placedItemId: string) {
+        const gameObject = this.placedItemObjectMap[placedItemId]?.object
+        if (!gameObject) {
+            throw new Error("Object not found")
+        }
+        gameObject.clear(true)
+        gameObject.destroy()
+        delete this.placedItemObjectMap[placedItemId]
     }
 
     protected clearPlacedItem(placedItem: PlacedItemSchema) {
@@ -1192,7 +1206,6 @@ export interface PlacedItemObjectData {
   tileY: number;
   placedItemType: PlacedItemTypeSchema;
   occupiedTiles: Array<Position>;
-  pressBlocked?: boolean;
   ignoreCollision?: boolean;
 }
 
