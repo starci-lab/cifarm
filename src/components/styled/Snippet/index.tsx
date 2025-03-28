@@ -21,6 +21,7 @@ export const Snippet: FC<SnippetProps> = ({
         <Button
             variant="ghost-secondary"
             size="icon"
+            className="min-w-9 min-h-9"
             onClick={() => {
                 navigator.clipboard.writeText(code)
                 toast({

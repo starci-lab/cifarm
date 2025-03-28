@@ -15,9 +15,12 @@ import {
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "@/hooks"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { List } from "@/components"
+
+export enum SocialQuest {
+    FollowX = "Follow X",
+    InviteUser = "Invite User",
+}
 
 export const SocialTab: FC = () => {
     const { swr: staticSwr } = useSingletonHook<
@@ -34,11 +37,12 @@ export const SocialTab: FC = () => {
     )
 
     return (
-        <div className="relative">
-            <ScrollArea className="h-[300px] rounded-md border">
-                <Card>
-                    <CardContent className="p-0">
-                        <QuestCard
+        <div>
+            <List items={Object.values(SocialQuest)} contentCallback={
+                (item) => {
+                    switch (item) {
+                    case SocialQuest.FollowX: {                      
+                        return <QuestCard
                             title="Follow X"
                             description="Follow our X account to earn rewards."
                             rewards={[
@@ -46,7 +50,7 @@ export const SocialTab: FC = () => {
                                     key: "follow-x-1",
                                     imageUrl: TOKEN_IMAGE_URL,
                                     amount:
-                    staticSwr.data?.data.defaultInfo.followXRewardQuantity ?? 0,
+                staticSwr.data?.data.defaultInfo.followXRewardQuantity ?? 0,
                                 },
                             ]}
                             onClick={async () => {
@@ -59,8 +63,9 @@ export const SocialTab: FC = () => {
                             }}
                             completed={userSwr.data?.data.user.followXAwarded}
                         />
-                        <Separator />
-                        <QuestCard
+                    }
+                    case SocialQuest.InviteUser: {
+                        return <QuestCard
                             title="Invite User"
                             description="Invite new users to join CiFarm and earn rewards together."
                             rewards={[
@@ -85,9 +90,10 @@ export const SocialTab: FC = () => {
                 (staticSwr.data?.data.defaultInfo.referredLimit ?? 0)
                             }
                         />
-                    </CardContent>
-                </Card>
-            </ScrollArea>
+                    }
+                    }
+                }
+            } />
         </div>
     )
 }

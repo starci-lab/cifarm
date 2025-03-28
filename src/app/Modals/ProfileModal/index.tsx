@@ -1,6 +1,6 @@
 "use client"
 import { PROFILE_DISCLOSURE, GRAPHQL_QUERY_USER_SWR  } from "@/app/constants"
-import { ExclamationTooltip } from "@/components"
+import { Avatar, AvatarImage, ExclamationTooltip, Image, ModalHeader, Snippet, Spacer } from "@/components"
 import { pathConstants } from "@/constants"
 import { useDisclosure, useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
@@ -8,7 +8,6 @@ import { computeExperiencesQuota, truncateString } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
-import Image from "next/image"
 import { Button } from "@/components"
 import {
     Dialog,
@@ -37,49 +36,43 @@ export const ProfileModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">Profile</DialogTitle>
+                    <DialogTitle>
+                        <ModalHeader title="Profile" />
+                    </DialogTitle>
                 </DialogHeader>
                 <div className="py-4">
                     <div>
                         <div className="flex gap-4 items-center">
-                            <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-primary">
-                                <Image
-                                    src={avatarUrl}
-                                    alt="Profile"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
+                            <Avatar className="w-28 h-28 min-w-28 min-h-28">
+                                <AvatarImage src={avatarUrl} alt="Profile"/>
+                            </Avatar>
                             <div>
                                 {user ? (
                                     <>
                                         <div className="flex gap-2 items-center">
                                             <div className="text-xl font-bold">{user.username}</div>
                                             {user ? (
-                                                <Badge variant="secondary" className="flex items-center gap-1">
+                                                <Badge variant="secondary" className="flex gap-1">
                                                     <Image
                                                         src={blockchainMap[user.chainKey].imageUrl}
-                                                        alt={blockchainMap[user.chainKey].name}
-                                                        width={20}
-                                                        height={20}
-                                                        className="rounded-none"
+                                                        className="w-5 h-5"
                                                     />
                                                     {blockchainMap[user.chainKey].name}
                                                 </Badge>
                                             ) : null}
                                         </div>
-                                        <div className="h-2" /> {/* Spacer */}
+                                        <Spacer y={2} />
                                         <div className="flex gap-2 items-center">
                                             <div className="text-sm">{`UID: ${truncateString(
                                                 user.id
                                             )}`}</div>
-                                            <code className="text-sm text-muted-foreground">{user.id}</code>
+                                            <Snippet code={user.id} />
                                         </div>
                                         <div className="flex gap-2 items-center">
                                             <div className="text-sm">{`Address: ${truncateString(
                                                 user.accountAddress
                                             )}`}</div>
-                                            <code className="text-sm text-muted-foreground">{user.accountAddress}</code>
+                                            <Snippet code={user.accountAddress} />
                                         </div>
                                     </>
                                 ) : (
@@ -90,7 +83,7 @@ export const ProfileModal: FC = () => {
                                 )}
                             </div>
                         </div>
-                        <div className="h-4" /> {/* Spacer */}
+                        <Spacer y={4} />
                         <div>
                             {user ? (
                                 <div className="space-y-2">
@@ -104,21 +97,22 @@ export const ProfileModal: FC = () => {
                                 <Skeleton className="h-4 w-full" />
                             )}
                         </div>
-                        <div className="h-6" /> {/* Spacer */}
+                        <Spacer y={6} />
                         <div>
                             <div className="flex gap-2 items-center">
                                 <div className="text-lg font-bold">Achievements</div>
                                 <ExclamationTooltip message="Achievements and badges earned by the user." />
                             </div>
-                            <div className="h-4" /> {/* Spacer */}
-                            <div className="text-muted-foreground">
+                            <Spacer y={4} />
+                            <div className="text-muted-foreground text-sm">
                                 Currently, there are no achievements.
                             </div>
                         </div>
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button 
+                    <Button
+                        className="w-full" 
                         variant="destructive" 
                         onClick={() => {
                             onClose()

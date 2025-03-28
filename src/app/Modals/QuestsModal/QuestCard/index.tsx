@@ -1,9 +1,9 @@
 import { CheckIcon } from "@heroicons/react/24/outline"
 import React, { FC } from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { PressableCard } from "@/components"
 
 export interface Reward {
     key: string
@@ -33,26 +33,26 @@ export const QuestCard: FC<QuestCardProps> = ({
     completed 
 }: QuestCardProps) => {
     return (
-        <Card 
+        <PressableCard 
+            showBorder={false}
             className={cn(
-                "flex items-center justify-between",
+                "flex items-center justify-between w-full p-3 rounded-none text-left",
                 !completed && "cursor-pointer hover:bg-accent/50 transition-colors"
             )}
             onClick={!completed ? onClick : undefined}
         >
-            <CardContent className="p-3">
-                <div className="flex items-center justify-between gap-2">
-                    <div className="space-y-1">
-                        <div className="font-medium">{title}</div>
-                        <div className="text-xs text-muted-foreground">{description}</div>
-                        {   
-                            (completed) 
-                                ? 
-                                <div className="flex items-center gap-1 mt-4">
-                                    <CheckIcon className="w-5 h-5 text-success" />
-                                    <div className="text-sm text-success">Responsed</div>
-                                </div>
-                                : ((progress) &&
+            <div className="flex items-center justify-between gap-2 w-full">
+                <div>
+                    <div>{title}</div>
+                    <div className="text-xs text-muted-foreground">{description}</div>
+                    {   
+                        (completed) 
+                            ? 
+                            <div className="flex items-center gap-1 mt-4">
+                                <CheckIcon className="w-5 h-5 text-success" />
+                                <div className="text-sm text-success">Completed</div>
+                            </div>
+                            : ((progress) &&
                                 <div className="mt-4 space-y-1">
                                     <Progress 
                                         value={(progress.current/progress.total) * 100} 
@@ -60,28 +60,27 @@ export const QuestCard: FC<QuestCardProps> = ({
                                     />
                                     <div className="text-xs">{`${progress.current} of ${progress.total} ${progress.postText}`}</div>
                                 </div>)
-                        }
-                    </div>
-                    <div className="flex gap-2">
-                        {
-                            rewards ?
-                                rewards.map((reward) => (
-                                    <div className="flex gap-1 items-center" key={reward.key}>
-                                        <Image 
-                                            src={reward.imageUrl} 
-                                            alt="Reward"
-                                            width={20}
-                                            height={20}
-                                            className="w-5 h-5 min-w-5" 
-                                        />
-                                        <div>{`+${reward.amount}`}</div>
-                                    </div>
-                                )) 
-                                : []
-                        }
-                    </div>  
+                    }
                 </div>
-            </CardContent>
-        </Card>
+                <div className="flex gap-2">
+                    {
+                        rewards ?
+                            rewards.map((reward) => (
+                                <div className="flex gap-1 items-center" key={reward.key}>
+                                    <Image 
+                                        src={reward.imageUrl} 
+                                        alt="Reward"
+                                        width={20}
+                                        height={20}
+                                        className="w-5 h-5 min-w-5" 
+                                    />
+                                    <div>{`+${reward.amount}`}</div>
+                                </div>
+                            )) 
+                            : []
+                    }
+                </div>  
+            </div>
+        </PressableCard>
     )
 }

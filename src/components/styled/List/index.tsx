@@ -3,17 +3,17 @@ import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-export interface ScrollableListProps<TItem extends string | object> {
+export interface ListProps<TItem extends string | object> {
   items: Array<TItem>;
   contentCallback: (item: TItem) => React.ReactNode;
   enableScroll?: boolean;
 }
 
-export const ScrollableList = <TItem extends string | object>({
+export const List = <TItem extends string | object>({
     items,
     contentCallback,
     enableScroll = true,
-}: ScrollableListProps<TItem>) => {
+}: ListProps<TItem>) => {
     const content = (<Card className="overflow-hidden">
         {items.map((item, index) => {
             const last = index === items.length - 1

@@ -1,5 +1,6 @@
 import { DefaultToken } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { TxResponse } from "@/modules/honeycomb"
 export interface WarningModal {
   message: string;
   nextModalToken?: string;
@@ -22,7 +23,7 @@ export enum TransactionType {
 }
 
 export interface HoneycombProtocolRawTxData {
-  serializedTx: string;
+  txResponse: TxResponse;
 }
 
 export interface TransferTokenData {

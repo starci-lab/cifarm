@@ -1,41 +1,34 @@
-import {
-    NEIGHBORS_DISCLOSURE,
-    GRAPHQL_QUERY_USER_SWR,
-    QUESTS_DISCLOSURE,
-} from "@/app/constants"
-import { ExclamationTooltip } from "@/components"
-import { useGraphQLQueryUserSwr } from "@/hooks"
-import { blockchainMap } from "@/modules/blockchain"
-import { computeExperiencesQuota, truncateString } from "@/modules/common"
-import { createJazziconBlobUrl } from "@/modules/jazz"
-import { useSingletonHook } from "@/modules/singleton-hook"
-
+// import {
+//     NEIGHBORS_DISCLOSURE,
+//     GRAPHQL_QUERY_USER_SWR,
+//     QUESTS_DISCLOSURE,
+// } from "@/app/constants"
+// import { Avatar, AvatarImage } from "@/components"
+// import { useDisclosure, useGraphQLQueryUserSwr } from "@/hooks"
+// import { computeExperiencesQuota } from "@/modules/common"
+// import { createJazziconBlobUrl } from "@/modules/jazz"
+// import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 
 export const Profile : FC = () => {
-    const { swr } =
-    useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
-    const user = swr.data?.data.user
-    const avatarUrl = user
-        ? user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
-        : ""
-    const quota = user ? computeExperiencesQuota(user.level) : 0
+    // const { swr } =
+    // useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
+    //const user = swr.data?.data.user
+    // const avatarUrl = user
+    //     ? user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
+    //     : ""
+    // const quota = user ? computeExperiencesQuota(user.level) : 0
 
-    const { onOpen: onNeighborsOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
-    const { onOpen: onQuestsOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
+    // const { onOpen: onNeighborsOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
+    // const { onOpen: onQuestsOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
     return (
         <div>
             {/* <div className="flex gap-4 items-center">
-                <Avatar
-                    isBordered
-                    src={avatarUrl}
-                    radius="full"
-                    classNames={{
-                        base: "w-20 h-20 min-w-20",
-                    }}
-                />
+                <Avatar>
+                    <AvatarImage src={avatarUrl} className="w-20 h-20 min-w-20 min-h-20" />
+                </Avatar>
                 <div>
-                    {user ? (
+                    {/* {user ? (
                         <>
                             <div className="flex gap-2 items-center">
                                 <div className="text-xl font-bold">{user.username}</div>

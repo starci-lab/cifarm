@@ -4,6 +4,7 @@ import React, { FC } from "react"
 import { AssetTab, setAssetTab, useAppDispatch, useAppSelector } from "@/redux"
 import { Container, Header, Spacer, Tabs, TabsList, TabsTrigger } from "@/components"  // ShadCN UI Button
 import { OnChainAssets } from "./OnChainAssets"
+import { Profile } from "./Profile"
 
 const Page: FC = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
@@ -11,7 +12,7 @@ const Page: FC = () => {
     const renderContent = () => {
         const contentMap = {
             [AssetTab.OnChainAssets]: <OnChainAssets />,
-            [AssetTab.Profile]: <div />,
+            [AssetTab.Profile]: <Profile />,
             [AssetTab.GameAssets]: <div />,
         }
         return contentMap[assetTab]
@@ -23,7 +24,7 @@ const Page: FC = () => {
         <Container hasPadding> 
             <div>
                 <Header 
-                    title="Profile"
+                    title="Assets"
                     description="Manage your profile, tokens, NFTs, and in-game items"
                 />
                 <Spacer y={6}/>

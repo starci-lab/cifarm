@@ -2,7 +2,7 @@ import { valuesWithKey } from "@/modules/common"
 import { useAppSelector } from "@/redux"
 import React, { useMemo, useState } from "react"
 import { Token } from "./Token"
-import { ScrollableList, FilterBar, Spacer, EnhancedButton } from "@/components"
+import { List, FilterBar, Spacer, EnhancedButton, ModalHeader } from "@/components"
 import { SELECT_TOKEN_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
@@ -32,7 +32,9 @@ export const SelectTokenModal = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">Select Token</DialogTitle>
+                    <DialogTitle>
+                        <ModalHeader title="Select Token" description="Select a token to transfer." />
+                    </DialogTitle>
                 </DialogHeader>
                 <div>
                     <FilterBar
@@ -42,7 +44,7 @@ export const SelectTokenModal = () => {
                         disableDebounce={true}
                     />
                     <Spacer y={4} />
-                    <ScrollableList
+                    <List
                         items={filteredTokensArray}
                         contentCallback={(token) => <Token token={token} />}
                     />

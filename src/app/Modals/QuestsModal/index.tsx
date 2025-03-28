@@ -1,7 +1,7 @@
 "use client"
 import { QUESTS_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import React, { FC, ReactNode, useState } from "react"
+import React, { FC, ReactNode } from "react"
 import { EventBus, EventName, ModalName } from "@/game/event-bus"
 import { DailyTab } from "./DailyTab"
 import { GameTab } from "./GameTab"
@@ -15,28 +15,21 @@ import {
 } from "@/components/ui/dialog"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useDisclosure } from "@/hooks"
-
-export enum QuestsTab {
-    Game = "Game",
-    Daily = "Daily",
-    Social = "Social",
-    Partnership = "Partnership"
-}
-
+import { useAppSelector, useAppDispatch, QuestsTab as QuestsTabEnum, setQuestsTab } from "@/redux"
+import { ModalHeader } from "@/components"
 export const QuestsModal: FC = () => {
     const { onOpenChange, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
-    
-    const [selectedTab, setSelectedTab] = useState<QuestsTab>(
-        QuestsTab.Game
-    )
+
+    const selectedTab = useAppSelector((state) => state.tabReducer.questsTab)
+    const dispatch = useAppDispatch()
 
     const renderTab = () => {
-        const map: Record<QuestsTab, ReactNode> = {
-            [QuestsTab.Game]: <GameTab />,
-            [QuestsTab.Daily]: <DailyTab />,
-            [QuestsTab.Social]: <SocialTab />,
-            [QuestsTab.Partnership]: <PartnershipTab />,
+        const map: Record<QuestsTabEnum, ReactNode> = {
+            [QuestsTabEnum.Social]: <SocialTab />,
+            [QuestsTabEnum.Game]: <GameTab />,
+            [QuestsTabEnum.Daily]: <DailyTab />,
+            [QuestsTabEnum.Partnership]: <PartnershipTab />,
         }
         return map[selectedTab]
     }
@@ -55,19 +48,21 @@ export const QuestsModal: FC = () => {
         >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Quests</DialogTitle>
+                    <DialogTitle>   
+                        <ModalHeader title="Quests" description="Complete quests to earn rewards" />
+                    </DialogTitle>
                 </DialogHeader>
-                <div className="py-4 space-y-4">
+                <div>
                     <Tabs
                         defaultValue={selectedTab}
-                        onValueChange={(value) => setSelectedTab(value as QuestsTab)}
+                        onValueChange={(value) => dispatch(setQuestsTab(value as QuestsTabEnum))}
                         className="w-full"
                     >
                         <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value={QuestsTab.Game}>Game</TabsTrigger>
-                            <TabsTrigger value={QuestsTab.Daily}>Daily</TabsTrigger>
-                            <TabsTrigger value={QuestsTab.Social}>Social</TabsTrigger>
-                            <TabsTrigger value={QuestsTab.Partnership}>Partnership</TabsTrigger>
+                            <TabsTrigger value={QuestsTabEnum.Social}>Social</TabsTrigger>
+                            <TabsTrigger value={QuestsTabEnum.Game}>Game</TabsTrigger>
+                            <TabsTrigger value={QuestsTabEnum.Daily}>Daily</TabsTrigger>
+                            <TabsTrigger value={QuestsTabEnum.Partnership}>Partnership</TabsTrigger>
                         </TabsList>
                         <TabsContent value={selectedTab}>
                             {renderTab()}

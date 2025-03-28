@@ -1,17 +1,17 @@
 "use client"
 import {
+    GRAPHQL_QUERY_NEIGHBORS_SWR,
+    GRAPHQL_QUERY_FOLLOWEES_SWR,
     GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
-    GRAPHQL_QUERY_FOLLOWEES_SWR,
-    GRAPHQL_QUERY_NEIGHBORS_SWR,
 } from "@/app/constants"
 import {
     DEFAULT_LIMIT,
     DEFAULT_OFFSET,
-    useGraphQLMutationFollowSwrMutation,
-    useGraphQLMutationUnfollowSwrMutation,
     useGraphQLQueryFolloweesSwr,
     useGraphQLQueryNeighborsSwr,
+    useGraphQLMutationFollowSwrMutation,
+    useGraphQLMutationUnfollowSwrMutation,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
@@ -21,17 +21,17 @@ import { RefreshCcw } from "lucide-react"
 import { EnhancedButton } from "@/components"
 import { Pagination } from "@/components/ui/pagination"
 
-export const FolloweesTab: FC = () => {
+export const NeighborsTab: FC = () => {
     const {
-        swr: { mutate: neighborsMutate },
+        swr: { data, mutate: neighborsMutate },
+        params,
+        setParams,
     } = useSingletonHook<ReturnType<typeof useGraphQLQueryNeighborsSwr>>(
         GRAPHQL_QUERY_NEIGHBORS_SWR
     )
 
     const {
-        swr: { data, mutate: followeesMutate },
-        params,
-        setParams,
+        swr: { mutate: followeesMutate },
     } = useSingletonHook<ReturnType<typeof useGraphQLQueryFolloweesSwr>>(
         GRAPHQL_QUERY_FOLLOWEES_SWR
     )
@@ -44,8 +44,8 @@ export const FolloweesTab: FC = () => {
     ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
   >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
 
-    const followees = data?.data.followees.data || []
-    const count = data?.data.followees.count || 0
+    const neighbors = data?.data.neighbors.data || []
+    const count = data?.data.neighbors.count || 0
     // compute the total number of pages
     const limit = params?.request?.limit ?? DEFAULT_LIMIT
     const offset = params?.request?.offset ?? DEFAULT_OFFSET
@@ -80,7 +80,7 @@ export const FolloweesTab: FC = () => {
                 <EnhancedButton
                     variant="outline"
                     size="icon"
-                    onClick={() => followeesMutate()}
+                    onClick={() => neighborsMutate()}
                     className="shrink-0"
                 >
                     <RefreshCcw className="h-4 w-4" />
@@ -88,7 +88,7 @@ export const FolloweesTab: FC = () => {
             </div>
 
             <List
-                items={followees}
+                items={neighbors}
                 contentCallback={(item) => {
                     return (
                         <UserCard
@@ -99,10 +99,11 @@ export const FolloweesTab: FC = () => {
                                         followeeUserId: item.id,
                                     },
                                 })
+                                
                                 await neighborsMutate()
                                 await followeesMutate()
                             }}
-                            onUnfollowCallback={async () => {
+                            onUnfollowCallback={async() => {
                                 await unfollowSwrMutation.trigger({
                                     request: {
                                         followeeUserId: item.id,

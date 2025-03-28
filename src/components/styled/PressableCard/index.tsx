@@ -24,7 +24,7 @@ export const PressableCard: FC<PressableCardProps> = ({
             variant="ghost"
             size="icon"
             onClick={onClick}
-            className={cn("rounded-xl border bg-card text-card-foreground shadow", base, !showBorder && "border-none border-0 shadow-none", className)}
+            className={cn(" whitespace-normal rounded-xl border bg-card text-card-foreground shadow h-fit", base, !showBorder && "border-none border-0 shadow-none", className)}
         >
             {children}
         </Button>

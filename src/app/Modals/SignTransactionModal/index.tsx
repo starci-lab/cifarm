@@ -16,9 +16,8 @@ import {
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
 import { useHoneycombSendTransactionSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
-import { Title } from "@/components"
 import useSWRMutation from "swr/mutation"
-import { EnhancedButton } from "@/components"
+import { EnhancedButton, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -31,6 +30,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
 import { useDisclosure } from "@/hooks"
+import { sessionDb, SessionDbKey } from "@/modules/dexie"
 
 interface ProviderInfo {
   name: string;
@@ -63,6 +63,10 @@ export const SignTransactionModal: FC = () => {
 
     const { toast } = useToast()
 
+    const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
+    const currentAccountId = useAppSelector((state) => state.sessionReducer.accounts.currentId)
+    const account = accounts.find((account) => account.id === currentAccountId)
+
     const addTxHashToast = (txHash: string) => toast({
         title: "Tx hash",
         description: truncateString(txHash, 10, 4),
@@ -86,8 +90,6 @@ export const SignTransactionModal: FC = () => {
     })
 
     const balances = useAppSelector((state) => state.sessionReducer.balances)
-    
-
     const { trigger, isMutating } = useSWRMutation(
         "SIGN_TRANSACTION",
         async () => {
@@ -96,7 +98,16 @@ export const SignTransactionModal: FC = () => {
                 switch (type) {
                 case TransactionType.HoneycombProtocolRawTx: {
                     //return await honeycombSendTransactionSwrMutation.trigger(data)
-                    console.log(honeycombSendTransactionSwrMutation)
+                    // get the edge client       
+                    const { txResponse } = data as HoneycombProtocolRawTxData
+                    const response = await honeycombSendTransactionSwrMutation.trigger({
+                        transaction: txResponse
+                    })
+                    if (!response) throw new Error("Failed to send transaction")
+                    if (response.error) { throw new Error(response.error) }
+                    txHash = response.signature?.toString() ?? ""
+                    // clear the data in session db
+                    await sessionDb.keyValueStore.delete(SessionDbKey.HoneycombDailyRewardTransaction)
                     break
                 }
                 case TransactionType.TransferToken: {
@@ -128,11 +139,6 @@ export const SignTransactionModal: FC = () => {
             }
         }
     )
-
-    const { accounts, currentId } = useAppSelector(
-        (state) => state.sessionReducer.accounts
-    )
-    const account = accounts.find((account) => account.id === currentId)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     if (!account) return null
@@ -188,17 +194,21 @@ export const SignTransactionModal: FC = () => {
             )
         }
         case TransactionType.HoneycombProtocolRawTx: {
-            const { serializedTx } = data as HoneycombProtocolRawTxData
+            const { txResponse } = data as HoneycombProtocolRawTxData
             return (
-                <div className="space-y-4">
-                    <Title
-                        title="Serialized Tx"
-                        tooltipString="Serialized Tx is the raw transaction data that will be sent to the blockchain. It is a hex string that represents the transaction data."
-                    />
-                    <code className="block w-full p-2 bg-muted rounded-md text-sm break-all whitespace-pre-wrap line-clamp-5">
-                        {truncateString(serializedTx, 60, 4)}
-                    </code>
-                </div>
+                <Card>
+                    <CardContent className="p-3">
+                        <div className="flex items-center justify-between gap-12">
+                            <div className="text-sm font-semibold">Serialized Tx</div>
+                            <div className="flex gap-2 items-center">
+                                <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                    {truncateString(txResponse.transaction, 40, 4)}
+                                </div>
+                                <Snippet code={txResponse.transaction} /> 
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             )
         }
         }
@@ -208,7 +218,9 @@ export const SignTransactionModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">Sign Transaction</DialogTitle>
+                    <DialogTitle>
+                        <ModalHeader title="Sign Transaction" />
+                    </DialogTitle>
                 </DialogHeader>
                 <div>
                     <div className="flex gap-2 items-center">

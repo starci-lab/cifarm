@@ -9,6 +9,7 @@ import {
     useAppDispatch,
 } from "@/redux"
 import { DefaultToken } from "@/modules/blockchain"
+
 export interface TransferFormikValues {
   recipientAddress: string;
   stringAmount: string;

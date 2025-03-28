@@ -1,124 +1,91 @@
 "use client"
-import { Container, ExclamationTooltip } from "@/components"
-import { useRouterWithSearchParams } from "@/hooks"
-import { blockchainMap, ChainKey, Network, networkMap } from "@/modules/blockchain"
-import { setChainKey, setNetwork, useAppDispatch, useAppSelector } from "@/redux"
-// import { Alert, Button, Card, CardBody, CheckboxIcon, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Link, Spacer } from "@heroui/react"
-import { ArrowLeftIcon } from "lucide-react"
+import {
+    Container,
+    ExclamationTooltip,
+    Header,
+    Image,
+    PressableCard,
+    List,
+    Spacer,
+} from "@/components"
+import { cn } from "@/lib/utils"
+import { blockchainMap, ChainKey, Network } from "@/modules/blockchain"
+import { setChainKey, useAppDispatch, useAppSelector } from "@/redux"
+import { CheckIcon } from "lucide-react"
 import React, { FC } from "react"
+import { NetworkDropdown } from "./NetworkDropdown"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 const Page: FC = () => {
-    const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
-    const chainKey = useAppSelector(
-        (state) => state.sessionReducer.chainKey
-    )
-    const network = useAppSelector(
-        (state) => state.sessionReducer.network
-    )
-    const networkName = networkMap[network].name
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
+    const network = useAppSelector((state) => state.sessionReducer.network)
     const isTestnet = network === Network.Testnet
     return (
         <Container hasPadding>
-            {/* <div className="h-full">
-                <div>
-                    <div className="flex gap-2 items-center">
-                        <Link as="button" onPress={() => router.back()} color="foreground">
-                            <ArrowLeftIcon className="w-6 h-6" />
-                        </Link>
-                        <div className="text-2xl font-bold">Select Chain</div>
-                    </div>
-                    <Spacer y={4} />
-                    <div className="text-xs text-foreground-400">
-            Please select the chain you want to use.
-                    </div>
-                </div>
+            <div className="h-full">
+                <Header
+                    title="Select Chain"
+                    description="Select the chain you want to use."
+                />
                 <Spacer y={6} />
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Supported Chains</div>
-                        <ExclamationTooltip message="Select the chain you want to use."  />
+                        <ExclamationTooltip message="Select the chain you want to use." />
                     </div>
                     <Spacer y={4} />
-                    <Card>
-                        <div className="grid">
-                            {Object.values(ChainKey).map((_chainKey, index) => {
-                                const isSelected = chainKey === _chainKey
-                                const last = index === Object.values(ChainKey).length - 1
-                                return (
-                                    <>
-                                        <Card
-                                            radius="none"
-                                            shadow="none"
-                                            key={_chainKey}
-                                            isPressable={true}
-                                            disableRipple={true}
-                                            onPress={() => {
-                                                dispatch(setChainKey(_chainKey))
-                                            }}
-                                            className={isSelected ? "bg-default/40" : ""}
-                                        >
-                                            <CardBody className="flex gap-2">
-                                                <div className="w-full flex justify-between items-center">
-                                                    <div className="flex gap-2 items-center">
-                                                        <Image
-                                                            src={blockchainMap[_chainKey].imageUrl}
-                                                            radius="none"
-                                                            className="w-6 h-6"
-                                                        />
-                                                        <div>{blockchainMap[_chainKey].name}</div>
-                                                    </div>
-                                                    <CheckboxIcon className="w-4 h-4" isSelected={isSelected} />
-                                                </div>
-                                            </CardBody>
-                                        </Card>
-                                        {!last && <Divider/>}
-                                    </>
-                                )
-                            })}
-                        </div>
-                    </Card>
+                    <List
+                        enableScroll={false}
+                        items={Object.values(ChainKey)}
+                        contentCallback={(item) => {
+                            const isSelected = chainKey === item
+                            return (
+                                <PressableCard
+                                    showBorder={false}
+                                    key={item}
+                                    onClick={() => {
+                                        dispatch(setChainKey(item))
+                                    }}
+                                    className={cn(
+                                        "w-full p-3 rounded-none",
+                                        isSelected ? "bg-default/40" : ""
+                                    )}
+                                >
+                                    <div className="w-full flex justify-between items-center">
+                                        <div className="flex gap-2 items-center">
+                                            <Image
+                                                src={blockchainMap[item].imageUrl}
+                                                className="w-6 h-6"
+                                            />
+                                            <div>{blockchainMap[item].name}</div>
+                                        </div>
+                                        {isSelected && <CheckIcon className="w-4 h-4" />}
+                                    </div>
+                                </PressableCard>
+                            )
+                        }}
+                    />
                 </div>
                 <Spacer y={6} />
                 <div>
                     <div className="flex gap-2 items-center">
                         <div className="text-lg font-bold">Network</div>
-                        <ExclamationTooltip message="Select the network you want to use."  />
+                        <ExclamationTooltip message="Select the network you want to use." />
                     </div>
+                    <Spacer y={6} />
+                    <NetworkDropdown />
                     <Spacer y={4} />
-                    <Dropdown>
-                        <DropdownTrigger>
-                            <Button variant="flat">{networkName}</Button>
-                        </DropdownTrigger>
-                        <DropdownMenu aria-label="Static Actions">
-                            {
-                                Object.values(Network).map((_network) => (
-                                    <DropdownItem
-                                        key={_network}
-                                        onPress={() => {
-                                            dispatch(setNetwork(_network))
-                                        }}
-                                    >
-                                        {networkMap[_network].name}
-                                    </DropdownItem>
-                                ))
-                            }
-                        </DropdownMenu>
-                    </Dropdown>
-                    {
-                        isTestnet && (
-                            <>
-                                <Spacer y={4} />
-                                <Alert color="warning">
-                                    <div className="text-sm">
-                                        The testnet mode is only for testing purposes, and all assets have no value.
-                                    </div>
-                                </Alert>
-                            </>
-                        )
-                    }
+                    {isTestnet && (
+                        <Alert variant="default">
+                            <AlertDescription>
+                You are on the testnet network. This means that you are using a
+                test version of the blockchain.
+                            </AlertDescription>
+                        </Alert>
+                    )}
                 </div>
-            </div> */}
+            </div>
         </Container>
     )
 }

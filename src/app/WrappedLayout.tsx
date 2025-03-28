@@ -29,7 +29,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                         <SingletonHook2Provider>
                             <NextThemesProvider
                                 attribute="class"
-                                defaultTheme="system"
+                                defaultTheme="dark"
                                 enableSystem
                                 disableTransitionOnChange
                             >

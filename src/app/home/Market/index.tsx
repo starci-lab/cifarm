@@ -1,5 +1,5 @@
 import { NATIVE_COINGEKCO_SWR } from "@/app/constants"
-import { ExclamationTooltip, Image, Badge, ScrollableList  } from "@/components"
+import { ExclamationTooltip, Image, Badge, List  } from "@/components"
 import { useNativeCoinGeckoSWR } from "@/hooks"
 import { blockchainMap, DefaultToken } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -34,7 +34,7 @@ export const Market: FC = () => {
                 <ExclamationTooltip message="The current market prices and trends are based on the last 24 hours." />
             </div>
             <div className="h-4" />
-            <ScrollableList
+            <List
                 enableScroll={false}
                 items={Object.keys(blockchainMap[chainKey].defaultTokens[network])}
                 contentCallback={(item) => {

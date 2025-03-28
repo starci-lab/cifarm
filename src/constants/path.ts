@@ -3,7 +3,7 @@ export const pathConstants = {
     home: "/home",
     selectChain: "/select-chain",
     adjustTokens: "/adjust-tokens",
-    profile: "/profile",
+    assets: "/assets",
     settings: "/settings",
     play: "/play",
     partnerships: "/partnerships",

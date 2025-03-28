@@ -33,12 +33,6 @@ export class SettingsContent extends BaseSizer {
                     showWrapperContainer: false,
                     showContainer: true,
                 },
-                mainButton: {
-                    text: "Quit",
-                    onPress: () => {
-                        EventBus.emit(EventName.CloseGame)
-                    },
-                },
                 onXButtonPress: (button: XButton) => {
                     onGameObjectPress({
                         gameObject: button,

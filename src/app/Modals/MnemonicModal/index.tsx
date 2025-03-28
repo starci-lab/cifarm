@@ -4,7 +4,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline"
 import React, { FC, useState } from "react"
-import { EnhancedButton } from "@/components"
+import { EnhancedButton, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -30,7 +30,9 @@ export const MnemonicModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Mnemonic</DialogTitle>
+                    <DialogTitle>
+                        <ModalHeader title="Mnemonic" description="Your mnemonic is used to recover your account. It is stored on your device and cannot be recovered if lost." />
+                    </DialogTitle>
                 </DialogHeader>
                 <div className="py-4">
                     <Card>

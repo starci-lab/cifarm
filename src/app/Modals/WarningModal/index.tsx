@@ -3,7 +3,7 @@ import { WARNING_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
-import { EnhancedButton } from "@/components"
+import { EnhancedButton, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -40,7 +40,9 @@ export const WarningModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Warning</DialogTitle>
+                    <DialogTitle>
+                        <ModalHeader title="Warning" />
+                    </DialogTitle>
                 </DialogHeader>
                 <div className="py-4">
                     <Alert variant="destructive">

@@ -4,7 +4,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline"
 import React, { FC, useState } from "react"
-import { EnhancedButton } from "@/components"
+import { EnhancedButton, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -36,7 +36,9 @@ export const PrivateKeyModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Private Key</DialogTitle>
+                    <DialogTitle>
+                        <ModalHeader title="Private Key" description="Your private key is used to sign transactions. It is stored on your device and cannot be recovered if lost." />
+                    </DialogTitle>
                 </DialogHeader>
                 <div className="py-4">
                     <div className="relative">

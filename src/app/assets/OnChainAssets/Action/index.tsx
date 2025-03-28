@@ -9,7 +9,7 @@ export interface ActionProps {
 
 export const Action: FC<ActionProps> = ({ icon, name, onClick }: ActionProps) => {
     return (
-        <PressableCard onClick={onClick} classNames={{ base: "w-full h-full p-3 whitespace-normal" }}>
+        <PressableCard onClick={onClick} classNames={{ base: "w-full h-full p-3" }}>
             <div className="grid gap-2 place-items-center">
                 {icon}
                 <div className="text-sm text-center">{name}</div> 

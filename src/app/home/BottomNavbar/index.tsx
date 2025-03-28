@@ -16,7 +16,7 @@ import {
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { EnhancedButton } from "@/components"
-import { BlocksIcon, GiftIcon, TwitterIcon, UserCircleIcon } from "lucide-react"
+import { BlocksIcon, GiftIcon, TwitterIcon, CoinsIcon } from "lucide-react"
 
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
@@ -43,10 +43,10 @@ export const BottomNavbar: FC = () => {
                     <EnhancedButton
                         variant="ghost"
                         className="flex-1 flex flex-col items-center justify-center h-full gap-1"
-                        onClick={() => router.push(pathConstants.profile)}
+                        onClick={() => router.push(pathConstants.assets)}
                     >
-                        <UserCircleIcon className="w-5 h-5 min-w-5 min-h-5" />
-                        <div className="text-xs h-4 flex items-center">Profile</div>
+                        <CoinsIcon className="w-5 h-5 min-w-5 min-h-5" />
+                        <div className="text-xs h-4 flex items-center">Assets</div>
                     </EnhancedButton>
                     <EnhancedButton
                         variant="ghost"

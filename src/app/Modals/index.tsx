@@ -7,7 +7,7 @@ import { InviteUserModal } from "./InviteUserModal"
 import { NeighborsModal } from "./NeighborsModal"
 import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
-import { TokensOffchainModal } from "./TokensOffchainModal"
+import { MintModal } from "./MintModal"
 import { MintAmountModal } from "./MintAmountModal"
 import { SelectTokenModal } from "./SelectTokenModal"
 
@@ -24,7 +24,7 @@ const Modals : FC = () => {
             <InviteUserModal />
             <NeighborsModal />
             <QuestsModal />
-            <TokensOffchainModal />
+            <MintModal />
             <SelectTokenModal />
         </div>
     )

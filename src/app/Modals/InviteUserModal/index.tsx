@@ -10,9 +10,9 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useDisclosure } from "@/hooks"
-
+import { ModalHeader, Snippet, Spacer } from "@/components"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 export const InviteUserModal: FC = () => {
     const { isOpen, onOpenChange } = useSingletonHook<
     ReturnType<typeof useDisclosure>
@@ -31,25 +31,39 @@ export const InviteUserModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Invite User</DialogTitle>
+                    <DialogTitle>
+                        <ModalHeader title="Invite User" description="Share the link through your social network; users with the referral code will receive bonus tokens, and you will earn extra tokens as well." />
+                    </DialogTitle>
                 </DialogHeader>
-                <div className="py-4 space-y-4">
-                    <Alert>
-                        <AlertDescription>
-                            Share the link through your social network; users with the referral code will receive bonus tokens, and you will earn extra tokens as well.
-                        </AlertDescription>
-                    </Alert>
-                    <div className="w-full">
+                <div>
+                    <div>
                         <div className="text-sm mb-1.5">Web URL</div>
-                        <code className="block w-full p-2 bg-muted rounded-md text-sm break-all whitespace-pre-wrap line-clamp-5">
-                            {webUrl}
-                        </code>
+                        <Spacer y={1.5} />
+                        <Alert>
+                            <AlertDescription> 
+                                <div className="flex items-center gap-2 justify-between w-full">
+                                    <div className="text-sm">
+                                        {webUrl}
+                                    </div>
+                                    <Snippet code={webUrl} />
+                                </div>
+                            </AlertDescription>
+                        </Alert>
                     </div>
+                    <Spacer y={4} />
                     <div className="w-full">
                         <div className="text-sm mb-1.5">Telegram URL</div>
-                        <code className="block w-full p-2 bg-muted rounded-md text-sm break-all whitespace-pre-wrap line-clamp-5">
-                            {telegramUrl}
-                        </code>
+                        <Spacer y={1.5} />
+                        <Alert>
+                            <AlertDescription> 
+                                <div className="flex items-center gap-2 justify-between w-full">
+                                    <div className="text-sm">
+                                        {telegramUrl}
+                                    </div>
+                                    <Snippet code={telegramUrl} />
+                                </div>
+                            </AlertDescription>
+                        </Alert>
                     </div>
                 </div>
             </DialogContent>
