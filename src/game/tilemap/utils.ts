@@ -20,7 +20,7 @@ import {
 } from "@/modules/entities"
 import { CacheKey } from "../types"
 
-export const setTint = (
+export const setTintForMainVisual = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject,
     tintColor: number
 ) => {
@@ -39,7 +39,7 @@ export const setTint = (
     }
 }
 
-export const clearTint = (
+export const clearTintForMainVisual = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject
 ) => {
     if (mainVisual) {

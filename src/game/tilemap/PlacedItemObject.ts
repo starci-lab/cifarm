@@ -38,7 +38,7 @@ import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { flowerAssetMap } from "../assets"
-import { setTint, clearTint, createMainVisual, getAssetData } from "./utils"
+import { setTintForMainVisual, clearTintForMainVisual, createMainVisual, getAssetData } from "./utils"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
 import { gameplayDepth } from "../depth"
 
@@ -1144,7 +1144,7 @@ export class PlacedItemObject extends ContainerLite {
 
     public setTint(tintColor: number) {
         if (this.mainVisual) {
-            setTint(this.mainVisual, tintColor)
+            setTintForMainVisual(this.mainVisual, tintColor)
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.setTint(tintColor)
@@ -1153,7 +1153,7 @@ export class PlacedItemObject extends ContainerLite {
 
     public clearTint() {
         if (this.mainVisual) {
-            clearTint(this.mainVisual)  
+            clearTintForMainVisual(this.mainVisual)  
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.clearTint()

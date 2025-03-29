@@ -63,7 +63,7 @@ import {
     UsePesticideMessage,
     UseWateringCanMessage,
 } from "@/hooks"
-import { createMainVisual, getAssetData, setTint } from "./utils"
+import { createMainVisual, getAssetData, setTintForMainVisual } from "./utils"
 import {
     BuyingModeOnMessage,
     ExternalEventName,
@@ -1150,7 +1150,7 @@ export class InputTilemap extends ItemTilemap {
         const { x = 0, y = 0 } = { ...textureConfig?.extraOffsets }
         // set tint based on can place
 
-        setTint(
+        setTintForMainVisual(
             this.dragBuyVisual,
             isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
         )
