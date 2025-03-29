@@ -924,7 +924,7 @@ export class PlacedItemObject extends ContainerLite {
             spineConfig,
             textureConfig,
         })
-        this.mainVisual.setPosition(offsets.x, offsets.y)
+        this.mainVisual.setPosition(offsets.x, offsets.y).setDepth(this.depth + 10)
         this.addLocal(this.mainVisual)
     }
 

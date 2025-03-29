@@ -121,7 +121,6 @@ export class InputTilemap extends ItemTilemap {
     private placementConfirmation: PlacementConfirmation | undefined
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
-
         // listen for place in progress event
         SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {
             this.cancelPlacement()
@@ -212,7 +211,6 @@ export class InputTilemap extends ItemTilemap {
             }
 
             const data = this.findPlacedItemRoot(tile.x, tile.y)
-
             if (!data) {
                 console.log("No placed item found for position")
                 return

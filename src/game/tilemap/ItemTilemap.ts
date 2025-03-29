@@ -1260,7 +1260,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         if (!object) {
             throw new Error("Object not found")
         }
-        object.setOrigin(1, 0.5).setDepth((tile.x + tile.y + 1) * DEPTH_MULTIPLIER)
+        object.setOrigin(1, 0.5).setDepth((tile.x * this.width + tile.y + 1) * DEPTH_MULTIPLIER)
         // store the object in the placed item objects map
         this.placedItemObjectMap[placedItem.id] = {
             object,
