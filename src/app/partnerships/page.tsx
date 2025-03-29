@@ -1,27 +1,8 @@
 "use client"
 
-import { Container, ExclamationTooltip } from "@/components"
-import { pathConstants } from "@/constants"
-import { useRouterWithSearchParams } from "@/hooks"
-import { valuesWithKey } from "@/modules/common"
-
-import { ArrowLeftIcon } from "lucide-react"
+import { Container } from "@/components"
 import React, { FC } from "react"
-import { Partnership, PartnershipKey } from "./types"
 const Page: FC = () => {
-    const router = useRouterWithSearchParams()
-
-    const partnerships: Record<PartnershipKey, Partnership> = {
-        [PartnershipKey.HoneycombProtocol]: {
-            name: "Honeycomb Protocol",
-            description: "Honeycomb Protocol, developed on top of the robust Solana blockchain, addresses this gap by offering a comprehensive suite of tools designed specifically for game developers.",
-            logo: "/honeycomb-protocol.svg",
-            onPress: () => {
-                router.push(pathConstants.partnershipsHoneycombProtocol)
-            },
-        }
-    }
-
     return (
         <Container hasPadding>
             {/* <div className="h-full">
