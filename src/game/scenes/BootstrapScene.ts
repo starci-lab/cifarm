@@ -11,8 +11,8 @@ export class BootstrapScene extends Scene {
     }
 
     preload() {
+        this.load.font(FONT_DINOSAUR, "/fonts/Dinosaur.ttf", "truetype")
         this.load.setPath("assets")
-        this.load.font(FONT_DINOSAUR, "dinosaur.ttf", "truetype")
         //  The Boot Scene is typically used to load in any assets you require for your Preloader, such as a game logo or background.
         // load all the assets
         loadBootstrapAssets(this)

@@ -1004,7 +1004,7 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
 }
 
 // preload, for loading screen
-export const loadBootstrapAssets = async (scene: Phaser.Scene) => {
+export const loadBootstrapAssets = (scene: Phaser.Scene) => {
     for (const value of Object.values(bootstrapAssetMap)) {
         if (value.base) {
             const { key, assetUrl, useExisting } = value.base.textureConfig
