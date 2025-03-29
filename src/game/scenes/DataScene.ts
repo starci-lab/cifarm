@@ -39,14 +39,9 @@ export class DataScene extends Scene {
                         if (foundIndex === -1) {
                             throw new Error("Placed item not found")
                         }
-                        console.log("Original")
-                        console.log(_.cloneDeep(placedItems[foundIndex]))
-                        console.log("Changes")
-                        console.log(_.cloneDeep(placedItemWithStatus))
                         placedItems[foundIndex] = mergeObjects(
                             _.cloneDeep(placedItems[foundIndex]),
                             _.cloneDeep(placedItemWithStatus))
-                        console.log(placedItems[foundIndex])
                         break
                     }
                     case SchemaStatus.Deleted: {

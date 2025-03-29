@@ -22,7 +22,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/turnip/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -60,
+                        y: -90,
                     },
                 },
             },
@@ -83,7 +83,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/carrot/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -90,
                     },
                 },
             },
@@ -144,7 +144,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/bell-pepper/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -90,
                     },
                 },
             },
@@ -206,7 +206,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/cucumber/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -90,
                     },
                 },
             },
@@ -328,7 +328,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -90,
                     },
                 },
             },
@@ -389,7 +389,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/watermelon/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -90,
                     },
                 },
             },
@@ -450,7 +450,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/strawberry/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -90,
                     },
                 },
             },
@@ -506,7 +506,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
 
 // Function to load crop assets (images) for each crop and growth stage
 export const loadCropAssets = async (scene: Scene) => {
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
     // Load the asset for each growth stage
     for (const cropId of Object.keys(cropAssetMap)) {
         const _cropId = cropId as CropId

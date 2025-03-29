@@ -39,14 +39,14 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
         name: "Coop",
         map: {
             textureConfig: {
-                extraOffsets: { x: 0, y: -65 },
+                extraOffsets: { x: 0, y: -140 },
                 key: "buildings-coop",
                 assetUrl: "buildings/coop/coop.png",
             },
             starsConfig: {
                 extraOffsets: {
-                    x: -50,
-                    y: -300,
+                    x: -120,
+                    y: -630,
                 },
             },
         },
@@ -63,12 +63,12 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             textureConfig: {
                 key: "buildings-barn",
                 assetUrl: "buildings/barn/barn.png",
-                extraOffsets: { x: 0, y: -60 },
+                extraOffsets: { x: 0, y: -120 },
             },
             starsConfig: {
                 extraOffsets: {
-                    x: -110,
-                    y: -370,
+                    x: -205,
+                    y: -730,
                 },
             },
         },
@@ -92,12 +92,15 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     key: "buildings-bee-house-json",
                     assetUrl: "buildings/bee-house/spine/bee-house.json",
                 },
+                extraOffsets: {
+                    y: -130,
+                }
             },
             mainVisualType: MainVisualType.Spine,
             starsConfig: {
                 extraOffsets: {
-                    x: -50,
-                    y: -300,
+                    x: -65,
+                    y: -450,
                 },
             },
         },
@@ -114,8 +117,14 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
             textureConfig: {
                 key: "buildings-pet-house",
                 assetUrl: "buildings/pet-house/pet-house.png",
-                extraOffsets: { x: 0, y: -65 },
+                extraOffsets: { x: 0, y: -175 },
             },
+            starsConfig: {
+                extraOffsets: {
+                    x: -185,
+                    y: -575,
+                },
+            }
         },
         shop: {
             textureConfig: {

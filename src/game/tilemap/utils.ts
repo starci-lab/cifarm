@@ -2,8 +2,6 @@ import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import {
     MainVisualType,
     MapAssetData,
-    SpineConfig,
-    TextureConfig,
     tileAssetMap,
     buildingAssetMap,
     animalAssetMap,
@@ -53,11 +51,34 @@ export const clearTintForMainVisual = (
     }
 }
 
-export interface CreateMainVisualParams {
-  mainVisualType?: MainVisualType;
-  textureConfig?: TextureConfig;
-  spineConfig?: SpineConfig;
+export interface CreateMainVisualParams extends MapAssetData {
   scene: Phaser.Scene;
+}
+
+export type GetMainVisualOffsetsParams = MapAssetData
+export const getMainVisualOffsets = (
+    { mainVisualType, spineConfig, textureConfig }: GetMainVisualOffsetsParams
+) => {
+    let x = 0
+    let y = 0
+    switch (mainVisualType) {
+    case MainVisualType.Spine: {
+        const { x: extraX = 0, y: extraY = 0 } = { ...spineConfig?.extraOffsets }
+        x = extraX
+        y = extraY
+        break
+    }
+    default: {
+        const { x: extraX = 0, y: extraY = 0 } = {
+            ...textureConfig?.extraOffsets,
+        }
+        x = extraX
+        y = extraY
+        break
+    }
+    }
+
+    return { x, y }
 }
 
 export const createMainVisual = ({
@@ -72,10 +93,9 @@ export const createMainVisual = ({
         if (!spineConfig) {
             throw new Error("Spine config is undefined")
         }
-        const { x = 0, y = 0 } = { ...spineConfig.extraOffsets }
         //render spine animation
         mainVisual = scene.add
-            .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
+            .spine(0, 0, spineConfig.json.key, spineConfig.atlas.key)
             .setOrigin(0.5, 1)
         mainVisual.animationState.setAnimation(0, "idle", true)
         return mainVisual
@@ -84,9 +104,8 @@ export const createMainVisual = ({
         if (!textureConfig) {
             throw new Error("Texture config is undefined")
         }
-        const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
         //render sprite
-        return scene.add.sprite(x, y, textureConfig.key).setOrigin(0.5, 1)
+        return scene.add.sprite(0, 0, textureConfig.key).setOrigin(0.5, 1)
     }
     }
 }

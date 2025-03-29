@@ -26,7 +26,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
                     assetUrl: "flowers/daisy/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -30,
+                        y: -60,
                     },
                 },
             },
@@ -36,7 +36,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
                     assetUrl: "flowers/daisy/2.png",
                     extraOffsets: {
                         x: 0,
-                        y: -45,
+                        y: -90,
                     },
                 },
             },
@@ -46,7 +46,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
                     assetUrl: "flowers/daisy/3.png",
                     extraOffsets: {
                         x: 0,
-                        y: -45,
+                        y: -90,
                     },
                 },
             },
@@ -56,7 +56,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
                     assetUrl: "flowers/daisy/4.png",
                     extraOffsets: {
                         x: 0,
-                        y: -45,
+                        y: -90,
                     },
                 },
             },
@@ -66,7 +66,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
                     assetUrl: "flowers/daisy/5.png",
                     extraOffsets: {
                         x: 0,
-                        y: -45,
+                        y: -90,
                     },
                 },
             },
@@ -77,7 +77,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
                 assetUrl: "flowers/daisy/seed.png",
                 extraOffsets: {
                     x: 0,
-                    y: -45,
+                    y: -90,
                 },
             },
         },
@@ -86,7 +86,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
 
 // Function to load all flower assets
 export const loadFlowerAssets = async (scene: Scene) => {
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
     // Load all flower assets
     for (const flowerData of Object.values(flowerAssetMap)) {
         // Load shop asset if exis

@@ -15,8 +15,7 @@ import {
     PlantCurrentState,
     PlantType,
     Position,
-    ProductSchema,
-    TileSchema,
+    ProductSchema
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import {
@@ -38,7 +37,7 @@ import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { flowerAssetMap } from "../assets"
-import { setTintForMainVisual, clearTintForMainVisual, createMainVisual, getAssetData } from "./utils"
+import { setTintForMainVisual, clearTintForMainVisual, createMainVisual, getAssetData, getMainVisualOffsets } from "./utils"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
 import { gameplayDepth } from "../depth"
 
@@ -56,7 +55,6 @@ export class PlacedItemObject extends ContainerLite {
     private products: Array<ProductSchema>
     private animals: Array<AnimalSchema>
     private placedItemTypes: Array<PlacedItemTypeSchema>
-    private tiles: Array<TileSchema>
     private buildings: Array<BuildingSchema>
     private fruits: Array<FruitSchema>
     private flowers: Array<FlowerSchema>
@@ -75,7 +73,6 @@ export class PlacedItemObject extends ContainerLite {
         this.products = scene.cache.obj.get(CacheKey.Products)
         this.animals = scene.cache.obj.get(CacheKey.Animals)
         this.placedItemTypes = scene.cache.obj.get(CacheKey.PlacedItemTypes)
-        this.tiles = scene.cache.obj.get(CacheKey.Tiles)
         this.buildings = scene.cache.obj.get(CacheKey.Buildings)
         this.fruits = scene.cache.obj.get(CacheKey.Fruits)
         this.fruitInfo = scene.cache.obj.get(CacheKey.FruitInfo)
@@ -935,6 +932,15 @@ export class PlacedItemObject extends ContainerLite {
             spineConfig,
             scene: this.scene,
         })
+        const offsets = getMainVisualOffsets({
+            mainVisualType,
+            spineConfig,
+            textureConfig,
+        })
+        this.mainVisual.setPosition(
+            offsets.x,
+            offsets.y
+        )
         this.addLocal(this.mainVisual)
     }
 

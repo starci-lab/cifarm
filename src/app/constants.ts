@@ -134,7 +134,7 @@ export const GAMEPLAY_IO = "GAMEPLAY_IO"
 // =====================================
 export const EXPERIENCE_IMAGE_URL = "/assets/ui/common/experience.png"
 export const TOKEN_IMAGE_URL = "/assets/ui/common/icon-carrot.png"
-export const GOLD_IMAGE_URL = "/assets/ui/common/icon-coin.png"
+export const GOLD_IMAGE_URL = "/assets/ui/common/icon-gold.png"
 export const CHECK_IMAGE_URL = "/assets/ui/common/check.png"
 
 // =====================================

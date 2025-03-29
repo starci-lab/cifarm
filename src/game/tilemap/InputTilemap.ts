@@ -20,19 +20,19 @@ import {
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
-    AnimalAge,
-    animalAssetMap,
     BaseAssetKey,
     baseAssetMap,
-    buildingAssetMap,
-    fruitAssetMap,
     MainVisualType,
     SpineConfig,
     TextureConfig,
-    tileAssetMap,
 } from "../assets"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
-import { CacheKey, SellModalData, TilemapBaseConstructorParams, UpgradeModalData } from "../types"
+import {
+    CacheKey,
+    SellModalData,
+    TilemapBaseConstructorParams,
+    UpgradeModalData,
+} from "../types"
 import { ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
@@ -63,7 +63,7 @@ import {
     UsePesticideMessage,
     UseWateringCanMessage,
 } from "@/hooks"
-import { createMainVisual, getAssetData, setTintForMainVisual } from "./utils"
+import { createMainVisual, getAssetData, getMainVisualOffsets, setTintForMainVisual } from "./utils"
 import {
     BuyingModeOnMessage,
     ExternalEventName,
@@ -127,11 +127,14 @@ export class InputTilemap extends ItemTilemap {
             this.cancelPlacement()
         })
 
-        SceneEventEmitter.on(SceneEventName.BuyingModeOn, (data: BuyingModeOnMessage) => {
-            this.hideEverything()
-            this.inputMode = InputMode.Buy
-            this.handleBuyingMode(data)
-        })
+        SceneEventEmitter.on(
+            SceneEventName.BuyingModeOn,
+            (data: BuyingModeOnMessage) => {
+                this.hideEverything()
+                this.inputMode = InputMode.Buy
+                this.handleBuyingMode(data)
+            }
+        )
         SceneEventEmitter.on(SceneEventName.MovingModeOn, () => {
             this.hideEverything()
             this.inputMode = InputMode.Move
@@ -248,7 +251,7 @@ export class InputTilemap extends ItemTilemap {
                 })
                 if (!assetData) {
                     throw new Error("Asset data not found")
-                }   
+                }
                 const sellModalData: SellModalData = {
                     placedItem: data.object.currentPlacedItem,
                     mapAssetData: assetData,
@@ -858,82 +861,6 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    private getAssetConfigFromPlacedItem(placedItemType: PlacedItemTypeSchema) {
-        let _mainVisualType: MainVisualType | undefined
-        let _textureConfig: TextureConfig | undefined
-        let _spineConfig: SpineConfig | undefined
-        switch (placedItemType.type) {
-        case PlacedItemType.Building: {
-            const building = this.buildings.find(
-                (building) => building.id === placedItemType?.building
-            )
-            if (!building) {
-                throw new Error("Building not found")
-            }
-            const { textureConfig, spineConfig, mainVisualType } =
-          buildingAssetMap[building.displayId].map
-            switch (mainVisualType) {
-            case MainVisualType.Spine:
-                _mainVisualType = MainVisualType.Spine
-                _spineConfig = spineConfig
-                break
-            default:
-                _mainVisualType = MainVisualType.Sprite
-                _textureConfig = textureConfig
-                break
-            }
-            break
-        }
-        case PlacedItemType.Tile: {
-            const tile = this._tiles.find(
-                (tile) => tile.id === placedItemType?.tile
-            )
-            if (!tile) {
-                throw new Error("Tile not found")
-            }
-            const { textureConfig } = tileAssetMap[tile.displayId].map
-            _mainVisualType = MainVisualType.Sprite
-            _textureConfig = textureConfig
-            break
-        }
-        case PlacedItemType.Animal: {
-            const animal = this.animals.find(
-                (animal) => animal.id === placedItemType?.animal
-            )
-            if (!animal) {
-                throw new Error("Animal not found")
-            }
-            const { spineConfig, mainVisualType } =
-          animalAssetMap[animal.displayId].map[AnimalAge.Baby]
-            _spineConfig = spineConfig
-            _mainVisualType = mainVisualType
-            break
-        }
-        case PlacedItemType.Fruit: {
-            const fruit = this.fruits.find(
-                (fruit) => fruit.id === placedItemType?.fruit
-            )
-            if (!fruit) {
-                throw new Error("Fruit not found")
-            }
-            const { textureConfig } = fruitAssetMap[fruit.displayId].map[0]
-            _mainVisualType = MainVisualType.Sprite
-            _textureConfig = textureConfig
-            break
-        }
-        }
-
-        if (!_mainVisualType) {
-            throw new Error("Main visual type not found")
-        }
-
-        return {
-            mainVisualType: _mainVisualType,
-            textureConfig: _textureConfig,
-            spineConfig: _spineConfig,
-        }
-    }
-
     private handleMovingDragMode(data: PlacedItemObjectData) {
         const { object } = data
         const { placedItemType } = object
@@ -966,8 +893,14 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Placed item type not found")
         }
 
-        const { mainVisualType, textureConfig, spineConfig } =
-      this.getAssetConfigFromPlacedItem(placedItemType)
+        const assetData = getAssetData({
+            placedItemType,
+            scene: this.scene,
+        })
+        if (!assetData) {
+            throw new Error("Asset data not found")
+        }
+        const { mainVisualType, textureConfig, spineConfig } = assetData
 
         this.buyingDragData = {
             type: mainVisualType,
@@ -1147,16 +1080,19 @@ export class InputTilemap extends ItemTilemap {
         )
         this.placementConfirmation.updateTileXY(centeredX, centeredY)
 
-        const { x = 0, y = 0 } = { ...textureConfig?.extraOffsets }
         // set tint based on can place
-
         setTintForMainVisual(
             this.dragBuyVisual,
             isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
         )
+        const offsets = getMainVisualOffsets({
+            mainVisualType: type,
+            spineConfig,
+            textureConfig,
+        })
         this.dragBuyVisual.setPosition(
-            tilePosition.x + x * this.scale,
-            tilePosition.y + (this.tileHeight / 2) * this.scale + y * this.scale
+            tilePosition.x + offsets.x,
+            tilePosition.y + this.tileHeight / 2 + offsets.y
         )
     }
 
@@ -1236,6 +1172,7 @@ export class InputTilemap extends ItemTilemap {
         this.placementConfirmation.updateTileXY(centeredX, centeredY)
         // set tint based on can place
         object.setTint(isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR)
+
         object.setPosition(tilePosition.x, tilePosition.y + this.tileHeight / 2)
     }
 
@@ -1259,9 +1196,7 @@ export class InputTilemap extends ItemTilemap {
                     onCancel,
                     onConfirm,
                 },
-            }).setDepth(
-                gameplayDepth.placementConfirmation
-            )
+            }).setDepth(gameplayDepth.placementConfirmation)
             this.scene.add.existing(this.placementConfirmation)
         }
         this.placementConfirmation.setPosition(tilePosition.x, tilePosition.y)
@@ -1321,7 +1256,10 @@ export class InputTilemap extends ItemTilemap {
                 const upgradeModalData: UpgradeModalData = {
                     placedItem: currentPlacedItem,
                 }
-                this.scene.cache.obj.add(CacheKey.UpgradeModalData, upgradeModalData)
+                this.scene.cache.obj.add(
+                    CacheKey.UpgradeModalData,
+                    upgradeModalData
+                )
                 SceneEventEmitter.emit(SceneEventName.UpdateUpgradeModal)
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Upgrade,
@@ -1738,7 +1676,9 @@ export class InputTilemap extends ItemTilemap {
             const position = data.object.getCenter()
             this.createFlyItems([
                 {
-                    iconAssetKey: baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    iconAssetKey:
+            baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig
+                .key,
                     x: position.x,
                     y: position.y,
                     text: "Not enough",
@@ -1749,7 +1689,7 @@ export class InputTilemap extends ItemTilemap {
         return true
     }
 
-    private hideEverything() {  
+    private hideEverything() {
         SceneEventEmitter.emit(SceneEventName.ShowPlacementModeButtons)
         SceneEventEmitter.emit(SceneEventName.HideToolbar)
         SceneEventEmitter.emit(SceneEventName.HideButtons)
