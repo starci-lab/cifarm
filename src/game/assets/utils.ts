@@ -5,11 +5,11 @@ import axios from "axios"
 import { CacheKey } from "../types"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
 //export const BASE_URL = "https://cifarm.s3.ap-southeast-1.amazonaws.com/"
-export const BASE_URL = "http://localhost:3000/"
+//export const BASE_URL = "http://localhost:3000/"
 export const PATH = "assets"
 
 export const getAssetUrl = (assetUrl: string) => {
-    return `${BASE_URL}${PATH}/${assetUrl}`
+    return `${PATH}/${assetUrl}`
 }
 
 export const downloadTexture = async (
