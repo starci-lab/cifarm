@@ -63,7 +63,7 @@ import {
     UsePesticideMessage,
     UseWateringCanMessage,
 } from "@/hooks"
-import { createMainVisual, setTintForSpriteOrSpine } from "./utils"
+import { createMainVisual, getAssetData, setTint } from "./utils"
 import {
     BuyingModeOnMessage,
     ExternalEventName,
@@ -86,7 +86,7 @@ export enum InputMode {
 }
 
 interface DragData {
-  type: MainVisualType;
+  type?: MainVisualType;
   textureConfig?: TextureConfig;
   spineConfig?: SpineConfig;
   placedItemType: PlacedItemTypeSchema;
@@ -241,9 +241,17 @@ export class InputTilemap extends ItemTilemap {
                 if (!data.object.mainVisual) {
                     throw new Error("Main visual not found")
                 }
+
+                const assetData = getAssetData({
+                    placedItemType: data.object.placedItemType,
+                    scene: this.scene,
+                })
+                if (!assetData) {
+                    throw new Error("Asset data not found")
+                }   
                 const sellModalData: SellModalData = {
                     placedItem: data.object.currentPlacedItem,
-                    mainVisual: data.object.cloneMainVisual(),
+                    mapAssetData: assetData,
                 }
                 this.scene.cache.obj.add(CacheKey.SellModalData, sellModalData)
                 SceneEventEmitter.emit(SceneEventName.UpdateSellModal)
@@ -932,13 +940,19 @@ export class InputTilemap extends ItemTilemap {
         if (!placedItemType) {
             throw new Error("Placed item type not found")
         }
-        const { mainVisualType, textureConfig, spineConfig } =
-      this.getAssetConfigFromPlacedItem(placedItemType)
-
+        const assetData = getAssetData({
+            placedItemType,
+            scene: this.scene,
+            isAdult: object.currentPlacedItem?.animalInfo?.isAdult,
+            fruitStage: object.currentPlacedItem?.fruitInfo?.currentStage,
+        })
+        if (!assetData) {
+            throw new Error("Asset data not found")
+        }
         this.movingDragData = {
-            type: mainVisualType,
-            textureConfig,
-            spineConfig,
+            type: assetData.mainVisualType,
+            textureConfig: assetData.textureConfig,
+            spineConfig: assetData.spineConfig,
             placedItemType,
             objectData: data,
         }
@@ -1136,7 +1150,7 @@ export class InputTilemap extends ItemTilemap {
         const { x = 0, y = 0 } = { ...textureConfig?.extraOffsets }
         // set tint based on can place
 
-        setTintForSpriteOrSpine(
+        setTint(
             this.dragBuyVisual,
             isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
         )

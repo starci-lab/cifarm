@@ -22,6 +22,7 @@ import {
 } from "@/modules/entities"
 import { PlacedItemTypeSchema } from "@/modules/entities"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { createMainVisual } from "../../../tilemap"
 
 export class SellContent extends BaseSizer {
     private background: ModalBackground
@@ -74,12 +75,20 @@ export class SellContent extends BaseSizer {
         }
 
         SceneEventEmitter.on(SceneEventName.UpdateSellModal, () => {
-            const { mainVisual, placedItem } = this.scene.cache.obj.get(
+            const { mapAssetData, placedItem } = this.scene.cache.obj.get(
                 CacheKey.SellModalData
             ) as SellModalData
             if (!placedItem) {
                 throw new Error("Placed item is undefined")
             }
+            const mainVisual = createMainVisual({
+                ...mapAssetData,
+                scene: this.scene,
+            })
+            if (!mainVisual) {
+                throw new Error("Main visual is undefined")
+            }
+
             const sellPrice = getSellPriceFromPlacedItem({
                 scene: this.scene,
                 placedItem,

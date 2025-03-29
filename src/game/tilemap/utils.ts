@@ -1,7 +1,26 @@
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
-import { MainVisualType, SpineConfig, TextureConfig } from "../assets"
+import {
+    MainVisualType,
+    MapAssetData,
+    SpineConfig,
+    TextureConfig,
+    tileAssetMap,
+    buildingAssetMap,
+    animalAssetMap,
+    fruitAssetMap,
+    AnimalAge,
+} from "../assets"
+import {
+    AnimalSchema,
+    BuildingSchema,
+    FruitSchema,
+    PlacedItemType,
+    PlacedItemTypeSchema,
+    TileSchema,
+} from "@/modules/entities"
+import { CacheKey } from "../types"
 
-export const setTintForSpriteOrSpine = (
+export const setTint = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject,
     tintColor: number
 ) => {
@@ -20,7 +39,7 @@ export const setTintForSpriteOrSpine = (
     }
 }
 
-export const clearTintForSpriteOrSpine = (
+export const clearTint = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject
 ) => {
     if (mainVisual) {
@@ -68,6 +87,80 @@ export const createMainVisual = ({
         const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
         //render sprite
         return scene.add.sprite(x, y, textureConfig.key).setOrigin(0.5, 1)
+    }
+    }
+}
+
+export interface GetAssetDataParams {
+  placedItemType: PlacedItemTypeSchema;
+  scene: Phaser.Scene;
+  // extra vars to be use to define the asset data
+  isAdult?: boolean;
+  fruitStage?: number;
+}
+
+export const getAssetData = ({
+    placedItemType,
+    scene,
+    isAdult,
+    fruitStage,
+}: GetAssetDataParams): MapAssetData | undefined => {
+    if (!placedItemType) {
+        throw new Error("Placed item type not found")
+    }
+    switch (placedItemType.type) {
+    case PlacedItemType.Tile: {
+        if (!placedItemType.tile) {
+            throw new Error("Tile ID not found")
+        }
+        const tiles = scene.cache.obj.get(CacheKey.Tiles) as Array<TileSchema>
+        const tile = tiles.find((tile) => tile.id === placedItemType.tile)
+        if (!tile) {
+            throw new Error("Tile not found")
+        }
+        return tileAssetMap[tile.displayId].map
+    }
+    case PlacedItemType.Building: {
+        if (!placedItemType.building) {
+            throw new Error("Building ID not found")
+        }
+        const buildings = scene.cache.obj.get(
+            CacheKey.Buildings
+        ) as Array<BuildingSchema>
+        const building = buildings.find(
+            (building) => building.id === placedItemType.building
+        )
+        if (!building) {
+            throw new Error("Building not found")
+        }
+        return buildingAssetMap[building.displayId].map
+    }
+    case PlacedItemType.Animal: {
+        if (!placedItemType.animal) {
+            throw new Error("Animal ID not found")
+        }
+        const animals = scene.cache.obj.get(
+            CacheKey.Animals
+        ) as Array<AnimalSchema>
+        const animal = animals.find(
+            (animal) => animal.id === placedItemType.animal
+        )
+        if (!animal) {
+            throw new Error("Animal not found")
+        }
+        const age = isAdult ? AnimalAge.Adult : AnimalAge.Baby
+        return animalAssetMap[animal.displayId].map[age]
+    }
+    case PlacedItemType.Fruit: {
+        if (!placedItemType.fruit) {
+            throw new Error("Fruit ID not found")
+        }
+        const fruits = scene.cache.obj.get(CacheKey.Fruits) as Array<FruitSchema>
+        const fruit = fruits.find((fruit) => fruit.id === placedItemType.fruit)
+        if (!fruit) {
+            throw new Error("Fruit not found")
+        }
+        return fruitAssetMap[fruit.displayId].map[fruitStage ?? 0]
     }
     }
 }

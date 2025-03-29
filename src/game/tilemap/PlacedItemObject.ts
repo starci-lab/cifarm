@@ -24,17 +24,11 @@ import {
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
-    AnimalAge,
-    animalAssetMap,
     BaseAssetKey,
     baseAssetMap,
     buildingAssetMap,
     cropAssetMap,
-    fruitAssetMap,
-    MainVisualType,
-    SpineConfig,
     TextureConfig,
-    tileAssetMap,
 } from "../assets"
 import {
     stateAssetMap
@@ -44,7 +38,7 @@ import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { flowerAssetMap } from "../assets"
-import { setTintForSpriteOrSpine, clearTintForSpriteOrSpine, createMainVisual } from "./utils"
+import { setTint, clearTint, createMainVisual, getAssetData } from "./utils"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
 import { gameplayDepth } from "../depth"
 
@@ -917,7 +911,12 @@ export class PlacedItemObject extends ContainerLite {
         if (willReturn) {
             return
         }
-        const assetData = this.getAssetData()
+        const assetData = getAssetData({
+            placedItemType,
+            scene: this.scene,
+            isAdult: this.nextPlacedItem.animalInfo?.isAdult,
+            fruitStage: this.nextPlacedItem.fruitInfo?.currentStage,
+        })
         if (!assetData) {
             throw new Error("Asset data not found")
         }
@@ -937,29 +936,6 @@ export class PlacedItemObject extends ContainerLite {
             scene: this.scene,
         })
         this.addLocal(this.mainVisual)
-    }
-
-    public cloneMainVisual() {
-        if (!this.mainVisual) {
-            throw new Error("Main visual not found")
-        }
-
-        const assetData = this.getAssetData()
-        if (!assetData) {
-            throw new Error("Asset data not found")
-        }
-        const {
-            textureConfig,
-            spineConfig,
-            mainVisualType
-        } = assetData
-
-        return createMainVisual({
-            mainVisualType,
-            textureConfig,
-            spineConfig,
-            scene: this.scene,
-        })
     }
 
     private updateAnimalInfoBubble() {
@@ -1166,77 +1142,9 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
-    private getAssetData(): AssetData | undefined {
-        if (!this.nextPlacedItem) {
-            throw new Error("Placed item not found")
-        }
-        const placedItemType = this.placedItemTypes.find((placedItemType) => {
-            if (!this.nextPlacedItem) {
-                throw new Error("Current placed item not found")
-            }
-            return placedItemType.id === this.nextPlacedItem.placedItemType
-        })
-        if (!placedItemType) {
-            throw new Error("Placed item type not found")
-        }
-        switch (placedItemType.type) {
-        case PlacedItemType.Tile: {
-            if (!placedItemType.tile) {
-                throw new Error("Tile ID not found")
-            }
-            const tile = this.tiles.find((tile) => tile.id === placedItemType.tile)
-            if (!tile) {
-                throw new Error("Tile not found")
-            }
-            return tileAssetMap[tile.displayId].map
-        }
-        case PlacedItemType.Building: {
-            if (!placedItemType.building) {
-                throw new Error("Building ID not found")
-            }
-            const building = this.buildings.find(
-                (building) => building.id === placedItemType.building
-            )
-            if (!building) {
-                throw new Error("Building not found")
-            }
-            return buildingAssetMap[building.displayId].map
-        }
-        case PlacedItemType.Animal: {
-            if (!placedItemType.animal) throw new Error("Animal ID not found")
-            const animal = this.animals.find(
-                (animal) => animal.id === placedItemType.animal
-            )
-            if (!animal) {
-                throw new Error("Animal not found")
-            }
-            const animalAge = this.nextPlacedItem?.animalInfo?.isAdult
-                ? AnimalAge.Adult
-                : AnimalAge.Baby
-            return animalAssetMap[animal.displayId].map[animalAge]
-        }
-        case PlacedItemType.Fruit: {
-            if (!placedItemType.fruit) {
-                throw new Error("Fruit ID not found")
-            }
-            const fruit = this.fruits.find(
-                (fruit) => fruit.id === placedItemType.fruit
-            )
-            if (!fruit) {
-                throw new Error("Fruit not found")
-            }
-            const fruitStage = this.nextPlacedItem?.fruitInfo?.currentStage
-            if (fruitStage === undefined) {
-                throw new Error("Fruit stage not found")
-            }
-            return fruitAssetMap[fruit.displayId].map[fruitStage]
-        }
-        }
-    }
-
     public setTint(tintColor: number) {
         if (this.mainVisual) {
-            setTintForSpriteOrSpine(this.mainVisual, tintColor)
+            setTint(this.mainVisual, tintColor)
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.setTint(tintColor)
@@ -1245,16 +1153,10 @@ export class PlacedItemObject extends ContainerLite {
 
     public clearTint() {
         if (this.mainVisual) {
-            clearTintForSpriteOrSpine(this.mainVisual)  
+            clearTint(this.mainVisual)  
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.clearTint()
         }
     }
-}
-
-export interface AssetData {
-  textureConfig?: TextureConfig;
-  spineConfig?: SpineConfig;
-  mainVisualType?: MainVisualType;  
 }

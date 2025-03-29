@@ -1,5 +1,5 @@
 import { PlacedItemSchema } from "@/modules/entities"
-import { SpineGameObject } from "@esotericsoftware/spine-phaser"
+import { MapAssetData } from "../assets"
 
 export enum CacheKey {
     PlacedItems = "placed-items",
@@ -13,10 +13,6 @@ export enum CacheKey {
     Pets = "pets",
     Fruits = "fruits",
     Inventories = "inventories",
-    NeighborsArgs = "neighbors-args",
-    Neighbors = "neighbors",
-    FolloweesArgs = "followees-args",
-    Followees = "followees",
     InventoryTypes = "inventory-types",
     DailyRewardInfo = "daily-reward-info",
     User = "user",
@@ -49,6 +45,5 @@ export interface PlacedItemsData {
 
 export interface SellModalData {
     placedItem: PlacedItemSchema;
-    mainVisual: Phaser.GameObjects.Sprite | SpineGameObject;
-    scale?: number;
+    mapAssetData: MapAssetData
 }
