@@ -209,7 +209,7 @@ export class InputTilemap extends ItemTilemap {
             if (this.inputMode === InputMode.Buy) {
                 return
             }
-
+            console.log(this.getActualTileCoordinates(tile.x, tile.y))
             const data = this.findPlacedItemRoot(tile.x, tile.y)
             if (!data) {
                 console.log("No placed item found for position")
