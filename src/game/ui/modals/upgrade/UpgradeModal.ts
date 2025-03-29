@@ -1,19 +1,19 @@
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { UpgradeBuildingContent } from "./UpgradeBuildingContent"
+import { UpgradeContent } from "./UpgradeContent"
 import { BaseSizerBaseConstructorParams } from "../../../types"
 
-export class UpgradeBuildingModal extends BaseSizer {
-    private upgradeBuildingContent: UpgradeBuildingContent
+export class UpgradeModal extends BaseSizer {
+    private upgradeContent: UpgradeContent
 
     constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
-        this.upgradeBuildingContent = new UpgradeBuildingContent({
+        this.upgradeContent = new UpgradeContent({
             scene: this.scene,
             width,
             height
         })
-        this.scene.add.existing(this.upgradeBuildingContent)
-        this.addLocal(this.upgradeBuildingContent)
+        this.scene.add.existing(this.upgradeContent)
+        this.addLocal(this.upgradeContent)
     }
 }

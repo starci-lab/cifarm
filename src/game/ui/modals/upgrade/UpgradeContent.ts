@@ -1,23 +1,36 @@
-import { BuildingSchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
+import {
+    BuildingSchema,
+    PlacedItemSchema,
+    UserSchema,
+} from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { BaseAssetKey } from "../../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../../assets"
 import { SceneEventEmitter, SceneEventName, ModalName } from "../../../events"
-import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
+import {
+    BaseSizerBaseConstructorParams,
+    CacheKey,
+    UpgradeModalData,
+} from "../../../types"
 import { Background, Text, ModalBackground, TextColor } from "../../elements"
 import { createObjectId } from "@/modules/common"
 
-export class UpgradeBuildingContent extends BaseSizer {
+export class UpgradeContent extends BaseSizer {
     private background: ModalBackground
     private mainContainer: Sizer
-    private goldLabel: Label
+    private label: Label
     private levelText: Text
     private amountText: Text
     private buildings: Array<BuildingSchema>
-    private currentUser: UserSchema
-    private currentPlacedItemId: string = ""
-
-    constructor({ scene, x, y, height, width, config }: BaseSizerBaseConstructorParams) {
+    private user: UserSchema
+    constructor({
+        scene,
+        x,
+        y,
+        height,
+        width,
+        config,
+    }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
         // Background Modal
@@ -32,32 +45,33 @@ export class UpgradeBuildingContent extends BaseSizer {
                 background: Background.Small,
                 title: "Upgrade",
                 onXButtonPress: () => {
-                    SceneEventEmitter.emit(SceneEventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, {
+                        modalName: ModalName.Upgrade,
+                    })
                 },
                 mainButton: {
                     onPress: () => {
                         // const eventName: UpgradeBuildingRequest = {
                         //     placedItemBuildingId: this.currentPlacedItemId
                         // }
-
                         // SceneEventEmitter.once(SceneEventName.UpgradeBuildingResponsed, () => {
                         //     SceneEventEmitter.emit(SceneEventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
                         // })
                         // SceneEventEmitter.emit(SceneEventName.RequestUpgradeBuilding, eventName)
                     },
                     text: "Upgrade",
-                }
-            }
+                },
+            },
         })
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
 
         this.amountText = new Text({
             baseParams: { scene, text: "0", x: 0, y: 0 },
-            options: { fontSize: 30, textColor: TextColor.Brown }
+            options: { fontSize: 30, textColor: TextColor.Brown },
         })
         this.scene.add.existing(this.amountText)
-        
+
         this.mainContainer = this.scene.rexUI.add.sizer({
             orientation: "y",
             space: { item: 25 },
@@ -66,70 +80,82 @@ export class UpgradeBuildingContent extends BaseSizer {
 
         this.levelText = new Text({
             baseParams: { scene, text: "Current Level: 0", x: 0, y: 0 },
-            options: { fontSize: 30, textColor: TextColor.Brown }
+            options: { fontSize: 30, textColor: TextColor.Brown },
         }).setOrigin(0.5, 0)
         this.scene.add.existing(this.levelText)
         this.mainContainer.add(this.levelText, { align: "center" })
 
-        this.goldLabel = this.createGoldLabel({
-            iconKey: BaseAssetKey.UICommonIconGold,
+        this.label = this.createLabel({
+            iconKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
             amount: "0",
         })
-        this.scene.add.existing(this.goldLabel)
-        this.mainContainer.add(this.goldLabel, { align: "center" })
+
+        this.scene.add.existing(this.label)
+        this.mainContainer.add(this.label, { align: "center" })
 
         this.mainContainer.layout()
-        this.mainContainer.setPosition(0, -50) 
+        this.mainContainer.setPosition(0, -50)
 
         if (!this.background.container) {
             throw new Error("Container not found")
         }
         this.background.container.add(this.mainContainer)
 
-        this.buildings = this.scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
-        this.currentUser = this.scene.cache.obj.get(CacheKey.User)
+        this.buildings = this.scene.cache.obj.get(
+            CacheKey.Buildings
+        ) as Array<BuildingSchema>
+        this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
-        // SceneEventEmitter.on(SceneEventName.UpdateUpgadeBuildingModal, (placedItem: PlacedItemSchema) => {
-        //     console.log("UpdateUpgadeBuildingModal", placedItem)
-        //     this.render(placedItem) 
-        // })
+        SceneEventEmitter.on(SceneEventName.UpdateUpgradeModal, () => {
+            const { placedItem } = this.scene.cache.obj.get(
+                CacheKey.UpgradeModalData
+            ) as UpgradeModalData
+            this.render(placedItem)
+        })
     }
 
     private render(placedItem: PlacedItemSchema) {
-        this.currentPlacedItemId = placedItem.id
-        console.log("Buildings:", this.buildings)
-        console.log("Placed Item:", placedItem)
-        
         const buildingId = placedItem.placedItemType as string
-        console.log("Building ID:", buildingId)
-        const upgradeData = this.buildings.find(b => createObjectId(b.displayId) === buildingId)?.upgrades
-    
-        console.log("upgradeData", upgradeData)
-    
-        const currentUpgrade = placedItem.buildingInfo?.currentUpgrade ?? 0
-        const upgradeCost = upgradeData?.find(u => u.upgradeLevel === currentUpgrade + 1)?.upgradePrice ?? 0
+        const upgradeData = this.buildings.find(
+            (b) => createObjectId(b.displayId) === buildingId
+        )?.upgrades
 
-        this.levelText.setText(`Current Level: ${currentUpgrade} (Max: ${upgradeData?.length})`)
+        console.log("upgradeData", upgradeData)
+
+        const currentUpgrade = placedItem.buildingInfo?.currentUpgrade ?? 0
+        const upgradeCost =
+      upgradeData?.find((u) => u.upgradeLevel === currentUpgrade + 1)
+          ?.upgradePrice ?? 0
+
+        this.levelText.setText(
+            `Current Level: ${currentUpgrade} (Max: ${upgradeData?.length})`
+        )
         this.amountText.setText(upgradeCost.toString())
 
         //if max level hidden
         if (currentUpgrade === upgradeData?.length) {
-            this.goldLabel.setVisible(false)
+            this.label.setVisible(false)
             return
         }
-
-
     }
 
-    private createGoldLabel({ iconKey, amount, scale = 1 }: CreateLabelParams): Label {
-        const background = this.scene.add.image(0, 0, BaseAssetKey.UITopbarResource)
+    private createLabel({
+        iconKey,
+        amount,
+        scale = 1,
+    }: CreateLabelParams): Label {
+        const background = this.scene.add.image(
+            0,
+            0,
+            baseAssetMap[BaseAssetKey.UITopbarResource].base.textureConfig.key
+        )
         const iconContainer = this.scene.add.container(0, 0)
         const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)
         iconContainer.add(icon)
 
         this.amountText = new Text({
             baseParams: { scene: this.scene, x: 0, y: 0, text: amount.toString() },
-            options: { fontSize: 28, textColor: TextColor.White }
+            options: { fontSize: 28, textColor: TextColor.White },
         })
         this.scene.add.existing(this.amountText)
 
@@ -145,7 +171,7 @@ export class UpgradeBuildingContent extends BaseSizer {
 }
 
 interface CreateLabelParams {
-    iconKey: BaseAssetKey;
-    scale?: number;
-    amount: string;
+  iconKey: string;
+  scale?: number;
+  amount: string;
 }

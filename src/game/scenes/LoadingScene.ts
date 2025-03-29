@@ -86,12 +86,14 @@ export class LoadingScene extends Scene {
         )
 
         ExternalEventEmitter.on(ExternalEventName.AssetsLoaded, (progress: number) => {
+            if (progress === undefined) {
+                return
+            }
             const totalAssetsLoaded = Number.parseInt(this.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
             const prevAssetsLoaded = this.prevAssetsLoaded
             const currentAssetsLoaded = progress + prevAssetsLoaded
             this.prevAssetsLoaded = currentAssetsLoaded
             this.loadAssets(currentAssetsLoaded/totalAssetsLoaded) 
-            console.log("currentAssetsLoaded", currentAssetsLoaded)
         })
 
         //listen for load user data event

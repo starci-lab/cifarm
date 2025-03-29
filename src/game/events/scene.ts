@@ -32,6 +32,7 @@ export enum SceneEventName {
     UpdateInputQuantityModal = "update_input_quantity_modal",
     UpdateClaimModal = "update_claim_modal",
     UpdateConfirmModal = "update_confirm_modal",
+    UpdateUpgradeModal = "update_upgrade_modal",
 
     // action for show backdrop
     ShowBackdrop = "show_backdrop",
@@ -87,7 +88,7 @@ export enum ModalName {
     Claim = "claim",
     Settings = "settings",
     Profile = "profile",
-    UpgradeBuilding = "upgrade-building",
+    Upgrade = "upgrade",
     Sell = "sell",
 }  
 

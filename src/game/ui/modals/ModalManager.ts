@@ -8,7 +8,6 @@ import { ShopModal } from "./shop"
 import { InputQuantityModal, SelectProductModal, StandModal } from "./stand"
 import { ClaimModal } from "./claim"
 import { SettingsModal } from "./settings"
-import { UpgradeBuildingModal } from "./upgrade-building"
 import {
     CloseExternalModalMessage,
     CloseModalMessage,
@@ -22,7 +21,7 @@ import {
 } from "../../events"
 import { uiDepth } from "../../depth"
 import { SellModal } from "./sell"
-
+import { UpgradeModal } from "./upgrade"
 export class ModalManager extends ContainerLite {
     // the shop modal
     private shopModal: ShopModal | undefined
@@ -49,7 +48,7 @@ export class ModalManager extends ContainerLite {
         ModalName.Quests,
         ModalName.Profile,
     ]
-    private upgradeBuildingModal: UpgradeBuildingModal | undefined
+    private upgradeModal: UpgradeModal | undefined
 
     constructor({
         scene,
@@ -114,14 +113,14 @@ export class ModalManager extends ContainerLite {
             .hide()
         this.scene.add.existing(this.standModal)
 
-        this.upgradeBuildingModal = new UpgradeBuildingModal({
+        this.upgradeModal = new UpgradeModal({
             scene: this.scene,
             x: centerX,
             y: centerY,
         })
             .setDepth(uiDepth.modal.modal1)
             .hide()
-        this.scene.add.existing(this.upgradeBuildingModal)
+        this.scene.add.existing(this.upgradeModal)
 
         //selected product is a chained modal, so that it stay in layer depth 2 + 9, default is for the modal
         this.selectProductModal = new SelectProductModal({
@@ -275,11 +274,11 @@ export class ModalManager extends ContainerLite {
             }
             return this.sellModal
         }
-        case ModalName.UpgradeBuilding: {
-            if (!this.upgradeBuildingModal) {
-                throw new Error("Upgrade Building modal not found")
+        case ModalName.Upgrade: {
+            if (!this.upgradeModal) {
+                throw new Error("Upgrade modal not found")
             }
-            return this.upgradeBuildingModal
+            return this.upgradeModal
         }
         case ModalName.Neighbors:
         case ModalName.Quests:

@@ -32,7 +32,7 @@ import {
     tileAssetMap,
 } from "../assets"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
-import { CacheKey, SellModalData, TilemapBaseConstructorParams } from "../types"
+import { CacheKey, SellModalData, TilemapBaseConstructorParams, UpgradeModalData } from "../types"
 import { ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
@@ -1318,14 +1318,15 @@ export class InputTilemap extends ItemTilemap {
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.Hammer: {
+                const upgradeModalData: UpgradeModalData = {
+                    placedItem: currentPlacedItem,
+                }
+                this.scene.cache.obj.add(CacheKey.UpgradeModalData, upgradeModalData)
+                SceneEventEmitter.emit(SceneEventName.UpdateUpgradeModal)
                 const eventMessage: OpenModalMessage = {
-                    modalName: ModalName.UpgradeBuilding,
+                    modalName: ModalName.Upgrade,
                 }
                 SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
-            // SceneEventEmitter.emit(
-            //     SceneEventName.UpdateUpgadeBuildingModal,
-            //     currentPlacedItem
-            // )
             }
             }
         }

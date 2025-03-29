@@ -31,6 +31,7 @@ export enum CacheKey {
     AssetsLoaded = "assets-loaded",
     ClaimData = "claim-data",
     SellModalData = "sell-modal-data",
+    UpgradeModalData = "upgrade-modal-data",
 }
 
 export interface DeliveryData {
@@ -47,3 +48,8 @@ export interface SellModalData {
     placedItem: PlacedItemSchema;
     mapAssetData: MapAssetData
 }
+
+export interface UpgradeModalData {
+    placedItem: PlacedItemSchema;
+}
+
