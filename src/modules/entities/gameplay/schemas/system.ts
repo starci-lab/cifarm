@@ -1,5 +1,5 @@
 import { Position } from "../base"
-import { AppearanceChance, CropId, DailyRewardId } from "../enums"
+import { CropId, DailyRewardId } from "../enums"
 
 export interface SystemSchema {
   value: object;
@@ -92,23 +92,6 @@ export interface DefaultInfo {
   tileLimit: number;
   fruitLimit: number;
   buildingLimit: number;
-}
-
-export interface SlotInfo {
-  count: number;
-  thresholdMin: number;
-  thresholdMax: number;
-}
-
-export interface AppearanceChanceSlots {
-  [AppearanceChance.Common]: SlotInfo;
-  [AppearanceChance.Rare]: SlotInfo;
-  [AppearanceChance.Uncommon]: SlotInfo;
-  [AppearanceChance.VeryRare]: SlotInfo;
-}
-
-export interface SpinInfo {
-  appearanceChanceSlots: AppearanceChanceSlots;
 }
 
 export interface EnergyRegen {

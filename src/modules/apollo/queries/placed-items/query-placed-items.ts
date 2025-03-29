@@ -27,6 +27,14 @@ const query1 = gql`
       buildingInfo {
         currentUpgrade
       }
+      beeHouseInfo {
+        currentState
+        currentYieldTime
+        thieves
+        harvestQuantityRemaining
+        isQuality
+        harvestQuantityDesired
+      }
       animalInfo {
         currentGrowthTime
         currentHungryTime

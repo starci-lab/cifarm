@@ -26,7 +26,7 @@ export const flowerAssetMap: Record<FlowerId, FlowerAssetData> = {
                     assetUrl: "flowers/daisy/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -60,
+                        y: -90,
                     },
                 },
             },

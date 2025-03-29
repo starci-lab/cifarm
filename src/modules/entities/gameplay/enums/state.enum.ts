@@ -22,3 +22,23 @@ export enum FruitCurrentState {
     IsBuggy = "isBuggy",
     FullyMatured = "fullyMatured",
 }
+
+// Fruit Current State Enum
+export enum BeeHouseCurrentState {
+    Normal = "normal",
+    Yield = "yield"
+}
+
+// Building Current State Enum
+export enum BuildingCurrentState {
+    Normal = "normal",
+    Upgraded = "upgraded"
+}
+
+// Building Kind
+export enum BuildingKind {
+    // neutral mean normal building, no special function
+    Neutral = "neutral",
+    // bee house mean building that can produce honey
+    BeeHouse = "beeHouse",
+}

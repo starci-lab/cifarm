@@ -1,4 +1,4 @@
-import { AnimalType, BuildingId } from "../enums"
+import { AnimalType, BuildingId, BuildingKind } from "../enums"
 import { UpgradeSchema } from "./upgrade"
 import { PlacedItemTypeSchema } from "./placed-item-type"
 import { StaticAbstractSchema } from "./abstract"
@@ -19,4 +19,9 @@ export interface BuildingSchema extends StaticAbstractSchema<BuildingId> {
     upgradeIds: Array<string>
     placedItemTypeId?: string
     placedItemType?: PlacedItemTypeSchema
+    beeHouseYieldTime?: number
+    beeHouseBasicHarvestExperiences?: number
+    beeHouseQualityHarvestExperiences?: number
+    baseHoneyYieldCoefficient?: number
+    kind: BuildingKind
 }

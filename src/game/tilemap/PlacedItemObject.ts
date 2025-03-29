@@ -2,6 +2,8 @@ import { createObjectId, formatTime } from "@/modules/common"
 import {
     AnimalCurrentState,
     AnimalSchema,
+    BeeHouseCurrentState,
+    BuildingKind,
     BuildingSchema,
     CropSchema,
     FlowerSchema,
@@ -15,7 +17,7 @@ import {
     PlantCurrentState,
     PlantType,
     Position,
-    ProductSchema
+    ProductSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import {
@@ -29,15 +31,19 @@ import {
     cropAssetMap,
     TextureConfig,
 } from "../assets"
-import {
-    stateAssetMap
-} from "../assets/states"
+import { stateAssetMap } from "../assets/states"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { flowerAssetMap } from "../assets"
-import { setTintForMainVisual, clearTintForMainVisual, createMainVisual, getAssetData, getMainVisualOffsets } from "./utils"
+import {
+    setTintForMainVisual,
+    clearTintForMainVisual,
+    createMainVisual,
+    getAssetData,
+    getMainVisualOffsets,
+} from "./utils"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
 import { gameplayDepth } from "../depth"
 
@@ -59,13 +65,13 @@ export class PlacedItemObject extends ContainerLite {
     private fruits: Array<FruitSchema>
     private flowers: Array<FlowerSchema>
     private fruitInfo: FruitInfo
-    private timerIsShown = false      
+    private timerIsShown = false
 
     public ignoreCollision?: boolean
     public isPressedForAction = false
     public isPressedForTimer = false
     public placedItemType: PlacedItemTypeSchema | undefined
-    
+
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y)
 
@@ -98,7 +104,10 @@ export class PlacedItemObject extends ContainerLite {
         }
         for (let dx = 0; dx < this.placedItemType.sizeX; dx++) {
             for (let dy = 0; dy < this.placedItemType.sizeY; dy++) {
-                occupiedTiles.push({ x: this.currentPlacedItem.x - dx, y: this.currentPlacedItem.y - dy })
+                occupiedTiles.push({
+                    x: this.currentPlacedItem.x - dx,
+                    y: this.currentPlacedItem.y - dy,
+                })
             }
         }
         return occupiedTiles
@@ -169,9 +178,6 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem.plantInfo) {
             // remove everything in the container
             this.destroyAllChildren(true)
@@ -209,15 +215,17 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem.buildingInfo) {
             // remove everything in the container
             this.destroyAllChildren()
         } else {
             // Update the star based on level
             this.updateBuildingUpgrade()
+
+            // Update the timer
+            this.updateBeeHouseInfoTimer()
+            // Update the bubble state
+            this.updateBeeHouseInfoBubble()
         }
     }
 
@@ -238,9 +246,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updateFruitInfoBubble() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem?.fruitInfo) {
             throw new Error("Fruit info not found")
         }
@@ -287,7 +292,7 @@ export class PlacedItemObject extends ContainerLite {
                         })
                         .addBackground(background)
                         .setDepth(this.depth + 30)
-                        .setPosition(-TILE_WIDTH / 4, -2 * TILE_HEIGHT)
+                        .setPosition((-3/8) * TILE_WIDTH, (-3/2) * TILE_HEIGHT)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -377,9 +382,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updateFruitInfoTimer() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem?.fruitInfo) {
             throw new Error("Fruit info not found")
         }
@@ -402,9 +404,7 @@ export class PlacedItemObject extends ContainerLite {
                 })
                     .setVisible(false)
                     .setOrigin(0.5, 1)
-                    .setDepth(
-                        gameplayDepth.placementConfirmation
-                    )
+                    .setDepth(gameplayDepth.placementConfirmation)
                 this.scene.add.existing(this.timer)
                 this.pinLocal(this.timer, {
                     syncScale: false,
@@ -468,7 +468,8 @@ export class PlacedItemObject extends ContainerLite {
         }
 
         const stars = this.nextPlacedItem.buildingInfo.currentUpgrade || 0
-        const starKey = baseAssetMap[BaseAssetKey.UIModalStandPurpleStar].base.textureConfig.key
+        const starKey =
+      baseAssetMap[BaseAssetKey.UIModalStandPurpleStar].base.textureConfig.key
 
         const placedItemTypes = this.placedItemTypes.find(
             (placedItemType) =>
@@ -607,9 +608,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updatePlantInfoBubble() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem?.plantInfo) {
             throw new Error("Plant info not found")
         }
@@ -748,9 +746,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updatePlantInfoFertilizer() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem?.plantInfo) {
             throw new Error("Seed growth info not found")
         }
@@ -758,7 +753,11 @@ export class PlacedItemObject extends ContainerLite {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
                 this.fertilizerParticle = this.scene.add
-                    .sprite(0, 0, baseAssetMap[BaseAssetKey.FertilizerParticle].base.textureConfig.key) // Using sprite instead of image
+                    .sprite(
+                        0,
+                        0,
+                        baseAssetMap[BaseAssetKey.FertilizerParticle].base.textureConfig.key
+                    ) // Using sprite instead of image
                     .setDepth(this.depth + 11)
                     .setOrigin(0.5, 1)
                 this.addLocal(this.fertilizerParticle)
@@ -773,9 +772,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updatePlantInfoTimer() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem?.plantInfo) {
             throw new Error("Plant info not found")
         }
@@ -788,7 +784,7 @@ export class PlacedItemObject extends ContainerLite {
                     baseParams: {
                         scene: this.scene,
                         x: 0,
-                        y: -25,
+                        y: -50,
                         text: "",
                     },
                     options: {
@@ -798,9 +794,7 @@ export class PlacedItemObject extends ContainerLite {
                 })
                     .setVisible(false)
                     .setOrigin(0.5, 1)
-                    .setDepth(
-                        gameplayDepth.placementConfirmation
-                    )
+                    .setDepth(gameplayDepth.placementConfirmation)
                 this.scene.add.existing(this.timer)
                 this.pinLocal(this.timer, {
                     syncScale: false,
@@ -859,9 +853,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updateMainVisual() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
@@ -917,11 +908,7 @@ export class PlacedItemObject extends ContainerLite {
         if (!assetData) {
             throw new Error("Asset data not found")
         }
-        const {
-            textureConfig,
-            spineConfig,
-            mainVisualType
-        } = assetData
+        const { textureConfig, spineConfig, mainVisualType } = assetData
 
         if (this.mainVisual) {
             this.remove(this.mainVisual, true)
@@ -937,17 +924,11 @@ export class PlacedItemObject extends ContainerLite {
             spineConfig,
             textureConfig,
         })
-        this.mainVisual.setPosition(
-            offsets.x,
-            offsets.y
-        )
+        this.mainVisual.setPosition(offsets.x, offsets.y)
         this.addLocal(this.mainVisual)
     }
 
     private updateAnimalInfoBubble() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem?.animalInfo) {
             throw new Error("Animal info not found")
         }
@@ -1078,9 +1059,6 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     private updateAnimalInfoTimer() {
-        if (!this) {
-            throw new Error("Container not found")
-        }
         if (!this.nextPlacedItem?.animalInfo) {
             throw new Error("Animal info not found")
         }
@@ -1093,7 +1071,7 @@ export class PlacedItemObject extends ContainerLite {
                     baseParams: {
                         scene: this.scene,
                         x: 0,
-                        y: -25,
+                        y: -50,
                         text: "",
                     },
                     options: {
@@ -1103,9 +1081,7 @@ export class PlacedItemObject extends ContainerLite {
                 })
                     .setVisible(false)
                     .setOrigin(0.5, 1)
-                    .setDepth(
-                        gameplayDepth.placementConfirmation
-                    )
+                    .setDepth(gameplayDepth.placementConfirmation)
                 this.scene.add.existing(text)
                 this.timer = text
                 this.pinLocal(this.timer, {
@@ -1148,6 +1124,170 @@ export class PlacedItemObject extends ContainerLite {
         }
     }
 
+    // work only for specific building, currrently is bee house
+    private updateBeeHouseInfoTimer() {
+        const building = this.buildings.find((building) => {
+            return building.id === this.placedItemType?.building
+        })
+        if (!building) {
+            throw new Error("Building not found")
+        }
+        if (building.kind !== BuildingKind.BeeHouse) {
+            return
+        }
+        if (
+            this.nextPlacedItem?.beeHouseInfo?.currentState !=
+      BeeHouseCurrentState.Yield
+        ) {
+            if (!this.timer) {
+                const text = new Text({
+                    baseParams: {
+                        scene: this.scene,
+                        x: 0,
+                        y: -50,
+                        text: "",
+                    },
+                    options: {
+                        fontSize: 32,
+                        enableStroke: true,
+                    },
+                })
+                    .setVisible(false)
+                    .setOrigin(0.5, 1)
+                    .setDepth(gameplayDepth.placementConfirmation)
+                this.scene.add.existing(text)
+                this.timer = text
+                this.pinLocal(this.timer, {
+                    syncScale: false,
+                    syncPosition: true,
+                })
+            }
+
+            const beeHouse = this.buildings.find((building) => {
+                if (!this.nextPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                const placedItemType = this.placedItemTypes.find((placedItemType) => {
+                    if (!this.nextPlacedItem) {
+                        throw new Error("Current placed item not found")
+                    }
+                    return placedItemType.id === this.nextPlacedItem.placedItemType
+                })
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                return building.id === placedItemType.building
+            })
+
+            if (beeHouse?.beeHouseYieldTime == undefined) {
+                throw new Error("Bee house yield time not found")
+            }
+
+            const formattedTime = formatTime(
+                Math.round(
+                    beeHouse.beeHouseYieldTime -
+            (this.nextPlacedItem?.beeHouseInfo?.currentYieldTime || 0)
+                )
+            )
+            this.timer.setText(formattedTime)
+        } else {
+            if (this.timer) {
+                this.remove(this.timer, true)
+                this.timer = undefined
+            }
+        }
+    }
+
+    private updateBeeHouseInfoBubble() {
+        const building = this.buildings.find((building) => {
+            return building.id === this.placedItemType?.building
+        })
+        if (!building) {
+            throw new Error("Building not found")
+        }
+        if (building.kind !== BuildingKind.BeeHouse) {
+            return
+        } 
+
+        if (
+            this.nextPlacedItem?.beeHouseInfo?.currentState !== BeeHouseCurrentState.Normal
+        ) {
+            if (
+                this.currentPlacedItem?.beeHouseInfo?.currentState !==
+        this.nextPlacedItem?.beeHouseInfo?.currentState
+            ) {
+                if (!this.bubbleState) {
+                    const background = this.scene.add.image(
+                        0,
+                        0,
+                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
+                    )
+                    this.bubbleState = this.scene.rexUI.add
+                        .overlapSizer({
+                            width: background.width,
+                            height: background.height,
+                            originY: 1,
+                        })
+                        .addBackground(background)
+                        .setDepth(this.depth + 30)
+                        .setPosition((-3/8) * TILE_WIDTH, (-3/2) * TILE_HEIGHT)
+                    this.addLocal(this.bubbleState)
+                } else {
+                    this.bubbleState.removeAll(true)
+                }
+
+                const text = `${
+                    this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0
+                }/${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0}`
+
+                this.quantityText = new Text({
+                    baseParams: {
+                        scene: this.scene,
+                        text,
+                        x: 0,
+                        y: 0,
+                    },
+                    options: {
+                        fontSize: 28,
+                        textColor: TextColor.Brown,
+                    },
+                }).setDepth(this.depth + 31)
+
+                this.scene.add.existing(this.quantityText)
+                this.bubbleState
+                    .add(this.quantityText, {
+                        align: "center",
+                        expand: false,
+                        offsetY: -10,
+                    })
+                    .layout()
+            }
+        } else if (
+            this.currentPlacedItem?.beeHouseInfo?.currentState ===
+          BeeHouseCurrentState.Yield &&
+        this.currentPlacedItem?.beeHouseInfo?.harvestQuantityRemaining !==
+          this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining
+        ) {
+            if (!this.quantityText) {
+                throw new Error("Quantity text not found")
+            }
+            this.quantityText
+                .setText(
+                    `${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0}/${
+                        this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0
+                    }`
+                )
+                .setDepth(this.depth + 31)
+        } else {
+            // if bubble state is present, remove it
+            if (this.bubbleState) {
+                this.bubbleState.removeAll(true)
+                this.bubbleState.destroy()
+                this.bubbleState = undefined
+            }
+        }
+    }
+
     public setTint(tintColor: number) {
         if (this.mainVisual) {
             setTintForMainVisual(this.mainVisual, tintColor)
@@ -1159,7 +1299,7 @@ export class PlacedItemObject extends ContainerLite {
 
     public clearTint() {
         if (this.mainVisual) {
-            clearTintForMainVisual(this.mainVisual)  
+            clearTintForMainVisual(this.mainVisual)
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.clearTint()

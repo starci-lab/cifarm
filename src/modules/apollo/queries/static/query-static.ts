@@ -8,7 +8,6 @@ import {
     EnergyRegen,
     InventoryTypeSchema,
     PlacedItemTypeSchema,
-    SpinInfo,
     DefaultInfo,
     ToolSchema,
     ProductSchema,
@@ -130,30 +129,6 @@ const query = gql`
       fruitLimit
       buildingLimit
     }
-    spinInfo {
-      appearanceChanceSlots {
-        common {
-          count
-          thresholdMin
-          thresholdMax
-        }
-        rare {
-          count
-          thresholdMin
-          thresholdMax
-        }
-        uncommon {
-          count
-          thresholdMin
-          thresholdMax
-        }
-        veryRare {
-          count
-          thresholdMin
-          thresholdMax
-        }
-      }
-    }
     energyRegen {
       time
     }
@@ -240,7 +215,12 @@ const query = gql`
       maxOwnership
       animalContainedType
       maxUpgrade
+      beeHouseYieldTime
+      beeHouseBasicHarvestExperiences
+      beeHouseQualityHarvestExperiences
+      baseHoneyYieldCoefficient
       price
+      kind
       upgrades {
         id
         upgradePrice
@@ -382,7 +362,6 @@ const query = gql`
 export interface QueryStaticResponse {
   activities: Activities;
   defaultInfo: DefaultInfo;
-  spinInfo: SpinInfo;
   pets: Array<PetSchema>;
   energyRegen: EnergyRegen;
   placedItemTypes: Array<PlacedItemTypeSchema>;

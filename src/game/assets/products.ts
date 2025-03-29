@@ -12,6 +12,25 @@ export const productAssetMap: Record<
   ProductId,
   ProductAssetData
 > = {
+    [ProductId.Honey]: {
+        name: "Honey",
+        base: {
+            textureConfig: {
+                assetUrl: "products/honey.png",
+                key: "honey",
+            },
+        },
+    },
+    [ProductId.HoneyQuality]: {
+        name: "Honey Quality",
+        base: {
+            textureConfig: {
+                key: "honey",
+                useExisting: true,
+                isQuality: true,
+            },
+        },
+    },
     [ProductId.Egg]: {
         name: "Egg",
         base: {

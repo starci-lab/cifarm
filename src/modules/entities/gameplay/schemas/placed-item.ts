@@ -5,7 +5,7 @@ import { AnimalInfoSchema } from "./animal-info"
 import { BuildingInfoSchema } from "./building-info"
 import { FruitInfoSchema } from "./fruit-info"
 import { PlantInfoSchema } from "./plant-info"
-
+import { BeeHouseInfoSchema } from "./bee-house-info"
 export interface PlacedItemSchema extends AbstractSchema {
     x: number
     y: number
@@ -16,6 +16,7 @@ export interface PlacedItemSchema extends AbstractSchema {
     tileInfo?: TileInfoSchema
     animalInfo?: AnimalInfoSchema
     buildingInfo?: BuildingInfoSchema
+    beeHouseInfo?: BeeHouseInfoSchema
     placedItemType: string
     fruitInfo?: FruitInfoSchema
 }

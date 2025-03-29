@@ -110,6 +110,8 @@ export enum ProductId {
     DaisyQuality = "daisyQuality",
     Strawberry = "strawberry",
     StrawberryQuality = "strawberryQuality",
+    Honey = "honey",
+    HoneyQuality = "honeyQuality",
 }
 
 export enum SystemId {
@@ -117,7 +119,6 @@ export enum SystemId {
     CropRandomness = "cropRandomness",
     AnimalRandomness = "animalRandomness",
     Starter = "starter",
-    SpinInfo = "spinInfo",
     EnergyRegen = "energyRegen",
 }
 
@@ -186,6 +187,8 @@ export enum PlacedItemTypeId {
     Barn = "barn",
     Home = "home",
     BasicTile = "basicTile",
+    BeeHouse = "beeHouse",
+    PetHouse = "petHouse",
 }
 
 // Pet Enum

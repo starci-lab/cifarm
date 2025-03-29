@@ -4,6 +4,7 @@ export enum ProductType {
     Crop = "crop",
     Fruit = "fruit",
     Flower = "flower",
+    Honey = "honey",
 }
 
 // Animal Type Enum
@@ -24,15 +25,6 @@ export enum SupplyType {
     Fertilizer = "fertilizer",
     AnimalFeed = "animalFeed"
 }
-
-// Spin Type Enum
-export enum SpinPrizeType {
-    Gold = "gold",
-    Seed = "seed",
-    Supply = "supply",
-    Token = "token"
-}
-
 // Inventory Type Enum
 export enum InventoryType {
     Seed = "seed",
@@ -52,14 +44,6 @@ export enum PlacedItemType {
     Fruit = "fruit",
     Pet = "pet",
 }
-
-// AppearanceChance Enum
-export enum AppearanceChance {
-    Common = "common",
-    Uncommon = "uncommon",
-    Rare = "rare",
-    VeryRare = "veryRare",  
-} 
 
 // Inventory Kind
 export enum InventoryKind {
