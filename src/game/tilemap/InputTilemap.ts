@@ -22,8 +22,6 @@ import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
     AnimalAge,
     animalAssetMap,
-    // AnimalAge,
-    // animalAssetMap,
     BaseAssetKey,
     baseAssetMap,
     buildingAssetMap,
@@ -34,7 +32,7 @@ import {
     tileAssetMap,
 } from "../assets"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
-import { CacheKey, TilemapBaseConstructorParams } from "../types"
+import { CacheKey, SellModalData, TilemapBaseConstructorParams } from "../types"
 import { ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
@@ -65,7 +63,7 @@ import {
     UsePesticideMessage,
     UseWateringCanMessage,
 } from "@/hooks"
-import { setTintColorForSpriteOrSpine } from "./utils"
+import { createMainVisual, setTintForSpriteOrSpine } from "./utils"
 import {
     BuyingModeOnMessage,
     ExternalEventName,
@@ -100,7 +98,6 @@ export interface MovingDragData extends DragData {
 }
 
 // key for experience
-const ENERGY_KEY = baseAssetMap[BaseAssetKey.UITopbarIconEnergy].key
 // tilemap for handling input events
 export class InputTilemap extends ItemTilemap {
     // pinch instance
@@ -108,7 +105,7 @@ export class InputTilemap extends ItemTilemap {
     private tap: Tap | undefined
 
     // input mode
-    private inputMode = InputMode.Normal
+    private inputMode: InputMode = InputMode.Normal
 
     private minZoom = 0.5
     private maxZoom = 5
@@ -211,7 +208,6 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            console.log(tile.x, tile.y)
             const data = this.findPlacedItemRoot(tile.x, tile.y)
 
             if (!data) {
@@ -236,14 +232,23 @@ export class InputTilemap extends ItemTilemap {
             }
 
             if (this.inputMode === InputMode.Sell) {
-                const placedItem = data.object.currentPlacedItem
-
-                if (!placedItem) {
+                if (!data.object.currentPlacedItem?.id) {
                     throw new Error("Placed item id not found")
                 }
-
-                this.handleSellingMode({
-                    placedItem,
+                if (!data.object.placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                if (!data.object.mainVisual) {
+                    throw new Error("Main visual not found")
+                }
+                const sellModalData: SellModalData = {
+                    placedItem: data.object.currentPlacedItem,
+                    mainVisual: data.object.cloneMainVisual(),
+                }
+                this.scene.cache.obj.add(CacheKey.SellModalData, sellModalData)
+                SceneEventEmitter.emit(SceneEventName.UpdateSellModal)
+                SceneEventEmitter.emit(SceneEventName.OpenModal, {
+                    modalName: ModalName.Sell,
                 })
                 return
             }
@@ -878,7 +883,7 @@ export class InputTilemap extends ItemTilemap {
             if (!tile) {
                 throw new Error("Tile not found")
             }
-            const { textureConfig } = tileAssetMap[tile.displayId]
+            const { textureConfig } = tileAssetMap[tile.displayId].map
             _mainVisualType = MainVisualType.Sprite
             _textureConfig = textureConfig
             break
@@ -957,96 +962,8 @@ export class InputTilemap extends ItemTilemap {
             placedItemType,
         }
     }
-
-    private handleSellingMode({ 
-        placedItem }: HandleSellingModeParams) {
-        console.log(placedItem)
-    //     if (!placedItem) {
-    //         throw new Error("Placed item not found")
-    //     }
-    //     const data = this.placedItemObjectMap[placedItem.id]
-    //     if (!data) {
-    //         return
-    //     }
-    //     const currentPlacedItem = data.object.currentPlacedItem
-    //     if (!currentPlacedItem) {
-    //         throw new Error("Current placed item not found")
-    //     }
-    //     const placedItemType = this.placedItemTypes.find(
-    //         (placedItemType) => placedItemType.id === currentPlacedItem.placedItemType
-    //     )
-    //     if (!placedItemType) {
-    //         throw new Error("Placed item type not found")
-    //     }
-    //     let sellPrice: number = 0
-    //     if (!placedItemType.sellable) {
-    //         return
-    //     }
-    //     switch (placedItemType.type) {
-    //     case PlacedItemType.Building: {
-    //         const building = this.buildings.find(
-    //             (building) =>
-    //                 building.displayId.toString() ===
-    //         placedItemType.displayId.toString()
-    //         )
-    //         if (!building) {
-    //             throw new Error("Building not found")
-    //         }
-    //         const upgradeLevel =
-    //       currentPlacedItem?.buildingInfo?.currentUpgrade ?? 1
-    //         const upgradePrice =
-    //       building.upgrades?.find(
-    //           (upgrade) => upgrade.upgradeLevel === upgradeLevel
-    //       )?.sellPrice ?? 0
-    //         sellPrice = upgradePrice
-    //         break
-    //     }
-    //     case PlacedItemType.Tile: {
-    //         const tile = this._tiles.find(
-    //             (tile) =>
-    //                 tile.displayId.toString() === placedItemType.displayId.toString()
-    //         )
-    //         if (!tile) {
-    //             throw new Error("Tile not found")
-    //         }
-    //         sellPrice = tile.sellPrice ?? 0
-    //         break
-    //     }
-    //     case PlacedItemType.Animal: {
-    //         const animal = this.animals.find(
-    //             (animal) =>
-    //                 animal.displayId.toString() === placedItemType.displayId.toString()
-    //         )
-    //         if (!animal) {
-    //             throw new Error("Animal not found")
-    //         }
-    //         sellPrice = animal.sellPrice ?? 0
-    //         break
-    //     }
-    //     }
-    //     if (placedItemType.sellable) {
-    //         // const updateConfirmSellModalMessage: UpdateConfirmSellModalMessage = {
-    //         //     message: "Are you sure you want to sell this item?",
-    //         //     quantity: sellPrice,
-    //         //     callback: () => {
-    //         //         const eventMessage = {
-    //         //             placedItemId: placedItem.id,
-    //         //         }
-    //         //         ExternalEventEmitter.emit(ExternalEventName.RequestSell, eventMessage)
-    //         //     },
-    //         // }
-    //         // SceneEventEmitter.emit(
-    //         //     SceneEventName.UpdateConfirmSellModal,
-    //         //     updateConfirmSellModalMessage
-    //         // )
-    //     } else {
-    //         console.error("Not sellable")
-    //         return
-    //     }
-    }
     // update method to handle input events
     public update() {
-    // console.log(this.pinch?.pointers.map(x => `${x.x} ${x.y}`))
     //check current mouse position is in which tile
         if (this.inputMode === InputMode.Buy) {
             const camera = this.scene.cameras.main
@@ -1095,35 +1012,13 @@ export class InputTilemap extends ItemTilemap {
             tileSizeWidth: placedItemType.sizeX,
             tileSizeHeight: placedItemType.sizeY,
         })
-        switch (type) {
-        case MainVisualType.Spine: {
-            const { x = 0, y = 0 } = { ...spineConfig?.extraOffsets }
-            if (!spineConfig) {
-                throw new Error("Spine config not found")
-            }
-            //render spine animation
-            if (!this.dragBuyVisual) {
-                this.dragBuyVisual = this.scene.add
-                    .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
-                    .setDepth(gameplayDepth.drag)
-                    .setOrigin(0.5, 1)
-                this.dragBuyVisual.animationState.setAnimation(0, "idle", true)
-            }
-            break
-        }
-        case MainVisualType.Sprite: {
-            const { x = 0, y = 0 } = { ...textureConfig?.extraOffsets }
-            if (!textureConfig) {
-                throw new Error("Texture config not found")
-            }
-            if (!this.dragBuyVisual) {
-                this.dragBuyVisual = this.scene.add
-                    .sprite(x, y, textureConfig.key)
-                    .setDepth(gameplayDepth.drag)
-                    .setOrigin(0.5, 1)
-            }
-            break
-        }
+        if (!this.dragBuyVisual) {
+            this.dragBuyVisual = createMainVisual({
+                mainVisualType: type,
+                textureConfig,
+                spineConfig,
+                scene: this.scene,
+            })
         }
         // update the temporary place item object position
         const tilePosition = this.tileToWorldXY(tile.x, tile.y)
@@ -1241,7 +1136,7 @@ export class InputTilemap extends ItemTilemap {
         const { x = 0, y = 0 } = { ...textureConfig?.extraOffsets }
         // set tint based on can place
 
-        setTintColorForSpriteOrSpine(
+        setTintForSpriteOrSpine(
             this.dragBuyVisual,
             isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
         )
@@ -1635,21 +1530,20 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
+    // method to clean up the resources
     private cancelPlacement() {
         this.showEverything()
-        this.destroyDragVisual()
+        if (this.dragBuyVisual) {
+            this.dragBuyVisual.destroy()
+            this.dragBuyVisual = undefined
+        }
         this.inputMode = InputMode.Normal
-        this.placementConfirmation?.removeAll(true)
-        this.placementConfirmation?.destroy()
-        this.placementConfirmation = undefined
+        if (this.placementConfirmation) {
+            this.placementConfirmation.removeAll(true)
+            this.placementConfirmation.destroy()
+            this.placementConfirmation = undefined
+        }
         this.isDragging = false
-    }
-
-    // destroy method to clean up the resources
-    public destroyDragVisual() {
-        this.dragBuyVisual?.destroy()
-        this.dragBuyVisual = undefined
-    // remove the temporary object from the temporary layer
     }
 
     private hasThievedPlant({ data }: HasThievedPlantParams): boolean {
@@ -1829,7 +1723,7 @@ export class InputTilemap extends ItemTilemap {
             const position = data.object.getCenter()
             this.createFlyItems([
                 {
-                    iconAssetKey: ENERGY_KEY,
+                    iconAssetKey: baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
                     x: position.x,
                     y: position.y,
                     text: "Not enough",

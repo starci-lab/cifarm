@@ -4,7 +4,7 @@ import { InventorySchema, InventoryTypeSchema } from "@/modules/entities"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { onGameObjectPress } from "../../utils"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { getDeliveryInventories } from "../../../queries"
+import { getDeliveryInventories } from "../../../cache"
 import { Text, XButton, XButtonColor } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { RetainInventoryMessage } from "@/hooks"
@@ -78,7 +78,7 @@ export class StandContent extends BaseSizer {
             this.remove(this.gridSizer, true)
         }
         const items = this.getItems()
-        const background = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStand].key)
+        const background = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStand].base.textureConfig.key)
         // Create Fixed Grid Table
         this.gridSizer = this.scene.rexUI.add
             .gridSizer({
@@ -101,7 +101,7 @@ export class StandContent extends BaseSizer {
                         hasItem: !!item,
                         container
                     }
-                    const tagBackground = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStandTag].key)
+                    const tagBackground = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStandTag].base.textureConfig.key)
                     
                     let tagText: Text | undefined
                     if (item) {
@@ -177,7 +177,7 @@ export class StandContent extends BaseSizer {
             )
         }
         const {
-            textureConfig: { key },
+            base: { textureConfig: { key } },
         } = inventoryTypeAssetMap[inventoryType.displayId]
         
         const image = this.scene.add.image(0, 0, key)

@@ -126,7 +126,7 @@ export class InputQuantityContent extends BaseSizer {
         const frame = this.scene.add.image(
             0,
             0,
-            baseAssetMap[BaseAssetKey.UIModalCommonFrame].key
+            baseAssetMap[BaseAssetKey.UIModalCommonFrame].base.textureConfig.key
         )
         this.iconContainer = this.scene.rexUI.add.container(0, 0)
         this.productLabel = this.scene.rexUI.add
@@ -192,7 +192,7 @@ export class InputQuantityContent extends BaseSizer {
             throw new Error("Inventory type not found")
         }
         const {
-            textureConfig: { key },
+            base: { textureConfig: { key } },
         } = inventoryTypeAssetMap[inventoryType.displayId]
 
         const image = this.scene.add.image(0, 0, key).setDepth(this.depth + 1)

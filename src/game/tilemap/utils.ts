@@ -1,6 +1,7 @@
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
+import { MainVisualType, SpineConfig, TextureConfig } from "../assets"
 
-export const setTintColorForSpriteOrSpine = (
+export const setTintForSpriteOrSpine = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject,
     tintColor: number
 ) => {
@@ -19,7 +20,7 @@ export const setTintColorForSpriteOrSpine = (
     }
 }
 
-export const clearTintColorForSpriteOrSpine = (
+export const clearTintForSpriteOrSpine = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject
 ) => {
     if (mainVisual) {
@@ -30,5 +31,43 @@ export const clearTintColorForSpriteOrSpine = (
                 slot.color.set(1, 1, 1, 1)
             })
         }
+    }
+}
+
+export interface CreateMainVisualParams {
+  mainVisualType?: MainVisualType;
+  textureConfig?: TextureConfig;
+  spineConfig?: SpineConfig;
+  scene: Phaser.Scene;
+}
+
+export const createMainVisual = ({
+    mainVisualType = MainVisualType.Sprite,
+    textureConfig,
+    spineConfig,
+    scene,
+}: CreateMainVisualParams) => {
+    let mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
+    switch (mainVisualType) {
+    case MainVisualType.Spine: {
+        if (!spineConfig) {
+            throw new Error("Spine config is undefined")
+        }
+        const { x = 0, y = 0 } = { ...spineConfig.extraOffsets }
+        //render spine animation
+        mainVisual = scene.add
+            .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
+            .setOrigin(0.5, 1)
+        mainVisual.animationState.setAnimation(0, "idle", true)
+        return mainVisual
+    }
+    default: {
+        if (!textureConfig) {
+            throw new Error("Texture config is undefined")
+        }
+        const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
+        //render sprite
+        return scene.add.sprite(x, y, textureConfig.key).setOrigin(0.5, 1)
+    }
     }
 }

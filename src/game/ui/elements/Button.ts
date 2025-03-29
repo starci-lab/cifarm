@@ -34,8 +34,8 @@ export class Button extends Label {
         const { text, onPress, background = ButtonBackground.Primary, disableInteraction = true, syncTextScale, height, width, fontSize = 48, scale = 1 } = options
 
         const backgroundKeyMap: Record<ButtonBackground, string> = {
-            [ButtonBackground.Primary]: baseAssetMap[BaseAssetKey.UICommonButtonGreen].key,
-            [ButtonBackground.Secondary]: baseAssetMap[BaseAssetKey.UICommonButtonRed].key,
+            [ButtonBackground.Primary]: baseAssetMap[BaseAssetKey.UICommonButtonGreen].base.textureConfig.key,
+            [ButtonBackground.Secondary]: baseAssetMap[BaseAssetKey.UICommonButtonRed].base.textureConfig.key,
         }
         const buttonBackground = new NinePatch3x3({
             baseParams: {

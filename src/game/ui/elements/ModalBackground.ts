@@ -36,7 +36,7 @@ export interface Size {
 export enum SizeStyle {
   Container = "container",
   TabContainer = "tabContainer",
-}
+}   
 
 export interface SizeConfig {
   [SizeStyle.Container]?: Size;
@@ -56,9 +56,9 @@ export interface BackgroundData {
 
 const map: Record<Background, BackgroundData> = {
     [Background.Large]: {
-        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundLarge].key,
-        containerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundLargeContainer].key,
-        wrapperContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundLargeWrapperContainer].key,
+        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundLarge].base.textureConfig.key,
+        containerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundLargeContainer].base.textureConfig.key,
+        wrapperContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundLargeWrapperContainer].base.textureConfig.key,
         containerToWrapperOffsetY: 14,
         sizeConfig: {
             container: {
@@ -68,9 +68,9 @@ const map: Record<Background, BackgroundData> = {
         },
     },
     [Background.Medium]: {
-        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundMedium].key,
+        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundMedium].base.textureConfig.key,
         // containerAssetKey: BaseAssetKey.UIBackgroundMediumContainer,
-        containerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundMediumContainer].key,
+        containerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundMediumContainer].base.textureConfig.key,
         buttonScale: 1.4,
         buttonOffsetY: -70,
         sizeConfig: {
@@ -80,8 +80,8 @@ const map: Record<Background, BackgroundData> = {
         },
     },
     [Background.XLarge]: {
-        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXLarge].key,
-        wrapperContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXLargeWrapperContainer].key,
+        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXLarge].base.textureConfig.key,
+        wrapperContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXLargeWrapperContainer].base.textureConfig.key,
         sizeConfig: {
             container: {
                 width: BASE_WIDTH,
@@ -93,8 +93,8 @@ const map: Record<Background, BackgroundData> = {
         },
     },
     [Background.Small]: {
-        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundSmall].key,
-        containerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundSmallContainer].key,
+        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundSmall].base.textureConfig.key,
+        containerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundSmallContainer].base.textureConfig.key,
         sizeConfig: {
             container: {
                 width: SMALLER_WIDTH,
@@ -105,9 +105,9 @@ const map: Record<Background, BackgroundData> = {
         buttonScale: 0.9,
     },
     [Background.XXLarge]: {
-        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXXLarge].key,
-        tabContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXXLargeTabContainer].key,
-        wrapperContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXXLargeWrapperContainer].key,
+        backgroundAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXXLarge].base.textureConfig.key,
+        tabContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXXLargeTabContainer].base.textureConfig.key,
+        wrapperContainerAssetKey: baseAssetMap[BaseAssetKey.UIBackgroundXXLargeWrapperContainer].base.textureConfig.key,
         sizeConfig: {
             container: {
                 width: BASE_WIDTH,

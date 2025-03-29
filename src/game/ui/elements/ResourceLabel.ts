@@ -1,10 +1,10 @@
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { ConstructorParams, LabelBaseConstructorParams } from "@/game/types"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { TextColor, Text } from "./Text"
 
 export interface ResourceLabelOptions {
-    iconKey: BaseAssetKey
+    iconKey: string
     text: string
     //icon scale
     scale?: number      
@@ -20,7 +20,7 @@ export class ResourceLabel extends Label {
         }
         const { iconKey, text, scale = 1 } = options
         // create background
-        const background = scene.add.image(0, 0, BaseAssetKey.UITopbarResource)
+        const background = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UITopbarResource].base.textureConfig.key)
         // create icon container
         const iconContainer = scene.add.container(0, 0)
         // create icon

@@ -1,4 +1,4 @@
-import { BaseAssetKey, BootstrapAssetKey } from "@/game/assets"
+import { BaseAssetKey, BootstrapAssetKey, baseAssetMap, bootstrapAssetMap } from "@/game/assets"
 import {
     ConstructorParams,
     OverlapSizerBaseConstructorParams,
@@ -32,7 +32,7 @@ export class Slider extends OverlapSizer {
         const background = scene.add.image(
             0,
             0,
-            BootstrapAssetKey.LoadingBar
+            bootstrapAssetMap[BootstrapAssetKey.LoadingBar].base.textureConfig.key
         )
         super(scene, {
             width: background.width * scale,
@@ -43,11 +43,11 @@ export class Slider extends OverlapSizer {
         const indicator = scene.add.image(
             0,
             0,
-            BootstrapAssetKey.LoadingFill
+            bootstrapAssetMap[BootstrapAssetKey.LoadingFill].base.textureConfig.key
         ) as Phaser.GameObjects.Image & {
       resize: (width: number, height: number) => Phaser.GameObjects.Image;
     }
-        this.thumb = scene.add.image(0, 0, BaseAssetKey.UICommonSliderThumb).setScale(thumbScale)
+        this.thumb = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonSliderThumb].base.textureConfig.key).setScale(thumbScale)
         indicator.resize = (width: number, height: number) => {
             indicator.setCrop(0, 0, width - this.thumb.width / 2, height)
             return indicator

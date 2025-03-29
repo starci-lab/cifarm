@@ -1,8 +1,13 @@
 // Fruit Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
 import { FruitId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, TextureConfig } from "./types"
-import { loadTexture } from "./utils"
+import {
+    MapAssetData,
+    TextureConfig,
+    MainVisualType,
+    ShopAssetData,
+} from "./types"
+import { loadTexture, loadSpine } from "./utils"
 
 // Fruit Asset Data Interface
 export interface FruitStageAssetData {
@@ -10,7 +15,7 @@ export interface FruitStageAssetData {
 }
 
 export interface FruitAssetData {
-  map: Record<number, FruitStageAssetData>;
+  map: Record<number, MapAssetData>;
   name: string;
   shop?: ShopAssetData;
 }
@@ -150,15 +155,28 @@ export const loadFruitAssets = async (scene: Scene) => {
     // Load all fruit assets
     const promises: Promise<void>[] = []
     for (const fruitData of Object.values(fruitAssetMap)) {
-        // Load shop asset if exists
-        if (fruitData.shop?.textureConfig) {
+    // Load shop asset if exists
+        if (fruitData.shop) {
             promises.push(loadTexture(scene, fruitData.shop.textureConfig))
         }
 
         // Load all stage assets
         for (const stageData of Object.values(fruitData.map)) {
-            if (stageData.textureConfig) {
+            switch (stageData.mainVisualType) {
+            case MainVisualType.Spine: {
+                if (!stageData.spineConfig) {
+                    throw new Error("Spine config is undefined")
+                }
+                promises.push(loadSpine(scene, stageData.spineConfig))
+                break
+            }
+            default: {
+                if (!stageData.textureConfig) {
+                    throw new Error("Texture config is undefined")
+                }
                 promises.push(loadTexture(scene, stageData.textureConfig))
+                break
+            }
             }
         }
     }

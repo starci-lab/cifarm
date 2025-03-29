@@ -15,7 +15,6 @@ export class ResizedImage extends Phaser.GameObjects.Image {
             throw new Error("ResizedImage requires options")
         }
         const { width, height, widthPercentage = 1, heightPercentage = 1, key = v4(), baseKey } = options
-        console.log(width, height, widthPercentage, heightPercentage, key, baseKey)
         const sourceImage = scene.textures.get(baseKey).getSourceImage() as HTMLImageElement
         sourceImage.width = Math.floor(width ?? (sourceImage.width * widthPercentage))
         console.log(sourceImage.width, sourceImage.width)

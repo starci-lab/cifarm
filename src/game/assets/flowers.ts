@@ -1,8 +1,8 @@
 // Flower Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
 import { FlowerId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, TextureConfig } from "./types"
-import { loadTexture } from "./utils"
+import { MapAssetData, TextureConfig, MainVisualType, ShopAssetData } from "./types"
+import { loadTexture, loadSpine } from "./utils"
 
 // Flower Asset Data Interface
 export interface FlowerStageAssetData {
@@ -10,9 +10,9 @@ export interface FlowerStageAssetData {
 }
 
 export interface FlowerAssetData {
-  map: Record<number, FlowerStageAssetData>;
-  name: string;
-  shop?: ShopAssetData;
+    map: Record<number, MapAssetData>;
+    name: string;
+    shop?: ShopAssetData;
 }
 
 // Flower asset data map with the GID and asset URL for each flower using FlowerId as the key
@@ -89,15 +89,28 @@ export const loadFlowerAssets = async (scene: Scene) => {
     const promises: Promise<void>[] = []
     // Load all flower assets
     for (const flowerData of Object.values(flowerAssetMap)) {
-        // Load shop asset if exists
+        // Load shop asset if exis
         if (flowerData.shop) {
             promises.push(loadTexture(scene, flowerData.shop.textureConfig))
         }
-
+        
         // Load all stage assets
         for (const stageData of Object.values(flowerData.map)) {
-            if (stageData.textureConfig) {
+            switch (stageData.mainVisualType) {
+            case MainVisualType.Spine: {
+                if (!stageData.spineConfig) {
+                    throw new Error("Spine config is undefined")
+                }
+                promises.push(loadSpine(scene, stageData.spineConfig))
+                break
+            }
+            default: {
+                if (!stageData.textureConfig) {
+                    throw new Error("Texture config is undefined")
+                }
                 promises.push(loadTexture(scene, stageData.textureConfig))
+                break
+            }
             }
         }
     }

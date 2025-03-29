@@ -90,7 +90,8 @@ export class LoadingScene extends Scene {
             const prevAssetsLoaded = this.prevAssetsLoaded
             const currentAssetsLoaded = progress + prevAssetsLoaded
             this.prevAssetsLoaded = currentAssetsLoaded
-            this.loadAssets(currentAssetsLoaded/totalAssetsLoaded)  
+            this.loadAssets(currentAssetsLoaded/totalAssetsLoaded) 
+            console.log("currentAssetsLoaded", currentAssetsLoaded)
         })
 
         //listen for load user data event

@@ -3,18 +3,14 @@ import { BuildingId } from "@/modules/entities"
 import { Scene } from "phaser"
 import {
     ExtraOffsets,
-    ShopAssetData,
-    SpineConfig,
-    TextureConfig,
+    MapAssetData,
     MainVisualType,
+    ShopAssetData,
 } from "./types"
 import { loadSpine, loadTexture } from "./utils"
 // Building Asset Data Interface
-export interface BuildingStageAssetData {
-  textureConfig?: TextureConfig;
-  spineConfig?: SpineConfig;
+export interface BuildingStageAssetData extends MapAssetData {
   starsConfig?: StarsConfig;
-  mainVisualType?: MainVisualType;
 }
 
 export interface BuildingAssetData {
@@ -37,7 +33,6 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                 assetUrl: "buildings/home/home.png",
                 extraOffsets: { x: -10, y: -65 },
             },
-            mainVisualType: MainVisualType.Sprite,
         },
     },
     [BuildingId.Coop]: {
@@ -54,7 +49,6 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     y: -300,
                 },
             },
-            mainVisualType: MainVisualType.Sprite,
         },
         shop: {
             textureConfig: {
@@ -77,7 +71,6 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     y: -370,
                 },
             },
-            mainVisualType: MainVisualType.Sprite,
         },
         shop: {
             textureConfig: {
@@ -123,7 +116,6 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                 assetUrl: "buildings/pet-house/pet-house.png",
                 extraOffsets: { x: 0, y: -65 },
             },
-            mainVisualType: MainVisualType.Sprite,
         },
         shop: {
             textureConfig: {
@@ -136,22 +128,29 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
 
 // Function to load all building assets
 export const loadBuildingAssets = async (scene: Scene) => {
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
     // Load all building assets
     for (const buildingData of Object.values(buildingAssetMap)) {
     // Load shop asset if exists
-        if (buildingData.shop?.textureConfig) {
+        if (buildingData.shop) {
             promises.push(loadTexture(scene, buildingData.shop.textureConfig))
         }
-
-        // Load map asset
-        if (buildingData.map.textureConfig) {
-            promises.push(loadTexture(scene, buildingData.map.textureConfig))
-        }
-
-        // load spine asset if exists
-        if (buildingData.map.spineConfig) {
+        
+        switch (buildingData.map.mainVisualType) {
+        case MainVisualType.Spine: {
+            if (!buildingData.map.spineConfig) {
+                throw new Error("Spine config is undefined")
+            }
             promises.push(loadSpine(scene, buildingData.map.spineConfig))
+            break
+        }
+        default: {
+            if (!buildingData.map.textureConfig) {
+                throw new Error("Texture config is undefined")
+            }
+            promises.push(loadTexture(scene, buildingData.map.textureConfig))
+            break
+        }
         }
     }
     await Promise.all(promises)

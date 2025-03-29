@@ -21,6 +21,7 @@ import {
     ShowBackdropMessage
 } from "../../events"
 import { uiDepth } from "../../depth"
+import { SellModal } from "./sell"
 
 export class ModalManager extends ContainerLite {
     // the shop modal
@@ -39,6 +40,9 @@ export class ModalManager extends ContainerLite {
     private claimModal: ClaimModal | undefined
     // animal housing modal
     private settingsModal: SettingsModal | undefined
+    // sell modal
+    private sellModal: SellModal | undefined
+
 
     private externalModalNames = [
         ModalName.Neighbors,
@@ -146,6 +150,15 @@ export class ModalManager extends ContainerLite {
             .setDepth(uiDepth.modal.modal2)
             .hide()
         this.scene.add.existing(this.inputQuantityModal)
+
+        this.sellModal = new SellModal({
+            scene: this.scene,
+            x: centerX,
+            y: centerY,
+        })
+            .setDepth(uiDepth.modal.modal1)
+            .hide()
+        this.scene.add.existing(this.sellModal)
 
         SceneEventEmitter.on(
             SceneEventName.OpenModal,
@@ -255,6 +268,12 @@ export class ModalManager extends ContainerLite {
                 throw new Error("Settings modal not found")
             }
             return this.settingsModal
+        }
+        case ModalName.Sell: {
+            if (!this.sellModal) {
+                throw new Error("Sell modal not found")
+            }
+            return this.sellModal
         }
         case ModalName.UpgradeBuilding: {
             if (!this.upgradeBuildingModal) {

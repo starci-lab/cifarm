@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ConstructorParams, LabelBaseConstructorParams } from "../../types"
 import { onGameObjectPress } from "../utils"
 import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -27,7 +27,7 @@ export class XButton extends Label {
             [XButtonColor.Brown]: 0x522D28,
             [XButtonColor.White]: 0xffffff,
         }
-        const icon = scene.add.image(0, 0, BaseAssetKey.UICommonX).setTint(map[color])
+        const icon = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonX].base.textureConfig.key).setTint(map[color])
         super(scene, {
             width: width ?? icon.width,
             height: height ?? icon.height,

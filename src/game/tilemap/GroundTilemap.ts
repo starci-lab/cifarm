@@ -37,7 +37,7 @@ export class GroundTilemap extends BaseTilemap {
     // create the ground layer
         const grassTileset = this.createSingleTileTileset({
             tilesetName: TilesetName.Grass,
-            key: baseAssetMap[BaseAssetKey.Grass].key,
+            key: baseAssetMap[BaseAssetKey.Grass].base.textureConfig.key,
             gid: GRASS_GID,
         })
         // create ground layer

@@ -1,5 +1,5 @@
 import { GRAY_TINT_COLOR, SCALE_TIME } from "@/game/constants"
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import {
     ConstructorParams,
     ContainerLiteBaseConstructorParams,
@@ -56,10 +56,10 @@ export class Tabs extends ContainerLite {
         options,
     }: ConstructorParams<ContainerLiteBaseConstructorParams, TabsOptions>) {
         const tabSourceImage = scene.textures
-            .get(BaseAssetKey.UITabFrame)
+            .get(baseAssetMap[BaseAssetKey.UITabFrame].base.textureConfig.key)
             .getSourceImage() as HTMLImageElement
         const slatSourceImage = scene.textures
-            .get(BaseAssetKey.UITabSlat)
+            .get(baseAssetMap[BaseAssetKey.UITabSlat].base.textureConfig.key)
             .getSourceImage() as HTMLImageElement
         super(scene, x, y, width, height ?? tabSourceImage.height, children)
         if (!options) {
@@ -115,7 +115,7 @@ export class Tabs extends ContainerLite {
         this.tabContainer.addLocal(this.scrollablePanel)
         this.addLocal(this.tabContainer)
         const center = this.getCenter()
-        this.slat = scene.add.image(center.x, center.y, BaseAssetKey.UITabSlat).setOrigin(0.5, 1)
+        this.slat = scene.add.image(center.x, center.y, baseAssetMap[BaseAssetKey.UITabSlat].base.textureConfig.key).setOrigin(0.5, 1)
         this.addLocal(this.slat)
 
         SceneEventEmitter.on(
@@ -157,7 +157,7 @@ export class Tabs extends ContainerLite {
         const iconTabOnBackground = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UITabFrame
+            baseAssetMap[BaseAssetKey.UITabFrame].base.textureConfig.key
         )
         // iconTabOn.setInteractive()
         // add the icon tab on to the container

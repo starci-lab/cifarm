@@ -21,7 +21,7 @@ export interface GridTableOptions<TItem> {
 
 export class GridTableFrame extends Phaser.GameObjects.Image {
     constructor({ scene, x, y }: ImageBaseConstructorParams) {
-        super(scene, x, y, baseAssetMap[BaseAssetKey.UIModalCommonFrame].key)
+        super(scene, x, y, baseAssetMap[BaseAssetKey.UIModalCommonFrame].base.textureConfig.key)
     }
 }
 
@@ -32,7 +32,7 @@ export interface CellSize {
 
 export const getCellSize = (scene: Phaser.Scene): CellSize => {
     const sourceImage = scene.textures
-        .get(baseAssetMap[BaseAssetKey.UIModalCommonFrame].key)
+        .get(baseAssetMap[BaseAssetKey.UIModalCommonFrame].base.textureConfig.key)
         .getSourceImage()
     return {
         width: sourceImage.width,
@@ -53,7 +53,7 @@ export class GridTable<TItem> extends RexGridTable {
         }
 
         const frameSourceImage = scene.textures
-            .get(baseAssetMap[BaseAssetKey.UIModalCommonFrame].key)
+            .get(baseAssetMap[BaseAssetKey.UIModalCommonFrame].base.textureConfig.key)
             .getSourceImage()
         const cellWidth = frameSourceImage.width + MARGIN
         const cellHeight = frameSourceImage.height + MARGIN
@@ -78,7 +78,7 @@ export class GridTable<TItem> extends RexGridTable {
                 interactive: true, // Allow scrolling
             },
             slider: {
-                thumb: scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalCommonThumb].key),
+                thumb: scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalCommonThumb].base.textureConfig.key),
             },
             mouseWheelScroller: { focus: false, speed: 2 },
             createCellContainerCallback,

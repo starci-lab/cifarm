@@ -1,35 +1,87 @@
 import { Scene } from "phaser"
-import { TextureConfig } from "./types"
+import { MapAssetData, ShopAssetData, MainVisualType } from "./types"
 import { PetId } from "@/modules/entities"
-import { loadTexture } from "./utils"
+import { loadSpine, loadTexture } from "./utils"
 
 export interface PetAssetData {
     name: string;
-    textureConfig: TextureConfig;
+    map: MapAssetData;
+    shop?: ShopAssetData;
 }
 
 export const petAssetMap: Record<PetId, PetAssetData> = {
     [PetId.Dog]: {
         name: "Dog",
-        textureConfig: { 
-            key: "pets-dog", 
-            assetUrl: "pets/dog.png" 
+        map: { 
+            mainVisualType: MainVisualType.Spine,
+            spineConfig: {
+                atlas: {
+                    key: "pets-dog-atlas",
+                    assetUrl: "pets/dog/spine/dog.atlas",
+                    textureUrl: "pets/dog/sprite/dog.png",
+                },
+                json: {
+                    key: "pets-dog-json",
+                    assetUrl: "pets/dog/spine/dog.json",
+                },  
+            }   
+        },
+        shop: {
+            textureConfig: {
+                key: "pets-dog-shop",
+                assetUrl: "pets/dog/shop/dog.png",
+            },
         },
     },
     [PetId.Cat]: {
         name: "Cat",
-        textureConfig: { 
-            key: "pets-cat", 
-            assetUrl: "pets/cat.png" 
+        map: { 
+            mainVisualType: MainVisualType.Spine,
+            spineConfig: {
+                atlas: {
+                    key: "pets-cat-atlas",
+                    assetUrl: "pets/cat/spine/cat.atlas",
+                    textureUrl: "pets/cat/sprite/cat.png",
+                },
+                json: {
+                    key: "pets-cat-json",
+                    assetUrl: "pets/cat/spine/cat.json",
+                },
+            },
+        },
+        shop: {
+            textureConfig: {
+                key: "pets-cat-shop",
+                assetUrl: "pets/cat/shop/cat.png",
+            },
         },
     },
 }
 
 export const loadPetAssets = async (scene: Scene) => {
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
     for (const petData of Object.values(petAssetMap)) {
-        if (petData.textureConfig) {
-            promises.push(loadTexture(scene, petData.textureConfig))
+        if (petData.shop) {
+            promises.push(loadTexture(scene, petData.shop.textureConfig))
+        }
+
+        if (petData.map) {
+            switch (petData.map.mainVisualType) {
+            case MainVisualType.Spine: {
+                if (!petData.map.spineConfig) {
+                    throw new Error("Spine config is undefined")
+                }
+                promises.push(loadSpine(scene, petData.map.spineConfig))
+                break
+            }
+            default: {
+                if (!petData.map.textureConfig) {
+                    throw new Error("Texture config is undefined")
+                }
+                promises.push(loadTexture(scene, petData.map.textureConfig))
+                break
+            }       
+            }
         }
     }
     await Promise.all(promises)

@@ -4,7 +4,8 @@ import { sessionDb } from "@/modules/dexie"
 import axios from "axios"
 import { CacheKey } from "../types"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
-export const BASE_URL = "https://cifarm.s3.ap-southeast-1.amazonaws.com/"
+//export const BASE_URL = "https://cifarm.s3.ap-southeast-1.amazonaws.com/"
+export const BASE_URL = "http://localhost:3000/"
 export const PATH = "assets"
 
 export const getAssetUrl = (assetUrl: string) => {

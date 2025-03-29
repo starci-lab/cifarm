@@ -32,7 +32,7 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.returnButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconReturn].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconReturn].base.textureConfig.key,
             text: "Return",
             onPress: () => {
                 this.scene.cache.obj.remove(CacheKey.WatchingUser)
@@ -44,7 +44,7 @@ export class NeighborLeftHorizontalButtons extends HorizontalButtons {
 
         // add neighbors button
         this.neighborsButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconNeighbors].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNeighbors].base.textureConfig.key,
             text: "Neighbors",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {

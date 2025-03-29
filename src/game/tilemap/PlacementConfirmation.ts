@@ -36,7 +36,7 @@ export class PlacementConfirmation extends Buttons {
         const yesButtonBackground = scene.add.image(
             0,
             0,
-            baseAssetMap[BaseAssetKey.UICommonCheckRound].key
+            baseAssetMap[BaseAssetKey.UICommonCheckRound].base.textureConfig.key
         )
         this.yesButton = scene.rexUI.add
             .sizer({
@@ -48,7 +48,7 @@ export class PlacementConfirmation extends Buttons {
         const noButtonBackground = scene.add.image(
             0,
             0,
-            baseAssetMap[BaseAssetKey.UICommonXRound].key
+            baseAssetMap[BaseAssetKey.UICommonXRound].base.textureConfig.key
         )
         this.noButton = scene.rexUI.add
             .sizer({

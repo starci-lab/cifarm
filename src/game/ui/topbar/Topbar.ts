@@ -1,5 +1,5 @@
 import { UserSchema } from "@/modules/entities"
-import { BaseAssetKey } from "../../assets"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
 import { ResourceLabel, Text, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
@@ -28,7 +28,7 @@ export class Topbar extends BaseSizer {
     private watchingUser: UserSchema | undefined
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         const background = scene.add
-            .image(0, 0, BaseAssetKey.UITopbarHeader)
+            .image(0, 0, baseAssetMap[BaseAssetKey.UITopbarHeader].base.textureConfig.key)
             .setOrigin(0.5, 0)
         super(scene, x, y, width || background.width, height || background.height)
         this.background = background
@@ -112,7 +112,7 @@ export class Topbar extends BaseSizer {
         const nameBackground = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UITopbarName
+            baseAssetMap[BaseAssetKey.UITopbarName].base.textureConfig.key
         )
         const nameText = new Text({
             baseParams: {
@@ -141,11 +141,11 @@ export class Topbar extends BaseSizer {
         const avatarWrapperBackground = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UITopbarAvatarWrapper
+            baseAssetMap[BaseAssetKey.UITopbarAvatarWrapper].base.textureConfig.key
         )
-        const avatarImage = this.scene.add.image(0, 0, BaseAssetKey.UITopbarAvatar)
+        const avatarImage = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UITopbarAvatar].base.textureConfig.key)
         const avatarMask = this.scene.add
-            .image(0, 0, BaseAssetKey.UITopbarAvatarMask)
+            .image(0, 0, baseAssetMap[BaseAssetKey.UITopbarAvatarMask].base.textureConfig.key)
             .setVisible(false)
         const image = this.scene.add
             .image(0, 0, user.id)
@@ -174,7 +174,7 @@ export class Topbar extends BaseSizer {
         const levelBoxImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UITopbarLevelBox
+            baseAssetMap[BaseAssetKey.UITopbarLevelBox].base.textureConfig.key
         )
         const levelText = new Text({
             baseParams: {
@@ -236,16 +236,16 @@ export class Topbar extends BaseSizer {
     private updateResourcesContainer() {
         if (!this.resourcesContainer) {
             this.energyLabel = this.addLabel({
-                iconKey: BaseAssetKey.UITopbarIconEnergy,
+                iconKey: baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
                 text: "",
                 scale: 0.8,
             })
             this.goldLabel = this.addLabel({
-                iconKey: BaseAssetKey.UICommonIconCoin,
+                iconKey:  baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
                 text: "",
             })
             this.tokenLabel = this.addLabel({
-                iconKey: BaseAssetKey.UICommonIconCarrot,
+                iconKey: baseAssetMap[BaseAssetKey.UICommonIconCarrot].base.textureConfig.key,
                 text: "",
                 scale: 0.9,
             })
@@ -316,7 +316,7 @@ export class Topbar extends BaseSizer {
 }
 
 interface AddLabelParams {
-  iconKey: BaseAssetKey;
+  iconKey: string;
   scale?: number;
   text: string;
 }

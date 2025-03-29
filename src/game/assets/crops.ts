@@ -1,16 +1,12 @@
 // Crop Assets Loading (Fixed with proper configurations for TilesetConfig, TextureConfig, and ExtraOffsets)
 import { CropId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, TextureConfig } from "./types"
-import { loadTexture } from "./utils"
+import { MapAssetData, MainVisualType, ShopAssetData } from "./types"
+import { loadTexture, loadSpine } from "./utils"
 
-// Crop Asset Data Interface
-export interface CropStageAssetData {
-  textureConfig: TextureConfig;
-}
 
 export interface CropAssetData {
-  map: Record<number, CropStageAssetData>;
+  map: Record<number, MapAssetData>;
   name: string;
   shop?: ShopAssetData;
 }
@@ -522,11 +518,26 @@ export const loadCropAssets = async (scene: Scene) => {
         // Load the seed asset
         if (cropData.shop) {
             promises.push(loadTexture(scene, cropData.shop.textureConfig))
-        }
+        }   
 
         for (const stage of Object.keys(cropData.map)) {
             const stageData = cropData.map[parseInt(stage)]
-            promises.push(loadTexture(scene, stageData.textureConfig))
+            switch (stageData.mainVisualType) {
+            case MainVisualType.Spine: {
+                if (!stageData.spineConfig) {
+                    throw new Error("Spine config is undefined")
+                }
+                promises.push(loadSpine(scene, stageData.spineConfig))
+                break
+            }
+            default: {
+                if (!stageData.textureConfig) {
+                    throw new Error("Texture config is undefined")
+                }
+                promises.push(loadTexture(scene, stageData.textureConfig))
+                break
+            }
+            }
         }
     }
     await Promise.all(promises)

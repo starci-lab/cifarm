@@ -24,7 +24,7 @@ export class PlacementModeLeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.returnButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconPrevious].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconPrevious].base.textureConfig.key,
             text: "Return",
             onPress: () => {
                 SceneEventEmitter.emit(SceneEventName.NormalModeOn)

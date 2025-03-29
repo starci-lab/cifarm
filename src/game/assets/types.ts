@@ -43,12 +43,27 @@ export interface TextureConfig {
   // 1,2,3 is the package id, which is triggered when download package
 }
 
-export interface ShopAssetData {
-  textureConfig: TextureConfig;
-}
-
 export enum MainVisualType {
   Sprite = "sprite",
   Spine = "spine",
 }
+
+export interface MapAssetData {
+  spineConfig?: SpineConfig;
+  textureConfig?: TextureConfig;
+  mainVisualType?: MainVisualType;
+}
+
+export interface ShopAssetData {
+  textureConfig: TextureConfig;
+}
+
+export interface BaseData {
+  textureConfig: TextureConfig;
+}
+
+export interface ItemData {
+  textureConfig: TextureConfig;
+}
+
 

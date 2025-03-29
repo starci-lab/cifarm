@@ -1,6 +1,6 @@
 import { AnimalId } from "@/modules/entities"
 import { Scene } from "phaser"
-import { ShopAssetData, SpineConfig, MainVisualType } from "./types"
+import { MainVisualType, MapAssetData, ShopAssetData } from "./types"
 import { loadSpine, loadTexture } from "./utils"
 
 export enum AnimalAge {
@@ -8,13 +8,8 @@ export enum AnimalAge {
   Adult = "adult",
 }
 
-export interface AnimalStageAssetData {
-  spineConfig?: SpineConfig;
-  mainVisualType?: MainVisualType;
-}
-
 export interface AnimalAssetData {
-  map: Record<AnimalAge, AnimalStageAssetData>;
+  map: Record<AnimalAge, MapAssetData>;
   name: string;
   shop?: ShopAssetData;
 }
@@ -105,14 +100,30 @@ export const animalAssetMap: Record<AnimalId, AnimalAssetData> = {
 }
 
 export const loadAnimalAssets = async (scene: Scene) => {
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
     for (const animalData of Object.values(animalAssetMap)) {
         if (animalData.shop) {
+            if (!animalData.shop.textureConfig) {
+                throw new Error("Texture config is undefined")
+            }
             promises.push(loadTexture(scene, animalData.shop.textureConfig))
         }
         for (const stageData of Object.values(animalData.map)) {
-            if (stageData.spineConfig) {
+            switch (stageData.mainVisualType) {
+            case MainVisualType.Spine: {
+                if (!stageData.spineConfig) {
+                    throw new Error("Spine config is undefined")
+                }
                 promises.push(loadSpine(scene, stageData.spineConfig))
+                break
+            }
+            default: {
+                if (!stageData.textureConfig) {
+                    throw new Error("Texture config is undefined")
+                }
+                promises.push(loadTexture(scene, stageData.textureConfig))
+                break
+            }
             }
         }
     }

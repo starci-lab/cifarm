@@ -40,7 +40,7 @@ import {
     flowerAssetMap,
     baseAssetMap,
 } from "../../../assets"
-import { getPlacedItemsByType } from "../../../queries"
+import { getPlacedItemsByType } from "../../../cache"
 import {
     BaseSizerBaseConstructorParams,
     CacheKey,
@@ -125,7 +125,7 @@ export class ShopContent extends BaseSizer {
         super(scene, x, y, width, height, config)
 
         const cellSourceImage = this.scene.textures
-            .get(baseAssetMap[BaseAssetKey.UIModalShopCard].key)
+            .get(baseAssetMap[BaseAssetKey.UIModalShopCard].base.textureConfig.key)
             .getSourceImage()
         this.cellWidth = cellSourceImage.width
         this.cellHeight = cellSourceImage.height
@@ -713,7 +713,7 @@ export class ShopContent extends BaseSizer {
                 }
                 // get the image
                 items.push({
-                    assetKey: tileAssetMap[displayId].textureConfig.key,
+                    assetKey: tileAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     disabled,
                     unlockLevel,
@@ -739,7 +739,7 @@ export class ShopContent extends BaseSizer {
             for (const { displayId, price, unlockLevel } of this.supplies) {
                 // get the image
                 items.push({
-                    assetKey: supplyAssetMap[displayId].textureConfig.key,
+                    assetKey: supplyAssetMap[displayId].base.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
@@ -753,9 +753,12 @@ export class ShopContent extends BaseSizer {
         }
         case ShopTab.Pets: {
             for (const { displayId, price, unlockLevel } of this.pets) {
+                if (!petAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
                 // get the image
                 items.push({
-                    assetKey: petAssetMap[displayId].textureConfig.key,
+                    assetKey: petAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     unlockLevel,
                     onPress: (pointer: Phaser.Input.Pointer) => {
@@ -785,7 +788,7 @@ export class ShopContent extends BaseSizer {
                 const disabled = !goldsEnough || owned
                 // get the image
                 items.push({
-                    assetKey: toolAssetMap[displayId].textureConfig.key,
+                    assetKey: toolAssetMap[displayId].base.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     unlockLevel,
                     disabled,
@@ -1014,8 +1017,8 @@ export class ShopContent extends BaseSizer {
                 scene: this.scene,
             },
             options: {
-                iconAssetKey: supplyAssetMap[displayId].textureConfig.key,
-                x: pointer.x,
+                iconAssetKey: supplyAssetMap[displayId].base.textureConfig.key,
+                x: pointer.x,   
                 y: pointer.y,
                 quantity: 1,
                 depth: uiDepth.modal.fly,
@@ -1031,7 +1034,7 @@ export class ShopContent extends BaseSizer {
                     scene: this.scene,
                 },
                 options: {
-                    iconAssetKey: toolAssetMap[displayId].textureConfig.key,
+                    iconAssetKey: toolAssetMap[displayId].base.textureConfig.key,
                     x: pointer.x,
                     y: pointer.y,
                     quantity: 1,

@@ -30,7 +30,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
         })
 
         this.settingButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconSetting].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconSetting].base.textureConfig.key,
             text: "Settings",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -43,7 +43,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add inventory button
         this.inventoryButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconInventory].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconInventory].base.textureConfig.key,
             text: "Inventory",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -56,7 +56,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add daily button
         this.dailyButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconDaily].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconDaily].base.textureConfig.key,
             text: "Daily",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -69,7 +69,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add quest button
         this.questButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconQuests].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconQuests].base.textureConfig.key,
             text: "Quest",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -82,7 +82,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add move button
         this.moveButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconMove].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconMove].base.textureConfig.key,
             text: "Move",
             onPress: () => {
                 SceneEventEmitter.emit(SceneEventName.MovingModeOn)
@@ -92,7 +92,7 @@ export class RightHorizontalButtons extends HorizontalButtons {
 
         // add move button
         this.sellButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconSell].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconSell].base.textureConfig.key,
             text: "Sell",
             onPress: () => {
                 SceneEventEmitter.emit(SceneEventName.SellingModeOn)

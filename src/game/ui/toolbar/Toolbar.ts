@@ -21,7 +21,7 @@ import {
 import {
     getDefaultTools,
     getToolInventories,
-} from "@/game/queries"
+} from "../../cache"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { CellSize, getCellSize, ItemQuantity } from "../elements"
 import Button from "phaser3-rex-plugins/plugins/button"
@@ -80,7 +80,7 @@ export class Toolbar extends ContainerLite {
         this.cellSize = getCellSize(this.scene)
         // create the toolbar background
         this.background = this.scene.add
-            .image(0, 0, baseAssetMap[BaseAssetKey.UIToolbarBackground].key)
+            .image(0, 0, baseAssetMap[BaseAssetKey.UIToolbarBackground].base.textureConfig.key)
             .setOrigin(0.5, 1)
         this.addLocal(this.background)
 
@@ -172,9 +172,9 @@ export class Toolbar extends ContainerLite {
         const background = this.scene.add.image(
             0,
             0,
-            baseAssetMap[BaseAssetKey.UICommonPrevAvatar].key
+            baseAssetMap[BaseAssetKey.UICommonPrevAvatar].base.textureConfig.key
         )
-        const icon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonPrevIcon].key)
+        const icon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonPrevIcon].base.textureConfig.key)
         const prevButton = this.scene.rexUI.add
             .label({
                 originX: 0,
@@ -225,9 +225,9 @@ export class Toolbar extends ContainerLite {
         const background = this.scene.add.image(
             0,
             0,
-            baseAssetMap[BaseAssetKey.UICommonNextAvatar].key
+            baseAssetMap[BaseAssetKey.UICommonNextAvatar].base.textureConfig.key
         )
-        const icon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonNextIcon].key)
+        const icon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonNextIcon].base.textureConfig.key)
         const nextButton = this.scene.rexUI.add
             .label({
                 align: "center",
@@ -388,7 +388,7 @@ export class Toolbar extends ContainerLite {
                     this.selectTool(i, true)
                 })
                 item.layout()
-                const arrow = this.scene.add.image(0, -(item.height/2 + 20), baseAssetMap[BaseAssetKey.UIToolbarSelectedArrow].key)
+                const arrow = this.scene.add.image(0, -(item.height/2 + 20), baseAssetMap[BaseAssetKey.UIToolbarSelectedArrow].base.textureConfig.key)
                 const itemContainer = this.scene.rexUI.add.container(0, 0)
                 itemContainer.addLocal(item)
                 itemContainer.addLocal(arrow)
@@ -437,7 +437,7 @@ export class Toolbar extends ContainerLite {
             }
             const {
                 name,
-                textureConfig: { key: assetKey },
+                base: { textureConfig: { key: assetKey } },
             } = inventoryTypeAssetMap[inventoryType.displayId]
             return {
                 assetKey,
@@ -458,7 +458,7 @@ export class Toolbar extends ContainerLite {
         return defaultTools.map((tool) => {
             const {
                 name,
-                textureConfig: { key: assetKey },
+                base: { textureConfig: { key: assetKey } },
             } = toolAssetMap[tool.displayId]
             return {
                 assetKey,

@@ -13,4 +13,6 @@ export interface FruitSchema extends StaticAbstractSchema<FruitId> {
     maxHarvestQuantity: number
     basicHarvestExperiences: number
     qualityHarvestExperiences: number
+    sellable?: boolean
+    sellPrice?: number
 }

@@ -1,11 +1,11 @@
 import { Scene } from "phaser"
-import { TextureConfig } from "./types"
+import { BaseData } from "./types"
 import { SupplyId } from "@/modules/entities"
 import { loadTexture } from "./utils"
 
 export interface SupplyAssetData {
   name: string;
-  textureConfig: TextureConfig;
+  base: BaseData;
 }
 
 export const supplyAssetMap: Record<
@@ -14,23 +14,29 @@ export const supplyAssetMap: Record<
 > = {
     [SupplyId.BasicFertilizer]: {
         name: "Basic Fertilizer",
-        textureConfig: {
-            assetUrl: "supplies/basic-fertilizer.png",
-            key: "basic-fertilizer",
+        base: {
+            textureConfig: {
+                assetUrl: "supplies/basic-fertilizer.png",
+                key: "basic-fertilizer",
+            },
         },
     },
     [SupplyId.AnimalFeed]: {
         name: "Animal Feed",
-        textureConfig: {
-            assetUrl: "supplies/animal-feed.png",
-            key: "animal-feed",
+        base: {
+            textureConfig: {
+                assetUrl: "supplies/animal-feed.png",
+                key: "animal-feed",
+            },
         },
     },
     [SupplyId.FruitFertilizer]: {
         name: "Fruit Fertilizer",
-        textureConfig: {
-            assetUrl: "supplies/fruit-fertilizer.png",
-            key: "fruit-fertilizer",
+        base: {
+            textureConfig: {
+                assetUrl: "supplies/fruit-fertilizer.png",
+                key: "fruit-fertilizer",
+            },
         },
     },
 }
@@ -40,7 +46,9 @@ export const loadSupplyAssets = async (scene: Scene) => {
     // Load all supply assets
     const promises: Promise<void>[] = []
     for (const supplyData of Object.values(supplyAssetMap)) {
-        promises.push(loadTexture(scene, supplyData.textureConfig))
+        if (supplyData.base) {
+            promises.push(loadTexture(scene, supplyData.base.textureConfig))
+        }
     }
     await Promise.all(promises)
 }

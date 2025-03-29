@@ -28,7 +28,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.nftMarketplaceButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconNFTMarketplace].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNFTMarketplace].base.textureConfig.key,
             text: "NFT Marketplace",
             onPress: () => {
                 console.log("NFT")
@@ -38,7 +38,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add shop button
         this.shopButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconShop].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconShop].base.textureConfig.key,
             text: "Shop",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -50,7 +50,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
         this.addButton(this.shopButton)
         // add roadside stand button
         this.roadsideStandButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconRoadsideStand].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconRoadsideStand].base.textureConfig.key,
             text: "Roadside Stand",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {
@@ -63,7 +63,7 @@ export class LeftHorizontalButtons extends HorizontalButtons {
 
         // add neighbors button
         this.neighborsButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconNeighbors].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNeighbors].base.textureConfig.key,
             text: "Neighbors",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {

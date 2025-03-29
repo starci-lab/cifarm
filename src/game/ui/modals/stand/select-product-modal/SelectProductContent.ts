@@ -22,7 +22,7 @@ import {
 import {
     getDeliveryInventories,
     getProductInventories,
-} from "../../../../queries"
+} from "../../../../cache"
 import {
     SceneEventEmitter,
     SceneEventName,
@@ -156,7 +156,7 @@ export class SelectProductContent extends BaseSizer {
                             throw new Error("Inventory type not found")
                         }
                         const assetKey =
-              inventoryTypeAssetMap[inventoryType.displayId].textureConfig.key
+                            inventoryTypeAssetMap[inventoryType.displayId].base.textureConfig.key
                         const itemQuantity = new ItemQuantity({
                             baseParams: {
                                 scene: this.scene,

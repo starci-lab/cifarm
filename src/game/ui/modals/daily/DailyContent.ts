@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { DailyRewardId, DailyRewardInfo, UserSchema } from "@/modules/entities"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
 import { Background, Text, ModalBackground, XButton } from "../../elements"
@@ -40,16 +40,11 @@ export class DailyContent extends BaseSizer {
     private background: ModalBackground
     private rewardContainersSizer: Sizer | undefined
     private user: UserSchema
-    private goldBaseAssetKey: BaseAssetKey
-    private tokenBaseAssetKey: BaseAssetKey
     // daily rewards data
     private dailyRewardInfo: DailyRewardInfo
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
-
-        this.goldBaseAssetKey = BaseAssetKey.UICommonIconCoin
-        this.tokenBaseAssetKey = BaseAssetKey.UICommonIconCarrot
-
+        
         this.user = this.scene.cache.obj.get(CacheKey.User)
 
         // get the daily rewards data
@@ -91,14 +86,14 @@ export class DailyContent extends BaseSizer {
                         }
                         ExternalEventEmitter.once(ExternalEventName.ClaimDailyRewardResponsed, () => {
                             const items : Array<ClaimItem> = [{
-                                assetKey: this.goldBaseAssetKey,
+                                assetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
                                 quantity: this.dailyRewardInfo[id].golds,
                                 stackable: true,
                                 scale: GOLD_SCALE,
                             }]
                             if (this.dailyRewardInfo[id].tokens) {
                                 items.push({
-                                    assetKey: this.tokenBaseAssetKey,
+                                    assetKey: baseAssetMap[BaseAssetKey.UICommonIconCarrot].base.textureConfig.key,
                                     quantity: this.dailyRewardInfo[id].tokens,
                                     stackable: true,
                                     scale: TOKEN_SCALE,
@@ -199,11 +194,11 @@ export class DailyContent extends BaseSizer {
         const backgroundImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UIModalDailyBaseDayAvatar
+            baseAssetMap[BaseAssetKey.UIModalDailyBaseDayAvatar].base.textureConfig.key
         )
 
         // add the day label
-        const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
+        const dayImage = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalDailyDay].base.textureConfig.key)
         const dayText = new Text({
             baseParams: {
                 scene: this.scene,
@@ -264,7 +259,7 @@ export class DailyContent extends BaseSizer {
         if (claimed) {
             icon.setTint(GRAY_TINT_COLOR)
             quantityText.setTint(GRAY_TINT_COLOR)
-            const image = this.scene.add.image(0, 0, BaseAssetKey.UICommonCheck)
+            const image = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonCheck].base.textureConfig.key)
             iconSizerContainer.addLocal(image)
         }
         return badgeLabel
@@ -294,10 +289,10 @@ export class DailyContent extends BaseSizer {
         const backgroundImage = this.scene.add.image(
             0,
             0,
-            BaseAssetKey.UIModalDailyLastDayAvatar
+            baseAssetMap[BaseAssetKey.UIModalDailyLastDayAvatar].base.textureConfig.key
         )
         // add the day label
-        const dayImage = this.scene.add.image(0, 0, BaseAssetKey.UIModalDailyDay)
+        const dayImage = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalDailyDay].base.textureConfig.key)
         const dayText = new Text({
             baseParams: {
                 scene: this.scene,

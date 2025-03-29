@@ -70,6 +70,9 @@ export enum SceneEventName {
     // action for request toolbar inventory index
     RequestToolbarInventoryIndex = "request_toolbar_inventory_index",
     ToolbarInventoryIndexResponsed = "toolbar_inventory_index_responsed",
+
+    // action for set sell mode
+    UpdateSellModal = "update_sell_modal",
 }
 
 export enum ModalName {
@@ -85,6 +88,7 @@ export enum ModalName {
     Settings = "settings",
     Profile = "profile",
     UpgradeBuilding = "upgrade-building",
+    Sell = "sell",
 }  
 
 export interface OpenModalMessage {

@@ -9,7 +9,7 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
     Label,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { getStorageInventories } from "@/game/queries"
+import { getStorageInventories } from "../../../cache"
 import {
     GridTable,
     ItemQuantity,
@@ -153,7 +153,7 @@ export class InventoryStorage extends BaseSizer {
                                 options: {
                                     assetKey:
                     inventoryTypeAssetMap[inventoryType?.displayId]
-                        .textureConfig.key,
+                        .base.textureConfig.key,
                                     quantity,
                                     showBadge: inventoryType.stackable,
                                     itemHeight: this.cellSize.height,

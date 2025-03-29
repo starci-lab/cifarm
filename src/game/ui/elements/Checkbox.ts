@@ -17,8 +17,8 @@ export class Checkbox extends Label {
             throw new Error("Checkbox requires options")
         }
         const { checked, callback } = options
-        const container = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonCheckboxContainer].key)
-        const check = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonCheck].key)
+        const container = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonCheckboxContainer].base.textureConfig.key)
+        const check = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonCheck].base.textureConfig.key)
         const button = new Button(container)
 
         button.on("click", () => {

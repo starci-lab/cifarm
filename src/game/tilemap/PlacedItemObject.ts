@@ -31,6 +31,7 @@ import {
     buildingAssetMap,
     cropAssetMap,
     fruitAssetMap,
+    MainVisualType,
     SpineConfig,
     TextureConfig,
     tileAssetMap,
@@ -43,13 +44,13 @@ import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { flowerAssetMap } from "../assets"
-import { clearTintColorForSpriteOrSpine, setTintColorForSpriteOrSpine } from "./utils"
+import { setTintForSpriteOrSpine, clearTintForSpriteOrSpine, createMainVisual } from "./utils"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
 import { gameplayDepth } from "../depth"
 
 export class PlacedItemObject extends ContainerLite {
     private plantInfoSprite: Phaser.GameObjects.Sprite | undefined
-    private mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
+    public mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
     private bubbleState: OverlapSizer | undefined
     private quantityText: Text | undefined
     public currentPlacedItem: PlacedItemSchema | undefined
@@ -66,7 +67,7 @@ export class PlacedItemObject extends ContainerLite {
     private fruits: Array<FruitSchema>
     private flowers: Array<FlowerSchema>
     private fruitInfo: FruitInfo
-    private timerIsShown = false
+    private timerIsShown = false      
 
     public ignoreCollision?: boolean
     public isPressedForAction = false
@@ -285,7 +286,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        baseAssetMap[BaseAssetKey.BubbleState].key
+                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -308,7 +309,7 @@ export class PlacedItemObject extends ContainerLite {
                 ) {
                     const textureConfig =
             stateAssetMap.fruit[this.nextPlacedItem.fruitInfo.currentState]
-                ?.textureConfig
+                ?.base.textureConfig
                     if (!textureConfig) {
                         throw new Error("Texture config not found")
                     }
@@ -476,7 +477,7 @@ export class PlacedItemObject extends ContainerLite {
         }
 
         const stars = this.nextPlacedItem.buildingInfo.currentUpgrade || 0
-        const starKey = baseAssetMap[BaseAssetKey.UIModalStandPurpleStar].key
+        const starKey = baseAssetMap[BaseAssetKey.UIModalStandPurpleStar].base.textureConfig.key
 
         const placedItemTypes = this.placedItemTypes.find(
             (placedItemType) =>
@@ -662,7 +663,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        baseAssetMap[BaseAssetKey.BubbleState].key
+                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -685,7 +686,7 @@ export class PlacedItemObject extends ContainerLite {
                 ) {
                     const stateKey =
             stateAssetMap.plant[this.nextPlacedItem.plantInfo.currentState]
-                ?.textureConfig?.key
+                ?.base.textureConfig?.key
                     if (!stateKey) {
                         throw new Error("State key not found")
                     }
@@ -766,7 +767,7 @@ export class PlacedItemObject extends ContainerLite {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
                 this.fertilizerParticle = this.scene.add
-                    .sprite(0, 0, baseAssetMap[BaseAssetKey.FertilizerParticle].key) // Using sprite instead of image
+                    .sprite(0, 0, baseAssetMap[BaseAssetKey.FertilizerParticle].base.textureConfig.key) // Using sprite instead of image
                     .setDepth(this.depth + 11)
                     .setOrigin(0.5, 1)
                 this.addLocal(this.fertilizerParticle)
@@ -923,34 +924,42 @@ export class PlacedItemObject extends ContainerLite {
         const {
             textureConfig,
             spineConfig,
+            mainVisualType
         } = assetData
 
-        if (spineConfig) {
-            const { x = 0, y = 0 } = { ...spineConfig.extraOffsets }
-            //render spine animation
-            if (this.mainVisual) {
-                this.remove(this.mainVisual, true)
-            }
-            this.mainVisual = this.scene.add
-                .spine(x, y, spineConfig.json.key, spineConfig.atlas.key)
-                .setDepth(this.depth + 10)
-                .setOrigin(0.5, 1)
-            this.mainVisual.animationState.setAnimation(0, "idle", true)
-            this.addLocal(this.mainVisual)
-        } 
-        if (textureConfig) {
-            const { x = 0, y = 0 } = { ...textureConfig.extraOffsets }
-            //render sprite
-            if (this.mainVisual) {
-                // destroy the previous sprite
-                this.remove(this.mainVisual, true)
-            }
-            this.mainVisual = this.scene.add
-                .sprite(x, y, textureConfig.key)
-                .setDepth(this.depth + 10)
-                .setOrigin(0.5, 1)
-            this.addLocal(this.mainVisual)
+        if (this.mainVisual) {
+            this.remove(this.mainVisual, true)
         }
+        this.mainVisual = createMainVisual({
+            mainVisualType,
+            textureConfig,
+            spineConfig,
+            scene: this.scene,
+        })
+        this.addLocal(this.mainVisual)
+    }
+
+    public cloneMainVisual() {
+        if (!this.mainVisual) {
+            throw new Error("Main visual not found")
+        }
+
+        const assetData = this.getAssetData()
+        if (!assetData) {
+            throw new Error("Asset data not found")
+        }
+        const {
+            textureConfig,
+            spineConfig,
+            mainVisualType
+        } = assetData
+
+        return createMainVisual({
+            mainVisualType,
+            textureConfig,
+            spineConfig,
+            scene: this.scene,
+        })
     }
 
     private updateAnimalInfoBubble() {
@@ -989,7 +998,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        baseAssetMap[BaseAssetKey.BubbleState].key
+                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -1011,7 +1020,7 @@ export class PlacedItemObject extends ContainerLite {
                 ) {
                     const textureConfig =
             stateAssetMap.animal[this.nextPlacedItem.animalInfo.currentState]
-                ?.textureConfig
+                ?.base.textureConfig
                     if (!textureConfig) {
                         throw new Error("Texture config not found")
                     }
@@ -1179,7 +1188,7 @@ export class PlacedItemObject extends ContainerLite {
             if (!tile) {
                 throw new Error("Tile not found")
             }
-            return tileAssetMap[tile.displayId]
+            return tileAssetMap[tile.displayId].map
         }
         case PlacedItemType.Building: {
             if (!placedItemType.building) {
@@ -1227,16 +1236,16 @@ export class PlacedItemObject extends ContainerLite {
 
     public setTint(tintColor: number) {
         if (this.mainVisual) {
-            setTintColorForSpriteOrSpine(this.mainVisual, tintColor)
+            setTintForSpriteOrSpine(this.mainVisual, tintColor)
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.setTint(tintColor)
         }
     }
 
-    public clearTintColor() {
+    public clearTint() {
         if (this.mainVisual) {
-            clearTintColorForSpriteOrSpine(this.mainVisual)  
+            clearTintForSpriteOrSpine(this.mainVisual)  
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.clearTint()
@@ -1247,4 +1256,5 @@ export class PlacedItemObject extends ContainerLite {
 export interface AssetData {
   textureConfig?: TextureConfig;
   spineConfig?: SpineConfig;
+  mainVisualType?: MainVisualType;  
 }

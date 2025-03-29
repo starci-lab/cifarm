@@ -48,14 +48,14 @@ import { PlacedItemObject } from "./PlacedItemObject"
 import { LayerName, ObjectLayerName } from "./types"
 import { FlyItem, FlyItemOptions } from "../ui"
 import { gameplayDepth } from "../depth"
-import { ExternalEventEmitter, ExternalEventName, SceneEventEmitter } from "../events"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+    SceneEventEmitter,
+} from "../events"
 import { SceneEventName } from "../events"
 
 const DEPTH_MULTIPLIER = 100
-const EXPERIENCE_KEY = baseAssetMap[BaseAssetKey.UICommonExperience].key
-const ENERGY_KEY = baseAssetMap[BaseAssetKey.UITopbarIconEnergy].key
-const GOLD_KEY = baseAssetMap[BaseAssetKey.UICommonIconCoin].key
-
 export abstract class ItemTilemap extends GroundTilemap {
     // item layer
     private itemLayer: Phaser.Tilemaps.ObjectLayer
@@ -105,7 +105,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             this.scene.cache.obj.add(CacheKey.WatchingUser, user)
             this.handeVisit()
         })
-        
+
         SceneEventEmitter.on(SceneEventName.PlacedItemsRefreshed, () => {
             //console.log("update placed items")
             const currentPlaceItemsData = this.getCurrentPlacedItemsData()
@@ -129,912 +129,966 @@ export abstract class ItemTilemap extends GroundTilemap {
             this.previousPlacedItemsData = placedItemsData
         }
 
-        ExternalEventEmitter.on(ExternalEventName.ActionEmitted, (data: EmitActionPayload) => {
-            const {
-                placedItem: { x, y, placedItemType: placedItemTypeId },
-            } = data
-            if (x === undefined) {
-                throw new Error("X is not found")
-            }
-            if (y === undefined) {
-                throw new Error("Y is not found")
-            }
-            const placedItemType = this.placedItemTypes.find(
-                (placedItemType) => placedItemType.id === placedItemTypeId
-            )
-            if (!placedItemType) {
-                throw new Error("Placed item type not found")
-            }
-            const tile = this.getTileCenteredAt({
-                tileX: x,
-                tileY: y,
-                layer: LayerName.Ground,
-            })
-            if (!tile) {
-                throw new Error("Tile not found")
-            }
-            const position = {
-                x: tile.getCenterX() - this.tileWidth / 2,
-                y: tile.getCenterY() - (placedItemType.sizeY * this.tileHeight) / 2,
-            }
-            switch (data.action) {
-            case ActionName.UseWateringCan:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useWateringCan.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.useWateringCan.experiencesGain ?? 0,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useWateringCan.energyConsume,
-                        },
-                    ])
+        ExternalEventEmitter.on(
+            ExternalEventName.ActionEmitted,
+            (data: EmitActionPayload) => {
+                const {
+                    placedItem: { x, y, placedItemType: placedItemTypeId },
+                } = data
+                if (x === undefined) {
+                    throw new Error("X is not found")
                 }
-                break
+                if (y === undefined) {
+                    throw new Error("Y is not found")
+                }
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.id === placedItemTypeId
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                const tile = this.getTileCenteredAt({
+                    tileX: x,
+                    tileY: y,
+                    layer: LayerName.Ground,
+                })
+                if (!tile) {
+                    throw new Error("Tile not found")
+                }
+                const position = {
+                    x: tile.getCenterX() - this.tileWidth / 2,
+                    y: tile.getCenterY() - (placedItemType.sizeY * this.tileHeight) / 2,
+                }
+                switch (data.action) {
+                case ActionName.UseWateringCan:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useWateringCan.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.useWateringCan.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:   
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useWateringCan.energyConsume,
+                            },
+                        ])
+                    }
+                    break
 
-            case ActionName.PlantSeed:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.plantSeed.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.plantSeed.experiencesGain ?? 0,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.plantSeed.energyConsume,
-                        },
-                    ])
-                }
-                break
+                case ActionName.PlantSeed:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.plantSeed.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.plantSeed.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.plantSeed.energyConsume,
+                            },
+                        ])
+                    }
+                    break
 
-            case ActionName.UsePesticide:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.usePesticide.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.usePesticide.experiencesGain ?? 0,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.usePesticide.energyConsume,
-                        },
-                    ])
-                }
-                break
-            case ActionName.HelpUsePesticide:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.helpUsePesticide.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.helpUsePesticide.experiencesGain ?? 0,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.helpUsePesticide.energyConsume,
-                        },
-                    ])
-                }
-                break
-            case ActionName.UseHerbicide:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useHerbicide.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.useHerbicide.experiencesGain ?? 0,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useHerbicide.energyConsume,
-                        },
-                    ])
-                }
-                break
-            case ActionName.HelpUseHerbicide:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.helpUseHerbicide.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.helpUseHerbicide.experiencesGain ?? 0,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        { 
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to use herbicide",
-                        },
-                    ])
-                }
-                break
-            case ActionName.UseFertilizer:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useFertilizer.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.useFertilizer.experiencesGain ?? 0,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to use fertilizer",
-                        },  
-                    ])
-                }
-                break
-            case ActionName.HarvestPlant:
-                if (data.success) {
-                    const { quantity, productId } = data.data as HarvestPlantData
-                    const product = this.products.find(
-                        (product) => product.id === productId
-                    )
-                    if (!product) {
-                        throw new Error("Product not found")
+                case ActionName.UsePesticide:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.usePesticide.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.usePesticide.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.usePesticide.energyConsume,
+                            },
+                        ])
                     }
-                    const assetKey =
-              productAssetMap[product.displayId].textureConfig.key
-                    let experiencesGain = 0
-                    switch (product.type) {
-                    case ProductType.Crop: {
-                        const crop = this.crops.find(
-                            (crop) => crop.id === product.crop
-                        )
-                        if (!crop) {
-                            throw new Error("Crop not found")
-                        }
-                        experiencesGain = product.isQuality
-                            ? crop.qualityHarvestExperiences
-                            : crop.basicHarvestExperiences
-
-                        break
+                    break
+                case ActionName.HelpUsePesticide:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.helpUsePesticide.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity:
+                    this.activities.helpUsePesticide.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.helpUsePesticide.energyConsume,
+                            },
+                        ])
                     }
-                    case ProductType.Flower: {
-                        const flower = this.flowers.find(
-                            (flower) => flower.id === product.flower
-                        )
-                        if (!flower) {
-                            throw new Error("Flower not found")
-                        }
-                        experiencesGain = product.isQuality
-                            ? flower.qualityHarvestExperiences
-                            : flower.basicHarvestExperiences
-                        break
+                    break
+                case ActionName.UseHerbicide:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useHerbicide.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.useHerbicide.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useHerbicide.energyConsume,
+                            },
+                        ])
                     }
-                    }
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.harvestPlant.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: experiencesGain,
-                        },
-                        {
-                            iconAssetKey: assetKey,
-                            x: position.x,
-                            y: position.y,
-                            quantity,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to harvest plant",
-                        },
-                    ])
-                }
-                break
-            case ActionName.BuyTile:
-                if (data.success) {
-                    const { tileId } = data.data as BuyTileData
-                    const tile = this._tiles.find((tile) => tile.id === tileId)
-                    if (!tile) {
-                        throw new Error("Tile not found")
-                    }
-                    if (!tile.price) {
-                        throw new Error("Tile price not found")
-                    }
-                    // get the tile position
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: GOLD_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -tile.price,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to buy tile",
-                        },
-                    ])
-                }
-                break
-            case ActionName.BuyAnimal:
-                if (data.success) {
-                    const { animalId } = data.data as BuyAnimalData
-                    const animal = this.animals.find(
-                        (animal) => animal.id === animalId
-                    )
-                    if (!animal) {
-                        throw new Error("Animal not found")
-                    }
-                    if (!animal.price) {
-                        throw new Error("Animal price not found")
-                    }
-                    // get the tile position
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: GOLD_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -animal.price,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to buy animal",
-                        },  
-                    ])
-                }
-                break
-            case ActionName.BuyFruit:
-                if (data.success) {
-                    const { fruitId } = data.data as BuyFruitData
-                    const fruit = this.fruits.find((fruit) => fruit.id === fruitId)
-                    if (!fruit) {
-                        throw new Error("Fruit not found")
-                    }
-                    if (!fruit.price) {
-                        throw new Error("Fruit price not found")
-                    }
-                    // get the tile position
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: GOLD_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -fruit.price,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to buy fruit",
-                        },
-                    ])
-                }
-                break
-            case ActionName.BuyBuilding:
-                if (data.success) {
-                    const { buildingId } = data.data as BuyBuildingData
-                    const building = this.buildings.find(
-                        (building) => building.id === buildingId
-                    )
-                    if (!building) {
-                        throw new Error("Building not found")
-                    }
-                    if (!building.price) {
-                        throw new Error("Building price not found")
-                    }
-                    // get the tile position
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: GOLD_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -building.price,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to buy building",
-                        },
-                    ])
-                }
-                break
-            case ActionName.ThiefPlant:
-                if (data.success) {
-                    const { quantity, productId } = data.data as ThiefPlantData
-                    const product = this.products.find(
-                        (product) => product.id === productId
-                    )
-                    if (!product) {
-                        throw new Error("Product not found")
-                    }
-                    const assetKey =
-              productAssetMap[product.displayId].textureConfig.key
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.thiefPlant.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.thiefPlant.experiencesGain,
-                        },
-                        {
-                            iconAssetKey: assetKey,
-                            x: position.x,
-                            y: position.y,
-                            quantity,
-                        },
-                    ])
-                } else {
-                    switch (data.reasonCode) {
-                    case 1:
+                    break
+                case ActionName.HelpUseHerbicide:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                        baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.helpUseHerbicide.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                        baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity:
+                    this.activities.helpUseHerbicide.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
                         this.createFlyItems([
                             {
                                 showIcon: false,
                                 x: position.x,
                                 y: position.y,
-                                text: "You are already thieved",
+                                text: "Failed to use herbicide",
                             },
                         ])
-                        break
                     }
-                }
-                break
-            case ActionName.UseAnimalMedicine:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useAnimalMedicine.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.useAnimalMedicine.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to use animal medicine",
-                        },
-                    ])
-                }
-                break
-            case ActionName.UseAnimalFeed:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useAnimalFeed.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.useAnimalFeed.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to use animal feed",
-                        },
-                    ])
-                }
-                break
-            case ActionName.HarvestAnimal:
-                if (data.success) {
-                    const { quantity, productId } = data.data as HarvestAnimalData
-                    const product = this.products.find(
-                        (product) => product.id === productId
-                    )
-                    if (!product) {
-                        throw new Error("Product not found")
+                    break
+                case ActionName.UseFertilizer:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useFertilizer.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.useFertilizer.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to use fertilizer",
+                            },
+                        ])
                     }
-                    let experiencesGain = 0
-                    switch (product.type) {
-                    case ProductType.Animal: {
+                    break
+                case ActionName.HarvestPlant:
+                    if (data.success) {
+                        const { quantity, productId } = data.data as HarvestPlantData
+                        const product = this.products.find(
+                            (product) => product.id === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
+                        let experiencesGain = 0
+                        switch (product.type) {
+                        case ProductType.Crop: {
+                            const crop = this.crops.find(
+                                (crop) => crop.id === product.crop
+                            )
+                            if (!crop) {
+                                throw new Error("Crop not found")
+                            }
+                            experiencesGain = product.isQuality
+                                ? crop.qualityHarvestExperiences
+                                : crop.basicHarvestExperiences
+
+                            break
+                        }
+                        case ProductType.Flower: {
+                            const flower = this.flowers.find(
+                                (flower) => flower.id === product.flower
+                            )
+                            if (!flower) {
+                                throw new Error("Flower not found")
+                            }
+                            experiencesGain = product.isQuality
+                                ? flower.qualityHarvestExperiences
+                                : flower.basicHarvestExperiences
+                            break
+                        }
+                        }
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.harvestPlant.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to harvest plant",
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.BuyTile:
+                    if (data.success) {
+                        const { tileId } = data.data as BuyTileData
+                        const tile = this._tiles.find((tile) => tile.id === tileId)
+                        if (!tile) {
+                            throw new Error("Tile not found")
+                        }
+                        if (!tile.price) {
+                            throw new Error("Tile price not found")
+                        }
+                        // get the tile position
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -tile.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to buy tile",
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.BuyAnimal:
+                    if (data.success) {
+                        const { animalId } = data.data as BuyAnimalData
                         const animal = this.animals.find(
-                            (animal) => animal.id === product.animal
+                            (animal) => animal.id === animalId
                         )
                         if (!animal) {
                             throw new Error("Animal not found")
                         }
-                        experiencesGain = product.isQuality
-                            ? animal.qualityHarvestExperiences
-                            : animal.basicHarvestExperiences
-                        break
+                        if (!animal.price) {
+                            throw new Error("Animal price not found")
+                        }
+                        // get the tile position
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -animal.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to buy animal",
+                            },
+                        ])
                     }
+                    break
+                case ActionName.BuyFruit:
+                    if (data.success) {
+                        const { fruitId } = data.data as BuyFruitData
+                        const fruit = this.fruits.find((fruit) => fruit.id === fruitId)
+                        if (!fruit) {
+                            throw new Error("Fruit not found")
+                        }
+                        if (!fruit.price) {
+                            throw new Error("Fruit price not found")
+                        }
+                        // get the tile position
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -fruit.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to buy fruit",
+                            },
+                        ])
                     }
-                    const assetKey =
-              productAssetMap[product.displayId].textureConfig.key
+                    break
+                case ActionName.BuyBuilding:
+                    if (data.success) {
+                        const { buildingId } = data.data as BuyBuildingData
+                        const building = this.buildings.find(
+                            (building) => building.id === buildingId
+                        )
+                        if (!building) {
+                            throw new Error("Building not found")
+                        }
+                        if (!building.price) {
+                            throw new Error("Building price not found")
+                        }
+                        // get the tile position
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -building.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to buy building",
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.ThiefPlant:
+                    if (data.success) {
+                        const { quantity, productId } = data.data as ThiefPlantData
+                        const product = this.products.find(
+                            (product) => product.id === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.thiefPlant.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.thiefPlant.experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        switch (data.reasonCode) {
+                        case 1:
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "You are already thieved",
+                                },
+                            ])
+                            break
+                        }
+                    }
+                    break
+                case ActionName.UseAnimalMedicine:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                        baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useAnimalMedicine.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                        baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.useAnimalMedicine.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to use animal medicine",
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.UseAnimalFeed:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useAnimalFeed.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.useAnimalFeed.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to use animal feed",
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.HarvestAnimal:
+                    if (data.success) {
+                        const { quantity, productId } = data.data as HarvestAnimalData
+                        const product = this.products.find(
+                            (product) => product.id === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        let experiencesGain = 0
+                        switch (product.type) {
+                        case ProductType.Animal: {
+                            const animal = this.animals.find(
+                                (animal) => animal.id === product.animal
+                            )
+                            if (!animal) {
+                                throw new Error("Animal not found")
+                            }
+                            experiencesGain = product.isQuality
+                                ? animal.qualityHarvestExperiences
+                                : animal.basicHarvestExperiences
+                            break
+                        }
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
 
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.harvestAnimal.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: experiencesGain,
-                        },
-                        {
-                            iconAssetKey: assetKey,
-                            x: position.x,
-                            y: position.y,
-                            quantity,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.HarvestAnimal,
-                        },
-                    ])
-                }
-                break
-            case ActionName.HelpUseAnimalMedicine:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.helpUseAnimalMedicine.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.helpUseAnimalMedicine.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.HelpUseAnimalMedicine,
-                        },
-                    ])
-                }
-                break
-            case ActionName.ThiefAnimal:
-                if (data.success) {
-                    const { quantity, productId } = data.data as ThiefAnimalData
-                    const product = this.products.find(
-                        (product) => product.id === productId
-                    )
-                    if (!product) {
-                        throw new Error("Product not found")
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.harvestAnimal.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.HarvestAnimal,
+                            },
+                        ])
                     }
-                    const assetKey =
-              productAssetMap[product.displayId].textureConfig.key
+                    break
+                case ActionName.HelpUseAnimalMedicine:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity:
+                    -this.activities.helpUseAnimalMedicine.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity:
+                    this.activities.helpUseAnimalMedicine.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.HelpUseAnimalMedicine,
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.ThiefAnimal:
+                    if (data.success) {
+                        const { quantity, productId } = data.data as ThiefAnimalData
+                        const product = this.products.find(
+                            (product) => product.id === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
 
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.thiefAnimal.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.thiefAnimal.experiencesGain,
-                        },
-                        {
-                            iconAssetKey: assetKey,
-                            x: position.x,
-                            y: position.y,
-                            quantity,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.ThiefAnimal,
-                        },
-                    ])
-                }
-                break
-            case ActionName.Sell:
-                if (data.success) {
-                    const { quantity } = data.data as SellData
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: GOLD_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: quantity,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.Sell,
-                        },
-                    ])
-                }
-                break
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.thiefAnimal.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.thiefAnimal.experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.ThiefAnimal,
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.Sell:
+                    if (data.success) {
+                        const { quantity } = data.data as SellData
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.Sell,
+                            },
+                        ])
+                    }
+                    break
 
-            case ActionName.HarvestFruit:
-                if (data.success) {
-                    const { quantity, productId } = data.data as HarvestFruitData
-                    const product = this.products.find(
-                        (product) => product.displayId === productId
-                    )
-                    if (!product) {
-                        throw new Error("Product not found")
-                    }
-                    const assetKey =
-              productAssetMap[product.displayId].textureConfig.key
+                case ActionName.HarvestFruit:
+                    if (data.success) {
+                        const { quantity, productId } = data.data as HarvestFruitData
+                        const product = this.products.find(
+                            (product) => product.displayId === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
 
-                    const fruit = this.fruits.find(
-                        (fruit) => fruit.id === product.fruit
-                    )
-                    if (!fruit) {
-                        throw new Error("Fruit not found")
+                        const fruit = this.fruits.find(
+                            (fruit) => fruit.id === product.fruit
+                        )
+                        if (!fruit) {
+                            throw new Error("Fruit not found")
+                        }
+                        let experiencesGain = 0
+                        switch (product.type) {
+                        case ProductType.Fruit: {
+                            experiencesGain = product.isQuality
+                                ? fruit.qualityHarvestExperiences
+                                : fruit.basicHarvestExperiences
+                            break
+                        }
+                        }
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.harvestFruit.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.HarvestFruit,
+                            },
+                        ])
                     }
-                    let experiencesGain = 0
-                    switch (product.type) {
-                    case ProductType.Fruit: {
-                        experiencesGain = product.isQuality
-                            ? fruit.qualityHarvestExperiences
-                            : fruit.basicHarvestExperiences
-                        break
+                    break
+                case ActionName.ThiefFruit:
+                    if (data.success) {
+                        const { quantity, productId } = data.data as ThiefFruitData
+                        const product = this.products.find(
+                            (product) => product.id === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                        baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.thiefFruit.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                        baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.thiefFruit.experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.ThiefFruit,
+                            },
+                        ])
                     }
+                    break
+                case ActionName.UseBugNet:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.   key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useBugNet.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.useBugNet.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.UseBugNet,
+                            },
+                        ])
                     }
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.harvestFruit.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: experiencesGain,
-                        },
-                        {
-                            iconAssetKey: assetKey,
-                            x: position.x,
-                            y: position.y,
-                            quantity,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.HarvestFruit,
-                        },
-                    ])
-                }
-                break
-            case ActionName.ThiefFruit:
-                if (data.success) {
-                    const { quantity, productId } = data.data as ThiefFruitData
-                    const product = this.products.find(
-                        (product) => product.id === productId
-                    )
-                    if (!product) {
-                        throw new Error("Product not found")
+                    break
+                case ActionName.HelpUseWateringCan: {
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.helpUseWateringCan.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.helpUseWateringCan.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.HelpUseWateringCan,
+                            },
+                        ])
                     }
-                    const assetKey =
-              productAssetMap[product.displayId].textureConfig.key
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.thiefFruit.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.thiefFruit.experiencesGain,
-                        },
-                        {
-                            iconAssetKey: assetKey,
-                            x: position.x,
-                            y: position.y,
-                            quantity,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.ThiefFruit,
-                        },
-                    ])
+                    break
                 }
-                break
-            case ActionName.UseBugNet:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useBugNet.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.useBugNet.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.UseBugNet,
-                        },
-                    ])
+                case ActionName.HelpUseFruitFertilizer:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity:
+                    -this.activities.helpUseFruitFertilizer.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity:
+                    this.activities.helpUseFruitFertilizer.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.HelpUseFruitFertilizer,
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.HelpUseBugNet:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.helpUseBugNet.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.helpUseBugNet.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.HelpUseBugNet,
+                            },
+                        ])
+                    }
+                    break
+                case ActionName.UseFruitFertilizer:
+                    if (data.success) {
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.useFruitFertilizer.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.useFruitFertilizer.experiencesGain,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.UseFruitFertilizer,
+                            },
+                        ])
+                    }
+                    break
                 }
-                break
-            case ActionName.HelpUseWateringCan: {
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.helpUseWateringCan.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.helpUseWateringCan.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.HelpUseWateringCan,
-                        },
-                    ])
-                }
-                break
             }
-            case ActionName.HelpUseFruitFertilizer:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.helpUseFruitFertilizer.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity:
-                  this.activities.helpUseFruitFertilizer.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.HelpUseFruitFertilizer,
-                        },
-                    ])
-                }
-                break
-            case ActionName.HelpUseBugNet:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.helpUseBugNet.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.helpUseBugNet.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.HelpUseBugNet,
-                        },
-                    ])
-                }
-                break
-            case ActionName.UseFruitFertilizer:
-                if (data.success) {
-                    this.createFlyItems([
-                        {
-                            iconAssetKey: ENERGY_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: -this.activities.useFruitFertilizer.energyConsume,
-                        },
-                        {
-                            iconAssetKey: EXPERIENCE_KEY,
-                            x: position.x,
-                            y: position.y,
-                            quantity: this.activities.useFruitFertilizer.experiencesGain,
-                        },
-                    ])
-                } else {
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            x: position.x,
-                            y: position.y,
-                            text: "Failed to " + ActionName.UseFruitFertilizer,
-                        },
-                    ])
-                }
-                break
-            }
-        })
+        )
     }
-
 
     // methods to handle changes in the placed items
     private handlePlacedItemsUpdate(
@@ -1292,10 +1346,11 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (!sizeY) {
                 throw new Error("SizeY not found")
             }
-            const { x: centeredTileX, y: centeredTileY } = this.getCenteredTileCoordinates(
-                currentPlacedItem.x,
-                currentPlacedItem.y
-            )
+            const { x: centeredTileX, y: centeredTileY } =
+        this.getCenteredTileCoordinates(
+            currentPlacedItem.x,
+            currentPlacedItem.y
+        )
             if (
                 x <= centeredTileX &&
         x > centeredTileX - sizeX &&
@@ -1308,15 +1363,13 @@ export abstract class ItemTilemap extends GroundTilemap {
         return null
     }
 
-    protected async createFlyItems(
-        items: Array<FlyItemOptions>
-    ) {
+    protected async createFlyItems(items: Array<FlyItemOptions>) {
         for (const item of items) {
             const flyItem = new FlyItem({
                 baseParams: {
                     scene: this.scene,
                 },
-                options: item
+                options: item,
             })
             flyItem.setDepth(gameplayDepth.fly)
             this.scene.add.existing(flyItem)
@@ -1325,15 +1378,15 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     private async handeVisit() {
-        // save to cache
-        // console.log(toNeighbor)
+    // save to cache
+    // console.log(toNeighbor)
         SceneEventEmitter.emit(SceneEventName.FadeIn)
         await sleep(FADE_TIME)
         SceneEventEmitter.emit(SceneEventName.UpdateWatchingStatus)
         // re-sync the placed items
         const watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as
-     | UserSchema
-     | undefined
+      | UserSchema
+      | undefined
         const userId = watchingUser?.id ?? undefined
         ExternalEventEmitter.emit(ExternalEventName.LoadPlacedItems, userId)
         SceneEventEmitter.emit(SceneEventName.CenterCamera)

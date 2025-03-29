@@ -72,7 +72,7 @@ export class UpgradeBuildingContent extends BaseSizer {
         this.mainContainer.add(this.levelText, { align: "center" })
 
         this.goldLabel = this.createGoldLabel({
-            iconKey: BaseAssetKey.UICommonIconCoin,
+            iconKey: BaseAssetKey.UICommonIconGold,
             amount: "0",
         })
         this.scene.add.existing(this.goldLabel)

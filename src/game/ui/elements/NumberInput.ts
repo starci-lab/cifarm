@@ -1,4 +1,4 @@
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { ConstructorParams, SizerBaseConstructorParams } from "../../types"
 import { Label, Sizer, TextEdit } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { NinePatch3x3 } from "./NinePatch3x3"
@@ -47,13 +47,13 @@ export class NumberInput extends Sizer {
         this.min = min
         this.max = max
 
-        const sourceImage = scene.textures.get(BaseAssetKey.UICommonInput).getSourceImage()
+        const sourceImage = scene.textures.get(baseAssetMap[BaseAssetKey.UICommonInput].base.textureConfig.key).getSourceImage()
         const inputBackground = new NinePatch3x3({
             baseParams: {
                 scene,
             },
             options: {
-                assetKey: BaseAssetKey.UICommonInput,
+                assetKey: baseAssetMap[BaseAssetKey.UICommonInput].base.textureConfig.key,
                 leftWidth: 30,
                 rightWidth: 30,
             }
@@ -78,8 +78,8 @@ export class NumberInput extends Sizer {
 
         if (showLeftArrow) {
         // left arrow icon
-            const leftAvatar = this.scene.add.image(0, 0, BaseAssetKey.UICommonPrevAvatar)
-            const leftArrowIcon = this.scene.add.image(0, 0, BaseAssetKey.UICommonPrevIcon)
+            const leftAvatar = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonPrevAvatar].base.textureConfig.key)
+            const leftArrowIcon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonPrevIcon].base.textureConfig.key)
             this.leftArrow = this.scene.rexUI.add.label({
                 background: leftAvatar,
                 width: leftAvatar.width,
@@ -133,8 +133,8 @@ export class NumberInput extends Sizer {
 
         if (showRightArrow) {
             // right arrow icon
-            const rightAvatar = this.scene.add.image(0, 0, BaseAssetKey.UICommonNextAvatar)
-            const rightArrowIcon = this.scene.add.image(0, 0, BaseAssetKey.UICommonNextIcon)
+            const rightAvatar = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonNextAvatar].base.textureConfig.key)
+            const rightArrowIcon = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UICommonNextIcon].base.textureConfig.key)
             this.rightArrow = this.scene.rexUI.add.label({
                 background: rightAvatar,
                 width: rightAvatar.width,

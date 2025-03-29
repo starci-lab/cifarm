@@ -13,7 +13,7 @@ export class StandHeader extends ContainerLite {
         super(scene, x, y, width, height, children)
 
         // Background header covering the full width
-        this.header = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStandHeader].key)
+        this.header = this.scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UIModalStandHeader].base.textureConfig.key)
             .setOrigin(0.5, 0)
         this.addLocal(this.header)
 

@@ -4,7 +4,7 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CellSize, getCellSize, ItemQuantity } from "../../elements"
 import { CacheKey } from "../../../types"
-import { getToolInventories } from "../../../queries"
+import { getToolInventories } from "../../../cache"
 import {
     SceneEventEmitter,
     SceneEventName,
@@ -127,7 +127,7 @@ export class InventoryToolbar extends ContainerLite {
                             )
                         }
                         const {
-                            textureConfig: { key },
+                            base: { textureConfig: { key } },
                         } = inventoryTypeAssetMap[inventoryType.displayId]
 
                         const itemQuantity = new ItemQuantity({

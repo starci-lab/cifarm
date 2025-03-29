@@ -26,7 +26,7 @@ export class NeighborRightHorizontalButtons extends HorizontalButtons {
 
         // add nft button
         this.nextButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconNext].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNext].base.textureConfig.key,
             text: "Next",
             onPress: () => {
                 console.log("NFT")
@@ -36,7 +36,7 @@ export class NeighborRightHorizontalButtons extends HorizontalButtons {
 
         // add inventory button
         this.inventoryButton = this.createButton({
-            iconKey: baseAssetMap[BaseAssetKey.UIIconInventory].key,
+            iconKey: baseAssetMap[BaseAssetKey.UIIconInventory].base.textureConfig.key,
             text: "Inventory",
             onPress: () => {
                 const eventMessage: OpenModalMessage = {

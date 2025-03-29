@@ -4,13 +4,9 @@ import {
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { TextColor } from "./Text"
 import { ConstructorParams, LabelBaseConstructorParams } from "@/game/types"
-import { BaseAssetKey } from "@/game/assets"
+import { BaseAssetKey  } from "@/game/assets"
 import { NinePatch3x3 } from "./NinePatch3x3"
 import { BBCodeText } from "./BBCodeText"
-
-export enum InputIcon {
-  MagnifyingGlass = "magnifying-glass",
-}
 
 export interface InputOptions {
   // onChange
@@ -19,7 +15,6 @@ export interface InputOptions {
   fontSize?: number;
   textColor?: TextColor;
   width?: number;
-  icon?: InputIcon;
 }
 
 export class Input extends Label {
@@ -31,16 +26,12 @@ export class Input extends Label {
         if (!options) {
             throw new Error("Input requires options")
         }
-        const map = {
-            [InputIcon.MagnifyingGlass]: BaseAssetKey.UICommonIconMagnifyingGlass,
-        }
 
         const {
             onChange,
             fontSize = 48,
             textColor = TextColor.White,
             width = 200,
-            icon,
         } = options
         const sourceImage = scene.textures
             .get(BaseAssetKey.UICommonInput)
@@ -57,8 +48,6 @@ export class Input extends Label {
         })
         scene.add.existing(inputBackground)
 
-        const iconKey = icon ? map[icon] : undefined
-        const iconImage = iconKey ? scene.add.image(0, 0, iconKey) : undefined
         const text = new BBCodeText({
             baseParams: {
                 scene,
@@ -82,7 +71,6 @@ export class Input extends Label {
             rtl: true,
             space: { top: 5, bottom: 5, left: 20, right: 20, iconLeft: 10 },
             align: "center",
-            icon: iconImage,
             originY: 0,
             ...config,
         })

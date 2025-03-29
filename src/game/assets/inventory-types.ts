@@ -1,10 +1,10 @@
 import { Scene } from "phaser"
-import { TextureConfig } from "./types"
+import { BaseData } from "./types"
 import { cropAssetMap } from "./crops"
 import {
     CropId,
     FlowerId,
-    InventoryTypeId,
+    InventoryTypeId as InventoryTypeIdImport,
     ProductId,
     SupplyId,
     ToolId,
@@ -15,382 +15,493 @@ import { supplyAssetMap } from "./supply"
 import { flowerAssetMap } from "./flowers"
 import { loadTexture } from "./utils"
 
+// Re-export the InventoryTypeId to avoid naming conflicts
+export type InventoryTypeId = InventoryTypeIdImport;
+
 export interface InventoryAssetData {
   name: string;
-  textureConfig: TextureConfig;
+  base: BaseData;
 }
 
 export const inventoryTypeAssetMap: Record<
-  InventoryTypeId,
+  InventoryTypeIdImport,
   InventoryAssetData
 > = {
-    [InventoryTypeId.Egg]: {
+    [InventoryTypeIdImport.Egg]: {
         name: "Egg",
-        textureConfig: {
-            ...productAssetMap[ProductId.Egg].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Egg].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.EggQuality]: {
+    [InventoryTypeIdImport.EggQuality]: {
         name: "High-Quality Egg",
-        textureConfig: {
-            ...productAssetMap[ProductId.EggQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.EggQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.Milk]: {
+    [InventoryTypeIdImport.Milk]: {
         name: "Milk",
-        textureConfig: {
-            ...productAssetMap[ProductId.Milk].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Milk].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.MilkQuality]: {
+    [InventoryTypeIdImport.MilkQuality]: {
         name: "Milk Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.MilkQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.MilkQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.Turnip]: {
+    [InventoryTypeIdImport.Turnip]: {
         name: "Turnip",
-        textureConfig: {
-            ...productAssetMap[ProductId.Turnip].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Turnip].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.TurnipQuality]: {
+    [InventoryTypeIdImport.TurnipQuality]: {
         name: "Turnip Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.TurnipQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.TurnipQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.TurnipSeed]: {
+    [InventoryTypeIdImport.TurnipSeed]: {
         name: "Turnip Seed",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.Turnip].shop) {
-                throw new Error("Turnip Seed shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.Turnip].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.Turnip].shop) {
+                    throw new Error("Turnip Seed shop texture not found")
+                }
+                const textureConfig = cropAssetMap[CropId.Turnip].shop.textureConfig
+                if (!textureConfig) {
+                    throw new Error("Turnip Seed shop texture not found")
+                }
+                return {
+                    ...textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
     },
-    [InventoryTypeId.Carrot]: {
+    [InventoryTypeIdImport.Carrot]: {
         name: "Carrot",
-        textureConfig: {
-            ...productAssetMap[ProductId.Carrot].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Carrot].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.CarrotQuality]: {
+    [InventoryTypeIdImport.CarrotQuality]: {
         name: "Carrot Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.CarrotQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.CarrotQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.CarrotSeed]: {
+    [InventoryTypeIdImport.CarrotSeed]: {
         name: "Carrot Seed",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.Carrot].shop) {
-                throw new Error("Carrot Seed shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.Carrot].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.Carrot].shop) {
+                    throw new Error("Carrot Seed shop texture not found")
+                }
+                const textureConfig = cropAssetMap[CropId.Carrot].shop.textureConfig    
+                if (!textureConfig) {
+                    throw new Error("Carrot Seed shop texture not found")
+                }
+                return {
+                    ...textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
     },
-    [InventoryTypeId.Potato]: {
+    [InventoryTypeIdImport.Potato]: {
         name: "Potato",
-        textureConfig: {
-            ...productAssetMap[ProductId.Potato].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Potato].base.textureConfig ,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.PotatoQuality]: {
+    [InventoryTypeIdImport.PotatoQuality]: {
         name: "Potato Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.PotatoQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.PotatoQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.PotatoSeed]: {
+    [InventoryTypeIdImport.PotatoSeed]: {
         name: "Potato Seed",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.Potato].shop) {
-                throw new Error("Potato Seed shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.Potato].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
-    },
-    [InventoryTypeId.Cucumber]: {
-        name: "Cucumber",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.Cucumber].shop) {
-                throw new Error("Cucumber shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.Potato].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
-    },
-    [InventoryTypeId.CucumberQuality]: {
-        name: "Cucumber Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.CucumberQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.Potato].shop) {
+                    throw new Error("Potato Seed shop texture not found")
+                }
+                const textureConfig = cropAssetMap[CropId.Potato].shop.textureConfig
+                if (!textureConfig) {
+                    throw new Error("Potato Seed shop texture not found")
+                }
+                return {
+                    ...textureConfig,
+                    useExisting: true,
+                }
+            })(),
         },
     },
-    [InventoryTypeId.CucumberSeed]: {
+    [InventoryTypeIdImport.Cucumber]: {
+        name: "Cucumber",
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.Cucumber].shop) {
+                    throw new Error("Cucumber shop texture not found")
+                }
+                return {
+                    ...cropAssetMap[CropId.Potato].shop.textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
+    },
+    [InventoryTypeIdImport.CucumberQuality]: {
+        name: "Cucumber Quality",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.CucumberQuality].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.CucumberSeed]: {
         name: "Cucumber Seed",
-        textureConfig: {
-            ...cropAssetMap[CropId.Cucumber].shop.textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...cropAssetMap[CropId.Cucumber].shop.textureConfig,
+                useExisting: true,
+            },
         },
     },
 
-    [InventoryTypeId.Pineapple]: {
+    [InventoryTypeIdImport.Pineapple]: {
         name: "Pineapple",
-        textureConfig: {
-            ...productAssetMap[ProductId.Pineapple].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Pineapple].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.PineappleQuality]: {
+    [InventoryTypeIdImport.PineappleQuality]: {
         name: "Pineapple Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.PineappleQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.PineappleQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.PineappleSeed]: {
+    [InventoryTypeIdImport.PineappleSeed]: {
         name: "Pineapple Seed",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.Pineapple].shop) {
-                throw new Error("Pineapple Seed shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.Pineapple].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.Pineapple].shop) {
+                    throw new Error("Pineapple Seed shop texture not found")
+                }
+                const textureConfig = cropAssetMap[CropId.Pineapple].shop.textureConfig
+                if (!textureConfig) {
+                    throw new Error("Pineapple Seed shop texture not found")
+                }
+                return {
+                    ...textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
     },
-    [InventoryTypeId.Watermelon]: {
+    [InventoryTypeIdImport.Watermelon]: {
         name: "Watermelon",
-        textureConfig: {
-            ...productAssetMap[ProductId.Watermelon].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Watermelon].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.WatermelonQuality]: {
+    [InventoryTypeIdImport.WatermelonQuality]: {
         name: "Watermelon Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.WatermelonQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.WatermelonQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.WatermelonSeed]: {
+    [InventoryTypeIdImport.WatermelonSeed]: {
         name: "Watermelon Seed",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.Watermelon].shop) {
-                throw new Error("Watermelon Seed shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.Watermelon].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.Watermelon].shop) {
+                    throw new Error("Watermelon Seed shop texture not found")
+                }
+                return {
+                    ...cropAssetMap[CropId.Watermelon].shop.textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
     },
-    [InventoryTypeId.BellPepper]: {
+    [InventoryTypeIdImport.BellPepper]: {
         name: "Bell Pepper",
-        textureConfig: {
-            ...productAssetMap[ProductId.BellPepper].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.BellPepper].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.BellPepperQuality]: {
+    [InventoryTypeIdImport.BellPepperQuality]: {
         name: "Bell Pepper Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.BellPepperQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.BellPepperQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.BellPepperSeed]: {
+    [InventoryTypeIdImport.BellPepperSeed]: {
         name: "Bell Pepper Seed",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.BellPepper].shop) {
-                throw new Error("Bell Pepper Seed shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.BellPepper].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.BellPepper].shop) {
+                    throw new Error("Bell Pepper Seed shop texture not found")
+                }
+                return {
+                    ...cropAssetMap[CropId.BellPepper].shop.textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
     },
-    [InventoryTypeId.Banana]: {
+    [InventoryTypeIdImport.Banana]: {
         name: "Banana",
-        textureConfig: {
-            ...productAssetMap[ProductId.Banana].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Banana].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.BananaQuality]: {
+    [InventoryTypeIdImport.BananaQuality]: {
         name: "Banana Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.BananaQuality].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.BananaQuality].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.Apple]: {
+    [InventoryTypeIdImport.Apple]: {
         name: "Apple",
-        textureConfig: {
-            ...productAssetMap[ProductId.Apple].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Apple].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.AppleQuality]: {
+    [InventoryTypeIdImport.AppleQuality]: {
         name: "Apple Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.AppleQuality].textureConfig,
-            useExisting: true,
-        }
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.AppleQuality].base.textureConfig,
+                useExisting: true,
+            },
+        },
     },
-    [InventoryTypeId.Daisy]: {
+    [InventoryTypeIdImport.Daisy]: {
         name: "Daisy",
-        textureConfig: {
-            ...productAssetMap[ProductId.Daisy].textureConfig,
-            useExisting: true,
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Daisy].base.textureConfig,
+                useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.DaisyQuality]: {
+    [InventoryTypeIdImport.DaisyQuality]: {
         name: "Daisy Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.DaisyQuality].textureConfig,
-            useExisting: true,
-        }
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.DaisyQuality].base.textureConfig,
+                useExisting: true,
+            },
+        },
     },
-    [InventoryTypeId.DaisySeed]: {
+    [InventoryTypeIdImport.DaisySeed]: {
         name: "Daisy Seed",
-        textureConfig: (() => {
-            if (!flowerAssetMap[FlowerId.Daisy].shop) {
-                throw new Error("Daisy Seed shop texture not found")
-            }
-            return {
-                ...flowerAssetMap[FlowerId.Daisy].shop.textureConfig,
-                useExisting: true,
-            }
-        })(),
+        base: {
+            textureConfig: (() => {
+                if (!flowerAssetMap[FlowerId.Daisy].shop) {
+                    throw new Error("Daisy Seed shop texture not found")
+                }
+                return {
+                    ...flowerAssetMap[FlowerId.Daisy].shop.textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
     },
-    [InventoryTypeId.BasicFertilizer]: {
+    [InventoryTypeIdImport.BasicFertilizer]: {
         name: "Basic Fertilizer",
-        textureConfig: {
-            ...supplyAssetMap[SupplyId.BasicFertilizer].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.AnimalFeed]: {
-        name: "Animal Feed",
-        textureConfig: {
-            ...supplyAssetMap[SupplyId.AnimalFeed].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.FruitFertilizer]: {
-        name: "FruitFertilizer",
-        textureConfig: {
-            ...supplyAssetMap[SupplyId.FruitFertilizer].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.Hand]: {
-        name: "Hand",
-        textureConfig: {
-            ...toolAssetMap[ToolId.Hand].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.Crate]: {
-        name: "Crate",
-        textureConfig: {
-            ...toolAssetMap[ToolId.Crate].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.WateringCan]: {
-        name: "Watering Can",
-        textureConfig: {
-            ...toolAssetMap[ToolId.WateringCan].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.Herbicide]: {
-        name: "Herbicide",
-        textureConfig: {
-            ...toolAssetMap[ToolId.Herbicide].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.Pesticide]: {
-        name: "Pesticide",
-        textureConfig: {
-            ...toolAssetMap[ToolId.Pesticide].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.Hammer]: {
-        name: "Hammer",
-        textureConfig: {
-            ...toolAssetMap[ToolId.Hammer].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.AnimalMedicine]: {
-        name: "Animal Medicine",
-        textureConfig: {
-            ...toolAssetMap[ToolId.AnimalMedicine].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.BugNet]: {
-        name: "BugNet",
-        textureConfig: {
-            ...toolAssetMap[ToolId.BugNet].textureConfig,
-            useExisting: true,
-        },
-    },
-    [InventoryTypeId.StrawberrySeed]: {
-        name: "Strawberry Seed",
-        textureConfig: (() => {
-            if (!cropAssetMap[CropId.Strawberry].shop) {
-                throw new Error("Strawberry Seed shop texture not found")
-            }
-            return {
-                ...cropAssetMap[CropId.Strawberry].shop.textureConfig,
+        base: {
+            textureConfig: {
+                ...supplyAssetMap[SupplyId.BasicFertilizer].base.textureConfig,
                 useExisting: true,
-            }
-        })(),
-    },
-    [InventoryTypeId.Strawberry]: {
-        name: "Strawberry",
-        textureConfig: {
-            ...productAssetMap[ProductId.Strawberry].textureConfig,
-            useExisting: true,
+            },
         },
     },
-    [InventoryTypeId.StrawberryQuality]: {
+    [InventoryTypeIdImport.AnimalFeed]: {
+        name: "Animal Feed",
+        base: {
+            textureConfig: {
+                ...supplyAssetMap[SupplyId.AnimalFeed].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.FruitFertilizer]: {
+        name: "FruitFertilizer",
+        base: {
+            textureConfig: {
+                ...supplyAssetMap[SupplyId.FruitFertilizer].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.Hand]: {
+        name: "Hand",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.Hand].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.Crate]: {
+        name: "Crate",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.Crate].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.WateringCan]: {
+        name: "Watering Can",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.WateringCan].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.Herbicide]: {
+        name: "Herbicide",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.Herbicide].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.Pesticide]: {
+        name: "Pesticide",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.Pesticide].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.Hammer]: {
+        name: "Hammer",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.Hammer].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.AnimalMedicine]: {
+        name: "Animal Medicine",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.AnimalMedicine].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.BugNet]: {
+        name: "BugNet",
+        base: {
+            textureConfig: {
+                ...toolAssetMap[ToolId.BugNet].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.StrawberrySeed]: {
+        name: "Strawberry Seed",
+        base: {
+            textureConfig: (() => {
+                if (!cropAssetMap[CropId.Strawberry].shop) {
+                    throw new Error("Strawberry Seed shop texture not found")
+                }
+                return {
+                    ...cropAssetMap[CropId.Strawberry].shop.textureConfig,
+                    useExisting: true,
+                }
+            })(),
+        },
+    },
+    [InventoryTypeIdImport.Strawberry]: {
+        name: "Strawberry",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Strawberry].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeIdImport.StrawberryQuality]: {
         name: "Strawberry Quality",
-        textureConfig: {
-            ...productAssetMap[ProductId.StrawberryQuality].textureConfig,
-            useExisting: true,
-        }
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.StrawberryQuality].base.textureConfig,
+                useExisting: true,
+            },
+        },
     },
 }
 
@@ -399,8 +510,8 @@ export const loadInventoryTypesAssets = async (scene: Scene) => {
     const promises: Promise<void>[] = []
     // Load all inventory type assets
     for (const inventoryData of Object.values(inventoryTypeAssetMap)) {
-        if (inventoryData.textureConfig) {
-            promises.push(loadTexture(scene, inventoryData.textureConfig))
+        if (inventoryData.base) {
+            promises.push(loadTexture(scene, inventoryData.base.textureConfig))
         }
     }
     await Promise.all(promises)
