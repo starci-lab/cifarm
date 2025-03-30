@@ -1,19 +1,20 @@
 import {
     BuildingSchema,
     PlacedItemSchema,
+    PlacedItemTypeSchema,
     UserSchema,
 } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, baseAssetMap } from "../../../assets"
-import { SceneEventEmitter, SceneEventName, ModalName } from "../../../events"
+import { SceneEventEmitter, SceneEventName, ModalName, ExternalEventEmitter, ExternalEventName } from "../../../events"
 import {
     BaseSizerBaseConstructorParams,
     CacheKey,
     UpgradeModalData,
 } from "../../../types"
 import { Background, Text, ModalBackground, TextColor } from "../../elements"
-import { createObjectId } from "@/modules/common"
+import { UpgradeBuildingMessage } from "@/hooks/io/emitter"
 
 export class UpgradeContent extends BaseSizer {
     private background: ModalBackground
@@ -23,6 +24,8 @@ export class UpgradeContent extends BaseSizer {
     private amountText: Text
     private buildings: Array<BuildingSchema>
     private user: UserSchema
+    private placedItemTypes: Array<PlacedItemTypeSchema>
+    private placedItem: PlacedItemSchema | undefined
     constructor({
         scene,
         x,
@@ -51,20 +54,25 @@ export class UpgradeContent extends BaseSizer {
                 },
                 mainButton: {
                     onPress: () => {
-                        // const eventName: UpgradeBuildingRequest = {
-                        //     placedItemBuildingId: this.currentPlacedItemId
-                        // }
-                        // SceneEventEmitter.once(SceneEventName.UpgradeBuildingResponsed, () => {
-                        //     SceneEventEmitter.emit(SceneEventName.CloseModal, { modalName: ModalName.UpgradeBuilding })
-                        // })
-                        // SceneEventEmitter.emit(SceneEventName.RequestUpgradeBuilding, eventName)
+                        if (!this.placedItem) {
+                            throw new Error("Placed item not found.")
+                        }
+                        const eventMessage: UpgradeBuildingMessage = {
+                            placedItemBuildingId: this.placedItem.id
+                        }
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, { modalName: ModalName.Upgrade })
+                        ExternalEventEmitter.emit(ExternalEventName.RequestUpgradeBuilding, eventMessage)
                     },
-                    text: "Upgrade",
+                    text: "OK",
                 },
             },
         })
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
+
+        this.placedItemTypes = this.scene.cache.obj.get(
+            CacheKey.PlacedItemTypes
+        ) as Array<PlacedItemTypeSchema>
 
         this.amountText = new Text({
             baseParams: { scene, text: "0", x: 0, y: 0 },
@@ -115,25 +123,32 @@ export class UpgradeContent extends BaseSizer {
     }
 
     private render(placedItem: PlacedItemSchema) {
-        const buildingId = placedItem.placedItemType as string
-        const upgradeData = this.buildings.find(
-            (b) => createObjectId(b.displayId) === buildingId
-        )?.upgrades
-
-        console.log("upgradeData", upgradeData)
-
-        const currentUpgrade = placedItem.buildingInfo?.currentUpgrade ?? 0
-        const upgradeCost =
-      upgradeData?.find((u) => u.upgradeLevel === currentUpgrade + 1)
-          ?.upgradePrice ?? 0
-
-        this.levelText.setText(
-            `Current Level: ${currentUpgrade} (Max: ${upgradeData?.length})`
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === placedItem.placedItemType
         )
-        this.amountText.setText(upgradeCost.toString())
-
+        if (!placedItemType) {
+            throw new Error("Placed item type not found.")
+        }
+        const building = this.buildings.find(
+            (building) => building.id === placedItemType.building
+        )
+        if (!building) {
+            throw new Error("Building not found.")
+        }
+        const upgrades = building.upgrades
+        this.placedItem = placedItem
+        const currentUpgrade = this.placedItem.buildingInfo?.currentUpgrade ?? 0
+        const upgrade =
+        upgrades?.find((upgrade) => upgrade.upgradeLevel === currentUpgrade + 1)
+        if (!upgrade) {
+            throw new Error("Upgrade not found.")
+        }
+        if (upgrade.upgradePrice === undefined) {
+            throw new Error("Upgrade price not found.")
+        }
+        this.amountText.setText(upgrade.upgradePrice.toString())
         //if max level hidden
-        if (currentUpgrade === upgradeData?.length) {
+        if (currentUpgrade === upgrades?.length) {
             this.label.setVisible(false)
             return
         }

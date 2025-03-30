@@ -206,3 +206,7 @@ export interface SellMessage {
   placedItemId: string;
 }
 
+export interface UpgradeBuildingMessage {
+  placedItemBuildingId: string;
+}
+

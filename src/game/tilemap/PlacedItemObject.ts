@@ -1,4 +1,4 @@
-import { createObjectId, formatTime } from "@/modules/common"
+import { formatTime } from "@/modules/common"
 import {
     AnimalCurrentState,
     AnimalSchema,
@@ -12,7 +12,6 @@ import {
     FruitSchema,
     PlacedItemSchema,
     PlacedItemType,
-    PlacedItemTypeId,
     PlacedItemTypeSchema,
     PlantCurrentState,
     PlantType,
@@ -458,11 +457,16 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem?.buildingInfo) {
             throw new Error("Building info not found")
         }
-
         //if home not show star
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) =>
+                placedItemType.id === this.nextPlacedItem?.placedItemType
+        )
+        const building = this.buildings.find(
+            (building) => building.id === placedItemType?.building
+        )
         if (
-            this.nextPlacedItem.placedItemType ===
-      createObjectId(PlacedItemTypeId.Home)
+            !building?.upgradable
         ) {
             return
         }
@@ -477,12 +481,6 @@ export class PlacedItemObject extends ContainerLite {
         )
         if (!placedItemTypes) {
             throw new Error("Placed item type not found")
-        }
-        const building = this.buildings.find(
-            (building) => building.id === placedItemTypes.building
-        )
-        if (!building) {
-            throw new Error("Building not found")
         }
         const { x = 0, y = 0 } = {
             ...buildingAssetMap[building.displayId].map.starsConfig?.extraOffsets,

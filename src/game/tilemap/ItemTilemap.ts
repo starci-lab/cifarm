@@ -812,12 +812,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     break
                 case ActionName.Sell:
                     if (data.success) {
-                        const placedItemType = this.placedItemTypes.find(
-                            (placedItemType) => placedItemType.id === data.placedItem.placedItemType
-                        )
-                        if (!placedItemType) {
-                            throw new Error("Placed item type not found")
-                        }
                         const sellPrice = getSellPriceFromPlacedItemType({
                             scene: this.scene,
                             placedItemType
@@ -1097,6 +1091,51 @@ export abstract class ItemTilemap extends GroundTilemap {
                         ])
                     }
                     break
+                case ActionName.UpgradeBuilding: {
+                    if (data.success) {
+                        const currentUpgrade = data.placedItem.buildingInfo?.currentUpgrade
+                        if (currentUpgrade === undefined) {
+                            throw new Error("Current upgrade not found.")
+                        }
+                        const placedItemType = this.placedItemTypes.find(
+                            (placedItemType) => placedItemType.id === data.placedItem.placedItemType
+                        )
+                        if (!placedItemType) {
+                            throw new Error("Placed item type not found.")
+                        }
+                        const building = this.buildings.find(
+                            (building) => building.id === placedItemType?.building
+                        )
+                        if (!building) {
+                            throw new Error("Building not found.")
+                        }
+                        const price = building.upgrades?.find(
+                            (upgrade) => upgrade.upgradeLevel === currentUpgrade
+                        )?.upgradePrice
+                        if (price === undefined) {
+                            throw new Error("Price not found.")
+                        }
+                        // get the tile position
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.UpgradeBuilding,
+                            },
+                        ])
+                    }
+                    break
+                }
                 }
             }
         )

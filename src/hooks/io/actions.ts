@@ -29,6 +29,7 @@ export enum ActionName {
   HelpUseFruitFertilizer = "help_use_fruit_fertilizer",
   HarvestFruit = "harvest_fruit",
   ThiefFruit = "thief_fruit",
+  UpgradeBuilding = "upgrade_building",
 }
 
 export interface EmitActionPayload {

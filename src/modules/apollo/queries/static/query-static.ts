@@ -215,6 +215,7 @@ const query = gql`
       maxOwnership
       animalContainedType
       maxUpgrade
+      upgradable
       beeHouseYieldTime
       beeHouseBasicHarvestExperiences
       beeHouseQualityHarvestExperiences

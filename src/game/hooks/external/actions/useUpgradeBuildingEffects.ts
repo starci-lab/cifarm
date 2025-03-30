@@ -1,7 +1,7 @@
 import { GAMEPLAY_IO } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EmitterEventName, useGameplayIo } from "@/hooks"
+import { EmitterEventName, UpgradeBuildingMessage, useGameplayIo } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useUpgradeBuildingEffects = () => {
@@ -12,11 +12,11 @@ export const useUpgradeBuildingEffects = () => {
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestUpgradeBuilding,
-            async () => {
+            async (message: UpgradeBuildingMessage) => {
                 if (!socket) {
                     return
                 }
-                socket.emit(EmitterEventName.UpgradeBuilding)
+                socket.emit(EmitterEventName.UpgradeBuilding, message)
             }
         )
 
