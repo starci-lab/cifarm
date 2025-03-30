@@ -56,7 +56,7 @@ export const EnhancedInput: FC<EnhancedInputProps> = ({
                     className={
                         cn(      
                             "flex w-full",   
-                            "outline-none",
+                            "outline-none bg-transparent",
                             inputClassName
                         )
                     }

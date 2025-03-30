@@ -40,24 +40,28 @@ export const BottomNavbar: FC = () => {
         <div className="m-auto fixed top-auto bottom-0 border-t h-16 z-50 max-w-[500px] w-full bg-background">
             <nav className="m-auto w-full h-full flex items-center justify-between px-4">
                 <div className="flex-1 flex justify-between">
-                    <EnhancedButton
-                        variant="ghost"
-                        className="flex-1 flex flex-col items-center justify-center h-full gap-1"
-                        onClick={() => router.push(pathConstants.assets)}
-                    >
-                        <CoinsIcon className="w-5 h-5 min-w-5 min-h-5" />
-                        <div className="text-xs h-4 flex items-center">Assets</div>
-                    </EnhancedButton>
-                    <EnhancedButton
-                        variant="ghost"
-                        className="flex-1 flex flex-col items-center justify-center h-full gap-1"
-                        onClick={() => router.push(pathConstants.partnerships)}
-                    >
-                        <GiftIcon className="w-5 h-5 min-h-5 min-w-5" />
-                        <div className="text-xs h-4 flex items-center">Partnerships</div>
-                    </EnhancedButton>
+                    <div className="flex flex-1 grid place-items-center">
+                        <EnhancedButton
+                            variant="ghost"
+                            className="flex-1 flex flex-col items-center justify-center h-full gap-1 w-fit"
+                            onClick={() => router.push(pathConstants.assets)}
+                        >
+                            <CoinsIcon className="w-5 h-5 min-w-5 min-h-5" />
+                            <div className="text-[10px] h-4 flex items-center">Assets</div>
+                        </EnhancedButton>
+                    </div>
+                    <div className="flex flex-1 grid place-items-center">
+                        <EnhancedButton
+                            variant="ghost"
+                            className="flex-1 flex flex-col items-center justify-center h-full gap-1"
+                            onClick={() => router.push(pathConstants.partnerships)}
+                        >
+                            <GiftIcon className="w-5 h-5 min-h-5 min-w-5" />
+                            <div className="text-[10px] h-4 flex items-center">Partner</div>
+                        </EnhancedButton>
+                    </div>
                 </div>
-                <div className="flex-1 flex justify-center">
+                <div className="flex justify-center w-fit">
                     <EnhancedButton
                         disabled={!(authenticated && allDataLoaded)}
                         size="lg"
@@ -68,24 +72,28 @@ export const BottomNavbar: FC = () => {
                     </EnhancedButton>
                 </div>
                 <div className="flex-1 flex justify-end">
-                    <EnhancedButton
-                        variant="ghost"
-                        className="flex-1 flex flex-col items-center justify-center h-full"
-                    >
-                        <BlocksIcon className="w-5 h-5 min-w-5 min-h-5" />
-                        <div className="text-[10px] h-4 flex items-center">
+                    <div className="flex flex-1 grid place-items-center">
+                        <EnhancedButton
+                            variant="ghost"
+                            className="flex-1 flex flex-col items-center justify-center h-full"
+                        >
+                            <BlocksIcon className="w-5 h-5 min-w-5 min-h-5" />
+                            <div className="text-[10px] h-4 flex items-center">
                             DApps
-                        </div>
-                    </EnhancedButton>
-                    <EnhancedButton
-                        variant="ghost"
-                        className="flex-1 flex flex-col items-center justify-center h-full"
-                    >
-                        <TwitterIcon className="w-5 h-5 min-w-5 min-h-5" />
-                        <div className="text-[10px] h-4 flex items-center">
+                            </div>
+                        </EnhancedButton>
+                    </div>
+                    <div className="flex flex-1 grid place-items-center">
+                        <EnhancedButton
+                            variant="ghost"
+                            className="flex-1 flex flex-col items-center justify-center h-full"
+                        >
+                            <TwitterIcon className="w-5 h-5 min-w-5 min-h-5" />
+                            <div className="text-[10px] h-4 flex items-center">
                             Social
-                        </div>
-                    </EnhancedButton>
+                            </div>
+                        </EnhancedButton>
+                    </div>
                 </div>
             </nav>
         </div>

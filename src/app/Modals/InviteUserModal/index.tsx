@@ -10,11 +10,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import { ModalHeader, Snippet, Spacer } from "@/components"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 export const InviteUserModal: FC = () => {
-    const { isOpen, onOpenChange } = useSingletonHook<
+    const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(INVITE_USER_DISCLOSURE)
 
@@ -28,7 +28,7 @@ export const InviteUserModal: FC = () => {
 
     const telegramUrl = `https://t.me/cifarm_bot?startapp=${swr.data?.data.user.id}`
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>

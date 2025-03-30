@@ -12,10 +12,10 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 
 export const WarningModal: FC = () => {
-    const { isOpen, onOpenChange } =
+    const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(WARNING_DISCLOSURE)
     const message = useAppSelector(
         (state) => state.modalReducer.warningModal.message
@@ -37,7 +37,7 @@ export const WarningModal: FC = () => {
     useSingletonHook<ReturnType<typeof useDisclosure>>(nextModalToken ?? "")
  
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
@@ -52,7 +52,7 @@ export const WarningModal: FC = () => {
                 <DialogFooter>
                     <EnhancedButton 
                         variant="ghost" 
-                        onClick={() => onOpenChange(false)}
+                        onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
@@ -61,13 +61,13 @@ export const WarningModal: FC = () => {
                         variant="destructive"
                         onClick={() => {
                             //close the current modal
-                            onOpenChange(false)
+                            toggle(false)
                             //open the next modal
                             if (callback) {
                                 callback()
                             }
                             if (nextModalDisclosure) {
-                                nextModalDisclosure.onOpen()
+                                nextModalDisclosure.open()
                             }
                         }}
                     >

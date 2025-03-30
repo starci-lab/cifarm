@@ -2,7 +2,7 @@ import { FormikProps, useFormik } from "formik"
 import * as Yup from "yup" // Import Yup
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import {
     setSignTransactionModal,
     TransactionType,
@@ -18,7 +18,7 @@ export interface TransferFormikValues {
 }
 
 export const useTransferTokenFormik = (): FormikProps<TransferFormikValues> => {
-    const { onOpenChange } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
     )
     const dispatch = useAppDispatch()
@@ -62,7 +62,7 @@ export const useTransferTokenFormik = (): FormikProps<TransferFormikValues> => {
                     },
                 })
             )
-            onOpenChange(true)
+            open()
         },
     })
 

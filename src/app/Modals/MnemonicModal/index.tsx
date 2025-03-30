@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/dialog"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import { cn } from "@/lib/utils"
 import { CopyIcon } from "lucide-react"
 
 export const MnemonicModal: FC = () => {
-    const { isOpen, onOpenChange } = useSingletonHook<
+    const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(MNEMONIC_DISCLOSURE)
     const [isBlurred, setIsBlurred] = useState(true)
@@ -27,7 +27,7 @@ export const MnemonicModal: FC = () => {
         (state) => state.sessionReducer.mnemonic
     )
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>

@@ -10,14 +10,14 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 
 export const MintAmountModal: FC = () => {
-    const { isOpen, onOpenChange } = useSingletonHook<
+    const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(MINT_AMOUNT_DISCLOSURE)
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold">
@@ -36,7 +36,7 @@ export const MintAmountModal: FC = () => {
                 <DialogFooter>
                     <EnhancedButton
                         variant="ghost"
-                        onClick={() => onOpenChange(false)}
+                        onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel

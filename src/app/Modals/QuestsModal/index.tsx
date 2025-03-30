@@ -14,11 +14,11 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector, useAppDispatch, QuestsTab as QuestsTabEnum, setQuestsTab } from "@/redux"
 import { ModalHeader } from "@/components"
 export const QuestsModal: FC = () => {
-    const { onOpenChange, isOpen } =
+    const { toggle, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
 
     const selectedTab = useAppSelector((state) => state.tabReducer.questsTab)
@@ -38,7 +38,7 @@ export const QuestsModal: FC = () => {
         <Dialog 
             open={isOpen} 
             onOpenChange={(open) => {
-                onOpenChange(open)
+                toggle(open)
                 if (!open) {
                     ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
                         modalName: ModalName.Quests,

@@ -9,7 +9,7 @@
 // import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 
-export const GameAssets : FC = () => {
+export const InGame: FC = () => {
     // const { onOpen: onTokensOffchainPress } = useSingletonHook<ReturnType<typeof useDisclosure>>(TOKENS_OFFCHAIN_DISCLOSURE)
     // const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
     // const user = swr.data?.data.user

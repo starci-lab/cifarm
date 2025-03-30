@@ -10,7 +10,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { useDisclosure, useGraphQLQueryUserSwr } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
+import { useGraphQLQueryUserSwr } from "@/hooks"
 
 export enum MintRequirement {
     OffchainBalance = "Offchain Balance",
@@ -18,13 +19,13 @@ export enum MintRequirement {
 }
 
 export const MintModal: FC = () => {
-    const { isOpen, onOpenChange } = useSingletonHook<
+    const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(MINT_DISCLOSURE)
     const { swr: { data: user } } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
-    const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(MINT_AMOUNT_DISCLOSURE)
+    const { toggle: mintAmountToggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(MINT_AMOUNT_DISCLOSURE)
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
@@ -55,12 +56,12 @@ export const MintModal: FC = () => {
                 <DialogFooter>
                     <EnhancedButton
                         variant="ghost"
-                        onClick={() => onOpenChange(false)}
+                        onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
                     </EnhancedButton>
-                    <EnhancedButton onClick={() => onOpen()}>
+                    <EnhancedButton onClick={() => mintAmountToggle(true)}>
                         Mint
                     </EnhancedButton>
                 </DialogFooter>

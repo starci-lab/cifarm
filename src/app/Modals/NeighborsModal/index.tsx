@@ -1,7 +1,7 @@
 "use client"
 import { NEIGHBORS_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import React, { FC, ReactNode } from "react"
 import { FolloweesTab } from "./FolloweesTab"
 import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
@@ -12,7 +12,7 @@ import { NeighborsTab } from "./Neighbors"
 import { NeighborsTab as NeighborsTabEnum, setNeighborsTab, useAppDispatch, useAppSelector } from "@/redux"  
 
 export const NeighborsModal: FC = () => {
-    const { onOpenChange, isOpen } =
+    const { toggle, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
 
     const selectedTab = useAppSelector((state) => state.tabReducer.neighborsTab)
@@ -29,7 +29,7 @@ export const NeighborsModal: FC = () => {
         <Dialog 
             open={isOpen} 
             onOpenChange={(value) => {
-                onOpenChange(value)
+                toggle(value)
                 if (!value) {
                     ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
                         modalName: ModalName.Neighbors,

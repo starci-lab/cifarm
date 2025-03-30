@@ -14,7 +14,7 @@ import {
     useGraphQLQueryUserSwr,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import { List } from "@/components"
 
 export enum SocialQuest {

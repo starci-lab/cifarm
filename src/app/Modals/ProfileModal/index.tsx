@@ -2,7 +2,7 @@
 import { PROFILE_DISCLOSURE, GRAPHQL_QUERY_USER_SWR  } from "@/app/constants"
 import { Avatar, AvatarImage, ExclamationTooltip, Image, ModalHeader, Snippet, Spacer } from "@/components"
 import { pathConstants } from "@/constants"
-import { useDisclosure, useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { computeExperiencesQuota, truncateString } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -19,9 +19,10 @@ import {
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useDisclosure } from "react-use-disclosure"
 
 export const ProfileModal: FC = () => {
-    const { isOpen, onOpenChange, onClose } =
+    const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(PROFILE_DISCLOSURE)
     const { swr } =
     useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
@@ -33,7 +34,7 @@ export const ProfileModal: FC = () => {
     const router = useRouterWithSearchParams()
 
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
@@ -115,7 +116,7 @@ export const ProfileModal: FC = () => {
                         className="w-full" 
                         variant="destructive" 
                         onClick={() => {
-                            onClose()
+                            toggle(false)
                             router.push(pathConstants.home)
                         }}
                     >

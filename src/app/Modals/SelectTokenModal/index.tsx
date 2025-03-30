@@ -12,10 +12,10 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 
 export const SelectTokenModal = () => {
-    const { isOpen, onOpenChange } = useSingletonHook<
+    const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(SELECT_TOKEN_DISCLOSURE)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -29,7 +29,7 @@ export const SelectTokenModal = () => {
     }, [searchString])
     
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
@@ -41,7 +41,6 @@ export const SelectTokenModal = () => {
                         handleSearchResult={({ searchString }) => {
                             setSearchString(searchString)
                         }}
-                        disableDebounce={true}
                     />
                     <Spacer y={4} />
                     <List
@@ -52,7 +51,7 @@ export const SelectTokenModal = () => {
                 <DialogFooter>
                     <EnhancedButton
                         variant="ghost"
-                        onClick={() => onOpenChange(false)}
+                        onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel

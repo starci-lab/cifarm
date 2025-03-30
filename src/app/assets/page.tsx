@@ -3,17 +3,16 @@
 import React, { FC } from "react"
 import { AssetTab, setAssetTab, useAppDispatch, useAppSelector } from "@/redux"
 import { Container, Header, Spacer, Tabs, TabsList, TabsTrigger } from "@/components"  // ShadCN UI Button
-import { OnChainAssets } from "./OnChainAssets"
-import { Profile } from "./Profile"
+import { OnChain } from "./OnChain"
+import { InGame } from "./InGame"
 
 const Page: FC = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
 
     const renderContent = () => {
         const contentMap = {
-            [AssetTab.OnChainAssets]: <OnChainAssets />,
-            [AssetTab.Profile]: <Profile />,
-            [AssetTab.GameAssets]: <div />,
+            [AssetTab.OnChain]: <OnChain />,
+            [AssetTab.InGame]: <InGame />,
         }
         return contentMap[assetTab]
     }
@@ -30,15 +29,12 @@ const Page: FC = () => {
                 <Spacer y={6}/>
                 <div>
                     <Tabs className="w-full" value={assetTab} onValueChange={(value) => dispatch(setAssetTab(value as AssetTab))}>
-                        <TabsList className="grid w-full grid-cols-3">
-                            <TabsTrigger value={AssetTab.OnChainAssets}>
-                                On-chain Assets
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value={AssetTab.OnChain}>
+                                On-chain
                             </TabsTrigger>
-                            <TabsTrigger value={AssetTab.Profile}>
-                                Profile
-                            </TabsTrigger>
-                            <TabsTrigger value={AssetTab.GameAssets}>
-                                Game Assets
+                            <TabsTrigger value={AssetTab.InGame}>
+                                In-game
                             </TabsTrigger>
                         </TabsList>
                     </Tabs>

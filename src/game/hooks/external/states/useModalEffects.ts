@@ -1,4 +1,4 @@
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import {
     QUESTS_DISCLOSURE,
     NEIGHBORS_DISCLOSURE,
@@ -13,11 +13,11 @@ import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "@/game/events"
 
 export const useModalEffects = () => {
-    const { onOpenChange: onQuestsOpenChange } =
+    const { toggle: questsToggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
-    const { onOpenChange: onNeighborsOpenChange } =
+    const { toggle: neighborsToggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
-    const { onOpenChange: onProfileOpenChange } =
+    const { toggle: profileToggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(PROFILE_DISCLOSURE)
 
     useEffect(() => {
@@ -26,13 +26,13 @@ export const useModalEffects = () => {
             ({ modalName }: OpenModalMessage) => {
                 switch (modalName) {
                 case ModalName.Quests:
-                    onQuestsOpenChange(true)
+                    questsToggle(true)
                     break
                 case ModalName.Neighbors:
-                    onNeighborsOpenChange(true)
+                    neighborsToggle(true)
                     break
                 case ModalName.Profile:
-                    onProfileOpenChange(true)
+                    profileToggle(true)
                     break
                 default:
                     break

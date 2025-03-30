@@ -4,7 +4,7 @@ import { TokenInfo } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { WithKey } from "@/modules/common"
 import { useAppSelector, WithEnabled } from "@/redux"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import React, { FC } from "react"
 import { Image, PressableCard } from "@/components"
 
@@ -13,7 +13,7 @@ export interface TokenProps {
 }
 
 export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
-    const { onClose } = useSingletonHook<ReturnType<typeof useDisclosure>>(SELECT_TOKEN_DISCLOSURE)
+    const { toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(SELECT_TOKEN_DISCLOSURE)
     const balances = useAppSelector((state) => state.sessionReducer.balances)
     const balanceSwr = balances[token.key]
     const callback = useAppSelector(state => state.modalReducer.selectTokenModal.callback)
@@ -25,7 +25,7 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
                 if (callback) {
                     callback(token.key)
                 }
-                onClose()
+                toggle(false)
             }}
         >
             <div className="w-full justify-between flex items-center">

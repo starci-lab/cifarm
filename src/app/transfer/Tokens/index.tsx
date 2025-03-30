@@ -17,7 +17,7 @@ import {
 } from "@/app/constants"
 import { valuesWithKey } from "@/modules/common"
 import { useTransferTokenFormik } from "@/hooks"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import { AtSymbolIcon } from "@heroicons/react/24/outline"
 
 export const Tokens: FC = () => {
@@ -30,7 +30,7 @@ export const Tokens: FC = () => {
     const tokensArray = valuesWithKey(tokens)
     const selectedTokenKey = formik.values.tokenKey || tokensArray[0].key
     const balanceSwr = balances[selectedTokenKey]
-    const { onOpenChange } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_TOKEN_DISCLOSURE
     )
 
@@ -68,7 +68,7 @@ export const Tokens: FC = () => {
                                     },
                                 })
                             )
-                            onOpenChange(true)
+                            open()
                         }}
                     >
                         <Image

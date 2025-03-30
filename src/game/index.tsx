@@ -29,7 +29,7 @@ export const Game: FC = () => {
     //useEffects
     useEffects()
 
-    return <div id={CONTAINER_ID} className="w-screen h-screen"></div>
+    return <div id={CONTAINER_ID} className="w-full h-full"></div>
 }
 
 //export default for dynamic import

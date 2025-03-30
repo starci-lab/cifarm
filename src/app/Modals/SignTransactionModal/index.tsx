@@ -29,7 +29,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 
 interface ProviderInfo {
@@ -37,7 +37,7 @@ interface ProviderInfo {
 }
 
 export const SignTransactionModal: FC = () => {
-    const { isOpen, onOpenChange } = useSingletonHook<
+    const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(SIGN_TRANSACTION_DISCLOSURE)
   
@@ -135,7 +135,7 @@ export const SignTransactionModal: FC = () => {
                 console.log(error)
                 addErrorToast()
             } finally {
-                onOpenChange(false)
+                toggle(false)
             }
         }
     )
@@ -215,7 +215,7 @@ export const SignTransactionModal: FC = () => {
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
@@ -241,7 +241,7 @@ export const SignTransactionModal: FC = () => {
                 <DialogFooter>
                     <EnhancedButton
                         variant="ghost"
-                        onClick={() => onOpenChange(false)}
+                        onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel

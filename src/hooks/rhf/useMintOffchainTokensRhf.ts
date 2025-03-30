@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { z, ZodType } from "zod"
 import { SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 export interface MintOffchainTokensRhfInputs {
   amount: number
 }

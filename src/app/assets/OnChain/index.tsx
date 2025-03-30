@@ -18,7 +18,6 @@ import {
 } from "lucide-react"
 import { Action, ActionProps } from "./Action"
 import {
-    useDisclosure,
     useGraphQLMutationClaimHoneycombDailyRewardSwrMutation,
     useRouterWithSearchParams,
 } from "@/hooks"
@@ -34,7 +33,9 @@ import { deserialize, serialize } from "@/modules/serialization"
 import { setSignTransactionModal } from "@/redux"
 import { TxResponse } from "@/modules/honeycomb"
 import { useToast } from "@/hooks/use-toast"
-export const OnChainAssets: FC = () => {
+import { useDisclosure } from "react-use-disclosure"
+
+export const OnChain: FC = () => {
     const { toast } = useToast()
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
@@ -44,11 +45,11 @@ export const OnChainAssets: FC = () => {
     useSingletonHook<
       ReturnType<typeof useGraphQLMutationClaimHoneycombDailyRewardSwrMutation>
     >(GRAPHQL_MUTATION_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION)
-    const { onOpen: onSignTransactionModalOpen } = useSingletonHook<
+    const { open: openSignTransactionModal } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(SIGN_TRANSACTION_DISCLOSURE)
 
-    const { onOpen: onMintModalOpen } = useSingletonHook<
+    const { open: openMintModal } = useSingletonHook<
     ReturnType<typeof useDisclosure>
     >(MINT_DISCLOSURE)
     const dispatch = useAppDispatch()
@@ -114,7 +115,7 @@ export const OnChainAssets: FC = () => {
                         })
                     )
 
-                    onSignTransactionModalOpen()
+                    openSignTransactionModal()
                 } catch (error: unknown) {
                     if (error instanceof Error) {
                         toast({
@@ -139,7 +140,7 @@ export const OnChainAssets: FC = () => {
             key: "mint",
             icon: <PickaxeIcon className="w-8 h-8 min-w-8 min-h-8" />,
             name: "Mint",
-            onClick: () => onMintModalOpen()
+            onClick: () => openMintModal()
         }
     ]
 

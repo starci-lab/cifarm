@@ -14,10 +14,10 @@ import {
 } from "@/components/ui/dialog"
 import { CopyIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 
 export const PrivateKeyModal: FC = () => {
-    const { isOpen, onOpenChange } = useSingletonHook<
+    const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(PRIVATE_KEY_DISCLOSURE)
     const [isBlurred, setIsBlurred] = useState(true)
@@ -33,7 +33,7 @@ export const PrivateKeyModal: FC = () => {
     }
     const { privateKey } = account
     return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>

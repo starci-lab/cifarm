@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 export enum AssetTab {
-    Profile = "profile",
-    OnChainAssets = "on-chain-assets",
-    GameAssets = "game-assets",
+    OnChain = "on-chain",
+    InGame = "in-game",
 }
 
 export enum TransferTab {
@@ -31,7 +30,7 @@ export interface TabSlice {
 }
 
 const initialState: TabSlice = {
-    assetTab: AssetTab.OnChainAssets,
+    assetTab: AssetTab.OnChain,
     transferTab: TransferTab.Token,
     neighborsTab: NeighborsTab.Neighbors,
     questsTab: QuestsTab.Social,

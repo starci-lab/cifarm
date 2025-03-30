@@ -23,7 +23,7 @@ import {
     SingletonHookProvider as BaseSingletonHookProvider,
     SingletonHook2Provider as BaseSingletonHook2Provider,
 } from "@/modules/singleton-hook"
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import React, { PropsWithChildren } from "react"
 import { useGraphQLMutationUpdateReferralSwrMutation } from "@/hooks/swr/graphql/mutations/useGraphQLMutationUpdateReferralSwrMutation"
 

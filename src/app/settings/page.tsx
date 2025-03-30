@@ -1,6 +1,6 @@
 "use client"
 
-import { useDisclosure } from "@/hooks"
+import { useDisclosure } from "react-use-disclosure"
 import { Card, CardContent, CardHeader, Container, ExclamationTooltip, Header, Spacer } from "@/components"
 import React, { FC } from "react"
 import { Theme } from "./Theme"
