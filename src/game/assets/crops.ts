@@ -22,7 +22,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/turnip/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
@@ -83,7 +83,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/carrot/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
@@ -144,7 +144,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/bell-pepper/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
@@ -206,7 +206,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/cucumber/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
@@ -267,7 +267,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/potato/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
@@ -328,7 +328,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/pineapple/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
@@ -389,7 +389,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/watermelon/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
@@ -450,7 +450,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                     assetUrl: "crops/strawberry/1.png",
                     extraOffsets: {
                         x: 0,
-                        y: -90,
+                        y: -85,
                     },
                 },
             },
