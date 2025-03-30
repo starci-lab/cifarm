@@ -27,6 +27,7 @@ export const toolAssetMap: Record<ToolId, ToolAssetData> = {
             textureConfig: {
                 key: "watering-can",
                 assetUrl: "tools/watering-can.png",
+                version: 1,
             }
         }
     },

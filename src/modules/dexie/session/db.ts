@@ -40,13 +40,6 @@ export enum SessionDbKey {
   HoneycombMintOffchainTokensTransaction = "honeycombMintOffchainTokensTransaction",
 }
 
-export interface Asset {
-  id: number;
-  data: Blob;
-  version: number;
-  key: string;
-}
-
 export interface KeyValueStore {
   key: SessionDbKey; // enum
   value: string;
@@ -105,7 +98,7 @@ export interface Asset {
   id: number;
   key: string;
   data: Blob;
-  versionNumber?: number;
+  version?: number;
 }
 
 //store all sessions
@@ -124,7 +117,7 @@ sessionDb.version(1).stores({
     storedAddresses: "++id, chainKey, network, accountAddress, type",
     //assets
     packages: "++id, packageId",
-    assets: "++id, key, data, versionNumber",
+    assets: "++id, key, data, version",
 })
 
 export { sessionDb }
