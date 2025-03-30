@@ -77,6 +77,7 @@ export const productAssetMap: Record<
                 assetUrl: "products/turnip.png",
                 key: "turnip",
                 isQuality: false,
+                version: 1,
             },
         },
     },
@@ -97,6 +98,7 @@ export const productAssetMap: Record<
                 assetUrl: "products/carrot.png",
                 key: "carrot",
                 isQuality: false,
+                version: 1,
             },
         },
     },
@@ -295,7 +297,7 @@ export const productAssetMap: Record<
 // Function to load all product assets
 export const loadProductAssets = async (scene: Scene) => {
     // Load all product assets
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
     for (const productData of Object.values(productAssetMap)) {
         if (productData.base) {
             if (productData.base) {

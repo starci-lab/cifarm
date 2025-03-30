@@ -43,7 +43,7 @@ export enum SessionDbKey {
 export interface Asset {
   id: number;
   data: Blob;
-  versionNumber?: number;
+  version: number;
   key: string;
 }
 

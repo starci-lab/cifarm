@@ -84,6 +84,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                     x: 0,
                     y: -170,
                 },
+                version: 1,
             },
         },
     },
@@ -145,6 +146,7 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             textureConfig: {
                 key: "fruit-apple-sapling",
                 assetUrl: "fruits/apple/sapling.png",
+                version: 1,
             },
         },
     },

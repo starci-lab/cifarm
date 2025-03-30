@@ -132,12 +132,7 @@ export enum BaseAssetKey {
   UITopbarName = "ui-topbar-name",
 
   //Bubble
-  Bubble = "bubble",
   FertilizerParticle = "fertilizer-particle",
-
-  //Press here arrow
-  PressHereArrow = "press-here-arrow",
-
   //State
   BubbleState = "bubble-state",
 }
@@ -753,29 +748,11 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
     },
 
     //Bubble
-    [BaseAssetKey.Bubble]: {
-        base: {
-            textureConfig: {
-                assetUrl: "bubble.png",
-                key: "bubble",
-            },
-        },
-    },
     [BaseAssetKey.FertilizerParticle]: {
         base: {
             textureConfig: {
                 assetUrl: "tiles/fertilizer-particle.png",
                 key: "tiles-fertilizer-particle",
-            },
-        },
-    },
-
-    //Press here arrow
-    [BaseAssetKey.PressHereArrow]: {
-        base: {
-            textureConfig: {
-                assetUrl: "press-here-arrow.png",
-                key: "press-here-arrow",
             },
         },
     },
@@ -932,8 +909,9 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
     [BaseAssetKey.BubbleState]: {
         base: {
             textureConfig: {
-                assetUrl: "bubble-state.png",
+                assetUrl: "states/bubble-state.png",
                 key: "bubble-state",
+                version: 1,
             },
         },
     },
@@ -1004,18 +982,14 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
 }
 
 // preload, for loading screen
-export const loadBootstrapAssets = (scene: Phaser.Scene) => {
+export const loadBootstrapAssets = async (scene: Phaser.Scene) => {
+    const promises: Array<Promise<void>> = []
     for (const value of Object.values(bootstrapAssetMap)) {
         if (value.base) {
-            const { key, assetUrl, useExisting } = value.base.textureConfig
-            if (!useExisting) {
-                if (!assetUrl) {
-                    throw new Error(`Asset URL is required for ${key}`)
-                }
-                scene.load.image(key, assetUrl)
-            }
+            promises.push(loadTexture(scene, value.base.textureConfig))
         }
     }
+    await Promise.all(promises)
 }
 
 // asset Loading Function for `baseAssetMap`

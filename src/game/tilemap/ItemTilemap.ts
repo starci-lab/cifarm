@@ -1388,7 +1388,16 @@ export abstract class ItemTilemap extends GroundTilemap {
       | UserSchema
       | undefined
         const userId = watchingUser?.id ?? undefined
-        ExternalEventEmitter.emit(ExternalEventName.LoadPlacedItems, userId)
+
+        // turn the event into a promise for better readability
+        await new Promise<void>((resolve) => {
+            ExternalEventEmitter.once(ExternalEventName.PlacedItemsLoaded, async() => {
+                resolve()
+            })
+            // Emit the event to request the toolbar inventory index
+            ExternalEventEmitter.emit(ExternalEventName.LoadPlacedItems, userId)
+        })
+        // wait for the placed items to be loaded
         SceneEventEmitter.emit(SceneEventName.CenterCamera)
         await sleep(FADE_HOLD_TIME)
         SceneEventEmitter.emit(SceneEventName.FadeOut)

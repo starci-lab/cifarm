@@ -21,13 +21,13 @@ export const tileAssetMap: Record<TileId, TileAssetData> = {
         map: {
             textureConfig: {
                 key: "tiles-basic-tile",
-                assetUrl: "tiles/starter-tile.png",
+                assetUrl: "tiles/basic-tile/basic-tile.png",
             },
         },
         shop: {
             textureConfig: {
-                key: "tiles-basic-tile",
-                assetUrl: "tiles/starter-tile.png",
+                key: "tiles-basic-tile-shop",
+                assetUrl: "tiles/basic-tile/shop.png",
             },
         },
     },

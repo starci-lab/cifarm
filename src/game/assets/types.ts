@@ -7,16 +7,19 @@ export interface AtlasConfig {
   key: string;
   assetUrl: string;
   textureUrl: string;
+  version?: number;
 }
 
 export interface JsonConfig {
   key: string;
   assetUrl: string;
+  version?: number;
 }
 
 export interface AtlasTextureConfig {
   name: string;
   assetUrl: string;
+  version?: number;
 }
 
 export interface SpineConfig {
@@ -39,6 +42,7 @@ export interface TextureConfig {
   scaleWidth?: number;
   scaleHeight?: number;
   packageId?: number;
+  version?: number;
   // 0 is default, load from first join game
   // 1,2,3 is the package id, which is triggered when download package
 }

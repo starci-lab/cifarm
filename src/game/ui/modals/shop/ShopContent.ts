@@ -936,118 +936,143 @@ export class ShopContent extends BaseSizer {
         return container
     }
 
-    private onBuyCropSeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
-        ExternalEventEmitter.once(
-            ExternalEventName.BuyCropSeedsResponsed,
-            () => {}
-        )
+    private async onBuyCropSeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
         const eventMessage: BuyCropSeedsMessage = {
             cropId: displayId,
             quantity: 1,
         }
-        ExternalEventEmitter.once(ExternalEventName.BuyCropSeedsResponsed, () => {
-            if (!cropAssetMap[displayId].shop) {
-                throw new Error("Shop asset is not found.")
-            }
-            const flyItem = new FlyItem({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    iconAssetKey: cropAssetMap[displayId].shop.textureConfig.key,
-                    x: pointer.x,
-                    y: pointer.y,
-                    quantity: 1,
-                    depth: uiDepth.modal.fly,
-                },
+        // turn the event into a promise for better readability
+        await new Promise<void>((resolve) => {
+            ExternalEventEmitter.once(ExternalEventName.BuyCropSeedsResponsed, () => {
+                if (!cropAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
+                const flyItem = new FlyItem({
+                    baseParams: {
+                        scene: this.scene,
+                    },
+                    options: {
+                        iconAssetKey: cropAssetMap[displayId].shop.textureConfig.key,
+                        x: pointer.x,
+                        y: pointer.y,
+                        quantity: 1,
+                        depth: uiDepth.modal.fly,
+                    },
+                })
+                this.scene.add.existing(flyItem)
+                resolve()
             })
-            this.scene.add.existing(flyItem)
+            // send request to buy seeds
+            ExternalEventEmitter.emit(
+                ExternalEventName.RequestBuyCropSeeds,
+                eventMessage
+            )
         })
-        // send request to buy seeds
-        ExternalEventEmitter.emit(
-            ExternalEventName.RequestBuyCropSeeds,
-            eventMessage
-        )
     }
 
-    private onBuyFlowerPress(displayId: FlowerId, pointer: Phaser.Input.Pointer) {
-        ExternalEventEmitter.once(ExternalEventName.BuyFlowerSeedsResponsed, () => {
-            if (!flowerAssetMap[displayId].shop) {
-                throw new Error("Shop asset is not found.")
-            }
-            const flyItem = new FlyItem({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    iconAssetKey: flowerAssetMap[displayId].shop.textureConfig.key,
-                    x: pointer.x,
-                    y: pointer.y,
-                    quantity: 1,
-                    depth: uiDepth.modal.fly,
-                },
+    private async onBuyFlowerPress(displayId: FlowerId, pointer: Phaser.Input.Pointer) {
+        // turn the event into a promise for better readability
+        await new Promise<void>((resolve) => {
+            ExternalEventEmitter.once(ExternalEventName.BuyFlowerSeedsResponsed, () => {
+                if (!flowerAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
+                const flyItem = new FlyItem({
+                    baseParams: {
+                        scene: this.scene,
+                    },
+                    options: {
+                        iconAssetKey: flowerAssetMap[displayId].shop.textureConfig.key,
+                        x: pointer.x,
+                        y: pointer.y,
+                        quantity: 1,
+                        depth: uiDepth.modal.fly,
+                    },
+                })
+                this.scene.add.existing(flyItem)
+                resolve()
             })
-            this.scene.add.existing(flyItem)
+            const eventMessage: BuyFlowerSeedsMessage = {
+                flowerId: displayId,
+                quantity: 1,
+            }
+            // send request to buy seeds
+            ExternalEventEmitter.emit(
+                ExternalEventName.RequestBuyFlowerSeeds,
+                eventMessage
+            )
         })
-        const eventMessage: BuyFlowerSeedsMessage = {
-            flowerId: displayId,
-            quantity: 1,
-        }
-        // send request to buy seeds
-        ExternalEventEmitter.emit(
-            ExternalEventName.RequestBuyFlowerSeeds,
-            eventMessage
-        )
     }
 
     //onBuySupplyPress
-    private onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
-        ExternalEventEmitter.once(ExternalEventName.BuySuppliesResponsed, () => {})
-        const eventMessage: BuySuppliesMessage = {
-            supplyId: displayId,
-            quantity: 1,
-        }
-        // send request to buy seeds
-        ExternalEventEmitter.emit(
-            ExternalEventName.RequestBuySupplies,
-            eventMessage
-        )
-        const flyItem = new FlyItem({
-            baseParams: {
-                scene: this.scene,
-            },
-            options: {
-                iconAssetKey: supplyAssetMap[displayId].base.textureConfig.key,
-                x: pointer.x,   
-                y: pointer.y,
+    private async onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
+        // turn the event into a promise for better readability
+        await new Promise<void>((resolve) => {
+            ExternalEventEmitter.once(ExternalEventName.BuySuppliesResponsed, () => {
+                const eventMessage: BuySuppliesMessage = {
+                    supplyId: displayId,
+                    quantity: 1,
+                }
+                // send request to buy seeds
+                ExternalEventEmitter.emit(
+                    ExternalEventName.RequestBuySupplies,
+                    eventMessage
+                )
+                const flyItem = new FlyItem({
+                    baseParams: {
+                        scene: this.scene,
+                    },
+                    options: {
+                        iconAssetKey: supplyAssetMap[displayId].base.textureConfig.key,
+                        x: pointer.x,   
+                        y: pointer.y,
+                        quantity: 1,
+                        depth: uiDepth.modal.fly,
+                    },
+                })
+                this.scene.add.existing(flyItem)
+                resolve()
+            })
+            const eventMessage: BuySuppliesMessage = {
+                supplyId: displayId,
                 quantity: 1,
-                depth: uiDepth.modal.fly,
-            },
+            }
+            // send request to buy seeds
+            ExternalEventEmitter.emit(
+                ExternalEventName.RequestBuySupplies,
+                eventMessage
+            )
         })
-        this.scene.add.existing(flyItem)
     }
 
-    private onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
-        ExternalEventEmitter.once(ExternalEventName.BuyToolResponsed, () => {
-            const flyItem = new FlyItem({
-                baseParams: {
-                    scene: this.scene,
-                },
-                options: {
-                    iconAssetKey: toolAssetMap[displayId].base.textureConfig.key,
-                    x: pointer.x,
-                    y: pointer.y,
-                    quantity: 1,
-                    depth: uiDepth.modal.fly,
-                },
+    private async onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
+        // turn the event into a promise for better readability
+        await new Promise<void>((resolve) => {
+            ExternalEventEmitter.once(ExternalEventName.BuyToolResponsed, () => {
+                const flyItem = new FlyItem({
+                    baseParams: {
+                        scene: this.scene,
+                    },
+                    options: {
+                        iconAssetKey: toolAssetMap[displayId].base.textureConfig.key,
+                        x: pointer.x,
+                        y: pointer.y,
+                        quantity: 1,
+                        depth: uiDepth.modal.fly,
+                    },
+                })
+                this.scene.add.existing(flyItem)
+                resolve()
             })
-            this.scene.add.existing(flyItem)
+            const eventMessage: BuyToolMessage = {
+                toolId: displayId,
+            }
+            // send request to buy seeds
+            ExternalEventEmitter.emit(
+                ExternalEventName.RequestBuyTool,
+                eventMessage
+            )
         })
-        const eventMessage: BuyToolMessage = {
-            toolId: displayId,
-        }
-        // send request to buy seeds
-        ExternalEventEmitter.emit(ExternalEventName.RequestBuyTool, eventMessage)
     }
 
     private getCurrentOwnership({

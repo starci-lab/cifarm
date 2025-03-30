@@ -11,7 +11,6 @@ export const PATH = "assets"
 export const getAssetUrl = (assetUrl: string) => {
     return `${PATH}/${assetUrl}`
 }
-
 export const downloadTexture = async (
     scene: Scene,
     textureConfig: TextureConfig
@@ -20,13 +19,13 @@ export const downloadTexture = async (
     const totalAssetsLoaded = Number.parseInt(scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
     scene.cache.obj.add(CacheKey.TotalAssetsLoaded, totalAssetsLoaded + 1)
 
-    const { key, assetUrl } = textureConfig
+    const { key, assetUrl, version = 0 } = textureConfig
     if (!assetUrl) throw new Error("Asset URL is required")
 
     const asset = await sessionDb.assets
         .filter((asset) => asset.key === key)
         .first()
-    if (asset) {
+    if (asset && asset.version === version) {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
@@ -40,7 +39,7 @@ export const downloadTexture = async (
             }
         },
     })
-    await sessionDb.assets.add({ key, data })
+    await sessionDb.assets.add({ key, data, version })
     return data
 }
 
@@ -73,7 +72,7 @@ export const downloadJson = async (scene: Scene, spineConfig: SpineConfig) => {
     const totalAssetsLoaded = Number.parseInt(scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
     scene.cache.obj.add(CacheKey.TotalAssetsLoaded, totalAssetsLoaded + 1)
 
-    const { key, assetUrl } = spineConfig.json
+    const { key, assetUrl, version = 0 } = spineConfig.json
     if (!assetUrl) throw new Error("Asset URL is required")
 
     const asset = await sessionDb.assets
@@ -89,7 +88,7 @@ export const downloadJson = async (scene: Scene, spineConfig: SpineConfig) => {
             ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
         },
     })
-    await sessionDb.assets.add({ key, data })
+    await sessionDb.assets.add({ key, data, version })
     return data
 }
 
@@ -99,7 +98,7 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
     scene.cache.obj.add(CacheKey.TotalAssetsLoaded, totalAssetsLoaded + 2)
 
     const {
-        atlas: { key, assetUrl, textureUrl },
+        atlas: { key, assetUrl, textureUrl, version = 0 },
     } = spineConfig
     if (!textureUrl) throw new Error("Texture URL is required")
 
@@ -108,7 +107,7 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
     const textureAsset = await sessionDb.assets
         .filter((asset) => asset.key === textureKey)
         .first()
-    if (textureAsset) {
+    if (textureAsset && textureAsset.version === version) {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         textureData = textureAsset.data
     } else {
@@ -118,7 +117,7 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
                 ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
             },
         })
-        await sessionDb.assets.add({ key: textureKey, data })
+        await sessionDb.assets.add({ key: textureKey, data, version })
         textureData = data
     }
 
@@ -148,7 +147,7 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
     const _atlasBlob = new Blob([atlasTextLines.join("\n")], {
         type: "blob",
     })
-    await sessionDb.assets.add({ key, data: _atlasBlob })
+    await sessionDb.assets.add({ key, data: _atlasBlob, version })
     return _atlasBlob
 }
 
