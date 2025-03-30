@@ -32,7 +32,7 @@ export const SocialTab: FC = () => {
     const { swrMutation: updateFollowXSwrMutation } = useSingletonHook<
     ReturnType<typeof useGraphQLMutationUpdateFollowXSwrMutation>
   >(GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION)
-    const { onOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { open: openInviteUserModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         INVITE_USER_DISCLOSURE
     )
 
@@ -83,7 +83,7 @@ export const SocialTab: FC = () => {
                                 postText: "users referred",
                             }}
                             onClick={() => {
-                                onOpen()
+                                openInviteUserModal()
                             }}
                             completed={
                                 (userSwr.data?.data.user.referredUserIds.length ?? 0) >=

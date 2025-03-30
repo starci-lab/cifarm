@@ -14,7 +14,7 @@ import { setWarningModal, useAppDispatch } from "@/redux"
 import { Button } from "@/components"
 
 const Page: FC = () => {
-    const { onOpen } =
+    const { open: openWarningModal } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(WARNING_DISCLOSURE)
     const dispatch = useAppDispatch()
     return (
@@ -44,7 +44,7 @@ const Page: FC = () => {
                                             nextModalToken: MNEMONIC_DISCLOSURE,
                                         })
                                     )
-                                    onOpen()
+                                    openWarningModal()
                                 }}
                                 variant="outline"
                             >
@@ -63,7 +63,7 @@ const Page: FC = () => {
                                             nextModalToken: PRIVATE_KEY_DISCLOSURE,
                                         })
                                     )
-                                    onOpen()
+                                    openWarningModal()
                                 }}
                                 variant="outline"
                             >

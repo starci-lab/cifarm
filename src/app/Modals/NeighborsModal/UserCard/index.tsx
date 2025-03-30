@@ -49,7 +49,7 @@ export const UserCard: FC<UserCardProps> = ({
         ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
     >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
 
-    const { onClose } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { close: closeNeighborsModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NEIGHBORS_DISCLOSURE
     )
 
@@ -57,7 +57,7 @@ export const UserCard: FC<UserCardProps> = ({
         GAMEPLAY_IO
     )
 
-    const { onOpen: onWarningOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { open: openWarningModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         WARNING_DISCLOSURE
     )
     const dispatch = useAppDispatch()
@@ -129,7 +129,7 @@ export const UserCard: FC<UserCardProps> = ({
                                     }
                                 }
                             }))
-                            onWarningOpen()
+                            openWarningModal()
                         }}
                         variant="ghost"
                         size="icon"
@@ -161,7 +161,7 @@ export const UserCard: FC<UserCardProps> = ({
                 )}
                 <EnhancedButton 
                     onClick={async () => {
-                        onClose()
+                        closeNeighborsModal()
                         if (pathname !== pathConstants.play) {
                             router.push(pathConstants.play)
                             gameState.data = {

@@ -3,8 +3,6 @@ import {
     useGraphQLMutationAuthenticationSwrMutation,
     useGraphQLMutationMintOffchainTokensSwrMutation,
     useGameplayIo,
-    useMintOffchainTokensRhf,
-    useTransferTokensRhf,
     useTransferTokenFormik,
     useTransferTokenSwrMutation,
     useHoneycombSendTransactionSwrMutation,
@@ -74,8 +72,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
 export const SingletonHook2Provider = ({ children }: PropsWithChildren) => (
     <BaseSingletonHook2Provider
         hooks={{
-            MINT_OFFCHAIN_TOKENS_RHF: useMintOffchainTokensRhf(),
-            TRANSFER_TOKEN_RHF: useTransferTokensRhf(),
             TRANSFER_TOKEN_FORMIK: useTransferTokenFormik(),
         }}
     >
