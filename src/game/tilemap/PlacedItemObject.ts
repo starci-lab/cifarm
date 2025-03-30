@@ -253,14 +253,10 @@ export class PlacedItemObject extends ContainerLite {
         ) {
             // use the product icon
             const fruit = this.fruits.find((fruit) => {
-                const placedItemType = this.placedItemTypes.find(
-                    (placedItemType) =>
-                        placedItemType.id === this.nextPlacedItem?.placedItemType
-                )
-                if (!placedItemType) {
-                    throw new Error("Placed item type not found")
+                if (!this.placedItemType?.fruit) {
+                    throw new Error("Placed item fruit not found")
                 }
-                return fruit.id === placedItemType.fruit
+                return fruit.id === this.placedItemType.fruit
             })
             if (!fruit) {
                 throw new Error("Fruit not found")
@@ -866,14 +862,13 @@ export class PlacedItemObject extends ContainerLite {
         // if the placed item type is the same as the current placed item, we will check it either is tree or animal
         let willReturn = false
         if (
-            this.nextPlacedItem.placedItemType ===
-      this.currentPlacedItem?.placedItemType
+            this.currentPlacedItem
         ) {
             switch (placedItemType.type) {
             case PlacedItemType.Animal: {
                 // check if the isAdult property has changed
                 if (
-                    this.currentPlacedItem?.animalInfo?.isAdult ===
+                    this.currentPlacedItem.animalInfo?.isAdult ===
             this.nextPlacedItem.animalInfo?.isAdult
                 ) {
                     willReturn = true
@@ -935,16 +930,10 @@ export class PlacedItemObject extends ContainerLite {
             this.nextPlacedItem.animalInfo.currentState !== AnimalCurrentState.Normal
         ) {
             const animal = this.animals.find((animal) => {
-                const placedItemType = this.placedItemTypes.find((placedItemType) => {
-                    if (!this.nextPlacedItem) {
-                        throw new Error("Current placed item not found")
-                    }
-                    return placedItemType.id === this.nextPlacedItem.placedItemType
-                })
-                if (!placedItemType) {
+                if (!this.placedItemType?.animal) {
                     throw new Error("Placed item type not found")
                 }
-                return animal.id === placedItemType.animal
+                return animal.id === this.placedItemType.animal
             })
 
             if (!animal) {
@@ -1092,16 +1081,7 @@ export class PlacedItemObject extends ContainerLite {
                 if (!this.nextPlacedItem) {
                     throw new Error("Current placed item not found")
                 }
-                const placedItemType = this.placedItemTypes.find((placedItemType) => {
-                    if (!this.nextPlacedItem) {
-                        throw new Error("Current placed item not found")
-                    }
-                    return placedItemType.id === this.nextPlacedItem.placedItemType
-                })
-                if (!placedItemType) {
-                    throw new Error("Placed item type not found")
-                }
-                return animal.id === placedItemType.animal
+                return animal.id === this.placedItemType?.animal
             })
 
             if (animal?.growthTime == undefined) {
@@ -1165,16 +1145,7 @@ export class PlacedItemObject extends ContainerLite {
                 if (!this.nextPlacedItem) {
                     throw new Error("Current placed item not found")
                 }
-                const placedItemType = this.placedItemTypes.find((placedItemType) => {
-                    if (!this.nextPlacedItem) {
-                        throw new Error("Current placed item not found")
-                    }
-                    return placedItemType.id === this.nextPlacedItem.placedItemType
-                })
-                if (!placedItemType) {
-                    throw new Error("Placed item type not found")
-                }
-                return building.id === placedItemType.building
+                return building.id === this.placedItemType?.building
             })
 
             if (beeHouse?.beeHouseYieldTime == undefined) {

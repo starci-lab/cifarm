@@ -1222,22 +1222,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         delete this.placedItemObjectMap[placedItemId]
     }
 
-    protected clearPlacedItem(placedItem: PlacedItemSchema) {
-        const gameObject = this.placedItemObjectMap[placedItem.id]?.object
-        const placedItemType = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.id === placedItem.placedItemType
-        )
-        if (!placedItemType) {
-            throw new Error("Placed item type not found")
-        }
-        gameObject.update(placedItemType.type, {
-            ...placedItem,
-            plantInfo: undefined,
-            animalInfo: undefined,
-            buildingInfo: undefined,
-        })
-    }
-
     // method to create all placed items when user IDs differ
     private createAllPlacedItems(placedItems: Array<PlacedItemSchema>) {
         for (const placedItem of placedItems) {
