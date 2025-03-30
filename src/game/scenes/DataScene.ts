@@ -50,6 +50,8 @@ export class DataScene extends Scene {
                         if (foundIndex === -1) {
                             throw new Error("Placed item not found")
                         }
+                        placedItems.splice(foundIndex, 1)
+                        break
                     }
                     }
                 }   

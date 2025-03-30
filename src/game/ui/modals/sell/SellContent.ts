@@ -12,14 +12,13 @@ import {
     Size,
     SizeStyle,
 } from "../../elements"
-import { SceneEventEmitter, SceneEventName, ModalName } from "../../../events"
+import { SceneEventEmitter, SceneEventName, ModalName, ExternalEventEmitter, ExternalEventName } from "../../../events"
 import {
     baseAssetMap,
     BaseAssetKey,
 } from "../../../assets"
-import { getSellPriceFromPlacedItem } from "../../../cache"
-import {
-} from "@/modules/entities"
+import { getSellPriceFromPlacedItemType } from "../../../cache"
+import { PlacedItemSchema } from "@/modules/entities"
 import { PlacedItemTypeSchema } from "@/modules/entities"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { createMainVisual } from "../../../tilemap"
@@ -30,6 +29,8 @@ export class SellContent extends BaseSizer {
     private resourceLabel: ResourceLabel | undefined
     private assetIcon: Phaser.GameObjects.Image | undefined
     private sizer: Sizer | undefined
+    private placedItemTypes: Array<PlacedItemTypeSchema>
+    private placedItem: PlacedItemSchema | undefined
 
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
@@ -44,13 +45,19 @@ export class SellContent extends BaseSizer {
                     showWrapperContainer: false,
                     showContainer: true,
                 },
-                secondaryButton: {
+                mainButton: {
                     text: "OK",
                     onPress: () => {
+                        if (!this.placedItem) {
+                            throw new Error("Placed item is undefined")
+                        }
                         SceneEventEmitter.emit(SceneEventName.CloseModal, {
                             modalName: ModalName.Sell,
                         })
-                        SceneEventEmitter.emit(SceneEventName.NormalModeOn)
+                        //SceneEventEmitter.emit(SceneEventName.NormalModeOn)
+                        ExternalEventEmitter.emit(ExternalEventName.RequestSell, {
+                            placedItemId: this.placedItem.id,
+                        })
                     },
                 },
                 onXButtonPress: () => {
@@ -65,6 +72,10 @@ export class SellContent extends BaseSizer {
         })
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
+
+        this.placedItemTypes = this.scene.cache.obj.get(
+            CacheKey.PlacedItemTypes
+        )
 
         this.size = getBackgroundContainerSize({
             style: SizeStyle.Container,
@@ -81,6 +92,7 @@ export class SellContent extends BaseSizer {
             if (!placedItem) {
                 throw new Error("Placed item is undefined")
             }
+            this.placedItem = placedItem
             const mainVisual = createMainVisual({
                 ...mapAssetData,
                 scene: this.scene,
@@ -88,10 +100,17 @@ export class SellContent extends BaseSizer {
             if (!mainVisual) {
                 throw new Error("Main visual is undefined")
             }
+            
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.id === placedItem.placedItemType
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
 
-            const sellPrice = getSellPriceFromPlacedItem({
+            const sellPrice = getSellPriceFromPlacedItemType({
                 scene: this.scene,
-                placedItem,
+                placedItemType,
             })
             if (!sellPrice) {
                 throw new Error("Sell price is undefined")
@@ -108,19 +127,10 @@ export class SellContent extends BaseSizer {
                     item: 50,
                 },
             })
-
             // re-create sell icon
             if (this.assetIcon) {
                 this.background.container?.remove(this.assetIcon)
             }
-            const placedItemTypes = this.scene.cache.obj.get(
-                CacheKey.PlacedItemTypes
-            ) as Array<PlacedItemTypeSchema>
-            const placedItemType = placedItemTypes.find(
-                (placedItemType) =>
-                    placedItemType.id ===
-                    placedItem.placedItemType
-            )
             if (!placedItemType) {
                 throw new Error("Placed item type not found")
             }

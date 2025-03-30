@@ -1,6 +1,6 @@
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { useGameplayIo, EmitterEventName } from "@/hooks"
+import { useGameplayIo, EmitterEventName, SellMessage } from "@/hooks"
 import { GAMEPLAY_IO } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
@@ -11,11 +11,11 @@ export const useSellEffects = () => {
     >(GAMEPLAY_IO)
     
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.RequestSell, async () => {
+        ExternalEventEmitter.on(ExternalEventName.RequestSell, async (message: SellMessage) => {
             if (!socket) {
                 return
             }
-            socket.emit(EmitterEventName.Sell)
+            socket.emit(EmitterEventName.Sell, message)
         })
         
         return () => {

@@ -8,7 +8,6 @@ import {
     HarvestAnimalData,
     HarvestFruitData,
     HarvestPlantData,
-    SellData,
     ThiefAnimalData,
     ThiefFruitData,
     ThiefPlantData,
@@ -54,6 +53,7 @@ import {
     SceneEventEmitter,
 } from "../events"
 import { SceneEventName } from "../events"
+import { getSellPriceFromPlacedItemType } from "../cache"
 
 const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
@@ -812,13 +812,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                     break
                 case ActionName.Sell:
                     if (data.success) {
-                        const { quantity } = data.data as SellData
+                        const placedItemType = this.placedItemTypes.find(
+                            (placedItemType) => placedItemType.id === data.placedItem.placedItemType
+                        )
+                        if (!placedItemType) {
+                            throw new Error("Placed item type not found")
+                        }
+                        const sellPrice = getSellPriceFromPlacedItemType({
+                            scene: this.scene,
+                            placedItemType
+                        })
+                        if (sellPrice === undefined) {
+                            throw new Error("Sell price not found")
+                        }
                         this.createFlyItems([
                             {
                                 iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
                                 x: position.x,
                                 y: position.y,
-                                quantity: quantity,
+                                quantity: sellPrice,
                             },
                         ])
                     } else {

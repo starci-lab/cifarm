@@ -1,4 +1,4 @@
-import { PlacedItemSchema } from "@/modules/entities"
+import { PlacedItemSchema, PlacedItemType } from "@/modules/entities"
 import { DeepPartial } from "react-hook-form"
 
 export enum ActionName {
@@ -91,7 +91,8 @@ export interface ThiefFruitData {
 }
 
 export interface SellData {
-  quantity: number;
+  id: string;
+  type: PlacedItemType;
 }
 
 export interface BuyBuildingData {

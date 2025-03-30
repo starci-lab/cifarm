@@ -71,22 +71,15 @@ export interface GetPlacedItemsByTypeParams {
     type: PlacedItemType; // Specify the type of items to filter (Tile, Building, or Fruit)
 }
 
-export const getSellPriceFromPlacedItem = ({
+export const getSellPriceFromPlacedItemType = ({
     scene,
-    placedItem,
-}: GetSellPriceFromPlacedItemParams) => {
-    const placedItemTypes: Array<PlacedItemTypeSchema> = scene.cache.obj.get(
-        CacheKey.PlacedItemTypes
-    )
-    const placedItemType = placedItemTypes.find((placedItemType) => placedItemType.id === placedItem.placedItemType)
-    if (!placedItemType) {
-        throw new Error("Placed item type not found")
-    }
+    placedItemType,
+}: GetSellPriceFromPlacedItemTypeParams) => {
     switch (placedItemType.type) {
     case PlacedItemType.Tile:
     {
         const tiles = scene.cache.obj.get(CacheKey.Tiles) as Array<TileSchema>
-        const tile = tiles.find((tile) => tile.id === placedItem.placedItemType)
+        const tile = tiles.find((tile) => tile.id === placedItemType.tile)
         if (!tile) {
             throw new Error("Tile not found")
         }
@@ -95,7 +88,7 @@ export const getSellPriceFromPlacedItem = ({
     case PlacedItemType.Building:
     {
         const buildings = scene.cache.obj.get(CacheKey.Buildings) as Array<BuildingSchema>
-        const building = buildings.find((building) => building.id === placedItem.placedItemType)
+        const building = buildings.find((building) => building.id === placedItemType.building)
         if (!building) {
             throw new Error("Building not found")
         }
@@ -104,7 +97,7 @@ export const getSellPriceFromPlacedItem = ({
     case PlacedItemType.Fruit:
     {
         const fruits = scene.cache.obj.get(CacheKey.Fruits) as Array<FruitSchema>
-        const fruit = fruits.find((fruit) => fruit.id === placedItem.placedItemType)
+        const fruit = fruits.find((fruit) => fruit.id === placedItemType.fruit)
         if (!fruit) {
             throw new Error("Fruit not found")
         }
@@ -113,7 +106,7 @@ export const getSellPriceFromPlacedItem = ({
     case PlacedItemType.Animal:
     {
         const animals = scene.cache.obj.get(CacheKey.Animals) as Array<AnimalSchema>
-        const animal = animals.find((animal) => animal.id === placedItem.placedItemType)
+        const animal = animals.find((animal) => animal.id === placedItemType.animal)
         if (!animal) {
             throw new Error("Animal not found")
         }
@@ -122,7 +115,7 @@ export const getSellPriceFromPlacedItem = ({
     }
 }
 
-export interface GetSellPriceFromPlacedItemParams {
+export interface GetSellPriceFromPlacedItemTypeParams {
     scene: Scene;
-    placedItem: PlacedItemSchema;
+    placedItemType: PlacedItemTypeSchema;
 }

@@ -201,3 +201,8 @@ export interface UseFertilizerMessage {
 export interface HelpUseBugNetMessage {
   placedItemFruitId: string;
 }
+
+export interface SellMessage {
+  placedItemId: string;
+}
+
