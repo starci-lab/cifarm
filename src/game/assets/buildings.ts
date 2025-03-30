@@ -49,6 +49,10 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     y: -630,
                 },
             },
+            modalScale: {
+                scaleX: 0.3,
+                scaleY: 0.3,
+            },
         },
         shop: {
             textureConfig: {
@@ -71,13 +75,17 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     y: -730,
                 },
             },
+            modalScale: {
+                scaleX: 0.3,
+                scaleY: 0.3,
+            },
         },
         shop: {
             textureConfig: {
                 key: "buildings-barn-shop",
                 assetUrl: "buildings/barn/shop.png",
             },
-        },
+        },   
     },
     [BuildingId.BeeHouse]: {
         name: "Bee House",
@@ -103,6 +111,10 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     y: -450,
                 },
             },
+            modalScale: {
+                scaleX: 0.6,
+                scaleY: 0.6,
+            },
         },
         shop: {
             textureConfig: {
@@ -124,7 +136,11 @@ export const buildingAssetMap: Record<BuildingId, BuildingAssetData> = {
                     x: -185,
                     y: -575,
                 },
-            }
+            },
+            modalScale: {
+                scaleX: 0.3,
+                scaleY: 0.3,
+            },
         },
         shop: {
             textureConfig: {

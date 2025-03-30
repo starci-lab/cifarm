@@ -5,27 +5,38 @@ import {
     UserSchema,
 } from "@/modules/entities"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
-import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseAssetKey, baseAssetMap } from "../../../assets"
-import { SceneEventEmitter, SceneEventName, ModalName, ExternalEventEmitter, ExternalEventName } from "../../../events"
+import {
+    SceneEventEmitter,
+    SceneEventName,
+    ModalName,
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "../../../events"
 import {
     BaseSizerBaseConstructorParams,
     CacheKey,
     UpgradeModalData,
 } from "../../../types"
-import { Background, Text, ModalBackground, TextColor } from "../../elements"
+import { Background, ModalBackground, ResourceLabel } from "../../elements"
 import { UpgradeBuildingMessage } from "@/hooks/io/emitter"
+import { createMainVisual } from "@/game/tilemap"
+import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 
 export class UpgradeContent extends BaseSizer {
     private background: ModalBackground
-    private mainContainer: Sizer
-    private label: Label
-    private levelText: Text
-    private amountText: Text
-    private buildings: Array<BuildingSchema>
     private user: UserSchema
+    private buildings: Array<BuildingSchema>
     private placedItemTypes: Array<PlacedItemTypeSchema>
     private placedItem: PlacedItemSchema | undefined
+
+    // large frame and resource label will stay in the sizer
+    private sizer: Sizer
+    private frameSizer: Sizer
+    private resourceLabel: ResourceLabel
+    private mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
+    private starsSizer: Sizer
     constructor({
         scene,
         x,
@@ -36,6 +47,10 @@ export class UpgradeContent extends BaseSizer {
     }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, height, width, config)
 
+        this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
+        this.buildings = this.scene.cache.obj.get(
+            CacheKey.Buildings
+        ) as Array<BuildingSchema>
         // Background Modal
         this.background = new ModalBackground({
             baseParams: { scene, x: 0, y: 0, width, height },
@@ -45,7 +60,7 @@ export class UpgradeContent extends BaseSizer {
                     showWrapperContainer: false,
                 },
                 align: "center",
-                background: Background.Small,
+                background: Background.Medium,
                 title: "Upgrade",
                 onXButtonPress: () => {
                     SceneEventEmitter.emit(SceneEventName.CloseModal, {
@@ -58,10 +73,15 @@ export class UpgradeContent extends BaseSizer {
                             throw new Error("Placed item not found.")
                         }
                         const eventMessage: UpgradeBuildingMessage = {
-                            placedItemBuildingId: this.placedItem.id
+                            placedItemBuildingId: this.placedItem.id,
                         }
-                        SceneEventEmitter.emit(SceneEventName.CloseModal, { modalName: ModalName.Upgrade })
-                        ExternalEventEmitter.emit(ExternalEventName.RequestUpgradeBuilding, eventMessage)
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, {
+                            modalName: ModalName.Upgrade,
+                        })
+                        ExternalEventEmitter.emit(
+                            ExternalEventName.RequestUpgradeBuilding,
+                            eventMessage
+                        )
                     },
                     text: "OK",
                 },
@@ -74,119 +94,120 @@ export class UpgradeContent extends BaseSizer {
             CacheKey.PlacedItemTypes
         ) as Array<PlacedItemTypeSchema>
 
-        this.amountText = new Text({
-            baseParams: { scene, text: "0", x: 0, y: 0 },
-            options: { fontSize: 30, textColor: TextColor.Brown },
-        })
-        this.scene.add.existing(this.amountText)
-
-        this.mainContainer = this.scene.rexUI.add.sizer({
-            orientation: "y",
-            space: { item: 25 },
-            originY: 0.5,
+        this.sizer = this.scene.rexUI.add.sizer({
+            orientation: "vertical",
+            originY: 0,
+            space: {
+                item: 40,
+            },
+            y: 60,
         })
 
-        this.levelText = new Text({
-            baseParams: { scene, text: "Current Level: 0", x: 0, y: 0 },
-            options: { fontSize: 30, textColor: TextColor.Brown },
-        }).setOrigin(0.5, 0)
-        this.scene.add.existing(this.levelText)
-        this.mainContainer.add(this.levelText, { align: "center" })
-
-        this.label = this.createLabel({
-            iconKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
-            amount: "0",
+        // add frame sizer
+        const backgroundFrame = this.scene.add.image(
+            0,
+            0,
+            baseAssetMap[BaseAssetKey.UICommonLargeFrame].base.textureConfig.key
+        )
+        this.frameSizer = this.scene.rexUI.add.sizer({
+            width: backgroundFrame.width,
+            height: backgroundFrame.height,
         })
+        this.frameSizer.addBackground(backgroundFrame)
+        this.frameSizer.layout()
+        this.sizer.add(this.frameSizer)
 
-        this.scene.add.existing(this.label)
-        this.mainContainer.add(this.label, { align: "center" })
+        // add stars sizer
+        this.starsSizer = this.scene.rexUI.add.sizer({
+            orientation: "horizontal",
+            y: - backgroundFrame.height / 2 + 30,
+            space: {
+                item: 20,
+            },
+        })
+        this.frameSizer.addLocal(this.starsSizer)
 
-        this.mainContainer.layout()
-        this.mainContainer.setPosition(0, -50)
-
-        if (!this.background.container) {
-            throw new Error("Container not found")
-        }
-        this.background.container.add(this.mainContainer)
-
-        this.buildings = this.scene.cache.obj.get(
-            CacheKey.Buildings
-        ) as Array<BuildingSchema>
-        this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
+        this.resourceLabel = new ResourceLabel({
+            baseParams: {
+                scene,
+            },
+            options: {
+                text: "",
+                iconKey:
+          baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+            },
+        })
+        this.scene.add.existing(this.resourceLabel)
+        this.sizer.add(this.resourceLabel)
+        this.sizer.layout()
+        this.background.container?.addLocal(this.sizer)
 
         SceneEventEmitter.on(SceneEventName.UpdateUpgradeModal, () => {
-            const { placedItem } = this.scene.cache.obj.get(
+            const { placedItem, mapAssetData } = this.scene.cache.obj.get(
                 CacheKey.UpgradeModalData
             ) as UpgradeModalData
-            this.render(placedItem)
+            if (!placedItem) {
+                throw new Error("Placed item is undefined")
+            }
+            this.placedItem = placedItem
+            const { scaleX = 1, scaleY = 1 } = { ...mapAssetData.modalScale }
+            if (this.mainVisual) {
+                this.mainVisual.destroy()
+            }
+            this.mainVisual = createMainVisual({
+                ...mapAssetData,
+                scene: this.scene,
+            }).setDepth(this.depth + 1).setScale(scaleX, scaleY)
+            this.mainVisual.setY(backgroundFrame.width / 2 - 30)
+            this.frameSizer.addLocal(this.mainVisual)
+
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.id === placedItem.placedItemType
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const building = this.buildings.find(
+                (building) => building.id === placedItemType.building
+            )
+            if (!building) {
+                throw new Error("Building not found.")
+            }
+            const upgrades = building.upgrades
+            this.placedItem = placedItem
+            const currentUpgrade = this.placedItem.buildingInfo?.currentUpgrade ?? 0
+            const upgrade = upgrades?.find(
+                (upgrade) => upgrade.upgradeLevel === currentUpgrade + 1
+            )
+            if (!upgrade) {
+                throw new Error("Upgrade not found.")
+            }
+            const upgradePrice = upgrade.upgradePrice
+            if (!upgradePrice) {
+                throw new Error("Upgrade price not found.")
+            }
+            this.resourceLabel.amountText.setText(upgradePrice.toString())
+
+            // check
+            // add stars
+            this.starsSizer.removeAll(true)
+            for (let i = 0; i < 3; i++) {
+                let starAssetKey: BaseAssetKey
+                if (i < currentUpgrade) {
+                    starAssetKey = BaseAssetKey.UICommonPurpleStar
+                } else if (i === currentUpgrade) {
+                    starAssetKey = BaseAssetKey.UICommonUpgradeStar
+                } else {
+                    starAssetKey = BaseAssetKey.UICommonFadeStar
+                }
+                const star = this.scene.add.image(
+                    0,
+                    0,
+                    baseAssetMap[starAssetKey].base.textureConfig.key
+                ).setDepth(this.depth + 2)
+                this.starsSizer.add(star)
+            }
+            this.starsSizer.layout()
         })
     }
-
-    private render(placedItem: PlacedItemSchema) {
-        const placedItemType = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.id === placedItem.placedItemType
-        )
-        if (!placedItemType) {
-            throw new Error("Placed item type not found.")
-        }
-        const building = this.buildings.find(
-            (building) => building.id === placedItemType.building
-        )
-        if (!building) {
-            throw new Error("Building not found.")
-        }
-        const upgrades = building.upgrades
-        this.placedItem = placedItem
-        const currentUpgrade = this.placedItem.buildingInfo?.currentUpgrade ?? 0
-        const upgrade =
-        upgrades?.find((upgrade) => upgrade.upgradeLevel === currentUpgrade + 1)
-        if (!upgrade) {
-            throw new Error("Upgrade not found.")
-        }
-        if (upgrade.upgradePrice === undefined) {
-            throw new Error("Upgrade price not found.")
-        }
-        this.amountText.setText(upgrade.upgradePrice.toString())
-        //if max level hidden
-        if (currentUpgrade === upgrades?.length) {
-            this.label.setVisible(false)
-            return
-        }
-    }
-
-    private createLabel({
-        iconKey,
-        amount,
-        scale = 1,
-    }: CreateLabelParams): Label {
-        const background = this.scene.add.image(
-            0,
-            0,
-            baseAssetMap[BaseAssetKey.UITopbarResource].base.textureConfig.key
-        )
-        const iconContainer = this.scene.add.container(0, 0)
-        const icon = this.scene.add.image(0, 0, iconKey).setScale(scale)
-        iconContainer.add(icon)
-
-        this.amountText = new Text({
-            baseParams: { scene: this.scene, x: 0, y: 0, text: amount.toString() },
-            options: { fontSize: 28, textColor: TextColor.White },
-        })
-        this.scene.add.existing(this.amountText)
-
-        return this.scene.rexUI.add.label({
-            background,
-            icon: iconContainer,
-            text: this.amountText,
-            width: background.width,
-            height: background.height,
-            space: { icon: 40, top: -2, left: 10 },
-        })
-    }
-}
-
-interface CreateLabelParams {
-  iconKey: string;
-  scale?: number;
-  amount: string;
 }

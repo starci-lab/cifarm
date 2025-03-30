@@ -22,6 +22,7 @@ import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
     BaseAssetKey,
     baseAssetMap,
+    buildingAssetMap,
     MainVisualType,
     SpineConfig,
     TextureConfig,
@@ -1247,11 +1248,25 @@ export class InputTilemap extends ItemTilemap {
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
             }
+
+            const placedItemType = this.placedItemTypes.find(
+                (placedItemType) => placedItemType.id === currentPlacedItem?.placedItemType
+            )
+            if (!placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            const building = this.buildings.find(
+                (building) => building.id === placedItemType.building
+            )
+            if (!building) {
+                throw new Error("Building not found")
+            }
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.Hammer: {
                 const upgradeModalData: UpgradeModalData = {
                     placedItem: currentPlacedItem,
+                    mapAssetData: buildingAssetMap[building.displayId].map
                 }
                 this.scene.cache.obj.add(
                     CacheKey.UpgradeModalData,

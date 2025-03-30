@@ -12,26 +12,33 @@ import {
     Size,
     SizeStyle,
 } from "../../elements"
-import { SceneEventEmitter, SceneEventName, ModalName, ExternalEventEmitter, ExternalEventName } from "../../../events"
 import {
-    baseAssetMap,
-    BaseAssetKey,
-} from "../../../assets"
+    SceneEventEmitter,
+    SceneEventName,
+    ModalName,
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "../../../events"
+import { baseAssetMap, BaseAssetKey } from "../../../assets"
 import { getSellPriceFromPlacedItemType } from "../../../cache"
 import { PlacedItemSchema } from "@/modules/entities"
 import { PlacedItemTypeSchema } from "@/modules/entities"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { createMainVisual } from "../../../tilemap"
+import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 
 export class SellContent extends BaseSizer {
     private background: ModalBackground
     private size: Size
-    private resourceLabel: ResourceLabel | undefined
-    private assetIcon: Phaser.GameObjects.Image | undefined
-    private sizer: Sizer | undefined
     private placedItemTypes: Array<PlacedItemTypeSchema>
     private placedItem: PlacedItemSchema | undefined
 
+    // large frame and resource label will stay in the sizer
+    private sizer: Sizer
+    private frameSizer: Sizer
+    private resourceLabel: ResourceLabel
+    private mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
+        
     constructor({ scene, x, y, width, height }: BaseSizerBaseConstructorParams) {
         super(scene, x, y, width, height)
 
@@ -73,9 +80,7 @@ export class SellContent extends BaseSizer {
         this.scene.add.existing(this.background)
         this.addLocal(this.background)
 
-        this.placedItemTypes = this.scene.cache.obj.get(
-            CacheKey.PlacedItemTypes
-        )
+        this.placedItemTypes = this.scene.cache.obj.get(CacheKey.PlacedItemTypes)
 
         this.size = getBackgroundContainerSize({
             style: SizeStyle.Container,
@@ -85,6 +90,44 @@ export class SellContent extends BaseSizer {
             throw new Error("Size width is undefined")
         }
 
+        this.sizer = this.scene.rexUI.add.sizer({
+            orientation: "vertical",
+            originY: 0,
+            space: {
+                item: 40,
+            },
+            y: 60,
+        })
+
+        // add frame sizer
+        const backgroundFrame = this.scene.add.image(
+            0,
+            0,
+            baseAssetMap[BaseAssetKey.UICommonLargeFrame].base.textureConfig.key
+        )
+        this.frameSizer = this.scene.rexUI.add.sizer({
+            width: backgroundFrame.width,
+            height: backgroundFrame.height,
+        })
+        this.frameSizer.addBackground(backgroundFrame)
+        this.frameSizer.layout()
+        this.sizer.add(this.frameSizer)
+
+        this.resourceLabel = new ResourceLabel({
+            baseParams: {
+                scene,
+            },
+            options: {
+                text: "",
+                iconKey:
+                    baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+            },
+        })
+        this.scene.add.existing(this.resourceLabel)
+        this.sizer.add(this.resourceLabel)
+        this.sizer.layout()
+        this.background.container?.addLocal(this.sizer)
+
         SceneEventEmitter.on(SceneEventName.UpdateSellModal, () => {
             const { mapAssetData, placedItem } = this.scene.cache.obj.get(
                 CacheKey.SellModalData
@@ -93,14 +136,18 @@ export class SellContent extends BaseSizer {
                 throw new Error("Placed item is undefined")
             }
             this.placedItem = placedItem
-            const mainVisual = createMainVisual({
+
+            const { scaleX = 1, scaleY = 1 } = { ...mapAssetData.modalScale }
+            if (this.mainVisual) {
+                this.mainVisual.destroy()
+            }
+            this.mainVisual = createMainVisual({
                 ...mapAssetData,
                 scene: this.scene,
-            })
-            if (!mainVisual) {
-                throw new Error("Main visual is undefined")
-            }
-            
+            }).setDepth(this.depth + 1).setScale(scaleX, scaleY)
+            this.mainVisual.setY(backgroundFrame.width / 2 - 30)
+            this.frameSizer.addLocal(this.mainVisual)
+
             const placedItemType = this.placedItemTypes.find(
                 (placedItemType) => placedItemType.id === placedItem.placedItemType
             )
@@ -115,45 +162,7 @@ export class SellContent extends BaseSizer {
             if (!sellPrice) {
                 throw new Error("Sell price is undefined")
             }
-
-            if (this.sizer) {
-                this.sizer.clear(true)
-                this.background.container?.remove(this.sizer)
-            }
-            this.sizer = this.scene.rexUI.add.sizer({
-                orientation: "vertical",
-                originY: 0,
-                space: {
-                    item: 50,
-                },
-            })
-            // re-create sell icon
-            if (this.assetIcon) {
-                this.background.container?.remove(this.assetIcon)
-            }
-            if (!placedItemType) {
-                throw new Error("Placed item type not found")
-            }
-            this.sizer.add(mainVisual)
-
-            // re-create resource label
-            if (this.resourceLabel) {
-                this.resourceLabel.clear(true)
-                this.background.container?.remove(this.resourceLabel)
-            }
-            this.resourceLabel = new ResourceLabel({
-                baseParams: {
-                    scene,
-                },
-                options: {
-                    text: sellPrice.toString(),
-                    iconKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
-                },
-            })
-            this.scene.add.existing(this.resourceLabel)
-            this.sizer.add(this.resourceLabel)
-            this.sizer.layout().setDepth(this.depth + 1)
-            this.background.container?.addLocal(this.sizer)
+            this.resourceLabel.amountText.setText(sellPrice.toString())
         })
     }
 }

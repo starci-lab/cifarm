@@ -115,6 +115,11 @@ export enum BaseAssetKey {
   UICommonExperience = "ui-common-experience",
   UICommonCheckRound = "ui-common-check-round",
   UICommonXRound = "ui-common-x-round",
+  UICommonResourceLabelBackground = "ui-common-resource-label-background",
+  UICommonLargeFrame = "ui-common-large-frame",
+  UICommonPurpleStar = "ui-common-purple-star",
+  UICommonFadeStar = "ui-common-fade-star",
+  UICommonUpgradeStar = "ui-common-upgrade-star",
 
   // Slider
   UICommonSliderThumb = "ui-common-slider-thumb",
@@ -904,7 +909,47 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
             },
         },
     },
-
+    [BaseAssetKey.UICommonResourceLabelBackground]: {
+        base: {
+            textureConfig: {
+                assetUrl: "ui/common/resource-label-background.png",
+                key: "ui-common-resource-label-background",
+            },
+        },
+    },
+    [BaseAssetKey.UICommonLargeFrame]: {
+        base: {
+            textureConfig: {
+                assetUrl: "ui/common/large-frame.png",
+                key: "ui-common-large-frame",
+                version: 1,
+            },
+        },
+    },
+    [BaseAssetKey.UICommonPurpleStar]: {
+        base: {
+            textureConfig: {
+                assetUrl: "ui/common/purple-star.png",
+                key: "ui-common-purple-star",
+            },
+        },
+    },
+    [BaseAssetKey.UICommonFadeStar]: {
+        base: {
+            textureConfig: {
+                assetUrl: "ui/common/fade-star.png",
+                key: "ui-common-fade-star",
+            },
+        },
+    },
+    [BaseAssetKey.UICommonUpgradeStar]: {
+        base: {
+            textureConfig: {
+                assetUrl: "ui/common/upgrade-star.png",
+                key: "ui-common-upgrade-star",
+            },
+        },
+    },
     //State
     [BaseAssetKey.BubbleState]: {
         base: {

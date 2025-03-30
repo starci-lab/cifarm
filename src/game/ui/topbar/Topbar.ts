@@ -1,6 +1,6 @@
 import { UserSchema } from "@/modules/entities"
 import { BaseAssetKey, baseAssetMap } from "../../assets"
-import { ResourceLabel, Text, TextColor } from "../elements"
+import { Text, TextColor } from "../elements"
 import { Label, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { BaseSizerBaseConstructorParams, CacheKey } from "@/game/types"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
@@ -15,7 +15,7 @@ import {
     SceneEventEmitter,
     SceneEventName,
 } from "../../events"
-
+import { TopbarResourceLabel } from "./TopbarResourceLabel"
 export class Topbar extends BaseSizer {
     private background: Phaser.GameObjects.Image
     private user: UserSchema
@@ -296,7 +296,7 @@ export class Topbar extends BaseSizer {
     }
 
     private addLabel({ iconKey, text, scale = 1 }: AddLabelParams) {
-        const resourceLabel = new ResourceLabel({
+        const resourceLabel = new TopbarResourceLabel({
             baseParams: {
                 scene: this.scene,
             },

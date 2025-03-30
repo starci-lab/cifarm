@@ -1,34 +1,50 @@
-import { BaseAssetKey, baseAssetMap } from "@/game/assets"
-import { ConstructorParams, LabelBaseConstructorParams } from "@/game/types"
-import { Label } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { TextColor, Text } from "./Text"
+import { BaseAssetKey, baseAssetMap } from "../../assets"
+import { ConstructorParams, OverlapSizerBaseConstructorParams } from "@/game/types"
+import { OverlapSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
+import { TextColor, Text } from "../elements"
 
 export interface ResourceLabelOptions {
-    iconKey: string
-    text: string
-    //icon scale
-    scale?: number      
+  iconKey: string;
+  text: string;
+  //icon scale
+  scale?: number;
 }
 
-export class ResourceLabel extends Label {
+export class ResourceLabel extends OverlapSizer {
+    public amountText: Text
     constructor({
         baseParams: { scene, config },
-        options,    
-    }: ConstructorParams<LabelBaseConstructorParams, ResourceLabelOptions>) {
+        options,
+    }: ConstructorParams<OverlapSizerBaseConstructorParams, ResourceLabelOptions>) {
         if (!options) {
-            throw new Error("ResourceLabelOptions is required")
+            throw new Error("Options is required")
         }
-        const { iconKey, text, scale = 1 } = options
+        const { iconKey, text, scale = 1.2 } = options
         // create background
-        const background = scene.add.image(0, 0, baseAssetMap[BaseAssetKey.UITopbarResource].base.textureConfig.key)
+        const background = scene.add.image(
+            0,
+            0,
+            baseAssetMap[BaseAssetKey.UICommonResourceLabelBackground].base
+                .textureConfig.key
+        )
+        // create label
+        super(scene, {
+            width: background.width,
+            height: background.height,
+            ...config,
+        })
+        this.addBackground(background)
         // create icon container
-        const iconContainer = scene.add.container(0, 0)
-        // create icon
+        const iconContainer = this.scene.rexUI.add.container()
         const icon = scene.add.image(0, 0, iconKey).setScale(scale)
+        iconContainer.addLocal(icon)
         // add icon to container
-        iconContainer.add(icon)
+        this.add(iconContainer, {
+            align: "left",
+            expand: false,
+        })
         // create amount text
-        const amountText = new Text({
+        this.amountText = new Text({
             baseParams: {
                 scene,
                 x: 0,
@@ -36,26 +52,15 @@ export class ResourceLabel extends Label {
                 text,
             },
             options: {
-                fontSize: 24,
+                fontSize: 32,
                 textColor: TextColor.White,
             },
-        }) 
-        scene.add.existing(amountText) 
-
-        // create label
-        super(scene, {
-            background,
-            icon: iconContainer,
-            text: amountText,
-            width: background.width,
-            height: background.height,
-            space: {
-                icon: 40,
-                top: -2
-            },
-            ...config,
         })
-
+        this.scene.add.existing(this.amountText)
+        this.add(this.amountText, {
+            align: "center",
+            expand: false,
+        })
         this.layout()
     }
 }

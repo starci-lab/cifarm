@@ -51,5 +51,6 @@ export interface SellModalData {
 
 export interface UpgradeModalData {
     placedItem: PlacedItemSchema;
+    mapAssetData: MapAssetData
 }
 

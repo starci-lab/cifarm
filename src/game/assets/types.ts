@@ -3,6 +3,11 @@ export interface ExtraOffsets {
   y?: number;
 }
 
+export interface ModalScale {
+  scaleX?: number;
+  scaleY?: number;
+}
+
 export interface AtlasConfig {
   key: string;
   assetUrl: string;
@@ -56,6 +61,8 @@ export interface MapAssetData {
   spineConfig?: SpineConfig;
   textureConfig?: TextureConfig;
   mainVisualType?: MainVisualType;
+  modalScale?: ModalScale;
+
 }
 
 export interface ShopAssetData {
