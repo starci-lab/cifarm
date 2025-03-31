@@ -34,7 +34,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                         x: 0,
                         y: -90,
                     },
-                    version: 1,
+                    version: 2,
                 },
             },
             2: {
@@ -96,7 +96,7 @@ export const cropAssetMap: Record<CropId, CropAssetData> = {
                         x: 0,
                         y: -90,
                     },
-                    version: 1,
+                    version: 2,
                 },
             },
             2: {
