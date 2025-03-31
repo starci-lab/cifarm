@@ -26,7 +26,6 @@ export enum ActionName {
   UseBugNet = "use_bug_net",
   UseFruitFertilizer = "use_fruit_fertilizer",
   HelpUseBugNet = "help_use_bug_net",
-  HelpUseFruitFertilizer = "help_use_fruit_fertilizer",
   HarvestFruit = "harvest_fruit",
   ThiefFruit = "thief_fruit",
   UpgradeBuilding = "upgrade_building",

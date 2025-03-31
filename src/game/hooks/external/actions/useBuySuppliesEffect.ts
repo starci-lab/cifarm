@@ -9,6 +9,16 @@ import { ExternalEventEmitter } from "@/game/events"
 export const useBuySuppliesEffects = () => {
     const { socket } =
     useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+
+    useEffect(() => {
+        socket?.on(ReceiverEventName.SuppliesBought, () => {
+            ExternalEventEmitter.emit(ExternalEventName.BuySuppliesResponsed)
+        })
+        return () => {
+            socket?.off(ReceiverEventName.SuppliesBought)
+        }
+    }, [socket])
+    
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestBuySupplies,
@@ -16,9 +26,6 @@ export const useBuySuppliesEffects = () => {
                 if (!socket) {
                     return
                 }
-                socket.on(ReceiverEventName.SuppliesBought, () => {
-                    ExternalEventEmitter.emit(ExternalEventName.BuySuppliesResponsed)
-                })
                 socket.emit(EmitterEventName.BuySupplies, message)
             }
         )

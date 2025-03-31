@@ -9,7 +9,7 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import {
     Label,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { getStorageInventories } from "../../../cache"
+import { getStorageInventories } from "../../../logic"
 import {
     GridTable,
     ItemQuantity,

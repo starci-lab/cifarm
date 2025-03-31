@@ -75,6 +75,7 @@ import {
 } from "../events"
 import { ExternalEventEmitter } from "../events"
 import { gameplayDepth } from "../depth"
+import { checkPlacedItemTypeSellable } from "../logic"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -146,6 +147,10 @@ export class InputTilemap extends ItemTilemap {
 
         this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
+        ExternalEventEmitter.on(ExternalEventName.StopBuying, () => {
+            this.cancelPlacement()
+        })
+
         this.addInputs()
     }
 
@@ -205,7 +210,6 @@ export class InputTilemap extends ItemTilemap {
             if (!tile) {
                 return
             }
-
             //if buying mode is on
             if (this.inputMode === InputMode.Buy) {
                 return
@@ -214,10 +218,6 @@ export class InputTilemap extends ItemTilemap {
             if (!data) {
                 console.log("No placed item found for position")
                 return
-            }
-
-            if (this.inputMode === InputMode.Normal) {
-                data.object.showTimer()
             }
 
             if (this.inputMode === InputMode.Move) {
@@ -231,7 +231,6 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
             }
-
             if (this.inputMode === InputMode.Sell) {
                 if (!data.object.currentPlacedItem?.id) {
                     throw new Error("Placed item id not found")
@@ -239,10 +238,29 @@ export class InputTilemap extends ItemTilemap {
                 if (!data.object.placedItemType) {
                     throw new Error("Placed item type not found")
                 }
+                if (!checkPlacedItemTypeSellable({
+                    scene: this.scene,
+                    placedItemType: data.object.placedItemType,
+                })) {
+                    const { x: tileX, y: tileY } = this.getCenterPosition({
+                        x: tile.getCenterX(),
+                        y: tile.getCenterY(),
+                        sizeX: data.object.placedItemType.sizeX,
+                        sizeY: data.object.placedItemType.sizeY,
+                    })
+                    this.createFlyItems([
+                        {
+                            showIcon: false,
+                            text: "Not sellable",
+                            x: tileX,
+                            y: tileY,
+                        }
+                    ])
+                    return
+                }
                 if (!data.object.mainVisual) {
                     throw new Error("Main visual not found")
                 }
-
                 const assetData = getAssetData({
                     placedItemType: data.object.placedItemType,
                     scene: this.scene,
@@ -270,26 +288,36 @@ export class InputTilemap extends ItemTilemap {
             if (data.object.isPressedForAction) {
                 return
             }
+
+            // do nothing if selected tool is default
+            const selectedTool = this.scene.cache.obj.get(
+                CacheKey.SelectedTool
+            ) as ToolLike
+            if (selectedTool.default) {
+                data.object.showTimer()
+                return
+            }
+            
             switch (data.object.placedItemType.type) {
             case PlacedItemType.Tile:
-                this.handlePressOnTile(data)
+                this.handlePressOnTile({ data })
                 break
             case PlacedItemType.Building:
                 if (data.object.placedItemType.displayId == PlacedItemTypeId.Home)
                     return
-                this.handlePressOnBuilding(data)
+                this.handlePressOnBuilding({ data })
                 break
             case PlacedItemType.Animal:
-                this.handlePressOnAnimal(data)
+                this.handlePressOnAnimal({ data })
                 break
             case PlacedItemType.Fruit:
-                this.handlePressOnFruit(data)
+                this.handlePressOnFruit({ data })
                 break
             }
         })
     }
     // method to handle press on tile
-    private async handlePressOnTile(data: PlacedItemObjectData) {
+    private async handlePressOnTile({ data }: HandlePressOnParams) {
     // check if current is visited or not
         if (!data.object.placedItemType) {
             throw new Error("Placed item type not found")
@@ -303,12 +331,6 @@ export class InputTilemap extends ItemTilemap {
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
-
-        // do nothing if selected tool is default
-        if (selectedTool.default) {
-            return
-        }
-
         const inventoryType = this.inventoryTypes.find(
             (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
         )
@@ -655,7 +677,7 @@ export class InputTilemap extends ItemTilemap {
     }
 
     //handlePressOnAnimal
-    private async handlePressOnAnimal(data: PlacedItemObjectData) {
+    private async handlePressOnAnimal({ data }: HandlePressOnParams) {
         if (!data.object.placedItemType) {
             throw new Error("Placed item type not found")
         }
@@ -976,7 +998,7 @@ export class InputTilemap extends ItemTilemap {
                 this.cancelPlacement()
                 SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
-            onConfirm: (tileX: number, tileY: number) => {
+            onConfirm: async (tileX: number, tileY: number) => {
                 // show modal
                 switch (placedItemType.type) {
                 case PlacedItemType.Building: {
@@ -1200,7 +1222,7 @@ export class InputTilemap extends ItemTilemap {
         this.placementConfirmation.setPosition(tilePosition.x, tilePosition.y)
     }
 
-    private handlePressOnBuilding(data: PlacedItemObjectData) {
+    private handlePressOnBuilding({ data }: HandlePressOnParams) {
         if (!data.object.placedItemType) {
             throw new Error("Placed item type not found")
         }
@@ -1211,11 +1233,6 @@ export class InputTilemap extends ItemTilemap {
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
-
-        // do nothing if selected tool is default
-        if (selectedTool.default) {
-            return
-        }
 
         const inventoryType = this.inventoryTypes.find(
             (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
@@ -1264,6 +1281,48 @@ export class InputTilemap extends ItemTilemap {
             // check if tool id is water can
             switch (tool.displayId) {
             case ToolId.Hammer: {
+                if (!data.object.currentPlacedItem) {
+                    throw new Error("Placed item not found")
+                }
+                const { x, y } = this.getCenteredTileCoordinates(data.object.currentPlacedItem.x, data.object.currentPlacedItem.y)
+                console.log(x, y)
+                const tile = this.getTileAt(x, y)
+                if (!tile) {
+                    throw new Error("Tile not found")
+                }
+                const { x: tileX, y: tileY } = this.getCenterPosition({
+                    x: tile.getCenterX(),
+                    y: tile.getCenterY(),
+                    sizeX: placedItemType.sizeX,
+                    sizeY: placedItemType.sizeY,
+                })
+                // check if the building is upgradeable
+                if (!building.upgradeable) {
+                    this.createFlyItems([
+                        {
+                            showIcon: false,
+                            text: "Not upgradeable",
+                            x: tileX,
+                            y: tileY,
+                        }
+                    ])
+                    return
+                }
+                // check if the building is already at max upgrade
+                if (data.object.currentPlacedItem?.buildingInfo?.currentUpgrade === undefined) {
+                    throw new Error("Building info not found")
+                }
+                if (data.object.currentPlacedItem.buildingInfo.currentUpgrade >= building.maxUpgrade) {
+                    this.createFlyItems([
+                        {
+                            showIcon: false,
+                            text: "Already at max upgrade",
+                            x: tileX,
+                            y: tileY,
+                        }
+                    ])
+                    return
+                }
                 const upgradeModalData: UpgradeModalData = {
                     placedItem: currentPlacedItem,
                     mapAssetData: buildingAssetMap[building.displayId].map
@@ -1283,7 +1342,7 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    private handlePressOnFruit(data: PlacedItemObjectData) {
+    private handlePressOnFruit({ data }: HandlePressOnParams) {
         if (!data.object.placedItemType) {
             throw new Error("Placed item type not found")
         }
@@ -1296,11 +1355,6 @@ export class InputTilemap extends ItemTilemap {
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
-
-        // do nothing if selected tool is default
-        if (selectedTool.default) {
-            return
-        }
 
         const inventoryType = this.inventoryTypes.find(
             (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
@@ -1767,4 +1821,8 @@ export interface HandleSellingModeParams {
 
 export interface UpdatePlacedItemColorParams {
   placedItem?: PlacedItemSchema;
+}
+
+export interface HandlePressOnParams {
+    data: PlacedItemObjectData;
 }

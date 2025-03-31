@@ -40,7 +40,6 @@ import {
     flowerAssetMap,
     baseAssetMap,
 } from "../../../assets"
-import { getPlacedItemsByType } from "../../../cache"
 import {
     BaseSizerBaseConstructorParams,
     CacheKey,
@@ -78,19 +77,15 @@ import {
     SelectTabMessage,
     BuyingModeOnMessage,
 } from "../../../events"
+import { getAnimalLimit, getBuildingLimit, getFruitLimit, getTileLimit } from "../../../logic"
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
-
-export interface LimitData {
-  limitReached: boolean;
-}
 
 export class ShopContent extends BaseSizer {
     private contentContainer: ContainerLite
     private background: ModalBackground
     // list of items
     private gridTableMap: Partial<Record<ShopTab, Sizer>> = {}
-    private limitMap: Partial<Record<ShopTab, LimitData>> = {}
     // data
     private animals: Array<AnimalSchema>
     private crops: Array<CropSchema>
@@ -290,32 +285,62 @@ export class ShopContent extends BaseSizer {
     private getLimit(shopTab: ShopTab): GetLimitResult {
         switch (shopTab) {
         case ShopTab.Tiles:
-            return {
-                currentOwnership: getPlacedItemsByType({
+        {
+            const {totalPlacedItemCount, totalLimit } = getTileLimit(
+                {
                     scene: this.scene,
                     placedItems: this.placedItems,
-                    type: PlacedItemType.Tile,
-                }).length,
-                maxOwnership: this.defaultInfo.tileLimit,
+                }
+            )
+            if (totalPlacedItemCount === undefined) {
+                throw new Error("Total placed item count is not found.")
             }
+            if (totalLimit === undefined) {
+                throw new Error("Total limit is not found.")
+            }
+            return {
+                currentOwnership: totalPlacedItemCount,
+                maxOwnership: totalLimit,
+            }
+        }
         case ShopTab.Buildings:
-            return {
-                currentOwnership: getPlacedItemsByType({
+        {
+            const { totalPlacedItemCount, totalLimit } = getBuildingLimit(
+                {
                     scene: this.scene,
                     placedItems: this.placedItems,
-                    type: PlacedItemType.Building,
-                }).length,
-                maxOwnership: this.defaultInfo.buildingLimit,
+                }
+            )
+            if (totalPlacedItemCount === undefined) {
+                throw new Error("Total placed item count is not found.")
             }
+            if (totalLimit === undefined) {
+                throw new Error("Total limit is not found.")
+            }
+            return {
+                currentOwnership: totalPlacedItemCount,
+                maxOwnership: totalLimit,
+            }
+        }
         case ShopTab.Fruits:
-            return {
-                currentOwnership: getPlacedItemsByType({
+        {       
+            const { totalPlacedItemCount, totalLimit } = getFruitLimit(
+                {
                     scene: this.scene,
                     placedItems: this.placedItems,
-                    type: PlacedItemType.Fruit,
-                }).length,
-                maxOwnership: this.defaultInfo.fruitLimit,
+                }
+            )
+            if (totalPlacedItemCount === undefined) {
+                throw new Error("Total placed item count is not found.")
             }
+            if (totalLimit === undefined) {
+                throw new Error("Total limit is not found.")
+            }
+            return {
+                currentOwnership: totalPlacedItemCount,
+                maxOwnership: totalLimit,
+            }
+        }
         default:
             throw new Error("Shop tab not found")
         }
@@ -472,11 +497,6 @@ export class ShopContent extends BaseSizer {
         }
         const { currentOwnership, maxOwnership } = this.getLimit(shopTab)
         limitText.setText(`Limit: ${currentOwnership}/${maxOwnership}`)
-        if (currentOwnership >= maxOwnership) {
-            this.limitMap[shopTab] = {
-                limitReached: true,
-            }
-        }
     }
 
     private checkUnlock(unlockLevel?: number) {
@@ -534,20 +554,26 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Animals: {
-            for (const { displayId, price, unlockLevel, id } of this.animals) {
+            for (const animal of this.animals) {
+                const { displayId, price, unlockLevel, id } = animal
                 if (!price) {
                     throw new Error("Price is not found.")
                 }
                 const goldsEnough = this.user.golds >= price
-                const maxOwnership = this.getAnimalMaxOwnership({
-                    displayId,
-                })
-                const currentOwnership = this.getCurrentOwnership({
-                    displayId,
-                    type: PlacedItemType.Animal,
-                })
-                const ownershipSastified = currentOwnership < maxOwnership
-                const disabled = !(goldsEnough && ownershipSastified)
+                const { selectedLimit, placedItemCount } = getAnimalLimit(
+                    {
+                        scene: this.scene,
+                        animal,
+                        placedItems: this.placedItems,
+                    }
+                )
+                if (placedItemCount === undefined) {
+                    throw new Error("Placed item count is not found.")
+                }
+                if (selectedLimit === undefined) {
+                    throw new Error("Total limit is not found.")
+                }
+                const disabled = !(goldsEnough && placedItemCount < selectedLimit)
                 // get the image
                 if (!animalAssetMap[displayId].shop) {
                     throw new Error("Shop asset is not found.")
@@ -580,33 +606,49 @@ export class ShopContent extends BaseSizer {
                         SceneEventEmitter.emit(SceneEventName.HideButtons)
                     },
                     price,
-                    maxOwnership,
-                    currentOwnership,
+                    maxOwnership: selectedLimit,
+                    currentOwnership: placedItemCount,
                 })
                 // add the item card to the scrollable panel
             }
             break
         }
         case ShopTab.Buildings: {
-            for (const { displayId, price, unlockLevel, id } of this.buildings) {
+            for (const building of this.buildings) {
+                const { displayId, price, unlockLevel, id } = building
                 if (!price) {
                     throw new Error("Price is not found.")
                 }
                 const goldsEnough = this.user.golds >= price
-                const currentOwnership = this.getCurrentOwnership({
-                    displayId,
-                    type: PlacedItemType.Building,
-                })
-                const maxOwnership = this.buildings.find(
-                    (building) => building.displayId === displayId
-                )?.maxOwnership
-                if (!maxOwnership) {
-                    throw new Error("Max ownership is not found.")
+                const {
+                    totalLimit,
+                    placedItemCount,
+                    selectedLimit,
+                    totalPlacedItemCount,
+                } = getBuildingLimit(
+                    {
+                        scene: this.scene,
+                        building,
+                        placedItems: this.placedItems,
+                    }
+                )
+                if (!selectedLimit) {
+                    throw new Error("Selected limit is not found.")
                 }
-                const ownershipSastified = currentOwnership < maxOwnership
-                const disabled =
-            !(goldsEnough && ownershipSastified) ||
-            this.limitMap[ShopTab.Buildings]?.limitReached
+                if (!totalLimit) {
+                    throw new Error("Total limit is not found.")
+                }
+                if (totalPlacedItemCount === undefined) {
+                    throw new Error("Total placed item count is not found.")
+                }
+                if (placedItemCount === undefined) {
+                    throw new Error("Placed item count is not found.")
+                }
+                const disabled = !(
+                    goldsEnough &&
+            placedItemCount < selectedLimit &&
+            totalPlacedItemCount < totalLimit
+                )
                 // get the image
                 if (!buildingAssetMap[displayId].shop) {
                     throw new Error("Shop asset is not found.")
@@ -641,8 +683,8 @@ export class ShopContent extends BaseSizer {
                     scaleHeight:
               buildingAssetMap[displayId].shop.textureConfig.scaleHeight,
                     showOwnership: true,
-                    maxOwnership,
-                    currentOwnership,
+                    maxOwnership: selectedLimit,
+                    currentOwnership: placedItemCount,
                 })
             }
             break
@@ -652,9 +694,20 @@ export class ShopContent extends BaseSizer {
                 if (!fruitAssetMap[displayId].shop) {
                     throw new Error("Price is not found.")
                 }
+                const { totalLimit, totalPlacedItemCount } = getFruitLimit(
+                    {
+                        scene: this.scene,
+                        placedItems: this.placedItems,
+                    }
+                )
+                if (totalPlacedItemCount === undefined) {
+                    throw new Error("Placed item count is not found.")
+                }
+                if (!totalLimit) {
+                    throw new Error("Total limit is not found.")
+                }
                 const goldsEnough = this.user.golds >= price
-                const disabled =
-            !goldsEnough || this.limitMap[ShopTab.Fruits]?.limitReached
+                const disabled = !(goldsEnough && totalPlacedItemCount < totalLimit)
                 const placedItemType = this.placedItemTypes.find(
                     (placedItemType) => placedItemType.fruit === id
                 )
@@ -691,19 +744,20 @@ export class ShopContent extends BaseSizer {
                 if (!price) {
                     throw new Error("Price is not found.")
                 }
-                const goldsEnough = this.user.golds >= price
-                const currentOwnership = this.getCurrentOwnership({
-                    displayId,
-                    type: PlacedItemType.Tile,
-                })
-                const maxOwnership = this.defaultInfo.tileLimit
-                if (!maxOwnership) {
-                    throw new Error("Max ownership is not found.")
+                const { totalLimit, totalPlacedItemCount } = getTileLimit(
+                    {
+                        scene: this.scene,
+                        placedItems: this.placedItems,
+                    }
+                )
+                if (!totalPlacedItemCount) {
+                    throw new Error("Placed item count is not found.")
                 }
-                const ownershipSastified = currentOwnership < maxOwnership
-                const disabled =
-            !(goldsEnough && ownershipSastified) ||
-            this.limitMap[ShopTab.Tiles]?.limitReached
+                if (!totalLimit) {
+                    throw new Error("Total limit is not found.")
+                }
+                const goldsEnough = this.user.golds >= price
+                const disabled = !(goldsEnough && totalPlacedItemCount < totalLimit)
 
                 const placedItemType = this.placedItemTypes.find(
                     (placedItemType) => placedItemType.tile === id
@@ -937,7 +991,10 @@ export class ShopContent extends BaseSizer {
         return container
     }
 
-    private async onBuyCropSeedPress(displayId: CropId, pointer: Phaser.Input.Pointer) {
+    private async onBuyCropSeedPress(
+        displayId: CropId,
+        pointer: Phaser.Input.Pointer
+    ) {
         const eventMessage: BuyCropSeedsMessage = {
             cropId: displayId,
             quantity: 1,
@@ -971,28 +1028,34 @@ export class ShopContent extends BaseSizer {
         })
     }
 
-    private async onBuyFlowerPress(displayId: FlowerId, pointer: Phaser.Input.Pointer) {
-        // turn the event into a promise for better readability
+    private async onBuyFlowerPress(
+        displayId: FlowerId,
+        pointer: Phaser.Input.Pointer
+    ) {
+    // turn the event into a promise for better readability
         await new Promise<void>((resolve) => {
-            ExternalEventEmitter.once(ExternalEventName.BuyFlowerSeedsResponsed, () => {
-                if (!flowerAssetMap[displayId].shop) {
-                    throw new Error("Shop asset is not found.")
+            ExternalEventEmitter.once(
+                ExternalEventName.BuyFlowerSeedsResponsed,
+                () => {
+                    if (!flowerAssetMap[displayId].shop) {
+                        throw new Error("Shop asset is not found.")
+                    }
+                    const flyItem = new FlyItem({
+                        baseParams: {
+                            scene: this.scene,
+                        },
+                        options: {
+                            iconAssetKey: flowerAssetMap[displayId].shop.textureConfig.key,
+                            x: pointer.x,
+                            y: pointer.y,
+                            quantity: 1,
+                            depth: uiDepth.modal.fly,
+                        },
+                    })
+                    this.scene.add.existing(flyItem)
+                    resolve()
                 }
-                const flyItem = new FlyItem({
-                    baseParams: {
-                        scene: this.scene,
-                    },
-                    options: {
-                        iconAssetKey: flowerAssetMap[displayId].shop.textureConfig.key,
-                        x: pointer.x,
-                        y: pointer.y,
-                        quantity: 1,
-                        depth: uiDepth.modal.fly,
-                    },
-                })
-                this.scene.add.existing(flyItem)
-                resolve()
-            })
+            )
             const eventMessage: BuyFlowerSeedsMessage = {
                 flowerId: displayId,
                 quantity: 1,
@@ -1006,8 +1069,11 @@ export class ShopContent extends BaseSizer {
     }
 
     //onBuySupplyPress
-    private async onBuySupplyPress(displayId: SupplyId, pointer: Phaser.Input.Pointer) {
-        // turn the event into a promise for better readability
+    private async onBuySupplyPress(
+        displayId: SupplyId,
+        pointer: Phaser.Input.Pointer
+    ) {
+    // turn the event into a promise for better readability
         await new Promise<void>((resolve) => {
             ExternalEventEmitter.once(ExternalEventName.BuySuppliesResponsed, () => {
                 const eventMessage: BuySuppliesMessage = {
@@ -1025,7 +1091,7 @@ export class ShopContent extends BaseSizer {
                     },
                     options: {
                         iconAssetKey: supplyAssetMap[displayId].base.textureConfig.key,
-                        x: pointer.x,   
+                        x: pointer.x,
                         y: pointer.y,
                         quantity: 1,
                         depth: uiDepth.modal.fly,
@@ -1046,8 +1112,11 @@ export class ShopContent extends BaseSizer {
         })
     }
 
-    private async onBuyToolPress(displayId: ToolId, pointer: Phaser.Input.Pointer) {
-        // turn the event into a promise for better readability
+    private async onBuyToolPress(
+        displayId: ToolId,
+        pointer: Phaser.Input.Pointer
+    ) {
+    // turn the event into a promise for better readability
         await new Promise<void>((resolve) => {
             ExternalEventEmitter.once(ExternalEventName.BuyToolResponsed, () => {
                 const flyItem = new FlyItem({
@@ -1069,76 +1138,8 @@ export class ShopContent extends BaseSizer {
                 toolId: displayId,
             }
             // send request to buy seeds
-            ExternalEventEmitter.emit(
-                ExternalEventName.RequestBuyTool,
-                eventMessage
-            )
+            ExternalEventEmitter.emit(ExternalEventName.RequestBuyTool, eventMessage)
         })
-    }
-
-    private getCurrentOwnership({
-        type,
-        displayId,
-    }: GetCurrentOwnershipParams): number {
-        if (this.placedItemTypes.length === 0) return 0
-        //get the placed item type
-        const placedItemType = this.placedItemTypes.find(
-            (placedItemType) =>
-                placedItemType.displayId === displayId && placedItemType.type === type
-        )
-        if (!placedItemType) {
-            throw new Error("Placed item type not found.")
-        }
-
-        return this.placedItems.filter(
-            (item) => item.placedItemType === placedItemType.id
-        ).length
-    }
-
-    private getAnimalMaxOwnership({
-        displayId,
-    }: GetAnimalMaxOwnershipParams): number {
-        const animal = this.animals.find(
-            (animal) => animal.displayId === displayId
-        )
-        if (!animal) {
-            throw new Error("Animal not found.")
-        }
-
-        const building = this.buildings.find(
-            (building) => building.animalContainedType === animal.type
-        )
-        if (!building) {
-            throw new Error("Building not found.")
-        }
-        const placedItemType = this.placedItemTypes.find(
-            (placedItemType) => placedItemType.building === building.id
-        )
-        if (!placedItemType) {
-            throw new Error("Placed item type not found.")
-        }
-        const placedItemBuildings = this.placedItems.filter(
-            (placedItemBuilding) => {
-                return placedItemBuilding.placedItemType === placedItemType.id
-            }
-        )
-        let maxCapacity = 0
-        for (const placedItemBuilding of placedItemBuildings) {
-            const upgradeLevel = placedItemBuilding.buildingInfo?.currentUpgrade
-            if (!upgradeLevel) {
-                throw new Error("Upgrade level not found.")
-            }
-            if (building.upgrades) {
-                const upgrade = building.upgrades.find(
-                    (upgrade) => upgrade.upgradeLevel === upgradeLevel
-                )
-                if (!upgrade) {
-                    throw new Error("[getAnimalMaxOwnership] Upgrade not found.")
-                }
-                maxCapacity += upgrade.capacity
-            }
-        }
-        return maxCapacity
     }
 
     private updateGridTables() {

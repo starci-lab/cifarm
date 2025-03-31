@@ -34,6 +34,8 @@ import { useHelpUseAnimalMedicineEffects } from "./useHelpUseAnimalMedicineEffec
 import { useBuyFlowerSeedsEffects } from "./useBuyFlowerSeedsEffects"
 import { useThiefFruitEffects } from "./useThiefFruitEffects"
 import { useThiefAnimalEffects } from "./useThiefAnimalEffects"
+import { useStopBuyingEffects } from "./useStopBuyingEffects"
+import { useTimerEffects } from "./useTimerEffects"
 
 export const useActionsEffects = () => {
     useBuyCropSeedsEffects()
@@ -72,4 +74,6 @@ export const useActionsEffects = () => {
     useThiefFruitEffects()
     useThiefPlantEffects()
     useThiefAnimalEffects()
+    useStopBuyingEffects()
+    useTimerEffects()
 }

@@ -8,20 +8,25 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 export const useBuyFlowerSeedsEffects = () => {
     //get the singleton instance of the buy seeds mutation
     const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+
+    useEffect(() => {
+        socket?.on(ReceiverEventName.FlowerSeedsBought, () => {
+            ExternalEventEmitter.emit(ExternalEventName.BuyFlowerSeedsResponsed)
+        })
+        return () => {
+            socket?.off(ReceiverEventName.FlowerSeedsBought)
+        }
+    }, [socket])
     useEffect(() => {
         ExternalEventEmitter.on(ExternalEventName.RequestBuyFlowerSeeds, async (message: BuyFlowerSeedsMessage) => {
             if (!socket) {
                 return  
             }
-            socket.on(ReceiverEventName.FlowerSeedsBought, () => {
-                ExternalEventEmitter.emit(ExternalEventName.BuyFlowerSeedsResponsed)
-            })
             socket.emit(EmitterEventName.BuyFlowerSeeds, message)
             // return the user to the phaser
         })
     
         return () => {
-            socket?.off(ReceiverEventName.FlowerSeedsBought)
             ExternalEventEmitter.removeListener(ExternalEventName.RequestBuyFlowerSeeds)
         }
     }, [socket])

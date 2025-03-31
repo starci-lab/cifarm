@@ -20,7 +20,7 @@ import {
     ExternalEventName,
 } from "../../../events"
 import { baseAssetMap, BaseAssetKey } from "../../../assets"
-import { getSellPriceFromPlacedItemType } from "../../../cache"
+import { getSellPriceFromPlacedItemType } from "../../../logic"
 import { PlacedItemSchema } from "@/modules/entities"
 import { PlacedItemTypeSchema } from "@/modules/entities"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"

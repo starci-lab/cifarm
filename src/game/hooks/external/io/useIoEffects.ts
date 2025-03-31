@@ -7,7 +7,6 @@ import {
     PlacedItemsSyncedMessage,
     UserSyncedMessage,
     ReceiverEventName,
-    SyncPlacedItemsMessage,
     EmitterEventName,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -47,15 +46,6 @@ export const useIoEffects = () => {
                 ExternalEventEmitter.emit(ExternalEventName.PlacedItemsSynced, data)
             }
         )
-
-        ExternalEventEmitter.on(ExternalEventName.EmitSyncPlacedItems, ({ placedItemIds }: SyncPlacedItemsMessage) => {
-            // socket.emit(SYNC_PLACED_ITEMS_EVENT, {
-            //     placedItemIds,
-            // })
-            socket.emit(EmitterEventName.SyncPlacedItems, {
-                placedItemIds,
-            })
-        })
 
         ExternalEventEmitter.on(ExternalEventName.RequestReturn, () => {
             socket.emit(EmitterEventName.Return)

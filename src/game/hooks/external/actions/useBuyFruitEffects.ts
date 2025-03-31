@@ -7,6 +7,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 export const useBuyFruitEffects = () => {
     const { socket } =
     useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+    
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestBuyFruit,
