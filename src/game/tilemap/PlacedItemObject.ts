@@ -109,11 +109,18 @@ export class PlacedItemObject extends ContainerLite {
     }
 
     public showTimer() {
+        if (this.isPressedForTimer) {
+            return
+        }
+        this.isPressedForTimer = true
         if (!this.currentPlacedItem) {
             throw new Error("Placed item not found")
         }
         ExternalEventEmitter.emit(ExternalEventName.RequestDisplayTimers, {
             ids: [this.currentPlacedItem.id],
+        })
+        this.scene.time.delayedCall(1000, () => {
+            this.isPressedForTimer = false
         })
     }
 

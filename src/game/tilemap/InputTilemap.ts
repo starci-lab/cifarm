@@ -27,7 +27,7 @@ import {
     SpineConfig,
     TextureConfig,
 } from "../assets"
-import { GREEN_TINT_COLOR, RED_TINT_COLOR, TAP_DELAY_TIME } from "../constants"
+import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 import {
     CacheKey,
     SellModalData,
@@ -76,7 +76,6 @@ import {
 import { ExternalEventEmitter } from "../events"
 import { gameplayDepth } from "../depth"
 import { checkPlacedItemTypeSellable } from "../logic"
-import { sleep } from "@/modules/common"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -106,7 +105,7 @@ export class InputTilemap extends ItemTilemap {
     // pinch instance
     private pinch: Pinch | undefined
     private tap: Tap | undefined
-
+    private cancelNextTap = false
     // input mode
     private inputMode: InputMode = InputMode.Normal
 
@@ -218,6 +217,10 @@ export class InputTilemap extends ItemTilemap {
             maxTaps: undefined,
         })
         this.tap.on("tap", (pointer: Phaser.Input.Pointer) => {
+            if (this.cancelNextTap) {
+                this.cancelNextTap = false
+                return
+            }
             const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
             // do nothing if tile is not found
             if (!tile) {
@@ -1023,7 +1026,6 @@ export class InputTilemap extends ItemTilemap {
                             `Building not found for id: ${placedItemType.building}`
                         )
                     }
-                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyBuildingMessage = {
                         buildingId: building.displayId,
                         position: {
@@ -1035,6 +1037,7 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyBuilding,
                         eventMessage
                     )
+                    this.cancelNextTap = true
                     break
                 }
                 case PlacedItemType.Tile: {
@@ -1044,7 +1047,6 @@ export class InputTilemap extends ItemTilemap {
                     if (!tile) {
                         throw new Error(`Tile not found for id: ${placedItemType.tile}`)
                     }
-                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyTileMessage = {
                         tileId: tile.displayId,
                         position: {
@@ -1056,6 +1058,7 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyTile,
                         eventMessage
                     )
+                    this.cancelNextTap = true
                     break
                 }
                 case PlacedItemType.Animal: {
@@ -1067,7 +1070,6 @@ export class InputTilemap extends ItemTilemap {
                             `Animal not found for id: ${placedItemType.tile}`
                         )
                     }
-                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyAnimalMessage = {
                         animalId: animal.displayId,
                         position: {
@@ -1079,6 +1081,7 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyAnimal,
                         eventMessage
                     )
+                    this.cancelNextTap = true
                     break
                 }
                 case PlacedItemType.Fruit: {
@@ -1090,7 +1093,6 @@ export class InputTilemap extends ItemTilemap {
                             `Fruit not found for id: ${placedItemType.fruit}`
                         )
                     }
-                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyFruitMessage = {
                         fruitId: fruit.displayId,
                         position: {
@@ -1102,6 +1104,7 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyFruit,
                         eventMessage
                     )
+                    this.cancelNextTap = true
                     break
                 }
                 }
@@ -1185,7 +1188,6 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
                 } else {
-                    await sleep(TAP_DELAY_TIME)
                     const moveRequest: MoveMessage = {
                         placedItemId: objectData.object.currentPlacedItem?.id,
                         position: {
@@ -1194,6 +1196,7 @@ export class InputTilemap extends ItemTilemap {
                         },
                     }
                     ExternalEventEmitter.emit(ExternalEventName.RequestMove, moveRequest)
+                    this.cancelNextTap = true
                 }
                 this.cancelPlacement()
             },
