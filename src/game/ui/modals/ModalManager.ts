@@ -17,7 +17,8 @@ import {
     OpenModalMessage,
     SceneEventEmitter,
     SceneEventName,
-    ShowBackdropMessage
+    ShowBackdropMessage,
+    UpdateBackdropMessage
 } from "../../events"
 import { uiDepth } from "../../depth"
 import { SellModal } from "./sell"
@@ -188,17 +189,19 @@ export class ModalManager extends ContainerLite {
         modalName,
         transparency = false,
     }: ShowBackdropParams = {}) {
-        let depth = uiDepth.modal.modalBackdrop1
-
         switch (modalName) {
         case ModalName.SelectProduct:
         case ModalName.InputQuantity:
-        case ModalName.Claim:
-            depth = uiDepth.modal.modalBackdrop2
-            break
+        case ModalName.Claim: {
+            const updateBackdropMessage: UpdateBackdropMessage = {
+                depth: uiDepth.modal.modalBackdrop2,
+            }
+            SceneEventEmitter.emit(SceneEventName.UpdateBackdrop, updateBackdropMessage)
+            return
+        }
         }
         const showBackdropMessage: ShowBackdropMessage = {
-            depth,
+            depth: uiDepth.modal.modalBackdrop1,
             transparency,
         }
         SceneEventEmitter.emit(SceneEventName.ShowBackdrop, showBackdropMessage)

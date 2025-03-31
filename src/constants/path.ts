@@ -1,6 +1,7 @@
 export const pathConstants = {
     default: "/",
     home: "/home",
+    import: "/import",
     selectChain: "/select-chain",
     adjustTokens: "/adjust-tokens",
     assets: "/assets",

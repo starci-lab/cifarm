@@ -280,6 +280,8 @@ export class InputTilemap extends ItemTilemap {
                 const assetData = getAssetData({
                     placedItemType: data.object.placedItemType,
                     scene: this.scene,
+                    isAdult: data.object.currentPlacedItem?.animalInfo?.isAdult,
+                    fruitStage: data.object.currentPlacedItem?.fruitInfo?.currentStage,
                 })
                 if (!assetData) {
                     throw new Error("Asset data not found")

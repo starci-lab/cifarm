@@ -33,14 +33,14 @@ const Page: FC = () => {
                         />
                     </div>
                 </div>
-                <div className="h-16" /> {/* Spacer */}
+                <div className="h-6" />
                 <div className="text-center">
                     <div className="text-4xl font-bold">CiFarm</div>
                     <div className="text-muted-foreground text-sm">
-                        The leading play-to-earn farming game on Telegram
+                        The leading GameFixDeFi farming game
                     </div>
                 </div>
-                <div className="h-36" /> {/* Spacer */}
+                <div className="h-12" />
                 <div className="grid gap-4 w-full">
                     <EnhancedButton
                         size="lg"
@@ -121,7 +121,7 @@ const Page: FC = () => {
                         variant="outline"
                         size="lg"
                         className="w-full"
-                        onClick={() => router.push(pathConstants.home)}
+                        onClick={() => router.push(pathConstants.import)}
                     >
                         Import existing account
                     </EnhancedButton>

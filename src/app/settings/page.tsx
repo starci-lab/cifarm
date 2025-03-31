@@ -1,7 +1,7 @@
 "use client"
 
 import { useDisclosure } from "react-use-disclosure"
-import { Card, CardContent, CardHeader, Container, ExclamationTooltip, Header, Spacer } from "@/components"
+import { Card, CardContent, CardHeader, Container, EnhancedButton, Header, Spacer, Title } from "@/components"
 import React, { FC } from "react"
 import { Theme } from "./Theme"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -11,12 +11,14 @@ import {
     WARNING_DISCLOSURE,
 } from "../constants"
 import { setWarningModal, useAppDispatch } from "@/redux"
-import { Button } from "@/components"
+import { sessionDb } from "@/modules/dexie"
+import { useRouterWithSearchParams } from "@/hooks"
 
 const Page: FC = () => {
     const { open: openWarningModal } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(WARNING_DISCLOSURE)
     const dispatch = useAppDispatch()
+    const router = useRouterWithSearchParams()
     return (
         <Container hasPadding>
             <div className="h-full">
@@ -24,18 +26,14 @@ const Page: FC = () => {
                 <Spacer y={6} />
                 <Theme />
                 <Spacer y={6} />
-
                 <Card>
                     <CardHeader>
-                        <div className="flex gap-2 items-center">
-                            <div className="text-lg font-bold">Security</div>
-                            <ExclamationTooltip message="Manage your security settings." />
-                        </div>
+                        <Title title="Security" tooltipString="Manage your security settings." />
                     </CardHeader>
                     <CardContent>
                         <div className="flex justify-between items-center">
                             <div className="text-sm">Mnemonic</div>
-                            <Button
+                            <EnhancedButton
                                 onClick={() => {
                                     dispatch(
                                         setWarningModal({
@@ -49,12 +47,12 @@ const Page: FC = () => {
                                 variant="outline"
                             >
             Show
-                            </Button>
+                            </EnhancedButton>
                         </div>
                         <Spacer y={4} />
                         <div className="flex justify-between items-center">
                             <div className="text-sm">Private key</div>
-                            <Button
+                            <EnhancedButton
                                 onClick={() => {
                                     dispatch(
                                         setWarningModal({
@@ -68,8 +66,39 @@ const Page: FC = () => {
                                 variant="outline"
                             >
             Show
-                            </Button>
+                            </EnhancedButton>
                         </div>
+                    </CardContent>
+                </Card>
+                <Spacer y={6} />
+                <Card className="border-destructive">
+                    <CardHeader>
+                        <Title classNames={
+                            {
+                                title: "text-destructive",
+                                tooltip: "text-destructive",
+                            }
+                        } title="Danger zone" tooltipString="Dangerous actions are irreversible. Proceed with extreme caution." />
+                    </CardHeader>
+                    <CardContent>
+                        <EnhancedButton
+                            variant="destructive"
+                            onClick={() => {
+                                dispatch(
+                                    setWarningModal({
+                                        message:
+                    "Are you sure you want to sign out? This will log you out of your current session and require you to sign in again via private key/mnemonic.",
+                                        callback: async () => {
+                                            await sessionDb.delete()
+                                            router.replace("/")
+                                        },
+                                    })
+                                )
+                                openWarningModal()
+                            }}
+                        >
+                                Sign out
+                        </EnhancedButton>
                     </CardContent>
                 </Card>
             </div>

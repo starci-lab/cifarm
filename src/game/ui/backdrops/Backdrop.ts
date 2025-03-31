@@ -26,6 +26,7 @@ export class UIBackdrop extends ContainerLite {
 
         SceneEventEmitter.on(SceneEventName.ShowBackdrop, ({ depth, transparency }: ShowBackdropMessage) => {
             this.show()
+            console.log("show backdrop")
             this.backdrop.setDepth(depth).setAlpha(!transparency ? OPACITY_LEVEL : 0.01)
         })
         

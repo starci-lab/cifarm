@@ -9,8 +9,6 @@ import { loadImageAwait, loadSvgAwait } from "../utils"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import Button from "phaser3-rex-plugins/plugins/button"
 import {
-    ExternalEventEmitter,
-    ExternalEventName,
     ModalName,
     SceneEventEmitter,
     SceneEventName,
@@ -225,7 +223,7 @@ export class Topbar extends BaseSizer {
         if (!this.visited) {
             const button = new Button(this.profileContainer)
             button.on("click", () => {
-                ExternalEventEmitter.emit(ExternalEventName.OpenExternalModal, {
+                SceneEventEmitter.emit(SceneEventName.OpenModal, {
                     modalName: ModalName.Profile,
                 })
             })
