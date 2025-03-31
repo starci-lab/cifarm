@@ -8,6 +8,16 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 export const useBuyToolEffects = () => {
     const { socket } =
     useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+
+    useEffect(() => {
+        socket?.on(ReceiverEventName.ToolBought, () => {
+            ExternalEventEmitter.emit(ExternalEventName.BuyToolResponsed)
+        })
+        return () => {
+            socket?.off(ReceiverEventName.ToolBought)
+        }
+    }, [socket])
+
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestBuyTool,
@@ -15,16 +25,12 @@ export const useBuyToolEffects = () => {
                 if (!socket) {
                     return
                 }
-                socket.on(ReceiverEventName.ToolBought, () => {
-                    ExternalEventEmitter.emit(ExternalEventName.BuyToolResponsed)
-                })
                 socket.emit(EmitterEventName.BuyTool, message)
                 // return the user to the phaser
             }
         )
 
         return () => {
-            socket?.off(ReceiverEventName.ToolBought)
             ExternalEventEmitter.removeListener(ExternalEventName.RequestBuyTool)
         }
     }, [socket])

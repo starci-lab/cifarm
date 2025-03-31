@@ -6,6 +6,7 @@ import { GAMEPLAY_IO } from "@/app/constants"
 
 export const useBuyTileEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestBuyTile,

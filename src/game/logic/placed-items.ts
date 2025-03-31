@@ -119,3 +119,58 @@ export interface GetSellPriceFromPlacedItemTypeParams {
     scene: Scene;
     placedItemType: PlacedItemTypeSchema;
 }
+
+export interface CheckSellableParams {
+    scene: Phaser.Scene, 
+    placedItemType: PlacedItemTypeSchema
+}
+
+
+export const checkPlacedItemTypeSellable = ({
+    scene, 
+    placedItemType
+}: CheckSellableParams) => {
+    switch (placedItemType.type) {
+    case PlacedItemType.Tile: {
+        const tiles = scene.cache.obj.get(CacheKey.Tiles) as Array<TileSchema>
+        const tile = tiles.find((tile) => tile.id === placedItemType.tile)
+        if (!tile) {
+            throw new Error("Tile not found")
+        }
+        return tile.sellable
+    }
+    case PlacedItemType.Building: {
+        const buildings = scene.cache.obj.get(
+            CacheKey.Buildings
+        ) as Array<BuildingSchema>
+        const building = buildings.find(
+            (building) => building.id === placedItemType.building
+        )
+        if (!building) {
+            throw new Error("Building not found")
+        }
+        return building.sellable
+    }
+    case PlacedItemType.Animal: {
+        const animals = scene.cache.obj.get(
+            CacheKey.Animals
+        ) as Array<AnimalSchema>
+        const animal = animals.find(
+            (animal) => animal.id === placedItemType.animal
+        )
+        if (!animal) {
+            throw new Error("Animal not found")
+        }
+        return animal.sellable
+    }
+    case PlacedItemType.Fruit: {
+        const fruits = scene.cache.obj.get(CacheKey.Fruits) as Array<FruitSchema>
+        const fruit = fruits.find((fruit) => fruit.id === placedItemType.fruit)
+        if (!fruit) {
+            throw new Error("Fruit not found")
+        }
+        return fruit.sellable
+    }
+    } 
+}
+

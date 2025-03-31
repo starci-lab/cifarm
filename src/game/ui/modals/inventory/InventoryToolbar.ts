@@ -4,7 +4,7 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { GridSizer } from "phaser3-rex-plugins/templates/ui/ui-components"
 import { CellSize, getCellSize, ItemQuantity } from "../../elements"
 import { CacheKey } from "../../../types"
-import { getToolInventories } from "../../../cache"
+import { getToolInventories } from "../../../logic"
 import {
     SceneEventEmitter,
     SceneEventName,

@@ -18,6 +18,7 @@ export enum ReceiverEventName {
   SuppliesBought = "supplies_bought",
   ToolBought = "tool_bought",
   DailyRewardClaimed = "daily_reward_claimed",
+  StopBuying = "stop_buying",
 }
 
 // sync placed items

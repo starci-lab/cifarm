@@ -22,7 +22,7 @@ import {
 import {
     getDeliveryInventories,
     getProductInventories,
-} from "../../../../cache"
+} from "../../../../logic"
 import {
     SceneEventEmitter,
     SceneEventName,

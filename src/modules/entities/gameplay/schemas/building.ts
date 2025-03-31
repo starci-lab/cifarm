@@ -17,7 +17,7 @@ export interface BuildingSchema extends StaticAbstractSchema<BuildingId> {
     sellPrice?: number
     upgrades?: Array<UpgradeSchema>
     upgradeIds: Array<string>
-    upgradable: boolean
+    upgradeable: boolean
     placedItemTypeId?: string
     placedItemType?: PlacedItemTypeSchema
     beeHouseYieldTime?: number

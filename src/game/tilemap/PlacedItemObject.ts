@@ -462,7 +462,7 @@ export class PlacedItemObject extends ContainerLite {
             (building) => building.id === placedItemType?.building
         )
         if (
-            !building?.upgradable
+            !building?.upgradeable
         ) {
             return
         }

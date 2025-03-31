@@ -53,7 +53,7 @@ import {
     SceneEventEmitter,
 } from "../events"
 import { SceneEventName } from "../events"
-import { getSellPriceFromPlacedItemType } from "../cache"
+import { getSellPriceFromPlacedItemType } from "../logic"
 
 const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
@@ -155,10 +155,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                 if (!tile) {
                     throw new Error("Tile not found")
                 }
-                const position = {
-                    x: tile.getCenterX() - this.tileWidth / 2,
-                    y: tile.getCenterY() - (placedItemType.sizeY * this.tileHeight) / 2,
-                }
+                const position = this.getCenterPosition({
+                    x: tile.getCenterX(),
+                    y: tile.getCenterY(),
+                    sizeX: placedItemType.sizeX,
+                    sizeY: placedItemType.sizeY,
+                })
                 switch (data.action) {
                 case ActionName.UseWateringCan:
                     if (data.success) {
@@ -1326,7 +1328,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         )
     }
 
-    private getCurrentPlacedItemsData(): PlacedItemsData {
+    protected getCurrentPlacedItemsData(): PlacedItemsData {
         const placedItemsData = this.scene.cache.obj.get(
             CacheKey.PlacedItems
         ) as PlacedItemsData
@@ -1437,6 +1439,24 @@ export abstract class ItemTilemap extends GroundTilemap {
         await sleep(FADE_HOLD_TIME)
         SceneEventEmitter.emit(SceneEventName.FadeOut)
     }
+
+    protected getCenterPosition({
+        x,
+        y,
+        sizeY = 1,
+    }: GetCenterPositionParams) {
+        return {
+            x: x - this.tileWidth / 2,
+            y: y - (sizeY * this.tileHeight) / 2,
+        }
+    }
+}
+
+export interface GetCenterPositionParams {
+    x: number;
+    y: number;
+    sizeX?: number;
+    sizeY?: number;
 }
 
 export interface UpdatePlacedItemLocalParams {

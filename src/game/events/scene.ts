@@ -74,6 +74,9 @@ export enum SceneEventName {
 
     // action for set sell mode
     UpdateSellModal = "update_sell_modal",
+
+    // action for check limit
+    CheckLimit = "check_limit",
 }
 
 export enum ModalName {

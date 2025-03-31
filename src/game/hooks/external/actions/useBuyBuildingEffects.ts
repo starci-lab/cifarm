@@ -5,8 +5,10 @@ import { BuyBuildingMessage, EmitterEventName, useGameplayIo } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName, } from "../../../events"
 
 export const useBuyBuildingEffects = () => {
+
     const { socket } =
         useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestBuyBuilding,

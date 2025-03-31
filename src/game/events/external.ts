@@ -39,35 +39,39 @@ export enum ExternalEventName {
     // request to buy animal, from Phaser to React
     RequestBuyAnimal = "request_buy_animal",
     // buy animal completed, from React to Phaser
-    BuyAnimalResponsed = "buy_animal_completed",
+    BuyAnimalResponsed = "buy_animal_responsed",
     // request to buy building, from Phaser to React
     RequestBuyBuilding = "request_buy_building",
     // buy building completed, from React to Phaser
-    BuyBuildingResponsed = "buy_building_completed",
+    BuyBuildingResponsed = "buy_building_responsed",
     // request to buy flower seeds, from Phaser to React
     RequestBuyFlowerSeeds = "request_buy_flower_seeds",
     // buy flower seeds completed, from React to Phaser
-    BuyFlowerSeedsResponsed = "buy_flower_seeds_completed",
+    BuyFlowerSeedsResponsed = "buy_flower_seeds_responsed",
     // request to buy crop seeds, from Phaser to React
     RequestBuyCropSeeds = "request_buy_crop_seeds",
     // buy crop seeds completed, from React to Phaser
-    BuyCropSeedsResponsed = "buy_crop_seeds_completed",
+    BuyCropSeedsResponsed = "buy_crop_seeds_responsed",
     // request to buy fruit seeds, from Phaser to React
     RequestBuyFruit = "request_buy_fruit",
+    // buy fruit completed, from React to Phaser
+    BuyFruitResponsed = "buy_fruit_responsed",
     // request to buy supply seeds, from Phaser to React
     RequestBuySupplies = "request_buy_supplies",
     // buy supply seeds completed, from React to Phaser
-    BuySuppliesResponsed = "buy_supplies_completed",
+    BuySuppliesResponsed = "buy_supplies_responsed",
     // request to buy tile, from Phaser to React
     RequestBuyTile = "request_buy_tile",
+    // buy tile completed, from React to Phaser
+    BuyTileResponsed = "buy_tile_responsed",
     // request to buy tool, from Phaser to React
     RequestBuyTool = "request_buy_tool",
     // buy tool completed, from React to Phaser
-    BuyToolResponsed = "buy_tool_completed",
+    BuyToolResponsed = "buy_tool_responsed",
     // request to claim daily reward, from Phaser to React
     RequestClaimDailyReward = "request_claim_daily_reward",
     // claim daily reward completed, from React to Phaser
-    ClaimDailyRewardResponsed = "claim_daily_reward_completed",
+    ClaimDailyRewardResponsed = "claim_daily_reward_responsed",
     // request to deliver additional inventory, from Phaser to React
     RequestDeliverAdditionalInventory = "request_deliver_additional_inventory",
     // request to deliver inventory, from Phaser to React
@@ -134,6 +138,9 @@ export enum ExternalEventName {
     AssetsLoaded = "assets_loaded",
     // visit, from React to Phaser
     Visit = "visit",
+
+    // stop buying, from React to Phaser
+    StopBuying = "stop_buying",
 }
 
 export interface SyncPlacedItemsMessage {
