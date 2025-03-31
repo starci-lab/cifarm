@@ -220,10 +220,6 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
 
-            if (this.inputMode === InputMode.Normal) {
-                data.object.showTimer()
-            }
-
             if (this.inputMode === InputMode.Move) {
                 if (!this.isDragging) {
                     this.isDragging = true
@@ -292,6 +288,16 @@ export class InputTilemap extends ItemTilemap {
             if (data.object.isPressedForAction) {
                 return
             }
+
+            // do nothing if selected tool is default
+            const selectedTool = this.scene.cache.obj.get(
+                CacheKey.SelectedTool
+            ) as ToolLike
+            if (selectedTool.default) {
+                data.object.showTimer()
+                return
+            }
+            
             switch (data.object.placedItemType.type) {
             case PlacedItemType.Tile:
                 this.handlePressOnTile({ data })
@@ -325,12 +331,6 @@ export class InputTilemap extends ItemTilemap {
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
-
-        // do nothing if selected tool is default
-        if (selectedTool.default) {
-            return
-        }
-
         const inventoryType = this.inventoryTypes.find(
             (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
         )
@@ -1234,11 +1234,6 @@ export class InputTilemap extends ItemTilemap {
             CacheKey.SelectedTool
         ) as ToolLike
 
-        // do nothing if selected tool is default
-        if (selectedTool.default) {
-            return
-        }
-
         const inventoryType = this.inventoryTypes.find(
             (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
         )
@@ -1360,11 +1355,6 @@ export class InputTilemap extends ItemTilemap {
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
-
-        // do nothing if selected tool is default
-        if (selectedTool.default) {
-            return
-        }
 
         const inventoryType = this.inventoryTypes.find(
             (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id

@@ -4,6 +4,7 @@ import {
     BuyBuildingData,
     BuyFruitData,
     BuyTileData,
+    DisplayTimersMessage,
     EmitActionPayload,
     HarvestAnimalData,
     HarvestFruitData,
@@ -12,7 +13,7 @@ import {
     ThiefFruitData,
     ThiefPlantData,
 } from "@/hooks"
-import { sleep } from "@/modules/common"
+import { formatTime, sleep } from "@/modules/common"
 import {
     Activities,
     AnimalSchema,
@@ -132,35 +133,10 @@ export abstract class ItemTilemap extends GroundTilemap {
         ExternalEventEmitter.on(
             ExternalEventName.ActionEmitted,
             (data: EmitActionPayload) => {
-                const {
-                    placedItem: { x, y, placedItemType: placedItemTypeId },
-                } = data
-                if (x === undefined) {
-                    throw new Error("X is not found")
+                if (!data.placedItem) {
+                    throw new Error("Placed item not found")
                 }
-                if (y === undefined) {
-                    throw new Error("Y is not found")
-                }
-                const placedItemType = this.placedItemTypes.find(
-                    (placedItemType) => placedItemType.id === placedItemTypeId
-                )
-                if (!placedItemType) {
-                    throw new Error("Placed item type not found")
-                }
-                const tile = this.getTileCenteredAt({
-                    tileX: x,
-                    tileY: y,
-                    layer: LayerName.Ground,
-                })
-                if (!tile) {
-                    throw new Error("Tile not found")
-                }
-                const position = this.getCenterPosition({
-                    x: tile.getCenterX(),
-                    y: tile.getCenterY(),
-                    sizeX: placedItemType.sizeX,
-                    sizeY: placedItemType.sizeY,
-                })
+                const position = this.getPositionFromPlacedItem(data.placedItem)
                 switch (data.action) {
                 case ActionName.UseWateringCan:
                     if (data.success) {
@@ -814,6 +790,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                     break
                 case ActionName.Sell:
                     if (data.success) {
+                        const placedItemType = this.placedItemTypes.find(
+                            (placedItemType) => placedItemType.id === data.placedItem.placedItemType
+                        )
+                        if (!placedItemType) {
+                            throw new Error("Placed item type not found")
+                        }
                         const sellPrice = getSellPriceFromPlacedItemType({
                             scene: this.scene,
                             placedItemType
@@ -1004,37 +986,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                     }
                     break
                 }
-                case ActionName.HelpUseFruitFertilizer:
-                    if (data.success) {
-                        this.createFlyItems([
-                            {
-                                iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
-                                x: position.x,
-                                y: position.y,
-                                quantity:
-                    -this.activities.helpUseFruitFertilizer.energyConsume,
-                            },
-                            {
-                                iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
-                                x: position.x,
-                                y: position.y,
-                                quantity:
-                    this.activities.helpUseFruitFertilizer.experiencesGain,
-                            },
-                        ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.HelpUseFruitFertilizer,
-                            },
-                        ])
-                    }
-                    break
                 case ActionName.HelpUseBugNet:
                     if (data.success) {
                         this.createFlyItems([
@@ -1141,6 +1092,30 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
             }
         )
+
+        ExternalEventEmitter.on(ExternalEventName.DisplayTimersResponsed, ({ ids }: DisplayTimersMessage) => {
+            for (const id of ids) {
+                const gameObject = this.placedItemObjectMap[id]?.object
+                if (!gameObject) {
+                    throw new Error("Object not found")
+                }
+                if (!gameObject.currentPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                if (!gameObject.timerNumber) {
+                    return
+                }
+                const position = this.getPositionFromPlacedItem(gameObject.currentPlacedItem)
+                this.createFlyItems([
+                    {
+                        showIcon: false,
+                        x: position.x,
+                        y: position.y,
+                        text: formatTime(gameObject.timerNumber),
+                    },
+                ])
+            }
+        })
     }
 
     // methods to handle changes in the placed items
@@ -1159,7 +1134,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         const checkedPreviousPlacedItems: Array<PlacedItemSchema> = []
 
         for (const placedItem of current.placedItems) {
-            console.log(placedItem.id)
             // if previous doesn't exist or the placed item is not in previous placed items, treat it as new
             const found = previous.placedItems.find(
                 (item) => item.id === placedItem.id
@@ -1410,7 +1384,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             })
             flyItem.setDepth(gameplayDepth.fly)
             this.scene.add.existing(flyItem)
-            await sleep(200)
+            await sleep(400)
         }
     }
 
@@ -1449,6 +1423,40 @@ export abstract class ItemTilemap extends GroundTilemap {
             x: x - this.tileWidth / 2,
             y: y - (sizeY * this.tileHeight) / 2,
         }
+    }
+
+    protected getPositionFromPlacedItem(placedItem: DeepPartial<PlacedItemSchema>) {
+        const {
+            x,
+            y,
+            placedItemType: placedItemTypeId,
+        } = placedItem
+        if (x === undefined) {
+            throw new Error("X is not found")
+        }
+        if (y === undefined) {
+            throw new Error("Y is not found")
+        }
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === placedItemTypeId
+        )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        const tile = this.getTileCenteredAt({
+            tileX: x,
+            tileY: y,
+            layer: LayerName.Ground,
+        })
+        if (!tile) {
+            throw new Error("Tile not found")
+        }
+        return this.getCenterPosition({
+            x: tile.getCenterX(),
+            y: tile.getCenterY(),
+            sizeX: placedItemType.sizeX,
+            sizeY: placedItemType.sizeY,
+        })
     }
 }
 

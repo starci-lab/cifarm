@@ -50,6 +50,7 @@ export enum EmitterEventName {
   UpgradeBuilding = "upgrade_building",
   Return = "return",
   Visit = "visit",
+  RequestDisplayTimers = "request_display_timers",
 }
 
 export interface BuySuppliesMessage {

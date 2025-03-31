@@ -26,8 +26,6 @@ export enum ExternalEventName {
     LoadInventories = "load_inventories",
     // inventory loaded, from React to Phaser
     InventoriesLoaded = "inventories_loaded",
-    // request to sync placed items, from Phaser to React
-    EmitSyncPlacedItems = "emit_sync_placed_items",
     // placed items synced, from React to Phaser
     PlacedItemsSynced = "placed_items_synced",
     // inventories synced, from React to Phaser
@@ -141,6 +139,11 @@ export enum ExternalEventName {
 
     // stop buying, from React to Phaser
     StopBuying = "stop_buying",
+
+    // sync placed items, from React to Phaser
+    RequestDisplayTimers = "request_display_timers",
+    // 
+    DisplayTimersResponsed = "display_timer_responsed"
 }
 
 export interface SyncPlacedItemsMessage {
@@ -150,3 +153,8 @@ export interface SyncPlacedItemsMessage {
 export interface CloseExternalModalMessage {
     modalName: ModalName
 }
+
+export interface DisplayTimersMessage {
+    ids: Array<string>
+}
+
