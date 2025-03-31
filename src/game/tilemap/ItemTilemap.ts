@@ -1123,7 +1123,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         current: PlacedItemsData,
         previous?: PlacedItemsData
     ) {
-    //if current.userId doesn't match previous.userId, treat all placed items as new
+        //if current.userId doesn't match previous.userId, treat all placed items as new
         if (!previous || (previous && current.userId !== previous.userId)) {
             // if user ids are different, create all placed items (treat as new)
             this.clearAllPlacedItems()

@@ -27,7 +27,7 @@ import {
     SpineConfig,
     TextureConfig,
 } from "../assets"
-import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
+import { GREEN_TINT_COLOR, RED_TINT_COLOR, TAP_DELAY_TIME } from "../constants"
 import {
     CacheKey,
     SellModalData,
@@ -76,6 +76,7 @@ import {
 import { ExternalEventEmitter } from "../events"
 import { gameplayDepth } from "../depth"
 import { checkPlacedItemTypeSellable } from "../logic"
+import { sleep } from "@/modules/common"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -203,7 +204,19 @@ export class InputTilemap extends ItemTilemap {
         )
 
         // click on empty tile to plant seed
-        this.tap = new Tap(this.scene)
+        this.tap = new Tap(this.scene, {
+            enable: true,
+            bounds: undefined,
+
+            time: 125,
+            tapInterval: 100,
+            threshold: 9,
+            tapOffset: 10,
+
+            taps: undefined,
+            minTaps: undefined,
+            maxTaps: undefined,
+        })
         this.tap.on("tap", (pointer: Phaser.Input.Pointer) => {
             const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
             // do nothing if tile is not found
@@ -228,8 +241,8 @@ export class InputTilemap extends ItemTilemap {
                     }
                     data.object.ignoreCollision = true
                     this.handleMovingDragMode(data)
-                    return
                 }
+                return
             }
             if (this.inputMode === InputMode.Sell) {
                 if (!data.object.currentPlacedItem?.id) {
@@ -1010,6 +1023,7 @@ export class InputTilemap extends ItemTilemap {
                             `Building not found for id: ${placedItemType.building}`
                         )
                     }
+                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyBuildingMessage = {
                         buildingId: building.displayId,
                         position: {
@@ -1030,6 +1044,7 @@ export class InputTilemap extends ItemTilemap {
                     if (!tile) {
                         throw new Error(`Tile not found for id: ${placedItemType.tile}`)
                     }
+                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyTileMessage = {
                         tileId: tile.displayId,
                         position: {
@@ -1052,6 +1067,7 @@ export class InputTilemap extends ItemTilemap {
                             `Animal not found for id: ${placedItemType.tile}`
                         )
                     }
+                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyAnimalMessage = {
                         animalId: animal.displayId,
                         position: {
@@ -1074,6 +1090,7 @@ export class InputTilemap extends ItemTilemap {
                             `Fruit not found for id: ${placedItemType.fruit}`
                         )
                     }
+                    await sleep(TAP_DELAY_TIME)
                     const eventMessage: BuyFruitMessage = {
                         fruitId: fruit.displayId,
                         position: {
@@ -1155,7 +1172,7 @@ export class InputTilemap extends ItemTilemap {
                 this.deleteObject(objectData.object.currentPlacedItem.id)
                 SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
-            onConfirm: (tileX: number, tileY: number) => {
+            onConfirm: async (tileX: number, tileY: number) => {
                 // this.movingDragSpriteData = undefined
                 if (!objectData.object.currentPlacedItem?.id) {
                     throw new Error("Placed item id not found")
@@ -1168,6 +1185,7 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
                 } else {
+                    await sleep(TAP_DELAY_TIME)
                     const moveRequest: MoveMessage = {
                         placedItemId: objectData.object.currentPlacedItem?.id,
                         position: {

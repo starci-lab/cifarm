@@ -640,11 +640,13 @@ export class PlacedItemObject extends ContainerLite {
         if (this.nextPlacedItem.plantInfo.isFertilized) {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
+                const { key, extraOffsets } = baseAssetMap[BaseAssetKey.FertilizerParticle].base.textureConfig
+                const { x = 0, y = 0 } = { ...extraOffsets }
                 this.fertilizerParticle = this.scene.add
                     .sprite(
-                        0,
-                        0,
-                        baseAssetMap[BaseAssetKey.FertilizerParticle].base.textureConfig.key
+                        x,
+                        y,
+                        key
                     ) // Using sprite instead of image
                     .setDepth(this.depth + 11)
                     .setOrigin(0.5, 1)

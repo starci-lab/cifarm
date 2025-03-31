@@ -758,6 +758,11 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
             textureConfig: {
                 assetUrl: "tiles/fertilizer-particle.png",
                 key: "tiles-fertilizer-particle",
+                version: 5,
+                extraOffsets: {
+                    x: 0,
+                    y: -50
+                }
             },
         },
     },

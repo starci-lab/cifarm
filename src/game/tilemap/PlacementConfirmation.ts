@@ -1,7 +1,6 @@
 import { ButtonsBaseConstructorParams, ConstructorParams } from "@/game/types"
 import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { Buttons, Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-
 export interface PlacementConfirmationOptions {
   onCancel?: () => void;
   onConfirm?: (tileX: number, tileY: number) => void;

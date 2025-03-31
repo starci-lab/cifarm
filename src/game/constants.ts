@@ -39,3 +39,5 @@ export const SYNC_DELAY_TIME = 5000
 
 export const BACKGROUND_MUSIC = "background-music"
 export const DEFAULT_VOLUME = 0.5
+
+export const TAP_DELAY_TIME = 200

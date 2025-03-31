@@ -15,15 +15,7 @@ export interface StateAssetData {
 
 
 // Plant State Assets
-const plantStateAssets: Record<PlantCurrentState, StateAssetData> = {
-    [PlantCurrentState.Normal]: {
-        base: { 
-            textureConfig: {
-                key: "plant-normal",
-                assetUrl: "states/plant-normal.png",
-            },
-        },
-    },
+const plantStateAssets: Partial<Record<PlantCurrentState, StateAssetData>> = {
     [PlantCurrentState.NeedWater]: {
         base: { 
             textureConfig: {
@@ -59,21 +51,12 @@ const plantStateAssets: Record<PlantCurrentState, StateAssetData> = {
 }
 
 // Animal State Assets
-const animalStateAssets: Record<AnimalCurrentState, StateAssetData> = {
-    [AnimalCurrentState.Normal]: {
-        base: { 
-            textureConfig: {
-                key: "animal-normal",
-                assetUrl: "states/animal-normal.png",
-            },
-        },
-    },
+const animalStateAssets: Partial<Record<AnimalCurrentState, StateAssetData>> = {
     [AnimalCurrentState.Hungry]: {
         base: {
             textureConfig: {
-                key: "animal-feed",
-                assetUrl: "states/animal-feed.png",
-                useExisting: true,
+                key: "hungry",
+                assetUrl: "states/hungry.png",
             },
         },
     },
@@ -96,23 +79,12 @@ const animalStateAssets: Record<AnimalCurrentState, StateAssetData> = {
 }
 
 // Fruit State Assets
-const fruitStateAssets: Record<FruitCurrentState, StateAssetData> = {
-    [FruitCurrentState.Normal]: {
-        base: { 
-            textureConfig: {
-                key: "fruit-normal",
-                assetUrl: "states/fruit-normal.png",
-            },
-        },
-    },
+const fruitStateAssets: Partial<Record<FruitCurrentState, StateAssetData>> = {
     [FruitCurrentState.NeedFertilizer]: {
         base: { 
             textureConfig: {
-                key: "fruit-fertilizer",
-                assetUrl: "states/fruit-fertilizer.png",
-                useExisting: true,
-                scaleHeight: 0.8,
-                scaleWidth: 0.8,
+                key: "need-fruit-fertilizer",
+                assetUrl: "states/need-fruit-fertilizer.png",
             },
         },
     },
@@ -143,7 +115,7 @@ export const stateAssetMap = {
 
 // Function to load all state assets
 export const loadStateAssets = async (scene: Scene) => {
-    const promises: Promise<void>[] = []
+    const promises: Array<Promise<void>> = []
     for (const stateType of Object.values(stateAssetMap)) {
         for (const stateData of Object.values(stateType)) {
             if (stateData.base) {
