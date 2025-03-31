@@ -742,6 +742,7 @@ export class ShopContent extends BaseSizer {
                     assetKey: supplyAssetMap[displayId].base.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     unlockLevel,
+                    disabled: this.user.golds < price,
                     onPress: (pointer: Phaser.Input.Pointer) => {
                         this.onBuySupplyPress(displayId, pointer)
                     },

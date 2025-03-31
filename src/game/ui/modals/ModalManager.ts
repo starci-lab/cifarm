@@ -1,5 +1,5 @@
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { SCALE_TIME } from "../../constants"
+// import { SCALE_TIME } from "../../constants"
 import { ContainerLiteBaseConstructorParams } from "../../types"
 import { getScreenCenterX, getScreenCenterY } from "../utils"
 import { DailyModal } from "./daily"
@@ -308,13 +308,14 @@ export class ModalManager extends ContainerLite {
             modal.input.enabled = false
         }
         // show the modal
-        modal.show().popUp(SCALE_TIME)
+        modal.show()
+        //.popUp(SCALE_TIME)
         // Wait for the animation to finish, then re-enable interaction
-        this.scene.time.delayedCall(SCALE_TIME, () => {
-            if (modal.input) {
-                modal.input.enabled = true
-            }
-        })
+        // this.scene.time.delayedCall(SCALE_TIME, () => {
+        //     if (modal.input) {
+        //         modal.input.enabled = true
+        //     }
+        // })
     }
 
     // close the modal

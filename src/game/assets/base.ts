@@ -939,6 +939,7 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
             textureConfig: {
                 assetUrl: "ui/common/fade-star.png",
                 key: "ui-common-fade-star",
+                version: 1,
             },
         },
     },
@@ -947,6 +948,7 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
             textureConfig: {
                 assetUrl: "ui/common/upgrade-star.png",
                 key: "ui-common-upgrade-star",
+                version: 1,
             },
         },
     },
