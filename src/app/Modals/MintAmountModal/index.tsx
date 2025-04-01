@@ -2,7 +2,7 @@
 import { MINT_AMOUNT_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
-import { EnhancedButton, EnhancedNumberInput, ModalHeader } from "@/components"
+import { ExtendedButton, ExtendedNumberInput, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -25,7 +25,7 @@ export const MintAmountModal: FC = () => {
                     </DialogTitle>
                 </DialogHeader>
                 <div>
-                    <EnhancedNumberInput
+                    <ExtendedNumberInput
                         value={"0"}
                         onValueChange={() => {}}
                         name="amount"
@@ -34,19 +34,19 @@ export const MintAmountModal: FC = () => {
                     />
                 </div>
                 <DialogFooter>
-                    <EnhancedButton
+                    <ExtendedButton
                         variant="ghost"
                         onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </EnhancedButton>
-                    <EnhancedButton
+                    </ExtendedButton>
+                    <ExtendedButton
                         onClick={() => {}}
                         isLoading={false}
                     >
                         Mint
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

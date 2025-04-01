@@ -18,7 +18,7 @@ import React, { FC } from "react"
 import { UserCard } from "../UserCard"
 import { FilterBar, List } from "@/components"
 import { RefreshCcw } from "lucide-react"
-import { EnhancedButton } from "@/components"
+import { ExtendedButton } from "@/components"
 import { Pagination } from "@/components/ui/pagination"
 
 export const FolloweesTab: FC = () => {
@@ -77,14 +77,14 @@ export const FolloweesTab: FC = () => {
                         })
                     }}
                 />
-                <EnhancedButton
+                <ExtendedButton
                     variant="outline"
                     size="icon"
                     onClick={() => followeesMutate()}
                     className="shrink-0"
                 >
                     <RefreshCcw className="h-4 w-4" />
-                </EnhancedButton>
+                </ExtendedButton>
             </div>
 
             <List

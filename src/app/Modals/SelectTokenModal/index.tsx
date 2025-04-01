@@ -2,7 +2,7 @@ import { valuesWithKey } from "@/modules/common"
 import { useAppSelector } from "@/redux"
 import React, { useMemo, useState } from "react"
 import { Token } from "./Token"
-import { List, FilterBar, Spacer, EnhancedButton, ModalHeader } from "@/components"
+import { List, FilterBar, Spacer, ExtendedButton, ModalHeader } from "@/components"
 import { SELECT_TOKEN_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
@@ -49,13 +49,13 @@ export const SelectTokenModal = () => {
                     />
                 </div>
                 <DialogFooter>
-                    <EnhancedButton
+                    <ExtendedButton
                         variant="ghost"
                         onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

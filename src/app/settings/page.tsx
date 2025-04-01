@@ -1,7 +1,7 @@
 "use client"
 
 import { useDisclosure } from "react-use-disclosure"
-import { Card, CardContent, CardHeader, Container, EnhancedButton, Header, Spacer, Title } from "@/components"
+import { Card, CardContent, CardHeader, Container, ExtendedButton, Header, Spacer, Title } from "@/components"
 import React, { FC } from "react"
 import { Theme } from "./Theme"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -33,7 +33,7 @@ const Page: FC = () => {
                     <CardContent>
                         <div className="flex justify-between items-center">
                             <div className="text-sm">Mnemonic</div>
-                            <EnhancedButton
+                            <ExtendedButton
                                 onClick={() => {
                                     dispatch(
                                         setWarningModal({
@@ -47,12 +47,12 @@ const Page: FC = () => {
                                 variant="outline"
                             >
             Show
-                            </EnhancedButton>
+                            </ExtendedButton>
                         </div>
                         <Spacer y={4} />
                         <div className="flex justify-between items-center">
                             <div className="text-sm">Private key</div>
-                            <EnhancedButton
+                            <ExtendedButton
                                 onClick={() => {
                                     dispatch(
                                         setWarningModal({
@@ -66,7 +66,7 @@ const Page: FC = () => {
                                 variant="outline"
                             >
             Show
-                            </EnhancedButton>
+                            </ExtendedButton>
                         </div>
                     </CardContent>
                 </Card>
@@ -81,7 +81,7 @@ const Page: FC = () => {
                         } title="Danger zone" tooltipString="Dangerous actions are irreversible. Proceed with extreme caution." />
                     </CardHeader>
                     <CardContent>
-                        <EnhancedButton
+                        <ExtendedButton
                             variant="destructive"
                             onClick={() => {
                                 dispatch(
@@ -98,7 +98,7 @@ const Page: FC = () => {
                             }}
                         >
                                 Sign out
-                        </EnhancedButton>
+                        </ExtendedButton>
                     </CardContent>
                 </Card>
             </div>

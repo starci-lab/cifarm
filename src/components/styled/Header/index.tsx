@@ -24,7 +24,7 @@ export const Header = ({ title, description }: HeaderProps) => {
                 <div className="text-2xl font-bold">{title}</div>
             </div>
             <Spacer y={4} />
-            <div className="text-xs text-foreground-400">
+            <div className="text-xs text-muted-foreground">
                 {description}
             </div>
         </div>

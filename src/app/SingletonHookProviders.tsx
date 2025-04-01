@@ -16,6 +16,7 @@ import {
     useGraphQLQueryUserSwr,
     useGraphQLQueryPlacedItemsSwrMutation,
     useGraphQLMutationUpdateFollowXSwrMutation,
+    useImportAccountFormik,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -73,6 +74,7 @@ export const SingletonHook2Provider = ({ children }: PropsWithChildren) => (
     <BaseSingletonHook2Provider
         hooks={{
             TRANSFER_TOKEN_FORMIK: useTransferTokenFormik(),
+            IMPORT_ACCOUNT_FORMIK: useImportAccountFormik(),
         }}
     >
         {children}

@@ -28,6 +28,7 @@ export const TRANSFER_TOKEN_RHF = "TRANSFER_TOKEN_RHF"
 
 // Formik constants
 export const TRANSFER_TOKEN_FORMIK = "TRANSFER_TOKEN_FORMIK"
+export const IMPORT_ACCOUNT_FORMIK = "IMPORT_ACCOUNT_FORMIK"
 
 // =====================================
 // SWR CONSTANTS

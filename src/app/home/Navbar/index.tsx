@@ -6,7 +6,7 @@ import { useAppSelector } from "@/redux"
 import { SelectChainButton } from "../SelectChainButton"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
-import { EnhancedButton } from "@/components"
+import { ExtendedButton } from "@/components"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Snippet } from "@/components"
 import { SearchIcon, SettingsIcon } from "lucide-react"
@@ -59,23 +59,23 @@ export const Navbar: FC = () => {
                 <div className="flex gap-2">
                     <SelectChainButton />
                     <Block scheme="light">
-                        <EnhancedButton
+                        <ExtendedButton
                             variant="ghost-secondary"
                             size="icon"
                             className="light"
                         >
                             <SearchIcon className="w-5 h-5" />
-                        </EnhancedButton>
+                        </ExtendedButton>
                     </Block>    
                     <Block scheme="light">
-                        <EnhancedButton
+                        <ExtendedButton
                             className="light"
                             variant="ghost-secondary"
                             size="icon"
                             onClick={() => router.push(pathConstants.settings)}
                         >
                             <SettingsIcon className="w-5 h-5" />
-                        </EnhancedButton>
+                        </ExtendedButton>
                     </Block>
                 </div>
             </div>

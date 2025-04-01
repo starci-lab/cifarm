@@ -3,7 +3,7 @@ import { WARNING_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
-import { EnhancedButton, ModalHeader } from "@/components"
+import { ExtendedButton, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -50,14 +50,14 @@ export const WarningModal: FC = () => {
                     </Alert>
                 </div>
                 <DialogFooter>
-                    <EnhancedButton 
+                    <ExtendedButton 
                         variant="ghost" 
                         onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </EnhancedButton>
-                    <EnhancedButton
+                    </ExtendedButton>
+                    <ExtendedButton
                         variant="destructive"
                         onClick={() => {
                             //close the current modal
@@ -72,7 +72,7 @@ export const WarningModal: FC = () => {
                         }}
                     >
                         Continue
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

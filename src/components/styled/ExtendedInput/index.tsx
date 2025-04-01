@@ -1,7 +1,7 @@
 import React, { FC } from "react"
 import { cn } from "@/lib/utils"
 
-export interface EnhancedInputProps extends React.ComponentProps<"input"> {
+export interface ExtendedInputProps extends React.ComponentProps<"input"> {
   value: string;
   onValueChange: (value: string) => void;
   isInvalid?: boolean;
@@ -18,7 +18,7 @@ export interface EnhancedInputProps extends React.ComponentProps<"input"> {
   };
 }
 
-export const EnhancedInput: FC<EnhancedInputProps> = ({
+export const ExtendedInput: FC<ExtendedInputProps> = ({
     value,
     onValueChange,
     isInvalid,

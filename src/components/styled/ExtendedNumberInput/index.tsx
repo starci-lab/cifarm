@@ -1,12 +1,12 @@
 import React, { FC } from "react"
-import { EnhancedInput, EnhancedInputProps } from "../EnhancedInput"
+import { ExtendedInput, ExtendedInputProps } from "../ExtendedInput"
 import { sanitizeNumericInput } from "@/modules/common"
 
-export interface EnhancedNumberInputProps extends Omit<EnhancedInputProps, "onValueChange"> {
+export interface ExtendedNumberInputProps extends Omit<ExtendedInputProps, "onValueChange"> {
     onValueChange: (value: string) => void
 }
 
-export const EnhancedNumberInput: FC<EnhancedNumberInputProps> = (props) => {
+export const ExtendedNumberInput: FC<ExtendedNumberInputProps> = (props) => {
     const onValueChange = (value: string) => {
         const sanitizeInput = sanitizeNumericInput(value)
         if (sanitizeInput != null) {
@@ -17,7 +17,7 @@ export const EnhancedNumberInput: FC<EnhancedNumberInputProps> = (props) => {
     }
 
     return (
-        <EnhancedInput
+        <ExtendedInput
             {...props}
             onValueChange={onValueChange}
             placeholder="0"

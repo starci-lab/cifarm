@@ -15,7 +15,7 @@ import {
     GRAPHQL_QUERY_USER_SWR,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { EnhancedButton } from "@/components"
+import { ExtendedButton } from "@/components"
 import { BlocksIcon, GiftIcon, TwitterIcon, CoinsIcon } from "lucide-react"
 
 export const BottomNavbar: FC = () => {
@@ -41,39 +41,39 @@ export const BottomNavbar: FC = () => {
             <nav className="m-auto w-full h-full flex items-center justify-between px-4">
                 <div className="flex-1 flex justify-between">
                     <div className="flex flex-1 grid place-items-center">
-                        <EnhancedButton
+                        <ExtendedButton
                             variant="ghost"
                             className="flex-1 flex flex-col items-center justify-center h-full gap-1 w-fit"
                             onClick={() => router.push(pathConstants.assets)}
                         >
                             <CoinsIcon className="w-5 h-5 min-w-5 min-h-5" />
                             <div className="text-[10px] h-4 flex items-center">Assets</div>
-                        </EnhancedButton>
+                        </ExtendedButton>
                     </div>
                     <div className="flex flex-1 grid place-items-center">
-                        <EnhancedButton
+                        <ExtendedButton
                             variant="ghost"
                             className="flex-1 flex flex-col items-center justify-center h-full gap-1"
                             onClick={() => router.push(pathConstants.partnerships)}
                         >
                             <GiftIcon className="w-5 h-5 min-h-5 min-w-5" />
                             <div className="text-[10px] h-4 flex items-center">Partner</div>
-                        </EnhancedButton>
+                        </ExtendedButton>
                     </div>
                 </div>
                 <div className="flex justify-center w-fit">
-                    <EnhancedButton
+                    <ExtendedButton
                         disabled={!(authenticated && allDataLoaded)}
                         size="lg"
                         className="text-background"
                         onClick={() => router.push(pathConstants.play)}
                     >
                         Play
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </div>
                 <div className="flex-1 flex justify-end">
                     <div className="flex flex-1 grid place-items-center">
-                        <EnhancedButton
+                        <ExtendedButton
                             variant="ghost"
                             className="flex-1 flex flex-col items-center justify-center h-full"
                         >
@@ -81,10 +81,10 @@ export const BottomNavbar: FC = () => {
                             <div className="text-[10px] h-4 flex items-center">
                             DApps
                             </div>
-                        </EnhancedButton>
+                        </ExtendedButton>
                     </div>
                     <div className="flex flex-1 grid place-items-center">
-                        <EnhancedButton
+                        <ExtendedButton
                             variant="ghost"
                             className="flex-1 flex flex-col items-center justify-center h-full"
                         >
@@ -92,7 +92,7 @@ export const BottomNavbar: FC = () => {
                             <div className="text-[10px] h-4 flex items-center">
                             Social
                             </div>
-                        </EnhancedButton>
+                        </ExtendedButton>
                     </div>
                 </div>
             </nav>

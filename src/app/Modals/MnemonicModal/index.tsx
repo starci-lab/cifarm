@@ -4,7 +4,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/outline"
 import React, { FC, useState } from "react"
-import { EnhancedButton, ModalHeader } from "@/components"
+import { ExtendedButton, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -57,7 +57,7 @@ export const MnemonicModal: FC = () => {
                     </Card>  
                 </div>
                 <DialogFooter className="gap-2">
-                    <EnhancedButton
+                    <ExtendedButton
                         variant="outline"
                         onClick={() => setIsBlurred(!isBlurred)}
                         className="gap-2"
@@ -68,15 +68,15 @@ export const MnemonicModal: FC = () => {
                             <EyeSlashIcon className="w-5 h-5" />
                         )}
                         {isBlurred ? "Show" : "Hide"}
-                    </EnhancedButton>
-                    <EnhancedButton
+                    </ExtendedButton>
+                    <ExtendedButton
                         variant="outline"
                         onClick={() => navigator.clipboard.writeText(mnemonic)}
                         className="gap-2"
                     >
                         <CopyIcon className="w-5 h-5" strokeWidth={3 / 2} />
                         Copy
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

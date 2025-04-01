@@ -5,10 +5,10 @@ import {
     Spacer,
     Title,
     Image,
-    EnhancedNumberInput,
-    EnhancedInput,
+    ExtendedNumberInput,
+    ExtendedInput,
     Link,
-    EnhancedButton,
+    ExtendedButton,
 } from "@/components"
 import { setSelectTokenModal, useAppDispatch, useAppSelector } from "@/redux"
 import {
@@ -56,7 +56,7 @@ export const Tokens: FC = () => {
                         }}
                     />
                     <Spacer y={1.5} />
-                    <EnhancedButton 
+                    <ExtendedButton 
                         variant="outline"
                         className="w-full justify-start"
                         onClick={() => {
@@ -76,7 +76,7 @@ export const Tokens: FC = () => {
                             className="w-5 h-5"
                         />
                         {tokens[selectedTokenKey].name}
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </div>
                 <Spacer y={4} />
                 <div>
@@ -92,7 +92,7 @@ export const Tokens: FC = () => {
                         <div className="text-sm text-gray-400">{`Balance: ${balanceSwr.data}`}</div>
                     </div>
                     <Spacer y={1.5} />
-                    <EnhancedNumberInput
+                    <ExtendedNumberInput
                         className="w-full"
                         id="stringAmount"
                         value={formik.values.stringAmount}
@@ -120,7 +120,7 @@ export const Tokens: FC = () => {
                         }}
                     />
                     <Spacer y={1.5} />
-                    <EnhancedInput
+                    <ExtendedInput
                         className="w-full"
                         id="recipientAddress"
                         value={formik.values.recipientAddress}
@@ -148,12 +148,12 @@ export const Tokens: FC = () => {
                 </div>
                 <Spacer y={6} />
             </div>
-            <EnhancedButton 
+            <ExtendedButton 
                 onClick={() => formik.submitForm()}
                 size="lg"
             >
                 Transfer
-            </EnhancedButton>
+            </ExtendedButton>
         </div>
     )
 }

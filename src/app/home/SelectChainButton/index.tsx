@@ -3,7 +3,7 @@ import { useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap, networkMap } from "@/modules/blockchain"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
-import { EnhancedButton } from "@/components"
+import { ExtendedButton } from "@/components"
 
 export const SelectChainButton: FC = () => {
     const router = useRouterWithSearchParams()
@@ -16,12 +16,12 @@ export const SelectChainButton: FC = () => {
     const imageUrl = blockchainMap[chainKey].imageUrl
     const networkName = networkMap[network].name
     return (
-        <EnhancedButton
+        <ExtendedButton
             variant="outline"
             onClick={() => router.push(pathConstants.selectChain)}
         >
             <img src={imageUrl} alt={networkName} className="w-5 h-5 mr-2" />
             {networkName}
-        </EnhancedButton>
+        </ExtendedButton>
     )
 }

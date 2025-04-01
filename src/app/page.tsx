@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouterWithSearchParams } from "@/hooks"
-import { Container, EnhancedButton } from "@/components"
+import { Container, ExtendedButton } from "@/components"
 import React, { FC } from "react"
 import { pathConstants } from "@/constants"
 import { generateMnemonic } from "bip39"
@@ -42,7 +42,7 @@ const Page: FC = () => {
                 </div>
                 <div className="h-12" />
                 <div className="grid gap-4 w-full">
-                    <EnhancedButton
+                    <ExtendedButton
                         size="lg"
                         className="w-full"
                         onClick={async () => {
@@ -116,15 +116,15 @@ const Page: FC = () => {
                         }}
                     >
                         Create new account
-                    </EnhancedButton>
-                    <EnhancedButton
+                    </ExtendedButton>
+                    <ExtendedButton
                         variant="outline"
                         size="lg"
                         className="w-full"
                         onClick={() => router.push(pathConstants.import)}
                     >
                         Import existing account
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </div>
             </div>
         </Container>

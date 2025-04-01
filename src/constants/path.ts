@@ -2,6 +2,8 @@ export const pathConstants = {
     default: "/",
     home: "/home",
     import: "/import",
+    importFromMnemonic: "/import/mnemonic",
+    importFromPrivateKey: "/import/private-key",
     selectChain: "/select-chain",
     adjustTokens: "/adjust-tokens",
     assets: "/assets",

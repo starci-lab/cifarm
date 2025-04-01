@@ -17,7 +17,7 @@ import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
 import { useHoneycombSendTransactionSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
 import useSWRMutation from "swr/mutation"
-import { EnhancedButton, ModalHeader } from "@/components"
+import { ExtendedButton, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -70,7 +70,7 @@ export const SignTransactionModal: FC = () => {
     const addTxHashToast = (txHash: string) => toast({
         title: "Tx hash",
         description: truncateString(txHash, 10, 4),
-        action: <EnhancedButton variant="outline" onClick={() => {
+        action: <ExtendedButton variant="outline" onClick={() => {
             window.open(explorerUrl({
                 chainKey,
                 network,
@@ -79,7 +79,7 @@ export const SignTransactionModal: FC = () => {
             }), "_blank")
         }}>
             View
-        </EnhancedButton>,
+        </ExtendedButton>,
         variant: "default",
     })
     
@@ -239,19 +239,19 @@ export const SignTransactionModal: FC = () => {
                     {renderContent()}
                 </div>
                 <DialogFooter>
-                    <EnhancedButton
+                    <ExtendedButton
                         variant="ghost"
                         onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </EnhancedButton>
-                    <EnhancedButton
+                    </ExtendedButton>
+                    <ExtendedButton
                         isLoading={isMutating}
                         onClick={() => trigger()}
                     >
                         Sign
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -1,5 +1,5 @@
 import { FunnelIcon } from "@heroicons/react/24/outline"
-import { Button, EnhancedInput } from "@/components"
+import { Button, ExtendedInput } from "@/components"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import React, { FC, useEffect, useState } from "react"
 
@@ -48,7 +48,7 @@ export const FilterBar: FC<FilterBarProps> = ({
 
     return (
         <div className="flex gap-2 w-full">
-            <EnhancedInput
+            <ExtendedInput
                 value={searchString}
                 onValueChange={(value) => setSearchString(value)}
                 placeholder="Search"

@@ -2,7 +2,7 @@
 import { MINT_AMOUNT_DISCLOSURE, MINT_DISCLOSURE, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
-import { EnhancedButton, List, ModalHeader } from "@/components"
+import { ExtendedButton, List, ModalHeader } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -54,16 +54,16 @@ export const MintModal: FC = () => {
                     />
                 </div>
                 <DialogFooter>
-                    <EnhancedButton
+                    <ExtendedButton
                         variant="ghost"
                         onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
-                    </EnhancedButton>
-                    <EnhancedButton onClick={() => mintAmountToggle(true)}>
+                    </ExtendedButton>
+                    <ExtendedButton onClick={() => mintAmountToggle(true)}>
                         Mint
-                    </EnhancedButton>
+                    </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
