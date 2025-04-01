@@ -4,11 +4,8 @@ import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
 import { FileLock2Icon } from "lucide-react"
 import React, { FC, ReactNode } from "react"
+import { ImportMethod } from "./types"
 
-export enum ImportMethod {
-    Mnemonic = "mnemonic",
-    //PrivateKey = "privateKey",
-}
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
     return (
