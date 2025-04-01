@@ -1,12 +1,12 @@
 import { GAMEPLAY_IO } from "@/app/constants"
 import { useEffect } from "react"
-import { BuyFruitMessage, useGameplayIo, EmitterEventName } from "@/hooks"
+import { BuyFruitMessage, useWs, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useBuyFruitEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
     
     useEffect(() => {
         ExternalEventEmitter.on(

@@ -1,7 +1,7 @@
 import { GAMEPLAY_IO } from "@/app/constants"
 import {
     BuyAnimalMessage,
-    useGameplayIo,
+    useWs,
     EmitterEventName,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -10,7 +10,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useBuyAnimalEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
 
     useEffect(() => {
         ExternalEventEmitter.on(

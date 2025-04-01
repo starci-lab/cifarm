@@ -1,12 +1,12 @@
 import { GAMEPLAY_IO } from "@/app/constants"
-import { EmitterEventName, MoveMessage, useGameplayIo } from "@/hooks"
+import { EmitterEventName, MoveMessage, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useMoveEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
 
     useEffect(() => {
         ExternalEventEmitter.on(

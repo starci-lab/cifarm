@@ -1,12 +1,12 @@
 import { useActionsEffects } from "./actions"
 import { useQueryEffects } from "./load"
-import { useIoEffects } from "./io"
+import { UseWsEffects } from "./ws"
 import { useStatesEffects } from "./states"
 
 export const useExternalEffects = () => {
     useQueryEffects()
     useActionsEffects()
-    useIoEffects()
+    UseWsEffects()
     useStatesEffects()
 }
         

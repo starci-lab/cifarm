@@ -1,7 +1,7 @@
 "use client"
 import { INVITE_USER_DISCLOSURE, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
 import { useGraphQLQueryUserSwr } from "@/hooks"
-import { REFERRAL_USER_ID } from "@/hooks/use-effects/referral"
+import { REFERRAL_USER_ID } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect, useState } from "react"
 import {

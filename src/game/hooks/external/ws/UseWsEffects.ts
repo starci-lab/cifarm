@@ -1,7 +1,7 @@
 import { GAMEPLAY_IO } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 import {
-    useGameplayIo,
+    useWs,
     ActionEmittedMessage,
     InventorySyncedMessage,
     PlacedItemsSyncedMessage,
@@ -12,10 +12,10 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 
-export const useIoEffects = () => {
+export const UseWsEffects = () => {
     //get the singleton instance of the thief crop mutation
     const { socket, connect } =
-    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
 
     useEffect(() => {
         // connect

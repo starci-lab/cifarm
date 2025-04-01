@@ -20,7 +20,7 @@ import {
     UpgradeModalData,
 } from "../../../types"
 import { Background, ModalBackground, ResourceLabel } from "../../elements"
-import { UpgradeBuildingMessage } from "@/hooks/io/emitter"
+import { UpgradeBuildingMessage } from "@/hooks"
 import { createMainVisual } from "@/game/tilemap"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 

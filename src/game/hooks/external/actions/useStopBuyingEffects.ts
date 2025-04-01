@@ -1,13 +1,13 @@
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { useGameplayIo, ReceiverEventName } from "@/hooks"
+import { useWs, ReceiverEventName } from "@/hooks"
 import { GAMEPLAY_IO } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useStopBuyingEffects = () => {
     //authentication useEffect
     const { socket } = useSingletonHook<
-        ReturnType<typeof useGameplayIo>
+        ReturnType<typeof useWs>
     >(GAMEPLAY_IO)
     
     useEffect(() => {

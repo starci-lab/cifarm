@@ -1,6 +1,6 @@
 import { GAMEPLAY_IO } from "@/app/constants"
 import {
-    useGameplayIo,
+    useWs,
     HelpUseHerbicideMessage,
     EmitterEventName,
 } from "@/hooks"
@@ -10,7 +10,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useHelpUseHerbicideEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
 
     useEffect(() => {
         ExternalEventEmitter.on(

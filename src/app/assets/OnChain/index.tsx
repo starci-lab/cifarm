@@ -32,7 +32,7 @@ import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { deserialize, serialize } from "@/modules/serialization"
 import { setSignTransactionModal } from "@/redux"
 import { TxResponse } from "@/modules/honeycomb"
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 
 export const OnChain: FC = () => {

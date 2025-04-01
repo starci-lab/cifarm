@@ -11,7 +11,7 @@ import {
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
 import { ModalName, SceneEventName, ExternalEventEmitter, ExternalEventName, SceneEventEmitter } from "@/game"
-import { useGameplayIo, useGraphQLMutationFollowSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams, VISIT_EVENT } from "@/hooks"
+import { useWs, useGraphQLMutationFollowSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams, VISIT_EVENT } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -53,7 +53,7 @@ export const UserCard: FC<UserCardProps> = ({
         NEIGHBORS_DISCLOSURE
     )
 
-    const { socket } = useSingletonHook<ReturnType<typeof useGameplayIo>>(
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(
         GAMEPLAY_IO
     )
 

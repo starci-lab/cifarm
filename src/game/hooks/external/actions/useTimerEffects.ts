@@ -1,12 +1,12 @@
 import { GAMEPLAY_IO } from "@/app/constants"
-import { EmitterEventName, useGameplayIo} from "@/hooks"
+import { EmitterEventName, useWs} from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 import { DisplayTimersMessage, ReceiverEventName } from "@/hooks"
 export const useTimerEffects = () => {
     const { socket } =
-               useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+               useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
 
     useEffect(() => {
         if (!socket) {

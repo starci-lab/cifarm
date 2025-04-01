@@ -2,7 +2,7 @@ import {
     useNativeCoinGeckoSWR,
     useGraphQLMutationAuthenticationSwrMutation,
     useGraphQLMutationMintOffchainTokensSwrMutation,
-    useGameplayIo,
+    useWs,
     useTransferTokenFormik,
     useTransferTokenSwrMutation,
     useHoneycombSendTransactionSwrMutation,
@@ -24,7 +24,7 @@ import {
 } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import React, { PropsWithChildren } from "react"
-import { useGraphQLMutationUpdateReferralSwrMutation } from "@/hooks/swr/graphql/mutations/useGraphQLMutationUpdateReferralSwrMutation"
+import { useGraphQLMutationUpdateReferralSwrMutation } from "@/hooks"
 
 export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
     <BaseSingletonHookProvider
@@ -63,7 +63,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_USER_SWR: useGraphQLQueryUserSwr(),
             GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION: useGraphQLQueryPlacedItemsSwrMutation(),        
             //io
-            GAMEPLAY_IO: useGameplayIo(),
+            GAMEPLAY_IO: useWs(),
         }}
     >
         {children}

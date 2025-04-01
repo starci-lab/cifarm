@@ -1,4 +1,4 @@
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks"
 import { cn } from "@/lib/utils"
 import { CopyIcon } from "lucide-react"
 import React, { FC } from "react"

@@ -3,9 +3,9 @@ import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { useAppSelector } from "@/redux"
 import { useEffect, useRef, useState } from "react"
 import { Manager, Socket } from "socket.io-client"
-import { UseIo } from "./types"
+import { UseWs } from "./types"
 
-export const useGameplayIo = (): UseIo => {
+export const useWs = (): UseWs => {
     const socket = useRef<Socket | null>(null)
     const [ , setSetup ] = useState(false)
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
@@ -20,7 +20,7 @@ export const useGameplayIo = (): UseIo => {
 
         const handleEffect = async () => {
             // create a new socket manager
-            const manager = new Manager(envConfig().ioUrl, {
+            const manager = new Manager(envConfig().wsUrl, {
                 autoConnect: false
             })
             const accessToken = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)

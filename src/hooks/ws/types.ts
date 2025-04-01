@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client"
 
-export interface UseIo {
+export interface UseWs {
   // the socket instance
   socket: Socket | null;
   // connect method

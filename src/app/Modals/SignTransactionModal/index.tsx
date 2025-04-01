@@ -28,7 +28,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 

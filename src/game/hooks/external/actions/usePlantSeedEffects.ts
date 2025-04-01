@@ -1,5 +1,5 @@
 import { GAMEPLAY_IO } from "@/app/constants"
-import { PlantSeedMessage, useGameplayIo } from "@/hooks"
+import { PlantSeedMessage, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EmitterEventName } from "@/hooks"
@@ -7,7 +7,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const usePlantSeedEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useGameplayIo>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
 
     useEffect(() => {
         ExternalEventEmitter.on(
