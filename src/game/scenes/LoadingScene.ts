@@ -109,7 +109,7 @@ export class LoadingScene extends Scene {
                 })
             } else {
                 // create jazzicon blob url
-                const imageUrl = createJazziconBlobUrl(user.id)
+                const imageUrl = createJazziconBlobUrl(user.accountAddress)
                 await loadSvgAwait({
                     key: user.id,
                     svgUrl: imageUrl,
