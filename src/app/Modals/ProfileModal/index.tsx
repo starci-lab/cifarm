@@ -20,6 +20,7 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDisclosure } from "react-use-disclosure"
+import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
 
 export const ProfileModal: FC = () => {
     const { isOpen, toggle } =
@@ -34,7 +35,14 @@ export const ProfileModal: FC = () => {
     const router = useRouterWithSearchParams()
 
     return (
-        <Dialog open={isOpen} onOpenChange={toggle}>
+        <Dialog open={isOpen} onOpenChange={(value) => {
+            toggle(value)
+            if (!value) {
+                ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
+                    modalName: ModalName.Profile,
+                })
+            }
+        }}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
