@@ -1,13 +1,18 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { TxResponse } from "@/modules/honeycomb"
+import { GraphQLResponse } from "../types"
 
 const mutation1 = gql`
   mutation ClaimHoneycombDailyReward {
     claimHoneycombDailyReward {
-      transaction
-      blockhash
-      lastValidBlockHeight
+      message
+      success
+      data {
+        transaction
+        blockhash
+        lastValidBlockHeight
+      }
     }
   }
 `
@@ -29,7 +34,7 @@ export const mutationClaimHoneycombDailyReward = async ({
 }: MutationClaimHoneycombDailyRewardParams = {}) => {
     const mutationDocument = mutationMap[query]
     return await authClient.mutate<
-    { claimHoneycombDailyReward: TxResponse }
+    { claimHoneycombDailyReward: GraphQLResponse<TxResponse> }
   >({
       mutation: mutationDocument
   })

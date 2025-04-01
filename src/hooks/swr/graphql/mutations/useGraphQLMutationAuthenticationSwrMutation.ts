@@ -40,7 +40,10 @@ export const useGraphQLMutationAuthenticationSwrMutation = (): UseSWRMutation<
                     throw new Error("No data returned from mutationRefresh")
                 }
                 //save the tokens
-                await saveTokens(mutationRefreshResponse.data.refresh)
+                if (!mutationRefreshResponse.data.refresh.data) {
+                    throw new Error("No data returned from mutationRefresh")
+                }
+                await saveTokens(mutationRefreshResponse.data.refresh.data)
                 dispatch(setAuthenticated(true))
                 return
             }
@@ -81,7 +84,10 @@ export const useGraphQLMutationAuthenticationSwrMutation = (): UseSWRMutation<
             }
 
             //save the tokens
-            await saveTokens(mutationVerifySignatureResponse.data.verifySignature)
+            if (!mutationVerifySignatureResponse.data.verifySignature.data) {
+                throw new Error("No data returned from mutationVerifySignature")
+            }   
+            await saveTokens(mutationVerifySignatureResponse.data.verifySignature.data)
             dispatch(setAuthenticated(true))
         }
     )

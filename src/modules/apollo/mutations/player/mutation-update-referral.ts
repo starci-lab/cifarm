@@ -1,10 +1,14 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams, MutationVariables } from "../../types"
+import { GraphQLResponse } from "../types"
 
 const mutation1 = gql`
   mutation UpdateReferral($request: UpdateReferralRequest!) {
-    updateReferral(request: $request)
+    updateReferral(request: $request) {
+        message
+        success
+      }
   }
 `
 
@@ -36,7 +40,7 @@ export const mutationUpdateReferral = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-    { updateReferral: null },
+    { updateReferral: GraphQLResponse },
     MutationVariables<UpdateReferralRequest>
   >({
       mutation: mutationDocument,

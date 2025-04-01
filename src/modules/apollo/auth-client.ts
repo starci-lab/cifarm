@@ -47,7 +47,10 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
                     throw new Error("Refresh token request failed")
                 }
                 // save the new tokens
-                await saveTokens(refreshResponse.data.refresh)
+                if (!refreshResponse.data.refresh.data) {
+                    throw new Error("Refresh token request failed")
+                }
+                await saveTokens(refreshResponse.data.refresh.data)
                 // retry the request
                 return forward(operation)
             }

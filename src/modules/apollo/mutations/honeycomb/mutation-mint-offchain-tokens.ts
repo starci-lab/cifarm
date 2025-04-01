@@ -6,9 +6,13 @@ import { TxResponse } from "@/modules/honeycomb"
 const mutation1 = gql`
     mutation MintOffchainTokens($request: MintOffchainTokensRequest!) {
         mintOffchainTokens(request: $request) {
-            txHash
-            blockHash
-            blockNumber
+            message
+            success
+            data {
+                txHash
+                blockHash
+                blockNumber
+            }
         }
     }
 `

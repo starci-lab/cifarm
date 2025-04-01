@@ -1,8 +1,7 @@
 import { BaseAssetKey, baseAssetMap } from "@/game/assets"
 import { DailyRewardId, DailyRewardInfo, UserSchema } from "@/modules/entities"
 import { BaseSizerBaseConstructorParams, CacheKey } from "../../../types"
-import { Background, Text, ModalBackground, XButton } from "../../elements"
-import { onGameObjectPress } from "../../utils"
+import { Background, Text, ModalBackground } from "../../elements"
 import { ClaimItem, SceneEventEmitter, SceneEventName, ModalName, ExternalEventEmitter, ExternalEventName } from "../../../events"
 import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
@@ -59,15 +58,9 @@ export class DailyContent extends BaseSizer {
                     showWrapperContainer: false,
                     showContainer: true,
                 },
-                onXButtonPress: (button: XButton) => {
-                    onGameObjectPress({
-                        gameObject: button,
-                        onPress: () => {
-                            SceneEventEmitter.emit(SceneEventName.CloseModal, {
-                                modalName: ModalName.Daily
-                            })
-                        },
-                        scene: this.scene,
+                onXButtonPress: () => {
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, {
+                        modalName: ModalName.Daily
                     })
                 },
                 title: "Daily",

@@ -1,7 +1,7 @@
 import { BaseAssetKey, baseAssetMap } from "../../../assets"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../../types"
-import { getScreenRightX, onGameObjectPress } from "../../utils"
+import { getScreenRightX } from "../../utils"
 import { XButton } from "../../elements"
 import { SceneEventEmitter, SceneEventName, CloseModalMessage, ModalName } from "../../../events"
 
@@ -27,16 +27,10 @@ export class StandHeader extends ContainerLite {
             },
             options: {
                 onPress: () => {
-                    onGameObjectPress({
-                        gameObject: this.closeButton,
-                        scene: this.scene,
-                        onPress: () => {
-                            const eventMessage: CloseModalMessage = {
-                                modalName: ModalName.Stand,
-                            }
-                            SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
-                        },
-                    })
+                    const eventMessage: CloseModalMessage = {
+                        modalName: ModalName.Stand,
+                    }
+                    SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
                 }
             }
         })

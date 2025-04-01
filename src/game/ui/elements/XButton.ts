@@ -40,7 +40,8 @@ export class XButton extends Label {
                 gameObject: this,
                 onPress,
                 scene: this.scene,
-                disableInteraction
+                disableInteraction,
+                animate: false
             })
         })
 

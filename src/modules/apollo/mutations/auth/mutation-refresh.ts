@@ -1,13 +1,18 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { noCacheClient } from "../../client"
 import { MutationParams, MutationVariables } from "../../types"
+import { GraphQLResponse } from "../types"
 
 const mutation1 = gql`
   mutation Refresh($request: RefreshRequest!) {
     refresh(request: $request) {
-      accessToken
-      refreshToken
-    }
+      success
+      message
+      data {
+        accessToken
+        refreshToken
+        }
+      }
   }
 `
 
@@ -40,7 +45,7 @@ export const mutationRefresh = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await noCacheClient.mutate<
-    { refresh: MutationRefreshResponse },
+    { refresh: GraphQLResponse<MutationRefreshResponse> },
     MutationVariables<RefreshRequest>
   >({
       mutation: mutationDocument,

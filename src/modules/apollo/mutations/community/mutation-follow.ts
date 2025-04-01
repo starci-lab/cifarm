@@ -1,10 +1,14 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams, MutationVariables } from "../../types"
+import { GraphQLResponse } from "../types"
 
 const mutation1 = gql`
     mutation Follow($request: FollowRequest!) {
-        follow(request: $request)
+        follow(request: $request) {
+            message
+            success
+        }
     }
 `
 
@@ -32,7 +36,7 @@ export const mutationFollow = async ({
     
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-        { follow: null },
+        { follow: GraphQLResponse },
         MutationVariables<FollowRequest>
     >({
         mutation: mutationDocument,
