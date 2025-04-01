@@ -203,19 +203,7 @@ export class InputTilemap extends ItemTilemap {
         )
 
         // click on empty tile to plant seed
-        this.tap = new Tap(this.scene, {
-            enable: true,
-            bounds: undefined,
-
-            time: 125,
-            tapInterval: 100,
-            threshold: 9,
-            tapOffset: 10,
-
-            taps: undefined,
-            minTaps: undefined,
-            maxTaps: undefined,
-        })
+        this.tap = new Tap(this.scene)
         this.tap.on("tap", (pointer: Phaser.Input.Pointer) => {
             if (this.cancelNextTap) {
                 this.cancelNextTap = false
