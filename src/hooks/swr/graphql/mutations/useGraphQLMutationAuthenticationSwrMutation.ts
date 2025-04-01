@@ -59,8 +59,12 @@ export const useGraphQLMutationAuthenticationSwrMutation = (): UseSWRMutation<
                 throw new Error("No data returned from mutationRequestMessage")
             }
             //sign the message
+            if (!mutationRequestMessageResponse.data.requestMessage.data) {
+                throw new Error("No data returned from mutationRequestMessage")
+            }
+            const message = mutationRequestMessageResponse.data.requestMessage.data.message
             const signature = await signMessage({
-                message: mutationRequestMessageResponse.data.requestMessage.message,
+                message,
                 publicKey,
                 privateKey,
                 chainKey,
@@ -69,7 +73,7 @@ export const useGraphQLMutationAuthenticationSwrMutation = (): UseSWRMutation<
             const mutationVerifySignatureResponse = await mutationVerifySignature(
                 {
                     request: {
-                        message: mutationRequestMessageResponse.data.requestMessage.message,
+                        message,
                         publicKey,
                         signature,
                         chainKey,
