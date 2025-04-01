@@ -96,7 +96,10 @@ export const OnChain: FC = () => {
                         if (!result.data?.claimHoneycombDailyReward) {
                             throw new Error("Failed to claim daily reward")
                         }
-                        txResponse = result.data.claimHoneycombDailyReward
+                        if (!result.data.claimHoneycombDailyReward.data) {
+                            throw new Error("Failed to claim daily reward")
+                        }
+                        txResponse = result.data.claimHoneycombDailyReward.data
                         // store the transaction in the indexedDB
                         await sessionDb.keyValueStore.put({
                             key: SessionDbKey.HoneycombDailyRewardTransaction,

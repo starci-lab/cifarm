@@ -7,12 +7,13 @@ import {
 } from "@/modules/apollo"
 import { FetchResult } from "@apollo/client"
 import { TxResponse } from "@/modules/honeycomb"
+import { GraphQLResponse } from "@/modules/apollo"
 export type UseGraphQLClaimHoneycombDailyRewardMutationArgs =
   MutationClaimHoneycombDailyRewardParams;
 
 export const useGraphQLMutationClaimHoneycombDailyRewardSwrMutation =
   (): UseSWRMutation<
-    FetchResult<{ claimHoneycombDailyReward: TxResponse }>,
+    FetchResult<{ claimHoneycombDailyReward: GraphQLResponse<TxResponse> }>,
     UseGraphQLClaimHoneycombDailyRewardMutationArgs
   > => {
       const swrMutation = useSWRMutation(
