@@ -36,6 +36,7 @@ import { useThiefFruitEffects } from "./useThiefFruitEffects"
 import { useThiefAnimalEffects } from "./useThiefAnimalEffects"
 import { useStopBuyingEffects } from "./useStopBuyingEffects"
 import { useTimerEffects } from "./useTimerEffects"
+import { useHarvestBeeHouseEffects } from "./useHarvestBeeHouseEffects"
 
 export const useActionsEffects = () => {
     useBuyCropSeedsEffects()
@@ -76,4 +77,5 @@ export const useActionsEffects = () => {
     useThiefAnimalEffects()
     useStopBuyingEffects()
     useTimerEffects()
+    useHarvestBeeHouseEffects()
 }

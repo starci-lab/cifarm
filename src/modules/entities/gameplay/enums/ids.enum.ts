@@ -176,6 +176,8 @@ export enum InventoryTypeId {
     StrawberrySeed = "strawberrySeed",
     Strawberry = "strawberry",
     StrawberryQuality = "strawberryQuality",
+    Honey = "honey",
+    HoneyQuality = "honeyQuality",
 }
 
 export enum PlacedItemTypeId {

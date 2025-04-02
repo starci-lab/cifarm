@@ -4,7 +4,7 @@ import { cropAssetMap } from "./crops"
 import {
     CropId,
     FlowerId,
-    InventoryTypeId as InventoryTypeIdImport,
+    InventoryTypeId,
     ProductId,
     SupplyId,
     ToolId,
@@ -15,19 +15,34 @@ import { supplyAssetMap } from "./supply"
 import { flowerAssetMap } from "./flowers"
 import { loadTexture } from "./utils"
 
-// Re-export the InventoryTypeId to avoid naming conflicts
-export type InventoryTypeId = InventoryTypeIdImport;
-
 export interface InventoryAssetData {
   name: string;
   base: BaseData;
 }
 
 export const inventoryTypeAssetMap: Record<
-  InventoryTypeIdImport,
+  InventoryTypeId,
   InventoryAssetData
 > = {
-    [InventoryTypeIdImport.Egg]: {
+    [InventoryTypeId.Honey]: {
+        name: "Honey",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Honey].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeId.HoneyQuality]: {
+        name: "High-Quality Honey",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.HoneyQuality].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeId.Egg]: {
         name: "Egg",
         base: {
             textureConfig: {
@@ -36,7 +51,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.EggQuality]: {
+    [InventoryTypeId.EggQuality]: {
         name: "High-Quality Egg",
         base: {
             textureConfig: {
@@ -45,7 +60,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Milk]: {
+    [InventoryTypeId.Milk]: {
         name: "Milk",
         base: {
             textureConfig: {
@@ -54,7 +69,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.MilkQuality]: {
+    [InventoryTypeId.MilkQuality]: {
         name: "Milk Quality",
         base: {
             textureConfig: {
@@ -63,7 +78,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Turnip]: {
+    [InventoryTypeId.Turnip]: {
         name: "Turnip",
         base: {
             textureConfig: {
@@ -72,7 +87,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.TurnipQuality]: {
+    [InventoryTypeId.TurnipQuality]: {
         name: "Turnip Quality",
         base: {
             textureConfig: {
@@ -81,7 +96,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.TurnipSeed]: {
+    [InventoryTypeId.TurnipSeed]: {
         name: "Turnip Seed",
         base: {
             textureConfig: (() => {
@@ -99,7 +114,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.Carrot]: {
+    [InventoryTypeId.Carrot]: {
         name: "Carrot",
         base: {
             textureConfig: {
@@ -108,7 +123,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.CarrotQuality]: {
+    [InventoryTypeId.CarrotQuality]: {
         name: "Carrot Quality",
         base: {
             textureConfig: {
@@ -117,7 +132,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.CarrotSeed]: {
+    [InventoryTypeId.CarrotSeed]: {
         name: "Carrot Seed",
         base: {
             textureConfig: (() => {
@@ -135,7 +150,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.Potato]: {
+    [InventoryTypeId.Potato]: {
         name: "Potato",
         base: {
             textureConfig: {
@@ -144,7 +159,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.PotatoQuality]: {
+    [InventoryTypeId.PotatoQuality]: {
         name: "Potato Quality",
         base: {
             textureConfig: {
@@ -153,7 +168,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.PotatoSeed]: {
+    [InventoryTypeId.PotatoSeed]: {
         name: "Potato Seed",
         base: {
             textureConfig: (() => {
@@ -171,7 +186,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.Cucumber]: {
+    [InventoryTypeId.Cucumber]: {
         name: "Cucumber",
         base: {
             textureConfig: (() => {
@@ -185,7 +200,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.CucumberQuality]: {
+    [InventoryTypeId.CucumberQuality]: {
         name: "Cucumber Quality",
         base: {
             textureConfig: {
@@ -194,7 +209,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.CucumberSeed]: {
+    [InventoryTypeId.CucumberSeed]: {
         name: "Cucumber Seed",
         base: {
             textureConfig: {
@@ -204,7 +219,7 @@ export const inventoryTypeAssetMap: Record<
         },
     },
 
-    [InventoryTypeIdImport.Pineapple]: {
+    [InventoryTypeId.Pineapple]: {
         name: "Pineapple",
         base: {
             textureConfig: {
@@ -213,7 +228,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.PineappleQuality]: {
+    [InventoryTypeId.PineappleQuality]: {
         name: "Pineapple Quality",
         base: {
             textureConfig: {
@@ -222,7 +237,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.PineappleSeed]: {
+    [InventoryTypeId.PineappleSeed]: {
         name: "Pineapple Seed",
         base: {
             textureConfig: (() => {
@@ -240,7 +255,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.Watermelon]: {
+    [InventoryTypeId.Watermelon]: {
         name: "Watermelon",
         base: {
             textureConfig: {
@@ -249,7 +264,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.WatermelonQuality]: {
+    [InventoryTypeId.WatermelonQuality]: {
         name: "Watermelon Quality",
         base: {
             textureConfig: {
@@ -258,7 +273,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.WatermelonSeed]: {
+    [InventoryTypeId.WatermelonSeed]: {
         name: "Watermelon Seed",
         base: {
             textureConfig: (() => {
@@ -272,7 +287,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.BellPepper]: {
+    [InventoryTypeId.BellPepper]: {
         name: "Bell Pepper",
         base: {
             textureConfig: {
@@ -281,7 +296,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.BellPepperQuality]: {
+    [InventoryTypeId.BellPepperQuality]: {
         name: "Bell Pepper Quality",
         base: {
             textureConfig: {
@@ -290,7 +305,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.BellPepperSeed]: {
+    [InventoryTypeId.BellPepperSeed]: {
         name: "Bell Pepper Seed",
         base: {
             textureConfig: (() => {
@@ -304,7 +319,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.Banana]: {
+    [InventoryTypeId.Banana]: {
         name: "Banana",
         base: {
             textureConfig: {
@@ -313,7 +328,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.BananaQuality]: {
+    [InventoryTypeId.BananaQuality]: {
         name: "Banana Quality",
         base: {
             textureConfig: {
@@ -322,7 +337,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Apple]: {
+    [InventoryTypeId.Apple]: {
         name: "Apple",
         base: {
             textureConfig: {
@@ -331,7 +346,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.AppleQuality]: {
+    [InventoryTypeId.AppleQuality]: {
         name: "Apple Quality",
         base: {
             textureConfig: {
@@ -340,7 +355,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Daisy]: {
+    [InventoryTypeId.Daisy]: {
         name: "Daisy",
         base: {
             textureConfig: {
@@ -349,7 +364,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.DaisyQuality]: {
+    [InventoryTypeId.DaisyQuality]: {
         name: "Daisy Quality",
         base: {
             textureConfig: {
@@ -358,7 +373,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.DaisySeed]: {
+    [InventoryTypeId.DaisySeed]: {
         name: "Daisy Seed",
         base: {
             textureConfig: (() => {
@@ -372,7 +387,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.BasicFertilizer]: {
+    [InventoryTypeId.BasicFertilizer]: {
         name: "Basic Fertilizer",
         base: {
             textureConfig: {
@@ -381,7 +396,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.AnimalFeed]: {
+    [InventoryTypeId.AnimalFeed]: {
         name: "Animal Feed",
         base: {
             textureConfig: {
@@ -390,7 +405,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.FruitFertilizer]: {
+    [InventoryTypeId.FruitFertilizer]: {
         name: "FruitFertilizer",
         base: {
             textureConfig: {
@@ -399,7 +414,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Hand]: {
+    [InventoryTypeId.Hand]: {
         name: "Hand",
         base: {
             textureConfig: {
@@ -408,7 +423,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Crate]: {
+    [InventoryTypeId.Crate]: {
         name: "Crate",
         base: {
             textureConfig: {
@@ -417,7 +432,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.WateringCan]: {
+    [InventoryTypeId.WateringCan]: {
         name: "Watering Can",
         base: {
             textureConfig: {
@@ -426,7 +441,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Herbicide]: {
+    [InventoryTypeId.Herbicide]: {
         name: "Herbicide",
         base: {
             textureConfig: {
@@ -435,7 +450,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Pesticide]: {
+    [InventoryTypeId.Pesticide]: {
         name: "Pesticide",
         base: {
             textureConfig: {
@@ -444,7 +459,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.Hammer]: {
+    [InventoryTypeId.Hammer]: {
         name: "Hammer",
         base: {
             textureConfig: {
@@ -453,7 +468,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.AnimalMedicine]: {
+    [InventoryTypeId.AnimalMedicine]: {
         name: "Animal Medicine",
         base: {
             textureConfig: {
@@ -462,7 +477,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.BugNet]: {
+    [InventoryTypeId.BugNet]: {
         name: "BugNet",
         base: {
             textureConfig: {
@@ -471,7 +486,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.StrawberrySeed]: {
+    [InventoryTypeId.StrawberrySeed]: {
         name: "Strawberry Seed",
         base: {
             textureConfig: (() => {
@@ -485,7 +500,7 @@ export const inventoryTypeAssetMap: Record<
             })(),
         },
     },
-    [InventoryTypeIdImport.Strawberry]: {
+    [InventoryTypeId.Strawberry]: {
         name: "Strawberry",
         base: {
             textureConfig: {
@@ -494,7 +509,7 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
-    [InventoryTypeIdImport.StrawberryQuality]: {
+    [InventoryTypeId.StrawberryQuality]: {
         name: "Strawberry Quality",
         base: {
             textureConfig: {
