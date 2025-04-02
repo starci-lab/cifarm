@@ -64,7 +64,12 @@ import {
     UsePesticideMessage,
     UseWateringCanMessage,
 } from "@/hooks"
-import { createMainVisual, getAssetData, getMainVisualOffsets, setTintForMainVisual } from "./utils"
+import {
+    createMainVisual,
+    getAssetData,
+    getMainVisualOffsets,
+    setTintForMainVisual,
+} from "./utils"
 import {
     BuyingModeOnMessage,
     ExternalEventName,
@@ -125,6 +130,7 @@ export class InputTilemap extends ItemTilemap {
         super(baseParams)
         // listen for place in progress event
         SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {
+            this.removeDrag(true)
             this.cancelPlacement()
         })
 
@@ -148,9 +154,9 @@ export class InputTilemap extends ItemTilemap {
         this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
         ExternalEventEmitter.on(ExternalEventName.StopBuying, () => {
+            this.removeDrag()
             this.cancelPlacement()
         })
-
         this.addInputs()
     }
 
@@ -242,10 +248,12 @@ export class InputTilemap extends ItemTilemap {
                 if (!data.object.placedItemType) {
                     throw new Error("Placed item type not found")
                 }
-                if (!checkPlacedItemTypeSellable({
-                    scene: this.scene,
-                    placedItemType: data.object.placedItemType,
-                })) {
+                if (
+                    !checkPlacedItemTypeSellable({
+                        scene: this.scene,
+                        placedItemType: data.object.placedItemType,
+                    })
+                ) {
                     const { x: tileX, y: tileY } = this.getCenterPosition({
                         x: tile.getCenterX(),
                         y: tile.getCenterY(),
@@ -258,7 +266,7 @@ export class InputTilemap extends ItemTilemap {
                             text: "Not sellable",
                             x: tileX,
                             y: tileY,
-                        }
+                        },
                     ])
                     return
                 }
@@ -303,7 +311,7 @@ export class InputTilemap extends ItemTilemap {
                 data.object.showTimer()
                 return
             }
-            
+
             switch (data.object.placedItemType.type) {
             case PlacedItemType.Tile:
                 this.handlePressOnTile({ data })
@@ -1001,8 +1009,8 @@ export class InputTilemap extends ItemTilemap {
         this.showPlacmentConfirmation({
             tile,
             onCancel: () => {
+                this.removeDrag()
                 this.cancelPlacement()
-                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
             onConfirm: async (tileX: number, tileY: number) => {
                 // show modal
@@ -1027,7 +1035,6 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyBuilding,
                         eventMessage
                     )
-                    this.cancelNextTap = true
                     break
                 }
                 case PlacedItemType.Tile: {
@@ -1048,7 +1055,6 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyTile,
                         eventMessage
                     )
-                    this.cancelNextTap = true
                     break
                 }
                 case PlacedItemType.Animal: {
@@ -1071,7 +1077,6 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyAnimal,
                         eventMessage
                     )
-                    this.cancelNextTap = true
                     break
                 }
                 case PlacedItemType.Fruit: {
@@ -1094,7 +1099,6 @@ export class InputTilemap extends ItemTilemap {
                         ExternalEventName.RequestBuyFruit,
                         eventMessage
                     )
-                    this.cancelNextTap = true
                     break
                 }
                 }
@@ -1158,19 +1162,11 @@ export class InputTilemap extends ItemTilemap {
             tile,
             onCancel: () => {
                 // cancel state by
+                this.removeDrag(true)
                 this.cancelPlacement()
-                if (!objectData.object.currentPlacedItem?.id) {
-                    throw new Error("Placed item id not found")
-                }
-                this.deleteObject(objectData.object.currentPlacedItem.id)
-                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
             onConfirm: async (tileX: number, tileY: number) => {
-                // this.movingDragSpriteData = undefined
-                if (!objectData.object.currentPlacedItem?.id) {
-                    throw new Error("Placed item id not found")
-                }
-                this.deleteObject(objectData.object.currentPlacedItem.id)
+                this.removeDrag()
                 // check if the object is same position
                 if (
                     objectData.object.currentPlacedItem?.x === tileX &&
@@ -1178,6 +1174,9 @@ export class InputTilemap extends ItemTilemap {
                 ) {
                     SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
                 } else {
+                    if (!objectData.object.currentPlacedItem) {
+                        throw new Error("Placed item not found")
+                    }
                     const moveRequest: MoveMessage = {
                         placedItemId: objectData.object.currentPlacedItem?.id,
                         position: {
@@ -1186,7 +1185,6 @@ export class InputTilemap extends ItemTilemap {
                         },
                     }
                     ExternalEventEmitter.emit(ExternalEventName.RequestMove, moveRequest)
-                    this.cancelNextTap = true
                 }
                 this.cancelPlacement()
             },
@@ -1278,7 +1276,8 @@ export class InputTilemap extends ItemTilemap {
             }
 
             const placedItemType = this.placedItemTypes.find(
-                (placedItemType) => placedItemType.id === currentPlacedItem?.placedItemType
+                (placedItemType) =>
+                    placedItemType.id === currentPlacedItem?.placedItemType
             )
             if (!placedItemType) {
                 throw new Error("Placed item type not found")
@@ -1295,7 +1294,10 @@ export class InputTilemap extends ItemTilemap {
                 if (!data.object.currentPlacedItem) {
                     throw new Error("Placed item not found")
                 }
-                const { x, y } = this.getCenteredTileCoordinates(data.object.currentPlacedItem.x, data.object.currentPlacedItem.y)
+                const { x, y } = this.getCenteredTileCoordinates(
+                    data.object.currentPlacedItem.x,
+                    data.object.currentPlacedItem.y
+                )
                 console.log(x, y)
                 const tile = this.getTileAt(x, y)
                 if (!tile) {
@@ -1315,28 +1317,34 @@ export class InputTilemap extends ItemTilemap {
                             text: "Not upgradeable",
                             x: tileX,
                             y: tileY,
-                        }
+                        },
                     ])
                     return
                 }
                 // check if the building is already at max upgrade
-                if (data.object.currentPlacedItem?.buildingInfo?.currentUpgrade === undefined) {
+                if (
+                    data.object.currentPlacedItem?.buildingInfo?.currentUpgrade ===
+              undefined
+                ) {
                     throw new Error("Building info not found")
                 }
-                if (data.object.currentPlacedItem.buildingInfo.currentUpgrade >= building.maxUpgrade) {
+                if (
+                    data.object.currentPlacedItem.buildingInfo.currentUpgrade >=
+              building.maxUpgrade
+                ) {
                     this.createFlyItems([
                         {
                             showIcon: false,
                             text: "Already at max upgrade",
                             x: tileX,
                             y: tileY,
-                        }
+                        },
                     ])
                     return
                 }
                 const upgradeModalData: UpgradeModalData = {
                     placedItem: currentPlacedItem,
-                    mapAssetData: buildingAssetMap[building.displayId].map
+                    mapAssetData: buildingAssetMap[building.displayId].map,
                 }
                 this.scene.cache.obj.add(
                     CacheKey.UpgradeModalData,
@@ -1563,10 +1571,6 @@ export class InputTilemap extends ItemTilemap {
     // method to clean up the resources
     private cancelPlacement() {
         this.showEverything()
-        if (this.dragBuyVisual) {
-            this.dragBuyVisual.destroy()
-            this.dragBuyVisual = undefined
-        }
         this.inputMode = InputMode.Normal
         if (this.placementConfirmation) {
             this.placementConfirmation.removeAll(true)
@@ -1574,6 +1578,40 @@ export class InputTilemap extends ItemTilemap {
             this.placementConfirmation = undefined
         }
         this.isDragging = false
+        this.cancelNextTap = true
+    }
+
+    private removeDrag(refresh = false) {
+        switch (this.inputMode) {
+        case InputMode.Buy: {
+            {
+                if (!this.buyingDragData) {
+                    throw new Error("Drag buy data not found")
+                }
+                this.buyingDragData = undefined
+                if (!this.dragBuyVisual) {
+                    throw new Error("Drag buy visual not found")
+                }
+                this.dragBuyVisual.destroy()
+                this.dragBuyVisual = undefined    
+                break
+            }
+        }
+        case InputMode.Move: {
+            if (!this.movingDragData) {
+                throw new Error("Moving drag data not found")
+            }
+            if (!this.movingDragData.objectData.object.currentPlacedItem?.id) {
+                throw new Error("Placed item id not found")
+            }
+            this.deleteObject(this.movingDragData.objectData.object.currentPlacedItem?.id)
+            this.movingDragData = undefined
+            if (refresh) {
+                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
+            }
+            break
+        }
+        }
     }
 
     private hasThievedPlant({ data }: HasThievedPlantParams): boolean {
@@ -1835,5 +1873,5 @@ export interface UpdatePlacedItemColorParams {
 }
 
 export interface HandlePressOnParams {
-    data: PlacedItemObjectData;
+  data: PlacedItemObjectData;
 }
