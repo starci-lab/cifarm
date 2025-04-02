@@ -21,6 +21,11 @@ const config: Phaser.Types.Core.GameConfig = {
     },
     autoMobilePipeline: true,
     powerPreference: "high-performance",
+    fps: {
+        smoothStep: true,
+        target: 60,
+        min: 60,
+    }
     dom: {
         createContainer: true
     },
