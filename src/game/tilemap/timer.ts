@@ -144,6 +144,10 @@ export const getTimer = (scene: Phaser.Scene, placedItem: PlacedItemSchema): num
               placedItem.fruitInfo.currentStageTimeElapsed
         }
     }
+    case PlacedItemType.Pet: {
+        // no execution for pet
+        return 0
+    }
     default: {
         throw new Error("Placed item type not found")
     }

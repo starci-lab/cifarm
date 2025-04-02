@@ -135,8 +135,8 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        this.updateMainVisual()
         this.timerNumber = getTimer(this.scene, placedItem)
+        this.updateMainVisual()
         switch (this.placedItemType.type) {
         case PlacedItemType.Tile: {
             this.updatePlantInfo()

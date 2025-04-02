@@ -42,6 +42,7 @@ import {
     BuyAnimalMessage,
     BuyBuildingMessage,
     BuyFruitMessage,
+    BuyPetMessage,
     BuyTileMessage,
     HarvestAnimalMessage,
     HarvestBeeHouseMessage,
@@ -1082,6 +1083,28 @@ export class InputTilemap extends ItemTilemap {
                     }
                     ExternalEventEmitter.emit(
                         ExternalEventName.RequestBuyAnimal,
+                        eventMessage
+                    )
+                    break
+                }
+                case PlacedItemType.Pet: {
+                    const pet = this.pets.find(
+                        (pet) => pet.id === placedItemType.pet
+                    )
+                    if (!pet) {
+                        throw new Error(
+                            `Pet not found for id: ${placedItemType.pet}`
+                        )
+                    }
+                    const eventMessage: BuyPetMessage = {
+                        petId: pet.displayId,
+                        position: {
+                            x: tileX,
+                            y: tileY,
+                        },
+                    }
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestBuyPet,
                         eventMessage
                     )
                     break

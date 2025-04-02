@@ -57,3 +57,10 @@ export enum PlantType {
     Crop = "crop",
     Flower = "flower"
 }
+
+// Pet Type Enum
+export enum PetType {
+    Dog = "dog",
+    Cat = "cat"
+}
+

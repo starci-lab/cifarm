@@ -7,11 +7,13 @@ import {
     animalAssetMap,
     fruitAssetMap,
     AnimalAge,
+    petAssetMap,
 } from "../assets"
 import {
     AnimalSchema,
     BuildingSchema,
     FruitSchema,
+    PetSchema,
     PlacedItemType,
     PlacedItemTypeSchema,
     TileSchema,
@@ -180,6 +182,21 @@ export const getAssetData = ({
             throw new Error("Fruit not found")
         }
         return fruitAssetMap[fruit.displayId].map[fruitStage ?? 0]
+    }
+    case PlacedItemType.Pet: {
+        if (!placedItemType.pet) {
+            throw new Error("Pet ID not found")
+        }
+        const pets = scene.cache.obj.get(
+            CacheKey.Pets
+        ) as Array<PetSchema>
+        const pet = pets.find(
+            (pet) => pet.id === placedItemType.pet
+        )
+        if (!pet) {
+            throw new Error("Pet not found")
+        }
+        return petAssetMap[pet.displayId].map
     }
     }
 }
