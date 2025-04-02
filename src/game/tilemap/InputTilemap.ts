@@ -130,7 +130,7 @@ export class InputTilemap extends ItemTilemap {
         super(baseParams)
         // listen for place in progress event
         SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {      
-            this.cancelPlacement()
+            this.cancelPlacement(true)
         })
 
         SceneEventEmitter.on(
@@ -1566,7 +1566,7 @@ export class InputTilemap extends ItemTilemap {
     }
 
     // method to clean up the resources
-    private cancelPlacement() {
+    private cancelPlacement(fromOtherScene = false) {
         switch (this.inputMode) {
         case InputMode.Buy: {
             {
@@ -1577,7 +1577,9 @@ export class InputTilemap extends ItemTilemap {
                     }
                     this.dragBuyVisual.destroy()
                     this.dragBuyVisual = undefined    
-                    //this.cancelNextTap = true
+                    if (!fromOtherScene) {
+                        this.cancelNextTap = true
+                    }
                 }               
                 break
             }
@@ -1589,13 +1591,17 @@ export class InputTilemap extends ItemTilemap {
                 }
                 this.deleteObject(this.movingDragData.objectData.object.currentPlacedItem?.id)
                 this.movingDragData = undefined
-                this.cancelNextTap = true
+                if (!fromOtherScene) {
+                    this.cancelNextTap = true
+                }
                 SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             }      
             break
         }
         case InputMode.Sell: {
-            //this.cancelNextTap = true
+            if (!fromOtherScene) {
+                this.cancelNextTap = true
+            }
             break
         }
         }
