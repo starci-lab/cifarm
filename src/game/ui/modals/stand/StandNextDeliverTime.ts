@@ -1,7 +1,7 @@
 import { Text, TextColor } from "../../elements"
 import { SizerBaseConstructorParams } from "../../../types"
 import { Sizer } from "phaser3-rex-plugins/templates/ui/ui-components"
-import { getNextDayMidnightUtc, getNowUtc, formatTime } from "@/modules/common"
+import { formatTime, getNextMinuteCronExecution } from "@/modules/common"
 
 export class StandNextDeliverTime extends Sizer {
     private nextDeliverTimeText: Text
@@ -10,9 +10,7 @@ export class StandNextDeliverTime extends Sizer {
     
     //secondly update
     private updateNextDeliverTime() {
-        const now = getNowUtc()
-        const nextDeliverTime = getNextDayMidnightUtc() 
-        const diff = nextDeliverTime.diff(now, "seconds")
+        const diff = getNextMinuteCronExecution() 
         this.timeText.setText(formatTime(diff))
     }
 
