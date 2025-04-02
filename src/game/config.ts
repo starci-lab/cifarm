@@ -19,6 +19,8 @@ const config: Phaser.Types.Core.GameConfig = {
         width: 1080,
         height: 1920,
     },
+    autoMobilePipeline: true,
+    powerPreference: "high-performance",
     dom: {
         createContainer: true
     },
