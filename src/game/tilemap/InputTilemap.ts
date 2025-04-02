@@ -1581,7 +1581,7 @@ export class InputTilemap extends ItemTilemap {
         this.cancelNextTap = true
     }
 
-    private removeDrag(refresh = false) {
+    private removeDrag(refreshIfMoving = false) {
         switch (this.inputMode) {
         case InputMode.Buy: {
             {
@@ -1606,7 +1606,7 @@ export class InputTilemap extends ItemTilemap {
             }
             this.deleteObject(this.movingDragData.objectData.object.currentPlacedItem?.id)
             this.movingDragData = undefined
-            if (refresh) {
+            if (refreshIfMoving) {
                 SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             }
             break
