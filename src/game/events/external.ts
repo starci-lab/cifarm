@@ -138,9 +138,10 @@ export enum ExternalEventName {
     AssetsLoaded = "assets_loaded",
     // visit, from React to Phaser
     Visit = "visit",
-
     // stop buying, from React to Phaser
     StopBuying = "stop_buying",
+    // request to thief bee house, from React to Phaser
+    RequestThiefBeeHouse = "request_thief_bee_house",
 
     // sync placed items, from React to Phaser
     RequestDisplayTimers = "request_display_timers",

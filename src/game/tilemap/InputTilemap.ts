@@ -55,6 +55,7 @@ import {
     MoveMessage,
     PlantSeedMessage,
     ThiefAnimalMessage,
+    ThiefBeeHouseMessage,
     ThiefFruitMessage,
     ThiefPlantMessage,
     UseAnimalFeedMessage,
@@ -83,6 +84,7 @@ import {
 import { ExternalEventEmitter } from "../events"
 import { gameplayDepth } from "../depth"
 import { checkPlacedItemTypeSellable } from "../logic"
+import { LayerName } from "./types"
 
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
@@ -131,8 +133,10 @@ export class InputTilemap extends ItemTilemap {
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
         // listen for place in progress event
-        SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {      
-            this.cancelPlacement(true)
+        SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {
+            this.cancelPlacement({
+                fromOtherScene: true,
+            })
         })
 
         SceneEventEmitter.on(
@@ -155,7 +159,9 @@ export class InputTilemap extends ItemTilemap {
         this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
         ExternalEventEmitter.on(ExternalEventName.StopBuying, () => {
-            this.cancelPlacement()
+            this.cancelPlacement({
+                fromOtherScene: true,
+            })
         })
         this.addInputs()
     }
@@ -1009,7 +1015,9 @@ export class InputTilemap extends ItemTilemap {
         this.showPlacmentConfirmation({
             tile,
             onCancel: () => {
-                this.cancelPlacement()
+                this.cancelPlacement({
+                    notSync: true,
+                })
             },
             onConfirm: async (tileX: number, tileY: number) => {
                 // show modal
@@ -1161,7 +1169,9 @@ export class InputTilemap extends ItemTilemap {
             tile,
             onCancel: () => {
                 // cancel state by
-                this.cancelPlacement()
+                this.cancelPlacement({
+                    notSync: true,
+                })
                 SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
             onConfirm: async (tileX: number, tileY: number) => {
@@ -1184,7 +1194,9 @@ export class InputTilemap extends ItemTilemap {
                         },
                     }
                     ExternalEventEmitter.emit(ExternalEventName.RequestMove, moveRequest)
-                    this.cancelPlacement()
+                    this.cancelPlacement({
+                        notSync: true,
+                    })
                 }
             },
         })
@@ -1301,44 +1313,44 @@ export class InputTilemap extends ItemTilemap {
                     return
                 }
                 if (watchingUser) {
-                    // if (
-                    //     !this.thiefFruitQuantityReactMinimum({
-                    //         data,
-                    //     })
-                    // ) {
-                    //     return
-                    // }
-                    // if (
-                    //     !this.hasThievedFruit({
-                    //         data,
-                    //     })
-                    // ) {
-                    //     return
-                    // }
-                    // if (
-                    //     !this.energyNotEnough({
-                    //         data,
-                    //         actionEnergy: this.activities.thiefFruit.energyConsume,
-                    //     })
-                    // ) {
-                    //     return
-                    // }
-                    // // emit the event to water the plant
-                    // // emit the event to plant seed
-                    // const eventMessage: ThiefFruitMessage = {
-                    //     placedItemFruitId: placedItemId,
-                    // }
-                    // ExternalEventEmitter.emit(
-                    //     ExternalEventName.RequestThiefFruit,
-                    //     eventMessage
-                    // )
-                    // object.setIsPressedForAction()
+                    if (
+                        !this.thiefBeeHouseQuantityReactMinimum({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
+                        !this.hasThievedBeeHouse({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.thiefBeeHouse.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    // emit the event to water the plant
+                    // emit the event to plant seed
+                    const eventMessage: ThiefBeeHouseMessage = {
+                        placedItemBuildingId: placedItemId,
+                    }
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestThiefBeeHouse,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
                 } else {
                     // emit the event to water the plant
                     if (
                         !this.energyNotEnough({
                             data,
-                            actionEnergy: this.activities.harvestFruit.energyConsume,
+                            actionEnergy: this.activities.harvestBeeHouse.energyConsume,
                         })
                     ) {
                         return
@@ -1634,7 +1646,10 @@ export class InputTilemap extends ItemTilemap {
     }
 
     // method to clean up the resources
-    private cancelPlacement(fromOtherScene = false) {
+    private cancelPlacement({
+        fromOtherScene = false,
+        notSync = false,
+    }: CancelPlacementParams = {}) {
         switch (this.inputMode) {
         case InputMode.Buy: {
             {
@@ -1644,11 +1659,11 @@ export class InputTilemap extends ItemTilemap {
                         throw new Error("Drag buy visual not found")
                     }
                     this.dragBuyVisual.destroy()
-                    this.dragBuyVisual = undefined    
+                    this.dragBuyVisual = undefined
                     if (!fromOtherScene) {
                         this.cancelNextTap = true
                     }
-                }               
+                }
                 break
             }
         }
@@ -1657,18 +1672,25 @@ export class InputTilemap extends ItemTilemap {
                 if (!this.movingDragData.objectData.object.currentPlacedItem?.id) {
                     throw new Error("Placed item id not found")
                 }
-                this.deleteObject(this.movingDragData.objectData.object.currentPlacedItem?.id)
+                this.deleteObject(
+                    this.movingDragData.objectData.object.currentPlacedItem?.id
+                )
                 this.movingDragData = undefined
                 if (!fromOtherScene) {
                     this.cancelNextTap = true
                 }
-                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
-            }      
+                if (!notSync) {
+                    SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
+                }
+            }
             break
         }
         case InputMode.Sell: {
             if (!fromOtherScene) {
                 this.cancelNextTap = true
+            }
+            if (!notSync) {
+                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             }
             break
         }
@@ -1687,7 +1709,9 @@ export class InputTilemap extends ItemTilemap {
         if (
             data.object.currentPlacedItem?.plantInfo?.thieves.includes(this.user.id)
         ) {
-            const position = data.object.getCenter()
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
             this.createFlyItems([
                 {
                     showIcon: false,
@@ -1707,7 +1731,9 @@ export class InputTilemap extends ItemTilemap {
         if (
             data.object.currentPlacedItem?.animalInfo?.thieves.includes(this.user.id)
         ) {
-            const position = data.object.getCenter()
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
             this.createFlyItems([
                 {
                     showIcon: false,
@@ -1725,7 +1751,31 @@ export class InputTilemap extends ItemTilemap {
         if (
             data.object.currentPlacedItem?.fruitInfo?.thieves.includes(this.user.id)
         ) {
-            const position = data.object.getCenter()
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
+            this.createFlyItems([
+                {
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
+                    text: "You are already thieved",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+
+    private hasThievedBeeHouse({ data }: HasThievedBeeHouseParams): boolean {
+        if (
+            data.object.currentPlacedItem?.beeHouseInfo?.thieves.includes(
+                this.user.id
+            )
+        ) {
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
             this.createFlyItems([
                 {
                     showIcon: false,
@@ -1765,7 +1815,23 @@ export class InputTilemap extends ItemTilemap {
             plant.minHarvestQuantity >=
       (data.object?.currentPlacedItem?.plantInfo?.harvestQuantityRemaining || 0)
         ) {
-            const position = data.object.getCenter()
+            if (!data.object.placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            if (!data.object.currentPlacedItem) {
+                throw new Error("Placed item not found")
+            }
+            const tile = this.getTileCenteredAt({
+                tileX: data.object.currentPlacedItem.x,
+                tileY: data.object.currentPlacedItem.y,
+                layer: LayerName.Ground,
+            })
+            if (!tile) {
+                throw new Error("Tile not found")
+            }
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
             this.createFlyItems([
                 {
                     x: position.x,
@@ -1801,7 +1867,40 @@ export class InputTilemap extends ItemTilemap {
             animal.minHarvestQuantity >=
       data.object.currentPlacedItem.animalInfo.harvestQuantityRemaining
         ) {
-            const position = data.object.getCenter()
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
+            this.createFlyItems([
+                {
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
+                    text: "Minimum quantity reached",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+
+    private thiefBeeHouseQuantityReactMinimum({
+        data,
+    }: ThiefBeeHouseQuantityReactMinimumParams): boolean {
+        if (!data.object.currentPlacedItem?.beeHouseInfo?.harvestQuantityMin) {
+            throw new Error("Harvest quantity min not found")
+        }
+        if (
+            !data.object.currentPlacedItem?.beeHouseInfo?.harvestQuantityRemaining
+        ) {
+            throw new Error("Harvest quantity remaining not found")
+        }
+        if (
+            data.object.currentPlacedItem.beeHouseInfo.harvestQuantityRemaining <=
+      data.object.currentPlacedItem.beeHouseInfo.harvestQuantityMin
+        ) {
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
             this.createFlyItems([
                 {
                     showIcon: false,
@@ -1838,7 +1937,9 @@ export class InputTilemap extends ItemTilemap {
             fruit.minHarvestQuantity >=
       data.object.currentPlacedItem.fruitInfo.harvestQuantityRemaining
         ) {
-            const position = data.object.getCenter()
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
             this.createFlyItems([
                 {
                     showIcon: false,
@@ -1857,7 +1958,15 @@ export class InputTilemap extends ItemTilemap {
         actionEnergy = 0,
     }: EnergyNotEnoughParams): boolean {
         if (this.user.energy < actionEnergy) {
-            const position = data.object.getCenter()
+            if (!data.object.placedItemType) {
+                throw new Error("Placed item type not found")
+            }
+            if (!data.object.currentPlacedItem) {
+                throw new Error("Placed item not found")
+            }
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
             this.createFlyItems([
                 {
                     iconAssetKey:
@@ -1942,5 +2051,18 @@ export interface UpdatePlacedItemColorParams {
 }
 
 export interface HandlePressOnParams {
+  data: PlacedItemObjectData;
+}
+
+export interface CancelPlacementParams {
+  fromOtherScene?: boolean;
+  notSync?: boolean;
+}
+
+export interface ThiefBeeHouseQuantityReactMinimumParams {
+  data: PlacedItemObjectData;
+}
+
+export interface HasThievedBeeHouseParams {
   data: PlacedItemObjectData;
 }

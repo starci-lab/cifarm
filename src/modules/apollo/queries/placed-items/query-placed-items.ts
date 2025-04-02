@@ -34,6 +34,7 @@ const query1 = gql`
         harvestQuantityRemaining
         isQuality
         harvestQuantityDesired
+        harvestQuantityMin
       }
       animalInfo {
         currentGrowthTime

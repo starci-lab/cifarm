@@ -33,6 +33,8 @@ export interface Activities {
   helpUseBugNet: ActivityInfo
   harvestFruit: ActivityInfo
   thiefFruit: ActivityInfo
+  harvestBeeHouse: ActivityInfo
+  thiefBeeHouse: ActivityInfo
 }
 
 export interface CropInfo {

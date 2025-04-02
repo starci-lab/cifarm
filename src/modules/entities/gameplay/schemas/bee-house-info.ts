@@ -7,6 +7,7 @@ export interface BeeHouseInfoSchema extends AbstractSchema {
     currentState: BeeHouseCurrentState
     thieves: Array<string>  
     harvestQuantityRemaining?: number
+    harvestQuantityMin?: number
     harvestQuantityDesired?: number
     isQuality?: boolean
 }

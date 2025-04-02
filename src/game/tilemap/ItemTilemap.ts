@@ -11,6 +11,7 @@ import {
     HarvestFruitData,
     HarvestPlantData,
     ThiefAnimalData,
+    ThiefBeeHouse,
     ThiefFruitData,
     ThiefPlantData,
 } from "@/hooks"
@@ -1012,7 +1013,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 showIcon: false,
                                 x: position.x,
                                 y: position.y,
-                                text: "Failed to " + ActionName.HelpUseBugNet,
+                                text: "Failed to help use bug net",
                             },
                         ])
                     }
@@ -1041,7 +1042,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 showIcon: false,
                                 x: position.x,
                                 y: position.y,
-                                text: "Failed to " + ActionName.UseFruitFertilizer,
+                                text: "Failed to use fruit fertilizer",
                             },
                         ])
                     }
@@ -1085,7 +1086,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 showIcon: false,
                                 x: position.x,
                                 y: position.y,
-                                text: "Failed to " + ActionName.UpgradeBuilding,
+                                text: "Failed to upgrade building",
                             },
                         ])
                     }
@@ -1133,7 +1134,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
                                 x: position.x,
                                 y: position.y,
-                                quantity: -this.activities.harvestAnimal.energyConsume,
+                                quantity: -this.activities.harvestBeeHouse.energyConsume,
                             },
                             {
                                 iconAssetKey:
@@ -1155,7 +1156,53 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 showIcon: false,
                                 x: position.x,
                                 y: position.y,
-                                text: "Failed to " + ActionName.HarvestAnimal,
+                                text: "Failed to harvest bee house",
+                            },
+                        ])
+                    }
+                    break
+                }
+                case ActionName.ThiefBeeHouse: {
+                    if (data.success) {
+                        const { quantity, productId } = data.data as ThiefBeeHouse
+                        const product = this.products.find(
+                            (product) => product.id === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
+
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.thiefBeeHouse.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: this.activities.thiefBeeHouse.experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to thief bee house",
                             },
                         ])
                     }

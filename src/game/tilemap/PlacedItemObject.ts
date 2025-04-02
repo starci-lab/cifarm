@@ -927,24 +927,22 @@ export class PlacedItemObject extends ContainerLite {
                         expand: false,
                     })
                     .layout()
-            }
-        } else if (
-            this.currentPlacedItem?.beeHouseInfo?.currentState ===
-          BeeHouseCurrentState.Yield &&
-        this.currentPlacedItem?.beeHouseInfo?.harvestQuantityRemaining !==
-          this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining
-        ) {
-            if (!this.quantityText) {
-                throw new Error("Quantity text not found")
-            }
-            this.quantityText
-                .setText(
-                    `${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0}/${
-                        this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0
-                    }`
-                )
-                .setDepth(this.depth + 31)
-        } else {
+            } else if (
+                this.currentPlacedItem?.beeHouseInfo?.harvestQuantityRemaining !==
+                this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining
+            ) {
+                if (!this.quantityText) {
+                    throw new Error("Quantity text not found")
+                }
+                this.quantityText
+                    .setText(
+                        `${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0}/${
+                            this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0
+                        }`
+                    )
+                    .setDepth(this.depth + 31)
+            } 
+        }else {
             // if bubble state is present, remove it
             if (this.bubbleState) {
                 this.bubbleState.removeAll(true)

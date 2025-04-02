@@ -51,7 +51,9 @@ export enum EmitterEventName {
   HarvestBeeHouse = "harvest_bee_house",
   Return = "return",
   Visit = "visit",
+  ThiefBeeHouse = "thief_bee_house",
   RequestDisplayTimers = "request_display_timers",
+
 }
 
 export interface BuySuppliesMessage {
@@ -215,3 +217,8 @@ export interface UpgradeBuildingMessage {
 export interface HarvestBeeHouseMessage {
   placedItemBuildingId: string;
 }
+
+export interface ThiefBeeHouseMessage {
+  placedItemBuildingId: string;
+}
+

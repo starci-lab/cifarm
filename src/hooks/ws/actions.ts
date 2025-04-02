@@ -88,6 +88,11 @@ export interface HarvestBeeHouse {
   productId: string;
 }
 
+export interface ThiefBeeHouse {
+  quantity: number;
+  productId: string;
+}
+
 export interface HarvestFruitData {
   quantity: number;
   productId: string;

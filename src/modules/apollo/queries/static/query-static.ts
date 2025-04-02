@@ -112,6 +112,14 @@ const query = gql`
         experiencesGain
         energyConsume
       }
+      harvestBeeHouse {
+        experiencesGain
+        energyConsume
+      }
+      thiefBeeHouse {
+        experiencesGain
+        energyConsume
+      }
     }
     defaultInfo {
       golds
