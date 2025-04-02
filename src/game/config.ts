@@ -25,7 +25,7 @@ const config: Phaser.Types.Core.GameConfig = {
         smoothStep: true,
         target: 60,
         min: 60,
-    }
+    },
     dom: {
         createContainer: true
     },
