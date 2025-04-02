@@ -1169,20 +1169,7 @@ export abstract class ItemTilemap extends GroundTilemap {
             if (
                 !checkedPreviousPlacedItems.some((item) => item.id === placedItem.id)
             ) {
-                console.log(
-                    `Removing item ${placedItem.id} at ${placedItem.x},${placedItem.y}`
-                )
-                // remove the object from the item layer
-                this.itemLayer.objects = this.itemLayer.objects.filter(
-                    (object) => object.name !== placedItem.id
-                )
-                // remove the object from the tilemap
-                const object = this.placedItemObjectMap[placedItem.id]?.object
-                if (!object) {
-                    throw new Error("Object not found")
-                }
-                object.clear(true)
-                object.destroy()
+                this.deleteObject(placedItem.id)
             }
         }
     }

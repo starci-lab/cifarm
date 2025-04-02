@@ -65,6 +65,7 @@ export class SellContent extends BaseSizer {
                         ExternalEventEmitter.emit(ExternalEventName.RequestSell, {
                             placedItemId: this.placedItem.id,
                         })
+                        SceneEventEmitter.emit(SceneEventName.NormalModeOn)
                     },
                 },
                 onXButtonPress: () => {

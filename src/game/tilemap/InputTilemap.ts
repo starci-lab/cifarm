@@ -129,8 +129,7 @@ export class InputTilemap extends ItemTilemap {
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
         // listen for place in progress event
-        SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {
-            this.removeDrag(true)
+        SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {      
             this.cancelPlacement()
         })
 
@@ -154,7 +153,6 @@ export class InputTilemap extends ItemTilemap {
         this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
         ExternalEventEmitter.on(ExternalEventName.StopBuying, () => {
-            this.removeDrag()
             this.cancelPlacement()
         })
         this.addInputs()
@@ -1009,7 +1007,6 @@ export class InputTilemap extends ItemTilemap {
         this.showPlacmentConfirmation({
             tile,
             onCancel: () => {
-                this.removeDrag()
                 this.cancelPlacement()
             },
             onConfirm: async (tileX: number, tileY: number) => {
@@ -1162,16 +1159,16 @@ export class InputTilemap extends ItemTilemap {
             tile,
             onCancel: () => {
                 // cancel state by
-                this.removeDrag(true)
                 this.cancelPlacement()
+                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
             },
             onConfirm: async (tileX: number, tileY: number) => {
-                this.removeDrag()
                 // check if the object is same position
                 if (
                     objectData.object.currentPlacedItem?.x === tileX &&
           objectData.object.currentPlacedItem?.y === tileY
                 ) {
+                    this.cancelPlacement()
                     SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
                 } else {
                     if (!objectData.object.currentPlacedItem) {
@@ -1185,8 +1182,8 @@ export class InputTilemap extends ItemTilemap {
                         },
                     }
                     ExternalEventEmitter.emit(ExternalEventName.RequestMove, moveRequest)
+                    this.cancelPlacement()
                 }
-                this.cancelPlacement()
             },
         })
 
@@ -1570,48 +1567,46 @@ export class InputTilemap extends ItemTilemap {
 
     // method to clean up the resources
     private cancelPlacement() {
-        this.showEverything()
+        switch (this.inputMode) {
+        case InputMode.Buy: {
+            {
+                if (this.buyingDragData) {
+                    this.buyingDragData = undefined
+                    if (!this.dragBuyVisual) {
+                        throw new Error("Drag buy visual not found")
+                    }
+                    this.dragBuyVisual.destroy()
+                    this.dragBuyVisual = undefined    
+                    //this.cancelNextTap = true
+                }               
+                break
+            }
+        }
+        case InputMode.Move: {
+            if (this.movingDragData) {
+                if (!this.movingDragData.objectData.object.currentPlacedItem?.id) {
+                    throw new Error("Placed item id not found")
+                }
+                this.deleteObject(this.movingDragData.objectData.object.currentPlacedItem?.id)
+                this.movingDragData = undefined
+                this.cancelNextTap = true
+                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
+            }      
+            break
+        }
+        case InputMode.Sell: {
+            //this.cancelNextTap = true
+            break
+        }
+        }
         this.inputMode = InputMode.Normal
+        this.showEverything()
         if (this.placementConfirmation) {
             this.placementConfirmation.removeAll(true)
             this.placementConfirmation.destroy()
             this.placementConfirmation = undefined
         }
         this.isDragging = false
-        this.cancelNextTap = true
-    }
-
-    private removeDrag(refreshIfMoving = false) {
-        switch (this.inputMode) {
-        case InputMode.Buy: {
-            {
-                if (!this.buyingDragData) {
-                    throw new Error("Drag buy data not found")
-                }
-                this.buyingDragData = undefined
-                if (!this.dragBuyVisual) {
-                    throw new Error("Drag buy visual not found")
-                }
-                this.dragBuyVisual.destroy()
-                this.dragBuyVisual = undefined    
-                break
-            }
-        }
-        case InputMode.Move: {
-            if (!this.movingDragData) {
-                throw new Error("Moving drag data not found")
-            }
-            if (!this.movingDragData.objectData.object.currentPlacedItem?.id) {
-                throw new Error("Placed item id not found")
-            }
-            this.deleteObject(this.movingDragData.objectData.object.currentPlacedItem?.id)
-            this.movingDragData = undefined
-            if (refreshIfMoving) {
-                SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
-            }
-            break
-        }
-        }
     }
 
     private hasThievedPlant({ data }: HasThievedPlantParams): boolean {

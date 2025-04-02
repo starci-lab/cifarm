@@ -149,3 +149,8 @@ export interface RequestToolbarInventoryIndexMessage {
 export interface ToolbarInventoryIndexResponsedMessage {
     index: number;
 }
+
+export interface NormalModeOnMessage {
+    refresh?: boolean;
+    cancelNextTap?: boolean;
+}
