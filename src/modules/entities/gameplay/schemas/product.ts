@@ -10,4 +10,5 @@ export interface ProductSchema extends StaticAbstractSchema<ProductId> {
     animal: string
     fruit: string
     flower: string
+    building: string
 }

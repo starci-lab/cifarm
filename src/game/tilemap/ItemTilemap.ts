@@ -7,6 +7,7 @@ import {
     DisplayTimersMessage,
     EmitActionPayload,
     HarvestAnimalData,
+    HarvestBeeHouse,
     HarvestFruitData,
     HarvestPlantData,
     ThiefAnimalData,
@@ -17,6 +18,7 @@ import { formatTime, sleep } from "@/modules/common"
 import {
     Activities,
     AnimalSchema,
+    BuildingKind,
     BuildingSchema,
     CropSchema,
     FlowerSchema,
@@ -1084,6 +1086,76 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 text: "Failed to " + ActionName.UpgradeBuilding,
+                            },
+                        ])
+                    }
+                    break
+                }
+                case ActionName.HarvestBeeHouse: {
+                    if (data.success) {
+                        const { quantity, productId } = data.data as HarvestBeeHouse
+                        const product = this.products.find(
+                            (product) => product.id === productId
+                        )
+                        if (!product) {
+                            throw new Error("Product not found")
+                        }
+                        let experiencesGain = 0
+                        switch (product.type) {
+                        case ProductType.BeeHouse: {
+                            const building = this.buildings.find(
+                                (building) => building.id === product.building
+                            )
+                            if (!building) {
+                                throw new Error("Building not found")
+                            }
+                            if (building.kind !== BuildingKind.BeeHouse) {
+                                throw new Error("Building kind not found")
+                            }
+                            if (!building.beeHouseBasicHarvestExperiences) {
+                                throw new Error("Basic harvest experiences not found")
+                            }
+                            if (!building.beeHouseQualityHarvestExperiences) {
+                                throw new Error("Quality harvest experiences not found")
+                            }
+                            experiencesGain = product.isQuality
+                                ? building.beeHouseQualityHarvestExperiences
+                                : building.beeHouseBasicHarvestExperiences
+                            break
+                        }
+                        }
+                        const assetKey =
+                productAssetMap[product.displayId].base.textureConfig.key
+
+                        this.createFlyItems([
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -this.activities.harvestAnimal.energyConsume,
+                            },
+                            {
+                                iconAssetKey:
+                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: experiencesGain,
+                            },
+                            {
+                                iconAssetKey: assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to " + ActionName.HarvestAnimal,
                             },
                         ])
                     }

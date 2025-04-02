@@ -1,4 +1,4 @@
-import { GAMEPLAY_IO } from "@/app/constants"
+import { WS } from "@/app/constants"
 import { BuyToolMessage, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
@@ -7,7 +7,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useBuyToolEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         socket?.on(ReceiverEventName.ToolBought, () => {

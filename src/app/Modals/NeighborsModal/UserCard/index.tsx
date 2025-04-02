@@ -6,7 +6,7 @@ import {
     GOLD_IMAGE_URL,
     NEIGHBORS_DISCLOSURE,
     WARNING_DISCLOSURE,
-    GAMEPLAY_IO,
+    WS,
 } from "@/app/constants"
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
@@ -54,7 +54,7 @@ export const UserCard: FC<UserCardProps> = ({
     )
 
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(
-        GAMEPLAY_IO
+        WS
     )
 
     const { open: openWarningModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(

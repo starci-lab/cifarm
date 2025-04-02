@@ -1,4 +1,4 @@
-import { GAMEPLAY_IO } from "@/app/constants"
+import { WS } from "@/app/constants"
 import { BuyFlowerSeedsMessage, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
@@ -7,7 +7,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useBuyFlowerSeedsEffects = () => {
     //get the singleton instance of the buy seeds mutation
-    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         socket?.on(ReceiverEventName.FlowerSeedsBought, () => {

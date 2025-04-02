@@ -48,6 +48,7 @@ export enum EmitterEventName {
   UseFertilizer = "use_fertilizer",
   Sell = "sell",
   UpgradeBuilding = "upgrade_building",
+  HarvestBeeHouse = "harvest_bee_house",
   Return = "return",
   Visit = "visit",
   RequestDisplayTimers = "request_display_timers",
@@ -211,3 +212,6 @@ export interface UpgradeBuildingMessage {
   placedItemBuildingId: string;
 }
 
+export interface HarvestBeeHouseMessage {
+  placedItemBuildingId: string;
+}

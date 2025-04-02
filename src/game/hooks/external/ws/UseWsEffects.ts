@@ -1,4 +1,4 @@
-import { GAMEPLAY_IO } from "@/app/constants"
+import { WS } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 import {
     useWs,
@@ -15,7 +15,7 @@ import { useEffect } from "react"
 export const UseWsEffects = () => {
     //get the singleton instance of the thief crop mutation
     const { socket, connect } =
-    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         // connect

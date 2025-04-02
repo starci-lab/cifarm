@@ -4,7 +4,7 @@ export enum ProductType {
     Crop = "crop",
     Fruit = "fruit",
     Flower = "flower",
-    Honey = "honey",
+    BeeHouse = "beeHouse",
 }
 
 // Animal Type Enum

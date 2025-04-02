@@ -16,6 +16,7 @@ import {
     AbstractPlantSchema,
     PlantType,
     Position,
+    BeeHouseCurrentState,
 } from "@/modules/entities"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
@@ -43,6 +44,7 @@ import {
     BuyFruitMessage,
     BuyTileMessage,
     HarvestAnimalMessage,
+    HarvestBeeHouseMessage,
     HarvestFruitMessage,
     HarvestPlantMessage,
     HelpUseAnimalMedicineMessage,
@@ -1236,6 +1238,10 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Invalid placed item type")
         }
 
+        const watchingUser = this.scene.cache.obj.get(
+            CacheKey.WatchingUser
+        ) as UserSchema
+
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
@@ -1287,6 +1293,68 @@ export class InputTilemap extends ItemTilemap {
             }
             // check if tool id is water can
             switch (tool.displayId) {
+            case ToolId.Crate: {
+                if (
+                    currentPlacedItem.beeHouseInfo?.currentState !==
+              BeeHouseCurrentState.Yield
+                ) {
+                    return
+                }
+                if (watchingUser) {
+                    // if (
+                    //     !this.thiefFruitQuantityReactMinimum({
+                    //         data,
+                    //     })
+                    // ) {
+                    //     return
+                    // }
+                    // if (
+                    //     !this.hasThievedFruit({
+                    //         data,
+                    //     })
+                    // ) {
+                    //     return
+                    // }
+                    // if (
+                    //     !this.energyNotEnough({
+                    //         data,
+                    //         actionEnergy: this.activities.thiefFruit.energyConsume,
+                    //     })
+                    // ) {
+                    //     return
+                    // }
+                    // // emit the event to water the plant
+                    // // emit the event to plant seed
+                    // const eventMessage: ThiefFruitMessage = {
+                    //     placedItemFruitId: placedItemId,
+                    // }
+                    // ExternalEventEmitter.emit(
+                    //     ExternalEventName.RequestThiefFruit,
+                    //     eventMessage
+                    // )
+                    // object.setIsPressedForAction()
+                } else {
+                    // emit the event to water the plant
+                    if (
+                        !this.energyNotEnough({
+                            data,
+                            actionEnergy: this.activities.harvestFruit.energyConsume,
+                        })
+                    ) {
+                        return
+                    }
+                    // emit the event to plant seed
+                    const eventMessage: HarvestBeeHouseMessage = {
+                        placedItemBuildingId: placedItemId,
+                    }
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestHarvestBeeHouse,
+                        eventMessage
+                    )
+                    object.setIsPressedForAction()
+                }
+                break
+            }
             case ToolId.Hammer: {
                 if (!data.object.currentPlacedItem) {
                     throw new Error("Placed item not found")

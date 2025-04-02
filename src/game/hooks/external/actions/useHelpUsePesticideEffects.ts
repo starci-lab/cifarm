@@ -1,4 +1,4 @@
-import { GAMEPLAY_IO } from "@/app/constants"
+import { WS } from "@/app/constants"
 import {
     useWs,
     HelpUsePesticideMessage,
@@ -10,7 +10,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useHelpUsePesticideEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(

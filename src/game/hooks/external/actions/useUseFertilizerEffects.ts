@@ -2,10 +2,10 @@ import { EmitterEventName, UseFertilizerMessage, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
-import { GAMEPLAY_IO } from "@/app/constants"
+import { WS } from "@/app/constants"
 
 export const useUseFertilizerEffects = () => {
-    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(

@@ -124,6 +124,8 @@ export enum ExternalEventName {
     RequestUpgradeBuilding = "request_upgrade_building",
     // request to use animal medicine, from Phaser to React
     RequestUseAnimalMedicine = "request_use_animal_medicine",
+    // request to harvest bee house, from Phaser to React
+    RequestHarvestBeeHouse = "request_harvest_bee_house",
     // request to visit, from Phaser to React
     ActionEmitted = "action_emitted",
     // open external modal, from React to Phaser

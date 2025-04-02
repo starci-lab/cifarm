@@ -63,7 +63,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_USER_SWR: useGraphQLQueryUserSwr(),
             GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION: useGraphQLQueryPlacedItemsSwrMutation(),        
             //io
-            GAMEPLAY_IO: useWs(),
+            WS: useWs(),
         }}
     >
         {children}

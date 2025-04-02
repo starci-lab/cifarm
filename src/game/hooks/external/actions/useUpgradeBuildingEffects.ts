@@ -1,4 +1,4 @@
-import { GAMEPLAY_IO } from "@/app/constants"
+import { WS } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EmitterEventName, UpgradeBuildingMessage, useWs } from "@/hooks"
@@ -8,7 +8,7 @@ export const useUpgradeBuildingEffects = () => {
     //authentication useEffect
     const { socket } = useSingletonHook<
         ReturnType<typeof useWs>
-    >(GAMEPLAY_IO)
+    >(WS)
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestUpgradeBuilding,

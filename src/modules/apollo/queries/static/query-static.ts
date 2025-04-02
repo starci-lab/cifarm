@@ -288,6 +288,7 @@ const query = gql`
       animal
       fruit
       flower
+      building
     }
     supplies {
       displayId

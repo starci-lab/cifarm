@@ -29,6 +29,8 @@ export enum ActionName {
   HarvestFruit = "harvest_fruit",
   ThiefFruit = "thief_fruit",
   UpgradeBuilding = "upgrade_building",
+  HarvestBeeHouse = "harvest_bee_house",
+  ThiefBeeHouse = "thief_bee_house",
 }
 
 export interface EmitActionPayload {
@@ -80,6 +82,12 @@ export interface HarvestAnimalData {
   quantity: number;
   productId: string;
 }
+
+export interface HarvestBeeHouse {
+  quantity: number;
+  productId: string;
+}
+
 export interface HarvestFruitData {
   quantity: number;
   productId: string;

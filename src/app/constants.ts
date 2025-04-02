@@ -128,7 +128,7 @@ export const MUTATION_GRAPHQL_AUTHENTICATION_SWR_MUTATION = "MUTATION_GRAPHQL_AU
 // =====================================
 // IO CONSTANTS
 // =====================================
-export const GAMEPLAY_IO = "GAMEPLAY_IO"
+export const WS = "WS"
 
 // =====================================
 // ASSET URL CONSTANTS

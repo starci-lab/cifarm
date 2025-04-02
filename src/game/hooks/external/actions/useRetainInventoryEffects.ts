@@ -1,4 +1,4 @@
-import { GAMEPLAY_IO } from "@/app/constants"
+import { WS } from "@/app/constants"
 import {
     EmitterEventName,
     RetainInventoryMessage,
@@ -10,7 +10,7 @@ import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useRetainInventoryEffects = () => {
     const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(GAMEPLAY_IO)
+    useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(
