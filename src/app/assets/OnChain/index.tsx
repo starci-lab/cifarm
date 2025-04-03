@@ -34,8 +34,8 @@ import { pathConstants } from "@/constants"
 // import { useToast } from "@/hooks"
 // import { useDisclosure } from "react-use-disclosure"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { setTokens, setNFTs, useAppSelector, useAppDispatch } from "@/redux"
-
+import { setTokens, useAppSelector, useAppDispatch } from "@/redux"
+import { NFTCollections } from "./NFTCollections"
 export const OnChain: FC = () => {
     //const { toast } = useToast()
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -233,31 +233,7 @@ export const OnChain: FC = () => {
                 </Collapsible>
             </div>
             <Spacer y={6} />
-            <div>
-                <Title title="NFTs" tooltipString="The NFTs you have added to your wallet." />
-                <Spacer y={4} />
-                <Collapsible
-                    open={isNFTsOpen}
-                    onOpenChange={() => dispatch(setNFTs(!isNFTsOpen))}
-                    className="space-y-4"
-                >
-                    <CollapsibleTrigger asChild>
-                        <ExtendedButton variant="outline">
-                            <ChevronsUpDown className="w-4 h-4" />
-                            {isNFTsOpen ? "Collapse" : "Expand"}
-                        </ExtendedButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <List
-                            enableScroll={false}
-                            items={tokensArray}
-                            contentCallback={(item) => {
-                                return <Token token={item} />
-                            }}
-                        />
-                    </CollapsibleContent>
-                </Collapsible>
-            </div>
+            <NFTCollections />
         </>
     )
 }

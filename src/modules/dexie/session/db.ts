@@ -30,6 +30,10 @@ const sessionDb = new Dexie("SessionDB") as Dexie & {
     Asset,
     "id" // primary key "id" (for the typings only)
   >;
+  nftCollections: EntityTable<
+    NFTCollection,
+    "id" // primary key "id" (for the typings only)
+  >;
 }
 
 export enum SessionDbKey {
@@ -101,6 +105,15 @@ export interface Asset {
   version?: number;
 }
 
+export interface NFTCollection {
+  id: number;
+  chainKey: string;
+  network: string;
+  collectionAddress: string;
+  name: string;
+  imageUrl: string;
+}
+
 //store all sessions
 sessionDb.version(1).stores({
     //store all key-value pairs
@@ -111,6 +124,9 @@ sessionDb.version(1).stores({
     //tokens
     tokens:
     "++id, chainKey, network, tokenKey, address, enabled, symbol, name, decimals, imageUrl",
+    //collections
+    nftCollections:
+    "++id, chainKey, network, collectionAddress, name, imageUrl",
     //current selected account
     currentAccount: "++id, chainKey, network, accountId",
     //stored addresses

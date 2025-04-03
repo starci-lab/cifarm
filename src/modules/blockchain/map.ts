@@ -7,6 +7,11 @@ export enum DefaultToken {
     $CAULI = "$CAULI",
 }
 
+export enum DefaultCollection {
+    DragonFruit = "DragonFruit",
+    Jackfruit = "Jackfruit",
+}
+
 export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
     [ChainKey.Solana]: {
         imageUrl: "/solana.svg",
@@ -17,6 +22,32 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
             },
             [Network.Mainnet]: {
                 projectAddress: envConfig().honeycombProjectAddress[Network.Mainnet],
+            }
+        },
+        defaultCollections: {
+            [Network.Testnet]: {
+                [DefaultCollection.DragonFruit]: {
+                    name: "DragonFruit",
+                    imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
+                    collectionAddress: "FkJJyaMCMmNHGWQkBkrVBo9Trz8o9ZffKBcpyC3SdZx4",
+                },
+                [DefaultCollection.Jackfruit]: {
+                    name: "Jackfruit",
+                    imageUrl: "/solana.svg",
+                    collectionAddress: "",
+                }
+            },
+            [Network.Mainnet]: {
+                [DefaultCollection.DragonFruit]: {
+                    name: "DragonFruit",
+                    imageUrl: "/solana.svg",
+                    collectionAddress: "",
+                },
+                [DefaultCollection.Jackfruit]: {
+                    name: "Jackfruit",
+                    imageUrl: "/solana.svg",
+                    collectionAddress: "",
+                }
             }
         },
         defaultTokens: {
@@ -120,6 +151,32 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     imageUrl: "/$CAULI.png",
                 }
             }
+        },
+        defaultCollections: {
+            [Network.Mainnet]: {
+                [DefaultCollection.DragonFruit]: {
+                    name: "DragonFruit",
+                    imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
+                    collectionAddress: "",
+                },
+                [DefaultCollection.Jackfruit]: {
+                    name: "Jackfruit",
+                    imageUrl: "/solana.svg",
+                    collectionAddress: "",
+                },
+            },
+            [Network.Testnet]: {
+                [DefaultCollection.DragonFruit]: {
+                    name: "DragonFruit",
+                    imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
+                    collectionAddress: "",
+                },
+                [DefaultCollection.Jackfruit]: {
+                    name: "Jackfruit",
+                    imageUrl: "/solana.svg",
+                    collectionAddress: "",
+                }
+            }
         }
     }
 }
@@ -134,6 +191,7 @@ export const networkMap: Record<Network, NetworkInfo> = {
 }
 
 export type DefaultTokens = Record<DefaultToken, TokenInfo>
+export type DefaultCollections = Record<DefaultCollection, CollectionInfo>
 
 export interface HoneycombProtocol {
     projectAddress: string
@@ -144,6 +202,7 @@ export interface BlockchainInfo {
     name: string
     defaultTokens: Record<Network, DefaultTokens>
     honeycombProtocol?: Record<Network, HoneycombProtocol>
+    defaultCollections: Record<Network, DefaultCollections>
 }
 
 export interface TokenInfo {
@@ -154,6 +213,19 @@ export interface TokenInfo {
     imageUrl: string
     // a boolean value to check if the token is using the honeycomb protocol
     useHoneycombProtocol?: boolean
+}
+
+export interface CollectionInfo {
+    name: string
+    imageUrl: string
+    collectionAddress: string
+}
+
+export interface NFTInfo {
+    name: string
+    imageUrl: string
+    tokenAddress: string
+    collectionAddress: string
 }
 
 export interface NetworkInfo {

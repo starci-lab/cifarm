@@ -1,7 +1,7 @@
 // component to fetch the balance of a token via SWR
 import React, { useEffect } from "react"
 import { useBalanceSwr } from "./useBalanceSwr"
-import { removeSwr, setSwr } from "@/redux"
+import { removeBalanceSwr, setBalanceSwr } from "@/redux"
 import { useAppDispatch } from "@/redux"
 
 interface BalanceComponentProps {
@@ -21,7 +21,7 @@ export const BalanceComponent = ({
 
     useEffect(() => {
         dispatch(
-            setSwr({
+            setBalanceSwr({
                 tokenKey,
                 swr,
             })
@@ -30,7 +30,7 @@ export const BalanceComponent = ({
 
     useEffect(() => {
         return () => {
-            dispatch(removeSwr(tokenKey))
+            dispatch(removeBalanceSwr(tokenKey))
         }
     }, [])
 
