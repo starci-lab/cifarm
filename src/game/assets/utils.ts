@@ -127,7 +127,7 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
     const asset = await sessionDb.assets
         .filter((asset) => asset.key === key)
         .first()
-    if (asset) {
+    if (asset && asset.version === version) {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         atlasText = await asset.data.text()
     } else {
