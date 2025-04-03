@@ -137,6 +137,10 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
                 ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
             },
         })
+        const _atlasBlob = new Blob([data], {
+            type: "blob",
+        })
+        await sessionDb.assets.add({ key, data: _atlasBlob, version })
         atlasText = data
     }
     // alter the first line of the atlas to the texture guid
@@ -147,7 +151,6 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
     const _atlasBlob = new Blob([atlasTextLines.join("\n")], {
         type: "blob",
     })
-    await sessionDb.assets.add({ key, data: _atlasBlob, version })
     return _atlasBlob
 }
 
