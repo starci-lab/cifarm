@@ -4,6 +4,7 @@ import {
     CropId,
     FlowerId,
     FruitId,
+    PetId,
     Position,
     SupplyId,
     TileId,
@@ -52,8 +53,8 @@ export enum EmitterEventName {
   Return = "return",
   Visit = "visit",
   ThiefBeeHouse = "thief_bee_house",
+  BuyPet = "buy_pet",
   RequestDisplayTimers = "request_display_timers",
-
 }
 
 export interface BuySuppliesMessage {
@@ -82,6 +83,11 @@ export interface BuyFruitMessage {
 
 export interface BuyAnimalMessage {
   animalId: AnimalId;
+  position: Position;
+}
+
+export interface BuyPetMessage {
+  petId: PetId;
   position: Position;
 }
 
@@ -222,3 +228,6 @@ export interface ThiefBeeHouseMessage {
   placedItemBuildingId: string;
 }
 
+export interface BuyPetMessage {
+  petId: PetId;
+}

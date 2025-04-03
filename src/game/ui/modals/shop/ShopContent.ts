@@ -4,7 +4,6 @@ import {
     BuildingSchema,
     CropId,
     CropSchema,
-    DefaultInfo,
     FlowerId,
     FlowerSchema,
     FruitSchema,
@@ -77,7 +76,7 @@ import {
     SelectTabMessage,
     BuyingModeOnMessage,
 } from "../../../events"
-import { getAnimalLimit, getBuildingLimit, getFruitLimit, getTileLimit } from "../../../logic"
+import { getAnimalLimit, getBuildingLimit, getFruitLimit, getPetLimit, getTileLimit } from "../../../logic"
 const CELL_SPACE = 25
 const defaultShopTab = ShopTab.Seeds
 
@@ -102,7 +101,6 @@ export class ShopContent extends BaseSizer {
     // previous selected tab
     private selectedShopTab: ShopTab = defaultShopTab
     private inventories: Array<InventorySchema> = []
-    private defaultInfo: DefaultInfo
     private user: UserSchema
     private cellWidth: number
     private cellHeight: number
@@ -210,7 +208,6 @@ export class ShopContent extends BaseSizer {
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
 
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
-        this.defaultInfo = this.scene.cache.obj.get(CacheKey.DefaultInfo)
         this.user = this.scene.cache.obj.get(CacheKey.User)
         this.tiles = this.scene.cache.obj.get(CacheKey.Tiles)
         const placedItemsData = this.scene.cache.obj.get(
@@ -807,20 +804,62 @@ export class ShopContent extends BaseSizer {
             break
         }
         case ShopTab.Pets: {
-            for (const { displayId, price, unlockLevel } of this.pets) {
+            for (const pet of this.pets) {
+                const { displayId, price, unlockLevel, id } = pet
                 if (!petAssetMap[displayId].shop) {
                     throw new Error("Shop asset is not found.")
+                }
+                if (!price) {
+                    throw new Error("Price is not found.")
+                }
+                const goldsEnough = this.user.golds >= price
+                const { totalLimit, totalPlacedItemCount } = getPetLimit(
+                    {
+                        scene: this.scene,
+                        pet,
+                        placedItems: this.placedItems,
+                    }
+                )
+                if (totalPlacedItemCount === undefined) {
+                    throw new Error("Placed item count is not found.")
+                }
+                if (totalLimit === undefined) {
+                    throw new Error("Total limit is not found.")
+                }
+                const disabled = !(goldsEnough && totalPlacedItemCount < totalLimit)
+                // get the image
+                if (!petAssetMap[displayId].shop) {
+                    throw new Error("Shop asset is not found.")
+                }
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.pet === id
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type is not found.")
                 }
                 // get the image
                 items.push({
                     assetKey: petAssetMap[displayId].shop.textureConfig.key,
                     locked: !this.checkUnlock(unlockLevel),
                     unlockLevel,
-                    onPress: (pointer: Phaser.Input.Pointer) => {
-                        // this.onBuySupplyPress(displayId, pointer)
-                        console.log(pointer)
+                    onPress: () => {
+                        // close the modal
+                        const eventMessage: CloseModalMessage = {
+                            modalName: ModalName.Shop,
+                        }
+                        SceneEventEmitter.emit(SceneEventName.CloseModal, eventMessage)
+                        // then turn on the building mode
+                        const message: BuyingModeOnMessage = {
+                            placedItemTypeId: placedItemType.id,
+                        }
+                        SceneEventEmitter.emit(SceneEventName.BuyingModeOn, message)
+                        SceneEventEmitter.emit(SceneEventName.HideButtons)
                     },
                     price,
+                    disabled,
+                    maxOwnership: totalLimit,
+                    currentOwnership: totalPlacedItemCount,
+                    showOwnership: true,
                 })
             }
             break

@@ -3,6 +3,7 @@ import {
     BuyAnimalData,
     BuyBuildingData,
     BuyFruitData,
+    BuyPetData,
     BuyTileData,
     DisplayTimersMessage,
     EmitActionPayload,
@@ -25,6 +26,7 @@ import {
     FlowerSchema,
     FruitSchema,
     InventoryTypeSchema,
+    PetSchema,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeId,
@@ -81,7 +83,8 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected placedItemTypes: Array<PlacedItemTypeSchema>
     protected inventoryTypes: Array<InventoryTypeSchema>
     protected flowers: Array<FlowerSchema>
-
+    protected pets: Array<PetSchema>
+        
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
 
@@ -103,6 +106,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.inventoryTypes = this.scene.cache.obj.get(CacheKey.InventoryTypes)
         this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
         this.flowers = this.scene.cache.obj.get(CacheKey.Flowers)
+        this.pets = this.scene.cache.obj.get(CacheKey.Pets)
 
         ExternalEventEmitter.on(ExternalEventName.Visit, (user: UserSchema) => {
             // save to cache
@@ -455,7 +459,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         ])
                     }
                     break
-                case ActionName.BuyAnimal:
+                case ActionName.BuyAnimal: {
                     if (data.success) {
                         const { animalId } = data.data as BuyAnimalData
                         const animal = this.animals.find(
@@ -487,6 +491,40 @@ export abstract class ItemTilemap extends GroundTilemap {
                         ])
                     }
                     break
+                }
+                case ActionName.BuyPet: {
+                    if (data.success) {
+                        const { petId } = data.data as BuyPetData
+                        const pet = this.pets.find(
+                            (pet) => pet.id === petId
+                        )
+                        if (!pet) {
+                            throw new Error("Pet not found")
+                        }
+                        if (!pet.price) {
+                            throw new Error("Animal price not found")
+                        }
+                        // get the tile position
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -pet.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Failed to buy pet",
+                            },
+                        ])
+                    }
+                    break
+                }
                 case ActionName.BuyFruit:
                     if (data.success) {
                         const { fruitId } = data.data as BuyFruitData

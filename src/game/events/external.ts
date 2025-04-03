@@ -142,6 +142,8 @@ export enum ExternalEventName {
     StopBuying = "stop_buying",
     // request to thief bee house, from React to Phaser
     RequestThiefBeeHouse = "request_thief_bee_house",
+    // request to buy pet, from React to Phaser
+    RequestBuyPet = "request_buy_pet",
 
     // sync placed items, from React to Phaser
     RequestDisplayTimers = "request_display_timers",

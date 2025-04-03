@@ -283,6 +283,7 @@ const query = gql`
       price
       unlockLevel
       sellPrice
+      type
     }
     products {
       id

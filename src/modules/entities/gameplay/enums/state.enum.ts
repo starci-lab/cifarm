@@ -41,4 +41,6 @@ export enum BuildingKind {
     Neutral = "neutral",
     // bee house mean building that can produce honey
     BeeHouse = "beeHouse",
+    // pet house mean building that can produce pet
+    PetHouse = "petHouse",
 }

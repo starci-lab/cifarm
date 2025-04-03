@@ -18,18 +18,22 @@ export const petAssetMap: Record<PetId, PetAssetData> = {
                 atlas: {
                     key: "pets-dog-atlas",
                     assetUrl: "pets/dog/spine/dog.atlas",
-                    textureUrl: "pets/dog/sprite/dog.png",
+                    textureUrl: "pets/dog/spine/dog.png",
+                    version: 1,
                 },
                 json: {
                     key: "pets-dog-json",
                     assetUrl: "pets/dog/spine/dog.json",
+                    version: 1,
                 },  
+                extraOffsets: { x: 0, y: -80 },
             }   
         },
         shop: {
             textureConfig: {
                 key: "pets-dog-shop",
-                assetUrl: "pets/dog/shop/dog.png",
+                assetUrl: "pets/dog/shop.png",
+                version: 1,
             },
         },
     },
@@ -41,18 +45,22 @@ export const petAssetMap: Record<PetId, PetAssetData> = {
                 atlas: {
                     key: "pets-cat-atlas",
                     assetUrl: "pets/cat/spine/cat.atlas",
-                    textureUrl: "pets/cat/sprite/cat.png",
+                    textureUrl: "pets/cat/spine/cat.png",
+                    version: 1,
                 },
                 json: {
                     key: "pets-cat-json",
                     assetUrl: "pets/cat/spine/cat.json",
+                    version: 1,
                 },
+                extraOffsets: { x: 0, y: -80 },
             },
         },
         shop: {
             textureConfig: {
                 key: "pets-cat-shop",
-                assetUrl: "pets/cat/shop/cat.png",
+                assetUrl: "pets/cat/shop.png",
+                version: 1,
             },
         },
     },
