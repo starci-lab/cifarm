@@ -7,18 +7,18 @@ import {
     setTransferTab,
     TransferTab,
     setTokenModal,
+    switchToken,
 } from "@/redux"
 import React, { FC } from "react"
-import { ModalHeader, PressableAction } from "@/components"
+import { ModalHeader, PressableAction, Spacer, Switch } from "@/components"
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogFooter,
 } from "@/components/ui/dialog"
 import { useDisclosure } from "react-use-disclosure"
-import { QrCodeIcon, SendHorizonalIcon } from "lucide-react"
+import { QrCodeIcon, SendHorizonalIcon, SendToBackIcon, HandCoinsIcon, EllipsisIcon, ArrowLeftRightIcon, ShoppingCartIcon } from "lucide-react"
 import { useRouterWithSearchParams, useTransferTokenFormik } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { DefaultToken } from "@/modules/blockchain"
@@ -43,6 +43,10 @@ export const TokenModal: FC = () => {
     if (!account) {
         return null
     }
+    const balanceSwrs = useAppSelector(
+        (state) => state.sessionReducer.balanceSwrs
+    )
+    const balanceSwr = balanceSwrs[tokenKey ?? DefaultToken.Native]
     const dispatch = useAppDispatch()
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
@@ -52,30 +56,77 @@ export const TokenModal: FC = () => {
                         <ModalHeader title={token?.name ?? "Token"} />
                     </DialogTitle>
                 </DialogHeader>
-                <DialogFooter>
-                    <PressableAction
-                        icon={<SendHorizonalIcon className="w-8 h-8 min-w-8 min-h-8" />}
-                        onClick={() => {
-                            formik.setFieldValue("tokenKey", tokenKey ?? DefaultToken.Native)
-                            dispatch(setTransferTab(TransferTab.Token))
-                            router.push(pathConstants.transfer)
-                            dispatch(
-                                setTokenModal({
-                                    tokenKey: tokenKey ?? DefaultToken.Native,
-                                })
-                            )
-                            close()
-                        }}
-                        name="Transfer"
-                    />
-                    <PressableAction
-                        icon={<QrCodeIcon className="w-8 h-8 min-w-8 min-h-8" />}
-                        onClick={() => {
-                            console.log("Receive")
-                        }}
-                        name="Receive"
-                    />
-                </DialogFooter>
+                <div>
+                    <div className="flex justify-between items-center">  
+                        <div className="flex gap-2 items-end">
+                            <div className="text-4xl font-bold">{balanceSwr.data ?? 0}</div>
+                            <div className="text-muted-foreground">{token?.symbol ?? ""}</div>
+                        </div>
+                        <Switch checked={token.enabled} onCheckedChange={() => {
+                            dispatch(switchToken({ id: tokenKey ?? DefaultToken.Native, enabled: !token.enabled }))
+                        }} />
+                    </div>
+                    <Spacer y={4} />
+                    <div className="grid grid-cols-4 gap-2">
+                        <PressableAction
+                            icon={<SendHorizonalIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                formik.setFieldValue("tokenKey", tokenKey ?? DefaultToken.Native)
+                                dispatch(setTransferTab(TransferTab.Token))
+                                router.push(pathConstants.transfer)
+                                dispatch(
+                                    setTokenModal({
+                                        tokenKey: tokenKey ?? DefaultToken.Native,
+                                    })
+                                )
+                                close()
+                            }}
+                            name="Transfer"
+                        />
+                        <PressableAction
+                            icon={<QrCodeIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                console.log("Receive")
+                            }}
+                            name="Receive"
+                        />
+                        <PressableAction
+                            icon={<ArrowLeftRightIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                console.log("Receive")
+                            }}
+                            name="Swap"
+                        />
+                        <PressableAction
+                            icon={<HandCoinsIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                console.log("Receive")
+                            }}
+                            name="Stake"
+                        />
+                        <PressableAction
+                            icon={<SendToBackIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                console.log("Receive")
+                            }}
+                            name="Bridge"
+                        />
+                        <PressableAction
+                            icon={<ShoppingCartIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                console.log("Receive")
+                            }}
+                            name="Buy"
+                        />
+                        <PressableAction
+                            icon={<EllipsisIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                console.log("Receive")
+                            }}
+                            name="More"
+                        />
+                    </div>
+                </div>
             </DialogContent>
         </Dialog>
     )

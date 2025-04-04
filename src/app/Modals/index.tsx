@@ -10,7 +10,7 @@ import { ProfileModal } from "./ProfileModal"
 import { MintModal } from "./MintModal"
 import { MintAmountModal } from "./MintAmountModal"
 import { SelectTokenModal } from "./SelectTokenModal"
-import { NFTModal } from "./NFT"
+import { NFTModal } from "./NFTModal"
 import { TokenModal } from "./TokenModal"
 import { SelectNFTModal } from "./SelectNFTModal"
 

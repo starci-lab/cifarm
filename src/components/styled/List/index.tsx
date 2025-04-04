@@ -7,12 +7,14 @@ export interface ListProps<TItem extends string | object> {
   items: Array<TItem>;
   contentCallback: (item: TItem) => React.ReactNode;
   enableScroll?: boolean;
+  emptyMessage?: string;
 }
 
 export const List = <TItem extends string | object>({
     items,
     contentCallback,
     enableScroll = true,
+    emptyMessage = "No items found",
 }: ListProps<TItem>) => {
     const content = (<Card className="overflow-hidden">
         {items.map((item, index) => {
@@ -26,14 +28,18 @@ export const List = <TItem extends string | object>({
         })}
     </Card>)
     return (
-        <>
+        <>  
             {
-                enableScroll ? (
-                    <ScrollArea className="h-[300px] relative -top-4 -left-4 p-4 w-[calc(100%+32px)]">
-                        {content}
-                    </ScrollArea>
+                items.length > 0 ? (
+                    enableScroll ? (
+                        <ScrollArea className="h-[300px] relative -top-4 -left-4 p-4 w-[calc(100%+32px)]">
+                            {content}
+                        </ScrollArea>
+                    ) : (
+                        content
+                    )
                 ) : (
-                    content
+                    <div className="text-muted-foreground">{emptyMessage}</div>
                 )
             }
         </>

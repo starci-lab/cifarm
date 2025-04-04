@@ -51,7 +51,7 @@ export const NFTSection: FC = () => {
                 <div className="flex gap-1.5">
                     <Image
                         src={data.imageUrl}
-                        className="w-20 h-20 border rounded-md object-contain"
+                        className="w-12 h-12 object-contain"
                     />
                     <div>
                         <div className="text-sm">{data.name}</div>

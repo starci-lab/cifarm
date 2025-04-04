@@ -2,6 +2,7 @@ import { FunnelIcon } from "@heroicons/react/24/outline"
 import { Button, ExtendedInput } from "@/components"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import React, { FC, useEffect, useState } from "react"
+import { SearchIcon } from "lucide-react"
 
 export interface HandleSearchResultParams {
   searchString: string;
@@ -49,6 +50,7 @@ export const FilterBar: FC<FilterBarProps> = ({
     return (
         <div className="flex gap-2 w-full">
             <ExtendedInput
+                startContent={<SearchIcon className="w-5 h-5 text-muted-foreground" />}
                 value={searchString}
                 onValueChange={(value) => setSearchString(value)}
                 placeholder="Search"

@@ -62,7 +62,7 @@ export const Profile : FC = () => {
                                     codeString={user.id}
                                     hideSymbol
                                     classNames={{
-                                        symbol: "text-foreground-400",
+                                        symbol: "text-muted-foreground",
                                         base: "p-0 gap-0 bg-transparent",
                                     }}
                                 />
@@ -75,7 +75,7 @@ export const Profile : FC = () => {
                                     hideSymbol
                                     codeString={user.accountAddress}
                                     classNames={{
-                                        symbol: "text-foreground-400",
+                                        symbol: "text-muted-foreground",
                                         base: "p-0 gap-0 bg-transparent",
                                     }}
                                 />

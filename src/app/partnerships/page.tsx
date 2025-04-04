@@ -14,7 +14,7 @@ const Page: FC = () => {
                         <div className="text-2xl font-bold">Partnerships</div>
                     </div>
                     <Spacer y={4} />
-                    <div className="text-xs text-foreground-400">
+                    <div className="text-xs text-muted-foreground">
                         The partnerships of CiFarm engage in integration and simplify the platform, also boosting the user experience.
                     </div>
                 </div>
@@ -47,7 +47,7 @@ const Page: FC = () => {
                                                     />
                                                     <div>
                                                         <div className="text-sm">{name}</div>
-                                                        <div className="text-xs text-foreground-400">{description}</div>
+                                                        <div className="text-xs text-muted-foreground">{description}</div>
                                                     </div>
                                                 </div>
                                             </CardBody>

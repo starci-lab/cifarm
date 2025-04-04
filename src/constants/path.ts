@@ -5,7 +5,7 @@ export const pathConstants = {
     importFromMnemonic: "/import/mnemonic",
     importFromPrivateKey: "/import/private-key",
     selectChain: "/select-chain",
-    adjustTokens: "/adjust-tokens",
+    manageTokens: "/manage-tokens",
     assets: "/assets",
     settings: "/settings",
     play: "/play",

@@ -1,9 +1,11 @@
-import { valuesWithKey } from "@/modules/common"
+import { valuesWithKey, WithKey } from "@/modules/common"
 // import { TransactionType, useAppDispatch, useAppSelector } from "@/redux"
 import { ExtendedButton, List, Spacer, Title } from "@/components"
 import React, { FC } from "react"
 import { Token } from "./Token"
 import {
+    QrCodeIcon,
+    SendHorizonalIcon,
     // ArrowDownToLineIcon,
     // CalendarCheck2,
     //ChevronsUpDown,
@@ -41,6 +43,7 @@ import { pathConstants } from "@/constants"
 //import { setTokens, useAppSelector, useAppDispatch } from "@/redux"
 import { NFTCollections } from "./NFTCollections"
 import { useAppSelector } from "@/redux"
+import { Action, ActionProps } from "./Action"
 export const OnChain: FC = () => {
     //const { toast } = useToast()
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -60,29 +63,19 @@ export const OnChain: FC = () => {
     //     >(MINT_DISCLOSURE)
     //     const dispatch = useAppDispatch()
 
-    //     const operations: Array<WithKey<ActionProps>> = [
-    //         {
-    //             key: "transfer",
-    //             icon: <SendHorizonalIcon className="w-8 h-8 min-w-8 min-h-8" />,
-    //             onClick: () => router.push(pathConstants.transfer),
-    //             name: "Transfer",
-    //         },
-    //         {
-    //             key: "receive",
-    //             icon: <ArrowDownToLineIcon className="w-8 h-8 min-w-8 min-h-8" />,
-    //             name: "Receive",
-    //         },
-    //         {
-    //             key: "scan",
-    //             icon: <QrCodeIcon className="w-8 h-8 min-w-8 min-h-8" />,
-    //             name: "Scan",
-    //         },
-    //         {
-    //             key: "crossChainTransfer",
-    //             icon: <SendToBackIcon className="w-8 h-8 min-w-8 min-h-8" />,
-    //             name: "Cross-chain transfer",
-    //         },
-    //     ]
+    const operations: Array<WithKey<ActionProps>> = [
+        {
+            key: "transfer",
+            icon: <SendHorizonalIcon className="w-5 h-5 min-w-5 min-h-5" />,
+            onClick: () => router.push(pathConstants.transfer),
+            name: "Transfer",
+        },
+        {
+            key: "receive",
+            icon: <QrCodeIcon className="w-5 h-5 min-w-5 min-h-5" />,
+            name: "Receive",
+        },
+    ]
 
     // const honeycombProtocols: Array<WithKey<ActionProps>> = [
     //     {
@@ -160,59 +153,30 @@ export const OnChain: FC = () => {
     // const isNFTsOpen = useAppSelector((state) => state.collapsibleReducer.nfts)
     return (
         <>
-            {/* <div>
+            <div>
                 <Title title="Operations" tooltipString="Perform operations on your tokens." />
                 <Spacer y={4} />
-                <Collapsible
-                    open={isOperationsOpen}
-                    onOpenChange={() => dispatch(setOperations(!isOperationsOpen))}
-                    className="space-y-4"
-                >
-                    <CollapsibleTrigger asChild>
-                        <ExtendedButton variant="outline">
-                            <ChevronsUpDown className="w-4 h-4" />
-                            {isOperationsOpen ? "Collapse" : "Expand"}
-                        </ExtendedButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <div className="grid grid-cols-3 gap-2 w-full">
-                            {operations.map((operation) => {
-                                return <Action {...operation} key={operation.key} />
-                            })}
-                        </div>
-                    </CollapsibleContent>
-                </Collapsible>
+                <div className="grid grid-cols-5 gap-2 w-full">
+                    {operations.map((operation) => {
+                        return <Action {...operation} key={operation.key} />
+                    })}
+                </div>
             </div>
             <Spacer y={6} />
             <div>
-                <Title title="Honeycomb Protocol" tooltipString="Actions on Honeycomb Protocol." />
-                <Spacer y={4} />
-                <Collapsible
-                    open={isHoneycombProtocolsOpen}
-                    onOpenChange={() => dispatch(setHoneycombProtocols(!isHoneycombProtocolsOpen))}
-                    className="space-y-4"
-                >
-                    <CollapsibleTrigger asChild>
-                        <ExtendedButton variant="outline">
-                            <ChevronsUpDown className="w-4 h-4" />
-                            {isHoneycombProtocolsOpen ? "Collapse" : "Expand"}
-                        </ExtendedButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <div className="grid grid-cols-3 gap-2 w-full">
-                            {honeycombProtocols.map((honeycombProtocol) => {
-                                return <Action {...honeycombProtocol} key={honeycombProtocol.key} />
-                            })}
-                        </div>
-                    </CollapsibleContent>
-                </Collapsible>
-            </div>
-            <Spacer y={6} /> */}
-            <div>
-                <Title
-                    title="Tokens"
-                    tooltipString="The tokens you have added to your wallet."
-                />
+                <div className="flex justify-between items-center">
+                    <Title
+                        title="Tokens"
+                        tooltipString="The tokens you have added to your wallet."
+                    />
+                    <ExtendedButton
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => router.push(pathConstants.manageTokens)}
+                    >
+                        <Settings2Icon className="w-5 h-5" />
+                    </ExtendedButton>
+                </div>
                 <Spacer y={4} />
                 <div>
                     <List
@@ -222,14 +186,6 @@ export const OnChain: FC = () => {
                             return <Token token={item} />
                         }}
                     />
-                    <Spacer y={4} />
-                    <ExtendedButton
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => router.push(pathConstants.adjustTokens)}
-                    >
-                        <Settings2Icon className="w-5 h-5" />
-                    </ExtendedButton>
                 </div>
             </div>
             <Spacer y={6} />

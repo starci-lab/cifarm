@@ -40,7 +40,7 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
                     </div>
                 </div>
             </div>
-            <div className="text-sm">{balanceSwr.data}</div>
+            <div className="text-sm">{balanceSwr.data}</div>   
         </PressableCard>
     )
 }
