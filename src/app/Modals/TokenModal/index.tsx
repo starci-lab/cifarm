@@ -31,9 +31,6 @@ export const TokenModal: FC = () => {
         (state) => state.sessionReducer.accounts.currentId
     )
     const account = accounts.find((account) => account.id === currentId)
-    if (!account) {
-        return null
-    }
     const router = useRouterWithSearchParams()
     const { tokenKey } = useAppSelector((state) => state.modalReducer.tokenModal)
     const { isOpen, toggle, close } =
@@ -43,6 +40,9 @@ export const TokenModal: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
     )
+    if (!account) {
+        return null
+    }
     const dispatch = useAppDispatch()
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
