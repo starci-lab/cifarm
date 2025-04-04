@@ -13,5 +13,6 @@ export * from "./tooltip"
 export * from "./separator"
 export * from "./textarea"
 export * from "./dropdown-menu"
+export * from "./skeleton"
 
 

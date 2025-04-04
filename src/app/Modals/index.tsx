@@ -11,6 +11,9 @@ import { MintModal } from "./MintModal"
 import { MintAmountModal } from "./MintAmountModal"
 import { SelectTokenModal } from "./SelectTokenModal"
 import { NFTModal } from "./NFT"
+import { TokenModal } from "./TokenModal"
+import { SelectNFTModal } from "./SelectNFTModal"
+
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -27,6 +30,8 @@ const Modals : FC = () => {
             <MintModal />
             <SelectTokenModal />
             <NFTModal />
+            <TokenModal />
+            <SelectNFTModal />
         </div>
     )
 }

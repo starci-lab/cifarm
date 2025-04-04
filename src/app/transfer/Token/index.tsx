@@ -18,10 +18,10 @@ import {
 import { valuesWithKey } from "@/modules/common"
 import { useTransferTokenFormik } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
-import { AtSymbolIcon } from "@heroicons/react/24/outline"
+import { AtSignIcon } from "lucide-react"
 
 export const Token: FC = () => {
-    const balances = useAppSelector((state) => state.sessionReducer.balances)
+    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
 
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
@@ -29,7 +29,7 @@ export const Token: FC = () => {
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const tokensArray = valuesWithKey(tokens)
     const selectedTokenKey = formik.values.tokenKey || tokensArray[0].key
-    const balanceSwr = balances[selectedTokenKey]
+    const balanceSwr = balanceSwrs[selectedTokenKey]
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_TOKEN_DISCLOSURE
     )
@@ -141,7 +141,7 @@ export const Token: FC = () => {
                         }
                         endContent={
                             <Link>
-                                <AtSymbolIcon className="w-5 h-5" />
+                                <AtSignIcon className="w-5 h-5" />
                             </Link>
                         }
                     />

@@ -45,6 +45,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             MINT_AMOUNT_DISCLOSURE: useDisclosure(),
             SELECT_TOKEN_DISCLOSURE: useDisclosure(),
             NFT_DISCLOSURE: useDisclosure(),
+            TOKEN_DISCLOSURE: useDisclosure(),
+            SELECT_NFT_DISCLOSURE: useDisclosure(),
             
             // Using new constants with GraphQL mutations
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),

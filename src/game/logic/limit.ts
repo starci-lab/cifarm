@@ -239,7 +239,6 @@ export const getPetLimit = ({
     if (!placedItemTypeBuilding) {
         throw new Error(`No placed item type building found for id: ${building.id}`)
     }
-
     // only one dog house is required
     const placedItemBuilding = placedItems.find(
         (placedItem) => placedItem.placedItemType === placedItemTypeBuilding.id

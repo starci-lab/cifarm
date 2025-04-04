@@ -6,7 +6,7 @@ import { Token } from "./Token"
 import {
     // ArrowDownToLineIcon,
     // CalendarCheck2,
-    ChevronsUpDown,
+    //ChevronsUpDown,
     // HandCoins,
     // PickaxeIcon,
     // QrCodeIcon,
@@ -33,15 +33,20 @@ import { pathConstants } from "@/constants"
 // import { TxResponse } from "@/modules/honeycomb"
 // import { useToast } from "@/hooks"
 // import { useDisclosure } from "react-use-disclosure"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { setTokens, useAppSelector, useAppDispatch } from "@/redux"
+// import {
+//     Collapsible,
+//     CollapsibleContent,
+//     CollapsibleTrigger,
+// } from "@/components/ui/collapsible"
+//import { setTokens, useAppSelector, useAppDispatch } from "@/redux"
 import { NFTCollections } from "./NFTCollections"
+import { useAppSelector } from "@/redux"
 export const OnChain: FC = () => {
     //const { toast } = useToast()
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
     const router = useRouterWithSearchParams()
-    const dispatch = useAppDispatch()
+    //const dispatch = useAppDispatch()
     //     const { swrMutation: claimHoneycombDailyRewardSwrMutation } =
     //     useSingletonHook<
     //       ReturnType<typeof useGraphQLMutationClaimHoneycombDailyRewardSwrMutation>
@@ -148,9 +153,11 @@ export const OnChain: FC = () => {
     //     }
     // ]
     //const isOperationsOpen = useAppSelector((state) => state.collapsibleReducer.operations)
-    //const isHoneycombProtocolsOpen = useAppSelector((state) => state.collapsibleReducer.honeycombProtocols)  
-    const isTokensOpen = useAppSelector((state) => state.collapsibleReducer.tokens)
-    const isNFTsOpen = useAppSelector((state) => state.collapsibleReducer.nfts)
+    //const isHoneycombProtocolsOpen = useAppSelector((state) => state.collapsibleReducer.honeycombProtocols)
+    // const isTokensOpen = useAppSelector(
+    //     (state) => state.collapsibleReducer.tokens
+    // )
+    // const isNFTsOpen = useAppSelector((state) => state.collapsibleReducer.nfts)
     return (
         <>
             {/* <div>
@@ -202,35 +209,28 @@ export const OnChain: FC = () => {
             </div>
             <Spacer y={6} /> */}
             <div>
-                <Title title="Tokens" tooltipString="The tokens you have added to your wallet." />
+                <Title
+                    title="Tokens"
+                    tooltipString="The tokens you have added to your wallet."
+                />
                 <Spacer y={4} />
-                <Collapsible
-                    open={isTokensOpen}
-                    onOpenChange={() => dispatch(setTokens(!isTokensOpen))}
-                    className="space-y-4"
-                >
-                    <CollapsibleTrigger asChild>
-                        <ExtendedButton variant="outline">
-                            <ChevronsUpDown className="w-4 h-4" />
-                            {isTokensOpen ? "Collapse" : "Expand"}
-                        </ExtendedButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <div>
-                            <List
-                                enableScroll={false}
-                                items={tokensArray}
-                                contentCallback={(item) => {
-                                    return <Token token={item} />
-                                }}
-                            />
-                            <Spacer y={4} />
-                            <ExtendedButton size="icon" variant="ghost" onClick={() => router.push(pathConstants.adjustTokens)}>
-                                <Settings2Icon className="w-5 h-5" />
-                            </ExtendedButton>
-                        </div>
-                    </CollapsibleContent>
-                </Collapsible>
+                <div>
+                    <List
+                        enableScroll={false}
+                        items={tokensArray}
+                        contentCallback={(item) => {
+                            return <Token token={item} />
+                        }}
+                    />
+                    <Spacer y={4} />
+                    <ExtendedButton
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => router.push(pathConstants.adjustTokens)}
+                    >
+                        <Settings2Icon className="w-5 h-5" />
+                    </ExtendedButton>
+                </div>
             </div>
             <Spacer y={6} />
             <NFTCollections />

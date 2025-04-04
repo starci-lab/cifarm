@@ -5,6 +5,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { NFT_DISCLOSURE } from "@/app/constants"
 import { useAppDispatch, setNFTModal, ExtendedNFTData } from "@/redux"
+
 interface NFTProps {
     nft: ExtendedNFTData
 }
