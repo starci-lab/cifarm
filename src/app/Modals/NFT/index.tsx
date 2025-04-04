@@ -26,16 +26,16 @@ export const NFTModal: FC = () => {
     const currentId = useAppSelector(
         (state) => state.sessionReducer.accounts.currentId
     )
-    const account = accounts.find((account) => account.id === currentId)
-    if (!account) {
-        return null
-    }
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
     const { nftData } = useAppSelector((state) => state.modalReducer.nftModal)
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(
         TRANSFER_NFT_FORMIK
     )
+    const account = accounts.find((account) => account.id === currentId)
+    if (!account) {
+        return null
+    }
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">

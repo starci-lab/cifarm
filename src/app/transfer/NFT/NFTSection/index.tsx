@@ -20,7 +20,10 @@ export const NFTSection: FC = () => {
         (state) => state.sessionReducer.nftCollections
     )
     const collection = collections[formik.values.collectionKey]
-    console.log(formik.values.nft)
+    const { open: openSelectNFTModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        SELECT_NFT_DISCLOSURE
+    )
+
     const getData = (): NFTData | null => {
         if (!collection) return null
         const collectionSwr = collectionSwrs[formik.values.collectionKey]
@@ -30,12 +33,7 @@ export const NFTSection: FC = () => {
         if (!data) return null  
         return data
     }
-
     const data = getData()
-
-    const { open: openSelectNFTModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        SELECT_NFT_DISCLOSURE
-    )
     return (
         <div>
             <Title
