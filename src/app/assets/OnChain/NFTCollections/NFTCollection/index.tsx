@@ -1,5 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle, Image, Spacer } from "@/components"
-import { blockchainMap } from "@/modules/blockchain"
+import { Card, CardContent, CardTitle, Image, Spacer } from "@/components"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
 import { NFT } from "./NFT"
@@ -13,6 +12,7 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collectionKey }) => {
     const collections = useAppSelector(state => state.sessionReducer.nftCollections)
     const collection = collections[collectionKey]
     const collectionSwr = collectionSwrs[collectionKey]
+    console.log(collectionSwr.data?.nfts.length)
     return <Card>
         <CardContent className="p-3">
             <div className="flex items-center gap-2">
@@ -20,9 +20,9 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collectionKey }) => {
                 <CardTitle className="text-normal">{collection.name}</CardTitle>
             </div>  
             <Spacer y={4} />
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-4">
                 {collectionSwr.data?.nfts.map((nft) => (
-                    <NFT key={nft.nftAddress} nft={nft} />
+                    <NFT key={nft.nftAddress} nft={{...nft, collectionKey}} />
                 ))}
             </div>
         </CardContent>

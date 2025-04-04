@@ -2,20 +2,22 @@
 import {
     HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
+    TRANSFER_NFT_SWR_MUTATION,
     TRANSFER_TOKEN_SWR_MUTATION,
 } from "@/app/constants"
 import { truncateString } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Image, Snippet, Spacer } from "@/components"
+import { Image, List, Snippet, Spacer } from "@/components"
 import {
     HoneycombProtocolRawTxData,
     TransactionType,
+    TransferNFTData,
     TransferTokenData,
     useAppSelector,
 } from "@/redux"
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
-import { useHoneycombSendTransactionSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
+import { useHoneycombSendTransactionSwrMutation, useTransferNFTSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
 import useSWRMutation from "swr/mutation"
 import { ExtendedButton, ModalHeader } from "@/components"
 import {
@@ -26,8 +28,6 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
@@ -48,6 +48,10 @@ export const SignTransactionModal: FC = () => {
     const { swrMutation: transferTokenSwrMutation } = useSingletonHook<
     ReturnType<typeof useTransferTokenSwrMutation>
   >(TRANSFER_TOKEN_SWR_MUTATION)
+
+    const { swrMutation: transferNFTSwrMutation } = useSingletonHook<
+    ReturnType<typeof useTransferNFTSwrMutation>
+  >(TRANSFER_NFT_SWR_MUTATION)
 
     const type = useAppSelector(
         (state) => state.modalReducer.signTransactionModal.type
@@ -89,7 +93,9 @@ export const SignTransactionModal: FC = () => {
         variant: "destructive",
     })
 
-    const balances = useAppSelector((state) => state.sessionReducer.balances)
+    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
+    const collections = useAppSelector((state) => state.sessionReducer.nftCollections)
+
     const { trigger, isMutating } = useSWRMutation(
         "SIGN_TRANSACTION",
         async () => {
@@ -119,10 +125,20 @@ export const SignTransactionModal: FC = () => {
                     })
                     txHash = txHashResponse
                     
-                    await balances[tokenKey].mutate()
+                    await balanceSwrs[tokenKey].mutate()
 
                     break
                 } 
+                case TransactionType.TransferNFT: {
+                    const { nft, recipientAddress, collectionKey } = data as TransferNFTData
+                    const { txHash: txHashResponse } = await transferNFTSwrMutation.trigger({
+                        nftAddress: nft.nftAddress,
+                        recipientAddress,
+                        collectionKey,
+                    })
+                    txHash = txHashResponse
+                    break
+                }   
                 default: {
                     throw new Error("Invalid transaction type")
                 }
@@ -150,6 +166,9 @@ export const SignTransactionModal: FC = () => {
         [TransactionType.HoneycombProtocolRawTx]: {
             name: "Honeycomb Protocol Raw Tx",
         },
+        [TransactionType.TransferNFT]: {
+            name: "Transfer NFT",
+        },
     }
 
     const renderContent = () => {
@@ -158,57 +177,114 @@ export const SignTransactionModal: FC = () => {
             const { tokenKey, amount, recipientAddress } =
           data as TransferTokenData
             return (
-                <Card>
-                    <CardContent className="p-3">
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm font-semibold">Token</div>
-                            <div className="flex gap-2 items-center">
-                                <Image 
-                                    src={tokens[tokenKey].imageUrl} 
-                                    className="rounded-none w-5 h-5" 
-                                />
-                                <div className="text-sm">{tokens[tokenKey].name}</div>
+                <List items={Object.values(TransferTokenContent)} contentCallback={(item) => {
+                    switch (item) {
+                    case TransferTokenContent.Token: {
+                        return (
+                            <div className="flex items-center justify-between px-2 py-3">
+                                <div className="text-sm font-semibold">Token</div>
+                                <div className="flex gap-2 items-center">
+                                    <Image 
+                                        src={tokens[tokenKey].imageUrl} 
+                                        className="rounded-none w-5 h-5" 
+                                    />
+                                    <div className="text-sm">{tokens[tokenKey].name}</div>
+                                </div>
                             </div>
-                        </div>
-                    </CardContent>
-                    <Separator />
-                    <CardContent className="p-3">
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm font-semibold">Amount</div>
-                            <div className="flex gap-2 items-center">
-                                <div className="text-sm">{amount}</div>
+                        )   
+                    }
+                    case TransferTokenContent.Amount: {
+                        return (
+                            <div className="flex items-center justify-between px-2 py-3">
+                                <div className="text-sm font-semibold">Amount</div>
+                                <div className="flex gap-2 items-center">
+                                    <div className="text-sm">{amount}</div>
+                                </div>
                             </div>
-                        </div>
-                    </CardContent>
-                    <Separator />
-                    <CardContent className="p-3">
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm font-semibold">Recipient Address</div>
-                            <div className="flex gap-2 items-center">
-                                <div className="text-sm">{truncateString(recipientAddress, 15,4)}</div>
-                                <Snippet code={recipientAddress} />
+                        )
+                    }
+                    case TransferTokenContent.RecipientAddress: {
+                        return (
+                            <div className="flex items-center justify-between px-2 py-3">
+                                <div className="text-sm font-semibold">Recipient Address</div>
+                                <div className="flex gap-2 items-center">
+                                    <div className="text-sm">{truncateString(recipientAddress, 10,4)}</div>
+                                    <Snippet code={recipientAddress} />
+                                </div>
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            )
-        }
+                        )
+                    }
+                    }
+                }
+                }/>)}
         case TransactionType.HoneycombProtocolRawTx: {
             const { txResponse } = data as HoneycombProtocolRawTxData
             return (
-                <Card>
-                    <CardContent className="p-3">
-                        <div className="flex items-center justify-between gap-12">
-                            <div className="text-sm font-semibold">Serialized Tx</div>
-                            <div className="flex gap-2 items-center">
-                                <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
-                                    {truncateString(txResponse.transaction, 40, 4)}
+                <List items={Object.values(HoneycombProtocolRawTxContent)} contentCallback={(item) => {
+                    switch (item) {
+                    case HoneycombProtocolRawTxContent.SerializedTx: {
+                        return (
+                            <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="text-sm font-semibold">Serialized Tx</div>
+                                <div className="flex gap-2 items-center">
+                                    <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                        {truncateString(txResponse.transaction, 40, 4)}
+                                    </div>
+                                    <Snippet code={txResponse.transaction} /> 
                                 </div>
-                                <Snippet code={txResponse.transaction} /> 
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        )
+                    }
+                    }
+                }}/>
+            )
+        }
+        case TransactionType.TransferNFT: {
+            const { nft, recipientAddress, collectionKey } = data as TransferNFTData
+            return (
+                <List items={Object.values(TransferNFTContent)} contentCallback={(item) => {
+                    switch (item) {
+                    case TransferNFTContent.Collection: {
+                        return (
+                            <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="text-sm font-semibold">Collection</div>
+                                <div className="flex gap-2 items-center">
+                                    <Image 
+                                        src={collections[collectionKey].imageUrl} 
+                                        className="rounded-none w-5 h-5 object-contain" 
+                                    />  
+                                    <div className="text-sm">{collections[collectionKey].name}</div>
+                                </div>
+                            </div>
+                        )
+                    }
+                    case TransferNFTContent.NFT: {
+                        return (
+                            <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="text-sm font-semibold">NFT</div>
+                                <div className="flex gap-2 items-center">
+                                    <Image 
+                                        src={nft.imageUrl} 
+                                        className="rounded-none w-5 h-5 object-contain" 
+                                    />  
+                                    <div className="text-sm">{nft.name}</div>
+                                </div>
+                            </div>
+                        )
+                    }
+                    case TransferNFTContent.RecipientAddress: {
+                        return (
+                            <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="text-sm font-semibold">Recipient Address</div>
+                                <div className="flex gap-2 items-center">
+                                    <div className="text-sm">{truncateString(recipientAddress, 10,4)}</div>
+                                    <Snippet code={recipientAddress} />
+                                </div>
+                            </div>
+                        )
+                    }
+                    }
+                }}/>
             )
         }
         }
@@ -238,15 +314,16 @@ export const SignTransactionModal: FC = () => {
                     <Spacer y={4} />
                     {renderContent()}
                 </div>
-                <DialogFooter>
+                <DialogFooter className="w-full">
                     <ExtendedButton
                         variant="ghost"
                         onClick={() => toggle(false)}
-                        className="text-muted-foreground"
+                        className="text-muted-foreground w-full"
                     >
                         Cancel
                     </ExtendedButton>
                     <ExtendedButton
+                        className="w-full"
                         isLoading={isMutating}
                         onClick={() => trigger()}
                     >
@@ -256,4 +333,20 @@ export const SignTransactionModal: FC = () => {
             </DialogContent>
         </Dialog>
     )
+}
+
+export enum TransferTokenContent {
+    Token = "token",
+    Amount = "amount",
+    RecipientAddress = "recipientAddress",
+}
+
+export enum TransferNFTContent {
+    Collection = "collection",
+    NFT = "nft",
+    RecipientAddress = "recipientAddress",
+}
+
+export enum HoneycombProtocolRawTxContent {
+    SerializedTx = "serializedTx",
 }

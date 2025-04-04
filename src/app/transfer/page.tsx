@@ -9,13 +9,13 @@ import {
 } from "@/redux"
 import { Spacer, Tabs, TabsTrigger } from "@/components"
 import React, { FC } from "react"
-import { Tokens } from "./Tokens"
-
+import { Token } from "./Token"
+import { NFT } from "./NFT"
 const Page: FC = () => {
     const renderContent = () => {
         const map = {
-            [TransferTab.Token]: <Tokens />,
-            [TransferTab.NFTs]: <div />,
+            [TransferTab.Token]: <Token />,
+            [TransferTab.NFT]: <NFT />,
         }
         return map[transferTab]
     }
@@ -30,10 +30,10 @@ const Page: FC = () => {
                     <Tabs className="w-full" value={transferTab} onValueChange={(value) => dispatch(setTransferTab(value as AssetTab))}>
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value={TransferTab.Token}>
-                                Tokens
+                                Token
                             </TabsTrigger>
-                            <TabsTrigger value={TransferTab.NFTs}>
-                                NFTs
+                            <TabsTrigger value={TransferTab.NFT}>
+                                NFT
                             </TabsTrigger>
                         </TabsList>
                     </Tabs>

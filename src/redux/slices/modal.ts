@@ -1,4 +1,4 @@
-import { DefaultToken } from "@/modules/blockchain"
+import { DefaultToken, NFTData   } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse } from "@/modules/honeycomb"
 export interface WarningModal {
@@ -20,11 +20,21 @@ export interface SelectTokenModal {
 export enum TransactionType {
   HoneycombProtocolRawTx = "HoneycombProtocolRawTx",
   TransferToken = "TransferToken",
+  TransferNFT = "TransferNFT",
 }
 
+export interface NFTModal {
+  nftData?: ExtendedNFTData
+}
 export interface HoneycombProtocolRawTxData {
   txResponse: TxResponse;
 }
+
+export interface TransferNFTData {
+  collectionKey: string;
+  nft: ExtendedNFTData;
+  recipientAddress: string;
+} 
 
 export interface TransferTokenData {
   tokenKey: string;
@@ -40,15 +50,24 @@ export type SignTransactionModal = ({
       data: TransferTokenData;
       type: TransactionType.TransferToken;
     }
+  | {
+      data: TransferNFTData;
+      type: TransactionType.TransferNFT;
+    }
 ) & {
   // extra action to be taken after the transaction is signed
   extraAction?: () => Promise<void> | void;
 };
 
+export interface ExtendedNFTData extends NFTData {
+  collectionKey: string;
+}
+
 export interface ModalSlice {
   warningModal: WarningModal;
   signTransactionModal: SignTransactionModal;
   selectTokenModal: SelectTokenModal;
+  nftModal: NFTModal;
 }
 
 const initialState: ModalSlice = {
@@ -65,6 +84,7 @@ const initialState: ModalSlice = {
         type: TransactionType.TransferToken
     },
     selectTokenModal: {},
+    nftModal: {}
 }
 
 export const modalSlice = createSlice({
@@ -83,9 +103,12 @@ export const modalSlice = createSlice({
         setSelectTokenModal: (state, action: PayloadAction<SelectTokenModal>) => {
             state.selectTokenModal = action.payload
         },
+        setNFTModal: (state, action: PayloadAction<NFTModal>) => {
+            state.nftModal = action.payload
+        },
     },
 })
 
 export const modalReducer = modalSlice.reducer
-export const { setWarningModal, setSignTransactionModal, setSelectTokenModal } =
+export const { setWarningModal, setSignTransactionModal, setSelectTokenModal, setNFTModal } =
   modalSlice.actions

@@ -17,6 +17,8 @@ import {
     useGraphQLQueryPlacedItemsSwrMutation,
     useGraphQLMutationUpdateFollowXSwrMutation,
     useImportAccountFormik,
+    useTransferNFTFormik,
+    useTransferNFTSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -42,6 +44,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             MINT_DISCLOSURE: useDisclosure(),
             MINT_AMOUNT_DISCLOSURE: useDisclosure(),
             SELECT_TOKEN_DISCLOSURE: useDisclosure(),
+            NFT_DISCLOSURE: useDisclosure(),
             
             // Using new constants with GraphQL mutations
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
@@ -53,6 +56,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION: useGraphQLMutationUpdateReferralSwrMutation(),
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
+            TRANSFER_NFT_SWR_MUTATION: useTransferNFTSwrMutation(),
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
             // queries
@@ -75,6 +79,7 @@ export const SingletonHook2Provider = ({ children }: PropsWithChildren) => (
         hooks={{
             TRANSFER_TOKEN_FORMIK: useTransferTokenFormik(),
             IMPORT_ACCOUNT_FORMIK: useImportAccountFormik(),
+            TRANSFER_NFT_FORMIK: useTransferNFTFormik(),
         }}
     >
         {children}

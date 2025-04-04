@@ -20,7 +20,7 @@ import { useTransferTokenFormik } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { AtSymbolIcon } from "@heroicons/react/24/outline"
 
-export const Tokens: FC = () => {
+export const Token: FC = () => {
     const balances = useAppSelector((state) => state.sessionReducer.balances)
 
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(

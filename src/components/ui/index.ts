@@ -12,5 +12,6 @@ export * from "./tabs"
 export * from "./tooltip"
 export * from "./separator"
 export * from "./textarea"
+export * from "./dropdown-menu"
 
 

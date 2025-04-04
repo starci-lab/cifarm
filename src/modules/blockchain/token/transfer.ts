@@ -23,6 +23,7 @@ import { solanaHttpRpcUrl, SUI_COIN_TYPE, suiClient } from "../rpcs"
 import { computeRaw } from "@/modules/common"
 import { DefaultToken } from "../map"
 import { Tokens } from "@/redux"
+import { TransferResult } from "../types"
 
 export interface TransferParams {
   chainKey: ChainKey;
@@ -34,10 +35,6 @@ export interface TransferParams {
   amount: number;
   fromAddress?: string;
   tokens?: Tokens;
-}
-
-export interface TransferResult {
-  txHash: string;
 }
 
 export const _transferSolana = async ({

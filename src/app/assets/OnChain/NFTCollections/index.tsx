@@ -8,9 +8,11 @@ export const NFTCollections: FC = () => {
         <div>
             <Title title="NFT Collections" tooltipString="The NFT collections you have added to your wallet." />
             <Spacer y={4} />
-            {Object.keys(collections).map((collection) => {
-                return <NFTCollection key={collection} collectionKey={collection} />
-            })}
+            <div className="grid gap-4">
+                {Object.keys(collections).map((collection) => {
+                    return <NFTCollection key={collection} collectionKey={collection} />
+                })}
+            </div>
         </div>
     )
 }

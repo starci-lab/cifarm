@@ -10,7 +10,7 @@ import { ProfileModal } from "./ProfileModal"
 import { MintModal } from "./MintModal"
 import { MintAmountModal } from "./MintAmountModal"
 import { SelectTokenModal } from "./SelectTokenModal"
-
+import { NFTModal } from "./NFT"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -26,6 +26,7 @@ const Modals : FC = () => {
             <QuestsModal />
             <MintModal />
             <SelectTokenModal />
+            <NFTModal />
         </div>
     )
 }

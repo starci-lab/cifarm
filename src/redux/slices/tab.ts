@@ -7,7 +7,7 @@ export enum AssetTab {
 
 export enum TransferTab {
     Token = "token",
-    NFTs = "nfts",
+    NFT = "nft",
 }
 
 export enum NeighborsTab {
