@@ -40,14 +40,14 @@ export const TokenModal: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
     )
-    if (!account) {
-        return null
-    }
     const balanceSwrs = useAppSelector(
         (state) => state.sessionReducer.balanceSwrs
     )
     const balanceSwr = balanceSwrs[tokenKey ?? DefaultToken.Native]
     const dispatch = useAppDispatch()
+    if (!account) {
+        return null
+    }
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
