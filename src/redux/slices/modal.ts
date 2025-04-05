@@ -1,6 +1,6 @@
 import { DefaultToken, NFTData } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { TxResponse } from "@/modules/honeycomb"
+import { TxResponse, TxResponses } from "@/modules/honeycomb"
 export interface WarningModal {
   message: string;
   nextModalToken?: string;
@@ -19,8 +19,10 @@ export interface SelectTokenModal {
 
 export enum TransactionType {
   HoneycombProtocolRawTx = "HoneycombProtocolRawTx",
+  HoneycombProtocolRawTxs = "HoneycombProtocolRawTxs",
   TransferToken = "TransferToken",
   TransferNFT = "TransferNFT",
+  FreezeSolanaMetaplexNFT = "FreezeSolanaMetaplexNFT",
 }
 
 export interface TokenModal {
@@ -32,6 +34,10 @@ export interface NFTModal {
 }
 export interface HoneycombProtocolRawTxData {
   txResponse: TxResponse;
+}
+
+export interface HoneycombProtocolRawTxsData {
+  txResponses: TxResponses;
 }
 
 export interface TransferNFTData {
@@ -46,10 +52,18 @@ export interface TransferTokenData {
   recipientAddress: string;
 }
 
+export interface FreezeSolanaMetaplexNFTData {
+  serializedTx: string;
+}
+
 export type SignTransactionModal = (
   | {
       data: HoneycombProtocolRawTxData;
       type: TransactionType.HoneycombProtocolRawTx;
+    }
+  | {
+      data: HoneycombProtocolRawTxsData;
+      type: TransactionType.HoneycombProtocolRawTxs;
     }
   | {
       data: TransferTokenData;
@@ -58,6 +72,10 @@ export type SignTransactionModal = (
   | {
       data: TransferNFTData;
       type: TransactionType.TransferNFT;
+    }
+  | {
+      data: FreezeSolanaMetaplexNFTData;
+      type: TransactionType.FreezeSolanaMetaplexNFT;
     }
 ) & {
   // extra action to be taken after the transaction is signed

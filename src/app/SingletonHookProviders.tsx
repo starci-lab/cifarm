@@ -19,6 +19,10 @@ import {
     useImportAccountFormik,
     useTransferNFTFormik,
     useTransferNFTSwrMutation,
+    useGraphQLMutationWrapSolanaMetaplexSwrMutation,
+    useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation,
+    useHoneycombSendTransactionsSwrMutation,
+    useSendUmiSerializedTxSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -56,11 +60,15 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useGraphQLMutationClaimHoneycombDailyRewardSwrMutation(),
             GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION: useGraphQLMutationUpdateFollowXSwrMutation(),
             GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION: useGraphQLMutationUpdateReferralSwrMutation(),
+            GRAPHQL_MUTATION_WRAP_SOLANA_METAPLEX_SWR_MUTATION: useGraphQLMutationWrapSolanaMetaplexSwrMutation(),
+            MUTATION_GRAPHQL_FREEZE_SOLANA_METAPLEX_NFT_SWR_MUTATION: useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation(),
+            SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
             TRANSFER_NFT_SWR_MUTATION: useTransferNFTSwrMutation(),
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
+            HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION: useHoneycombSendTransactionsSwrMutation(),
             // queries
             GRAPHQL_QUERY_INVENTORIES_SWR: useGraphQLQueryInventoriesSwr(),
             GRAPHQL_QUERY_STATIC_SWR: useGraphQLQueryStaticSwr(),

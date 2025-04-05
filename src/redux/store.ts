@@ -7,7 +7,8 @@ import {
     settingsReducer,
     modalReducer,
     gameReducer,
-    collapsibleReducer
+    collapsibleReducer,
+    wrapReducer
 } from "./slices"
 
 export const store = configureStore({
@@ -18,7 +19,8 @@ export const store = configureStore({
         settingsReducer,
         modalReducer,
         gameReducer,
-        collapsibleReducer
+        collapsibleReducer,
+        wrapReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

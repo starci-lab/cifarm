@@ -1,6 +1,8 @@
 "use client"
 import {
     HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION,
+    HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION,
+    SEND_UMI_SERIALIZED_TX_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
     TRANSFER_NFT_SWR_MUTATION,
     TRANSFER_TOKEN_SWR_MUTATION,
@@ -9,7 +11,9 @@ import { truncateString } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Image, List, Snippet, Spacer } from "@/components"
 import {
+    FreezeSolanaMetaplexNFTData,
     HoneycombProtocolRawTxData,
+    HoneycombProtocolRawTxsData,
     TransactionType,
     TransferNFTData,
     TransferTokenData,
@@ -17,7 +21,13 @@ import {
 } from "@/redux"
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
-import { useHoneycombSendTransactionSwrMutation, useTransferNFTSwrMutation, useTransferTokenSwrMutation } from "@/hooks"
+import {
+    useHoneycombSendTransactionsSwrMutation,
+    useHoneycombSendTransactionSwrMutation,
+    useSendUmiSerializedTxSwrMutation,
+    useTransferNFTSwrMutation,
+    useTransferTokenSwrMutation,
+} from "@/hooks"
 import useSWRMutation from "swr/mutation"
 import { ExtendedButton, ModalHeader } from "@/components"
 import {
@@ -30,24 +40,33 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
-import { sessionDb, SessionDbKey } from "@/modules/dexie"
 
 interface ProviderInfo {
   name: string;
 }
 
 export const SignTransactionModal: FC = () => {
-    const { isOpen, toggle } = useSingletonHook<
-    ReturnType<typeof useDisclosure>
-  >(SIGN_TRANSACTION_DISCLOSURE)
-  
+    const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        SIGN_TRANSACTION_DISCLOSURE
+    )
+
     const { swrMutation: honeycombSendTransactionSwrMutation } = useSingletonHook<
     ReturnType<typeof useHoneycombSendTransactionSwrMutation>
   >(HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION)
 
+    const { swrMutation: honeycombSendTransactionsSwrMutation } =
+    useSingletonHook<
+      ReturnType<typeof useHoneycombSendTransactionsSwrMutation>
+    >(HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION)
+
     const { swrMutation: transferTokenSwrMutation } = useSingletonHook<
     ReturnType<typeof useTransferTokenSwrMutation>
   >(TRANSFER_TOKEN_SWR_MUTATION)
+
+    
+    const { swrMutation: sendUmiSerializedTxSwrMutation } = useSingletonHook<
+    ReturnType<typeof useSendUmiSerializedTxSwrMutation>
+  >(SEND_UMI_SERIALIZED_TX_SWR_MUTATION)        
 
     const { swrMutation: transferNFTSwrMutation } = useSingletonHook<
     ReturnType<typeof useTransferNFTSwrMutation>
@@ -67,34 +86,52 @@ export const SignTransactionModal: FC = () => {
 
     const { toast } = useToast()
 
-    const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
-    const currentAccountId = useAppSelector((state) => state.sessionReducer.accounts.currentId)
+    const accounts = useAppSelector(
+        (state) => state.sessionReducer.accounts.accounts
+    )
+    const currentAccountId = useAppSelector(
+        (state) => state.sessionReducer.accounts.currentId
+    )
     const account = accounts.find((account) => account.id === currentAccountId)
 
-    const addTxHashToast = (txHash: string) => toast({
-        title: "Tx hash",
-        description: truncateString(txHash, 10, 4),
-        action: <ExtendedButton variant="outline" onClick={() => {
-            window.open(explorerUrl({
-                chainKey,
-                network,
-                value: txHash,
-                type: "tx",
-            }), "_blank")
-        }}>
-            View
-        </ExtendedButton>,
-        variant: "default",
-    })
-    
-    const addErrorToast = () => toast({
-        title: "Error",
-        description: "Failed to sign transaction",
-        variant: "destructive",
-    })
+    const addTxHashToast = (txHash: string) =>
+        toast({
+            title: "Tx hash",
+            description: truncateString(txHash, 10, 4),
+            action: (
+                <ExtendedButton
+                    variant="outline"
+                    onClick={() => {
+                        window.open(
+                            explorerUrl({
+                                chainKey,
+                                network,
+                                value: txHash,
+                                type: "tx",
+                            }),
+                            "_blank"
+                        )
+                    }}
+                >
+          View
+                </ExtendedButton>
+            ),
+            variant: "default",
+        })
 
-    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
-    const collections = useAppSelector((state) => state.sessionReducer.nftCollections)
+    const addErrorToast = (errorMessage: string = "Failed to sign transaction") =>
+        toast({
+            title: "Error",
+            description: truncateString(errorMessage, 400, 0),
+            variant: "destructive",
+        })
+
+    const balanceSwrs = useAppSelector(
+        (state) => state.sessionReducer.balanceSwrs
+    )
+    const collections = useAppSelector(
+        (state) => state.sessionReducer.nftCollections
+    )
 
     const { trigger, isMutating } = useSWRMutation(
         "SIGN_TRANSACTION",
@@ -104,41 +141,70 @@ export const SignTransactionModal: FC = () => {
                 switch (type) {
                 case TransactionType.HoneycombProtocolRawTx: {
                     //return await honeycombSendTransactionSwrMutation.trigger(data)
-                    // get the edge client       
+                    // get the edge client
                     const { txResponse } = data as HoneycombProtocolRawTxData
                     const response = await honeycombSendTransactionSwrMutation.trigger({
-                        transaction: txResponse
+                        transaction: txResponse,
                     })
                     if (!response) throw new Error("Failed to send transaction")
-                    if (response.error) { throw new Error(response.error) }
+                    if (response.error) {
+                        throw new Error(response.error)
+                    }
                     txHash = response.signature?.toString() ?? ""
-                    // clear the data in session db
-                    await sessionDb.keyValueStore.delete(SessionDbKey.HoneycombDailyRewardTransaction)
+                    break
+                }
+                case TransactionType.HoneycombProtocolRawTxs: {
+                    const { txResponses } = data as HoneycombProtocolRawTxsData
+                    const responses =
+              await honeycombSendTransactionsSwrMutation.trigger({
+                  transactions: txResponses,
+              })
+                    if (!responses) throw new Error("Failed to send transaction")
+                    // last transaction bundle response
+                    const lastResponse = responses.at(-1)?.responses[0]
+                    if (!lastResponse) throw new Error("Failed to send transaction")
+                    if (lastResponse.error) {
+                        throw new Error(lastResponse.error)
+                    }
+                    txHash = lastResponse.signature ?? ""
                     break
                 }
                 case TransactionType.TransferToken: {
-                    const { tokenKey, amount, recipientAddress } = data as TransferTokenData
-                    const { txHash: txHashResponse } = await transferTokenSwrMutation.trigger({
-                        amount,
-                        tokenKey,
-                        recipientAddress,
-                    })
+                    const { tokenKey, amount, recipientAddress } =
+              data as TransferTokenData
+                    const { txHash: txHashResponse } =
+              await transferTokenSwrMutation.trigger({
+                  amount,
+                  tokenKey,
+                  recipientAddress,
+              })
                     txHash = txHashResponse
-                    
+
                     await balanceSwrs[tokenKey].mutate()
 
                     break
-                } 
+                }
                 case TransactionType.TransferNFT: {
-                    const { nft, recipientAddress, collectionKey } = data as TransferNFTData
-                    const { txHash: txHashResponse } = await transferNFTSwrMutation.trigger({
-                        nftAddress: nft.nftAddress,
-                        recipientAddress,
-                        collectionKey,
+                    const { nft, recipientAddress, collectionKey } =
+              data as TransferNFTData
+                    const { txHash: txHashResponse } =
+              await transferNFTSwrMutation.trigger({
+                  nftAddress: nft.nftAddress,
+                  recipientAddress,
+                  collectionKey,
+              })
+                    txHash = txHashResponse
+                    break
+                }
+                case TransactionType.FreezeSolanaMetaplexNFT: {
+                    const { serializedTx } = data as FreezeSolanaMetaplexNFTData
+                    // decode the serializedTx
+                    const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                        serializedTx,
                     })
                     txHash = txHashResponse
                     break
-                }   
+                }
                 default: {
                     throw new Error("Invalid transaction type")
                 }
@@ -148,8 +214,7 @@ export const SignTransactionModal: FC = () => {
                 }
                 addTxHashToast(txHash)
             } catch (error) {
-                console.log(error)
-                addErrorToast()
+                addErrorToast((error as Error).message)
             } finally {
                 toggle(false)
             }
@@ -169,6 +234,12 @@ export const SignTransactionModal: FC = () => {
         [TransactionType.TransferNFT]: {
             name: "Transfer NFT",
         },
+        [TransactionType.HoneycombProtocolRawTxs]: {
+            name: "Honeycomb Protocol Raw Txs",
+        },
+        [TransactionType.FreezeSolanaMetaplexNFT]: {
+            name: "Freeze Solana Metaplex NFT",
+        },
     }
 
     const renderContent = () => {
@@ -177,114 +248,201 @@ export const SignTransactionModal: FC = () => {
             const { tokenKey, amount, recipientAddress } =
           data as TransferTokenData
             return (
-                <List items={Object.values(TransferTokenContent)} contentCallback={(item) => {
-                    switch (item) {
-                    case TransferTokenContent.Token: {
-                        return (
-                            <div className="flex items-center justify-between px-2 py-3">
-                                <div className="text-sm font-semibold">Token</div>
-                                <div className="flex gap-2 items-center">
-                                    <Image 
-                                        src={tokens[tokenKey].imageUrl} 
-                                        className="rounded-none w-5 h-5" 
-                                    />
-                                    <div className="text-sm">{tokens[tokenKey].name}</div>
+                <List
+                    enableScroll={false}
+                    items={Object.values(TransferTokenContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case TransferTokenContent.Token: {
+                            return (
+                                <div className="flex items-center justify-between px-2 py-3">
+                                    <div className="text-sm font-semibold">Token</div>
+                                    <div className="flex gap-2 items-center">
+                                        <Image
+                                            src={tokens[tokenKey].imageUrl}
+                                            className="rounded-none w-5 h-5"
+                                        />
+                                        <div className="text-sm">{tokens[tokenKey].name}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        )   
-                    }
-                    case TransferTokenContent.Amount: {
-                        return (
-                            <div className="flex items-center justify-between px-2 py-3">
-                                <div className="text-sm font-semibold">Amount</div>
-                                <div className="flex gap-2 items-center">
-                                    <div className="text-sm">{amount}</div>
+                            )
+                        }
+                        case TransferTokenContent.Amount: {
+                            return (
+                                <div className="flex items-center justify-between px-2 py-3">
+                                    <div className="text-sm font-semibold">Amount</div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="text-sm">{amount}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                    case TransferTokenContent.RecipientAddress: {
-                        return (
-                            <div className="flex items-center justify-between px-2 py-3">
-                                <div className="text-sm font-semibold">Recipient Address</div>
-                                <div className="flex gap-2 items-center">
-                                    <div className="text-sm">{truncateString(recipientAddress, 10,4)}</div>
-                                    <Snippet code={recipientAddress} />
+                            )
+                        }
+                        case TransferTokenContent.RecipientAddress: {
+                            return (
+                                <div className="flex items-center justify-between px-2 py-3">
+                                    <div className="text-sm font-semibold">
+                        Recipient Address
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="text-sm">
+                                            {truncateString(recipientAddress, 10, 4)}
+                                        </div>
+                                        <Snippet code={recipientAddress} />
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                    }
-                }
-                }/>)}
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
         case TransactionType.HoneycombProtocolRawTx: {
             const { txResponse } = data as HoneycombProtocolRawTxData
             return (
-                <List items={Object.values(HoneycombProtocolRawTxContent)} contentCallback={(item) => {
-                    switch (item) {
-                    case HoneycombProtocolRawTxContent.SerializedTx: {
-                        return (
-                            <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                <div className="text-sm font-semibold">Serialized Tx</div>
-                                <div className="flex gap-2 items-center">
-                                    <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
-                                        {truncateString(txResponse.transaction, 40, 4)}
+                <List
+                    enableScroll={false}
+                    items={Object.values(HoneycombProtocolRawTxContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case HoneycombProtocolRawTxContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">Serialized Tx</div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                            {truncateString(txResponse.transaction, 30, 4)}
+                                        </div>
+                                        <Snippet code={txResponse.transaction} />
                                     </div>
-                                    <Snippet code={txResponse.transaction} /> 
                                 </div>
-                            </div>
-                        )
-                    }
-                    }
-                }}/>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
+        case TransactionType.HoneycombProtocolRawTxs: {
+            const { txResponses } = data as HoneycombProtocolRawTxsData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(HoneycombProtocolRawTxsContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case HoneycombProtocolRawTxsContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">
+                        Serialized Txs
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                            {txResponses.transactions.map((transaction) => {
+                                                return (
+                                                    <div
+                                                        className="flex gap-2 items-center"
+                                                        key={transaction}
+                                                    >
+                                                        <div>{truncateString(transaction, 30, 4)}</div>
+                                                        <Snippet code={transaction} />
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
+        case TransactionType.FreezeSolanaMetaplexNFT: {
+            const { serializedTx } = data as FreezeSolanaMetaplexNFTData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(FreezeSolanaMetaplexNFTContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case FreezeSolanaMetaplexNFTContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">Serialized Tx</div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                            {truncateString(serializedTx, 30, 4)}
+                                        </div>
+                                        <Snippet code={serializedTx} />
+                                    </div>
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
             )
         }
         case TransactionType.TransferNFT: {
-            const { nft, recipientAddress, collectionKey } = data as TransferNFTData
+            const { nft, recipientAddress, collectionKey } =
+          data as TransferNFTData
             return (
-                <List items={Object.values(TransferNFTContent)} contentCallback={(item) => {
-                    switch (item) {
-                    case TransferNFTContent.Collection: {
-                        return (
-                            <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                <div className="text-sm font-semibold">Collection</div>
-                                <div className="flex gap-2 items-center">
-                                    <Image 
-                                        src={collections[collectionKey].imageUrl} 
-                                        className="rounded-none w-5 h-5 object-contain" 
-                                    />  
-                                    <div className="text-sm">{collections[collectionKey].name}</div>
+                <List
+                    enableScroll={false}
+                    items={Object.values(TransferNFTContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case TransferNFTContent.Collection: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">Collection</div>
+                                    <div className="flex gap-2 items-center">
+                                        <Image
+                                            src={collections[collectionKey].imageUrl}
+                                            className="rounded-none w-5 h-5 object-contain"
+                                        />
+                                        <div className="text-sm">
+                                            {collections[collectionKey].name}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                    case TransferNFTContent.NFT: {
-                        return (
-                            <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                <div className="text-sm font-semibold">NFT</div>
-                                <div className="flex gap-2 items-center">
-                                    <Image 
-                                        src={nft.imageUrl} 
-                                        className="rounded-none w-5 h-5 object-contain" 
-                                    />  
-                                    <div className="text-sm">{nft.name}</div>
+                            )
+                        }
+                        case TransferNFTContent.NFT: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">NFT</div>
+                                    <div className="flex gap-2 items-center">
+                                        <Image
+                                            src={nft.imageUrl}
+                                            className="rounded-none w-5 h-5 object-contain"
+                                        />
+                                        <div className="text-sm">{nft.name}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                    case TransferNFTContent.RecipientAddress: {
-                        return (
-                            <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                <div className="text-sm font-semibold">Recipient Address</div>
-                                <div className="flex gap-2 items-center">
-                                    <div className="text-sm">{truncateString(recipientAddress, 10,4)}</div>
-                                    <Snippet code={recipientAddress} />
+                            )
+                        }
+                        case TransferNFTContent.RecipientAddress: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">
+                        Recipient Address
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="text-sm">
+                                            {truncateString(recipientAddress, 10, 4)}
+                                        </div>
+                                        <Snippet code={recipientAddress} />
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                    }
-                }}/>
+                            )
+                        }
+                        }           
+                    }}
+                />
             )
         }
         }
@@ -307,9 +465,7 @@ export const SignTransactionModal: FC = () => {
                             />
                             {blockchainMap[chainKey].name}
                         </Badge>
-                        <Badge variant="secondary">
-                            {providers[type].name}
-                        </Badge>
+                        <Badge variant="secondary">{providers[type].name}</Badge>
                     </div>
                     <Spacer y={4} />
                     {renderContent()}
@@ -320,14 +476,14 @@ export const SignTransactionModal: FC = () => {
                         onClick={() => toggle(false)}
                         className="text-muted-foreground w-full"
                     >
-                        Cancel
+            Cancel
                     </ExtendedButton>
                     <ExtendedButton
                         className="w-full"
                         isLoading={isMutating}
                         onClick={() => trigger()}
                     >
-                        Sign
+            Sign
                     </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
@@ -336,17 +492,26 @@ export const SignTransactionModal: FC = () => {
 }
 
 export enum TransferTokenContent {
-    Token = "token",
-    Amount = "amount",
-    RecipientAddress = "recipientAddress",
+  Token = "token",
+  Amount = "amount",
+  RecipientAddress = "recipientAddress",
 }
 
 export enum TransferNFTContent {
-    Collection = "collection",
-    NFT = "nft",
-    RecipientAddress = "recipientAddress",
+  Collection = "collection",
+  NFT = "nft",
+  RecipientAddress = "recipientAddress",
 }
 
 export enum HoneycombProtocolRawTxContent {
-    SerializedTx = "serializedTx",
+  SerializedTx = "serializedTx",
 }
+
+export enum HoneycombProtocolRawTxsContent {
+  SerializedTx = "serializedTxs",
+}
+
+export enum FreezeSolanaMetaplexNFTContent {
+  SerializedTx = "serializedTx",
+}
+

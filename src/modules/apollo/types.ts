@@ -26,3 +26,7 @@ export interface MutationVariables<TRequest> {
     request: TRequest
 }
 
+export interface UmiTxResponse {
+    serializedTx: string
+}
+

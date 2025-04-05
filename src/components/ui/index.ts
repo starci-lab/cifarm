@@ -15,5 +15,7 @@ export * from "./textarea"
 export * from "./dropdown-menu"
 export * from "./skeleton"
 export * from "./switch"
+export * from "./alert-dialog"
+export * from "./alert"
 
 

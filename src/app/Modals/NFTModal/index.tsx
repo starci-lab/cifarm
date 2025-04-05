@@ -1,7 +1,7 @@
 "use client"
 import { NFT_DISCLOSURE, TRANSFER_NFT_FORMIK } from "@/app/constants"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
-import { useAppSelector, useAppDispatch, setTransferTab, TransferTab } from "@/redux"
+import { useAppSelector, useAppDispatch, setTransferTab, TransferTab, setWrapNFTData } from "@/redux"
 import React, { FC } from "react"
 import { ModalHeader, PressableAction, Image, Spacer } from "@/components"
 import {
@@ -11,7 +11,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { useDisclosure } from "react-use-disclosure"
-import { QrCodeIcon, SendHorizonalIcon, ShoppingCartIcon, EllipsisIcon } from "lucide-react"
+import { QrCodeIcon, SendHorizonalIcon, ShoppingCartIcon, EllipsisIcon, PackageIcon } from "lucide-react"
 import { useRouterWithSearchParams, useTransferNFTFormik } from "@/hooks" 
 import { pathConstants } from "@/constants"
 
@@ -66,6 +66,18 @@ export const NFTModal: FC = () => {
                                 console.log("Receive")
                             }}
                             name="Receive"
+                        />
+                        <PressableAction
+                            icon={<PackageIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            onClick={() => {
+                                router.push("/wrap/solana")
+                                if (!nftData) {
+                                    throw new Error("NFT data is undefined")
+                                }
+                                dispatch(setWrapNFTData(nftData))
+                                close()
+                            }}
+                            name="Wrap"
                         />
                         <PressableAction
                             icon={<ShoppingCartIcon className="w-5 h-5 min-w-5 min-h-5" />}
