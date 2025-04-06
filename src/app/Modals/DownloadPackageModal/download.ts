@@ -3,6 +3,7 @@ import { TextureConfig } from "@/game/assets"
 import { sessionDb } from "@/modules/dexie"
 import axios from "axios"
 import { DownloadData } from "@/redux"
+
 export const getBytes = async (textureConfigs: Array<TextureConfig>): Promise<Record<string, number>> => {
     const bytesMap: Record<string, number> = {}
     const promises: Array<Promise<void>> = []

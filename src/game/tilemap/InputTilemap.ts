@@ -335,6 +335,12 @@ export class InputTilemap extends ItemTilemap {
                 this.handlePressOnFruit({ data })
                 break
             }
+        }).on("2tap", () => {
+            console.log("2tap")
+            alert("2tap")
+            // SceneEventEmitter.emit(SceneEventName.OpenModal, {
+            //     modalName: ModalName.Info,
+            // })
         })
     }
     // method to handle press on tile
