@@ -70,7 +70,6 @@ export const NFTSection: FC = () => {
                 </div>
             </PressableCard>}
         </div>
-
     )
 }
 

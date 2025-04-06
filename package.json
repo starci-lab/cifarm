@@ -59,6 +59,7 @@
     "axios-retry": "^4.5.0",
     "bip39": "^3.1.0",
     "bs58": "^6.0.0",
+    "bytes": "^3.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -106,6 +107,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@types/bytes": "^3.1.5",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.16",
     "@types/node": "^20",

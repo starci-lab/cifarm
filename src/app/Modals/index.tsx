@@ -13,6 +13,7 @@ import { SelectTokenModal } from "./SelectTokenModal"
 import { NFTModal } from "./NFTModal"
 import { TokenModal } from "./TokenModal"
 import { SelectNFTModal } from "./SelectNFTModal"
+import { DownloadPackageModal } from "./DownloadPackageModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -32,6 +33,7 @@ const Modals : FC = () => {
             <NFTModal />
             <TokenModal />
             <SelectNFTModal />
+            <DownloadPackageModal />
         </div>
     )
 }

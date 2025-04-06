@@ -17,5 +17,6 @@ export * from "./skeleton"
 export * from "./switch"
 export * from "./alert-dialog"
 export * from "./alert"
+export * from "./progress"
 
 

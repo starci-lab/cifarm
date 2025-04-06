@@ -92,6 +92,11 @@ export interface ModalSlice {
   selectTokenModal: SelectTokenModal;
   nftModal: NFTModal;
   tokenModal: TokenModal;
+  downloadPackageModal: DownloadPackageModal;
+}
+
+export interface DownloadPackageModal {
+  packageId?: number;
 }
 
 const initialState: ModalSlice = {
@@ -110,6 +115,7 @@ const initialState: ModalSlice = {
     selectTokenModal: {},
     nftModal: {},
     tokenModal: {},
+    downloadPackageModal: {},
 }
 
 export const modalSlice = createSlice({
@@ -134,6 +140,9 @@ export const modalSlice = createSlice({
         setTokenModal: (state, action: PayloadAction<TokenModal>) => {
             state.tokenModal = action.payload
         },
+        setDownloadPackageModal: (state, action: PayloadAction<DownloadPackageModal>) => {
+            state.downloadPackageModal = action.payload
+        },
     },
 })
 
@@ -144,4 +153,5 @@ export const {
     setSelectTokenModal,
     setNFTModal,
     setTokenModal,
+    setDownloadPackageModal,
 } = modalSlice.actions

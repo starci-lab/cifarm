@@ -150,6 +150,126 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
             },
         },
     },
+    [FruitId.DragonFruit]: {
+        name: "Dragon Fruit",
+        map: {
+            0: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-1",
+                    assetUrl: "fruits/dragon-fruit/1.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            1: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-2",
+                    assetUrl: "fruits/dragon-fruit/2.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            2: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-3",
+                    assetUrl: "fruits/dragon-fruit/3.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            3: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-4",
+                    assetUrl: "fruits/dragon-fruit/4.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            4: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-5",
+                    assetUrl: "fruits/dragon-fruit/5.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+        },
+    },
+    [FruitId.Jackfruit]: {
+        name: "Jackfruit",
+        map: {
+            0: {
+                textureConfig: {
+                    key: "fruit-jackfruit-1",
+                    assetUrl: "fruits/jackfruit/1.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            1: {
+                textureConfig: {
+                    key: "fruit-jackfruit-2",
+                    assetUrl: "fruits/jackfruit/2.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            2: {
+                textureConfig: {
+                    key: "fruit-jackfruit-3",
+                    assetUrl: "fruits/jackfruit/3.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            3: {
+                textureConfig: {
+                    key: "fruit-jackfruit-4",
+                    assetUrl: "fruits/jackfruit/4.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+            4: {
+                textureConfig: {
+                    key: "fruit-jackfruit-5",
+                    assetUrl: "fruits/jackfruit/5.png",
+                    packageId: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -170,
+                    },
+                },
+            },
+        },
+    },  
 }
 
 // Function to load all fruit assets

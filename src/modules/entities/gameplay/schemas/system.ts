@@ -1,5 +1,6 @@
+import { Network } from "@/modules/blockchain"
 import { Position } from "../base"
-import { CropId, DailyRewardId } from "../enums"
+import { CropId, DailyRewardId, NFTType } from "../enums"
 
 export interface SystemSchema {
   value: object;
@@ -114,3 +115,18 @@ export interface DailyRewardInfo {
   [DailyRewardId.Day4]: DailyReward;
   [DailyRewardId.Day5]: DailyReward;
 }
+
+export interface NFTCollectionData {
+  collectionAddress: string
+}
+export interface NFTCollection {
+  [Network.Testnet]: NFTCollectionData;
+  [Network.Mainnet]: NFTCollectionData;
+}
+
+export interface NFTCollections {
+  [NFTType.DragonFruit]: NFTCollection;
+}
+
+
+

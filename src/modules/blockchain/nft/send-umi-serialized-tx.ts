@@ -19,7 +19,6 @@ export interface SendUmiSerializedTxResponse {
 
 export const sendUmiSerializedTx = async ({
     network = defaultNetwork,
-
     privateKey,
     serializedTx,
 }: SendUmiSerializedTxParams): Promise<SendUmiSerializedTxResponse> => {
@@ -31,9 +30,18 @@ export const sendUmiSerializedTx = async ({
     )
     umi.use(keypairIdentity(signer))
     const tx = umi.transactions.deserialize(base58.decode(serializedTx))
-    // const signedDeserializedCreateAssetTx = await umi.identity.signTransaction(
-    //     tx
-    // )
-    const txHash = await umi.rpc.sendTransaction(tx)
+    const signedDeserializedCreateAssetTx = await umi.identity.signTransaction(
+        tx
+    )
+    const txHash = await umi.rpc.sendTransaction(signedDeserializedCreateAssetTx)
+    const latestBlockhash = await umi.rpc.getLatestBlockhash()
+    await umi.rpc.confirmTransaction(txHash, {
+        commitment: "finalized",
+        strategy: {
+            type: "blockhash",
+            blockhash: latestBlockhash.blockhash,
+            lastValidBlockHeight: latestBlockhash.lastValidBlockHeight
+        }
+    })
     return { txHash: base58.encode(txHash) }
 }

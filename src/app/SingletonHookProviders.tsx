@@ -23,6 +23,7 @@ import {
     useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation,
     useHoneycombSendTransactionsSwrMutation,
     useSendUmiSerializedTxSwrMutation,
+    useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -51,6 +52,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             NFT_DISCLOSURE: useDisclosure(),
             TOKEN_DISCLOSURE: useDisclosure(),
             SELECT_NFT_DISCLOSURE: useDisclosure(),
+            DOWNLOAD_PACKAGE_MODAL_DISCLOSURE: useDisclosure(),
             
             // Using new constants with GraphQL mutations
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
@@ -62,6 +64,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION: useGraphQLMutationUpdateReferralSwrMutation(),
             GRAPHQL_MUTATION_WRAP_SOLANA_METAPLEX_SWR_MUTATION: useGraphQLMutationWrapSolanaMetaplexSwrMutation(),
             MUTATION_GRAPHQL_FREEZE_SOLANA_METAPLEX_NFT_SWR_MUTATION: useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation(),
+            MUTATION_GRAPHQL_VALIDATE_SOLANA_METAPLEX_NFT_FROZEN_SWR_MUTATION: useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation(),
             SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),

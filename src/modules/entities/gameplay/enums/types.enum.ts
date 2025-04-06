@@ -64,3 +64,6 @@ export enum PetType {
     Cat = "cat"
 }
 
+export enum NFTType {
+    DragonFruit = "dragonFruit",
+}

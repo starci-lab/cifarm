@@ -292,6 +292,48 @@ export const productAssetMap: Record<
             },
         },
     },
+    [ProductId.DragonFruit]: {
+        name: "Dragon Fruit",
+        base: {
+            textureConfig: {
+                assetUrl: "products/dragon-fruit.png",
+                key: "dragon-fruit",
+                isQuality: false,
+            },
+        },
+    },
+    [ProductId.DragonFruitQuality]: {
+        name: "Dragon Fruit Quality",
+        base: {
+            textureConfig: {
+                key: "dragon-fruit",
+                useExisting: true,
+                isQuality: true,
+            },
+        },
+    },
+    [ProductId.Jackfruit]: {
+        name: "Jackfruit",
+        base: {
+            textureConfig: {
+                assetUrl: "products/jackfruit.png",
+                key: "jackfruit",
+                packageId: 1,
+                isQuality: false,
+            },
+        },
+    },
+    [ProductId.JackfruitQuality]: {
+        name: "Jackfruit Quality",
+        base: {
+            textureConfig: {
+                key: "jackfruit",
+                useExisting: true,
+                packageId: 1,
+                isQuality: true,
+            },
+        },
+    },
 }
 
 // Function to load all product assets

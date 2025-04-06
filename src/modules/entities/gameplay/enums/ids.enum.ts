@@ -38,6 +38,9 @@ export enum CropId {
 export enum FruitId {
     Banana = "banana",
     Apple = "apple",
+    DragonFruit = "dragonFruit",
+    //j97fruit
+    Jackfruit = "jackfruit",
 }
 
 // Daily Reward Enum
@@ -112,6 +115,10 @@ export enum ProductId {
     StrawberryQuality = "strawberryQuality",
     Honey = "honey",
     HoneyQuality = "honeyQuality",
+    DragonFruit = "dragonFruit",
+    DragonFruitQuality = "dragonFruitQuality",
+    Jackfruit = "jackfruit",
+    JackfruitQuality = "jackfruitQuality",
 }
 
 export enum SystemId {
@@ -178,6 +185,10 @@ export enum InventoryTypeId {
     StrawberryQuality = "strawberryQuality",
     Honey = "honey",
     HoneyQuality = "honeyQuality",
+    DragonFruit = "dragonFruit",
+    DragonFruitQuality = "dragonFruitQuality",
+    Jackfruit = "jackfruit",
+    JackfruitQuality = "jackfruitQuality",
 }
 
 export enum PlacedItemTypeId {
@@ -191,6 +202,8 @@ export enum PlacedItemTypeId {
     BasicTile = "basicTile",
     BeeHouse = "beeHouse",
     PetHouse = "petHouse",
+    DragonFruit = "dragonFruit",
+    Jackfruit = "jackfruit",
 }
 
 // Pet Enum

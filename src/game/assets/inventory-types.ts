@@ -518,6 +518,42 @@ export const inventoryTypeAssetMap: Record<
             },
         },
     },
+    [InventoryTypeId.DragonFruit]: {
+        name: "Dragon Fruit",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.DragonFruit].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeId.DragonFruitQuality]: {
+        name: "Dragon Fruit Quality",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.DragonFruitQuality].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeId.Jackfruit]: {
+        name: "Jackfruit",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.Jackfruit].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
+    [InventoryTypeId.JackfruitQuality]: {
+        name: "Jackfruit Quality",
+        base: {
+            textureConfig: {
+                ...productAssetMap[ProductId.JackfruitQuality].base.textureConfig,
+                useExisting: true,
+            },
+        },
+    },
 }
 
 // Function to load all inventory type assets

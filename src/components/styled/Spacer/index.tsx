@@ -10,6 +10,9 @@ export const Spacer: FC<SpacerProps> = ({ y }: SpacerProps) => {
     case 1:
         yValue = "h-1"
         break
+    case 1.5:
+        yValue = "h-1.5"
+        break
     case 2:
         yValue = "h-2"
         break

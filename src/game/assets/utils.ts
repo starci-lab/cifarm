@@ -13,7 +13,7 @@ export const getAssetUrl = (assetUrl: string) => {
 }
 export const downloadTexture = async (
     scene: Scene,
-    textureConfig: TextureConfig
+    textureConfig: TextureConfig,
 ) => {
     // increment the total assets loaded
     const totalAssetsLoaded = Number.parseInt(scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 

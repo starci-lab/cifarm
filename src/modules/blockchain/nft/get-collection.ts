@@ -4,7 +4,7 @@ import { Platform, chainKeyToPlatform } from "../common"
 import { NFTCollections } from "@/redux"
 import { defaultNetwork } from "../default"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
-import { fetchAssetsByCollection, mplCore } from "@metaplex-foundation/mpl-core"
+import { Attribute, fetchAssetsByCollection, mplCore } from "@metaplex-foundation/mpl-core"
 import { publicKey } from "@metaplex-foundation/umi"
 import axios from "axios"
 
@@ -27,7 +27,8 @@ export interface NFTData {
     name: string;
     nftAddress: string;
     imageUrl: string;
-    traits: Array<NFTTrait>
+    attributes: Array<Attribute>
+    frozen: boolean
 }
 
 export interface CollectionResponse {
@@ -54,7 +55,7 @@ export const getSolanaCollection = async ({
         .use(mplCore())
     let assets = await fetchAssetsByCollection(umi, publicKey(collectionAddress))
     assets = assets.filter((asset) => asset.owner.toString() === accountAddress)
-    
+
     const nfts: Array<NFTData> = []
     const promises: Array<Promise<void>> = []
     for (const asset of assets) {
@@ -64,14 +65,13 @@ export const getSolanaCollection = async ({
                 name: metadata.data.name,
                 nftAddress: asset.publicKey.toString(),
                 imageUrl: metadata.data.image,
-                traits: metadata.data.attributes?.map((attribute) => ({
-                    key: attribute.trait_type,
-                    value: attribute.value.toString()
-                })) || [],
+                attributes: asset.attributes?.attributeList ?? [],
+                frozen: asset.permanentFreezeDelegate?.frozen ?? false
             })
         })())
     }
     await Promise.all(promises)
+    console.log(nfts.map((nft) => nft.nftAddress))
     // with filters
     return {
         nfts
@@ -92,18 +92,4 @@ export interface MetaplexNFTMetadata {
     name: string
     description: string
     image: string
-    external_url?: string
-    properties?: {
-        files?: Array<{
-            uri: string
-            type: string
-        }>
-        category?: string
-    }
-    attributes?: Array<{
-        trait_type: string
-        value: string | number
-    }>
-    animation_url?: string
-    youtube_url?: string
 }

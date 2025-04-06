@@ -19,7 +19,8 @@ import {
     AnimalInfo,
     CropInfo,
     FruitInfo,
-    FlowerSchema
+    FlowerSchema,
+    NFTCollections
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -367,6 +368,16 @@ const query = gql`
         lastDay
       }
     }
+    nftCollections {
+      dragonFruit {
+        testnet {
+          collectionAddress
+        }
+        mainnet {
+          collectionAddress
+        }
+      }
+    }  
   }
 `
 
@@ -390,6 +401,7 @@ export interface QueryStaticResponse {
   fruitInfo: FruitInfo
   cropInfo: CropInfo
   animalInfo: AnimalInfo
+  nftCollections: NFTCollections
 }
 
 export const queryStatic = async () => {
