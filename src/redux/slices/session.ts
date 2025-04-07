@@ -33,6 +33,8 @@ export interface SessionState {
   collectionKey: string;
   // selected nft address
   nftAddress: string;
+  // placed item id
+  placedItemId: string;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -67,6 +69,7 @@ const initialState: SessionState = {
     nftCollectionsSwrs: {},
     collectionKey: "",
     nftAddress: "",
+    placedItemId: "",
 }
 
 export const sessionSlice = createSlice({
@@ -126,6 +129,9 @@ export const sessionSlice = createSlice({
         setNftAddress: (state, action: PayloadAction<string>) => {
             state.nftAddress = action.payload
         },
+        setPlacedItemId: (state, action: PayloadAction<string>) => {
+            state.placedItemId = action.payload
+        },
     },
 })
 
@@ -146,6 +152,7 @@ export const {
     removeNftCollectionsSwr,
     setCollectionKey,
     setNftAddress,
+    setPlacedItemId,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

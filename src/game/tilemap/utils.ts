@@ -19,6 +19,7 @@ import {
     TileSchema,
 } from "@/modules/entities"
 import { CacheKey } from "../types"
+import { QueryStaticResponse } from "@/modules/apollo"
 
 export const setTintForMainVisual = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject,
@@ -57,10 +58,12 @@ export interface CreateMainVisualParams extends MapAssetData {
   scene: Phaser.Scene;
 }
 
-export type GetMainVisualOffsetsParams = MapAssetData
-export const getMainVisualOffsets = (
-    { mainVisualType, spineConfig, textureConfig }: GetMainVisualOffsetsParams
-) => {
+export type GetMainVisualOffsetsParams = MapAssetData;
+export const getMainVisualOffsets = ({
+    mainVisualType,
+    spineConfig,
+    textureConfig,
+}: GetMainVisualOffsetsParams) => {
     let x = 0
     let y = 0
     switch (mainVisualType) {
@@ -126,6 +129,41 @@ export const getAssetData = ({
     isAdult,
     fruitStage,
 }: GetAssetDataParams): MapAssetData | undefined => {
+    const tiles = scene.cache.obj.get(CacheKey.Tiles) as Array<TileSchema>
+    const buildings = scene.cache.obj.get(
+        CacheKey.Buildings
+    ) as Array<BuildingSchema>
+    const animals = scene.cache.obj.get(CacheKey.Animals) as Array<AnimalSchema>
+    const fruits = scene.cache.obj.get(CacheKey.Fruits) as Array<FruitSchema>
+    const pets = scene.cache.obj.get(CacheKey.Pets) as Array<PetSchema>
+    return getAssetDataRaw({
+        placedItemType,
+        fruitStage,
+        isAdult,
+        queryStaticResponsePartial: {
+            tiles,
+            buildings,
+            animals,
+            fruits,
+            pets,
+        },
+    })
+}
+
+export interface GetAssetDataRawParams {
+  placedItemType: PlacedItemTypeSchema;
+  queryStaticResponsePartial: Partial<QueryStaticResponse>;
+  // extra vars to be use to define the asset data
+  isAdult?: boolean;
+  fruitStage?: number;
+}
+
+export const getAssetDataRaw = ({
+    placedItemType,
+    fruitStage,
+    isAdult,
+    queryStaticResponsePartial,
+}: GetAssetDataRawParams) => {
     if (!placedItemType) {
         throw new Error("Placed item type not found")
     }
@@ -134,7 +172,10 @@ export const getAssetData = ({
         if (!placedItemType.tile) {
             throw new Error("Tile ID not found")
         }
-        const tiles = scene.cache.obj.get(CacheKey.Tiles) as Array<TileSchema>
+        const tiles = queryStaticResponsePartial.tiles
+        if (!tiles) {
+            throw new Error("Tiles not found")
+        }
         const tile = tiles.find((tile) => tile.id === placedItemType.tile)
         if (!tile) {
             throw new Error("Tile not found")
@@ -145,9 +186,10 @@ export const getAssetData = ({
         if (!placedItemType.building) {
             throw new Error("Building ID not found")
         }
-        const buildings = scene.cache.obj.get(
-            CacheKey.Buildings
-        ) as Array<BuildingSchema>
+        const buildings = queryStaticResponsePartial.buildings
+        if (!buildings) {
+            throw new Error("Buildings not found")
+        }
         const building = buildings.find(
             (building) => building.id === placedItemType.building
         )
@@ -160,9 +202,10 @@ export const getAssetData = ({
         if (!placedItemType.animal) {
             throw new Error("Animal ID not found")
         }
-        const animals = scene.cache.obj.get(
-            CacheKey.Animals
-        ) as Array<AnimalSchema>
+        const animals = queryStaticResponsePartial.animals
+        if (!animals) {
+            throw new Error("Animals not found")
+        }
         const animal = animals.find(
             (animal) => animal.id === placedItemType.animal
         )
@@ -176,7 +219,10 @@ export const getAssetData = ({
         if (!placedItemType.fruit) {
             throw new Error("Fruit ID not found")
         }
-        const fruits = scene.cache.obj.get(CacheKey.Fruits) as Array<FruitSchema>
+        const fruits = queryStaticResponsePartial.fruits
+        if (!fruits) {
+            throw new Error("Fruits not found")
+        }
         const fruit = fruits.find((fruit) => fruit.id === placedItemType.fruit)
         if (!fruit) {
             throw new Error("Fruit not found")
@@ -187,12 +233,11 @@ export const getAssetData = ({
         if (!placedItemType.pet) {
             throw new Error("Pet ID not found")
         }
-        const pets = scene.cache.obj.get(
-            CacheKey.Pets
-        ) as Array<PetSchema>
-        const pet = pets.find(
-            (pet) => pet.id === placedItemType.pet
-        )
+        const pets = queryStaticResponsePartial.pets
+        if (!pets) {
+            throw new Error("Pets not found")
+        }
+        const pet = pets.find((pet) => pet.id === placedItemType.pet)
         if (!pet) {
             throw new Error("Pet not found")
         }

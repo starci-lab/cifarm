@@ -53,7 +53,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             NFT_DISCLOSURE: useDisclosure(),
             TOKEN_DISCLOSURE: useDisclosure(),
             SELECT_NFT_DISCLOSURE: useDisclosure(),
-            INFO_MODAL_DISCLOSURE: useDisclosure(),
+            INFO_DISCLOSURE: useDisclosure(),
             NFT_STORAGE_DISCLOSURE: useDisclosure(),
             DOWNLOAD_DISCLOSURE: useDisclosure(),
             DOWNLOADING_DISCLOSURE: useDisclosure(),

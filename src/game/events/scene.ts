@@ -96,6 +96,7 @@ export enum ModalName {
     Sell = "sell",
     NFTStorage = "nft-storage",
     Download = "download",
+    Info = "info"
 }  
 
 export interface OpenModalMessage {

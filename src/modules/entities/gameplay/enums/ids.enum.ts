@@ -204,6 +204,8 @@ export enum PlacedItemTypeId {
     PetHouse = "petHouse",
     DragonFruit = "dragonFruit",
     Jackfruit = "jackfruit",
+    Banana = "banana",
+    Apple = "apple",
 }
 
 // Pet Enum

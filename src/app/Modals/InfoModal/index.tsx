@@ -1,72 +1,94 @@
 "use client"
-import { INFO_MODAL_DISCLOSURE, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
-import { useGraphQLQueryUserSwr } from "@/hooks"
-import { REFERRAL_USER_ID } from "@/hooks"
+import {
+    GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
+    INFO_DISCLOSURE,
+} from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import React, { FC, useEffect, useState } from "react"
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
-import { ModalHeader, Snippet, Spacer } from "@/components"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ModalHeader } from "@/components"
+import {  } from "@/components"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+    ModalName,
+} from "@/game/events"
+import { useAppSelector } from "@/redux"
+import { useGraphQLQueryPlacedItemsSwrMutation } from "@/hooks"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { placedItemTypeAssetMap } from "@/game"
+import { getAssetDataRaw } from "@/game/tilemap"
+import { MainVisual } from "./MainVisual"
 
 export const InfoModal: FC = () => {
-    const { isOpen, toggle } = useSingletonHook<
-    ReturnType<typeof useDisclosure>
-  >(INFO_MODAL_DISCLOSURE)
+    const { isOpen, toggle } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(INFO_DISCLOSURE)
 
-    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
+    const placedItemId = useAppSelector(
+        (state) => state.sessionReducer.placedItemId
+    )
+    const { swrMutation } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryPlacedItemsSwrMutation>
+  >(GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION)
+    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+        GRAPHQL_QUERY_STATIC_SWR
+    )
+    const placedItem = swrMutation.data?.data.placedItems.find(
+        (placedItem) => placedItem.id === placedItemId
+    )
+    const placedItemType = swr.data?.data.placedItemTypes.find(
+        (placedItemType) => placedItemType.id === placedItem?.placedItemType
+    )
 
-    const [webUrl, setWebUrl] = useState("")
-
-    useEffect(() => {
-        setWebUrl(`${window.location.href}?${REFERRAL_USER_ID}=${swr.data?.data.user.id}`)
-    }, [])
-
-    const telegramUrl = `https://t.me/cifarm_bot?startapp=${swr.data?.data.user.id}`
+    if (!placedItemType) {
+        return null
+    }
+    if (!placedItem) {
+        return null
+    }
+    if (!swr.data) {
+        return null
+    }
+    const mapAssetData = getAssetDataRaw({
+        placedItemType,
+        queryStaticResponsePartial: swr.data?.data,
+        isAdult: placedItem.animalInfo?.isAdult,
+        fruitStage: placedItem.fruitInfo?.currentStage,
+    })
+    if (!mapAssetData) {
+        return null
+    }
     return (
-        <Dialog open={isOpen} onOpenChange={toggle}>
+        <Dialog
+            open={isOpen}
+            onOpenChange={(value) => {
+                toggle(value)
+                if (!value) {
+                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
+                        modalName: ModalName.Info,
+                    })
+                }
+            }}
+        >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        <ModalHeader title="Invite User" description="Share the link through your social network; users with the referral code will receive bonus tokens, and you will earn extra tokens as well." />
+                        <ModalHeader
+                            title={placedItemTypeAssetMap[placedItemType.displayId].name}
+                        />
                     </DialogTitle>
-                </DialogHeader>
-                <div>
                     <div>
-                        <div className="text-sm mb-1.5">Web URL</div>
-                        <Spacer y={1.5} />
-                        <Alert>
-                            <AlertDescription> 
-                                <div className="flex items-center gap-2 justify-between w-full">
-                                    <div className="text-sm">
-                                        {webUrl}
-                                    </div>
-                                    <Snippet code={webUrl} />
-                                </div>
-                            </AlertDescription>
-                        </Alert>
+                        <MainVisual mapAssetData={mapAssetData} />
                     </div>
-                    <Spacer y={4} />
-                    <div className="w-full">
-                        <div className="text-sm mb-1.5">Telegram URL</div>
-                        <Spacer y={1.5} />
-                        <Alert>
-                            <AlertDescription> 
-                                <div className="flex items-center gap-2 justify-between w-full">
-                                    <div className="text-sm">
-                                        {telegramUrl}
-                                    </div>
-                                    <Snippet code={telegramUrl} />
-                                </div>
-                            </AlertDescription>
-                        </Alert>
-                    </div>
-                </div>
+                </DialogHeader>
+                <div></div>
             </DialogContent>
         </Dialog>
     )

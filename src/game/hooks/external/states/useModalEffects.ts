@@ -5,6 +5,7 @@ import {
     PROFILE_DISCLOSURE,
     NFT_STORAGE_DISCLOSURE,
     DOWNLOAD_DISCLOSURE,
+    INFO_DISCLOSURE,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
@@ -25,7 +26,8 @@ export const useModalEffects = () => {
     useSingletonHook<ReturnType<typeof useDisclosure>>(NFT_STORAGE_DISCLOSURE)
     const { toggle: downloadToggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(DOWNLOAD_DISCLOSURE)
-
+    const { toggle: infoToggle } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(INFO_DISCLOSURE)
 
     useEffect(() => {
         ExternalEventEmitter.on(
@@ -46,6 +48,9 @@ export const useModalEffects = () => {
                     break
                 case ModalName.Download:
                     downloadToggle(true)
+                    break
+                case ModalName.Info:
+                    infoToggle(true)
                     break
                 default:
                     break

@@ -151,7 +151,9 @@ export enum ExternalEventName {
     // 
     DisplayTimersResponsed = "display_timer_responsed",
     // place nft item, from React to Phaser
-    PlaceNFTItem = "place_nft_item"
+    PlaceNFTItem = "place_nft_item",
+    // set placed item info, from Phaser to React
+    SetPlacedItemInfo = "set_placed_item_info"
 }
 
 export interface SyncPlacedItemsMessage {
@@ -166,3 +168,6 @@ export interface DisplayTimersMessage {
     ids: Array<string>
 }
 
+export interface SetPlacedItemInfoMessage {
+    placedItemId: string
+}

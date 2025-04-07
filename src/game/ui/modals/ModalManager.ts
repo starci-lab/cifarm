@@ -43,13 +43,13 @@ export class ModalManager extends ContainerLite {
     // sell modal
     private sellModal: SellModal | undefined
 
-
     private externalModalNames = [
         ModalName.Neighbors,
         ModalName.Quests,
         ModalName.Profile,
         ModalName.NFTStorage,
         ModalName.Download,
+        ModalName.Info,
     ]
     private upgradeModal: UpgradeModal | undefined
 
@@ -290,6 +290,7 @@ export class ModalManager extends ContainerLite {
         case ModalName.Profile:
         case ModalName.NFTStorage:
         case ModalName.Download:
+        case ModalName.Info:
             throw new Error("External modals should not be opened directly")
         }
     }

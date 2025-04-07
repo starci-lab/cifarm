@@ -358,12 +358,30 @@ export class InputTilemap extends ItemTilemap {
                 this.handlePressOnFruit({ data })
                 break
             }
-        }).on("2tap", () => {
-            console.log("2tap")
-            alert("2tap")
-            // SceneEventEmitter.emit(SceneEventName.OpenModal, {
-            //     modalName: ModalName.Info,
-            // })
+        }).on("2tap", (pointer: Phaser.Input.Pointer) => {
+            const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
+            // do nothing if tile is not found
+            if (!tile) {
+                return
+            }
+            //if normal mode is not on
+            if (this.inputMode !== InputMode.Normal) {
+                return
+            }
+            const data = this.findPlacedItemRoot(tile.x, tile.y)
+            if (!data) {
+                console.log("No placed item found for position")
+                return
+            }
+            if (!data.object.currentPlacedItem) {
+                throw new Error("Placed item not found")
+            }
+            ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
+                placedItemId: data.object.currentPlacedItem.id
+            })
+            SceneEventEmitter.emit(SceneEventName.OpenModal, {
+                modalName: ModalName.Info
+            })
         })
     }
     // method to handle press on tile
