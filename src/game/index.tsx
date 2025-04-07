@@ -6,6 +6,7 @@ import { useEffects } from "./hooks"
 import { ExternalEventEmitter, SceneEventEmitter } from "./events"
 
 export * from "./events"
+export * from "./assets"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)

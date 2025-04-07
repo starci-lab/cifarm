@@ -39,7 +39,7 @@ import { useTimerEffects } from "./useTimerEffects"
 import { useHarvestBeeHouseEffects } from "./useHarvestBeeHouseEffects"
 import { useThiefBeeHouseEffects } from "./useThiefBeeHouseEffects"
 import { useBuyPetEffects } from "./useBuyPetEffects"
-
+import { usePlaceNFTEffects } from "./usePlaceNFTEffects"
 export const useActionsEffects = () => {
     useBuyCropSeedsEffects()
     useBuyFlowerSeedsEffects()  
@@ -82,4 +82,5 @@ export const useActionsEffects = () => {
     useHarvestBeeHouseEffects()
     useThiefBeeHouseEffects()
     useBuyPetEffects()
+    usePlaceNFTEffects()
 }

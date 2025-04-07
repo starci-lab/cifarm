@@ -28,6 +28,19 @@ export const Spacer: FC<SpacerProps> = ({ y }: SpacerProps) => {
     case 6:
         yValue = "h-6"
         break
+    case 8:
+        yValue = "h-8"
+        break
+    case 10:
+        yValue = "h-10"
+        break
+    case 12:
+        yValue = "h-12"
+        break
+    case 16:
+        yValue = "h-16"
+        break  
     }
+
     return <div className={cn(yValue)} />
 }   

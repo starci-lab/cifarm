@@ -5,14 +5,14 @@ import { QuestCard } from "../QuestCard"
 import { GOLD_IMAGE_URL } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
-import { DOWNLOAD_PACKAGE_MODAL_DISCLOSURE } from "@/app/constants"
+import { DOWNLOADING_DISCLOSURE } from "@/app/constants"
 import { useAppDispatch } from "@/redux"
 import { setDownloadPackageModal } from "@/redux/slices/modal"
 export enum GameTabContent {
     DownloadNFTPackage = "DownloadNFTPackage",
 }
 export const GameTab: FC = () => {
-    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(DOWNLOAD_PACKAGE_MODAL_DISCLOSURE)
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(DOWNLOADING_DISCLOSURE)
     const dispatch = useAppDispatch()
     return (
         <div className="relative">

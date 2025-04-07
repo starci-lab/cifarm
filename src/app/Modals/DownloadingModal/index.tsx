@@ -4,12 +4,14 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    ExtendedButton,
     ModalHeader,
     Progress,
+    Spacer,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
-import { DOWNLOAD_PACKAGE_MODAL_DISCLOSURE } from "@/app/constants"
+import { DOWNLOADING_DISCLOSURE } from "@/app/constants"
 import { fruitAssetMap } from "@/game/assets"
 import {
     addDownloadProgress,
@@ -21,11 +23,9 @@ import {
 import { downloadTexture, getBytes } from "./download"
 import { sessionDb } from "@/modules/dexie"
 import bytes from "bytes"
-import { ExtendedButton, Spacer } from "@/components"
-
-export const DownloadPackageModal: FC = () => {
+export const DownloadingModal: FC = () => {
     const { toggle, isOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        DOWNLOAD_PACKAGE_MODAL_DISCLOSURE
+        DOWNLOADING_DISCLOSURE
     )
     const downloadPackageModal = useAppSelector(
         (state) => state.modalReducer.downloadPackageModal
@@ -35,6 +35,7 @@ export const DownloadPackageModal: FC = () => {
     useAppSelector((state) => state.downloadReducer)
     const dispatch = useAppDispatch()
     useEffect(() => {
+        if (!isOpen) return
         if (!downloadPackageModal.packageId) return
         const handleEffect = async () => {
             try {
@@ -52,7 +53,6 @@ export const DownloadPackageModal: FC = () => {
                             textureConfig.packageId === downloadPackageModal.packageId
                     )
                 const bytesMap = await getBytes(fruitTextureConfigs)
-                console.log(bytesMap)
                 dispatch(setTotalDownloadBytes(bytesMap))
                 for (const textureConfig of fruitTextureConfigs) {
                     await downloadTexture(textureConfig, (key, data) => {
@@ -68,7 +68,7 @@ export const DownloadPackageModal: FC = () => {
             }
         }
         handleEffect()
-    }, [downloadPackageModal.packageId])
+    }, [downloadPackageModal.packageId, isOpen])
     const downloadedBytes = Object.entries(downloadProgresses).reduce(
         (acc, [key, data]) => {
             const bytes = totalDownloadBytes[key]
@@ -84,15 +84,15 @@ export const DownloadPackageModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>
                         <ModalHeader
-                            title="Download Package"
-                            description="Download the package..."
+                            title="Downloading"
+                            description="Downloading the package..."
                         />
                     </DialogTitle>
                 </DialogHeader>
                 <div>
                     <Progress value={(downloadedBytes / totalBytes) * 100} />
                     <Spacer y={2} />
-                    <div>
+                    <div className="text-sm">
                         {`${bytes(downloadedBytes)} / ${bytes(totalBytes)}`}
                     </div>
                     {downloadCompleted && (
@@ -100,17 +100,17 @@ export const DownloadPackageModal: FC = () => {
                             <Spacer y={4} />
                             <div>
                                 <div className="text-muted-foreground text-sm">
-                  Download completed. Please restart the game to see the
-                  changes.
+                                        Download completed. Please restart the game to see the
+                                        changes.
                                 </div>
-                                <Spacer y={1.5} />
+                                <Spacer y={2} />
                                 <ExtendedButton
                                     className="w-full"
                                     onClick={() => {
                                         window.location.reload()
                                     }}
                                 >
-                  Restart
+                                        Restart
                                 </ExtendedButton>
                             </div>
                         </>

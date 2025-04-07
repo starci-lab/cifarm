@@ -28,7 +28,7 @@ export interface NFTData {
     nftAddress: string;
     imageUrl: string;
     attributes: Array<Attribute>
-    frozen: boolean
+    wrapped: boolean
 }
 
 export interface CollectionResponse {
@@ -66,7 +66,7 @@ export const getSolanaCollection = async ({
                 nftAddress: asset.publicKey.toString(),
                 imageUrl: metadata.data.image,
                 attributes: asset.attributes?.attributeList ?? [],
-                frozen: asset.permanentFreezeDelegate?.frozen ?? false
+                wrapped: asset.permanentFreezeDelegate?.frozen ?? false
             })
         })())
     }

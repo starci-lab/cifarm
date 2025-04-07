@@ -16,10 +16,8 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import { UserCard } from "../UserCard"
-import { FilterBar, List } from "@/components"
+import { FilterBar, List, ExtendedButton, Pagination } from "@/components"
 import { RefreshCcw } from "lucide-react"
-import { ExtendedButton } from "@/components"
-import { Pagination } from "@/components/ui/pagination"
 
 export const FolloweesTab: FC = () => {
     const {

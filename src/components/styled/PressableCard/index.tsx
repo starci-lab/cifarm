@@ -1,9 +1,8 @@
-import React, { FC, PropsWithChildren } from "react"
-import { Button } from "../../ui/button"
+import React, { FC } from "react"
+import { ExtendedButton, ExtendedButtonProps } from "../ExtendedButton" 
 import { cn } from "@/lib/utils"
 
-export interface PressableCardProps extends PropsWithChildren {
-  onClick?: () => void;
+export interface PressableCardProps extends ExtendedButtonProps {
   showBorder?: boolean;
   classNames?: {
     base?: string;
@@ -17,16 +16,18 @@ export const PressableCard: FC<PressableCardProps> = ({
     classNames = {},
     showBorder = true,
     className,
+    ...props
 }: PressableCardProps) => {
     const { base } = classNames
     return (
-        <Button
+        <ExtendedButton
             variant="ghost"
             size="icon"
             onClick={onClick}
             className={cn("text-start justify-start w-full p-3","whitespace-normal rounded-xl border bg-card text-card-foreground shadow h-fit", base, !showBorder && "border-none border-0 shadow-none", className)}
+            {...props}
         >
             {children}
-        </Button>
+        </ExtendedButton>
     )
 }

@@ -5,7 +5,7 @@ import { ArrowLeftIcon } from "lucide-react"
 
 export interface HeaderProps {
   title: string
-  description: string
+  description?: string
 }
 
 export const Header = ({ title, description }: HeaderProps) => {
@@ -24,9 +24,9 @@ export const Header = ({ title, description }: HeaderProps) => {
                 <div className="text-2xl font-bold">{title}</div>
             </div>
             <Spacer y={4} />
-            <div className="text-xs text-muted-foreground">
+            { description &&  <div className="text-xs text-muted-foreground">
                 {description}
-            </div>
+            </div>}  
         </div>
     )
 }

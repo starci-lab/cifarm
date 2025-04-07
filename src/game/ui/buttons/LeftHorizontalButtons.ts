@@ -9,6 +9,8 @@ export class LeftHorizontalButtons extends HorizontalButtons {
     private shopButton : Sizer
     private roadsideStandButton : Sizer
     private neighborsButton : Sizer
+    private downloadButton : Sizer
+    private nftStorageButton : Sizer
     
     constructor(baseParams: ButtonsBaseConstructorParams) {
         super({
@@ -73,6 +75,32 @@ export class LeftHorizontalButtons extends HorizontalButtons {
             },
         })
         this.addButton(this.neighborsButton)
+
+        // add download button
+        this.downloadButton = this.createButton({
+            iconKey: baseAssetMap[BaseAssetKey.UIIconDownload].base.textureConfig.key,
+            text: "Download",
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.Download
+                }
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
+            },
+        })
+        this.addButton(this.downloadButton)
+
+        // add nft storage button
+        this.nftStorageButton = this.createButton({
+            iconKey: baseAssetMap[BaseAssetKey.UIIconNFTStorage].base.textureConfig.key,
+            text: "NFT Storage",
+            onPress: () => {
+                const eventMessage: OpenModalMessage = {
+                    modalName: ModalName.NFTStorage
+                }
+                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
+            },
+        })
+        this.addButton(this.nftStorageButton)
 
         SceneEventEmitter.on(SceneEventName.HideButtons, () => {
             this.setVisible(false).setActive(false)

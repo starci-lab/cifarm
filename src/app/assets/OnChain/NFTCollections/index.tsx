@@ -13,7 +13,7 @@ export const NFTCollections: FC = () => {
                 tooltipString="The NFT collections you have added to your wallet."
             />
             <Spacer y={4} />
-            <div className="grid gap-4">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 {Object.keys(collections).map((collection) => {
                     return <NFTCollection key={collection} collectionKey={collection} />
                 })}

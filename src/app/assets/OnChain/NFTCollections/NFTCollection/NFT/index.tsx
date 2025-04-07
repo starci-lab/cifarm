@@ -1,50 +1,18 @@
-import { Card, CardContent, Image, Spacer, ExtendedButton, NFTRarity } from "@/components"
-import { TraitDropdown } from "./TraitDropdown"
+import { Image, PressableCard } from "@/components"
 import React, { FC } from "react"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { useDisclosure } from "react-use-disclosure"
-import { NFT_DISCLOSURE } from "@/app/constants"
-import { useAppDispatch, setNFTModal, ExtendedNFTData } from "@/redux"
-import { AttributeName, NFTRarityEnum } from "@/modules/blockchain"
-import { ExtendedBadge } from "@/components"
-import { SnowflakeIcon } from "lucide-react"
+import { ExtendedNFTData } from "@/redux"
 
 interface NFTProps {
     nft: ExtendedNFTData
 }
 
 export const NFT: FC<NFTProps> = ({ nft }) => {
-    const { open } = useSingletonHook<
-    ReturnType<typeof useDisclosure>
-  >(NFT_DISCLOSURE)
-    const dispatch = useAppDispatch()
-    return <Card>
-        <CardContent className="p-3">
-            <Image src={nft.imageUrl} className="w-full aspect-square object-contain" />
-            <Spacer y={4} />
-            <div className="text-sm">{nft.name}</div>
-            <Spacer y={2} />
-            <div className="flex gap-2">
-                <NFTRarity rarity={nft.attributes.find(attribute => attribute.key === AttributeName.Rarity)?.value as NFTRarityEnum} />
-                {
-                    nft.frozen && <ExtendedBadge icon={<SnowflakeIcon className="w-[14px] h-[14px]" />}>Frozen</ExtendedBadge>
-                }
+    return <PressableCard className="relative">
+        <div className="grid place-items-center p-3 w-full">
+            <Image src={nft.imageUrl} className="w-40 h-40 object-contain" />
+            <div className="flex gap-2 absolute left-3 bottom-3 bg-background/50 text-muted-background rounded-md px-2 py-1.5">
+                <div className="text-sm font-bold">{nft.name}</div>
             </div>
-            <Spacer y={4} />
-            <div className="flex gap-2 flex-col">
-                <div className="flex gap-2 sm:flex-row flex-col">
-                    <TraitDropdown traits={nft.attributes} />
-                    <ExtendedButton variant="outline" className="w-full">
-                View
-                    </ExtendedButton>
-                </div>
-                <ExtendedButton variant="outline" className="w-full" onClick={() => {
-                    dispatch(setNFTModal({ nftData: nft }))
-                    open()
-                }}>
-                Manage
-                </ExtendedButton>
-            </div>
-        </CardContent>
-    </Card>
+        </div>
+    </PressableCard>
 }   

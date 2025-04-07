@@ -24,6 +24,7 @@ import {
     useHoneycombSendTransactionsSwrMutation,
     useSendUmiSerializedTxSwrMutation,
     useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
+    useGraphQLQueryStoredPlacedItemsSwr,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -52,9 +53,11 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             NFT_DISCLOSURE: useDisclosure(),
             TOKEN_DISCLOSURE: useDisclosure(),
             SELECT_NFT_DISCLOSURE: useDisclosure(),
-            DOWNLOAD_PACKAGE_MODAL_DISCLOSURE: useDisclosure(),
             INFO_MODAL_DISCLOSURE: useDisclosure(),
-            
+            NFT_STORAGE_DISCLOSURE: useDisclosure(),
+            DOWNLOAD_DISCLOSURE: useDisclosure(),
+            DOWNLOADING_DISCLOSURE: useDisclosure(),
+
             // Using new constants with GraphQL mutations
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
@@ -80,6 +83,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_NEIGHBORS_SWR: useGraphQLQueryNeighborsSwr(),
             GRAPHQL_QUERY_USER_SWR: useGraphQLQueryUserSwr(),
             GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION: useGraphQLQueryPlacedItemsSwrMutation(),        
+            GRAPHQL_QUERY_STORED_PLACED_ITEMS_SWR: useGraphQLQueryStoredPlacedItemsSwr(),
             //io
             WS: useWs(),
         }}

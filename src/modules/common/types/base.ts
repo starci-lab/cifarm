@@ -14,3 +14,7 @@ export enum SchemaStatus {
 export type WithStatus<TSchema> = DeepPartial<TSchema> & {
     status: SchemaStatus
 }
+
+export interface PageParams {
+    params: { id: string }
+}

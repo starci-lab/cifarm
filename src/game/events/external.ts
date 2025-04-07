@@ -144,11 +144,14 @@ export enum ExternalEventName {
     RequestThiefBeeHouse = "request_thief_bee_house",
     // request to buy pet, from React to Phaser
     RequestBuyPet = "request_buy_pet",
-
-    // sync placed items, from React to Phaser
+    // request to place nft, from React to Phaser
+    RequestPlaceNFT = "request_place_nft",
+    // request to display timers, from React to Phaser
     RequestDisplayTimers = "request_display_timers",
     // 
-    DisplayTimersResponsed = "display_timer_responsed"
+    DisplayTimersResponsed = "display_timer_responsed",
+    // place nft item, from React to Phaser
+    PlaceNFTItem = "place_nft_item"
 }
 
 export interface SyncPlacedItemsMessage {

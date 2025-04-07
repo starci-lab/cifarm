@@ -16,6 +16,7 @@ export interface FruitStageAssetData {
 
 export interface FruitAssetData {
   map: Record<number, MapAssetData>;
+  nft?: Record<number, MapAssetData>;
   name: string;
   shop?: ShopAssetData;
 }
@@ -23,7 +24,7 @@ export interface FruitAssetData {
 // Fruit asset data map with the GID and asset URL for each fruit using FruitId as the key
 export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
     [FruitId.Banana]: {
-        name: "Banana",
+        name: "Banana", 
         map: {
             0: {
                 textureConfig: {
@@ -209,6 +210,38 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                 },
             },
         },
+        nft: {
+            0: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-1",
+                    useExisting: true,
+                },
+            },
+            1: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-2",
+                    useExisting: true,
+                },
+            },
+            2: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-3",
+                    useExisting: true,
+                },
+            },
+            3: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-4",
+                    useExisting: true,
+                },
+            },
+            4: {
+                textureConfig: {
+                    key: "fruit-dragon-fruit-5",
+                    useExisting: true,
+                },
+            },      
+        },
     },
     [FruitId.Jackfruit]: {
         name: "Jackfruit",
@@ -266,6 +299,38 @@ export const fruitAssetMap: Record<FruitId, FruitAssetData> = {
                         x: 0,
                         y: -170,
                     },
+                },
+            },
+        },
+        nft: {
+            0: {
+                textureConfig: {
+                    key: "fruit-jackfruit-1",
+                    useExisting: true,
+                },
+            },
+            1: {
+                textureConfig: {
+                    key: "fruit-jackfruit-2",
+                    useExisting: true,
+                },
+            },
+            2: {
+                textureConfig: {
+                    key: "fruit-jackfruit-3",
+                    useExisting: true,
+                },
+            },
+            3: {
+                textureConfig: {
+                    key: "fruit-jackfruit-4",
+                    useExisting: true,
+                },
+            },
+            4: {
+                textureConfig: {
+                    key: "fruit-jackfruit-5",
+                    useExisting: true,
                 },
             },
         },

@@ -1,4 +1,5 @@
 import { Events } from "phaser"
+import { PlacedItemSchema } from "@/modules/entities"
 // external event emitter take care of events between Phaser and React
 export const SceneEventEmitter = new Events.EventEmitter()
 
@@ -93,6 +94,8 @@ export enum ModalName {
     Profile = "profile",
     Upgrade = "upgrade",
     Sell = "sell",
+    NFTStorage = "nft-storage",
+    Download = "download",
 }  
 
 export interface OpenModalMessage {
@@ -154,3 +157,8 @@ export interface NormalModeOnMessage {
     refresh?: boolean;
     cancelNextTap?: boolean;
 }
+
+export interface PlaceNFTItemMessage {
+    placedItem: PlacedItemSchema
+  }
+  

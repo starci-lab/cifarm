@@ -1,17 +1,17 @@
 import React, { FC } from "react"
 import { NFTRarityEnum } from "@/modules/blockchain"
 import { ExtendedBadge } from "@/components"
-interface NFTRarityProps {
+interface NFTRarityBadgeProps {
     rarity: NFTRarityEnum
 }
 
-interface NFTRarityData {
+interface NFTRarityBadgeData {
     className: string
     text: string
 }
 
-export const NFTRarity: FC<NFTRarityProps> = ({ rarity }) => {
-    const rarityMap: Record<NFTRarityEnum, NFTRarityData> = {
+export const NFTRarityBadge: FC<NFTRarityBadgeProps> = ({ rarity }) => {
+    const rarityMap: Record<NFTRarityEnum, NFTRarityBadgeData> = {
         [NFTRarityEnum.Common]: {
             className: "bg-gray-200",
             text: "Common",
@@ -25,8 +25,9 @@ export const NFTRarity: FC<NFTRarityProps> = ({ rarity }) => {
             text: "Epic",
         },
     }
-    return <ExtendedBadge className={rarityMap[rarity].className}>
-        <div className="text-sm">{rarityMap[rarity].text}</div>
+    const data = rarityMap[rarity || NFTRarityEnum.Common]
+    return <ExtendedBadge className={data.className}>
+        <div className="text-xs">{data.text}</div>
     </ExtendedBadge>
 }
 

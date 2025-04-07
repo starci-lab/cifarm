@@ -27,6 +27,8 @@ export enum BaseAssetKey {
   UIIconPrevious = "ui-icon-previous",
   UIIconMove = "ui-icon-move",
   UIIconSell = "ui-icon-sell",
+  UIIconDownload = "ui-icon-download",
+  UIIconNFTStorage = "ui-icon-nft-storage",
 
   // UI Backgrounds
   UIBackgroundLarge = "ui-background-large",
@@ -280,6 +282,22 @@ export const baseAssetMap: Record<BaseAssetKey, BaseAssetData> = {
             textureConfig: {
                 assetUrl: "ui/icons/sell.png",
                 key: "ui-icon-sell",
+            },
+        },
+    },
+    [BaseAssetKey.UIIconDownload]: {
+        base: {
+            textureConfig: {
+                assetUrl: "ui/icons/download.png",
+                key: "ui-icon-download",
+            },
+        },
+    },
+    [BaseAssetKey.UIIconNFTStorage]: {
+        base: {
+            textureConfig: {
+                assetUrl: "ui/icons/nft-storage.png",
+                key: "ui-icon-nft-storage",
             },
         },
     },

@@ -54,6 +54,7 @@ import {
     HelpUsePesticideMessage,
     HelpUseWateringCanMessage,
     MoveMessage,
+    PlaceNFTMessage,
     PlantSeedMessage,
     ThiefAnimalMessage,
     ThiefBeeHouseMessage,
@@ -79,6 +80,7 @@ import {
     ExternalEventName,
     ModalName,
     OpenModalMessage,
+    PlaceNFTItemMessage,
     SceneEventEmitter,
     SceneEventName,
 } from "../events"
@@ -95,6 +97,7 @@ export enum InputMode {
   Buy,
   Move,
   Sell,
+  PlaceNFT
 }
 
 interface DragData {
@@ -105,6 +108,11 @@ interface DragData {
 }
 
 export type BuyingDragData = DragData;
+
+export interface PlaceNFTDragData extends DragData {
+  placedItemId: string;
+}
+
 export interface MovingDragData extends DragData {
   objectData: PlacedItemObjectData;
 }
@@ -123,10 +131,15 @@ export class InputTilemap extends ItemTilemap {
     private maxZoom = 5
     // place item data
     private buyingDragData: BuyingDragData | undefined
+    private placeNFTDragData: PlaceNFTDragData | undefined
     private movingDragData: MovingDragData | undefined
 
     private isDragging = false
     private dragBuyVisual:
+    | Phaser.GameObjects.Sprite
+    | SpineGameObject
+    | undefined
+    private dragPlaceNFTVisual:
     | Phaser.GameObjects.Sprite
     | SpineGameObject
     | undefined
@@ -135,7 +148,7 @@ export class InputTilemap extends ItemTilemap {
         super(baseParams)
         // listen for place in progress event
         SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {
-            this.cancelPlacement({
+            this.returnNormal({
                 fromOtherScene: true,
             })
         })
@@ -148,6 +161,16 @@ export class InputTilemap extends ItemTilemap {
                 this.handleBuyingMode(data)
             }
         )
+
+        ExternalEventEmitter.on(
+            ExternalEventName.PlaceNFTItem,
+            (data: PlaceNFTItemMessage) => {
+                this.hideEverything()
+                this.inputMode = InputMode.PlaceNFT
+                this.handlePlaceNFTItem(data)
+            }
+        )
+
         SceneEventEmitter.on(SceneEventName.MovingModeOn, () => {
             this.hideEverything()
             this.inputMode = InputMode.Move
@@ -160,7 +183,7 @@ export class InputTilemap extends ItemTilemap {
         this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
         ExternalEventEmitter.on(ExternalEventName.StopBuying, () => {
-            this.cancelPlacement({
+            this.returnNormal({
                 fromOtherScene: true,
             })
         })
@@ -228,7 +251,7 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
             //if buying mode is on
-            if (this.inputMode === InputMode.Buy) {
+            if (this.inputMode === InputMode.Buy || this.inputMode === InputMode.PlaceNFT) {
                 return
             }
             const data = this.findPlacedItemRoot(tile.x, tile.y)
@@ -932,6 +955,31 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
+    private handlePlaceNFTItem(data: PlaceNFTItemMessage) {
+        const { placedItem } = data
+        const placedItemTypeSchema = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === placedItem.placedItemType
+        )
+        if (!placedItemTypeSchema) {
+            throw new Error("Placed item type not found")
+        }
+        const assetData = getAssetData({
+            placedItemType: placedItemTypeSchema,
+            scene: this.scene,
+        })
+        if (!assetData) {
+            throw new Error("Asset data not found")
+        }
+        const { mainVisualType, textureConfig, spineConfig } = assetData
+        this.placeNFTDragData = {
+            type: mainVisualType,
+            textureConfig,
+            spineConfig,
+            placedItemType: placedItemTypeSchema,
+            placedItemId: placedItem.id,
+        }
+    }
+
     private handleBuyingMode({ placedItemTypeId }: BuyingModeOnMessage) {
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === placedItemTypeId
@@ -970,7 +1018,20 @@ export class InputTilemap extends ItemTilemap {
                 return
             }
             // place the item temporarily on the tile
-            this.dragBuyingSpriteOnTile(tile)
+            this.dragBuyingVisualOnTile(tile)
+        }
+        if (this.inputMode === InputMode.PlaceNFT) {
+            const camera = this.scene.cameras.main
+            const { x, y } = this.scene.input.activePointer.positionToCamera(
+                camera
+            ) as Phaser.Math.Vector2
+            const tile = this.getTileAtWorldXY(x, y)
+            // do nothing if tile is not found
+            if (!tile) {
+                return
+            }
+            // place the item temporarily on the tile
+            this.dragPlaceNFTVisualOnTile(tile)
         }
         if (this.inputMode === InputMode.Move) {
             if (!this.isDragging) {
@@ -989,9 +1050,92 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
+    private dragPlaceNFTVisualOnTile(tile: Phaser.Tilemaps.Tile) {
+        // throw error if drag sprite data is not found
+        if (!this.placeNFTDragData) {
+            throw new Error("No drag sprite data found")
+        }
+        const { placedItemType, textureConfig, spineConfig, type } =
+        this.placeNFTDragData
+
+        const position = this.getActualTileCoordinates(tile.x, tile.y)
+
+        const isPlacementValid = this.canPlaceItemAtTile({
+            tileX: position.x,
+            tileY: position.y,
+            tileSizeWidth: placedItemType.sizeX,
+            tileSizeHeight: placedItemType.sizeY,
+        })
+        if (!this.dragPlaceNFTVisual) {
+            this.dragPlaceNFTVisual = createMainVisual({
+                mainVisualType: type,
+                textureConfig,
+                spineConfig,
+                scene: this.scene,
+            }).setDepth(gameplayDepth.drag)
+        }
+        // update the temporary place item object position
+        const tilePosition = this.tileToWorldXY(tile.x, tile.y)
+        if (!tilePosition) {
+            throw new Error("Position not found")
+        }
+        this.showPlacmentConfirmation({
+            tile,
+            onCancel: () => {
+                this.returnNormal({
+                    notSync: true,
+                })
+            },
+            onConfirm: async (tileX: number, tileY: number) => {
+                // update the placed item
+                if (!this.placeNFTDragData?.placedItemId) {
+                    throw new Error("Placed item id not found")
+                }
+                const eventMessage: PlaceNFTMessage = {
+                    placedItemId: this.placeNFTDragData.placedItemId,
+                    position: {
+                        x: tileX,
+                        y: tileY,
+                    },
+                }
+                ExternalEventEmitter.emit(
+                    ExternalEventName.RequestPlaceNFT,
+                    eventMessage
+                )   
+                this.returnNormal({
+                    notSync: true,
+                })
+            },
+        })
+        if (!this.placementConfirmation) {
+            throw new Error("Placement confirmation not found")
+        }
+        this.placementConfirmation.setYesButtonVisible(isPlacementValid)
+        const { x: centeredX, y: centeredY } = this.getActualTileCoordinates(
+            tile.x,
+            tile.y
+        )
+        this.placementConfirmation.updateTileXY(centeredX, centeredY)
+
+        // set tint based on can place
+        setTintForMainVisual(
+            this.dragPlaceNFTVisual,
+            isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
+        )
+        const offsets = getMainVisualOffsets({
+            mainVisualType: type,
+            spineConfig,
+            textureConfig,
+        })
+        this.dragPlaceNFTVisual.setPosition(
+            tilePosition.x + offsets.x,
+            tilePosition.y + this.tileHeight / 2 + offsets.y
+        )
+    }
+
     // drag sprite on tile
-    private dragBuyingSpriteOnTile(tile: Phaser.Tilemaps.Tile) {
-    // throw error if drag sprite data is not found
+    private dragBuyingVisualOnTile(tile: Phaser.Tilemaps.Tile) {
+        // throw error if drag sprite data is not found
         if (!this.buyingDragData) {
             throw new Error("No drag sprite data found")
         }
@@ -1022,7 +1166,7 @@ export class InputTilemap extends ItemTilemap {
         this.showPlacmentConfirmation({
             tile,
             onCancel: () => {
-                this.cancelPlacement({
+                this.returnNormal({
                     notSync: true,
                 })
             },
@@ -1198,7 +1342,7 @@ export class InputTilemap extends ItemTilemap {
             tile,
             onCancel: () => {
                 // cancel state by
-                this.cancelPlacement({
+                this.returnNormal({
                     notSync: true,
                 })
                 SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
@@ -1209,7 +1353,7 @@ export class InputTilemap extends ItemTilemap {
                     objectData.object.currentPlacedItem?.x === tileX &&
           objectData.object.currentPlacedItem?.y === tileY
                 ) {
-                    this.cancelPlacement()
+                    this.returnNormal()
                     SceneEventEmitter.emit(SceneEventName.PlacedItemsRefreshed)
                 } else {
                     if (!objectData.object.currentPlacedItem) {
@@ -1223,7 +1367,7 @@ export class InputTilemap extends ItemTilemap {
                         },
                     }
                     ExternalEventEmitter.emit(ExternalEventName.RequestMove, moveRequest)
-                    this.cancelPlacement({
+                    this.returnNormal({
                         notSync: true,
                     })
                 }
@@ -1675,7 +1819,7 @@ export class InputTilemap extends ItemTilemap {
     }
 
     // method to clean up the resources
-    private cancelPlacement({
+    private returnNormal({
         fromOtherScene = false,
         notSync = false,
     }: CancelPlacementParams = {}) {
@@ -1688,13 +1832,27 @@ export class InputTilemap extends ItemTilemap {
                         throw new Error("Drag buy visual not found")
                     }
                     this.dragBuyVisual.destroy()
-                    this.dragBuyVisual = undefined
+                    this.dragBuyVisual = undefined         
                     if (!fromOtherScene) {
                         this.cancelNextTap = true
                     }
                 }
                 break
             }
+        }
+        case InputMode.PlaceNFT: {
+            if (this.placeNFTDragData) {
+                this.placeNFTDragData = undefined
+                if (!this.dragPlaceNFTVisual) {
+                    throw new Error("Drag place nft visual not found")
+                }
+                this.dragPlaceNFTVisual.destroy()
+                this.dragPlaceNFTVisual = undefined
+                if (!fromOtherScene) {
+                    this.cancelNextTap = true
+                }
+            }
+            break
         }
         case InputMode.Move: {
             if (this.movingDragData) {

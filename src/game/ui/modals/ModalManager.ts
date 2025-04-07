@@ -48,6 +48,8 @@ export class ModalManager extends ContainerLite {
         ModalName.Neighbors,
         ModalName.Quests,
         ModalName.Profile,
+        ModalName.NFTStorage,
+        ModalName.Download,
     ]
     private upgradeModal: UpgradeModal | undefined
 
@@ -286,6 +288,8 @@ export class ModalManager extends ContainerLite {
         case ModalName.Neighbors:
         case ModalName.Quests:
         case ModalName.Profile:
+        case ModalName.NFTStorage:
+        case ModalName.Download:
             throw new Error("External modals should not be opened directly")
         }
     }

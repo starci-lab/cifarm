@@ -13,10 +13,12 @@ export const getAssetUrl = (assetUrl: string) => {
 }
 export const downloadTexture = async (
     scene: Scene,
-    textureConfig: TextureConfig,
+    textureConfig: TextureConfig
 ) => {
     // increment the total assets loaded
-    const totalAssetsLoaded = Number.parseInt(scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
+    const totalAssetsLoaded = Number.parseInt(
+        scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0
+    )
     scene.cache.obj.add(CacheKey.TotalAssetsLoaded, totalAssetsLoaded + 1)
 
     const { key, assetUrl, version = 0 } = textureConfig
@@ -35,7 +37,10 @@ export const downloadTexture = async (
         onDownloadProgress: (progress) => {
             console.log(url, progress.progress)
             if (progress.progress) {
-                ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
+                ExternalEventEmitter.emit(
+                    ExternalEventName.AssetsLoaded,
+                    progress.progress
+                )
             }
         },
     })
@@ -69,7 +74,9 @@ export const loadTexture = async (
 
 export const downloadJson = async (scene: Scene, spineConfig: SpineConfig) => {
     // increment the total assets loaded
-    const totalAssetsLoaded = Number.parseInt(scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
+    const totalAssetsLoaded = Number.parseInt(
+        scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0
+    )
     scene.cache.obj.add(CacheKey.TotalAssetsLoaded, totalAssetsLoaded + 1)
 
     const { key, assetUrl, version = 0 } = spineConfig.json
@@ -85,7 +92,10 @@ export const downloadJson = async (scene: Scene, spineConfig: SpineConfig) => {
     const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
-            ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
+            ExternalEventEmitter.emit(
+                ExternalEventName.AssetsLoaded,
+                progress.progress
+            )
         },
     })
     await sessionDb.assets.add({ key, data, version })
@@ -94,7 +104,9 @@ export const downloadJson = async (scene: Scene, spineConfig: SpineConfig) => {
 
 export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
     // increment the total assets loaded
-    const totalAssetsLoaded = Number.parseInt(scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
+    const totalAssetsLoaded = Number.parseInt(
+        scene.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0
+    )
     scene.cache.obj.add(CacheKey.TotalAssetsLoaded, totalAssetsLoaded + 2)
 
     const {
@@ -114,7 +126,10 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
         const { data } = await axios.get(getAssetUrl(textureUrl), {
             responseType: "blob",
             onDownloadProgress: (progress) => {
-                ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
+                ExternalEventEmitter.emit(
+                    ExternalEventName.AssetsLoaded,
+                    progress.progress
+                )
             },
         })
         await sessionDb.assets.add({ key: textureKey, data, version })
@@ -134,7 +149,10 @@ export const downloadAtlas = async (scene: Scene, spineConfig: SpineConfig) => {
         const { data } = await axios.get(getAssetUrl(assetUrl), {
             responseType: "text",
             onDownloadProgress: (progress) => {
-                ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)
+                ExternalEventEmitter.emit(
+                    ExternalEventName.AssetsLoaded,
+                    progress.progress
+                )
             },
         })
         const _atlasBlob = new Blob([data], {
@@ -177,4 +195,15 @@ export const loadSpine = async (scene: Scene, spineConfig: SpineConfig) => {
     } catch (error) {
         console.error(error)
     }
+}
+
+export const getBlobUrlByKey = async (textureConfig: TextureConfig) => {
+    const { key } = textureConfig
+    const textureAsset = await sessionDb.assets
+        .filter((asset) => asset.key === key)
+        .first()
+    if (textureAsset) {
+        return URL.createObjectURL(textureAsset.data)
+    }
+    return null
 }

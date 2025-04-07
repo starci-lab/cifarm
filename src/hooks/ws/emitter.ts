@@ -55,6 +55,7 @@ export enum EmitterEventName {
   ThiefBeeHouse = "thief_bee_house",
   BuyPet = "buy_pet",
   RequestDisplayTimers = "request_display_timers",
+  PlaceNFT = "place_nft",
 }
 
 export interface BuySuppliesMessage {
@@ -231,3 +232,9 @@ export interface ThiefBeeHouseMessage {
 export interface BuyPetMessage {
   petId: PetId;
 }
+
+export interface PlaceNFTMessage {
+  placedItemId: string;
+  position: Position;
+}
+

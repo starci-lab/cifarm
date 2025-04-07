@@ -16,10 +16,9 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import { UserCard } from "../UserCard"
-import { FilterBar, List } from "@/components"
+import { FilterBar, List, Spacer } from "@/components"
 import { RefreshCcw } from "lucide-react"
-import { ExtendedButton } from "@/components"
-import { Pagination } from "@/components/ui/pagination"
+import { ExtendedButton, Pagination } from "@/components"
 
 export const NeighborsTab: FC = () => {
     const {
@@ -116,7 +115,7 @@ export const NeighborsTab: FC = () => {
                     )
                 }}
             />
-
+            <Spacer y={4}/>
             <div className="flex justify-center">
                 <Pagination
                     currentPage={currentPage}
