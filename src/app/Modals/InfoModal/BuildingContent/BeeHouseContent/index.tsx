@@ -5,15 +5,13 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect, useState } from "react"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
-import { StatsAttributeName, statsAttributeNameMap } from "@/modules/blockchain"
 import { cn } from "@/lib/utils"
-import { HARVEST_COUNT } from "../../types"
-import { DialogFooter, Spacer, Image, List, ExtendedButton, ExtendedBadge } from "@/components"
+import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge } from "@/components"
 import {
     productAssetMap,
 } from "@/game"
 import { formatTime } from "@/modules/common"
-
+import { Stats } from "../../Stats"
 interface BeeHouseContentProps {
     placedItem: PlacedItemSchema;
 }
@@ -113,44 +111,6 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
         }
     }
 
-    const renderStats = () => {
-        return (
-            <List
-                enableScroll={false}
-                items={
-                    [HARVEST_COUNT, ...Object.values(StatsAttributeName)]
-                } contentCallback={(name) => {
-                    switch (name) {
-                    case HARVEST_COUNT:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">Harvests</div>
-                            <div>{placedItem.beeHouseInfo?.harvestCount}</div>
-                        </div>
-                    case StatsAttributeName.GrowthAcceleration:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.beeHouseInfo?.growthAcceleration}</div>
-                        </div>
-                    case StatsAttributeName.QualityYieldChance:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.beeHouseInfo?.qualityYieldChance}</div>
-                        </div>
-                    case StatsAttributeName.DiseaseResistance:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.beeHouseInfo?.diseaseResistance}</div>
-                        </div>
-                    case StatsAttributeName.HarvestYieldBonus:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.beeHouseInfo?.harvestYieldBonus}</div>
-                        </div>
-                    }
-                }} />
-        )
-    }
-
     return (
         <>
             <div>
@@ -191,7 +151,13 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
                         </>
                     )
                 }
-                {renderStats()}
+                <Stats
+                    harvestCount={placedItem.beeHouseInfo?.harvestCount}
+                    growthAcceleration={placedItem.beeHouseInfo?.growthAcceleration}
+                    qualityYieldChance={placedItem.beeHouseInfo?.qualityYieldChance}
+                    diseaseResistance={placedItem.beeHouseInfo?.diseaseResistance}
+                    harvestYieldBonus={placedItem.beeHouseInfo?.harvestYieldBonus}
+                />
                 {placedItem.nftMetadata && (
                     <>
                         <Spacer y={4}/>

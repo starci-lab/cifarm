@@ -7,12 +7,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { Spacer, List, ExtendedBadge, Image } from "@/components"
-import {
-    StatsAttributeName,
-    statsAttributeNameMap,
-} from "@/modules/blockchain"
-import { HARVEST_COUNT } from "../types"
+import { Spacer, ExtendedBadge, Image } from "@/components"
 import {
     productAssetMap,
     cropAssetMap,
@@ -23,6 +18,7 @@ import { sessionDb } from "@/modules/dexie"
 import useSWR from "swr"
 import { cn } from "@/lib/utils"
 import { formatTime } from "@/modules/common"
+import { Stats } from "../Stats"
 interface TileContentProps {
   placedItem: PlacedItemSchema;
 }
@@ -110,72 +106,6 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         }, 1000)
         return () => clearInterval(interval)
     }, [timeElapsed])
-
-    const renderStats = () => {
-        return (
-            <List
-                enableScroll={false}
-                items={[HARVEST_COUNT, ...Object.values(StatsAttributeName)]}
-                contentCallback={(name) => {
-                    switch (name) {
-                    case HARVEST_COUNT:
-                        return (
-                            <div className="flex justify-between px-3 py-2">
-                                <div className="text-muted-foreground text-sm">Harvests</div>
-                                <div className="text-sm">
-                                    {placedItem.tileInfo?.harvestCount}
-                                </div>
-                            </div>
-                        )
-                    case StatsAttributeName.GrowthAcceleration:
-                        return (
-                            <div className="flex justify-between px-3 py-2">
-                                <div className="text-muted-foreground text-sm">
-                                    {statsAttributeNameMap[name].name}
-                                </div>
-                                <div className="text-sm">
-                                    {placedItem.tileInfo?.growthAcceleration}
-                                </div>
-                            </div>
-                        )
-                    case StatsAttributeName.QualityYieldChance:
-                        return (
-                            <div className="flex justify-between px-3 py-2">
-                                <div className="text-muted-foreground text-sm">
-                                    {statsAttributeNameMap[name].name}
-                                </div>
-                                <div className="text-sm">
-                                    {placedItem.tileInfo?.qualityYieldChance}
-                                </div>
-                            </div>
-                        )
-                    case StatsAttributeName.DiseaseResistance:
-                        return (
-                            <div className="flex justify-between px-3 py-2">
-                                <div className="text-muted-foreground text-sm">
-                                    {statsAttributeNameMap[name].name}
-                                </div>
-                                <div className="text-sm">
-                                    {placedItem.tileInfo?.diseaseResistance}
-                                </div>
-                            </div>
-                        )
-                    case StatsAttributeName.HarvestYieldBonus:
-                        return (
-                            <div className="flex justify-between px-3 py-2">
-                                <div className="text-muted-foreground text-sm">
-                                    {statsAttributeNameMap[name].name}
-                                </div>
-                                <div className="text-sm">
-                                    {placedItem.tileInfo?.harvestYieldBonus}
-                                </div>
-                            </div>
-                        )
-                    }
-                }}
-            />
-        )
-    }
 
     const { data: asset } = useSWR(placedItem.id, async () => {
         let key: string | undefined
@@ -321,7 +251,13 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                         <Spacer y={4} />
                     </>
                 )}
-                {renderStats()}
+                <Stats
+                    harvestCount={placedItem.plantInfo?.harvestCount}
+                    growthAcceleration={placedItem.plantInfo?.growthAcceleration}
+                    qualityYieldChance={placedItem.plantInfo?.qualityYieldChance}
+                    diseaseResistance={placedItem.plantInfo?.diseaseResistance}
+                    harvestYieldBonus={placedItem.plantInfo?.harvestYieldBonus}
+                />
             </div>
         </>
     )

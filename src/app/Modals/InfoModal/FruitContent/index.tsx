@@ -4,16 +4,15 @@ import { formatTime } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { DialogFooter, Spacer, Image, List, ExtendedButton, ExtendedBadge } from "@/components"
+import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge } from "@/components"
 import {
     productAssetMap,
     stateAssetMap,
 } from "@/game"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
-import { StatsAttributeName, statsAttributeNameMap } from "@/modules/blockchain"
+import { Stats } from "../Stats"
 import { cn } from "@/lib/utils"
-import { HARVEST_COUNT } from "../types"
 interface FruitContentProps {
   placedItem: PlacedItemSchema;
 }
@@ -151,44 +150,6 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
         }
     }
 
-    const renderStats = () => {
-        return (
-            <List
-                enableScroll={false}
-                items={
-                    [HARVEST_COUNT, ...Object.values(StatsAttributeName)]
-                } contentCallback={(name) => {
-                    switch (name) {
-                    case HARVEST_COUNT:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">Harvests</div>
-                            <div>{placedItem.fruitInfo?.harvestCount}</div>
-                        </div>
-                    case StatsAttributeName.GrowthAcceleration:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.fruitInfo?.growthAcceleration}</div>
-                        </div>
-                    case StatsAttributeName.QualityYieldChance:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.fruitInfo?.qualityYieldChance}</div>
-                        </div>
-                    case StatsAttributeName.DiseaseResistance:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.fruitInfo?.diseaseResistance}</div>
-                        </div>
-                    case StatsAttributeName.HarvestYieldBonus:
-                        return <div className="flex justify-between px-3 py-2">
-                            <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                            <div>{placedItem.fruitInfo?.harvestYieldBonus}</div>
-                        </div>
-                    }
-                }} />
-        )
-    }
-
     return (
         <>
             <div>
@@ -231,7 +192,13 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                         </>
                     )
                 }
-                {renderStats()}
+                <Stats
+                    harvestCount={placedItem.fruitInfo?.harvestCount}
+                    growthAcceleration={placedItem.fruitInfo?.growthAcceleration}
+                    qualityYieldChance={placedItem.fruitInfo?.qualityYieldChance}
+                    diseaseResistance={placedItem.fruitInfo?.diseaseResistance}
+                    harvestYieldBonus={placedItem.fruitInfo?.harvestYieldBonus}
+                />
                 {placedItem.nftMetadata && (
                     <>
                         <Spacer y={4}/>
