@@ -2,7 +2,6 @@ import { AbstractSchema } from "./abstract"
 import { BeeHouseCurrentState } from "../enums"
 
 export interface BeeHouseInfoSchema extends AbstractSchema {
-    timesHarvested: number
     currentYieldTime: number
     currentState: BeeHouseCurrentState
     thieves: Array<string>  
@@ -10,4 +9,9 @@ export interface BeeHouseInfoSchema extends AbstractSchema {
     harvestQuantityMin?: number
     harvestQuantityDesired?: number
     isQuality?: boolean
+    growthAcceleration: number
+    qualityYieldChance: number
+    diseaseResistance: number
+    harvestYieldBonus: number
+    harvestCount: number
 }

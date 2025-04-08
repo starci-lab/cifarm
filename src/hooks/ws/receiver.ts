@@ -19,7 +19,7 @@ export enum ReceiverEventName {
   ToolBought = "tool_bought",
   DailyRewardClaimed = "daily_reward_claimed",
   StopBuying = "stop_buying",
-  DisplayTimersResponsed = "display_timers_responsed",
+  ForceSyncPlacedItemsResponsed = "force_sync_placed_items_responsed",
 }
 
 // sync placed items
@@ -51,7 +51,7 @@ export interface InventorySyncedMessage {
   data: Array<WithStatus<InventorySchema>>;
 }
 
-export interface DisplayTimersMessage {
+export interface ForceSyncPlacedItemsMessage {
   ids: Array<string>;
 }
 

@@ -12,7 +12,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { DOWNLOADING_DISCLOSURE } from "@/app/constants"
-import { fruitAssetMap } from "@/game/assets"
+import { fruitAssetMap, productAssetMap, TextureConfig } from "@/game"
 import {
     addDownloadProgress,
     setTotalDownloadBytes,
@@ -23,6 +23,7 @@ import {
 import { downloadTexture, getBytes } from "./download"
 import { sessionDb } from "@/modules/dexie"
 import bytes from "bytes"
+
 export const DownloadingModal: FC = () => {
     const { toggle, isOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         DOWNLOADING_DISCLOSURE
@@ -39,6 +40,7 @@ export const DownloadingModal: FC = () => {
         if (!downloadPackageModal.packageId) return
         const handleEffect = async () => {
             try {
+                const textureConfigs: Array<TextureConfig> = []
                 const fruitTextureConfigs = Object.values(fruitAssetMap)
                     .flatMap((fruit) =>
                         Object.values(fruit.map).map((stage) => {
@@ -52,9 +54,19 @@ export const DownloadingModal: FC = () => {
                         (textureConfig) =>
                             textureConfig.packageId === downloadPackageModal.packageId
                     )
-                const bytesMap = await getBytes(fruitTextureConfigs)
+                textureConfigs.push(...fruitTextureConfigs)
+                const productTextureConfigs = Object.values(productAssetMap)
+                    .flatMap((product) =>
+                        Object.values(product.base.textureConfig)
+                    ).filter(
+                        (textureConfig) =>
+                            textureConfig.packageId === downloadPackageModal.packageId
+                        && !textureConfig.useExisting
+                    )
+                textureConfigs.push(...productTextureConfigs)
+                const bytesMap = await getBytes(textureConfigs)
                 dispatch(setTotalDownloadBytes(bytesMap))
-                for (const textureConfig of fruitTextureConfigs) {
+                for (const textureConfig of textureConfigs) {
                     await downloadTexture(textureConfig, (key, data) => {
                         dispatch(addDownloadProgress({ key, data }))
                     })

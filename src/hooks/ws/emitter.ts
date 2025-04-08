@@ -54,7 +54,7 @@ export enum EmitterEventName {
   Visit = "visit",
   ThiefBeeHouse = "thief_bee_house",
   BuyPet = "buy_pet",
-  RequestDisplayTimers = "request_display_timers",
+  ForceSyncPlacedItems = "force_sync_placed_items",
   PlaceNFT = "place_nft",
 }
 

@@ -13,11 +13,7 @@ export const ExtendedBadge: FC<ExtendedBadgeProps> = ({
     return (
         <Badge {...props}>
             <div className="flex items-center gap-2">
-                {icon && (
-                    <div className="h-[14px] w-[14px]">
-                        {icon}
-                    </div>
-                )}
+                {icon}
                 <div className="text-sm">{children}</div>
             </div>
         </Badge>

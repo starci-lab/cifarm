@@ -5,7 +5,6 @@ import {
     BuyFruitData,
     BuyPetData,
     BuyTileData,
-    DisplayTimersMessage,
     EmitActionPayload,
     HarvestAnimalData,
     HarvestBeeHouse,
@@ -16,7 +15,6 @@ import {
     ThiefFruitData,
     ThiefPlantData,
 } from "@/hooks"
-import { formatTime, sleep } from "@/modules/common"
 import {
     Activities,
     AnimalSchema,
@@ -56,10 +54,12 @@ import { gameplayDepth } from "../depth"
 import {
     ExternalEventEmitter,
     ExternalEventName,
+    ModalName,
     SceneEventEmitter,
 } from "../events"
 import { SceneEventName } from "../events"
 import { getSellPriceFromPlacedItemType } from "../logic"
+import { sleep } from "@/modules/common"
 
 const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
@@ -1250,28 +1250,10 @@ export abstract class ItemTilemap extends GroundTilemap {
             }
         )
 
-        ExternalEventEmitter.on(ExternalEventName.DisplayTimersResponsed, ({ ids }: DisplayTimersMessage) => {
-            for (const id of ids) {
-                const gameObject = this.placedItemObjectMap[id]?.object
-                if (!gameObject) {
-                    throw new Error("Object not found")
-                }
-                if (!gameObject.currentPlacedItem) {
-                    throw new Error("Current placed item not found")
-                }
-                if (!gameObject.timerNumber) {
-                    return
-                }
-                const position = this.getPositionFromPlacedItem(gameObject.currentPlacedItem)
-                this.createFlyItems([
-                    {
-                        showIcon: false,
-                        x: position.x,
-                        y: position.y,
-                        text: formatTime(gameObject.timerNumber),
-                    },
-                ])
-            }
+        ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
+            SceneEventEmitter.emit(SceneEventName.OpenModal, {
+                modalName: ModalName.Info,
+            })
         })
     }
 

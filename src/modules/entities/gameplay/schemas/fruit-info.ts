@@ -9,4 +9,8 @@ export interface FruitInfoSchema extends AbstractSchema {
   isQuality: boolean;
   currentState: FruitCurrentState;
   thieves: Array<string>;
+  qualityYieldChance: string
+  growthAcceleration: string
+  harvestYieldBonus: number
+  diseaseResistance: number
 }

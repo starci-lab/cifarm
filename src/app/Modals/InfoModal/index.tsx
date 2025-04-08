@@ -1,6 +1,5 @@
 "use client"
 import {
-    GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
     INFO_DISCLOSURE,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -13,35 +12,30 @@ import {
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
 import { ModalHeader } from "@/components"
-import {  } from "@/components"
 import {
     ExternalEventEmitter,
     ExternalEventName,
     ModalName,
 } from "@/game/events"
 import { useAppSelector } from "@/redux"
-import { useGraphQLQueryPlacedItemsSwrMutation } from "@/hooks"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { placedItemTypeAssetMap } from "@/game"
 import { getAssetDataRaw } from "@/game/tilemap"
-import { MainVisual } from "./MainVisual"
-
+import { PlacedItemType } from "@/modules/entities"
+import { FruitContent } from "./FruitContent"
+import { TileContent } from "./TileContent"
+import { AnimalContent } from "./AnimalContent"
+import { BuildingContent } from "./BuildingContent"
 export const InfoModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(INFO_DISCLOSURE)
 
-    const placedItemId = useAppSelector(
-        (state) => state.sessionReducer.placedItemId
+    const placedItem = useAppSelector(
+        (state) => state.sessionReducer.placedItem
     )
-    const { swrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryPlacedItemsSwrMutation>
-  >(GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION)
     const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         GRAPHQL_QUERY_STATIC_SWR
-    )
-    const placedItem = swrMutation.data?.data.placedItems.find(
-        (placedItem) => placedItem.id === placedItemId
     )
     const placedItemType = swr.data?.data.placedItemTypes.find(
         (placedItemType) => placedItemType.id === placedItem?.placedItemType
@@ -65,6 +59,26 @@ export const InfoModal: FC = () => {
     if (!mapAssetData) {
         return null
     }
+    const renderContent = () => {
+        switch (placedItemType.type) {
+        case PlacedItemType.Fruit: {
+            return <FruitContent placedItem={placedItem} />
+        }
+        case PlacedItemType.Tile: {
+            return <TileContent placedItem={placedItem} />
+        }
+        case PlacedItemType.Animal: {
+            return <AnimalContent placedItem={placedItem} />
+        }
+        case PlacedItemType.Building: {
+            return <BuildingContent placedItem={placedItem} />
+        }
+        default: {
+            throw new Error("Invalid placed item type")
+        }
+        }
+    }
+
     return (
         <Dialog
             open={isOpen}
@@ -84,11 +98,8 @@ export const InfoModal: FC = () => {
                             title={placedItemTypeAssetMap[placedItemType.displayId].name}
                         />
                     </DialogTitle>
-                    <div>
-                        <MainVisual mapAssetData={mapAssetData} />
-                    </div>
                 </DialogHeader>
-                <div></div>
+                {renderContent()}
             </DialogContent>
         </Dialog>
     )

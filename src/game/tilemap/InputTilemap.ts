@@ -338,7 +338,6 @@ export class InputTilemap extends ItemTilemap {
                 CacheKey.SelectedTool
             ) as ToolLike
             if (selectedTool.default) {
-                data.object.showTimer()
                 return
             }
 
@@ -377,10 +376,10 @@ export class InputTilemap extends ItemTilemap {
                 throw new Error("Placed item not found")
             }
             ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
-                placedItemId: data.object.currentPlacedItem.id
+                placedItem: data.object.currentPlacedItem
             })
-            SceneEventEmitter.emit(SceneEventName.OpenModal, {
-                modalName: ModalName.Info
+            ExternalEventEmitter.emit(ExternalEventName.RequestForceSyncPlacedItems, {
+                ids: [data.object.currentPlacedItem.id],
             })
         })
     }

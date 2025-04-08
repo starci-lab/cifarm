@@ -35,7 +35,7 @@ import { useBuyFlowerSeedsEffects } from "./useBuyFlowerSeedsEffects"
 import { useThiefFruitEffects } from "./useThiefFruitEffects"
 import { useThiefAnimalEffects } from "./useThiefAnimalEffects"
 import { useStopBuyingEffects } from "./useStopBuyingEffects"
-import { useTimerEffects } from "./useTimerEffects"
+import { useForceSyncPlacedItemsEffects } from "./useForceSyncPlacedItemsEffects"
 import { useHarvestBeeHouseEffects } from "./useHarvestBeeHouseEffects"
 import { useThiefBeeHouseEffects } from "./useThiefBeeHouseEffects"
 import { useBuyPetEffects } from "./useBuyPetEffects"
@@ -78,7 +78,7 @@ export const useActionsEffects = () => {
     useThiefPlantEffects()
     useThiefAnimalEffects()
     useStopBuyingEffects()
-    useTimerEffects()
+    useForceSyncPlacedItemsEffects()
     useHarvestBeeHouseEffects()
     useThiefBeeHouseEffects()
     useBuyPetEffects()

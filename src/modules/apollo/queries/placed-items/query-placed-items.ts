@@ -11,6 +11,13 @@ const query1 = gql`
       x
       y
       placedItemType
+      tileInfo {
+        qualityYieldChance
+        growthAcceleration
+        harvestYieldBonus
+        diseaseResistance
+        harvestCount
+      }
       plantInfo {
         currentPerennialCount
         crop
@@ -23,6 +30,7 @@ const query1 = gql`
         currentStageTimeElapsed
         plantType
         flower
+        harvestCount
       }
       buildingInfo {
         currentUpgrade
@@ -35,6 +43,11 @@ const query1 = gql`
         isQuality
         harvestQuantityDesired
         harvestQuantityMin
+        growthAcceleration
+        qualityYieldChance
+        diseaseResistance
+        harvestYieldBonus
+        harvestCount
       }
       animalInfo {
         currentGrowthTime
@@ -45,6 +58,11 @@ const query1 = gql`
         isAdult
         isQuality
         thieves
+        growthAcceleration
+        qualityYieldChance
+        diseaseResistance
+        harvestYieldBonus
+        harvestCount
       }
       fruitInfo {
         currentStage
@@ -53,6 +71,16 @@ const query1 = gql`
         harvestQuantityRemaining
         isQuality
         thieves
+        qualityYieldChance
+        growthAcceleration
+        harvestYieldBonus
+        diseaseResistance
+        harvestCount
+      }
+      nftMetadata {
+        nftAddress
+        collectionAddress
+        nftName
       }
     }
   }

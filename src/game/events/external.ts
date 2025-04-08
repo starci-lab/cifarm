@@ -1,5 +1,6 @@
 import { Events } from "phaser"
 import { ModalName } from "./scene"
+import { PlacedItemSchema } from "@/modules/entities"
 // external event emitter take care of events between Phaser and React
 export const ExternalEventEmitter = new Events.EventEmitter()
 
@@ -147,9 +148,9 @@ export enum ExternalEventName {
     // request to place nft, from React to Phaser
     RequestPlaceNFT = "request_place_nft",
     // request to display timers, from React to Phaser
-    RequestDisplayTimers = "request_display_timers",
-    // 
-    DisplayTimersResponsed = "display_timer_responsed",
+    RequestForceSyncPlacedItems = "request_force_sync_placed_items",
+    // force sync placed items completed, from Phaser to React
+    ForceSyncPlacedItemsResponsed = "force_sync_placed_items_responsed",
     // place nft item, from React to Phaser
     PlaceNFTItem = "place_nft_item",
     // set placed item info, from Phaser to React
@@ -164,10 +165,10 @@ export interface CloseExternalModalMessage {
     modalName: ModalName
 }
 
-export interface DisplayTimersMessage {
+export interface RequestForceSyncPlacedItemsMessage {
     ids: Array<string>
 }
 
 export interface SetPlacedItemInfoMessage {
-    placedItemId: string
+    placedItem: PlacedItemSchema
 }

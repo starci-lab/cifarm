@@ -41,8 +41,6 @@ import {
     getAssetData,
     getMainVisualOffsets,
 } from "./utils"
-import { ExternalEventEmitter, ExternalEventName } from "../events"
-import { getTimer } from "./timer"
 
 export class PlacedItemObject extends ContainerLite {
     private plantInfoSprite: Phaser.GameObjects.Sprite | undefined
@@ -63,8 +61,6 @@ export class PlacedItemObject extends ContainerLite {
 
     public ignoreCollision?: boolean
     public isPressedForAction = false
-    public isPressedForTimer = false
-    public timerNumber = 0  
     public placedItemType: PlacedItemTypeSchema | undefined
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -108,22 +104,6 @@ export class PlacedItemObject extends ContainerLite {
         return occupiedTiles
     }
 
-    public showTimer() {
-        if (this.isPressedForTimer) {
-            return
-        }
-        this.isPressedForTimer = true
-        if (!this.currentPlacedItem) {
-            throw new Error("Placed item not found")
-        }
-        ExternalEventEmitter.emit(ExternalEventName.RequestDisplayTimers, {
-            ids: [this.currentPlacedItem.id],
-        })
-        this.scene.time.delayedCall(1000, () => {
-            this.isPressedForTimer = false
-        })
-    }
-
     public updateContent(placedItem: PlacedItemSchema) {
         this.placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === placedItem.placedItemType
@@ -135,7 +115,6 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem) {
             throw new Error("Placed item not found")
         }
-        this.timerNumber = getTimer(this.scene, placedItem)
         this.updateMainVisual()
         switch (this.placedItemType.type) {
         case PlacedItemType.Tile: {

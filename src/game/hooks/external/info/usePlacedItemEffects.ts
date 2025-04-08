@@ -1,13 +1,13 @@
 import { ExternalEventName, ExternalEventEmitter, SetPlacedItemInfoMessage } from "../../../events"
 import { useEffect } from "react"
-import { useAppDispatch, setPlacedItemId } from "@/redux"
+import { useAppDispatch, setPlacedItem } from "@/redux"
 
 export const usePlacedItemEffects = () => {
     const dispatch = useAppDispatch()
     // load inventory data
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.SetPlacedItemInfo, ({ placedItemId }: SetPlacedItemInfoMessage) => {
-            dispatch(setPlacedItemId(placedItemId))
+        ExternalEventEmitter.on(ExternalEventName.SetPlacedItemInfo, ({ placedItem }: SetPlacedItemInfoMessage) => {
+            dispatch(setPlacedItem(placedItem))
         })
 
         return () => {

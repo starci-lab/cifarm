@@ -18,4 +18,9 @@ export interface AnimalInfoSchema {
     immunized: boolean
     placedItemId: string
     placedItem?: PlacedItemSchema
+    growthAcceleration: number
+    qualityYieldChance: number
+    diseaseResistance: number
+    harvestYieldBonus: number
+    harvestCount: number
 }

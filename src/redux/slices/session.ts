@@ -9,6 +9,7 @@ import {
     TokenInfo,
 } from "@/modules/blockchain"
 import { Account } from "@/modules/dexie"
+import { PlacedItemSchema } from "@/modules/entities"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 
@@ -34,7 +35,7 @@ export interface SessionState {
   // selected nft address
   nftAddress: string;
   // placed item id
-  placedItemId: string;
+  placedItem: PlacedItemSchema | undefined;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -69,7 +70,7 @@ const initialState: SessionState = {
     nftCollectionsSwrs: {},
     collectionKey: "",
     nftAddress: "",
-    placedItemId: "",
+    placedItem: undefined,
 }
 
 export const sessionSlice = createSlice({
@@ -129,8 +130,8 @@ export const sessionSlice = createSlice({
         setNftAddress: (state, action: PayloadAction<string>) => {
             state.nftAddress = action.payload
         },
-        setPlacedItemId: (state, action: PayloadAction<string>) => {
-            state.placedItemId = action.payload
+        setPlacedItem: (state, action: PayloadAction<PlacedItemSchema>) => {
+            state.placedItem = action.payload
         },
     },
 })
@@ -152,7 +153,7 @@ export const {
     removeNftCollectionsSwr,
     setCollectionKey,
     setNftAddress,
-    setPlacedItemId,
+    setPlacedItem,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

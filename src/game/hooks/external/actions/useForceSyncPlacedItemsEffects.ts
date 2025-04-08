@@ -3,8 +3,9 @@ import { EmitterEventName, useWs} from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
-import { DisplayTimersMessage, ReceiverEventName } from "@/hooks"
-export const useTimerEffects = () => {
+import { ForceSyncPlacedItemsMessage, ReceiverEventName } from "@/hooks"
+
+export const useForceSyncPlacedItemsEffects = () => {
     const { socket } =
                useSingletonHook<ReturnType<typeof useWs>>(WS)
 
@@ -12,26 +13,23 @@ export const useTimerEffects = () => {
         if (!socket) {
             return
         }
-        socket.on(ReceiverEventName.DisplayTimersResponsed, ({ ids }: DisplayTimersMessage) => {
-            ExternalEventEmitter.emit(ExternalEventName.DisplayTimersResponsed, {
-                ids,
-            })
+        socket.on(ReceiverEventName.ForceSyncPlacedItemsResponsed, () => {
+            ExternalEventEmitter.emit(ExternalEventName.ForceSyncPlacedItemsResponsed)
         })
     }, [socket])
 
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.RequestDisplayTimers, ({ ids }: DisplayTimersMessage) => {
-            console.log({ ids })
+        ExternalEventEmitter.on(ExternalEventName.RequestForceSyncPlacedItems, ({ ids }: ForceSyncPlacedItemsMessage) => {
             if (!socket) {
                 return
             }
-            socket.emit(EmitterEventName.RequestDisplayTimers, {
+            socket.emit(EmitterEventName.ForceSyncPlacedItems, {
                 ids,
             })
         })
         return () => {
             ExternalEventEmitter.removeListener(
-                ExternalEventName.RequestDisplayTimers
+                ExternalEventName.RequestForceSyncPlacedItems
             )
         }
     }, [socket])

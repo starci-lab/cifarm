@@ -19,8 +19,7 @@ import router from "next/router"
 import React, { FC } from "react"
 import { MUTATION_GRAPHQL_FREEZE_SOLANA_METAPLEX_NFT_SWR_MUTATION, MUTATION_GRAPHQL_VALIDATE_SOLANA_METAPLEX_NFT_FROZEN_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE, TRANSFER_NFT_FORMIK } from "../constants"
 import { WrappedBadge } from "@/components"
-import { NFTRarityEnum, AttributeName, explorerUrl } from "@/modules/blockchain"
-import { StatsAttributeName, statsAttributeNameMap } from "./types"
+import { NFTRarityEnum, AttributeName, explorerUrl, StatsAttributeName, statsAttributeNameMap } from "@/modules/blockchain"
 import { useDisclosure } from "react-use-disclosure"
 const Page: FC = () => {
     const collectionSwrs = useAppSelector(

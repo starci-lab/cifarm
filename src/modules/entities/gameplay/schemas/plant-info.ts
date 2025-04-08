@@ -17,4 +17,8 @@ export interface PlantInfoSchema extends AbstractSchema {
     placedItemId: string
     placedItem?: PlacedItemSchema
     plantType: PlantType 
+    qualityYieldChance: string
+    growthAcceleration: string
+    harvestYieldBonus: number
+    diseaseResistance: number
 }
