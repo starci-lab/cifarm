@@ -5,6 +5,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetInventoryTypesMap, AssetUi, assetUiMap } from "@/modules/assets"
+import { useDroppable } from "@dnd-kit/core"
 interface InventoryCardProps {
   inventory: InventorySchema;
 }
@@ -18,8 +19,11 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
         (inventoryType) => inventoryType.id === inventory.inventoryType
     )
     if (!inventoryType) throw new Error("Inventory type not found")
+    const { setNodeRef } = useDroppable({
+        id: inventory.id,
+    })
     return (
-        <Card className="w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none">
+        <Card className="w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none" ref={setNodeRef}>
             <CardContent className="grid place-items-center p-0 w-fit h-fit relative">
                 <ScaledImage src={assetUiMap[AssetUi.Frame].base.assetUrl} className="relative"/>
                 <DraggableAbsoluteCard id={inventory.id} classNames={{ container: "w-full h-full absolute" }}>
