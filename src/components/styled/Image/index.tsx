@@ -10,8 +10,8 @@ export const Image: FC<ImageProps> = ({ src, alt = v4(), className }) => {
     return <img src={src} alt={alt} className={className} />
 }
 
-export type ItemImageProps = ImageProps
+export type ScaledImageProps = ImageProps
 
-export const ItemImage: FC<ItemImageProps> = (props) => {
-    return <img {...props} className={cn("scale-50 w-fit min-w-fit", props.className)} />
+export const ScaledImage: FC<ScaledImageProps> = (props) => {
+    return <img {...props} className={cn("w-fit h-fit min-w-fit min-h-fit",props.className)} srcSet={`${props.src} 2x`}/>
 }

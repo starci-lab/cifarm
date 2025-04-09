@@ -18,10 +18,12 @@ import { InfoModal } from "./InfoModal"
 import { DownloadingModal } from "./DownloadingModal"
 import { NFTStorageModal } from "./NFTStorageModal"
 import { ShopModal } from "./ShopModal"
+import { InventoryModal } from "./InventoryModal"
+
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
-        <div>
+        <div id={MODAL_CONTAINER_ID}>
             <MnemonicModal />
             <PrivateKeyModal />
             <WarningModal />
@@ -39,6 +41,7 @@ const Modals : FC = () => {
             <DownloadModal />
             <DownloadingModal />
             <InfoModal />
+            <InventoryModal />
             <NFTStorageModal />
             <ShopModal />
         </div>

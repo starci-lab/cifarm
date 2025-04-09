@@ -13,7 +13,7 @@ export const ScrollableTabs = ({ items, ...props }: ScrollableTabsProps) => {
         <div className="flex">
             <ScrollArea type="always" className="w-1 flex-1">
                 <Tabs
-                    className="w-full"
+                    className="w-full h-12"
                     {...props}
                 >
                     <TabsList className="w-full flex justify-between">
@@ -21,7 +21,9 @@ export const ScrollableTabs = ({ items, ...props }: ScrollableTabsProps) => {
                             items.map((item) => (
                                 <TabsTrigger key={item.label} value={item.label}>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-5 h-5">{item.icon}</div>
+                                        {item.icon && (
+                                            <div className="w-5 h-5">{item.icon}</div>
+                                        )}
                                         <div className="text-sm">{item.label}</div>
                                     </div>
                                 </TabsTrigger>

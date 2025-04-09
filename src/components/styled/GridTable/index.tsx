@@ -1,11 +1,16 @@
 import React from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
 
 export interface GridTableProps<TItem extends string | object> {
   items: Array<TItem>;
   contentCallback: (item: TItem) => React.ReactNode;
   enableScroll?: boolean;
   emptyMessage?: string;
+  classNames?: {
+    container?: string;
+    item?: string;
+  };
 }
 
 export const GridTable = <TItem extends string | object>({
@@ -13,6 +18,7 @@ export const GridTable = <TItem extends string | object>({
     contentCallback,
     enableScroll = true,
     emptyMessage = "No items found",
+    classNames,
 }: GridTableProps<TItem>) => {
     const content = (
         <>
@@ -30,12 +36,14 @@ export const GridTable = <TItem extends string | object>({
             {items.length > 0 ? (
                 enableScroll ? (
                     <ScrollArea className="h-[300px] relative -top-4 -left-4 p-4 w-[calc(100%+32px)]">
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className={cn("grid grid-cols-4 sm:grid-cols-4 gap-2", classNames?.container)}>
                             {content}
                         </div>
                     </ScrollArea>
                 ) : (
-                    content
+                    <div className={cn("grid grid-cols-4 sm:grid-cols-4 gap-2", classNames?.container)}>
+                        {content}
+                    </div>
                 )
             ) : (
                 <div className="text-muted-foreground">{emptyMessage}</div>
