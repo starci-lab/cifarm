@@ -10,11 +10,10 @@ export const ModalHeader: FC<ModalHeaderProps> = ({ title, description }) => {
     return (
         <div>
             <div className="text-lg font-bold">{title}</div>
-            
             {description && (
                 <>
                     <Spacer y={1.5} />  
-                    <div className="text-sm text-muted-foreground font-normal">
+                    <div className="text-muted-foreground font-normal">
                         {description}
                     </div>
                 </>

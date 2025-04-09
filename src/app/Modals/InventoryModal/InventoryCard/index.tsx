@@ -4,7 +4,7 @@ import React, { FC } from "react"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { assetInventoryTypesMap } from "@/modules/assets"
+import { assetInventoryTypesMap, AssetUi, assetUiMap } from "@/modules/assets"
 interface InventoryCardProps {
   inventory: InventorySchema;
 }
@@ -19,9 +19,10 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
     )
     if (!inventoryType) throw new Error("Inventory type not found")
     return (
-        <Card className="p-0 aspect-square">
-            <CardContent className="grid place-items-center p-0 w-full h-full">
-                <DraggableAbsoluteCard id={inventory.id} classNames={{ container: "w-full h-full" }}>
+        <Card className="w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none">
+            <CardContent className="grid place-items-center p-0 w-fit h-fit relative">
+                <ScaledImage src={assetUiMap[AssetUi.Frame].base.assetUrl} className="relative"/>
+                <DraggableAbsoluteCard id={inventory.id} classNames={{ container: "w-full h-full absolute" }}>
                     <ScaledImage
                         src={
                             assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl ?? ""

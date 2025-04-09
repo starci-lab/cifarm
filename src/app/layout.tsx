@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import React, { PropsWithChildren, FC } from "react"
 import "./globals.css"
 import { WrappedLayout } from "./WrappedLayout"
-import { Open_Sans } from "next/font/google"
+import { Rowdies } from "next/font/google"
 
-const font = Open_Sans({ subsets: ["latin"] })
+const font = Rowdies({ subsets: ["latin"], weight: ["300", "400", "700"] })
 
 export const metadata: Metadata = {
     title: "CiFarm",

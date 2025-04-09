@@ -35,13 +35,13 @@ export const GridTable = <TItem extends string | object>({
         <>
             {items.length > 0 ? (
                 enableScroll ? (
-                    <ScrollArea className="h-[300px] relative -top-4 -left-4 p-4 w-[calc(100%+32px)]">
-                        <div className={cn("grid grid-cols-4 sm:grid-cols-4 gap-2", classNames?.container)}>
+                    <ScrollArea className="h-[300px] w-fit min-w-fit relative -top-4 -left-4 p-4 w-[calc(100%+32px)]">
+                        <div className={cn("flex gap-2 flex-wrap", classNames?.container)}>
                             {content}
                         </div>
                     </ScrollArea>
                 ) : (
-                    <div className={cn("grid grid-cols-4 sm:grid-cols-4 gap-2", classNames?.container)}>
+                    <div className={cn("flex gap-2 flex-wrap", classNames?.container)}>
                         {content}
                     </div>
                 )

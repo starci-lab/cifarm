@@ -2,6 +2,9 @@ import { cn } from "@/lib/utils"
 import React, { FC, PropsWithChildren } from "react"
 import { PointerSensor, useSensors, useDraggable, useSensor } from "@dnd-kit/core"
 import { DndContext } from "@dnd-kit/core"
+import { assetUiMap } from "@/modules/assets/ui"
+import { AssetUi } from "@/modules/assets"
+import { ScaledImage } from "@/components"
 
 interface AbsoluteCardProps extends PropsWithChildren {
   classNames: {
@@ -86,7 +89,7 @@ export const DraggableAbsoluteCard: FC<DraggableAbsoluteCardProps> = ({
                 card.style.display = "none"
             }
         }}>
-            <div className={cn("relative grid place-items-center", classNames.container)}> 
+            <div className={cn("relative grid place-items-center relative w-fit h-fit", classNames.container)}> 
                 <Draggable  
                     id={id}
                     dragDisabled={dragDisabled}
