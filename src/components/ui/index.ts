@@ -19,4 +19,4 @@ export * from "./alert-dialog"
 export * from "./alert"
 export * from "./progress"
 export * from "./pagination"
-
+export * from "./scroll-area"

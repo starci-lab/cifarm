@@ -17,6 +17,7 @@ import { DownloadModal } from "./DownloadModal"
 import { InfoModal } from "./InfoModal"
 import { DownloadingModal } from "./DownloadingModal"
 import { NFTStorageModal } from "./NFTStorageModal"
+import { ShopModal } from "./ShopModal"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -39,6 +40,7 @@ const Modals : FC = () => {
             <DownloadingModal />
             <InfoModal />
             <NFTStorageModal />
+            <ShopModal />
         </div>
     )
 }

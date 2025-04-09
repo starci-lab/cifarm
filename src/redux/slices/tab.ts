@@ -22,11 +22,27 @@ export enum QuestsTab {
     Partnership = "partnership",
 }
 
+
+export enum ShopTab {
+    Seeds = "Seeds",
+    Flowers = "Flowers",
+    Animals = "Animals",
+    Buildings = "Buildings",
+    Fruits = "Fruits",
+    Tiles = "Tiles",
+    Supplies = "Supplies",
+    Tools = "Tools",
+    Pets = "Pets",
+    Decorations = "Decorations",
+}
+
+
 export interface TabSlice {
     assetTab: AssetTab
     transferTab: TransferTab
     neighborsTab: NeighborsTab
     questsTab: QuestsTab
+    shopTab: ShopTab
 }
 
 const initialState: TabSlice = {
@@ -34,6 +50,7 @@ const initialState: TabSlice = {
     transferTab: TransferTab.Token,
     neighborsTab: NeighborsTab.Neighbors,
     questsTab: QuestsTab.Social,
+    shopTab: ShopTab.Seeds,
 }
 
 export const tabSlice = createSlice({
@@ -52,8 +69,11 @@ export const tabSlice = createSlice({
         setQuestsTab: (state, action) => {
             state.questsTab = action.payload
         },
+        setShopTab: (state, action) => {
+            state.shopTab = action.payload
+        },
     },
 })
 
 export const tabReducer = tabSlice.reducer
-export const { setAssetTab, setTransferTab, setNeighborsTab, setQuestsTab } = tabSlice.actions
+export const { setAssetTab, setTransferTab, setNeighborsTab, setQuestsTab, setShopTab } = tabSlice.actions
