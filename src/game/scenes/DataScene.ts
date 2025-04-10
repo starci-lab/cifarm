@@ -93,16 +93,9 @@ export class DataScene extends Scene {
                     if (foundIndex === -1) {
                         throw new Error("Inventory not found")
                     }
-                    console.log(foundIndex)
-                    console.log("Original")
-                    console.log(_.cloneDeep(inventories[foundIndex]))
-                    console.log("Changes")
-                    console.log(_.cloneDeep(inventoryWithStatus))
                     inventories[foundIndex] = mergeObjects(
                         _.cloneDeep(inventories[foundIndex]),
                         _.cloneDeep(inventoryWithStatus))
-                    console.log("Updated")
-                    console.log(inventories[foundIndex])
                     break
                 }
                 case SchemaStatus.Deleted:

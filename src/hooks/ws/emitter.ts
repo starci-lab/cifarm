@@ -178,9 +178,7 @@ export interface ThiefAnimalMessage {
 }
 
 export interface DeliverInventoryMessage {
-  index: number;
   inventoryId: string;
-  quantity: number;
 }
 
 export interface DeliverAdditionalInventoryMessage {

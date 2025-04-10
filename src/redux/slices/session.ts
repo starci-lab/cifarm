@@ -9,7 +9,7 @@ import {
     TokenInfo,
 } from "@/modules/blockchain"
 import { Account } from "@/modules/dexie"
-import { PlacedItemSchema } from "@/modules/entities"
+import { PlacedItemSchema, InventorySchema } from "@/modules/entities"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 
@@ -35,7 +35,10 @@ export interface SessionState {
   // selected nft address
   nftAddress: string;
   // placed item id
-  placedItem: PlacedItemSchema | undefined;
+  placedItem?: PlacedItemSchema;
+  inventories: Array<InventorySchema>;
+  selectedInventoryId?: string;
+  selectedDeliveryInventoryId?: string;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -71,6 +74,7 @@ const initialState: SessionState = {
     collectionKey: "",
     nftAddress: "",
     placedItem: undefined,
+    inventories: [],
 }
 
 export const sessionSlice = createSlice({
@@ -133,6 +137,15 @@ export const sessionSlice = createSlice({
         setPlacedItem: (state, action: PayloadAction<PlacedItemSchema>) => {
             state.placedItem = action.payload
         },
+        setInventories: (state, action: PayloadAction<InventorySchema[]>) => {
+            state.inventories = action.payload
+        },
+        setSelectedInventoryId: (state, action: PayloadAction<string | undefined>) => {
+            state.selectedInventoryId = action.payload
+        },
+        setSelectedDeliveryInventoryId: (state, action: PayloadAction<string | undefined>) => {
+            state.selectedDeliveryInventoryId = action.payload
+        },
     },
 })
 
@@ -154,6 +167,9 @@ export const {
     setCollectionKey,
     setNftAddress,
     setPlacedItem,
+    setInventories,
+    setSelectedInventoryId,
+    setSelectedDeliveryInventoryId,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
