@@ -1,4 +1,4 @@
-import { ItemCard } from "@/components"
+import { ItemCard, TintColor } from "@/components"
 import { InventorySchema } from "@/modules/entities"
 import React, { FC } from "react"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -29,10 +29,11 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
                 if (!inventoryType) return
                 return assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
             })()}
-            faded={inventory?.id !== selectedRetrieveInventoryId}
+            tint={inventory?.id === selectedRetrieveInventoryId}
             onClick={() => {
                 dispatch(setSelectedRetrieveInventoryId(inventory?.id))
             }}
+            tintColor={TintColor.Green}
             frameOnly={!inventoryType}
         />
     )

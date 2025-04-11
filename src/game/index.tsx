@@ -1,6 +1,6 @@
 "use client"
 import React, { FC, useLayoutEffect, useRef } from "react"
-import { gameState, startGame } from "./react-ui/config"
+import { gameState, startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
 import { useEffects } from "./hooks"
 import { ExternalEventEmitter, SceneEventEmitter } from "./events"

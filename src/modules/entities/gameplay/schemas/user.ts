@@ -24,4 +24,6 @@ export interface UserSchema extends AbstractSchema {
     referralUserId?: string;
     referredUserIds: Array<string>;
     followXAwarded: boolean;
+    sound: number
+    ambient: number 
 }

@@ -22,6 +22,8 @@ const query1 = gql`
       referralUserId
       referredUserIds
       followXAwarded
+      sound
+      ambient
     }
   }
 `

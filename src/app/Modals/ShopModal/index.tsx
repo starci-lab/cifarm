@@ -90,7 +90,7 @@ export const ShopModal = () => {
                                         eventMessage
                                     )
                                 }}
-                                imageUrl={assetShopMap.crops[crop.displayId]?.assetUrl ?? ""}
+                                imageUrl={assetShopMap.crops[crop.displayId]?.base.assetUrl ?? ""}
                                 price={crop.price}
                                 unlockedLevel={crop.unlockLevel}
                             />
@@ -121,7 +121,7 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 imageUrl={
-                                    assetShopMap.flowers[flower.displayId]?.assetUrl ?? ""
+                                    assetShopMap.flowers[flower.displayId]?.base.assetUrl ?? ""
                                 }
                                 price={flower.price}
                                 unlockedLevel={flower.unlockLevel}
@@ -168,7 +168,7 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 imageUrl={
-                                    assetShopMap.animals[animal.displayId]?.assetUrl ?? ""
+                                    assetShopMap.animals[animal.displayId]?.base.assetUrl ?? ""
                                 }
                                 price={animal.price ?? 0}
                                 unlockedLevel={animal.unlockLevel}
@@ -228,7 +228,7 @@ export const ShopModal = () => {
                                         )
                                     }}
                                     imageUrl={
-                                        assetShopMap.buildings[building.displayId]?.assetUrl ?? ""
+                                        assetShopMap.buildings[building.displayId]?.base.assetUrl ?? ""
                                     }
                                     price={building.price ?? 0}
                                     unlockedLevel={building.unlockLevel}
@@ -279,7 +279,7 @@ export const ShopModal = () => {
                                         )
                                     }}
                                     imageUrl={
-                                        assetShopMap.fruits[fruit.displayId]?.assetUrl ?? ""
+                                        assetShopMap.fruits[fruit.displayId]?.base.assetUrl ?? ""
                                     }
                                     price={fruit.price ?? 0}
                                     unlockedLevel={fruit.unlockLevel}
@@ -325,7 +325,7 @@ export const ShopModal = () => {
                                         )
                                     }}
                                     imageUrl={
-                                        assetShopMap.tiles[tile.displayId]?.assetUrl ?? ""
+                                        assetShopMap.tiles[tile.displayId]?.base.assetUrl ?? ""
                                     }
                                     price={tile.price ?? 0}
                                     unlockedLevel={tile.unlockLevel ?? 0}
@@ -370,7 +370,7 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 imageUrl={
-                                    assetShopMap.supplies[supply.displayId]?.assetUrl ?? ""
+                                    assetShopMap.supplies[supply.displayId]?.base.assetUrl ?? ""
                                 }
                                 price={supply.price ?? 0}
                                 unlockedLevel={supply.unlockLevel ?? 0}
@@ -402,7 +402,7 @@ export const ShopModal = () => {
                                         eventMessage
                                     )
                                 }}
-                                imageUrl={assetShopMap.tools[tool.displayId]?.assetUrl ?? ""}
+                                imageUrl={assetShopMap.tools[tool.displayId]?.base.assetUrl ?? ""}
                                 price={tool.price ?? 0}
                                 unlockedLevel={tool.unlockLevel ?? 0}
                             />
@@ -447,7 +447,7 @@ export const ShopModal = () => {
                                         eventMessage
                                     )
                                 }}
-                                imageUrl={assetShopMap.pets[pet.displayId]?.assetUrl ?? ""}
+                                imageUrl={assetShopMap.pets[pet.displayId]?.base.assetUrl ?? ""}
                                 price={pet.price ?? 0}
                                 unlockedLevel={pet.unlockLevel ?? 0}
                                 ownership={totalPlacedItemCount}

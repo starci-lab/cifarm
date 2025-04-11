@@ -25,6 +25,7 @@ export const ExclamationTooltip: FC<ExclamationTooltipProps> = ({
             <TooltipTrigger>
                 <CircleAlertIcon
                     className={cn("w-[18px] h-[18px] text-primary", className, iconClassName)}
+                    strokeWidth={4}
                 />
             </TooltipTrigger>
             <TooltipContent>{message}</TooltipContent>

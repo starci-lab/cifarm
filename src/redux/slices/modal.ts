@@ -1,6 +1,7 @@
 import { DefaultToken, NFTData } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse, TxResponses } from "@/modules/honeycomb"
+
 export interface WarningModal {
   message: string;
   nextModalToken?: string;
@@ -15,6 +16,10 @@ export interface SelectTokenModal {
   // if tokenKey is not provided, it will use the first token in the tokens array
   callback?: (tokenKey: string) => void;
   tokenKey?: string;
+}
+
+export interface SellModal {
+  placedItemId?: string;
 }
 
 export enum TransactionType {
@@ -93,6 +98,7 @@ export interface ModalSlice {
   nftModal: NFTModal;
   tokenModal: TokenModal;
   downloadPackageModal: DownloadPackageModal;
+  sellModal: SellModal;
 }
 
 export interface DownloadPackageModal {
@@ -116,6 +122,7 @@ const initialState: ModalSlice = {
     nftModal: {},
     tokenModal: {},
     downloadPackageModal: {},
+    sellModal: {},
 }
 
 export const modalSlice = createSlice({
@@ -143,6 +150,9 @@ export const modalSlice = createSlice({
         setDownloadPackageModal: (state, action: PayloadAction<DownloadPackageModal>) => {
             state.downloadPackageModal = action.payload
         },
+        setSellModal: (state, action: PayloadAction<SellModal>) => {
+            state.sellModal = action.payload
+        },
     },
 })
 
@@ -154,4 +164,5 @@ export const {
     setNFTModal,
     setTokenModal,
     setDownloadPackageModal,
+    setSellModal,
 } = modalSlice.actions

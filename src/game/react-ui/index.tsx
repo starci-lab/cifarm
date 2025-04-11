@@ -5,7 +5,10 @@ import { useAppSelector } from "@/redux"
 import { AssetIcon, assetIconMap } from "@/modules/assets"
 import { Toolbar } from "./Toolbar"
 export const ReactUI: FC = () => {
-    const user = useAppSelector(state => state.sessionReducer.user)
+    const user = useAppSelector((state) => state.sessionReducer.user)
+    const playerContext = useAppSelector(
+        (state) => state.sessionReducer.playerContext
+    )
     return (
         <>
             <div className="absolute top-6 left-6">
@@ -21,24 +24,28 @@ export const ReactUI: FC = () => {
                 </div>  
             </div>
             <div className="flex flex-col gap-4 absolute top-[200px] left-6">
-                {leftButtons.map((button, index) => (
-                    <GameIconButton
-                        key={index}
-                        text={button.text}
-                        imgSrc={button.imgSrc}
-                        onClick={button.onClick}
-                    />
-                ))}
+                {leftButtons
+                    .filter((button) => button.availableIn.includes(playerContext))
+                    .map((button, index) => (
+                        <GameIconButton
+                            key={index}
+                            text={button.text}
+                            imageSrc={button.imageSrc}
+                            onClick={button.onClick}
+                        />
+                    ))}
             </div>
             <div className="flex flex-col gap-4 absolute top-[200px] right-6">
-                {rightButtons.map((button, index) => (
-                    <GameIconButton
-                        key={index}
-                        text={button.text}
-                        imgSrc={button.imgSrc}
-                        onClick={button.onClick}
-                    />
-                ))}
+                {rightButtons
+                    .filter((button) => button.availableIn.includes(playerContext))
+                    .map((button, index) => (
+                        <GameIconButton
+                            key={index}
+                            text={button.text}
+                            imageSrc={button.imageSrc}
+                            onClick={button.onClick}
+                        />
+                    ))}
             </div>
             <div className="absolute top-6 right-6">
                 <div className="grid gap-4">

@@ -21,6 +21,10 @@ import { ShopModal } from "./ShopModal"
 import { InventoryModal } from "./InventoryModal"
 import { RoadsideStandModal } from "./RoadsideStandModal"
 import { SelectInventoryModal } from "./SelectInventoryModal"
+import { SettingsModal } from "./SettingsModal"
+import { SellModal } from "./SellModal"
+import { UpgradeModal } from "./UpgradeModal"
+
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -42,11 +46,14 @@ const Modals : FC = () => {
             <DownloadModal />
             <DownloadingModal />
             <InfoModal />
+            <SettingsModal />
             <InventoryModal />
             <RoadsideStandModal />
             <NFTStorageModal />
             <ShopModal />
             <SelectInventoryModal />
+            <SellModal />
+            <UpgradeModal />
         </div>
     )
 }

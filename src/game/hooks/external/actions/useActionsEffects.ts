@@ -7,7 +7,6 @@ import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
 import { useBuyBuildingEffects } from "./useBuyBuildingEffects"
 import { useUseAnimalMedicineEffects } from "./useUseAnimalMedicineEffects"
-import { useDeliverAdditionalInventoryEffects } from "./useDeliverAdditionalProductEffects"
 import { useDeliverInventoryEffects } from "./useDeliverInventoryEffects"
 import { useUseAnimalFeedEffects } from "./useUseAnimalFeedEffects"
 import { useHarvestPlantEffects } from "./useHarvestPlantEffects"
@@ -40,6 +39,7 @@ import { useHarvestBeeHouseEffects } from "./useHarvestBeeHouseEffects"
 import { useThiefBeeHouseEffects } from "./useThiefBeeHouseEffects"
 import { useBuyPetEffects } from "./useBuyPetEffects"
 import { usePlaceNFTEffects } from "./usePlaceNFTEffects"
+import { useUpdateSettingsEffects } from "./useUpdateSettingsEffects"
 
 export const useActionsEffects = () => {
     useBuyCropSeedsEffects()
@@ -63,7 +63,6 @@ export const useActionsEffects = () => {
     useUseAnimalFeedEffects()
     useUseFertilizerEffects()
     useUpgradeBuildingEffects()
-    useDeliverAdditionalInventoryEffects()
     useMoveEffects()
     useBuyToolEffects()
     useSellEffects()
@@ -84,4 +83,5 @@ export const useActionsEffects = () => {
     useThiefBeeHouseEffects()
     useBuyPetEffects()
     usePlaceNFTEffects()
+    useUpdateSettingsEffects()
 }

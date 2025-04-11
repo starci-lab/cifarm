@@ -58,21 +58,21 @@ export class SellContent extends BaseSizer {
                         if (!this.placedItem) {
                             throw new Error("Placed item is undefined")
                         }
-                        SceneEventEmitter.emit(SceneEventName.CloseModal, {
+                        ExternalEventEmitter.emit(ExternalEventName.CloseModal, {
                             modalName: ModalName.Sell,
                         })
                         //SceneEventEmitter.emit(SceneEventName.NormalModeOn)
-                        ExternalEventEmitter.emit(ExternalEventName.RequestSell, {
-                            placedItemId: this.placedItem.id,
+                        ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                            modalName: ModalName.Sell,
                         })
-                        SceneEventEmitter.emit(SceneEventName.NormalModeOn)
+                        ExternalEventEmitter.emit(ExternalEventName.ReturnNormal)
                     },
                 },
                 onXButtonPress: () => {
-                    SceneEventEmitter.emit(SceneEventName.CloseModal, {
+                    ExternalEventEmitter.emit(ExternalEventName.CloseModal, {
                         modalName: ModalName.Sell,
                     })
-                    SceneEventEmitter.emit(SceneEventName.NormalModeOn)
+                    ExternalEventEmitter.emit(ExternalEventName.ReturnNormal)
                 },
                 title: "Sell",
                 background: Background.Medium,

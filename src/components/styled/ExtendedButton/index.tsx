@@ -1,7 +1,6 @@
 import { Button, ButtonProps } from "@/components"
 import React, { useEffect, useRef } from "react"
 import { Loader2 } from "lucide-react"
-import Hammer from "hammerjs"
 
 export interface ExtendedButtonProps extends ButtonProps {
   isLoading?: boolean;
@@ -22,13 +21,17 @@ export const ExtendedButton = ({
         if (!onTap) {
             return
         }
-        const hammer = new Hammer(ref.current as HTMLElement)
-        hammer.on("tap", () => {
-            onTap?.()
-        })
-        return () => {
-            hammer.destroy()
+        const handleEffect = async () => {
+            const Hammer = (await import("hammerjs")).default
+            const hammer = new Hammer(ref.current as HTMLElement)
+            hammer.on("tap", () => {
+                onTap?.()
+            })
+            return () => {
+                hammer.destroy()
+            }
         }
+        handleEffect()
     }, [onTap])
 
     const pressTime = useRef(0)
@@ -37,17 +40,21 @@ export const ExtendedButton = ({
         if (!onPress) {
             return
         }
-        const hammer = new Hammer(ref.current as HTMLElement)
+        const handleEffect = async () => {
+            const Hammer = (await import("hammerjs")).default
+            const hammer = new Hammer(ref.current as HTMLElement)
         
-        hammer.on("press", (event) => {
-            pressTime.current = event.deltaTime
-        })
-        hammer.on("pressup", (event) => {
-            onPress?.(event.deltaTime - pressTime.current)
-        })
-        return () => {
-            hammer.destroy()
+            hammer.on("press", (event) => {
+                pressTime.current = event.deltaTime
+            })
+            hammer.on("pressup", (event) => {
+                onPress?.(event.deltaTime - pressTime.current)
+            })
+            return () => {
+                hammer.destroy()
+            }
         }
+        handleEffect()
     }, [onPress])
 
     return (

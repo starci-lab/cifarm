@@ -1,6 +1,7 @@
 import { Events } from "phaser"
 import { PlacedItemSchema } from "@/modules/entities"
 import { ToolLike } from "../ui"
+import { PlayerContext } from "@/redux"
 // external event emitter take care of events between Phaser and React
 export const ExternalEventEmitter = new Events.EventEmitter()
 
@@ -143,6 +144,8 @@ export enum ExternalEventName {
     RequestBuyPet = "request_buy_pet",
     // request to place nft, from React to Phaser
     RequestPlaceNFT = "request_place_nft",
+    // request to update settings, from React to Phaser
+    RequestUpdateSettings = "request_update_settings",
     // request to display timers, from React to Phaser
     RequestForceSyncPlacedItems = "request_force_sync_placed_items",
     // force sync placed items completed, from Phaser to React
@@ -157,8 +160,22 @@ export enum ExternalEventName {
     CloseModal = "close_modal",
     // buy item, from React to Phaser
     BuyItem = "buy_item",
+    // move item, from React to Phaser
+    MoveItem = "move_item",
+    // sell item, from React to Phaser
+    SellItem = "sell_item",
+    // return normal, from React to Phaser
+    ReturnNormal = "return_normal",
     // select tool, from React to Phaser
     SelectTool = "select_tool",
+    // update sound, from React to Phaser
+    UpdateSound = "update_sound",
+    // update ambient, from React to Phaser
+    UpdateAmbient = "update_ambient",
+    // update player context, from React to Phaser
+    UpdatePlayerContext = "update_player_context",
+    // update sell modal, from React to Phaser
+    UpdateSellModalContent = "update_sell_modal_content",
 }
 
 export enum ModalName {
@@ -212,4 +229,20 @@ export interface SetPlacedItemInfoMessage {
 export interface BuyItemMessage {
     // placed item type id
     placedItemTypeId: string;
+}
+
+export interface UpdateSoundMessage {
+    value: number
+}
+
+export interface UpdateAmbientMessage {
+    value: number
+}
+
+export interface UpdatePlayerContextMessage {
+    playerContext: PlayerContext
+}
+
+export interface UpdateSellModalContentMessage {
+    placedItemId: string
 }

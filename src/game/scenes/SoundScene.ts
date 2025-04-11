@@ -2,9 +2,9 @@ import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import { DEFAULT_VOLUME } from "../constants"
 import {
-    SceneEventEmitter,
-    SceneEventName,
-    UpdateVolumeMessage,
+    ExternalEventEmitter,
+    ExternalEventName,
+    UpdateSoundMessage,
 } from "../events"
 import { loadMusic, MusicKey } from "../assets"
 
@@ -21,10 +21,10 @@ export class SoundScene extends Scene {
                 volume: DEFAULT_VOLUME,
             })
             audio.play()
-            SceneEventEmitter.on(
-                SceneEventName.UpdateVolume,
-                ({ volume }: UpdateVolumeMessage) => {
-                    audio.setVolume(volume)
+            ExternalEventEmitter.on(
+                ExternalEventName.UpdateSound,
+                ({ value }: UpdateSoundMessage) => {
+                    audio.setVolume(value)
                 }
             )
         })

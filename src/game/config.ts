@@ -1,6 +1,6 @@
 import { AUTO, Game } from "phaser"
-import { BootstrapScene, LoadingScene, GameplayScene, UIScene, SoundScene, DataScene } from "../scenes"
-import { CONTAINER_ID } from "../constants"
+import { BootstrapScene, LoadingScene, GameplayScene, UIScene, SoundScene, DataScene } from "./scenes"
+import { CONTAINER_ID } from "./constants"
 import GesturesPlugin from "phaser3-rex-plugins/plugins/gestures-plugin.js"
 import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscroller-plugin.js"
 import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"

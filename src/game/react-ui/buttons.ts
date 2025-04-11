@@ -1,61 +1,95 @@
 import { ExternalEventEmitter, ExternalEventName, ModalName } from "../events"
 import { assetIconMap } from "@/modules/assets"
 import { AssetIcon } from "@/modules/assets"
+import { PlayerContext } from "@/redux"
 
-
-export enum ButtonAvailableIn {
-    Home = "Home",
-    Neighbor = "Neighbor",
-    Both = "Both",
-}
 export interface ButtonData {
-    text: string
-    imgSrc: string
-    onClick: () => void
-    availableIn: ButtonAvailableIn
+  text: string;
+  onClick: () => void;
+  availableIn: Array<PlayerContext>;
+  imageSrc: string;
 }
 export const rightButtons: Array<ButtonData> = [
     {
-        text: "Inventory",
-        imgSrc: assetIconMap[AssetIcon.Inventory].base.assetUrl,
+        text: "Settings",
+        imageSrc: assetIconMap[AssetIcon.Settings].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                modalName: ModalName.Inventory
+                modalName: ModalName.Settings,
             })
         },
-        availableIn: ButtonAvailableIn.Both,
+        availableIn: [PlayerContext.Home],
+    },
+    {
+        text: "Inventory",
+        imageSrc: assetIconMap[AssetIcon.Inventory].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                modalName: ModalName.Inventory,
+            })
+        },
+        availableIn: [PlayerContext.Neighbor, PlayerContext.Home],
+    },
+    {
+        text: "Move",
+        imageSrc: assetIconMap[AssetIcon.Move].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.MoveItem)
+        },
+        availableIn: [PlayerContext.Home],
+    },
+    {
+        text: "Sell",
+        imageSrc: assetIconMap[AssetIcon.Sell].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.SellItem)
+        },
+        availableIn: [PlayerContext.Home],
     },
 ]
 
 export const leftButtons: Array<ButtonData> = [
     {
         text: "Shop",
-        imgSrc: assetIconMap[AssetIcon.Shop].base.assetUrl,
+        imageSrc: assetIconMap[AssetIcon.Shop].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                modalName: ModalName.Shop
+                modalName: ModalName.Shop,
             })
         },
-        availableIn: ButtonAvailableIn.Both,
+        availableIn: [PlayerContext.Home],
     },
     {
         text: "Roadside Stand",
-        imgSrc: assetIconMap[AssetIcon.RoadsideStand].base.assetUrl,
+        imageSrc: assetIconMap[AssetIcon.RoadsideStand].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                modalName: ModalName.RoadsideStand
+                modalName: ModalName.RoadsideStand,
             })
         },
-        availableIn: ButtonAvailableIn.Home,
+        availableIn: [PlayerContext.Home],
     },
     {
         text: "Neighbors",
-        imgSrc: assetIconMap[AssetIcon.Neighbors].base.assetUrl,
+        imageSrc: assetIconMap[AssetIcon.Neighbors].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                modalName: ModalName.Neighbors
+                modalName: ModalName.Neighbors,
             })
         },
-        availableIn: ButtonAvailableIn.Home,
+        availableIn: [PlayerContext.Neighbor, PlayerContext.Home],
+    },
+    {
+        text: "Back",
+        imageSrc: assetIconMap[AssetIcon.Back].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.ReturnNormal)
+        },
+        availableIn: [
+            PlayerContext.Moving,
+            PlayerContext.Selling,
+            PlayerContext.PlacingNFT,
+            PlayerContext.Buying,
+        ],
     },
 ]

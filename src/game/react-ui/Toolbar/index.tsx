@@ -121,7 +121,7 @@ export const Toolbar: FC = () => {
                                     key={toolLike.id}
                                     quantity={toolLike.quantity}
                                     imageUrl={assetToolsMap[toolLike.id as ToolId]?.base.assetUrl}
-                                    faded={toolLike.id !== selectedToolId}
+                                    tint={toolLike.id !== selectedToolId}
                                     hideCardContentBg={true}
                                     frameOnly={false}
                                 />
@@ -154,7 +154,7 @@ export const Toolbar: FC = () => {
                                 imageUrl={
                                     assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
                                 }
-                                faded={toolLike.id !== selectedToolId}
+                                tint={toolLike.id !== selectedToolId}
                                 hideCardContentBg={true}
                                 frameOnly={false}
                             />

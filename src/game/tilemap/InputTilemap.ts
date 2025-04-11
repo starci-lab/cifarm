@@ -31,7 +31,6 @@ import {
 import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 import {
     CacheKey,
-    SellModalData,
     TilemapBaseConstructorParams,
     UpgradeModalData,
 } from "../types"
@@ -88,7 +87,7 @@ import { ExternalEventEmitter } from "../events"
 import { gameplayDepth } from "../depth"
 import { checkPlacedItemTypeSellable } from "../logic"
 import { LayerName } from "./types"
-
+import { PlayerContext } from "@/redux"
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
 
@@ -147,7 +146,7 @@ export class InputTilemap extends ItemTilemap {
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
         // listen for place in progress event
-        SceneEventEmitter.on(SceneEventName.NormalModeOn, () => {
+        ExternalEventEmitter.on(ExternalEventName.ReturnNormal, () => {
             this.returnNormal({
                 fromOtherScene: true,
             })
@@ -159,6 +158,9 @@ export class InputTilemap extends ItemTilemap {
                 this.hideEverything()
                 this.inputMode = InputMode.Buy
                 this.handleBuyItem(data)
+                ExternalEventEmitter.emit(ExternalEventName.UpdatePlayerContext, {
+                    playerContext: PlayerContext.Buying,
+                })
             }
         )
 
@@ -168,18 +170,27 @@ export class InputTilemap extends ItemTilemap {
                 this.hideEverything()
                 this.inputMode = InputMode.PlaceNFT
                 this.handlePlaceNFTItem(data)
+                ExternalEventEmitter.emit(ExternalEventName.UpdatePlayerContext, {
+                    playerContext: PlayerContext.PlacingNFT,
+                })
             }
         )
 
-        SceneEventEmitter.on(SceneEventName.MovingModeOn, () => {
+        ExternalEventEmitter.on(ExternalEventName.MoveItem, () => {
             this.hideEverything()
             this.inputMode = InputMode.Move
+            ExternalEventEmitter.emit(ExternalEventName.UpdatePlayerContext, {
+                playerContext: PlayerContext.Moving,
+            })
         })
-        SceneEventEmitter.on(SceneEventName.SellingModeOn, () => {
+        
+        ExternalEventEmitter.on(ExternalEventName.SellItem, () => {
             this.hideEverything()
             this.inputMode = InputMode.Sell
+            ExternalEventEmitter.emit(ExternalEventName.UpdatePlayerContext, {
+                playerContext: PlayerContext.Selling,
+            })
         })
-
         this.user = this.scene.cache.obj.get(CacheKey.User) as UserSchema
 
         ExternalEventEmitter.on(ExternalEventName.StopBuying, () => {
@@ -312,12 +323,9 @@ export class InputTilemap extends ItemTilemap {
                 if (!assetData) {
                     throw new Error("Asset data not found")
                 }
-                const sellModalData: SellModalData = {
-                    placedItem: data.object.currentPlacedItem,
-                    mapAssetData: assetData,
-                }
-                this.scene.cache.obj.add(CacheKey.SellModalData, sellModalData)
-                //ExternalEventEmitter.emit(ExternalEventName.UpdateSellModal)
+                ExternalEventEmitter.emit(ExternalEventName.UpdateSellModalContent, {
+                    placedItemId: data.object.currentPlacedItem?.id,
+                })
                 ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                     modalName: ModalName.Sell,
                 })
@@ -1890,6 +1898,9 @@ export class InputTilemap extends ItemTilemap {
         }
         }
         this.inputMode = InputMode.Normal
+        ExternalEventEmitter.emit(ExternalEventName.UpdatePlayerContext, {
+            playerContext: PlayerContext.Home,
+        })
         this.showEverything()
         if (this.placementConfirmation) {
             this.placementConfirmation.removeAll(true)

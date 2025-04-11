@@ -1,11 +1,15 @@
-import { ItemCard } from "@/components"
+import { ItemCard, TintColor } from "@/components"
 import { InventoryKind, InventorySchema } from "@/modules/entities"
 import React, { FC } from "react"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { MoveInventoryMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetInventoryTypesMap } from "@/modules/assets"
-import { useAppDispatch, useAppSelector, setSelectedInventoryId } from "@/redux"
+import {
+    useAppDispatch,
+    useAppSelector,
+    setSelectedInventoryId,
+} from "@/redux"
 import { ExternalEventEmitter, ExternalEventName } from "@/game/events"
 
 interface InventoryCardProps {
@@ -14,7 +18,11 @@ interface InventoryCardProps {
   kind: InventoryKind;
 }
 
-export const InventoryCard: FC<InventoryCardProps> = ({ inventory, index, kind }) => {
+export const InventoryCard: FC<InventoryCardProps> = ({
+    inventory,
+    index,
+    kind,
+}) => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(GRAPHQL_QUERY_STATIC_SWR)
@@ -23,12 +31,22 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory, index, kind }
         (inventoryType) => inventoryType.id === inventory?.inventoryType
     )
 
-    const selectedInventoryId = useAppSelector(state => state.sessionReducer.selectedInventoryId)
+    const selectedInventoryId = useAppSelector(
+        (state) => state.sessionReducer.selectedInventoryId
+    )
     const dispatch = useAppDispatch()
-
     return (
         <ItemCard
-            faded={inventory?.id !== selectedInventoryId}
+            name={(() => {
+                if (!inventoryType) return
+                return assetInventoryTypesMap[inventoryType.displayId]?.name
+            })()}
+            description={(() => {
+                if (!inventoryType) return
+                return assetInventoryTypesMap[inventoryType.displayId]?.description
+            })()}
+            showTooltip={true}
+            tint={inventory?.id === selectedInventoryId}
             quantity={inventory?.quantity}
             stackable={inventoryType?.stackable}
             imageUrl={(() => {
@@ -46,10 +64,14 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory, index, kind }
                         isTool: kind === InventoryKind.Tool,
                         index,
                     }
-                    ExternalEventEmitter.emit(ExternalEventName.RequestMoveInventory, moveInventoryMessage)
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestMoveInventory,
+                        moveInventoryMessage
+                    )
                 }
             }}
+            tintColor={TintColor.Green}
             frameOnly={!inventoryType}
         />
-    )
+    )   
 }

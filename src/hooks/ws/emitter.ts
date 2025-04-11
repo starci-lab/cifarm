@@ -56,6 +56,7 @@ export enum EmitterEventName {
   BuyPet = "buy_pet",
   ForceSyncPlacedItems = "force_sync_placed_items",
   PlaceNFT = "place_nft",
+  UpdateSettings = "update_settings",
 }
 
 export interface BuySuppliesMessage {
@@ -200,10 +201,9 @@ export interface DeliverInventoryMessage {
   inventoryId: string;
 }
 
-export interface DeliverAdditionalInventoryMessage {
-  index: number;
-  inventoryId: string;
-  quantity: number;
+export interface UpdateSettingsMessage {
+  sound?: number;
+  ambient?: number;
 }
 
 export interface RetrieveInventoryMessage {

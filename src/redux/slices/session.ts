@@ -13,6 +13,15 @@ import { PlacedItemSchema, InventorySchema, UserSchema } from "@/modules/entitie
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 
+export enum PlayerContext {
+    Home = "home",
+    Neighbor = "neighbor",
+    Moving = "moving",
+    Selling = "selling",
+    PlacingNFT = "placingNFT",
+    Buying = "buying",
+}
+
 export interface Accounts {
   accounts: Array<Account>;
   currentId: number;
@@ -37,12 +46,14 @@ export interface SessionState {
   // placed item id
   placedItem?: PlacedItemSchema;
   inventories: Array<InventorySchema>;
+  placedItems: Array<PlacedItemSchema>;
   selectedInventoryId?: string;
   selectedDeliveryInventoryId?: string;
   selectedRetrieveInventoryId?: string;
   user?: UserSchema;
   fromToolIndex?: number;
   selectedToolId?: string;
+  playerContext: PlayerContext;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -77,9 +88,9 @@ const initialState: SessionState = {
     nftCollectionsSwrs: {},
     collectionKey: "",
     nftAddress: "",
-    placedItem: undefined,
     inventories: [],
-
+    placedItems: [],
+    playerContext: PlayerContext.Home,
 }
 
 export const sessionSlice = createSlice({
@@ -163,6 +174,12 @@ export const sessionSlice = createSlice({
         setSelectedToolId: (state, action: PayloadAction<string>) => {
             state.selectedToolId = action.payload
         },
+        setPlayerContext: (state, action: PayloadAction<PlayerContext>) => {
+            state.playerContext = action.payload
+        },
+        setPlacedItems: (state, action: PayloadAction<Array<PlacedItemSchema>>) => {
+            state.placedItems = action.payload
+        },
     },
 })
 
@@ -191,6 +208,8 @@ export const {
     setUser,
     setFromToolIndex,
     setSelectedToolId,
+    setPlayerContext,
+    setPlacedItems,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
