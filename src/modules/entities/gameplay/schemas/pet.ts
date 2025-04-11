@@ -7,4 +7,5 @@ export interface PetSchema extends StaticAbstractSchema<PetId> {
     unlockLevel?: number
     sellPrice?: number
     type: PetType
+    sellable?: boolean
 }

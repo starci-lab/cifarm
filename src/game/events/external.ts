@@ -174,8 +174,10 @@ export enum ExternalEventName {
     UpdateAmbient = "update_ambient",
     // update player context, from React to Phaser
     UpdatePlayerContext = "update_player_context",
-    // update sell modal, from React to Phaser
+    // update sell modal, from Phaser to React
     UpdateSellModalContent = "update_sell_modal_content",
+    // update upgrade modal, from Phaser to React
+    UpdateUpgradeModalContent = "update_upgrade_modal_content",
 }
 
 export enum ModalName {
@@ -245,4 +247,8 @@ export interface UpdatePlayerContextMessage {
 
 export interface UpdateSellModalContentMessage {
     placedItemId: string
+}
+
+export interface UpdateUpgradeModalContentMessage {
+    placedItemBuildingId: string
 }

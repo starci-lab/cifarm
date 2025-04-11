@@ -1,9 +1,9 @@
 import { AssetData } from "./types"
 
 export enum AssetIcon {
-    Golds = "golds",
+    Gold = "gold",
     Energy = "energy",
-    Tokens = "tokens",
+    Token = "token",
     Inventory = "inventory",
     Shop = "shop",
     RoadsideStand = "roadside-stand",
@@ -15,6 +15,12 @@ export enum AssetIcon {
     Sell = "sell",
     Return = "return",
     Back = "back",
+    PurpleStar = "purple-star",
+    UpgradeStar = "upgrade-star",
+    NFTStorage = "nft-storage",
+    Quests = "quests",
+    Daily = "daily",
+    Download = "download",
 }
 
 const PREFIX = "icons"
@@ -23,7 +29,7 @@ export interface AssetIconData {
     base: AssetData
 }
 export const assetIconMap: Record<AssetIcon, AssetIconData> = {
-    [AssetIcon.Golds]: {
+    [AssetIcon.Gold]: {
         base: {
             assetKey: "icons-gold",
             assetUrl: `${PREFIX}/gold.png`
@@ -35,7 +41,7 @@ export const assetIconMap: Record<AssetIcon, AssetIconData> = {
             assetUrl: `${PREFIX}/energy.png`
         },
     },
-    [AssetIcon.Tokens]: {
+    [AssetIcon.Token]: {
         base: {
             assetKey: "icons-token",
             assetUrl: `${PREFIX}/token.png`
@@ -105,6 +111,42 @@ export const assetIconMap: Record<AssetIcon, AssetIconData> = {
         base: {
             assetKey: "icons-back",
             assetUrl: `${PREFIX}/back.png`
+        },
+    },
+    [AssetIcon.PurpleStar]: {
+        base: {
+            assetKey: "icons-purple-star",
+            assetUrl: `${PREFIX}/purple-star.png`
+        },
+    },
+    [AssetIcon.UpgradeStar]: {
+        base: {
+            assetKey: "icons-upgrade-star",
+            assetUrl: `${PREFIX}/upgrade-star.png`
+        },
+    },
+    [AssetIcon.NFTStorage]: {
+        base: {
+            assetKey: "icons-nft-storage",
+            assetUrl: `${PREFIX}/nft-storage.png`
+        },
+    },
+    [AssetIcon.Quests]: {
+        base: {
+            assetKey: "icons-quests",
+            assetUrl: `${PREFIX}/quests.png`
+        },
+    },
+    [AssetIcon.Daily]: {
+        base: {
+            assetKey: "icons-daily",
+            assetUrl: `${PREFIX}/daily.png`
+        },
+    },
+    [AssetIcon.Download]: {
+        base: {
+            assetKey: "icons-download",
+            assetUrl: `${PREFIX}/download.png`
         },
     },
 }

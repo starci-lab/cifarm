@@ -9,6 +9,7 @@ export const ReactUI: FC = () => {
     const playerContext = useAppSelector(
         (state) => state.sessionReducer.playerContext
     )
+    
     return (
         <>
             <div className="absolute top-6 left-6">
@@ -17,7 +18,7 @@ export const ReactUI: FC = () => {
                         imgSrc={user?.avatarUrl}
                         jazzString={user?.accountAddress}  
                     />
-                    <div className="p-2 bg-background/50 rounded-l-md -ml-4 pl-6 rounded-r-md">
+                    <div className="p-2 bg-background/50 rounded-l-md rounded-r-md">
                         <div className="uppercase">{user?.username}</div>
                         <div className="text-sm text-muted-foreground">Lv.{user?.level}</div>
                     </div>    
@@ -50,8 +51,8 @@ export const ReactUI: FC = () => {
             <div className="absolute top-6 right-6">
                 <div className="grid gap-4">
                     <ResourceCard amount={user?.energy ?? 0} iconImgSrc={assetIconMap[AssetIcon.Energy].base.assetUrl}/>
-                    <ResourceCard amount={user?.golds ?? 0} iconImgSrc={assetIconMap[AssetIcon.Golds].base.assetUrl}/>
-                    <ResourceCard amount={user?.tokens ?? 0} iconImgSrc={assetIconMap[AssetIcon.Tokens].base.assetUrl}/>
+                    <ResourceCard amount={user?.golds ?? 0} iconImgSrc={assetIconMap[AssetIcon.Gold].base.assetUrl}/>
+                    <ResourceCard amount={user?.tokens ?? 0} iconImgSrc={assetIconMap[AssetIcon.Token].base.assetUrl}/>
                 </div>
             </div>
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2">

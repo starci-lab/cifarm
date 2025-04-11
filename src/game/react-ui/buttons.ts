@@ -31,6 +31,26 @@ export const rightButtons: Array<ButtonData> = [
         availableIn: [PlayerContext.Neighbor, PlayerContext.Home],
     },
     {
+        text: "Daily",
+        imageSrc: assetIconMap[AssetIcon.Daily].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                modalName: ModalName.Daily,
+            })
+        },
+        availableIn: [PlayerContext.Home],
+    },
+    {
+        text: "Quests",
+        imageSrc: assetIconMap[AssetIcon.Quests].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                modalName: ModalName.Quests,
+            })
+        },
+        availableIn: [PlayerContext.Home],
+    },
+    {
         text: "Move",
         imageSrc: assetIconMap[AssetIcon.Move].base.assetUrl,
         onClick: () => {
@@ -91,5 +111,25 @@ export const leftButtons: Array<ButtonData> = [
             PlayerContext.PlacingNFT,
             PlayerContext.Buying,
         ],
+    },
+    {
+        text: "Download",
+        imageSrc: assetIconMap[AssetIcon.Download].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                modalName: ModalName.Download,
+            })
+        },
+        availableIn: [PlayerContext.Home],
+    },
+    {
+        text: "NFT Storage",
+        imageSrc: assetIconMap[AssetIcon.NFTStorage].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                modalName: ModalName.NFTStorage,
+            })
+        },
+        availableIn: [PlayerContext.Home],
     },
 ]

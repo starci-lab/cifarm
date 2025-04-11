@@ -1,6 +1,6 @@
 "use client"
 import { PROFILE_DISCLOSURE, GRAPHQL_QUERY_USER_SWR  } from "@/app/constants"
-import { Avatar, AvatarImage, ExclamationTooltip, GameAvatar, Image, ModalHeader, Snippet, Spacer } from "@/components"
+import { ExclamationTooltip, GameAvatar, Image, ModalHeader, Snippet, Spacer } from "@/components"
 import { pathConstants } from "@/constants"
 import { useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"

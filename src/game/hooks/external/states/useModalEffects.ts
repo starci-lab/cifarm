@@ -12,16 +12,18 @@ import {
     SETTINGS_DISCLOSURE,
     UPGRADE_DISCLOSURE,
     SELL_DISCLOSURE,
+    DAILY_DISCLOSURE,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     ModalName,
     OpenModalMessage,
     UpdateSellModalContentMessage,
+    UpdateUpgradeModalContentMessage,
 } from "../../../events"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "@/game/events"
-import { setSellModal, useAppDispatch } from "@/redux"
+import { setSellModal, setUpgradeModal, useAppDispatch } from "@/redux"
 
 export const useModalEffects = () => {
     const { open: openQuestsModal } =
@@ -51,6 +53,8 @@ export const useModalEffects = () => {
     const { open: openUpgradeModal } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(UPGRADE_DISCLOSURE)
     const dispatch = useAppDispatch()
+    const { open: openDailyModal } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(DAILY_DISCLOSURE)
 
     useEffect(() => {
     // update sell modal content
@@ -58,6 +62,13 @@ export const useModalEffects = () => {
             ExternalEventName.UpdateSellModalContent,
             ({ placedItemId }: UpdateSellModalContentMessage) => {
                 dispatch(setSellModal({ placedItemId }))
+            }
+        )
+
+        ExternalEventEmitter.on(
+            ExternalEventName.UpdateUpgradeModalContent,
+            ({ placedItemBuildingId }: UpdateUpgradeModalContentMessage) => {
+                dispatch(setUpgradeModal({ placedItemBuildingId }))
             }
         )
 
@@ -101,6 +112,9 @@ export const useModalEffects = () => {
                     break
                 case ModalName.Upgrade:
                     openUpgradeModal()
+                    break
+                case ModalName.Daily:
+                    openDailyModal()
                     break
                 default:
                     break

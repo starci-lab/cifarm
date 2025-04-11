@@ -2,20 +2,23 @@ import React, { FC } from "react"
 import {
     Dialog,
     DialogContent,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
-    ScaledImage,
+    ExtendedButton,
+    Image,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { GRAPHQL_QUERY_STATIC_SWR, SELL_DISCLOSURE } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
 import { useAppSelector } from "@/redux"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { getAssetDataFromPlacedItem } from "@/modules/assets"
+import { SellMessage, useGraphQLQueryStaticSwr } from "@/hooks"
+import { getSellPrice } from "@/modules/entities"
+import { AssetIcon, assetIconMap } from "@/modules/assets"
 
 export const SellModal: FC = () => {
-    const { toggle, isOpen } =
+    const { toggle, isOpen, close } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(SELL_DISCLOSURE)
     const { placedItemId } = useAppSelector(
         (state) => state.modalReducer.sellModal
@@ -51,15 +54,45 @@ export const SellModal: FC = () => {
                             )
                             if (!placedItem) throw new Error("Placed item not found")
                             if (!staticSwr.data?.data) throw new Error("Static data not found")
-                            const { assetUrl } = getAssetDataFromPlacedItem({
-                                placedItem: placedItem!,
+                            const { sellable, sellPrice } = getSellPrice({
+                                placedItem,
                                 staticData: staticSwr.data.data,
-                                phaserMap: false,
-                            })
-                            return <ScaledImage src={assetUrl} />
+                            })  
+                            if (!sellable) {
+                                throw new Error("Item is not sellable")
+                            }
+                            return (
+                                <div className="flex items-center gap-1 text-sm">
+                                    <div>
+                                    Do you want to sell this item for
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <Image src={assetIconMap[AssetIcon.Gold].base.assetUrl} className="w-5 h-5" />
+                                        {sellPrice}
+                                    </div>
+                                    <div>
+                                        ?
+                                    </div>
+                                </div>
+                            )
                         })()}
                     </div>
                 </div>
+                <DialogFooter>
+                    <ExtendedButton variant="ghost" className="w-full" onClick={() => close()}>
+                    Cancel
+                    </ExtendedButton>
+                    <ExtendedButton variant="destructive" className="w-full" onClick={() => {
+                        close()
+                        if (!placedItemId) throw new Error("Placed item id not found")
+                        const eventMessage: SellMessage = {
+                            placedItemId,
+                        }
+                        ExternalEventEmitter.emit(ExternalEventName.RequestSell, eventMessage)
+                    }}>
+                    Confirm
+                    </ExtendedButton>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )

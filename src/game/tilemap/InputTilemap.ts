@@ -23,7 +23,6 @@ import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import {
     BaseAssetKey,
     baseAssetMap,
-    buildingAssetMap,
     MainVisualType,
     SpineConfig,
     TextureConfig,
@@ -32,7 +31,6 @@ import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 import {
     CacheKey,
     TilemapBaseConstructorParams,
-    UpgradeModalData,
 } from "../types"
 import { ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
@@ -78,7 +76,6 @@ import {
     BuyItemMessage,
     ExternalEventName,
     ModalName,
-    OpenModalMessage,
     PlaceNFTItemMessage,
     SceneEventEmitter,
     SceneEventName,
@@ -96,7 +93,7 @@ export enum InputMode {
   Buy,
   Move,
   Sell,
-  PlaceNFT
+  PlaceNFT,
 }
 
 interface DragData {
@@ -183,7 +180,7 @@ export class InputTilemap extends ItemTilemap {
                 playerContext: PlayerContext.Moving,
             })
         })
-        
+
         ExternalEventEmitter.on(ExternalEventName.SellItem, () => {
             this.hideEverything()
             this.inputMode = InputMode.Sell
@@ -251,145 +248,153 @@ export class InputTilemap extends ItemTilemap {
 
         // click on empty tile to plant seed
         this.tap = new Tap(this.scene)
-        this.tap.on("tap", (pointer: Phaser.Input.Pointer) => {
-            if (this.cancelNextTap) {
-                this.cancelNextTap = false
-                return
-            }
-            const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
-            // do nothing if tile is not found
-            if (!tile) {
-                return
-            }
-            //if buying mode is on
-            if (this.inputMode === InputMode.Buy || this.inputMode === InputMode.PlaceNFT) {
-                return
-            }
-            const data = this.findPlacedItemRoot(tile.x, tile.y)
-            if (!data) {
-                console.log("No placed item found for position")
-                return
-            }
+        this.tap
+            .on("tap", (pointer: Phaser.Input.Pointer) => {
+                if (this.cancelNextTap) {
+                    this.cancelNextTap = false
+                    return
+                }
+                const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
+                // do nothing if tile is not found
+                if (!tile) {
+                    return
+                }
+                //if buying mode is on
+                if (
+                    this.inputMode === InputMode.Buy ||
+          this.inputMode === InputMode.PlaceNFT
+                ) {
+                    return
+                }
+                const data = this.findPlacedItemRoot(tile.x, tile.y)
+                if (!data) {
+                    console.log("No placed item found for position")
+                    return
+                }
 
-            if (this.inputMode === InputMode.Move) {
-                if (!this.isDragging) {
-                    this.isDragging = true
+                if (this.inputMode === InputMode.Move) {
+                    if (!this.isDragging) {
+                        this.isDragging = true
+                        if (!data.object.currentPlacedItem?.id) {
+                            throw new Error("Placed item id not found")
+                        }
+                        data.object.ignoreCollision = true
+                        this.handleMovingDragMode(data)
+                    }
+                    return
+                }
+                if (this.inputMode === InputMode.Sell) {
                     if (!data.object.currentPlacedItem?.id) {
                         throw new Error("Placed item id not found")
                     }
-                    data.object.ignoreCollision = true
-                    this.handleMovingDragMode(data)
+                    if (!data.object.placedItemType) {
+                        throw new Error("Placed item type not found")
+                    }
+                    if (
+                        !checkPlacedItemTypeSellable({
+                            scene: this.scene,
+                            placedItemType: data.object.placedItemType,
+                        })
+                    ) {
+                        const { x: tileX, y: tileY } = this.getCenterPosition({
+                            x: tile.getCenterX(),
+                            y: tile.getCenterY(),
+                            sizeX: data.object.placedItemType.sizeX,
+                            sizeY: data.object.placedItemType.sizeY,
+                        })
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                text: "Not sellable",
+                                x: tileX,
+                                y: tileY,
+                            },
+                        ])
+                        return
+                    }
+                    if (!data.object.mainVisual) {
+                        throw new Error("Main visual not found")
+                    }
+                    const assetData = getAssetData({
+                        placedItemType: data.object.placedItemType,
+                        scene: this.scene,
+                        isAdult: data.object.currentPlacedItem?.animalInfo?.isAdult,
+                        fruitStage: data.object.currentPlacedItem?.fruitInfo?.currentStage,
+                    })
+                    if (!assetData) {
+                        throw new Error("Asset data not found")
+                    }
+                    ExternalEventEmitter.emit(ExternalEventName.UpdateSellModalContent, {
+                        placedItemId: data.object.currentPlacedItem?.id,
+                    })
+                    ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                        modalName: ModalName.Sell,
+                    })
+                    return
                 }
-                return
-            }
-            if (this.inputMode === InputMode.Sell) {
-                if (!data.object.currentPlacedItem?.id) {
-                    throw new Error("Placed item id not found")
-                }
+
                 if (!data.object.placedItemType) {
                     throw new Error("Placed item type not found")
                 }
-                if (
-                    !checkPlacedItemTypeSellable({
-                        scene: this.scene,
-                        placedItemType: data.object.placedItemType,
-                    })
-                ) {
-                    const { x: tileX, y: tileY } = this.getCenterPosition({
-                        x: tile.getCenterX(),
-                        y: tile.getCenterY(),
-                        sizeX: data.object.placedItemType.sizeX,
-                        sizeY: data.object.placedItemType.sizeY,
-                    })
-                    this.createFlyItems([
-                        {
-                            showIcon: false,
-                            text: "Not sellable",
-                            x: tileX,
-                            y: tileY,
-                        },
-                    ])
+
+                // return if object is pressed for action
+                if (data.object.isPressedForAction) {
                     return
                 }
-                if (!data.object.mainVisual) {
-                    throw new Error("Main visual not found")
-                }
-                const assetData = getAssetData({
-                    placedItemType: data.object.placedItemType,
-                    scene: this.scene,
-                    isAdult: data.object.currentPlacedItem?.animalInfo?.isAdult,
-                    fruitStage: data.object.currentPlacedItem?.fruitInfo?.currentStage,
-                })
-                if (!assetData) {
-                    throw new Error("Asset data not found")
-                }
-                ExternalEventEmitter.emit(ExternalEventName.UpdateSellModalContent, {
-                    placedItemId: data.object.currentPlacedItem?.id,
-                })
-                ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                    modalName: ModalName.Sell,
-                })
-                return
-            }
 
-            if (!data.object.placedItemType) {
-                throw new Error("Placed item type not found")
-            }
-
-            // return if object is pressed for action
-            if (data.object.isPressedForAction) {
-                return
-            }
-
-            // do nothing if selected tool is default
-            const selectedTool = this.scene.cache.obj.get(
-                CacheKey.SelectedTool
-            ) as ToolLike
-            if (selectedTool.default) {
-                return
-            }
-
-            switch (data.object.placedItemType.type) {
-            case PlacedItemType.Tile:
-                this.handlePressOnTile({ data })
-                break
-            case PlacedItemType.Building:
-                if (data.object.placedItemType.displayId == PlacedItemTypeId.Home)
+                // do nothing if selected tool is default
+                const selectedTool = this.scene.cache.obj.get(
+                    CacheKey.SelectedTool
+                ) as ToolLike
+                if (selectedTool.default) {
                     return
-                this.handlePressOnBuilding({ data })
-                break
-            case PlacedItemType.Animal:
-                this.handlePressOnAnimal({ data })
-                break
-            case PlacedItemType.Fruit:
-                this.handlePressOnFruit({ data })
-                break
-            }
-        }).on("2tap", (pointer: Phaser.Input.Pointer) => {
-            const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
-            // do nothing if tile is not found
-            if (!tile) {
-                return
-            }
-            //if normal mode is not on
-            if (this.inputMode !== InputMode.Normal) {
-                return
-            }
-            const data = this.findPlacedItemRoot(tile.x, tile.y)
-            if (!data) {
-                console.log("No placed item found for position")
-                return
-            }
-            if (!data.object.currentPlacedItem) {
-                throw new Error("Placed item not found")
-            }
-            ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
-                placedItem: data.object.currentPlacedItem
+                }
+
+                switch (data.object.placedItemType.type) {
+                case PlacedItemType.Tile:
+                    this.handlePressOnTile({ data })
+                    break
+                case PlacedItemType.Building:
+                    if (data.object.placedItemType.displayId == PlacedItemTypeId.Home)
+                        return
+                    this.handlePressOnBuilding({ data })
+                    break
+                case PlacedItemType.Animal:
+                    this.handlePressOnAnimal({ data })
+                    break
+                case PlacedItemType.Fruit:
+                    this.handlePressOnFruit({ data })
+                    break
+                }
             })
-            ExternalEventEmitter.emit(ExternalEventName.RequestForceSyncPlacedItems, {
-                ids: [data.object.currentPlacedItem.id],
+            .on("2tap", (pointer: Phaser.Input.Pointer) => {
+                const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
+                // do nothing if tile is not found
+                if (!tile) {
+                    return
+                }
+                //if normal mode is not on
+                if (this.inputMode !== InputMode.Normal) {
+                    return
+                }
+                const data = this.findPlacedItemRoot(tile.x, tile.y)
+                if (!data) {
+                    console.log("No placed item found for position")
+                    return
+                }
+                if (!data.object.currentPlacedItem) {
+                    throw new Error("Placed item not found")
+                }
+                ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
+                    placedItem: data.object.currentPlacedItem,
+                })
+                ExternalEventEmitter.emit(
+                    ExternalEventName.RequestForceSyncPlacedItems,
+                    {
+                        ids: [data.object.currentPlacedItem.id],
+                    }
+                )
             })
-        })
     }
     // method to handle press on tile
     private async handlePressOnTile({ data }: HandlePressOnParams) {
@@ -473,9 +478,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             const inventoryType = this.getInventoryTypeFromTool(selectedTool)
-            const tool = tools.find(
-                (tool) => tool.id === inventoryType.tool
-            )
+            const tool = tools.find((tool) => tool.id === inventoryType.tool)
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
             }
@@ -828,9 +831,7 @@ export class InputTilemap extends ItemTilemap {
             break
         }
         case InventoryType.Tool: {
-            const tool = this.tools.find(
-                (tool) => tool.id === inventoryType.tool
-            )
+            const tool = this.tools.find((tool) => tool.id === inventoryType.tool)
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
             }
@@ -1071,12 +1072,12 @@ export class InputTilemap extends ItemTilemap {
     }
 
     private dragPlaceNFTVisualOnTile(tile: Phaser.Tilemaps.Tile) {
-        // throw error if drag sprite data is not found
+    // throw error if drag sprite data is not found
         if (!this.placeNFTDragData) {
             throw new Error("No drag sprite data found")
         }
         const { placedItemType, textureConfig, spineConfig, type } =
-        this.placeNFTDragData
+      this.placeNFTDragData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
 
@@ -1121,7 +1122,7 @@ export class InputTilemap extends ItemTilemap {
                 ExternalEventEmitter.emit(
                     ExternalEventName.RequestPlaceNFT,
                     eventMessage
-                )   
+                )
                 this.returnNormal({
                     notSync: true,
                 })
@@ -1155,7 +1156,7 @@ export class InputTilemap extends ItemTilemap {
 
     // drag sprite on tile
     private dragBuyingVisualOnTile(tile: Phaser.Tilemaps.Tile) {
-        // throw error if drag sprite data is not found
+    // throw error if drag sprite data is not found
         if (!this.buyingDragData) {
             throw new Error("No drag sprite data found")
         }
@@ -1258,13 +1259,9 @@ export class InputTilemap extends ItemTilemap {
                     break
                 }
                 case PlacedItemType.Pet: {
-                    const pet = this.pets.find(
-                        (pet) => pet.id === placedItemType.pet
-                    )
+                    const pet = this.pets.find((pet) => pet.id === placedItemType.pet)
                     if (!pet) {
-                        throw new Error(
-                            `Pet not found for id: ${placedItemType.pet}`
-                        )
+                        throw new Error(`Pet not found for id: ${placedItemType.pet}`)
                     }
                     const eventMessage: BuyPetMessage = {
                         petId: pet.displayId,
@@ -1474,9 +1471,7 @@ export class InputTilemap extends ItemTilemap {
             if (!tools) {
                 throw new Error("Tools not found")
             }
-            const tool = tools.find(
-                (tool) => tool.id === inventoryType.tool
-            )
+            const tool = tools.find((tool) => tool.id === inventoryType.tool)
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
             }
@@ -1610,18 +1605,15 @@ export class InputTilemap extends ItemTilemap {
                     ])
                     return
                 }
-                const upgradeModalData: UpgradeModalData = {
-                    placedItem: currentPlacedItem,
-                    mapAssetData: buildingAssetMap[building.displayId].map,
-                }
-                this.scene.cache.obj.add(
-                    CacheKey.UpgradeModalData,
-                    upgradeModalData
+                ExternalEventEmitter.emit(
+                    ExternalEventName.UpdateUpgradeModalContent,
+                    {
+                        placedItemBuildingId: placedItemId,
+                    }
                 )
-                const eventMessage: OpenModalMessage = {
+                ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                     modalName: ModalName.Upgrade,
-                }
-                ExternalEventEmitter.emit(ExternalEventName.OpenModal, eventMessage)
+                })
             }
             }
         }
@@ -1665,9 +1657,7 @@ export class InputTilemap extends ItemTilemap {
             if (!tools) {
                 throw new Error("Tools not found")
             }
-            const tool = tools.find(
-                (tool) => tool.id === inventoryType.tool
-            )
+            const tool = tools.find((tool) => tool.id === inventoryType.tool)
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
             }
@@ -1847,7 +1837,7 @@ export class InputTilemap extends ItemTilemap {
                         throw new Error("Drag buy visual not found")
                     }
                     this.dragBuyVisual.destroy()
-                    this.dragBuyVisual = undefined         
+                    this.dragBuyVisual = undefined
                     if (!fromOtherScene) {
                         this.cancelNextTap = true
                     }
@@ -2202,11 +2192,15 @@ export class InputTilemap extends ItemTilemap {
         if (tool.default) {
             throw new Error("Tool is not default")
         }
-        const inventory = this.inventories.find((inventory) => inventory.id === tool.id)
+        const inventory = this.inventories.find(
+            (inventory) => inventory.id === tool.id
+        )
         if (!inventory) {
             throw new Error("Inventory not found")
         }
-        const inventoryType = this.inventoryTypes.find((inventoryType) => inventoryType.id === inventory.inventoryType)
+        const inventoryType = this.inventoryTypes.find(
+            (inventoryType) => inventoryType.id === inventory.inventoryType
+        )
         if (!inventoryType) {
             throw new Error("Inventory type not found")
         }

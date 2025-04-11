@@ -22,6 +22,10 @@ export interface SellModal {
   placedItemId?: string;
 }
 
+export interface UpgradeModal {
+  placedItemBuildingId?: string;
+}
+
 export enum TransactionType {
   HoneycombProtocolRawTx = "HoneycombProtocolRawTx",
   HoneycombProtocolRawTxs = "HoneycombProtocolRawTxs",
@@ -99,6 +103,7 @@ export interface ModalSlice {
   tokenModal: TokenModal;
   downloadPackageModal: DownloadPackageModal;
   sellModal: SellModal;
+  upgradeModal: UpgradeModal;
 }
 
 export interface DownloadPackageModal {
@@ -123,6 +128,7 @@ const initialState: ModalSlice = {
     tokenModal: {},
     downloadPackageModal: {},
     sellModal: {},
+    upgradeModal: {},
 }
 
 export const modalSlice = createSlice({
@@ -153,6 +159,9 @@ export const modalSlice = createSlice({
         setSellModal: (state, action: PayloadAction<SellModal>) => {
             state.sellModal = action.payload
         },
+        setUpgradeModal: (state, action: PayloadAction<UpgradeModal>) => {
+            state.upgradeModal = action.payload
+        },
     },
 })
 
@@ -165,4 +174,5 @@ export const {
     setTokenModal,
     setDownloadPackageModal,
     setSellModal,
+    setUpgradeModal,
 } = modalSlice.actions

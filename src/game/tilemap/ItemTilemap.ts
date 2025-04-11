@@ -1254,9 +1254,9 @@ export abstract class ItemTilemap extends GroundTilemap {
         )
 
         ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
-            SceneEventEmitter.emit(SceneEventName.OpenModal, {
-                modalName: ModalName.Info,
-            })
+            // SceneEventEmitter.emit(SceneEventName.OpenModal, {
+            //     modalName: ModalName.Sell,
+            // })
         })
     }
 

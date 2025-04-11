@@ -24,6 +24,7 @@ import { SelectInventoryModal } from "./SelectInventoryModal"
 import { SettingsModal } from "./SettingsModal"
 import { SellModal } from "./SellModal"
 import { UpgradeModal } from "./UpgradeModal"
+import { DailyModal } from "./DailyModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -54,6 +55,7 @@ const Modals : FC = () => {
             <SelectInventoryModal />
             <SellModal />
             <UpgradeModal />
+            <DailyModal />
         </div>
     )
 }

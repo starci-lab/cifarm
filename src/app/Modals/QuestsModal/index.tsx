@@ -2,7 +2,6 @@
 import { QUESTS_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, ReactNode } from "react"
-import { ModalName, ExternalEventEmitter, ExternalEventName } from "@/game"
 import { DailyTab } from "./DailyTab"
 import { GameTab } from "./GameTab"
 import { PartnershipTab } from "./PartnershipTab"
@@ -11,12 +10,10 @@ import {
     Dialog,
     DialogContent,
     DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector, useAppDispatch, QuestsTab as QuestsTabEnum, setQuestsTab } from "@/redux"
-import { ModalHeader } from "@/components"
 export const QuestsModal: FC = () => {
     const { toggle, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
@@ -37,20 +34,11 @@ export const QuestsModal: FC = () => {
     return (
         <Dialog 
             open={isOpen} 
-            onOpenChange={(open) => {
-                toggle(open)
-                if (!open) {
-                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
-                        modalName: ModalName.Quests,
-                    })
-                }
-            }}
+            onOpenChange={toggle}
         >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>   
-                        <ModalHeader title="Quests" description="Complete quests to earn rewards" />
-                    </DialogTitle>
+                    Quests
                 </DialogHeader>
                 <div>
                     <Tabs

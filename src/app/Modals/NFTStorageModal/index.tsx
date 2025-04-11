@@ -7,7 +7,6 @@ import {
     ExtendedButton,
     FilterBar,
     List,
-    ModalHeader,
     Pagination,
     Spacer,
 } from "@/components"
@@ -22,7 +21,6 @@ import {
     DEFAULT_OFFSET,
     useGraphQLQueryStoredPlacedItemsSwr,
 } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
 import { NFTCard } from "./NFTCard"
 import { RefreshCcw } from "lucide-react"
 export const NFTStorageModal: FC = () => {
@@ -57,22 +55,12 @@ export const NFTStorageModal: FC = () => {
     return (
         <Dialog
             open={isOpen}
-            onOpenChange={(value) => {
-                toggle(value)
-                if (!value) {
-                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
-                        modalName: ModalName.NFTStorage,
-                    })
-                }
-            }}
+            onOpenChange={toggle}
         >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        <ModalHeader
-                            title="NFT Storage"
-                            description="NFT storage is the location where your NFTs are kept."
-                        />
+                        NFT Storage
                     </DialogTitle>
                 </DialogHeader>
                 <div>
