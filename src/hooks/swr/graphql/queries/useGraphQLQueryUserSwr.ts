@@ -6,7 +6,7 @@ import {
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
 import { useState } from "react"
-import { useAppSelector } from "@/redux"
+import { setUser, useAppDispatch, useAppSelector } from "@/redux"
 import useSWR from "swr"
 
 export const useGraphQLQueryUserSwr = (): UseSWR<
@@ -15,10 +15,17 @@ export const useGraphQLQueryUserSwr = (): UseSWR<
 > => {
     const [ params, setParams ] = useState<QueryUserParams>({})
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    const [synced, setSynced] = useState(false)
+    const dispatch = useAppDispatch()
     const swr = useSWR(
         authenticated ? ["QUERY_USER", params] : null,
         async () => {
-            return await queryUser(params)
+            const response = await queryUser(params)
+            if (!synced) {
+                dispatch(setUser(response.data.user))
+                setSynced(true)
+            }
+            return response
         }
     )
 

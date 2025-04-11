@@ -9,7 +9,7 @@ import {
     TokenInfo,
 } from "@/modules/blockchain"
 import { Account } from "@/modules/dexie"
-import { PlacedItemSchema, InventorySchema } from "@/modules/entities"
+import { PlacedItemSchema, InventorySchema, UserSchema } from "@/modules/entities"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 
@@ -39,6 +39,10 @@ export interface SessionState {
   inventories: Array<InventorySchema>;
   selectedInventoryId?: string;
   selectedDeliveryInventoryId?: string;
+  selectedRetrieveInventoryId?: string;
+  user?: UserSchema;
+  fromToolIndex?: number;
+  selectedToolId?: string;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -75,6 +79,7 @@ const initialState: SessionState = {
     nftAddress: "",
     placedItem: undefined,
     inventories: [],
+
 }
 
 export const sessionSlice = createSlice({
@@ -146,6 +151,18 @@ export const sessionSlice = createSlice({
         setSelectedDeliveryInventoryId: (state, action: PayloadAction<string | undefined>) => {
             state.selectedDeliveryInventoryId = action.payload
         },
+        setSelectedRetrieveInventoryId: (state, action: PayloadAction<string | undefined>) => {
+            state.selectedRetrieveInventoryId = action.payload
+        },
+        setUser: (state, action: PayloadAction<UserSchema>) => {
+            state.user = action.payload
+        },
+        setFromToolIndex: (state, action: PayloadAction<number>) => {
+            state.fromToolIndex = action.payload
+        },
+        setSelectedToolId: (state, action: PayloadAction<string>) => {
+            state.selectedToolId = action.payload
+        },
     },
 })
 
@@ -170,6 +187,10 @@ export const {
     setInventories,
     setSelectedInventoryId,
     setSelectedDeliveryInventoryId,
+    setSelectedRetrieveInventoryId,
+    setUser,
+    setFromToolIndex,
+    setSelectedToolId,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

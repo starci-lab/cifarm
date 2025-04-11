@@ -27,32 +27,41 @@ const PREFIX_PETS = `${PREFIX}/pets`
 export const assetShopMap: AssetShopData = {
     crops: {
         [CropId.Turnip]: {
+            name: "Turnip seed",
             assetUrl: `${PREFIX_CROPS}/turnip.png`
         },
         [CropId.Carrot]: {
+            name: "Carrot seed",
             assetUrl: `${PREFIX_CROPS}/carrot.png`
         },
         [CropId.Potato]: {
+            name: "Potato seed",
             assetUrl: `${PREFIX_CROPS}/potato.png`
         },
         [CropId.Pineapple]: {
+            name: "Pineapple seed",
             assetUrl: `${PREFIX_CROPS}/pineapple.png`
         },
         [CropId.Watermelon]: {
+            name: "Watermelon seed",
             assetUrl: `${PREFIX_CROPS}/watermelon.png`
         },
         [CropId.Cucumber]: {
+            name: "Cucumber seed",
             assetUrl: `${PREFIX_CROPS}/cucumber.png`
         },
         [CropId.BellPepper]: {
+            name: "Bell Pepper seed",
             assetUrl: `${PREFIX_CROPS}/bell-pepper.png`
         },
         [CropId.Strawberry]: {
+            name: "Strawberry seed",
             assetUrl: `${PREFIX_CROPS}/strawberry.png`
         },    
     },
     flowers: {
         [FlowerId.Daisy]: {
+            name: "Daisy seed",
             assetUrl: `${PREFIX_FLOWERS}/daisy.png`
         },
     },

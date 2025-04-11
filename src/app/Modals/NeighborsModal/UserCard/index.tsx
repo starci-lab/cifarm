@@ -9,7 +9,7 @@ import {
     WS,
 } from "@/app/constants"
 import { pathConstants } from "@/constants"
-import { gameState } from "@/game/config"
+import { gameState } from "@/game/react-ui/config"
 import { ModalName, SceneEventName, ExternalEventEmitter, ExternalEventName, SceneEventEmitter } from "@/game"
 import { useWs, useGraphQLMutationFollowSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams, VISIT_EVENT } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"

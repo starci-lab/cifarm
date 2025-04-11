@@ -60,7 +60,7 @@ export const InventoryModal = () => {
     )   
     
     return (
-        <Dialog open={true} onOpenChange={toggle}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Inventory</DialogTitle>

@@ -4,7 +4,7 @@ import {
     SELECT_INVENTORY_DISCLOSURE,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { setSelectedDeliveryInventoryId, useAppDispatch, useAppSelector } from "@/redux"
+import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
 import { ExtendedButton, GridTable } from "@/components"
 import {
@@ -19,6 +19,7 @@ import { InventoryType, InventoryKind } from "@/modules/entities"
 import { InventoryCard } from "./InventoryCard"
 import { DeliverInventoryMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName } from "@/game"
+import { setSelectedDeliveryInventoryId, useAppDispatch } from "@/redux"
 
 export const SelectInventoryModal: FC = () => {
     const accounts = useAppSelector(
@@ -28,7 +29,7 @@ export const SelectInventoryModal: FC = () => {
         (state) => state.sessionReducer.accounts.currentId
     )
     const account = accounts.find((account) => account.id === currentId)
-    const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { isOpen, toggle, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_INVENTORY_DISCLOSURE
     )
     const inventories = useAppSelector(
@@ -50,7 +51,6 @@ export const SelectInventoryModal: FC = () => {
     const selectedDeliveryInventoryId = useAppSelector(
         (state) => state.sessionReducer.selectedDeliveryInventoryId
     )
-
     const dispatch = useAppDispatch()
 
     if (!account) {
@@ -80,7 +80,8 @@ export const SelectInventoryModal: FC = () => {
                         variant="ghost"
                         disabled={!selectedDeliveryInventoryId}
                         onClick={() => {
-                            dispatch(setSelectedDeliveryInventoryId())  
+                            close()
+                            dispatch(setSelectedDeliveryInventoryId())
                         }}
                     >
                         Cancel
@@ -94,6 +95,7 @@ export const SelectInventoryModal: FC = () => {
                                 inventoryId: selectedDeliveryInventoryId,
                             }
                             ExternalEventEmitter.emit(ExternalEventName.RequestDeliverInventory, deliverInventoryMessage)
+                            close()
                         }}
                     >
                         Deliver

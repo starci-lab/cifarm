@@ -1,5 +1,5 @@
 import { Scene } from "phaser"
-import { ExternalEventEmitter, ExternalEventName, SceneEventEmitter, SceneEventName } from "../events"
+import { ExternalEventEmitter, ExternalEventName, SceneEventEmitter, SceneEventName, SelectToolMessage } from "../events"
 import { InventorySchema, UserSchema, PlacedItemSchema } from "@/modules/entities"
 import { CacheKey, PlacedItemsData } from "../types"
 import { SceneName } from "../scene"
@@ -8,12 +8,19 @@ import { mergeObjects } from "@/modules/common"
 import { DeepPartial } from "react-hook-form"
 import _ from "lodash"
 
+//scene for handling all data
 export class DataScene extends Scene {
     constructor() {
         super(SceneName.Data)
     }
-    
+
     create() {
+        ExternalEventEmitter.on(
+            ExternalEventName.SelectTool,
+            ({ tool }: SelectToolMessage) => {
+                this.cache.obj.add(CacheKey.SelectedTool, tool)
+            }
+        )
         ExternalEventEmitter.on(
             ExternalEventName.PlacedItemsSynced,
             async (placedItemsWithStatus: Array<WithStatus<PlacedItemSchema>>) => {

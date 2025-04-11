@@ -7,6 +7,7 @@ import { MoveInventoryMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetInventoryTypesMap } from "@/modules/assets"
 import { useAppDispatch, useAppSelector, setSelectedInventoryId } from "@/redux"
 import { ExternalEventEmitter, ExternalEventName } from "@/game/events"
+
 interface InventoryCardProps {
   inventory: InventorySchema | null;
   index: number;
@@ -24,9 +25,10 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory, index, kind }
 
     const selectedInventoryId = useAppSelector(state => state.sessionReducer.selectedInventoryId)
     const dispatch = useAppDispatch()
-    
+
     return (
         <ItemCard
+            faded={inventory?.id !== selectedInventoryId}
             quantity={inventory?.quantity}
             stackable={inventoryType?.stackable}
             imageUrl={(() => {
@@ -48,7 +50,6 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory, index, kind }
                 }
             }}
             frameOnly={!inventoryType}
-            selected={inventory?.id === selectedInventoryId}
         />
     )
 }

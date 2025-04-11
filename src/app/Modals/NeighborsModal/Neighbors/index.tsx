@@ -77,7 +77,7 @@ export const NeighborsTab: FC = () => {
                     }}
                 />
                 <ExtendedButton
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={() => neighborsMutate()}
                     className="shrink-0"

@@ -29,9 +29,12 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
                 if (!inventoryType) return
                 return assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
             })()}
-            selected={inventory?.id === selectedDeliveryInventoryId}
+            faded={inventory?.id !== selectedDeliveryInventoryId}
             onClick={() => {
                 dispatch(setSelectedDeliveryInventoryId(inventory?.id))
+            }}
+            classNames={{
+                
             }}
             frameOnly={!inventoryType}
         />

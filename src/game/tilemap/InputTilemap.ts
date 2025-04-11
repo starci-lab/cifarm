@@ -76,7 +76,7 @@ import {
     setTintForMainVisual,
 } from "./utils"
 import {
-    BuyingModeOnMessage,
+    BuyItemMessage,
     ExternalEventName,
     ModalName,
     OpenModalMessage,
@@ -127,7 +127,7 @@ export class InputTilemap extends ItemTilemap {
     // input mode
     private inputMode: InputMode = InputMode.Normal
 
-    private minZoom = 0.5
+    private minZoom = 0.2
     private maxZoom = 5
     // place item data
     private buyingDragData: BuyingDragData | undefined
@@ -153,12 +153,12 @@ export class InputTilemap extends ItemTilemap {
             })
         })
 
-        SceneEventEmitter.on(
-            SceneEventName.BuyingModeOn,
-            (data: BuyingModeOnMessage) => {
+        ExternalEventEmitter.on(
+            ExternalEventName.BuyItem,
+            (data: BuyItemMessage) => {
                 this.hideEverything()
                 this.inputMode = InputMode.Buy
-                this.handleBuyingMode(data)
+                this.handleBuyItem(data)
             }
         )
 
@@ -317,8 +317,8 @@ export class InputTilemap extends ItemTilemap {
                     mapAssetData: assetData,
                 }
                 this.scene.cache.obj.add(CacheKey.SellModalData, sellModalData)
-                SceneEventEmitter.emit(SceneEventName.UpdateSellModal)
-                SceneEventEmitter.emit(SceneEventName.OpenModal, {
+                //ExternalEventEmitter.emit(ExternalEventName.UpdateSellModal)
+                ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                     modalName: ModalName.Sell,
                 })
                 return
@@ -398,14 +398,9 @@ export class InputTilemap extends ItemTilemap {
         const selectedTool = this.scene.cache.obj.get(
             CacheKey.SelectedTool
         ) as ToolLike
-        const inventoryType = this.inventoryTypes.find(
-            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
-        )
-        if (!inventoryType) {
-            throw new Error(
-                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
-            )
-        }
+
+        const inventoryType = this.getInventoryTypeFromTool(selectedTool)
+
         const object = data.object
         const currentPlacedItem = object.currentPlacedItem
 
@@ -468,8 +463,10 @@ export class InputTilemap extends ItemTilemap {
             if (!tools) {
                 throw new Error("Tools not found")
             }
+
+            const inventoryType = this.getInventoryTypeFromTool(selectedTool)
             const tool = tools.find(
-                (tool) => tool.id === selectedTool.inventoryType?.id
+                (tool) => tool.id === inventoryType.tool
             )
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
@@ -698,10 +695,10 @@ export class InputTilemap extends ItemTilemap {
                 throw new Error("Supplies not found")
             }
 
+            const inventoryType = this.getInventoryTypeFromTool(selectedTool)
             const supply = supplies.find(
-                (supply) => supply.id === selectedTool.inventoryType?.id
+                (supply) => supply.id === inventoryType.supply
             )
-
             if (!supply) {
                 throw new Error(`Supply not found for supply id: ${selectedTool.id}`)
             }
@@ -763,12 +760,10 @@ export class InputTilemap extends ItemTilemap {
             return
         }
 
-        const inventoryType = this.inventoryTypes.find(
-            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
-        )
+        const inventoryType = this.getInventoryTypeFromTool(selectedTool)
         if (!inventoryType) {
             throw new Error(
-                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+                `Inventory type not found for inventory id: ${selectedTool.id}`
             )
         }
         const object = data.object
@@ -783,7 +778,7 @@ export class InputTilemap extends ItemTilemap {
         switch (inventoryType.type) {
         case InventoryType.Supply: {
             const supply = this.supplies.find(
-                (supply) => supply.id === selectedTool.inventoryType?.id
+                (supply) => supply.id === inventoryType.supply
             )
             if (!supply) {
                 throw new Error(`Supply not found for supply id: ${selectedTool.id}`)
@@ -826,7 +821,7 @@ export class InputTilemap extends ItemTilemap {
         }
         case InventoryType.Tool: {
             const tool = this.tools.find(
-                (tool) => tool.id === selectedTool.inventoryType?.id
+                (tool) => tool.id === inventoryType.tool
             )
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
@@ -997,7 +992,7 @@ export class InputTilemap extends ItemTilemap {
         }
     }
 
-    private handleBuyingMode({ placedItemTypeId }: BuyingModeOnMessage) {
+    private handleBuyItem({ placedItemTypeId }: BuyItemMessage) {
         const placedItemType = this.placedItemTypes.find(
             (placedItemType) => placedItemType.id === placedItemTypeId
         )
@@ -1448,12 +1443,10 @@ export class InputTilemap extends ItemTilemap {
             CacheKey.SelectedTool
         ) as ToolLike
 
-        const inventoryType = this.inventoryTypes.find(
-            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
-        )
+        const inventoryType = this.getInventoryTypeFromTool(selectedTool)
         if (!inventoryType) {
             throw new Error(
-                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+                `Inventory type not found for inventory id: ${selectedTool.id}`
             )
         }
         const object = data.object
@@ -1474,7 +1467,7 @@ export class InputTilemap extends ItemTilemap {
                 throw new Error("Tools not found")
             }
             const tool = tools.find(
-                (tool) => tool.id === selectedTool.inventoryType?.id
+                (tool) => tool.id === inventoryType.tool
             )
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
@@ -1617,11 +1610,10 @@ export class InputTilemap extends ItemTilemap {
                     CacheKey.UpgradeModalData,
                     upgradeModalData
                 )
-                SceneEventEmitter.emit(SceneEventName.UpdateUpgradeModal)
                 const eventMessage: OpenModalMessage = {
                     modalName: ModalName.Upgrade,
                 }
-                SceneEventEmitter.emit(SceneEventName.OpenModal, eventMessage)
+                ExternalEventEmitter.emit(ExternalEventName.OpenModal, eventMessage)
             }
             }
         }
@@ -1642,12 +1634,10 @@ export class InputTilemap extends ItemTilemap {
             CacheKey.SelectedTool
         ) as ToolLike
 
-        const inventoryType = this.inventoryTypes.find(
-            (inventoryType) => inventoryType.id === selectedTool.inventoryType?.id
-        )
+        const inventoryType = this.getInventoryTypeFromTool(selectedTool)
         if (!inventoryType) {
             throw new Error(
-                `Inventory type not found for inventory id: ${selectedTool.inventoryType}`
+                `Inventory type not found for inventory id: ${selectedTool.id}`
             )
         }
         const object = data.object
@@ -1668,7 +1658,7 @@ export class InputTilemap extends ItemTilemap {
                 throw new Error("Tools not found")
             }
             const tool = tools.find(
-                (tool) => tool.id === selectedTool.inventoryType?.id
+                (tool) => tool.id === inventoryType.tool
             )
             if (!tool) {
                 throw new Error(`Tool not found for tool id: ${selectedTool.id}`)
@@ -1792,7 +1782,7 @@ export class InputTilemap extends ItemTilemap {
         }
         case InventoryType.Supply: {
             const supply = this.supplies.find(
-                (supply) => supply.id === selectedTool.inventoryType?.id
+                (supply) => supply.id === inventoryType.supply
             )
             if (!supply) {
                 throw new Error(`Supply not found for supply id: ${selectedTool.id}`)
@@ -2195,6 +2185,21 @@ export class InputTilemap extends ItemTilemap {
         SceneEventEmitter.emit(SceneEventName.HidePlacementModeButtons)
         SceneEventEmitter.emit(SceneEventName.ShowToolbar)
         SceneEventEmitter.emit(SceneEventName.ShowButtons)
+    }
+
+    private getInventoryTypeFromTool(tool: ToolLike) {
+        if (tool.default) {
+            throw new Error("Tool is not default")
+        }
+        const inventory = this.inventories.find((inventory) => inventory.id === tool.id)
+        if (!inventory) {
+            throw new Error("Inventory not found")
+        }
+        const inventoryType = this.inventoryTypes.find((inventoryType) => inventoryType.id === inventory.inventoryType)
+        if (!inventoryType) {
+            throw new Error("Inventory type not found")
+        }
+        return inventoryType
     }
 }
 

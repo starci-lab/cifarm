@@ -1,6 +1,6 @@
 import { AUTO, Game } from "phaser"
-import { BootstrapScene, LoadingScene, GameplayScene, UIScene, SoundScene, DataScene } from "./scenes"
-import { CONTAINER_ID } from "./constants"
+import { BootstrapScene, LoadingScene, GameplayScene, UIScene, SoundScene, DataScene } from "../scenes"
+import { CONTAINER_ID } from "../constants"
 import GesturesPlugin from "phaser3-rex-plugins/plugins/gestures-plugin.js"
 import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscroller-plugin.js"
 import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
@@ -14,10 +14,10 @@ const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
     parent: CONTAINER_ID,
     scale: {
-        mode: Phaser.Scale.FIT,
+        mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 1080,
-        height: 1920,
+        width: "100%",
+        height: "100%"
     },
     autoMobilePipeline: true,
     powerPreference: "high-performance",

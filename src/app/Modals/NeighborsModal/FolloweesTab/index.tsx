@@ -76,7 +76,7 @@ export const FolloweesTab: FC = () => {
                     }}
                 />
                 <ExtendedButton
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={() => followeesMutate()}
                     className="shrink-0"

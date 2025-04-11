@@ -3,7 +3,6 @@ import {
     QUERY_USER_SWR_MUTATION,
 } from "@/app/constants"
 import {
-    AbsoluteCard,
     Card,
     CardContent,
     ExtendedButton,
@@ -11,13 +10,15 @@ import {
     ScaledImage,
 } from "@/components"
 import { BaseAssetKey, getAssetUrl, baseAssetMap } from "@/game"
+import { AssetUI, assetUiMap } from "@/modules/assets"
 import { useGraphQLQueryStaticSwr, useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { LockIcon } from "lucide-react"
 import React, { FC } from "react"
+import { cn } from "@/lib/utils"
 
 export interface ShopCardProps {
-  onClick: () => void;
+  onTap: () => void;
+  onPress?: (pressTime: number) => void;
   imageUrl: string;
   price: number;
   ownership?: number;
@@ -26,7 +27,7 @@ export interface ShopCardProps {
   unlockedLevel: number;
 }
 
-export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ownership, limit, showLimit = false }) => {
+export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ownership, limit, showLimit = false, onTap, onPress }) => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
@@ -38,22 +39,25 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
     const levelEnough = (userSwr.data?.data.user.level ?? 0) >= unlockedLevel
     const disabled = !goldEnough
     const locked = !levelEnough
+
     if (!staticSwr.data) {
         throw new Error("Static data not found")
     } 
     return (
-        <Card>
+        <Card className="w-full">
             <CardContent className="p-0">
                 <div className="relative">
                     <div className="p-2">
-                        <AbsoluteCard classNames={{ container: "h-[100px]" }}>
-                            <ScaledImage src={imageUrl} className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
-                        </AbsoluteCard>
+                        <div className="relative min-h-[100px] h-[100px] grid place-items-center">
+                            <ScaledImage src={imageUrl} className="absolute"/>
+                        </div>
                         <div className="flex justify-center items-center">
                             <ExtendedButton
                                 className="w-full"
-                                variant="secondary"
-                                disabled={disabled}
+                                variant="default"
+                                disabled={disabled}  
+                                onTap={onTap}
+                                onPress={onPress}
                             >
                                 <Image
                                     src={getAssetUrl(
@@ -65,23 +69,19 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
                                 {price}
                             </ExtendedButton>
                         </div>
-                        {showLimit && (
-                            <div className="absolute w-full h-full blur-xs top-0 left-0 p-2">
-                                <div className="flex gap-2 items-center justify-end">
-                                    <div className="text-sm">
-                                        {`${ownership}/${limit}`}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
                         {locked && (
-                            <div className="absolute w-full h-full blur-xs top-0 left-0 bg-black/50 p-2">
-                                <div className="flex gap-1 items-center">
-                                    <LockIcon className="w-4 h-4" />
+                            <div className={cn("p-2 rounded-md absolute top-0 right-0 w-full h-full bg-black/50")}>
+                                <div className="flex gap-1 items-center relative h-8">
+                                    <ScaledImage src={assetUiMap[AssetUI.Locked].base.assetUrl}/>
                                     <div className="text-sm">
                                         {`Lv.${unlockedLevel}`}
                                     </div>
                                 </div>
+                            </div>
+                        )}
+                        {showLimit && (
+                            <div className="text-sm absolute top-2 right-2 h-8 grid place-items-center">
+                                {`${ownership}/${limit}`}
                             </div>
                         )}
                     </div>

@@ -1,26 +1,33 @@
 import { setShopTab, useAppDispatch, useAppSelector } from "@/redux"
 import React from "react"
+import { FilterBar, Spacer, ScrollableTabs, GridTable } from "@/components"
 import {
-    FilterBar,
-    Spacer,
-    ModalHeader,
-    ScrollableTabs,
-    GridTable,
-} from "@/components"
-import { GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION, GRAPHQL_QUERY_STATIC_SWR, SHOP_DISCLOSURE } from "@/app/constants"
+    GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
+    GRAPHQL_QUERY_STATIC_SWR,
+    SHOP_DISCLOSURE,
+} from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { shopTabMap } from "./config"
-import { useGraphQLQueryStaticSwr, useGraphQLQueryPlacedItemsSwrMutation } from "@/hooks"
+import {
+    useGraphQLQueryStaticSwr,
+    useGraphQLQueryPlacedItemsSwrMutation,
+    BuyCropSeedsMessage,
+    BuyFlowerSeedsMessage,
+    BuySuppliesMessage,
+    BuyToolMessage,
+} from "@/hooks"
 import { ShopCard } from "./ShopCard"
 import { assetShopMap } from "@/modules/assets"
-import { getAnimalLimit, getBuildingLimit, getFruitLimit, getTileLimit, getPetLimit } from "./limit"
+import {
+    getAnimalLimit,
+    getBuildingLimit,
+    getFruitLimit,
+    getTileLimit,
+    getPetLimit,
+} from "./limit"
+import { BuyItemMessage, ExternalEventEmitter, ExternalEventName } from "@/game"
 
 export enum ShopTab {
   Seeds = "Seeds",
@@ -36,18 +43,18 @@ export enum ShopTab {
 }
 
 export const ShopModal = () => {
-    const { isOpen, toggle } =
+    const { isOpen, toggle, close } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(SHOP_DISCLOSURE)
     const shopTab = useAppSelector((state) => state.tabReducer.shopTab)
     const dispatch = useAppDispatch()
 
-    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
-        GRAPHQL_QUERY_STATIC_SWR
-    )
+    const { swr: staticSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryStaticSwr>
+  >(GRAPHQL_QUERY_STATIC_SWR)
 
-    const { swrMutation: placedItemsSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLQueryPlacedItemsSwrMutation>>(
-        GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION
-    )
+    const { swrMutation: placedItemsSwrMutation } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryPlacedItemsSwrMutation>
+  >(GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION)
 
     const renderGridTable = () => {
         if (!staticSwr.data?.data) return null
@@ -56,11 +63,33 @@ export const ShopModal = () => {
             const crops = staticSwr.data.data.crops
             return (
                 <GridTable
+                    classNames={{
+                        container: "grid grid-cols-3 gap-2",
+                    }}
                     items={crops}
                     contentCallback={(crop) => {
                         return (
                             <ShopCard
-                                onClick={() => {}}
+                                onTap={() => {
+                                    const eventMessage: BuyCropSeedsMessage = {
+                                        cropId: crop.displayId,
+                                        quantity: 1,
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.RequestBuyCropSeeds,
+                                        eventMessage
+                                    )
+                                }}
+                                onPress={(pressTime) => {
+                                    const eventMessage: BuyCropSeedsMessage = {
+                                        cropId: crop.displayId,
+                                        quantity: Math.floor(pressTime / 100),
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.RequestBuyCropSeeds,
+                                        eventMessage
+                                    )
+                                }}
                                 imageUrl={assetShopMap.crops[crop.displayId]?.assetUrl ?? ""}
                                 price={crop.price}
                                 unlockedLevel={crop.unlockLevel}
@@ -75,14 +104,27 @@ export const ShopModal = () => {
             return (
                 <GridTable
                     items={flowers}
+                    classNames={{
+                        container: "grid grid-cols-3 gap-2",
+                    }}
                     contentCallback={(flower) => {
                         return (
                             <ShopCard
-                                onClick={() => {}}
-                                imageUrl={assetShopMap.flowers[flower.displayId]?.assetUrl ?? ""}
+                                onTap={() => {
+                                    const eventMessage: BuyFlowerSeedsMessage = {
+                                        flowerId: flower.displayId,
+                                        quantity: 1,
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.RequestBuyFlowerSeeds,
+                                        eventMessage
+                                    )
+                                }}
+                                imageUrl={
+                                    assetShopMap.flowers[flower.displayId]?.assetUrl ?? ""
+                                }
                                 price={flower.price}
                                 unlockedLevel={flower.unlockLevel}
-
                             />
                         )
                     }}
@@ -94,6 +136,9 @@ export const ShopModal = () => {
             return (
                 <GridTable
                     items={animals}
+                    classNames={{
+                        container: "grid grid-cols-3 gap-2",
+                    }}
                     contentCallback={(animal) => {
                         if (!staticSwr.data?.data) {
                             throw new Error("Static data not found")
@@ -101,12 +146,30 @@ export const ShopModal = () => {
                         const { selectedLimit, placedItemCount } = getAnimalLimit({
                             data: staticSwr.data?.data,
                             animal,
-                            placedItems: placedItemsSwrMutation.data?.data.placedItems ?? [],
-                        }) 
+                            placedItems:
+                  placedItemsSwrMutation.data?.data.placedItems ?? [],
+                        })
                         return (
                             <ShopCard
-                                onClick={() => {}}
-                                imageUrl={assetShopMap.animals[animal.displayId]?.assetUrl ?? ""}
+                                onTap={() => {
+                                    close()
+                                    const placedItemType = staticSwr.data?.data.placedItemTypes.find(   
+                                        (placedItemType) => placedItemType.animal === animal.id
+                                    )
+                                    if (!placedItemType) {
+                                        throw new Error("Placed item type not found")
+                                    }
+                                    const eventMessage: BuyItemMessage = {
+                                        placedItemTypeId: placedItemType.id,
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.BuyItem,
+                                        eventMessage
+                                    )
+                                }}
+                                imageUrl={
+                                    assetShopMap.animals[animal.displayId]?.assetUrl ?? ""
+                                }
                                 price={animal.price ?? 0}
                                 unlockedLevel={animal.unlockLevel}
                                 ownership={placedItemCount}
@@ -119,7 +182,9 @@ export const ShopModal = () => {
             )
         }
         case ShopTab.Buildings: {
-            const buildings = staticSwr.data.data.buildings.filter((building) => building.availableInShop)
+            const buildings = staticSwr.data.data.buildings.filter(
+                (building) => building.availableInShop
+            )
             const { totalLimit, totalPlacedItemCount } = getBuildingLimit({
                 data: staticSwr.data?.data,
                 building: buildings[0],
@@ -127,11 +192,12 @@ export const ShopModal = () => {
             })
             return (
                 <>
-                    <div>
-                        Limit: {`${totalPlacedItemCount}/${totalLimit}`}
-                    </div>
+                    <div>Limit: {`${totalPlacedItemCount}/${totalLimit}`}</div>
                     <Spacer y={2} />
                     <GridTable
+                        classNames={{
+                            container: "grid grid-cols-3 gap-2",
+                        }}
                         items={buildings}
                         contentCallback={(building) => {
                             if (!staticSwr.data?.data) {
@@ -140,12 +206,30 @@ export const ShopModal = () => {
                             const { selectedLimit, placedItemCount } = getBuildingLimit({
                                 data: staticSwr.data?.data,
                                 building,
-                                placedItems: placedItemsSwrMutation.data?.data.placedItems ?? [],
-                            }) 
+                                placedItems:
+                    placedItemsSwrMutation.data?.data.placedItems ?? [],
+                            })
                             return (
                                 <ShopCard
-                                    onClick={() => {}}
-                                    imageUrl={assetShopMap.buildings[building.displayId]?.assetUrl ?? ""}
+                                    onTap={() => {
+                                        close()
+                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(
+                                            (placedItemType) => placedItemType.building === building.id
+                                        )
+                                        if (!placedItemType) {
+                                            throw new Error("Placed item type not found")
+                                        }
+                                        const eventMessage: BuyItemMessage = {
+                                            placedItemTypeId: placedItemType.id,
+                                        }
+                                        ExternalEventEmitter.emit(
+                                            ExternalEventName.BuyItem,
+                                            eventMessage
+                                        )
+                                    }}
+                                    imageUrl={
+                                        assetShopMap.buildings[building.displayId]?.assetUrl ?? ""
+                                    }
                                     price={building.price ?? 0}
                                     unlockedLevel={building.unlockLevel}
                                     ownership={placedItemCount}
@@ -159,24 +243,44 @@ export const ShopModal = () => {
             )
         }
         case ShopTab.Fruits: {
-            const fruits = staticSwr.data.data.fruits.filter((fruit) => fruit.availableInShop)
+            const fruits = staticSwr.data.data.fruits.filter(
+                (fruit) => fruit.availableInShop
+            )
             const { totalLimit, totalPlacedItemCount } = getFruitLimit({
                 data: staticSwr.data?.data,
                 placedItems: placedItemsSwrMutation.data?.data.placedItems ?? [],
             })
             return (
                 <>
-                    <div>
-                        Limit: {`${totalPlacedItemCount}/${totalLimit}`}
-                    </div>
+                    <div>Limit: {`${totalPlacedItemCount}/${totalLimit}`}</div>
                     <Spacer y={2} />
                     <GridTable
                         items={fruits}
+                        classNames={{
+                            container: "grid grid-cols-3 gap-2",
+                        }}
                         contentCallback={(fruit) => {
                             return (
                                 <ShopCard
-                                    onClick={() => {}}
-                                    imageUrl={assetShopMap.fruits[fruit.displayId]?.assetUrl ?? ""}
+                                    onTap={() => {
+                                        close()
+                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(
+                                            (placedItemType) => placedItemType.fruit === fruit.id
+                                        )
+                                        if (!placedItemType) {
+                                            throw new Error("Placed item type not found")
+                                        }
+                                        const eventMessage: BuyItemMessage = {
+                                            placedItemTypeId: placedItemType.id,
+                                        }
+                                        ExternalEventEmitter.emit(
+                                            ExternalEventName.BuyItem,
+                                            eventMessage
+                                        )
+                                    }}
+                                    imageUrl={
+                                        assetShopMap.fruits[fruit.displayId]?.assetUrl ?? ""
+                                    }
                                     price={fruit.price ?? 0}
                                     unlockedLevel={fruit.unlockLevel}
                                 />
@@ -194,17 +298,35 @@ export const ShopModal = () => {
             })
             return (
                 <>
-                    <div>
-                        Limit: {`${totalPlacedItemCount}/${totalLimit}`}
-                    </div>
+                    <div>Limit: {`${totalPlacedItemCount}/${totalLimit}`}</div>
                     <Spacer y={2} />
                     <GridTable
+                        classNames={{
+                            container: "grid grid-cols-3 gap-2",
+                        }}
                         items={tiles}
                         contentCallback={(tile) => {
                             return (
                                 <ShopCard
-                                    onClick={() => {}}
-                                    imageUrl={assetShopMap.tiles[tile.displayId]?.assetUrl ?? ""}
+                                    onTap={() => {
+                                        close()
+                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(
+                                            (placedItemType) => placedItemType.tile === tile.id
+                                        )
+                                        if (!placedItemType) {
+                                            throw new Error("Placed item type not found")
+                                        }
+                                        const eventMessage: BuyItemMessage = {
+                                            placedItemTypeId: placedItemType.id,
+                                        }
+                                        ExternalEventEmitter.emit(
+                                            ExternalEventName.BuyItem,
+                                            eventMessage
+                                        )
+                                    }}
+                                    imageUrl={
+                                        assetShopMap.tiles[tile.displayId]?.assetUrl ?? ""
+                                    }
                                     price={tile.price ?? 0}
                                     unlockedLevel={tile.unlockLevel ?? 0}
                                 />
@@ -213,17 +335,43 @@ export const ShopModal = () => {
                     />
                 </>
             )
-        }   
+        }
         case ShopTab.Supplies: {
-            const supplies = staticSwr.data.data.supplies.filter((supply) => supply.availableInShop)
+            const supplies = staticSwr.data.data.supplies.filter(
+                (supply) => supply.availableInShop
+            )
             return (
-                <GridTable  
+                <GridTable
+                    classNames={{
+                        container: "grid grid-cols-3 gap-2",
+                    }}
                     items={supplies}
                     contentCallback={(supply) => {
                         return (
                             <ShopCard
-                                onClick={() => {}}
-                                imageUrl={assetShopMap.supplies[supply.displayId]?.assetUrl ?? ""}
+                                onTap={() => {
+                                    const eventMessage: BuySuppliesMessage = {
+                                        supplyId: supply.displayId,
+                                        quantity: 1,
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.RequestBuySupplies,
+                                        eventMessage
+                                    )
+                                }}
+                                onPress={(pressTime) => {
+                                    const eventMessage: BuySuppliesMessage = {
+                                        supplyId: supply.displayId,
+                                        quantity: Math.floor(pressTime / 100),
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.RequestBuySupplies,
+                                        eventMessage
+                                    )
+                                }}
+                                imageUrl={
+                                    assetShopMap.supplies[supply.displayId]?.assetUrl ?? ""
+                                }
                                 price={supply.price ?? 0}
                                 unlockedLevel={supply.unlockLevel ?? 0}
                             />
@@ -233,14 +381,27 @@ export const ShopModal = () => {
             )
         }
         case ShopTab.Tools: {
-            const tools = staticSwr.data.data.tools.filter((tool) => tool.availableInShop)
+            const tools = staticSwr.data.data.tools.filter(
+                (tool) => tool.availableInShop
+            )
             return (
                 <GridTable
+                    classNames={{
+                        container: "grid grid-cols-3 gap-2",
+                    }}
                     items={tools}
                     contentCallback={(tool) => {
                         return (
                             <ShopCard
-                                onClick={() => {}}
+                                onTap={() => {
+                                    const eventMessage: BuyToolMessage = {
+                                        toolId: tool.displayId,
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.RequestBuyTool,
+                                        eventMessage
+                                    )
+                                }}
                                 imageUrl={assetShopMap.tools[tool.displayId]?.assetUrl ?? ""}
                                 price={tool.price ?? 0}
                                 unlockedLevel={tool.unlockLevel ?? 0}
@@ -254,6 +415,9 @@ export const ShopModal = () => {
             const pets = staticSwr.data.data.pets
             return (
                 <GridTable
+                    classNames={{
+                        container: "grid grid-cols-3 gap-2",
+                    }}
                     items={pets}
                     contentCallback={(pet) => {
                         if (!staticSwr.data?.data) {
@@ -262,11 +426,27 @@ export const ShopModal = () => {
                         const { totalLimit, totalPlacedItemCount } = getPetLimit({
                             data: staticSwr.data?.data,
                             pet,
-                            placedItems: placedItemsSwrMutation.data?.data.placedItems ?? [],
+                            placedItems:
+                  placedItemsSwrMutation.data?.data.placedItems ?? [],
                         })
                         return (
                             <ShopCard
-                                onClick={() => {}}
+                                onTap={() => {
+                                    close() 
+                                    const placedItemType = staticSwr.data?.data.placedItemTypes.find(
+                                        (placedItemType) => placedItemType.pet === pet.id
+                                    )
+                                    if (!placedItemType) {
+                                        throw new Error("Placed item type not found")
+                                    }
+                                    const eventMessage: BuyItemMessage = {
+                                        placedItemTypeId: placedItemType.id,
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.BuyItem,
+                                        eventMessage
+                                    )
+                                }}
                                 imageUrl={assetShopMap.pets[pet.displayId]?.assetUrl ?? ""}
                                 price={pet.price ?? 0}
                                 unlockedLevel={pet.unlockLevel ?? 0}
@@ -283,16 +463,12 @@ export const ShopModal = () => {
             return null
         }
     }
+
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>
-                        <ModalHeader
-                            title="Shop"
-                            description="Purchase items from the shop."
-                        />
-                    </DialogTitle>
+                    <DialogTitle>Shop</DialogTitle>
                 </DialogHeader>
                 <div>
                     <ScrollableTabs

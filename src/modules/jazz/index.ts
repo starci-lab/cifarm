@@ -3,8 +3,8 @@
 // @ts-expect-error
 import jazzicon from "@metamask/jazzicon"
 
-export const createJazziconBlobUrl = (address: string) => {
-    const jazziconSvg = jazzicon(16, parseInt(address.slice(2, 10), 16))
+export const createJazziconBlobUrl = (jazzString: string) => {
+    const jazziconSvg = jazzicon(16, parseInt(jazzString.slice(2, 10), 16))
     const jazziconSvgString = new XMLSerializer().serializeToString(jazziconSvg)
     // keep the SVG
     const svgString = jazziconSvgString.substring(

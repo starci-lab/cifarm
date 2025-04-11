@@ -42,7 +42,7 @@ export enum EmitterEventName {
   ThiefAnimal = "thief_animal",
   DeliverInventory = "deliver_inventory",
   DeliverAdditionalInventory = "deliver_additional_inventory",
-  RetainInventory = "retain_inventory",
+  RetrieveInventory = "retrieve_inventory",
   MoveInventory = "move_inventory",
   Move = "move",
   ClaimDailyReward = "claim_daily_reward",
@@ -63,7 +63,16 @@ export interface BuySuppliesMessage {
   quantity: number;
 }
 
+export interface SuppliesBoughtMessage {
+  supplyId: SupplyId;
+  quantity: number;
+}
+
 export interface BuyToolMessage {
+  toolId: ToolId;
+}
+
+export interface ToolBoughtMessage {
   toolId: ToolId;
 }
 
@@ -72,8 +81,18 @@ export interface BuyCropSeedsMessage {
   quantity: number;
 }
 
+export interface CropSeedsBoughtMessage {
+  cropId: CropId
+  quantity: number;
+}
+
 export interface BuyFlowerSeedsMessage {
   flowerId: FlowerId;
+  quantity: number;
+}
+
+export interface FlowerSeedsBoughtMessage {
+  flowerId: FlowerId
   quantity: number;
 }
 
@@ -187,7 +206,7 @@ export interface DeliverAdditionalInventoryMessage {
   quantity: number;
 }
 
-export interface RetainInventoryMessage {
+export interface RetrieveInventoryMessage {
   inventoryId: string;
 }
 

@@ -11,13 +11,14 @@ import {
     DialogFooter
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { useAppSelector } from "@/redux"
+import { setSelectedRetrieveInventoryId, useAppDispatch, useAppSelector } from "@/redux"
 import { ExtendedButton } from "@/components"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/modules/entities"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { RetrieveInventoryMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { GridTable } from "@/components"
 import { formatTime, getNextMinuteCronExecution } from "@/modules/common"
+
 export const RoadsideStandModal: FC = () => {
     const { toggle, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(ROADSIDE_STAND_DISCLOSURE)
@@ -49,14 +50,16 @@ export const RoadsideStandModal: FC = () => {
             }
         }
     )   
+    const dispatch = useAppDispatch()
+    const selectedRetrieveInventoryId = useAppSelector(state => state.sessionReducer.selectedRetrieveInventoryId)
     return (
         <Dialog 
             open={isOpen} 
             onOpenChange={(open) => {
                 toggle(open)
                 if (!open) {
-                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
-                        modalName: ModalName.Quests,
+                    ExternalEventEmitter.emit(ExternalEventName.CloseModal, {
+                        modalName: ModalName.RoadsideStand,
                     })
                 }
             }}
@@ -78,9 +81,20 @@ export const RoadsideStandModal: FC = () => {
                     Next delivery: {formatTime(nextDeliveryTime)}
                 </div>
                 <DialogFooter>
-                    <ExtendedButton className="w-full" onClick={() => {
-                        openSelectInventory()
-                    }}>Deliver</ExtendedButton>
+                    { selectedRetrieveInventoryId ? 
+                        (
+                            <ExtendedButton className="w-full" variant="destructive" onTap={() => {
+                                const eventMessage: RetrieveInventoryMessage = {
+                                    inventoryId: selectedRetrieveInventoryId
+                                }
+                                ExternalEventEmitter.emit(ExternalEventName.RequestRetrieveInventory, eventMessage)
+                                dispatch(setSelectedRetrieveInventoryId())
+                            }}>Retrieve</ExtendedButton>
+                        ) : (
+                            <ExtendedButton className="w-full" onTap={() => {
+                                openSelectInventory()
+                            }}>Deliver</ExtendedButton>
+                        )}
                 </DialogFooter>
             </DialogContent>   
         </Dialog>

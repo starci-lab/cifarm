@@ -5,7 +5,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetInventoryTypesMap } from "@/modules/assets"
-import { setSelectedInventoryId, useAppDispatch, useAppSelector } from "@/redux"
+import { setSelectedRetrieveInventoryId, useAppDispatch, useAppSelector } from "@/redux"
 
 interface InventoryCardProps {
   inventory: InventorySchema | null;
@@ -20,7 +20,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
         (inventoryType) => inventoryType.id === inventory?.inventoryType
     )
     const dispatch = useAppDispatch()
-    const selectedInventoryId = useAppSelector(state => state.sessionReducer.selectedInventoryId)
+    const selectedRetrieveInventoryId = useAppSelector(state => state.sessionReducer.selectedRetrieveInventoryId)
     return (
         <ItemCard
             quantity={inventory?.quantity}
@@ -29,9 +29,9 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
                 if (!inventoryType) return
                 return assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
             })()}
-            selected={inventory?.id === selectedInventoryId}
+            faded={inventory?.id !== selectedRetrieveInventoryId}
             onClick={() => {
-                dispatch(setSelectedInventoryId(inventory?.id))
+                dispatch(setSelectedRetrieveInventoryId(inventory?.id))
             }}
             frameOnly={!inventoryType}
         />

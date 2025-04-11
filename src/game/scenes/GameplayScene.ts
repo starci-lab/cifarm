@@ -26,7 +26,7 @@ export class GameplayScene extends Scene
     create ()
     {   
         // launch the UI scene parallel to the gameplay scene
-        this.scene.launch(SceneName.UI)
+        // this.scene.launch(SceneName.UI)
 
         // set the camera to the center of the tilemap
         this.setCameraCenter()

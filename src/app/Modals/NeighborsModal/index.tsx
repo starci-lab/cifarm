@@ -4,10 +4,8 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC, ReactNode } from "react"
 import { FolloweesTab } from "./FolloweesTab"
-import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components"
+import { Dialog, DialogContent, DialogHeader } from "@/components"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { ModalHeader } from "@/components"
 import { NeighborsTab } from "./Neighbors"
 import { NeighborsTab as NeighborsTabEnum, setNeighborsTab, useAppDispatch, useAppSelector } from "@/redux"  
 
@@ -28,20 +26,11 @@ export const NeighborsModal: FC = () => {
     return (
         <Dialog 
             open={isOpen} 
-            onOpenChange={(value) => {
-                toggle(value)
-                if (!value) {
-                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
-                        modalName: ModalName.Neighbors,
-                    })
-                }
-            }}
+            onOpenChange={toggle}
         >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>
-                        <ModalHeader title="Neighbors" description="View your neighbors and followees." />
-                    </DialogTitle>
+                    Neighbors
                 </DialogHeader>
                 <Tabs
                     defaultValue={selectedTab}

@@ -6,6 +6,9 @@ import {
     NFT_STORAGE_DISCLOSURE,
     DOWNLOAD_DISCLOSURE,
     INFO_DISCLOSURE,
+    INVENTORY_DISCLOSURE,
+    ROADSIDE_STAND_DISCLOSURE,
+    SHOP_DISCLOSURE,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
@@ -28,10 +31,15 @@ export const useModalEffects = () => {
     useSingletonHook<ReturnType<typeof useDisclosure>>(DOWNLOAD_DISCLOSURE)
     const { toggle: infoToggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(INFO_DISCLOSURE)
-
+    const { toggle: inventoryToggle } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(INVENTORY_DISCLOSURE)
+    const { toggle: roadsideStandToggle } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(ROADSIDE_STAND_DISCLOSURE)
+    const { toggle: shopToggle } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(SHOP_DISCLOSURE)
     useEffect(() => {
         ExternalEventEmitter.on(
-            ExternalEventName.OpenExternalModal,
+            ExternalEventName.OpenModal,
             ({ modalName }: OpenModalMessage) => {
                 switch (modalName) {
                 case ModalName.Quests:
@@ -52,6 +60,15 @@ export const useModalEffects = () => {
                 case ModalName.Info:
                     infoToggle(true)
                     break
+                case ModalName.Inventory:
+                    inventoryToggle(true)
+                    break
+                case ModalName.RoadsideStand:
+                    roadsideStandToggle(true)
+                    break
+                case ModalName.Shop:
+                    shopToggle(true)
+                    break
                 default:
                     break
                 }
@@ -59,7 +76,7 @@ export const useModalEffects = () => {
         )
 
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.OpenExternalModal)
+            ExternalEventEmitter.removeListener(ExternalEventName.OpenModal)
         }
     }, [])
 }

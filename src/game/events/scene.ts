@@ -4,10 +4,6 @@ import { PlacedItemSchema } from "@/modules/entities"
 export const SceneEventEmitter = new Events.EventEmitter()
 
 export enum SceneEventName {
-    // action to control modal
-    OpenModal = "open_modal",
-    CloseModal = "close_modal",
-
     // action to refresh items
     PlacedItemsRefreshed = "placed_items_refreshed",
     UserRefreshed = "user_refreshed",
@@ -78,34 +74,7 @@ export enum SceneEventName {
 
     // action for check limit
     CheckLimit = "check_limit",
-}
-
-export enum ModalName {
-    Shop = "shop",
-    Inventory = "inventory",
-    Daily = "daily",
-    Quests = "quests",
-    Stand = "stand",
-    Neighbors = "neighbors",
-    SelectProduct = "select-product",
-    InputQuantity = "input-quantity",
-    Claim = "claim",
-    Settings = "settings",
-    Profile = "profile",
-    Upgrade = "upgrade",
-    Sell = "sell",
-    NFTStorage = "nft-storage",
-    Download = "download",
-    Info = "info"
-}  
-
-export interface OpenModalMessage {
-    modalName: ModalName
-}
-
-export interface CloseModalMessage {
-    modalName: ModalName
-}   
+} 
 
 export interface BuyingModeOnMessage {
     // placed item type id

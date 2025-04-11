@@ -1,18 +1,28 @@
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { WS } from "@/app/constants"
-import { BuySuppliesMessage, useWs } from "@/hooks"
-import { EmitterEventName, ReceiverEventName } from "@/hooks"
+import { BuySuppliesMessage, toast, useWs } from "@/hooks"
+import { EmitterEventName, ReceiverEventName, SuppliesBoughtMessage } from "@/hooks"
 import { ExternalEventName } from "@/game/events"
 import { ExternalEventEmitter } from "@/game/events"
+import { assetShopMap } from "@/modules/assets"
+import pluralize from "pluralize"
 
 export const useBuySuppliesEffects = () => {
     const { socket } =
     useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
-        socket?.on(ReceiverEventName.SuppliesBought, () => {
-            ExternalEventEmitter.emit(ExternalEventName.BuySuppliesResponsed)
+        socket?.on(ReceiverEventName.SuppliesBought, ({
+            quantity,
+            supplyId,
+        }: SuppliesBoughtMessage) => {
+            const supplyName = assetShopMap.supplies[supplyId]?.name?.toLowerCase() ?? ""
+            toast({
+                title: `Bought ${quantity} ${
+                    quantity > 1 ? pluralize(supplyName) : supplyName
+                }`,
+            })
         })
         return () => {
             socket?.off(ReceiverEventName.SuppliesBought)

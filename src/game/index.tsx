@@ -1,9 +1,10 @@
 "use client"
 import React, { FC, useLayoutEffect, useRef } from "react"
-import { gameState, startGame } from "./config"
+import { gameState, startGame } from "./react-ui/config"
 import { CONTAINER_ID } from "./constants"
 import { useEffects } from "./hooks"
 import { ExternalEventEmitter, SceneEventEmitter } from "./events"
+import { ReactUI } from "./react-ui"
 
 export * from "./events"
 export * from "./assets"
@@ -30,7 +31,12 @@ export const Game: FC = () => {
     //useEffects
     useEffects()
 
-    return <div id={CONTAINER_ID} className="w-full h-full"></div>
+    return (
+        <div className="relative">
+            <div id={CONTAINER_ID} className="w-full h-full"/>
+            <ReactUI />
+        </div>
+    )
 }
 
 //export default for dynamic import

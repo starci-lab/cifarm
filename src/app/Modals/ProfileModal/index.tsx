@@ -1,6 +1,6 @@
 "use client"
 import { PROFILE_DISCLOSURE, GRAPHQL_QUERY_USER_SWR  } from "@/app/constants"
-import { Avatar, AvatarImage, ExclamationTooltip, Image, ModalHeader, Snippet, Spacer } from "@/components"
+import { Avatar, AvatarImage, ExclamationTooltip, GameAvatar, Image, ModalHeader, Snippet, Spacer } from "@/components"
 import { pathConstants } from "@/constants"
 import { useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
@@ -52,9 +52,10 @@ export const ProfileModal: FC = () => {
                 <div className="py-4">
                     <div>
                         <div className="flex gap-4 items-center">
-                            <Avatar className="w-28 h-28 min-w-28 min-h-28">
-                                <AvatarImage src={avatarUrl} alt="Profile"/>
-                            </Avatar>
+                            <GameAvatar
+                                imgSrc={avatarUrl}
+                                jazzString={user?.accountAddress}
+                            />
                             <div>
                                 {user ? (
                                     <>

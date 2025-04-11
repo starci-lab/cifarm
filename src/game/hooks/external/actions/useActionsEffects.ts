@@ -16,7 +16,7 @@ import { useMoveEffects } from "./useMoveEffects"
 import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
 import { useUsePesticideEffects } from "./useUsePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
-import { useRetainInventoryEffects } from "./useRetainInventoryEffects"
+import { useRetrieveInventoryEffects } from "./useRetrieveInventoryEffects"
 import { useUpgradeBuildingEffects } from "./useUpgradeBuildingEffects"
 import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
 import { useUseWateringCanEffects } from "./useUseWateringCanEffects"
@@ -40,6 +40,7 @@ import { useHarvestBeeHouseEffects } from "./useHarvestBeeHouseEffects"
 import { useThiefBeeHouseEffects } from "./useThiefBeeHouseEffects"
 import { useBuyPetEffects } from "./useBuyPetEffects"
 import { usePlaceNFTEffects } from "./usePlaceNFTEffects"
+
 export const useActionsEffects = () => {
     useBuyCropSeedsEffects()
     useBuyFlowerSeedsEffects()  
@@ -52,7 +53,7 @@ export const useActionsEffects = () => {
     useBuyTileEffects()
     useMoveInventoryEffects()
     useDeliverInventoryEffects()
-    useRetainInventoryEffects()
+    useRetrieveInventoryEffects()
     useHelpUseHerbicideEffects()
     useHelpUsePesticideEffects()
     useHelpUseWateringCanEffects()

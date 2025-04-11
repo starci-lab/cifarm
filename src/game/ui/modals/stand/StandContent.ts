@@ -7,7 +7,7 @@ import BaseSizer from "phaser3-rex-plugins/templates/ui/basesizer/BaseSizer"
 import { getDeliveryInventories } from "../../../logic"
 import { Text, XButton, XButtonColor } from "../../elements"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
-import { RetainInventoryMessage } from "@/hooks"
+import { RetrieveInventoryMessage } from "@/hooks"
 import {
     SceneEventEmitter,
     SceneEventName,
@@ -193,11 +193,11 @@ export class StandContent extends BaseSizer {
                 color: XButtonColor.White,
                 onPress: () => {
                     console.log("XButton pressed!")
-                    // call retain method
-                    const eventMessage: RetainInventoryMessage = {
+                    // call retrieve method
+                    const eventMessage: RetrieveInventoryMessage = {
                         inventoryId: inventory.id,
                     }
-                    ExternalEventEmitter.emit(ExternalEventName.RequestRetainInventory, eventMessage)
+                    ExternalEventEmitter.emit(ExternalEventName.RequestRetrieveInventory, eventMessage)
                 }
             }
         })

@@ -23,6 +23,7 @@ import {
     CropSchema,
     FlowerSchema,
     FruitSchema,
+    InventorySchema,
     InventoryTypeSchema,
     PetSchema,
     PlacedItemSchema,
@@ -84,6 +85,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected inventoryTypes: Array<InventoryTypeSchema>
     protected flowers: Array<FlowerSchema>
     protected pets: Array<PetSchema>
+    protected inventories: Array<InventorySchema>
         
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -107,6 +109,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.fruits = this.scene.cache.obj.get(CacheKey.Fruits)
         this.flowers = this.scene.cache.obj.get(CacheKey.Flowers)
         this.pets = this.scene.cache.obj.get(CacheKey.Pets)
+        this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
 
         ExternalEventEmitter.on(ExternalEventName.Visit, (user: UserSchema) => {
             // save to cache

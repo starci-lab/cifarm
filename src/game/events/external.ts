@@ -1,6 +1,6 @@
 import { Events } from "phaser"
-import { ModalName } from "./scene"
 import { PlacedItemSchema } from "@/modules/entities"
+import { ToolLike } from "../ui"
 // external event emitter take care of events between Phaser and React
 export const ExternalEventEmitter = new Events.EventEmitter()
 
@@ -75,8 +75,8 @@ export enum ExternalEventName {
     RequestDeliverAdditionalInventory = "request_deliver_additional_inventory",
     // request to deliver inventory, from Phaser to React
     RequestDeliverInventory = "request_deliver_inventory",
-    // request to retain inventory, from Phaser to React
-    RequestRetainInventory = "request_retain_inventory",
+    // request to retrieve inventory, from Phaser to React
+    RequestRetrieveInventory = "request_retrieve_inventory",
     // request to harvest animal, from Phaser to React
     RequestHarvestAnimal = "request_harvest_animal",
     // request to harvest fruit, from Phaser to React
@@ -129,10 +129,6 @@ export enum ExternalEventName {
     RequestHarvestBeeHouse = "request_harvest_bee_house",
     // request to visit, from Phaser to React
     ActionEmitted = "action_emitted",
-    // open external modal, from React to Phaser
-    OpenExternalModal = "open_external_modal",
-    // close external modal, from React to Phaser
-    CloseExternalModal = "close_external_modal",
     // close game, from React to Phaser
     CloseGame = "close_game",
     // assets loaded, from React to Phaser
@@ -154,8 +150,48 @@ export enum ExternalEventName {
     // place nft item, from React to Phaser
     PlaceNFTItem = "place_nft_item",
     // set placed item info, from Phaser to React
-    SetPlacedItemInfo = "set_placed_item_info"
+    SetPlacedItemInfo = "set_placed_item_info",
+    // open modal, from Phaser to React
+    OpenModal = "open_modal",
+    // close modal, from React to Phaser
+    CloseModal = "close_modal",
+    // buy item, from React to Phaser
+    BuyItem = "buy_item",
+    // select tool, from React to Phaser
+    SelectTool = "select_tool",
 }
+
+export enum ModalName {
+    Shop = "shop",
+    Inventory = "inventory",
+    Daily = "daily",
+    Quests = "quests",
+    Stand = "stand",
+    Neighbors = "neighbors",
+    SelectProduct = "select-product",
+    InputQuantity = "input-quantity",
+    Claim = "claim",
+    Settings = "settings",
+    Profile = "profile",
+    Upgrade = "upgrade",
+    Sell = "sell",
+    NFTStorage = "nft-storage",
+    Download = "download",
+    Info = "info",
+    RoadsideStand = "roadside-stand",
+}  
+
+export interface SelectToolMessage {
+    tool: ToolLike
+}
+
+export interface OpenModalMessage {
+    modalName: ModalName
+}
+
+export interface CloseModalMessage {
+    modalName: ModalName
+}  
 
 export interface SyncPlacedItemsMessage {
     placedItemIds: Array<string>
@@ -171,4 +207,9 @@ export interface RequestForceSyncPlacedItemsMessage {
 
 export interface SetPlacedItemInfoMessage {
     placedItem: PlacedItemSchema
+}
+
+export interface BuyItemMessage {
+    // placed item type id
+    placedItemTypeId: string;
 }

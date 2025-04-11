@@ -85,7 +85,7 @@ export const InfoModal: FC = () => {
             onOpenChange={(value) => {
                 toggle(value)
                 if (!value) {
-                    ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
+                    ExternalEventEmitter.emit(ExternalEventName.CloseModal, {
                         modalName: ModalName.Info,
                     })
                 }

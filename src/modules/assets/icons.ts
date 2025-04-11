@@ -3,7 +3,11 @@ import { AssetData } from "./types"
 export enum AssetIcon {
     Golds = "golds",
     Energy = "energy",
-    Tokens = "tokens"
+    Tokens = "tokens",
+    Inventory = "inventory",
+    Shop = "shop",
+    RoadsideStand = "roadside-stand",
+    Neighbors = "neighbors",
 }
 
 const PREFIX = "icons"
@@ -14,7 +18,7 @@ export interface AssetIconData {
 export const assetIconMap: Record<AssetIcon, AssetIconData> = {
     [AssetIcon.Golds]: {
         base: {
-            assetUrl: `${PREFIX}/golds.png`
+            assetUrl: `${PREFIX}/gold.png`
         },
     },
     [AssetIcon.Energy]: {
@@ -24,8 +28,28 @@ export const assetIconMap: Record<AssetIcon, AssetIconData> = {
     },
     [AssetIcon.Tokens]: {
         base: {
-            assetUrl: `${PREFIX}/tokens.png`
+            assetUrl: `${PREFIX}/token.png`
         },
-    }
+    },
+    [AssetIcon.Inventory]: {
+        base: {
+            assetUrl: `${PREFIX}/inventory.png`
+        },
+    },
+    [AssetIcon.Shop]: {
+        base: {
+            assetUrl: `${PREFIX}/shop.png`
+        },
+    },
+    [AssetIcon.RoadsideStand]: {
+        base: {
+            assetUrl: `${PREFIX}/roadside-stand.png`
+        },
+    },
+    [AssetIcon.Neighbors]: {
+        base: {
+            assetUrl: `${PREFIX}/neighbors.png`
+        },
+    },
 }
 

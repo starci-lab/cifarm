@@ -1,7 +1,7 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
 import { loadBootstrapAssets, loadFont } from "../assets"
-import { gameState } from "../config"
+import { gameState } from "../react-ui/config"
 import { CacheKey } from "../types"
 
 export class BootstrapScene extends Scene {
