@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { loadBootstrapAssets, loadFont } from "../assets"
+import { loadBootstrapAssets, loadFontAssets } from "../load"
 import { gameState } from "../config"
 import { CacheKey } from "../types"
 
@@ -12,7 +12,7 @@ export class BootstrapScene extends Scene {
     async create() {
         await Promise.all([
             loadBootstrapAssets(this),
-            loadFont(this),
+            loadFontAssets(this),
         ])
         this.load.on("complete", () => {
             this.scene.launch(SceneName.Sound)

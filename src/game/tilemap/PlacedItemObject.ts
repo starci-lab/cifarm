@@ -22,18 +22,20 @@ import {
     Sizer,
 } from "phaser3-rex-plugins/templates/ui/ui-components"
 import {
-    BaseAssetKey,
-    baseAssetMap,
-    buildingAssetMap,
-    cropAssetMap,
-    TextureConfig,
-} from "../assets"
-import { stateAssetMap } from "../assets/states"
+    assetMiscMap,
+    assetStateMap,
+    AssetMiscId,
+    assetIconMap,
+    AssetIconId,
+    assetBuildingMap,
+    AssetTextureData,
+    assetCropMap,
+    assetFlowerMap,
+} from "@/modules/assets"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
 import { TILE_HEIGHT, TILE_WIDTH } from "./constants"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
-import { flowerAssetMap } from "../assets"
 import {
     setTintForMainVisual,
     clearTintForMainVisual,
@@ -236,7 +238,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
+                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -257,19 +259,18 @@ export class PlacedItemObject extends ContainerLite {
                     this.nextPlacedItem.fruitInfo.currentState !==
           FruitCurrentState.FullyMatured
                 ) {
-                    const textureConfig =
-            stateAssetMap.fruit[this.nextPlacedItem.fruitInfo.currentState]
-                ?.base.textureConfig
-                    if (!textureConfig) {
+                    const textureData =
+            assetStateMap.fruit[this.nextPlacedItem.fruitInfo.currentState]
+                ?.phaser.base
+                    if (!textureData) {
                         throw new Error("Texture config not found")
                     }
-                    const { key, scaleHeight, scaleWidth } = textureConfig
-                    if (!key) {
+                    const { assetKey } = textureData
+                    if (!assetKey) {
                         throw new Error("State key not found")
                     }
                     const icon = this.scene.add
-                        .image(0, 0, key)
-                        .setScale(scaleWidth, scaleHeight)
+                        .image(0, 0, assetKey)
                         .setDepth(this.depth + 31)
                     if (this.bubbleState) {
                         this.bubbleState
@@ -356,7 +357,7 @@ export class PlacedItemObject extends ContainerLite {
 
         const stars = this.nextPlacedItem.buildingInfo.currentUpgrade || 0
         const starKey =
-      baseAssetMap[BaseAssetKey.UIModalStandPurpleStar].base.textureConfig.key
+      assetIconMap[AssetIconId.PurpleStar].base.assetKey
 
         const placedItemTypes = this.placedItemTypes.find(
             (placedItemType) =>
@@ -366,7 +367,7 @@ export class PlacedItemObject extends ContainerLite {
             throw new Error("Placed item type not found")
         }
         const { x = 0, y = 0 } = {
-            ...buildingAssetMap[building.displayId].map.starsConfig?.extraOffsets,
+            ...assetBuildingMap[building.displayId].phaser.starsConfig?.extraOffsets,
         }
         // Update the number of stars
         // Sizer
@@ -431,7 +432,7 @@ export class PlacedItemObject extends ContainerLite {
             this.currentPlacedItem?.plantInfo?.currentStage !==
       this.nextPlacedItem.plantInfo.currentStage
         ) {
-            let assetData: TextureConfig | undefined
+            let assetData: AssetTextureData | undefined
             switch (this.nextPlacedItem.plantInfo.plantType) {
             case PlantType.Crop: {
                 const crop = this.crops.find((crop) => {
@@ -443,10 +444,11 @@ export class PlacedItemObject extends ContainerLite {
                 if (!crop) {
                     throw new Error("Crop not found")
                 }
+                console.log(assetCropMap[crop.displayId].phaser.map.stages)
                 assetData =
-            cropAssetMap[crop.displayId].map?.[
+            assetCropMap[crop.displayId].phaser.map.stages?.[
                 this.nextPlacedItem.plantInfo.currentStage
-            ].textureConfig
+            ].texture
                 break
             }
             case PlantType.Flower: {
@@ -457,9 +459,9 @@ export class PlacedItemObject extends ContainerLite {
                     throw new Error("Flower not found")
                 }
                 assetData =
-            flowerAssetMap[flower.displayId].map?.[
+            assetFlowerMap[flower.displayId].phaser.map.stages?.[
                 this.nextPlacedItem.plantInfo.currentStage
-            ].textureConfig
+            ].texture
                 break
             }
 
@@ -469,14 +471,14 @@ export class PlacedItemObject extends ContainerLite {
             if (!assetData) {
                 throw new Error("Asset data not found")
             }
-            const { key, extraOffsets } = assetData
+            const { assetKey, extraOffsets } = assetData
             const { x = 0, y = 0 } = { ...extraOffsets }
             if (this.plantInfoSprite) {
                 // destroy the previous sprite
                 this.remove(this.plantInfoSprite, true)
             }
             this.plantInfoSprite = this.scene.add
-                .sprite(x, y, key)
+                .sprite(x, y, assetKey)
                 .setOrigin(0.5, 1)
                 .setDepth(this.depth + 20)
             this.addLocal(this.plantInfoSprite)
@@ -528,7 +530,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
+                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -550,8 +552,8 @@ export class PlacedItemObject extends ContainerLite {
           PlantCurrentState.FullyMatured
                 ) {
                     const stateKey =
-            stateAssetMap.plant[this.nextPlacedItem.plantInfo.currentState]
-                ?.base.textureConfig?.key
+            assetStateMap.plant[this.nextPlacedItem.plantInfo.currentState]
+                ?.phaser.base.assetKey
                     if (!stateKey) {
                         throw new Error("State key not found")
                     }
@@ -626,13 +628,13 @@ export class PlacedItemObject extends ContainerLite {
         if (this.nextPlacedItem.plantInfo.isFertilized) {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
-                const { key, extraOffsets } = baseAssetMap[BaseAssetKey.FertilizerParticle].base.textureConfig
+                const { assetKey, extraOffsets } = assetMiscMap[AssetMiscId.FertilizerParticle].phaser.base
                 const { x = 0, y = 0 } = { ...extraOffsets }
                 this.fertilizerParticle = this.scene.add
                     .sprite(
                         x,
                         y,
-                        key
+                        assetKey
                     ) // Using sprite instead of image
                     .setDepth(this.depth + 11)
                     .setOrigin(0.5, 1)
@@ -702,21 +704,21 @@ export class PlacedItemObject extends ContainerLite {
         if (!assetData) {
             throw new Error("Asset data not found")
         }
-        const { textureConfig, spineConfig, mainVisualType } = assetData
+        const { type, texture, spine } = assetData
 
         if (this.mainVisual) {
             this.remove(this.mainVisual, true)
         }
         this.mainVisual = createMainVisual({
-            mainVisualType,
-            textureConfig,
-            spineConfig,
+            type,
+            texture,
+            spine,
             scene: this.scene,
         })
         const offsets = getMainVisualOffsets({
-            mainVisualType,
-            spineConfig,
-            textureConfig,
+            type,
+            spine,
+            texture,
         })
         this.mainVisual.setPosition(offsets.x, offsets.y).setDepth(this.depth + 10)
         this.addLocal(this.mainVisual)
@@ -749,7 +751,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
+                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -769,19 +771,18 @@ export class PlacedItemObject extends ContainerLite {
                     this.nextPlacedItem.animalInfo.currentState !==
           AnimalCurrentState.Yield
                 ) {
-                    const textureConfig =
-            stateAssetMap.animal[this.nextPlacedItem.animalInfo.currentState]
-                ?.base.textureConfig
-                    if (!textureConfig) {
+                    const textureData =
+            assetStateMap.animal[this.nextPlacedItem.animalInfo.currentState]
+                ?.phaser.base
+                    if (!textureData) {
                         throw new Error("Texture config not found")
                     }
-                    const { scaleHeight, scaleWidth, key } = textureConfig
-                    if (!key) {
+                    const { assetKey } = textureData
+                    if (!assetKey) {
                         throw new Error("State key not found")
                     }
                     const icon = this.scene.add
-                        .image(0, 0, key)
-                        .setScale(scaleWidth, scaleHeight)
+                        .image(0, 0, assetKey)
                         .setDepth(this.depth + 31)
                     if (this.bubbleState) {
                         this.bubbleState
@@ -866,7 +867,7 @@ export class PlacedItemObject extends ContainerLite {
                     const background = this.scene.add.image(
                         0,
                         0,
-                        baseAssetMap[BaseAssetKey.BubbleState].base.textureConfig.key
+                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({

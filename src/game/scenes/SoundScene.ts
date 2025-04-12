@@ -6,7 +6,9 @@ import {
     ExternalEventName,
     UpdateSoundMessage,
 } from "../events"
-import { loadMusic, MusicKey } from "../assets"
+import { loadMusicAssets } from "../load"
+import { assetMusicMap } from "@/modules/assets"
+import { MusicId } from "@/modules/assets"
 
 export class SoundScene extends Scene {
     constructor() {
@@ -14,9 +16,9 @@ export class SoundScene extends Scene {
     }
 
     async create() {
-        await loadMusic(this)
+        await loadMusicAssets(this)
         this.load.on("complete", () => {
-            const audio = this.sound.add(MusicKey.Background, {
+            const audio = this.sound.add(assetMusicMap[MusicId.Main].phaser.base.assetKey, {
                 loop: true,
                 volume: DEFAULT_VOLUME,
             })

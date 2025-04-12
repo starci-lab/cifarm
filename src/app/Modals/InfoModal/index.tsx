@@ -20,7 +20,6 @@ import {
 import { useAppSelector } from "@/redux"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { placedItemTypeAssetMap } from "@/game"
 import { getAssetDataRaw } from "@/game/tilemap"
 import { PlacedItemType } from "@/modules/entities"
 import { FruitContent } from "./FruitContent"

@@ -1,5 +1,5 @@
 import { HEIGHT, SCALE, TILE_HEIGHT, TILE_WIDTH, WIDTH } from "./constants"
-import { ExtraOffsets } from "../assets"
+import { ExtraOffsets } from "@/modules/assets"
 import { ConstructorParams, TilemapBaseConstructorParams } from "../types"
 
 export type BaseTilemapOptions = Partial<{

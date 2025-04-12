@@ -1,4 +1,4 @@
-import { FONT_DINOSAUR } from "@/game/constants"
+import { FontId, assetFontMap } from "@/modules/assets"
 import { ConstructorParams, TextBaseConstructorParams } from "../../types"
 
 // Text options
@@ -49,7 +49,7 @@ export class Text extends Phaser.GameObjects.Text {
             fontSize: `${fontSize ?? 32}px`,
             color: textColor,
             align: "center",
-            fontFamily: FONT_DINOSAUR,
+            fontFamily: assetFontMap[FontId.Rowdies].phaser.base.assetKey,
             ...style,
         })
 

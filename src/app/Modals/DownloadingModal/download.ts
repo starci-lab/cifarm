@@ -1,23 +1,21 @@
-import { getAssetUrl } from "@/game/assets/utils"
-import { TextureConfig } from "@/game/assets"
 import { sessionDb } from "@/modules/dexie"
 import axios from "axios"
 import { DownloadData } from "@/redux"
+import { AssetTextureData } from "@/modules/assets"
 
-export const getBytes = async (textureConfigs: Array<TextureConfig>): Promise<Record<string, number>> => {
+export const getBytes = async (textureConfigs: Array<AssetTextureData>): Promise<Record<string, number>> => {
     const bytesMap: Record<string, number> = {}
     const promises: Array<Promise<void>> = []
     for (const textureConfig of textureConfigs) {
         const { assetUrl } = textureConfig
         if (!assetUrl) throw new Error("Asset URL is required")
-        const url = getAssetUrl(assetUrl)
         promises.push(
             (async () => {
-                const { headers } = await axios.head(url, {
+                const { headers } = await axios.head(assetUrl, {
                     responseType: "blob",
                 })
                 const bytes = headers["content-length"]
-                bytesMap[textureConfig.key] = Number(bytes)
+                bytesMap[textureConfig.assetKey] = Number(bytes)
             })()
         )
     }
@@ -26,18 +24,17 @@ export const getBytes = async (textureConfigs: Array<TextureConfig>): Promise<Re
 }
 
 export const downloadTexture = async (
-    textureConfig: TextureConfig,
+    assetData: AssetTextureData,
     onDownloadProgress: (key: string, data: DownloadData) => void,  
 ) => {
-    const { key, assetUrl, version = 0 } = textureConfig
+    const { assetKey, assetUrl, version = 0 } = assetData
     if (!assetUrl) throw new Error("Asset URL is required")
-    const url = getAssetUrl(assetUrl)
-    const { data } = await axios.get(url, {
+    const { data } = await axios.get(assetUrl, {
         responseType: "blob",
         onDownloadProgress: (progress) => {
-            onDownloadProgress(key, { progress: progress.progress ?? 0 })
+            onDownloadProgress(assetKey, { progress: progress.progress ?? 0 })
         },
     })
-    await sessionDb.assets.put({ data, version, key })
+    await sessionDb.assets.put({ data, version, key: assetKey })
     return data
 }

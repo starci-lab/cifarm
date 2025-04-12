@@ -1,25 +1,39 @@
 import { PlacedItemType } from "../enums"
-import { PlacedItemSchema } from "../schemas"
+import { PlacedItemSchema, PlacedItemTypeSchema } from "../schemas"
 import { StaticData } from "./types"
 
-export interface GetSellPriceParams {
+export interface GetSellInfoParams {
   placedItem: PlacedItemSchema;
   staticData: StaticData;
 }
 
-export interface GetSellPriceResponse {
+export interface GetSellInfoResponse {
     sellable: boolean;
     sellPrice?: number;
 }
 
-export const getSellPrice = ({
+export const getSellInfo = ({
     placedItem,
     staticData,
-}: GetSellPriceParams): GetSellPriceResponse => {
+}: GetSellInfoParams): GetSellInfoResponse => {
     const placedItemType = staticData.placedItemTypes?.find(
         (placedItemType) => placedItemType.id === placedItem.placedItemType
     )
     if (!placedItemType) throw new Error("Placed item type not found")
+    return getSellInfoFromPlacedItemType({
+        placedItemType,
+        staticData,
+    })
+}
+
+export interface GetSellInfoFromPlacedItemTypeParams {
+    placedItemType: PlacedItemTypeSchema;
+    staticData: StaticData;
+}
+export const getSellInfoFromPlacedItemType = ({
+    placedItemType,
+    staticData,
+}: GetSellInfoFromPlacedItemTypeParams): GetSellInfoResponse => {
     switch (placedItemType.type) {
     case PlacedItemType.Animal: {
         const animal = staticData.animals?.find(
@@ -73,3 +87,4 @@ export const getSellPrice = ({
     }
     }
 }
+

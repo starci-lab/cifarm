@@ -1,6 +1,5 @@
 export * from "./BootstrapScene"
 export * from "./LoadingScene"
-export * from "./UIScene"
 export * from "./GameplayScene"
 export * from "./SoundScene"
 export * from "./DataScene"

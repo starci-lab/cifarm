@@ -1,5 +1,5 @@
 import { AUTO, Game } from "phaser"
-import { BootstrapScene, LoadingScene, GameplayScene, UIScene, SoundScene, DataScene } from "./scenes"
+import { BootstrapScene, LoadingScene, GameplayScene, SoundScene, DataScene } from "./scenes"
 import { CONTAINER_ID } from "./constants"
 import GesturesPlugin from "phaser3-rex-plugins/plugins/gestures-plugin.js"
 import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscroller-plugin.js"
@@ -61,7 +61,7 @@ const config: Phaser.Types.Core.GameConfig = {
             { key: "spine.SpinePlugin", plugin: SpinePlugin, mapping: "spine" },
         ],
     },
-    scene: [BootstrapScene, SoundScene, LoadingScene, GameplayScene, UIScene, DataScene],
+    scene: [BootstrapScene, SoundScene, LoadingScene, GameplayScene, DataScene],
 }
 
 export const startGame = (parent?: string) => {

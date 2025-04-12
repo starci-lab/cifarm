@@ -14,8 +14,8 @@ import { GRAPHQL_QUERY_STATIC_SWR, SELL_DISCLOSURE } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
 import { useAppSelector } from "@/redux"
 import { SellMessage, useGraphQLQueryStaticSwr } from "@/hooks"
-import { getSellPrice } from "@/modules/entities"
-import { AssetIcon, assetIconMap } from "@/modules/assets"
+import { getSellInfo } from "@/modules/entities"
+import { AssetIconId, assetIconMap } from "@/modules/assets"
 
 export const SellModal: FC = () => {
     const { toggle, isOpen, close } =
@@ -54,7 +54,7 @@ export const SellModal: FC = () => {
                             )
                             if (!placedItem) throw new Error("Placed item not found")
                             if (!staticSwr.data?.data) throw new Error("Static data not found")
-                            const { sellable, sellPrice } = getSellPrice({
+                            const { sellable, sellPrice } = getSellInfo({
                                 placedItem,
                                 staticData: staticSwr.data.data,
                             })  
@@ -67,7 +67,7 @@ export const SellModal: FC = () => {
                                     Do you want to sell this item for
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        <Image src={assetIconMap[AssetIcon.Gold].base.assetUrl} className="w-5 h-5" />
+                                        <Image src={assetIconMap[AssetIconId.Gold].base.assetUrl} className="w-5 h-5" />
                                         {sellPrice}
                                     </div>
                                     <div>

@@ -9,14 +9,26 @@ export interface SpineData {
 }
 
 export interface AtlasData  {
-    key: string;
+    assetKey: string;
     assetUrl: string;
     textureUrl: string;
     version?: number;
   }
   
 export interface JsonData {
-    key: string;
+    assetKey: string;
+    assetUrl: string;
+    version?: number;
+}
+
+export interface FontData {
+    assetKey: string;
+    assetUrl: string;
+    version?: number;
+}
+
+export interface MusicData {
+    assetKey: string;
     assetUrl: string;
     version?: number;
 }

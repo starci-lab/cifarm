@@ -69,7 +69,7 @@ export const UpgradeModal: FC = () => {
                                     <div>Do you want to update this building for</div>
                                     <div className="flex items-center gap-1">
                                         <Image
-                                            src={assetIconMap[AssetIcon.Gold].base.assetUrl}
+                                            src={assetIconMap[AssetIconId.Gold].base.assetUrl}
                                             className="w-5 h-5"
                                         />
                                         {upgradePrice}
@@ -84,12 +84,12 @@ export const UpgradeModal: FC = () => {
                                         }).map((_, index) => (
                                             <ScaledImage
                                                 key={index}
-                                                src={assetIconMap[AssetIcon.PurpleStar].base.assetUrl}
+                                                src={assetIconMap[AssetIconId.PurpleStar].base.assetUrl}
                                             />
                                         ))}
                                         {(placedItem.buildingInfo?.currentUpgrade ?? 0) < 3 && (
                                             <ScaledImage
-                                                src={assetIconMap[AssetIcon.UpgradeStar].base.assetUrl}
+                                                src={assetIconMap[AssetIconId.UpgradeStar].base.assetUrl}
                                             />
                                         )}
                                     </div>

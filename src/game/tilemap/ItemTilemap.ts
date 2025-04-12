@@ -23,6 +23,7 @@ import {
     CropSchema,
     FlowerSchema,
     FruitSchema,
+    getSellInfoFromPlacedItemType,
     InventorySchema,
     InventoryTypeSchema,
     PetSchema,
@@ -40,7 +41,6 @@ import {
 } from "@/modules/entities"
 import _ from "lodash"
 import { DeepPartial } from "react-hook-form"
-import { BaseAssetKey, baseAssetMap, productAssetMap } from "../assets"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
 import {
     CacheKey,
@@ -55,12 +55,12 @@ import { gameplayDepth } from "../depth"
 import {
     ExternalEventEmitter,
     ExternalEventName,
-    ModalName,
     SceneEventEmitter,
 } from "../events"
 import { SceneEventName } from "../events"
-import { getSellPriceFromPlacedItemType } from "../logic"
 import { sleep } from "@/modules/common"
+import { AssetIconId, assetProductMap } from "@/modules/assets"
+import { assetIconMap } from "@/modules/assets"
 
 const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
@@ -153,14 +153,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useWateringCan.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useWateringCan.experiencesGain ?? 0,
@@ -170,7 +170,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:   
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useWateringCan.energyConsume,
@@ -184,14 +184,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.plantSeed.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.plantSeed.experiencesGain ?? 0,
@@ -201,7 +201,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.plantSeed.energyConsume,
@@ -215,14 +215,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.usePesticide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.usePesticide.experiencesGain ?? 0,
@@ -232,7 +232,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.usePesticide.energyConsume,
@@ -245,14 +245,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUsePesticide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
@@ -263,7 +263,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUsePesticide.energyConsume,
@@ -276,14 +276,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useHerbicide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useHerbicide.experiencesGain ?? 0,
@@ -293,7 +293,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useHerbicide.energyConsume,
@@ -306,14 +306,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                        baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUseHerbicide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                        baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
@@ -336,14 +336,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useFertilizer.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useFertilizer.experiencesGain ?? 0,
@@ -370,7 +370,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                assetProductMap[product.displayId].base.assetKey
                         let experiencesGain = 0
                         switch (product.type) {
                         case ProductType.Crop: {
@@ -402,14 +402,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestPlant.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -445,7 +445,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         // get the tile position
                         this.createFlyItems([
                             {
-                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -tile.price,
@@ -477,7 +477,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         // get the tile position
                         this.createFlyItems([
                             {
-                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -animal.price,
@@ -510,7 +510,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         // get the tile position
                         this.createFlyItems([
                             {
-                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -pet.price,
@@ -541,7 +541,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         // get the tile position
                         this.createFlyItems([
                             {
-                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -fruit.price,
@@ -573,7 +573,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         // get the tile position
                         this.createFlyItems([
                             {
-                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -building.price,
@@ -600,18 +600,18 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                assetProductMap[product.displayId].base.assetKey
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefPlant.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefPlant.experiencesGain,
@@ -643,14 +643,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                        baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useAnimalMedicine.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                        baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useAnimalMedicine.experiencesGain,
@@ -672,14 +672,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useAnimalFeed.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useAnimalFeed.experiencesGain,
@@ -721,19 +721,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                         }
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestAnimal.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -761,7 +761,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
@@ -769,7 +769,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
@@ -797,19 +797,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefAnimal.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefAnimal.experiencesGain,
@@ -840,16 +840,23 @@ export abstract class ItemTilemap extends GroundTilemap {
                         if (!placedItemType) {
                             throw new Error("Placed item type not found")
                         }
-                        const sellPrice = getSellPriceFromPlacedItemType({
-                            scene: this.scene,
-                            placedItemType
+                        const { sellPrice } = getSellInfoFromPlacedItemType({
+                            placedItemType,
+                            staticData: {
+                                crops: this.crops,
+                                products: this.products,
+                                animals: this.animals,
+                                fruits: this.fruits,
+                                flowers: this.flowers,
+                                buildings: this.buildings,
+                            }
                         })
                         if (sellPrice === undefined) {
                             throw new Error("Sell price not found")
                         }
                         this.createFlyItems([
                             {
-                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: sellPrice,
@@ -877,7 +884,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                assetProductMap[product.displayId].base.assetKey
 
                         const fruit = this.fruits.find(
                             (fruit) => fruit.id === product.fruit
@@ -897,14 +904,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestFruit.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -937,18 +944,18 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                assetProductMap[product.displayId].base.assetKey
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                        baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefFruit.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                        baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefFruit.experiencesGain,
@@ -976,14 +983,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.   key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useBugNet.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useBugNet.experiencesGain,
@@ -1005,14 +1012,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUseWateringCan.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.helpUseWateringCan.experiencesGain,
@@ -1035,14 +1042,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUseBugNet.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.helpUseBugNet.experiencesGain,
@@ -1064,14 +1071,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useFruitFertilizer.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useFruitFertilizer.experiencesGain,
@@ -1115,7 +1122,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                         // get the tile position
                         this.createFlyItems([
                             {
-                                iconAssetKey: baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig.key,
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -price,
@@ -1167,19 +1174,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                         }
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                        assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestBeeHouse.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -1213,19 +1220,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                productAssetMap[product.displayId].base.textureConfig.key
+                        assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefBeeHouse.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    baseAssetMap[BaseAssetKey.UICommonExperience].base.textureConfig.key,
+                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefBeeHouse.experiencesGain,

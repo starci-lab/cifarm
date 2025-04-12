@@ -1,6 +1,6 @@
 import { assetShopMap } from "./shop"
 import { InventoryTypeId } from "../entities"
-import { assetProductsMap } from "./products"
+import { assetProductMap } from "./products"
 import { assetSuppliesMap } from "./supplies"
 import { assetToolsMap } from "./tools"
 import { AssetData, Metadata } from "./types"
@@ -10,7 +10,7 @@ export interface AssetInventoryTypesData extends Metadata {
 }
 export const assetInventoryTypesMap: Partial<Record<InventoryTypeId, AssetInventoryTypesData>> = {
     ...Object.fromEntries(
-        Object.entries(assetProductsMap).map(([key, { base, name, description }]) => [key, { base, name, description }])
+        Object.entries(assetProductMap).map(([key, { base, name, description }]) => [key, { base, name, description }])
     ),
     ...Object.fromEntries(
         Object.entries(assetSuppliesMap).map(([key, { base, name, description }]) => [key, { base, name, description }])

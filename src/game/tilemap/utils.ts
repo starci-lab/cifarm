@@ -1,15 +1,5 @@
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import {
-    MainVisualType,
-    MapAssetData,
-    tileAssetMap,
-    buildingAssetMap,
-    animalAssetMap,
-    fruitAssetMap,
-    AnimalAge,
-    petAssetMap,
-} from "../assets"
-import {
     AnimalSchema,
     BuildingSchema,
     FruitSchema,
@@ -20,6 +10,16 @@ import {
 } from "@/modules/entities"
 import { CacheKey } from "../types"
 import { QueryStaticResponse } from "@/modules/apollo"
+import {
+    AnimalAge,
+    assetAnimalMap,
+    AssetMapData,
+    AssetMapType,
+    assetTileMap,
+    assetBuildingMap,
+    assetFruitMap,
+    assetPetMap,
+} from "@/modules/assets"
 
 export const setTintForMainVisual = (
     mainVisual: Phaser.GameObjects.Sprite | SpineGameObject,
@@ -54,28 +54,28 @@ export const clearTintForMainVisual = (
     }
 }
 
-export interface CreateMainVisualParams extends MapAssetData {
+export interface CreateMainVisualParams extends AssetMapData {
   scene: Phaser.Scene;
 }
 
-export type GetMainVisualOffsetsParams = MapAssetData;
+export type GetMainVisualOffsetsParams = AssetMapData;
 export const getMainVisualOffsets = ({
-    mainVisualType,
-    spineConfig,
-    textureConfig,
+    type,
+    texture,
+    spine,
 }: GetMainVisualOffsetsParams) => {
     let x = 0
     let y = 0
-    switch (mainVisualType) {
-    case MainVisualType.Spine: {
-        const { x: extraX = 0, y: extraY = 0 } = { ...spineConfig?.extraOffsets }
+    switch (type) {
+    case AssetMapType.Spine: {
+        const { x: extraX = 0, y: extraY = 0 } = { ...spine?.extraOffsets }
         x = extraX
         y = extraY
         break
     }
     default: {
         const { x: extraX = 0, y: extraY = 0 } = {
-            ...textureConfig?.extraOffsets,
+            ...texture?.extraOffsets,
         }
         x = extraX
         y = extraY
@@ -87,30 +87,30 @@ export const getMainVisualOffsets = ({
 }
 
 export const createMainVisual = ({
-    mainVisualType = MainVisualType.Sprite,
-    textureConfig,
-    spineConfig,
+    type,
+    texture,
+    spine,
     scene,
 }: CreateMainVisualParams) => {
     let mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
-    switch (mainVisualType) {
-    case MainVisualType.Spine: {
-        if (!spineConfig) {
+    switch (type) {
+    case AssetMapType.Spine: {
+        if (!spine) {
             throw new Error("Spine config is undefined")
         }
         //render spine animation
         mainVisual = scene.add
-            .spine(0, 0, spineConfig.json.key, spineConfig.atlas.key)
+            .spine(0, 0, spine.json.assetKey, spine.atlas.assetKey)
             .setOrigin(0.5, 1)
         mainVisual.animationState.setAnimation(0, "idle", true)
         return mainVisual
     }
     default: {
-        if (!textureConfig) {
+        if (!texture) {
             throw new Error("Texture config is undefined")
         }
         //render sprite
-        return scene.add.sprite(0, 0, textureConfig.key).setOrigin(0.5, 1)
+        return scene.add.sprite(0, 0, texture.assetKey).setOrigin(0.5, 1)
     }
     }
 }
@@ -128,7 +128,7 @@ export const getAssetData = ({
     scene,
     isAdult,
     fruitStage,
-}: GetAssetDataParams): MapAssetData | undefined => {
+}: GetAssetDataParams): AssetMapData | undefined => {
     const tiles = scene.cache.obj.get(CacheKey.Tiles) as Array<TileSchema>
     const buildings = scene.cache.obj.get(
         CacheKey.Buildings
@@ -180,7 +180,7 @@ export const getAssetDataRaw = ({
         if (!tile) {
             throw new Error("Tile not found")
         }
-        return tileAssetMap[tile.displayId].map
+        return assetTileMap[tile.displayId].phaser.map
     }
     case PlacedItemType.Building: {
         if (!placedItemType.building) {
@@ -196,7 +196,7 @@ export const getAssetDataRaw = ({
         if (!building) {
             throw new Error("Building not found")
         }
-        return buildingAssetMap[building.displayId].map
+        return assetBuildingMap[building.displayId].phaser.map
     }
     case PlacedItemType.Animal: {
         if (!placedItemType.animal) {
@@ -213,7 +213,7 @@ export const getAssetDataRaw = ({
             throw new Error("Animal not found")
         }
         const age = isAdult ? AnimalAge.Adult : AnimalAge.Baby
-        return animalAssetMap[animal.displayId].map[age]
+        return assetAnimalMap[animal.displayId].phaser.map.ages[age]
     }
     case PlacedItemType.Fruit: {
         if (!placedItemType.fruit) {
@@ -227,7 +227,7 @@ export const getAssetDataRaw = ({
         if (!fruit) {
             throw new Error("Fruit not found")
         }
-        return fruitAssetMap[fruit.displayId].map[fruitStage ?? 0]
+        return assetFruitMap[fruit.displayId].phaser.map.stages[fruitStage ?? 0]
     }
     case PlacedItemType.Pet: {
         if (!placedItemType.pet) {
@@ -241,7 +241,7 @@ export const getAssetDataRaw = ({
         if (!pet) {
             throw new Error("Pet not found")
         }
-        return petAssetMap[pet.displayId].map
+        return assetPetMap[pet.displayId].phaser.map
     }
     }
 }

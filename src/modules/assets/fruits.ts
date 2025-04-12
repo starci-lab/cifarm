@@ -13,6 +13,7 @@ export interface AssetFruitData {
     };
 }
 
+const PREFIX = "fruits"
 // Fruit asset data map with the GID and asset URL for each fruit using FruitId as the key
 export const assetFruitMap: Record<FruitId, AssetFruitData> = {
     [FruitId.Banana]: {
@@ -24,7 +25,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-banana-1",
-                            assetUrl: "fruits/banana/1.png",
+                            assetUrl: `${PREFIX}/banana/1.png`,
                             extraOffsets: {
                                 x: -20,
                                 y: -173,
@@ -35,7 +36,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-banana-2",
-                            assetUrl: "fruits/banana/2.png",
+                            assetUrl: `${PREFIX}/banana/2.png`,
                             extraOffsets: {
                                 x: -10,
                                 y: -175,
@@ -46,7 +47,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-banana-3",
-                            assetUrl: "fruits/banana/3.png",
+                            assetUrl: `${PREFIX}/banana/3.png`,
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -57,7 +58,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-banana-4",
-                            assetUrl: "fruits/banana/4.png",
+                            assetUrl: `${PREFIX}/banana/4.png`,
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -68,7 +69,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-banana-5",
-                            assetUrl: "fruits/banana/5.png",
+                            assetUrl: `${PREFIX}/banana/5.png`,
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -82,23 +83,23 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             stages: {
                 0: {
                     assetKey: "fruit-banana-1",
-                    assetUrl: "fruits/banana/1.png",
+                    assetUrl: `${PREFIX}/banana/1.png`,
                 },
                 1: {
                     assetKey: "fruit-banana-2",
-                    assetUrl: "fruits/banana/2.png",
+                    assetUrl: `${PREFIX}/banana/2.png`,
                 },
                 2: {
                     assetKey: "fruit-banana-3",
-                    assetUrl: "fruits/banana/3.png",
+                    assetUrl: `${PREFIX}/banana/3.png`,
                 },
                 3: {
                     assetKey: "fruit-banana-4",
-                    assetUrl: "fruits/banana/4.png",
+                    assetUrl: `${PREFIX}/banana/4.png`,
                 },
                 4: {
                     assetKey: "fruit-banana-5",
-                    assetUrl: "fruits/banana/5.png",
+                    assetUrl: `${PREFIX}/banana/5.png`,
                 },
             },
         },
@@ -112,7 +113,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-apple-1",
-                            assetUrl: "fruits/apple/1.png",
+                            assetUrl: `${PREFIX}/apple/1.png`,
                             extraOffsets: {
                                 x: 0,
                                 y: -190,
@@ -123,7 +124,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-apple-2",
-                            assetUrl: "fruits/apple/2.png",
+                            assetUrl: `${PREFIX}/apple/2.png`,
                             extraOffsets: {
                                 x: 10,
                                 y: -170,
@@ -134,7 +135,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-apple-3",
-                            assetUrl: "fruits/apple/3.png",
+                            assetUrl: `${PREFIX}/apple/3.png`,
                             extraOffsets: {
                                 x: 0,
                                 y: -150,
@@ -145,7 +146,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-apple-4",
-                            assetUrl: "fruits/apple/4.png",
+                            assetUrl: `${PREFIX}/apple/4.png`,
                             extraOffsets: {
                                 x: 0,
                                 y: -150,
@@ -156,7 +157,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-apple-5",
-                            assetUrl: "fruits/apple/5.png",
+                            assetUrl: `${PREFIX}/apple/5.png`,
                             extraOffsets: {
                                 x: 0,
                                 y: -150,
@@ -170,23 +171,23 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             stages: {
                 0: {
                     assetKey: "fruit-apple-1",
-                    assetUrl: "fruits/apple/1.png",
+                    assetUrl: `${PREFIX}/apple/1.png`,
                 },
                 1: {
                     assetKey: "fruit-apple-2",
-                    assetUrl: "fruits/apple/2.png",
+                    assetUrl: `${PREFIX}/apple/2.png`,
                 },
                 2: {
                     assetKey: "fruit-apple-3",
-                    assetUrl: "fruits/apple/3.png",
+                    assetUrl: `${PREFIX}/apple/3.png`,
                 },
                 3: {
                     assetKey: "fruit-apple-4",
-                    assetUrl: "fruits/apple/4.png",
+                    assetUrl: `${PREFIX}/apple/4.png`,
                 },
                 4: {
                     assetKey: "fruit-apple-5",
-                    assetUrl: "fruits/apple/5.png",
+                    assetUrl: `${PREFIX}/apple/5.png`,
                 },
             },
         },
@@ -200,7 +201,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-dragon-fruit-1",
-                            assetUrl: "fruits/dragon-fruit/1.png",
+                            assetUrl: `${PREFIX}/dragon-fruit/1.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -212,7 +213,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-dragon-fruit-2",
-                            assetUrl: "fruits/dragon-fruit/2.png",
+                            assetUrl: `${PREFIX}/dragon-fruit/2.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -224,7 +225,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-dragon-fruit-3",
-                            assetUrl: "fruits/dragon-fruit/3.png",
+                            assetUrl: `${PREFIX}/dragon-fruit/3.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -236,7 +237,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-dragon-fruit-4",
-                            assetUrl: "fruits/dragon-fruit/4.png",
+                            assetUrl: `${PREFIX}/dragon-fruit/4.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -248,7 +249,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-dragon-fruit-5",
-                            assetUrl: "fruits/dragon-fruit/5.png",
+                            assetUrl: `${PREFIX}/dragon-fruit/5.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -263,23 +264,23 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             stages: {
                 0: {
                     assetKey: "fruit-dragon-fruit-1",
-                    assetUrl: "fruits/dragon-fruit/1.png",
+                    assetUrl: `${PREFIX}/dragon-fruit/1.png`,
                 },
                 1: {
                     assetKey: "fruit-dragon-fruit-2",
-                    assetUrl: "fruits/dragon-fruit/2.png",
+                    assetUrl: `${PREFIX}/dragon-fruit/2.png`,
                 },
                 2: {
                     assetKey: "fruit-dragon-fruit-3",
-                    assetUrl: "fruits/dragon-fruit/3.png",
+                    assetUrl: `${PREFIX}/dragon-fruit/3.png`,
                 },
                 3: {
                     assetKey: "fruit-dragon-fruit-4",
-                    assetUrl: "fruits/dragon-fruit/4.png",
+                    assetUrl: `${PREFIX}/dragon-fruit/4.png`,
                 },
                 4: {
                     assetKey: "fruit-dragon-fruit-5",
-                    assetUrl: "fruits/dragon-fruit/5.png",
+                    assetUrl: `${PREFIX}/dragon-fruit/5.png`,
                 },
             },
         },
@@ -293,7 +294,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-jackfruit-1",
-                            assetUrl: "fruits/jackfruit/1.png",
+                            assetUrl: `${PREFIX}/jackfruit/1.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -305,7 +306,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-jackfruit-2",
-                            assetUrl: "fruits/jackfruit/2.png",
+                            assetUrl: `${PREFIX}/jackfruit/2.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -317,7 +318,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-jackfruit-3",
-                            assetUrl: "fruits/jackfruit/3.png",
+                            assetUrl: `${PREFIX}/jackfruit/3.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -329,7 +330,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-jackfruit-4",
-                            assetUrl: "fruits/jackfruit/4.png",
+                            assetUrl: `${PREFIX}/jackfruit/4.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -341,7 +342,7 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         type: AssetMapType.Texture,
                         texture: {
                             assetKey: "fruit-jackfruit-5",
-                            assetUrl: "fruits/jackfruit/5.png",
+                            assetUrl: `${PREFIX}/jackfruit/5.png`,
                             packageId: 1,
                             extraOffsets: {
                                 x: 0,
@@ -356,58 +357,25 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             stages: {
                 0: {
                     assetKey: "fruit-jackfruit-1",
-                    assetUrl: "fruits/jackfruit/1.png",
+                    assetUrl: `${PREFIX}/jackfruit/1.png`,
                 },
                 1: {
                     assetKey: "fruit-jackfruit-2",
-                    assetUrl: "fruits/jackfruit/2.png",
+                    assetUrl: `${PREFIX}/jackfruit/2.png`,
                 },
                 2: {
                     assetKey: "fruit-jackfruit-3",
-                    assetUrl: "fruits/jackfruit/3.png",
+                    assetUrl: `${PREFIX}/jackfruit/3.png`,
                 },
                 3: {
                     assetKey: "fruit-jackfruit-4",
-                    assetUrl: "fruits/jackfruit/4.png",
+                    assetUrl: `${PREFIX}/jackfruit/4.png`,
                 },
                 4: {
                     assetKey: "fruit-jackfruit-5",
-                    assetUrl: "fruits/jackfruit/5.png",
+                    assetUrl: `${PREFIX}/jackfruit/5.png`,
                 },
             },
         },
     },
 }
-
-// // Function to load all fruit assets
-// export const loadFruitAssets = async (scene: Scene) => {
-//     // Load all fruit assets
-//     const promises: Promise<void>[] = []
-//     for (const fruitData of Object.values(fruitAssetMap)) {
-//     // Load shop asset if exists
-//         if (fruitData.shop) {
-//             promises.push(loadTexture(scene, fruitData.shop.textureConfig))
-//         }
-
-//         // Load all stage assets
-//         for (const stageData of Object.values(fruitData.map)) {
-//             switch (stageData.mainVisualType) {
-//             case MainVisualType.Spine: {
-//                 if (!stageData.spineConfig) {
-//                     throw new Error("Spine config is undefined")
-//                 }
-//                 promises.push(loadSpine(scene, stageData.spineConfig))
-//                 break
-//             }
-//             default: {
-//                 if (!stageData.textureConfig) {
-//                     throw new Error("Texture config is undefined")
-//                 }
-//                 promises.push(loadTexture(scene, stageData.textureConfig))
-//                 break
-//             }
-//             }
-//         }
-//     }
-//     await Promise.all(promises)
-// }

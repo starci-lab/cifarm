@@ -17,22 +17,15 @@ import {
     PlantType,
     Position,
     BeeHouseCurrentState,
+    getSellInfoFromPlacedItemType,
 } from "@/modules/entities"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
-import {
-    BaseAssetKey,
-    baseAssetMap,
-    MainVisualType,
-    SpineConfig,
-    TextureConfig,
-} from "../assets"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
 import {
     CacheKey,
     TilemapBaseConstructorParams,
 } from "../types"
-import { ToolLike } from "../ui"
 import { ItemTilemap, PlacedItemObjectData } from "./ItemTilemap"
 import { PlacementConfirmation } from "./PlacementConfirmation"
 import {
@@ -82,9 +75,10 @@ import {
 } from "../events"
 import { ExternalEventEmitter } from "../events"
 import { gameplayDepth } from "../depth"
-import { checkPlacedItemTypeSellable } from "../logic"
 import { LayerName } from "./types"
 import { PlayerContext } from "@/redux"
+import { AssetMapData } from "@/modules/assets"
+import { ToolLike } from "../react-ui"
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
 
@@ -97,9 +91,7 @@ export enum InputMode {
 }
 
 interface DragData {
-  type?: MainVisualType;
-  textureConfig?: TextureConfig;
-  spineConfig?: SpineConfig;
+  assetMapData: AssetMapData;
   placedItemType: PlacedItemTypeSchema;
 }
 
@@ -123,7 +115,7 @@ export class InputTilemap extends ItemTilemap {
     // input mode
     private inputMode: InputMode = InputMode.Normal
 
-    private minZoom = 0.2
+    private minZoom = 0.25
     private maxZoom = 5
     // place item data
     private buyingDragData: BuyingDragData | undefined
@@ -290,12 +282,17 @@ export class InputTilemap extends ItemTilemap {
                     if (!data.object.placedItemType) {
                         throw new Error("Placed item type not found")
                     }
-                    if (
-                        !checkPlacedItemTypeSellable({
-                            scene: this.scene,
-                            placedItemType: data.object.placedItemType,
-                        })
-                    ) {
+                    const { sellable } = getSellInfoFromPlacedItemType({
+                        placedItemType: data.object.placedItemType,
+                        staticData: {
+                            products: this.products,
+                            animals: this.animals,
+                            buildings: this.buildings,
+                            flowers: this.flowers,
+                            fruits: this.fruits,
+                        }
+                    })
+                    if (!sellable) {
                         const { x: tileX, y: tileY } = this.getCenterPosition({
                             x: tile.getCenterX(),
                             y: tile.getCenterY(),
@@ -968,9 +965,7 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Asset data not found")
         }
         this.movingDragData = {
-            type: assetData.mainVisualType,
-            textureConfig: assetData.textureConfig,
-            spineConfig: assetData.spineConfig,
+            assetMapData: assetData,
             placedItemType,
             objectData: data,
         }
@@ -991,11 +986,8 @@ export class InputTilemap extends ItemTilemap {
         if (!assetData) {
             throw new Error("Asset data not found")
         }
-        const { mainVisualType, textureConfig, spineConfig } = assetData
         this.placeNFTDragData = {
-            type: mainVisualType,
-            textureConfig,
-            spineConfig,
+            assetMapData: assetData,
             placedItemType: placedItemTypeSchema,
             placedItemId: placedItem.id,
         }
@@ -1016,12 +1008,9 @@ export class InputTilemap extends ItemTilemap {
         if (!assetData) {
             throw new Error("Asset data not found")
         }
-        const { mainVisualType, textureConfig, spineConfig } = assetData
 
         this.buyingDragData = {
-            type: mainVisualType,
-            textureConfig,
-            spineConfig,
+            assetMapData: assetData,
             placedItemType,
         }
     }
@@ -1076,7 +1065,7 @@ export class InputTilemap extends ItemTilemap {
         if (!this.placeNFTDragData) {
             throw new Error("No drag sprite data found")
         }
-        const { placedItemType, textureConfig, spineConfig, type } =
+        const { placedItemType, assetMapData } =
       this.placeNFTDragData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
@@ -1089,9 +1078,7 @@ export class InputTilemap extends ItemTilemap {
         })
         if (!this.dragPlaceNFTVisual) {
             this.dragPlaceNFTVisual = createMainVisual({
-                mainVisualType: type,
-                textureConfig,
-                spineConfig,
+                ...assetMapData,
                 scene: this.scene,
             }).setDepth(gameplayDepth.drag)
         }
@@ -1144,9 +1131,7 @@ export class InputTilemap extends ItemTilemap {
             isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
         )
         const offsets = getMainVisualOffsets({
-            mainVisualType: type,
-            spineConfig,
-            textureConfig,
+            ...assetMapData,
         })
         this.dragPlaceNFTVisual.setPosition(
             tilePosition.x + offsets.x,
@@ -1160,7 +1145,7 @@ export class InputTilemap extends ItemTilemap {
         if (!this.buyingDragData) {
             throw new Error("No drag sprite data found")
         }
-        const { placedItemType, textureConfig, spineConfig, type } =
+        const { placedItemType, assetMapData } =
       this.buyingDragData
 
         const position = this.getActualTileCoordinates(tile.x, tile.y)
@@ -1173,9 +1158,7 @@ export class InputTilemap extends ItemTilemap {
         })
         if (!this.dragBuyVisual) {
             this.dragBuyVisual = createMainVisual({
-                mainVisualType: type,
-                textureConfig,
-                spineConfig,
+                ...assetMapData,
                 scene: this.scene,
             }).setDepth(gameplayDepth.drag)
         }
@@ -1317,9 +1300,7 @@ export class InputTilemap extends ItemTilemap {
             isPlacementValid ? GREEN_TINT_COLOR : RED_TINT_COLOR
         )
         const offsets = getMainVisualOffsets({
-            mainVisualType: type,
-            spineConfig,
-            textureConfig,
+            ...assetMapData,
         })
         this.dragBuyVisual.setPosition(
             tilePosition.x + offsets.x,
@@ -2164,12 +2145,10 @@ export class InputTilemap extends ItemTilemap {
             )
             this.createFlyItems([
                 {
-                    iconAssetKey:
-            baseAssetMap[BaseAssetKey.UITopbarIconEnergy].base.textureConfig
-                .key,
+                    showIcon: false,
                     x: position.x,
                     y: position.y,
-                    text: "Not enough",
+                    text: "Not enough energy",
                 },
             ])
             return false

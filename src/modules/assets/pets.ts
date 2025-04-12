@@ -8,6 +8,8 @@ export interface AssetPetData extends Metadata {
     base: AssetData
 }
 
+const PREFIX = "pets"
+
 export const assetPetMap: Record<PetId, AssetPetData> = {
     [PetId.Dog]: {
         name: "Dog",
@@ -17,13 +19,13 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                 type: AssetMapType.Spine,
                 spine: {
                     atlas: {
-                        key: "pets-dog-baby-atlas",
-                        assetUrl: "pets/dog/baby/spine/baby.atlas",
-                        textureUrl: "pets/dog/baby/spine/baby.png",
+                        assetKey: "pets-dog-baby-atlas",
+                        assetUrl: `${PREFIX}/dog/baby/spine/baby.atlas`,
+                        textureUrl: `${PREFIX}/dog/baby/spine/baby.png`,
                     },
                     json: {
-                        key: "pets-dog-baby-json",
-                        assetUrl: "pets/dog/baby/spine/baby.json",
+                        assetKey: "pets-dog-baby-json",
+                        assetUrl: `${PREFIX}/dog/baby/spine/baby.json`,
                     },
                     extraOffsets: { x: 0, y: -80 },
                 },
@@ -31,7 +33,7 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
         },
         base: {
             assetKey: "pets-dog-baby",
-            assetUrl: "pets/dog/baby/spine/baby.png",
+            assetUrl: `${PREFIX}/dog/baby/spine/baby.png`,
         },
     },
     [PetId.Cat]: {
@@ -42,13 +44,13 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                 type: AssetMapType.Spine,
                 spine: {
                     atlas: {
-                        key: "pets-cat-baby-atlas",
-                        assetUrl: "pets/cat/baby/spine/baby.atlas",
-                        textureUrl: "pets/cat/baby/spine/baby.png",
+                        assetKey: "pets-cat-baby-atlas",
+                        assetUrl: `${PREFIX}/cat/baby/spine/baby.atlas`,
+                        textureUrl: `${PREFIX}/cat/baby/spine/baby.png`,
                     },
                     json: {
-                        key: "pets-cat-baby-json",
-                        assetUrl: "pets/cat/baby/spine/baby.json",
+                        assetKey: "pets-cat-baby-json",
+                        assetUrl: `${PREFIX}/cat/baby/spine/baby.json`,
                     },
                     extraOffsets: { x: 0, y: -80 },
                 },
@@ -56,7 +58,7 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
         },
         base: {
             assetKey: "pets-cat-baby",
-            assetUrl: "pets/cat/baby/spine/baby.png",
+            assetUrl: `${PREFIX}/cat/baby/spine/baby.png`,
         },
     },
 } 

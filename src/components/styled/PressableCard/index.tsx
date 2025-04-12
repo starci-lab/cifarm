@@ -27,7 +27,9 @@ export const PressableCard: FC<PressableCardProps> = ({
             className={cn("text-start justify-start w-full p-3","whitespace-normal rounded-xl border bg-card text-card-foreground shadow h-fit", base, !showBorder && "border-none border-0 shadow-none", className)}
             {...props}
         >
-            {children}
+            <div>
+                {children}
+            </div>
         </ExtendedButton>
     )
 }

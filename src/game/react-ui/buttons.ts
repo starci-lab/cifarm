@@ -1,6 +1,5 @@
 import { ExternalEventEmitter, ExternalEventName, ModalName } from "../events"
-import { assetIconMap } from "@/modules/assets"
-import { AssetIcon } from "@/modules/assets"
+import { assetIconMap, AssetIconId } from "@/modules/assets"
 import { PlayerContext } from "@/redux"
 
 export interface ButtonData {
@@ -12,7 +11,7 @@ export interface ButtonData {
 export const rightButtons: Array<ButtonData> = [
     {
         text: "Settings",
-        imageSrc: assetIconMap[AssetIcon.Settings].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Settings].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.Settings,
@@ -22,7 +21,7 @@ export const rightButtons: Array<ButtonData> = [
     },
     {
         text: "Inventory",
-        imageSrc: assetIconMap[AssetIcon.Inventory].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Inventory].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.Inventory,
@@ -32,7 +31,7 @@ export const rightButtons: Array<ButtonData> = [
     },
     {
         text: "Daily",
-        imageSrc: assetIconMap[AssetIcon.Daily].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Daily].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.Daily,
@@ -42,7 +41,7 @@ export const rightButtons: Array<ButtonData> = [
     },
     {
         text: "Quests",
-        imageSrc: assetIconMap[AssetIcon.Quests].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Quests].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.Quests,
@@ -52,7 +51,7 @@ export const rightButtons: Array<ButtonData> = [
     },
     {
         text: "Move",
-        imageSrc: assetIconMap[AssetIcon.Move].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Move].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.MoveItem)
         },
@@ -60,7 +59,7 @@ export const rightButtons: Array<ButtonData> = [
     },
     {
         text: "Sell",
-        imageSrc: assetIconMap[AssetIcon.Sell].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Sell].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.SellItem)
         },
@@ -71,7 +70,7 @@ export const rightButtons: Array<ButtonData> = [
 export const leftButtons: Array<ButtonData> = [
     {
         text: "Shop",
-        imageSrc: assetIconMap[AssetIcon.Shop].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Shop].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.Shop,
@@ -81,7 +80,7 @@ export const leftButtons: Array<ButtonData> = [
     },
     {
         text: "Roadside Stand",
-        imageSrc: assetIconMap[AssetIcon.RoadsideStand].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.RoadsideStand].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.RoadsideStand,
@@ -91,7 +90,7 @@ export const leftButtons: Array<ButtonData> = [
     },
     {
         text: "Neighbors",
-        imageSrc: assetIconMap[AssetIcon.Neighbors].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Neighbors].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.Neighbors,
@@ -101,7 +100,7 @@ export const leftButtons: Array<ButtonData> = [
     },
     {
         text: "Back",
-        imageSrc: assetIconMap[AssetIcon.Back].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Back].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.ReturnNormal)
         },
@@ -114,7 +113,7 @@ export const leftButtons: Array<ButtonData> = [
     },
     {
         text: "Download",
-        imageSrc: assetIconMap[AssetIcon.Download].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.Download].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.Download,
@@ -124,7 +123,7 @@ export const leftButtons: Array<ButtonData> = [
     },
     {
         text: "NFT Storage",
-        imageSrc: assetIconMap[AssetIcon.NFTStorage].base.assetUrl,
+        imageSrc: assetIconMap[AssetIconId.NFTStorage].base.assetUrl,
         onClick: () => {
             ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
                 modalName: ModalName.NFTStorage,

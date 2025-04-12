@@ -9,8 +9,7 @@ import {
     Image,
     ScaledImage,
 } from "@/components"
-import { BaseAssetKey, getAssetUrl, baseAssetMap } from "@/game"
-import { AssetUI, assetUiMap } from "@/modules/assets"
+import { assetUiMap, AssetUIId, assetIconMap, AssetIconId } from "@/modules/assets"
 import { useGraphQLQueryStaticSwr, useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
@@ -60,10 +59,7 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
                                 onPress={onPress}
                             >
                                 <Image
-                                    src={getAssetUrl(
-                                        baseAssetMap[BaseAssetKey.UICommonIconGold].base.textureConfig
-                                            .assetUrl ?? ""
-                                    )}
+                                    src={assetIconMap[AssetIconId.Gold].base.assetUrl}
                                     className="w-5 h-5"
                                 />
                                 {price}
@@ -72,7 +68,7 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
                         {locked && (
                             <div className={cn("p-2 rounded-md absolute top-0 right-0 w-full h-full bg-black/50")}>
                                 <div className="flex gap-1 items-center relative h-8">
-                                    <ScaledImage src={assetUiMap[AssetUI.Locked].base.assetUrl}/>
+                                    <ScaledImage src={assetUiMap[AssetUIId.Locked].base.assetUrl}/>
                                     <div className="text-sm">
                                         {`Lv.${unlockedLevel}`}
                                     </div>

@@ -28,12 +28,12 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                         type: AssetMapType.Spine,
                         spine: {
                             atlas: {
-                                key: "animals-cow-baby-atlas",
+                                assetKey: "animals-cow-baby-atlas",
                                 assetUrl: "animals/cow/baby/spine/baby.atlas",
                                 textureUrl: "animals/cow/baby/spine/baby.png",
                             },
                             json: {
-                                key: "animals-cow-baby-json",
+                                assetKey: "animals-cow-baby-json",
                                 assetUrl: "animals/cow/baby/spine/baby.json",
                             },
                             extraOffsets: { x: 0, y: -80 },
@@ -43,12 +43,12 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                         type: AssetMapType.Spine,
                         spine: {
                             atlas: {
-                                key: "animals-cow-adult-atlas",
+                                assetKey: "animals-cow-adult-atlas",
                                 assetUrl: "animals/cow/adult/spine/adult.atlas",
                                 textureUrl: "animals/cow/adult/spine/adult.png",
                             },
                             json: {
-                                key: "animals-cow-adult-json",
+                                assetKey: "animals-cow-adult-json",
                                 assetUrl: "animals/cow/adult/spine/adult.json",
                             },
                             extraOffsets: { x: 0, y: -80 },
@@ -79,12 +79,12 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                         type: AssetMapType.Spine,
                         spine: {
                             atlas: {
-                                key: "animals-chicken-baby-atlas",
+                                assetKey: "animals-chicken-baby-atlas",
                                 assetUrl: "animals/chicken/baby/spine/baby.atlas",
                                 textureUrl: "animals/chicken/baby/spine/baby.png",
                             },
                             json: {
-                                key: "animals-chicken-baby-json",
+                                assetKey: "animals-chicken-baby-json",
                                 assetUrl: "animals/chicken/baby/spine/baby.json",
                             },
                             extraOffsets: { x: 0, y: -80 },
@@ -94,12 +94,12 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                         type: AssetMapType.Spine,
                         spine: {
                             atlas: {
-                                key: "animals-chicken-adult-atlas",
+                                assetKey: "animals-chicken-adult-atlas",
                                 assetUrl: "animals/chicken/adult/spine/adult.atlas",
                                 textureUrl: "animals/chicken/adult/spine/adult.png",
                             },
                             json: {
-                                key: "animals-chicken-adult-json",
+                                assetKey: "animals-chicken-adult-json",
                                 assetUrl: "animals/chicken/adult/spine/adult.json",
                             },
                             extraOffsets: { x: 0, y: -80 },

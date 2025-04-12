@@ -13,8 +13,8 @@ import { QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
 import {
     assetInventoryTypesMap,
     assetToolsMap,
-    AssetUI,
     assetUiMap,
+    AssetUIId,
 } from "@/modules/assets"
 import { useMediaQuery } from "usehooks-ts"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
@@ -127,7 +127,7 @@ export const Toolbar: FC = () => {
                                 />
                                 {toolLike.id === selectedToolId && (
                                     <ScaledImage
-                                        src={assetUiMap[AssetUI.SelectedArrow].base.assetUrl}
+                                        src={assetUiMap[AssetUIId.SelectedArrow].base.assetUrl}
                                         className="absolute -top-4 left-1/2 -translate-x-1/2"
                                     />
                                 )}
@@ -160,7 +160,7 @@ export const Toolbar: FC = () => {
                             />
                             {toolLike.id === selectedToolId && (
                                 <ScaledImage
-                                    src={assetUiMap[AssetUI.SelectedArrow].base.assetUrl}
+                                    src={assetUiMap[AssetUIId.SelectedArrow].base.assetUrl}
                                     className="absolute -top-6 left-1/2 -translate-x-1/2"
                                 />
                             )}

@@ -1,4 +1,4 @@
-import { BootstrapAssetKey } from "../../assets"
+import { AssetBootstrapId } from "@/modules/assets"
 import {
     ConstructorParams,
     OverlapSizerBaseConstructorParams,
@@ -15,7 +15,7 @@ export class ProgressBar extends OverlapSizer {
         options,
     }: ConstructorParams<OverlapSizerBaseConstructorParams, ProgressBarOptions>) {
     //add loading bar
-        const loadingBar = scene.add.image(0, 0, BootstrapAssetKey.LoadingBar)
+        const loadingBar = scene.add.image(0, 0, AssetBootstrapId.LoadingBar)
         // We add the loading bar to the container
 
         const { progress = 0 } = { ...options }
@@ -43,7 +43,7 @@ export class ProgressBar extends OverlapSizer {
             this.loadingFill = this.scene.add.image(
                 0,
                 0,
-                BootstrapAssetKey.LoadingFill
+                AssetBootstrapId.LoadingFill
             )
             this.loadingFill.setCrop(
                 0,

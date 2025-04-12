@@ -82,7 +82,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
                     "grid place-items-center p-0 w-14 h-14 relative rounded-md",
                     classNames.cardContent,
                     {
-                        "bg-foreground/10": !hideCardContentBg,
+                        "bg-card": !hideCardContentBg,
                     }
                 )}
             >

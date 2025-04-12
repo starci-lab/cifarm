@@ -10,7 +10,7 @@ import {
 } from "@/app/constants"
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
-import { ModalName, SceneEventName, ExternalEventEmitter, ExternalEventName, SceneEventEmitter } from "@/game"
+import { ExternalEventEmitter, ExternalEventName } from "@/game"
 import { useWs, useGraphQLMutationFollowSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams, VISIT_EVENT } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
@@ -168,10 +168,6 @@ export const UserCard: FC<UserCardProps> = ({
                                 watchingUser: user,
                             }       
                         } else {
-                            // set visited user
-                            SceneEventEmitter.emit(SceneEventName.CloseModal, {
-                                modalName: ModalName.Neighbors,
-                            })
                             if (!socket) {
                                 throw new Error("Socket is not connected")
                             }

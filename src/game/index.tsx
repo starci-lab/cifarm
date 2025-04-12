@@ -7,7 +7,6 @@ import { ExternalEventEmitter, SceneEventEmitter } from "./events"
 import { ReactUI } from "./react-ui"
 
 export * from "./events"
-export * from "./assets"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)

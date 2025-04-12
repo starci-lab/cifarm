@@ -28,7 +28,7 @@ export const GameAvatar: FC<GameAvatarProps> = ({ imgSrc, jazzString, classNames
         <div className="relative">
             <Avatar className={
                 cn(
-                    "w-20 h-20 min-w-20 min-h-20 ring ring-2 ring-ring",
+                    "w-16 h-16 min-w-16 min-h-16 ring ring-2 ring-ring",
                     "bg-foreground",
                     "rounded-sm",
                     classNames.avatar
@@ -36,7 +36,7 @@ export const GameAvatar: FC<GameAvatarProps> = ({ imgSrc, jazzString, classNames
             >
                 <AvatarImage src={avatarUrl} alt="Profile" className={
                     cn(
-                        "w-20 h-20 min-w-20 min-h-20",
+                        "w-16 h-16 min-w-16 min-h-16",
                         classNames.avatarImage
                     )}/>
             </Avatar>

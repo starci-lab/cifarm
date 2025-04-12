@@ -1,8 +1,9 @@
-import { AssetData } from "./types"
+import { AssetData, AssetTextureData } from "./types"
 
-export enum AssetIcon {
+export enum AssetIconId {
     Gold = "gold",
     Energy = "energy",
+    Experience = "experience",
     Token = "token",
     Inventory = "inventory",
     Shop = "shop",
@@ -27,123 +28,162 @@ const PREFIX = "icons"
 
 export interface AssetIconData {
     base: AssetData
+    phaser?: {
+        base: AssetTextureData
+    }
 }
-export const assetIconMap: Record<AssetIcon, AssetIconData> = {
-    [AssetIcon.Gold]: {
+export const assetIconMap: Record<AssetIconId, AssetIconData> = {
+    [AssetIconId.Experience]: {
+        base: {
+            assetKey: "icons-experience",
+            assetUrl: `${PREFIX}/experience.png`
+        },
+        phaser: {
+            base: {
+                assetKey: "icons-experience",
+                assetUrl: `${PREFIX}/experience.png`
+            },
+        },
+    },
+    [AssetIconId.Gold]: {
         base: {
             assetKey: "icons-gold",
             assetUrl: `${PREFIX}/gold.png`
         },
+        phaser: {
+            base: {
+                assetKey: "icons-gold",
+                assetUrl: `${PREFIX}/gold.png`
+            },
+        },
     },
-    [AssetIcon.Energy]: {
+    [AssetIconId.Energy]: {
         base: {
             assetKey: "icons-energy",
             assetUrl: `${PREFIX}/energy.png`
         },
+        phaser: {
+            base: {
+                assetKey: "icons-energy",
+                assetUrl: `${PREFIX}/energy.png`
+            },
+        },
     },
-    [AssetIcon.Token]: {
+    [AssetIconId.Token]: {
         base: {
             assetKey: "icons-token",
             assetUrl: `${PREFIX}/token.png`
         },
+        phaser: {
+            base: {
+                assetKey: "icons-token",
+                assetUrl: `${PREFIX}/token.png`
+            },
+        },
     },
-    [AssetIcon.Inventory]: {
+    [AssetIconId.Inventory]: {
         base: {
             assetKey: "icons-inventory",
             assetUrl: `${PREFIX}/inventory.png`
         },
     },
-    [AssetIcon.Shop]: {
+    [AssetIconId.Shop]: {
         base: {
             assetKey: "icons-shop",
             assetUrl: `${PREFIX}/shop.png`
         },
     },
-    [AssetIcon.RoadsideStand]: {
+    [AssetIconId.RoadsideStand]: {
         base: {
             assetKey: "icons-roadside-stand",
             assetUrl: `${PREFIX}/roadside-stand.png`
         },
     },
-    [AssetIcon.Neighbors]: {
+    [AssetIconId.Neighbors]: {
         base: {
             assetKey: "icons-neighbors",
             assetUrl: `${PREFIX}/neighbors.png`
         },
     },
-    [AssetIcon.Settings]: {
+    [AssetIconId.Settings]: {
         base: {
             assetKey: "icons-settings",
             assetUrl: `${PREFIX}/settings.png`
         },
     },
-    [AssetIcon.NFTMarketplace]: {
+    [AssetIconId.NFTMarketplace]: {
         base: {
             assetKey: "icons-nft-marketplace",
             assetUrl: `${PREFIX}/nft-marketplace.png`
         },
     },
-    [AssetIcon.NFTBox]: {
+    [AssetIconId.NFTBox]: {
         base: {
             assetKey: "icons-nft-box",
             assetUrl: `${PREFIX}/nft-box.png`
         },
     },
-    [AssetIcon.Move]: {
+    [AssetIconId.Move]: {
         base: {
             assetKey: "icons-move",
             assetUrl: `${PREFIX}/move.png`
         },
     },
-    [AssetIcon.Sell]: {
+    [AssetIconId.Sell]: {
         base: {
             assetKey: "icons-sell",
             assetUrl: `${PREFIX}/sell.png`
         },
     },
-    [AssetIcon.Return]: {
+    [AssetIconId.Return]: {
         base: {
             assetKey: "icons-return",
             assetUrl: `${PREFIX}/return.png`
         },
     },
-    [AssetIcon.Back]: {
+    [AssetIconId.Back]: {
         base: {
             assetKey: "icons-back",
             assetUrl: `${PREFIX}/back.png`
         },
     },
-    [AssetIcon.PurpleStar]: {
+    [AssetIconId.PurpleStar]: {
         base: {
             assetKey: "icons-purple-star",
             assetUrl: `${PREFIX}/purple-star.png`
         },
+        phaser: {
+            base: {
+                assetKey: "icons-purple-star",
+                assetUrl: `${PREFIX}/purple-star.png`
+            },
+        },
     },
-    [AssetIcon.UpgradeStar]: {
+    [AssetIconId.UpgradeStar]: {
         base: {
             assetKey: "icons-upgrade-star",
             assetUrl: `${PREFIX}/upgrade-star.png`
         },
     },
-    [AssetIcon.NFTStorage]: {
+    [AssetIconId.NFTStorage]: {
         base: {
             assetKey: "icons-nft-storage",
             assetUrl: `${PREFIX}/nft-storage.png`
         },
     },
-    [AssetIcon.Quests]: {
+    [AssetIconId.Quests]: {
         base: {
             assetKey: "icons-quests",
             assetUrl: `${PREFIX}/quests.png`
         },
     },
-    [AssetIcon.Daily]: {
+    [AssetIconId.Daily]: {
         base: {
             assetKey: "icons-daily",
             assetUrl: `${PREFIX}/daily.png`
         },
     },
-    [AssetIcon.Download]: {
+    [AssetIconId.Download]: {
         base: {
             assetKey: "icons-download",
             assetUrl: `${PREFIX}/download.png`

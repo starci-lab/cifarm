@@ -1,11 +1,20 @@
 import { WS } from "@/app/constants"
-import { EmitterEventName, ReceiverEventName, useWs } from "@/hooks"
+import { EmitterEventName, ReceiverEventName, toast, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 
 export const useClaimDailyRewardEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
+
+    useEffect(() => {
+        ExternalEventEmitter.on(ExternalEventName.ClaimDailyRewardResponsed, () => {
+            toast({
+                title: "Daily reward claimed",
+            })
+        })
+    }, [])
+
     useEffect(() => {
         ExternalEventEmitter.on(ExternalEventName.RequestClaimDailyReward, async () => {
             if (!socket) {

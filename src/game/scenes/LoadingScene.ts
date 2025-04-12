@@ -1,27 +1,28 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import {
-    BootstrapAssetKey,
-    loadAnimalAssets,
-    loadBaseAssets,
-    loadBuildingAssets,
-    loadCropAssets,
-    loadInventoryTypesAssets,
-    loadPetAssets,
-    loadProductAssets,
-    loadSupplyAssets,
-    loadTileAssets,
-    loadToolAssets,
-    loadFruitAssets,
-    loadStateAssets,
-} from "../assets"
-import { loadSvgAwait, LoadingProgressBar, loadImageAwait } from "../ui"
 import { ExternalEventEmitter, ExternalEventName } from "../events"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey, PlacedItemsData } from "../types"
-import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
-import { createJazziconBlobUrl } from "@/modules/jazz"
-import { loadFlowerAssets } from "../assets/flowers"
+import {
+    InventorySchema,
+    PlacedItemSchema,
+    UserSchema,
+} from "@/modules/entities"
+import {
+    loadFlowerAssets,
+    loadFruitAssets,
+    loadProductAssets,
+    loadTileAssets,
+    loadPetAssets,
+    loadStateAssets,
+    loadBuildingAssets,
+    loadAnimalAssets,
+    loadCropAssets,
+    loadMiscAssets,
+    loadIconAssets,
+} from "../load"
+import { AssetBootstrapId } from "@/modules/assets"
+import { LoadingProgressBar } from "../ui"
 
 export enum LoadingPhase {
   DataFetching = "dataFetching",
@@ -42,7 +43,7 @@ export class LoadingScene extends Scene {
     private totalDataFetching = 4
 
     async init() {
-        //listen for static data loaded event
+    //listen for static data loaded event
         ExternalEventEmitter.once(
             ExternalEventName.StaticDataLoaded,
             ({
@@ -85,59 +86,24 @@ export class LoadingScene extends Scene {
             }
         )
 
-        ExternalEventEmitter.on(ExternalEventName.AssetsLoaded, (progress: number) => {
-            if (progress === undefined) {
-                return
+        ExternalEventEmitter.on(
+            ExternalEventName.AssetsLoaded,
+            (progress: number) => {
+                if (progress === undefined) {
+                    return
+                }
+                const totalAssetsLoaded = Number.parseInt(
+                    this.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0
+                )
+                const prevAssetsLoaded = this.prevAssetsLoaded
+                const currentAssetsLoaded = progress + prevAssetsLoaded
+                this.prevAssetsLoaded = currentAssetsLoaded
+                this.loadAssets(currentAssetsLoaded / totalAssetsLoaded)
             }
-            const totalAssetsLoaded = Number.parseInt(this.cache.obj.get(CacheKey.TotalAssetsLoaded) ?? 0) 
-            const prevAssetsLoaded = this.prevAssetsLoaded
-            const currentAssetsLoaded = progress + prevAssetsLoaded
-            this.prevAssetsLoaded = currentAssetsLoaded
-            this.loadAssets(currentAssetsLoaded/totalAssetsLoaded) 
-        })
+        )
 
         //listen for load user data event
-        ExternalEventEmitter.once(ExternalEventName.UserLoaded, async (user: UserSchema) => {
-            //load the user data
-            this.cache.obj.add(CacheKey.User, user)
-            // get the image url
-            if (user.avatarUrl) {
-                await loadImageAwait({
-                    key: user.id,
-                    imageUrl: user.avatarUrl,
-                    scene: this,
-                })
-            } else {
-                // create jazzicon blob url
-                const imageUrl = createJazziconBlobUrl(user.accountAddress)
-                await loadSvgAwait({
-                    key: user.id,
-                    svgUrl: imageUrl,
-                    scene: this,
-                    scale: 16,
-                })
-            }
-            // load the image
-            const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
-            if (watchingUser) {
-                if (watchingUser.avatarUrl) {
-                    await loadImageAwait({
-                        key: watchingUser.id,
-                        imageUrl: watchingUser.avatarUrl,
-                        scene: this,
-                    })
-                } else {
-                    // create jazzicon blob url
-                    const imageUrl = createJazziconBlobUrl(watchingUser.id)
-                    await loadSvgAwait({
-                        key: watchingUser.id,
-                        svgUrl: imageUrl,
-                        scene: this,
-                        scale: 16,
-                    })
-                }
-            }
-            // create the image by the url
+        ExternalEventEmitter.once(ExternalEventName.UserLoaded, async () => {
             this.handleFetchData()
         })
 
@@ -155,7 +121,9 @@ export class LoadingScene extends Scene {
         ExternalEventEmitter.once(
             ExternalEventName.PlacedItemsLoaded,
             (placedItems: Array<PlacedItemSchema>) => {
-                const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as UserSchema | undefined
+                const watchingUser = this.cache.obj.get(CacheKey.WatchingUser) as
+          | UserSchema
+          | undefined
                 const userId = watchingUser?.id ?? undefined
                 const placedItemsData: PlacedItemsData = {
                     placedItems,
@@ -183,10 +151,10 @@ export class LoadingScene extends Scene {
         const { width, height } = this.game.scale
 
         //  We loaded this image in our Boottrap Scene, so we can display it here
-        this.add.image(width / 2, height / 2, BootstrapAssetKey.Background)
+        this.add.image(width / 2, height / 2, AssetBootstrapId.Background)
         // We add logo to the scene
         const logo = this.add
-            .image(width / 2, height / 4, BootstrapAssetKey.Logo)
+            .image(width / 2, height / 4, AssetBootstrapId.Logo)
             .setScale(0.75)
         //  Animate the logo
         this.tweens.add({
@@ -214,19 +182,17 @@ export class LoadingScene extends Scene {
 
         await Promise.all([
             // listen for the complete event
-            loadBaseAssets(this),
             loadCropAssets(this),
             loadFlowerAssets(this),
-            loadSupplyAssets(this),
             loadProductAssets(this),
             loadTileAssets(this),
             loadPetAssets(this),
             loadFruitAssets(this),
-            loadToolAssets(this),
-            loadInventoryTypesAssets(this),
             loadAnimalAssets(this),
             loadStateAssets(this),
             loadBuildingAssets(this),
+            loadMiscAssets(this),
+            loadIconAssets(this),   
         ])
 
         this.load.setPath()
@@ -234,7 +200,6 @@ export class LoadingScene extends Scene {
         // fetch the data
         this.fetchData()
     }
-
 
     public fetchData() {
         if (!this.loadingProgressBar) {

@@ -15,8 +15,16 @@ export const isoUtcDateToLocale = (isoDateString: dayjs.ConfigType): dayjs.Dayjs
     return dayjs.utc(isoDateString).local()
 }
 
+export const getCurrentDayMidnightUtc = (timeZoneOffset: number = 7): dayjs.Dayjs => {
+    return dayjs().utcOffset(timeZoneOffset).startOf("day")
+}
+
 export const getNextDayMidnightUtc = (timeZoneOffset: number = 7): dayjs.Dayjs => {
     return dayjs().utcOffset(timeZoneOffset).add(1, "day").startOf("day")
+}
+
+export const getUtc = (time: dayjs.ConfigType, timeZoneOffset: number = 7): dayjs.Dayjs => {
+    return dayjs.utc(time).utcOffset(timeZoneOffset)
 }
 
 // get now in utc
