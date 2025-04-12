@@ -103,7 +103,8 @@ export class LoadingScene extends Scene {
         )
 
         //listen for load user data event
-        ExternalEventEmitter.once(ExternalEventName.UserLoaded, async () => {
+        ExternalEventEmitter.once(ExternalEventName.UserLoaded, async (user: UserSchema) => {
+            this.cache.obj.add(CacheKey.User, user)
             this.handleFetchData()
         })
 
