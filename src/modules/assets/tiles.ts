@@ -3,9 +3,13 @@ import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
 
 const PREFIX = "tiles"
 
+export interface TileAssetMapData {
+    mapData: AssetMapData,
+}
+
 export interface AssetTileData extends Metadata {
     phaser: {
-        map: AssetMapData
+        map: TileAssetMapData
     };
     base: AssetData
 }
@@ -16,10 +20,12 @@ export const assetTileMap: Record<TileId, AssetTileData> = {
         description: "A standard tile used for constructing farm paths and foundations.",
         phaser: {
             map: {
-                type: AssetMapType.Texture,
-                texture: {
-                    assetKey: "tiles-basic-tile",
-                    assetUrl: `${PREFIX}/basic-tile.png`,
+                mapData: {
+                    type: AssetMapType.Texture,
+                    texture: {
+                        assetKey: "tiles-basic-tile",
+                        assetUrl: `${PREFIX}/basic-tile.png`,
+                    },
                 },
             },
         },

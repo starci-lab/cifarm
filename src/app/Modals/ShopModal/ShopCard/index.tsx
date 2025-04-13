@@ -24,9 +24,10 @@ export interface ShopCardProps {
   limit?: number;
   showLimit?: boolean;
   unlockedLevel: number;
+  disabled?: boolean;
 }
 
-export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ownership, limit, showLimit = false, onTap, onPress }) => {
+export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ownership, limit, showLimit = false, onTap, onPress, disabled = false }) => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
@@ -36,7 +37,7 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
 
     const goldEnough = (userSwr.data?.data.user.golds ?? 0) >= price
     const levelEnough = (userSwr.data?.data.user.level ?? 0) >= unlockedLevel
-    const disabled = !goldEnough
+    const _disabled = disabled || (!goldEnough || !levelEnough || (!!limit && !!ownership && ownership >= limit))
     const locked = !levelEnough
 
     if (!staticSwr.data) {
@@ -54,7 +55,7 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
                             <ExtendedButton
                                 className="w-full"
                                 variant="default"
-                                disabled={disabled}  
+                                disabled={_disabled}  
                                 onTap={onTap}
                                 onPress={onPress}
                             >

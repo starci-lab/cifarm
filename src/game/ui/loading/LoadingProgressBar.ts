@@ -5,7 +5,7 @@ import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 
 export class LoadingProgressBar extends ContainerLite {
     private progressBar: ProgressBar | undefined
-    private text: Phaser.GameObjects.Text
+    private text: Text
 
     constructor({ scene, x, y }: ContainerBaseConstructorParams) {
         super(scene, x, y)
@@ -15,11 +15,11 @@ export class LoadingProgressBar extends ContainerLite {
             baseParams: {
                 scene: this.scene,
                 x: 0,
-                y: 80,
+                y: 50,
                 text: "",
             },
             options: {
-                fontSize: 32,
+                fontSize: 20,
                 textColor: TextColor.Brown,
             },
         })
@@ -40,7 +40,7 @@ export class LoadingProgressBar extends ContainerLite {
                     options: {
                         progress,
                     },
-                }).setScale(1.5, 1.5)
+                }).setScale(0.75, 0.75)
                 this.scene.add.existing(this.progressBar)
                 this.addLocal(this.progressBar)
             } else {

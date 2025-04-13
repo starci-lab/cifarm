@@ -21,7 +21,7 @@ import {
     loadMiscAssets,
     loadIconAssets,
 } from "../load"
-import { AssetBootstrapId } from "@/modules/assets"
+import { AssetBootstrapId, assetBootstrapMap } from "@/modules/assets"
 import { LoadingProgressBar } from "../ui"
 
 export enum LoadingPhase {
@@ -152,11 +152,21 @@ export class LoadingScene extends Scene {
         const { width, height } = this.game.scale
 
         //  We loaded this image in our Boottrap Scene, so we can display it here
-        this.add.image(width / 2, height / 2, AssetBootstrapId.Background)
+        const background = this.add.image(width / 2, height / 2, assetBootstrapMap[AssetBootstrapId.Background].phaser.base.assetKey)
+        
+        // scale the background to fit the screen
+        let scale =  width/background.width
+        const scaledHeight = background.height * scale
+        if (scaledHeight < height) {
+            scale = height/background.height
+        }
+        background.setScale(scale)
+
         // We add logo to the scene
         const logo = this.add
-            .image(width / 2, height / 4, AssetBootstrapId.Logo)
-            .setScale(0.75)
+            .image(width / 2, height / 4, assetBootstrapMap[AssetBootstrapId.Logo].phaser.base.assetKey)
+        const scaledLogo = 400/logo.width
+        logo.setScale(scaledLogo)
         //  Animate the logo
         this.tweens.add({
             targets: logo,

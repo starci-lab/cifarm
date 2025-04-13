@@ -138,7 +138,6 @@ export const useSyncEffects = () => {
 
         const handleEffect = ({ data }: PlacedItemsSyncedMessage) => {
             const _placedItems = _.cloneDeep(placedItems)
-            console.log("placedItems", _placedItems)
             for (let i = 0; i < data.length; i++) {
                 const placedItemWithStatus = data[i]
                 switch (placedItemWithStatus.status) {

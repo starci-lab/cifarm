@@ -31,6 +31,9 @@ import {
     AssetTextureData,
     assetCropMap,
     assetFlowerMap,
+    assetAnimalMap,
+    AnimalAge,
+    assetFruitMap,
 } from "@/modules/assets"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
@@ -86,7 +89,7 @@ export class PlacedItemObject extends ContainerLite {
             this.isPressedForAction = false
         })
     }
-    
+
     public getOccupiedTiles() {
         const occupiedTiles: Array<Position> = []
         if (!this.placedItemType) {
@@ -240,15 +243,23 @@ export class PlacedItemObject extends ContainerLite {
                         0,
                         assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
+                    if (!this.placedItemType) {
+                        throw new Error("Placed item type not found")
+                    }
+                    const { x: centerX, y: centerY } = this.getCenterPosition(this.placedItemType.sizeX, this.placedItemType.sizeY)
+                    const { x: offsetX = 0, y: offsetY = 0 } = {
+                        ...assetFruitMap[fruit.displayId].phaser.map.stages[this.nextPlacedItem.fruitInfo.currentStage].bubbleStateConfig?.extraOffsets,
+                    }
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
                             width: background.width,
                             height: background.height,
                             originY: 1,
+                            originX: 1,
                         })
                         .addBackground(background)
                         .setDepth(this.depth + 30)
-                        .setPosition((-3/8) * TILE_WIDTH, (-3/2) * TILE_HEIGHT)
+                        .setPosition(centerX + offsetX, centerY + offsetY)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -349,15 +360,12 @@ export class PlacedItemObject extends ContainerLite {
         const building = this.buildings.find(
             (building) => building.id === placedItemType?.building
         )
-        if (
-            !building?.upgradeable
-        ) {
+        if (!building?.upgradeable) {
             return
         }
 
         const stars = this.nextPlacedItem.buildingInfo.currentUpgrade || 0
-        const starKey =
-      assetIconMap[AssetIconId.PurpleStar].base.assetKey
+        const starKey = assetIconMap[AssetIconId.PurpleStar].base.assetKey
 
         const placedItemTypes = this.placedItemTypes.find(
             (placedItemType) =>
@@ -367,7 +375,8 @@ export class PlacedItemObject extends ContainerLite {
             throw new Error("Placed item type not found")
         }
         const { x = 0, y = 0 } = {
-            ...assetBuildingMap[building.displayId].phaser.starsConfig?.extraOffsets,
+            ...assetBuildingMap[building.displayId].phaser.map.starsConfig
+                ?.extraOffsets,
         }
         // Update the number of stars
         // Sizer
@@ -444,11 +453,10 @@ export class PlacedItemObject extends ContainerLite {
                 if (!crop) {
                     throw new Error("Crop not found")
                 }
-                console.log(assetCropMap[crop.displayId].phaser.map.stages)
                 assetData =
             assetCropMap[crop.displayId].phaser.map.stages?.[
                 this.nextPlacedItem.plantInfo.currentStage
-            ].texture
+            ].mapData.texture
                 break
             }
             case PlantType.Flower: {
@@ -461,7 +469,7 @@ export class PlacedItemObject extends ContainerLite {
                 assetData =
             assetFlowerMap[flower.displayId].phaser.map.stages?.[
                 this.nextPlacedItem.plantInfo.currentStage
-            ].texture
+            ].mapData.texture
                 break
             }
 
@@ -532,15 +540,63 @@ export class PlacedItemObject extends ContainerLite {
                         0,
                         assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
+                    if (!this.placedItemType) {
+                        throw new Error("Placed item type not found")
+                    }
+                    const { x: centerX, y: centerY } = this.getCenterPosition(
+                        this.placedItemType.sizeX,
+                        this.placedItemType.sizeY
+                    )
+
+                    let offsetX = 0
+                    let offsetY = 0
+
+                    switch (this.nextPlacedItem.plantInfo.plantType) {
+                    case PlantType.Crop: {
+                        const crop = this.crops.find((crop) => {
+                            if (!this.nextPlacedItem) {
+                                throw new Error("Current placed item not found")
+                            }
+                            return crop.id === this.nextPlacedItem.plantInfo?.crop
+                        })
+                        if (!crop) {
+                            throw new Error("Crop not found")
+                        }
+                        const { x, y } = assetCropMap[crop.displayId].phaser.map.stages[
+                            this.nextPlacedItem.plantInfo.currentStage
+                        ].bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
+                        offsetX = x
+                        offsetY = y
+                        break
+                    }
+                    case PlantType.Flower: {
+                        const flower = this.flowers.find((flower) => {
+                            if (!this.nextPlacedItem) {
+                                throw new Error("Current placed item not found")
+                            }
+                            return flower.id === this.nextPlacedItem.plantInfo?.flower
+                        })
+                        if (!flower) {
+                            throw new Error("Flower not found")
+                        }
+                        const { x, y } = assetFlowerMap[flower.displayId].phaser.map
+                            .stages[this.nextPlacedItem.plantInfo.currentStage]
+                            .bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
+                        offsetX = x
+                        offsetY = y
+                        break
+                    }
+                    }
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
                             width: background.width,
                             height: background.height,
                             originY: 1,
+                            originX: 1,
                         })
                         .addBackground(background)
                         .setDepth(this.depth + 30)
-                        .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
+                        .setPosition(centerX + offsetX, centerY + offsetY)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -601,7 +657,6 @@ export class PlacedItemObject extends ContainerLite {
         this.currentPlacedItem?.plantInfo?.harvestQuantityRemaining !==
           this.nextPlacedItem.plantInfo.harvestQuantityRemaining
             ) {
-                console.log(this.nextPlacedItem.plantInfo.harvestQuantityRemaining)
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
@@ -628,14 +683,11 @@ export class PlacedItemObject extends ContainerLite {
         if (this.nextPlacedItem.plantInfo.isFertilized) {
             // Create fertilizer sprite if it doesn’t exist
             if (!this.fertilizerParticle) {
-                const { assetKey, extraOffsets } = assetMiscMap[AssetMiscId.FertilizerParticle].phaser.base
+                const { assetKey, extraOffsets } =
+          assetMiscMap[AssetMiscId.FertilizerParticle].phaser.base
                 const { x = 0, y = 0 } = { ...extraOffsets }
                 this.fertilizerParticle = this.scene.add
-                    .sprite(
-                        x,
-                        y,
-                        assetKey
-                    ) // Using sprite instead of image
+                    .sprite(x, y, assetKey) // Using sprite instead of image
                     .setDepth(this.depth + 11)
                     .setOrigin(0.5, 1)
                 this.addLocal(this.fertilizerParticle)
@@ -664,9 +716,7 @@ export class PlacedItemObject extends ContainerLite {
         }
         // if the placed item type is the same as the current placed item, we will check it either is tree or animal
         let willReturn = false
-        if (
-            this.currentPlacedItem
-        ) {
+        if (this.currentPlacedItem) {
             switch (placedItemType.type) {
             case PlacedItemType.Animal: {
                 // check if the isAdult property has changed
@@ -753,20 +803,34 @@ export class PlacedItemObject extends ContainerLite {
                         0,
                         assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
+                    const age = this.nextPlacedItem.animalInfo.isAdult
+                        ? AnimalAge.Adult
+                        : AnimalAge.Baby
+                    if (!this.placedItemType) {
+                        throw new Error("Placed item type not found")
+                    }
+                    const { x: centerX, y: centerY } = this.getCenterPosition(
+                        this.placedItemType.sizeX,
+                        this.placedItemType.sizeY
+                    )
+                    const { x: offsetX = 0, y: offsetY = 0 } = {
+                        ...assetAnimalMap[animal.displayId].phaser.map.ages[age]
+                            .bubbleStateConfig?.extraOffsets,
+                    }
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
                             width: background.width,
                             height: background.height,
                             originY: 1,
+                            originX: 1,
                         })
                         .addBackground(background)
                         .setDepth(this.depth + 30)
-                        .setPosition(-TILE_WIDTH / 4, (-3 * TILE_HEIGHT) / 4)
+                        .setPosition(centerX + offsetX, centerY + offsetY)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
                 }
-
                 if (
                     this.nextPlacedItem.animalInfo.currentState !==
           AnimalCurrentState.Yield
@@ -854,10 +918,11 @@ export class PlacedItemObject extends ContainerLite {
         }
         if (building.kind !== BuildingKind.BeeHouse) {
             return
-        } 
+        }
 
         if (
-            this.nextPlacedItem?.beeHouseInfo?.currentState !== BeeHouseCurrentState.Normal
+            this.nextPlacedItem?.beeHouseInfo?.currentState !==
+      BeeHouseCurrentState.Normal
         ) {
             if (
                 this.currentPlacedItem?.beeHouseInfo?.currentState !==
@@ -869,15 +934,27 @@ export class PlacedItemObject extends ContainerLite {
                         0,
                         assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
                     )
+                    if (!this.placedItemType) {
+                        throw new Error("Placed item type not found")
+                    }
+                    const { x: centerX, y: centerY } = this.getCenterPosition(
+                        this.placedItemType.sizeX,
+                        this.placedItemType.sizeY
+                    )
+                    const { x: offsetX = 0, y: offsetY = 0 } = {
+                        ...assetBuildingMap[building.displayId].phaser.map.bubbleStateConfig
+                            ?.extraOffsets,
+                    }
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
                             width: background.width,
                             height: background.height,
                             originY: 1,
+                            originX: 1,
                         })
                         .addBackground(background)
                         .setDepth(this.depth + 30)
-                        .setPosition((-3/8) * TILE_WIDTH, (-3/2) * TILE_HEIGHT)
+                        .setPosition(centerX + offsetX, centerY + offsetY)
                     this.addLocal(this.bubbleState)
                 } else {
                     this.bubbleState.removeAll(true)
@@ -909,20 +986,20 @@ export class PlacedItemObject extends ContainerLite {
                     .layout()
             } else if (
                 this.currentPlacedItem?.beeHouseInfo?.harvestQuantityRemaining !==
-                this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining
+        this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining
             ) {
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
                 this.quantityText
                     .setText(
-                        `${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0}/${
-                            this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0
-                        }`
+                        `${
+                            this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0
+                        }/${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0}`
                     )
                     .setDepth(this.depth + 31)
-            } 
-        }else {
+            }
+        } else {
             // if bubble state is present, remove it
             if (this.bubbleState) {
                 this.bubbleState.removeAll(true)
@@ -947,6 +1024,16 @@ export class PlacedItemObject extends ContainerLite {
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.clearTint()
+        }
+    }
+
+    private getCenterPosition(sizeX: number, sizeY: number) {
+    // if sizeX = sizeY,
+        const xDif = -((sizeX - sizeY) / 2) * TILE_WIDTH
+        const yDif = -(sizeY / 2) * TILE_HEIGHT
+        return {
+            x: xDif,
+            y: yDif,
         }
     }
 }

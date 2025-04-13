@@ -54,6 +54,7 @@ export interface SessionState {
   fromToolIndex?: number;
   selectedToolId?: string;
   playerContext: PlayerContext;
+  showGameUI: boolean;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -91,6 +92,7 @@ const initialState: SessionState = {
     inventories: [],
     placedItems: [],
     playerContext: PlayerContext.Home,
+    showGameUI: false,
 }
 
 export const sessionSlice = createSlice({
@@ -180,6 +182,9 @@ export const sessionSlice = createSlice({
         setPlacedItems: (state, action: PayloadAction<Array<PlacedItemSchema>>) => {
             state.placedItems = action.payload
         },
+        setShowGameUI: (state, action: PayloadAction<boolean>) => {
+            state.showGameUI = action.payload
+        },
     },
 })
 
@@ -210,6 +215,7 @@ export const {
     setSelectedToolId,
     setPlayerContext,
     setPlacedItems,
+    setShowGameUI,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

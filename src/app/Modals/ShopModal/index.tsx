@@ -1,18 +1,13 @@
 import { setShopTab, useAppDispatch, useAppSelector } from "@/redux"
 import React from "react"
 import { FilterBar, Spacer, ScrollableTabs, GridTable } from "@/components"
-import {
-    GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
-    GRAPHQL_QUERY_STATIC_SWR,
-    SHOP_DISCLOSURE,
-} from "@/app/constants"
+import { GRAPHQL_QUERY_STATIC_SWR, SHOP_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { shopTabMap } from "./config"
 import {
     useGraphQLQueryStaticSwr,
-    useGraphQLQueryPlacedItemsSwrMutation,
     BuyCropSeedsMessage,
     BuyFlowerSeedsMessage,
     BuySuppliesMessage,
@@ -27,7 +22,11 @@ import {
     getTileLimit,
     getPetLimit,
 } from "./limit"
-import { BuyItemMessage, ExternalEventEmitter, ExternalEventName } from "@/game"
+import {
+    BuyItemMessage,
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/game"
 
 export enum ShopTab {
   Seeds = "Seeds",
@@ -52,9 +51,12 @@ export const ShopModal = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(GRAPHQL_QUERY_STATIC_SWR)
 
-    const { swrMutation: placedItemsSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryPlacedItemsSwrMutation>
-  >(GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION)
+    const placedItems = useAppSelector(
+        (state) => state.sessionReducer.placedItems
+    )
+    const inventories = useAppSelector(
+        (state) => state.sessionReducer.inventories
+    )
 
     const renderGridTable = () => {
         if (!staticSwr.data?.data) return null
@@ -90,7 +92,9 @@ export const ShopModal = () => {
                                         eventMessage
                                     )
                                 }}
-                                imageUrl={assetShopMap.crops[crop.displayId]?.base.assetUrl ?? ""}
+                                imageUrl={
+                                    assetShopMap.crops[crop.displayId]?.base.assetUrl ?? ""
+                                }
                                 price={crop.price}
                                 unlockedLevel={crop.unlockLevel}
                             />
@@ -146,16 +150,16 @@ export const ShopModal = () => {
                         const { selectedLimit, placedItemCount } = getAnimalLimit({
                             data: staticSwr.data?.data,
                             animal,
-                            placedItems:
-                  placedItemsSwrMutation.data?.data.placedItems ?? [],
+                            placedItems,
                         })
                         return (
                             <ShopCard
                                 onTap={() => {
                                     close()
-                                    const placedItemType = staticSwr.data?.data.placedItemTypes.find(   
-                                        (placedItemType) => placedItemType.animal === animal.id
-                                    )
+                                    const placedItemType =
+                      staticSwr.data?.data.placedItemTypes.find(
+                          (placedItemType) => placedItemType.animal === animal.id
+                      )
                                     if (!placedItemType) {
                                         throw new Error("Placed item type not found")
                                     }
@@ -188,7 +192,7 @@ export const ShopModal = () => {
             const { totalLimit, totalPlacedItemCount } = getBuildingLimit({
                 data: staticSwr.data?.data,
                 building: buildings[0],
-                placedItems: placedItemsSwrMutation.data?.data.placedItems ?? [],
+                placedItems,
             })
             return (
                 <>
@@ -206,16 +210,17 @@ export const ShopModal = () => {
                             const { selectedLimit, placedItemCount } = getBuildingLimit({
                                 data: staticSwr.data?.data,
                                 building,
-                                placedItems:
-                    placedItemsSwrMutation.data?.data.placedItems ?? [],
+                                placedItems,
                             })
                             return (
                                 <ShopCard
                                     onTap={() => {
                                         close()
-                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(
-                                            (placedItemType) => placedItemType.building === building.id
-                                        )
+                                        const placedItemType =
+                        staticSwr.data?.data.placedItemTypes.find(
+                            (placedItemType) =>
+                                placedItemType.building === building.id
+                        )
                                         if (!placedItemType) {
                                             throw new Error("Placed item type not found")
                                         }
@@ -228,7 +233,8 @@ export const ShopModal = () => {
                                         )
                                     }}
                                     imageUrl={
-                                        assetShopMap.buildings[building.displayId]?.base.assetUrl ?? ""
+                                        assetShopMap.buildings[building.displayId]?.base
+                                            .assetUrl ?? ""
                                     }
                                     price={building.price ?? 0}
                                     unlockedLevel={building.unlockLevel}
@@ -248,7 +254,7 @@ export const ShopModal = () => {
             )
             const { totalLimit, totalPlacedItemCount } = getFruitLimit({
                 data: staticSwr.data?.data,
-                placedItems: placedItemsSwrMutation.data?.data.placedItems ?? [],
+                placedItems,
             })
             return (
                 <>
@@ -264,9 +270,10 @@ export const ShopModal = () => {
                                 <ShopCard
                                     onTap={() => {
                                         close()
-                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(
-                                            (placedItemType) => placedItemType.fruit === fruit.id
-                                        )
+                                        const placedItemType =
+                        staticSwr.data?.data.placedItemTypes.find(
+                            (placedItemType) => placedItemType.fruit === fruit.id
+                        )
                                         if (!placedItemType) {
                                             throw new Error("Placed item type not found")
                                         }
@@ -294,7 +301,7 @@ export const ShopModal = () => {
             const tiles = staticSwr.data.data.tiles
             const { totalLimit, totalPlacedItemCount } = getTileLimit({
                 data: staticSwr.data?.data,
-                placedItems: placedItemsSwrMutation.data?.data.placedItems ?? [],
+                placedItems,
             })
             return (
                 <>
@@ -310,9 +317,10 @@ export const ShopModal = () => {
                                 <ShopCard
                                     onTap={() => {
                                         close()
-                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(
-                                            (placedItemType) => placedItemType.tile === tile.id
-                                        )
+                                        const placedItemType =
+                        staticSwr.data?.data.placedItemTypes.find(
+                            (placedItemType) => placedItemType.tile === tile.id
+                        )
                                         if (!placedItemType) {
                                             throw new Error("Placed item type not found")
                                         }
@@ -393,6 +401,16 @@ export const ShopModal = () => {
                     contentCallback={(tool) => {
                         return (
                             <ShopCard
+                                disabled={(() => {
+                                    const inventoryType =
+                      staticSwr.data?.data.inventoryTypes.find(
+                          (inventoryType) => inventoryType.tool === tool.id
+                      )
+                                    return inventories.some(
+                                        (inventory) =>
+                                            inventory.inventoryType === inventoryType?.id
+                                    )
+                                })()}
                                 onTap={() => {
                                     const eventMessage: BuyToolMessage = {
                                         toolId: tool.displayId,
@@ -402,7 +420,9 @@ export const ShopModal = () => {
                                         eventMessage
                                     )
                                 }}
-                                imageUrl={assetShopMap.tools[tool.displayId]?.base.assetUrl ?? ""}
+                                imageUrl={
+                                    assetShopMap.tools[tool.displayId]?.base.assetUrl ?? ""
+                                }
                                 price={tool.price ?? 0}
                                 unlockedLevel={tool.unlockLevel ?? 0}
                             />
@@ -426,16 +446,16 @@ export const ShopModal = () => {
                         const { totalLimit, totalPlacedItemCount } = getPetLimit({
                             data: staticSwr.data?.data,
                             pet,
-                            placedItems:
-                  placedItemsSwrMutation.data?.data.placedItems ?? [],
+                            placedItems,
                         })
                         return (
                             <ShopCard
                                 onTap={() => {
-                                    close() 
-                                    const placedItemType = staticSwr.data?.data.placedItemTypes.find(
-                                        (placedItemType) => placedItemType.pet === pet.id
-                                    )
+                                    close()
+                                    const placedItemType =
+                      staticSwr.data?.data.placedItemTypes.find(
+                          (placedItemType) => placedItemType.pet === pet.id
+                      )
                                     if (!placedItemType) {
                                         throw new Error("Placed item type not found")
                                     }
@@ -447,7 +467,9 @@ export const ShopModal = () => {
                                         eventMessage
                                     )
                                 }}
-                                imageUrl={assetShopMap.pets[pet.displayId]?.base.assetUrl ?? ""}
+                                imageUrl={
+                                    assetShopMap.pets[pet.displayId]?.base.assetUrl ?? ""
+                                }
                                 price={pet.price ?? 0}
                                 unlockedLevel={pet.unlockLevel ?? 0}
                                 ownership={totalPlacedItemCount}

@@ -168,6 +168,8 @@ export enum ExternalEventName {
     ReturnNormal = "return_normal",
     // select tool, from React to Phaser
     SelectTool = "select_tool",
+    // request to select tool, from Phaser to React
+    RequestSelectTool = "request_select_tool",
     // update sound, from React to Phaser
     UpdateSound = "update_sound",
     // update ambient, from React to Phaser
@@ -178,6 +180,8 @@ export enum ExternalEventName {
     UpdateSellModalContent = "update_sell_modal_content",
     // update upgrade modal, from Phaser to React
     UpdateUpgradeModalContent = "update_upgrade_modal_content",
+    // show game ui, from Phaser to React
+    ShowGameUI = "show_game_ui",
 }
 
 export enum ModalName {

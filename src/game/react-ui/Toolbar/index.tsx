@@ -18,7 +18,7 @@ import {
 } from "@/modules/assets"
 import { useMediaQuery } from "usehooks-ts"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
-import { ToolId } from "@/modules/entities"
+import { InventoryKind, ToolId } from "@/modules/entities"
 import { ExternalEventName } from "@/game"
 import { ExternalEventEmitter } from "@/game"
 
@@ -35,7 +35,8 @@ export const Toolbar: FC = () => {
   >(QUERY_STATIC_SWR_MUTATION)
     const inventories = useAppSelector(
         (state) => state.sessionReducer.inventories
-    )
+    ).filter((inventory) => inventory.kind === InventoryKind.Tool)
+
     const [numVisibleInventories, setNumVisibleInventories] = useState(6)
     const isSmallScreen = useMediaQuery("(max-width: 640px)") // Tailwind `sm` breakpoint
 
@@ -90,8 +91,25 @@ export const Toolbar: FC = () => {
         ExternalEventEmitter.emit(ExternalEventName.SelectTool, {
             tool: filteredTools.find((tool) => tool.id === selectedToolId)
         })
-        
     }, [selectedToolId])
+
+    useEffect(() => {
+        //check if selected tool is out of the filtered tools
+        if (!filteredTools.some((tool) => tool.id === selectedToolId)) {
+            dispatch(setSelectedToolId(filteredTools[0].id))
+        }
+    }, [filteredTools, selectedToolId])
+
+    useEffect(() => {
+        ExternalEventEmitter.on(ExternalEventName.RequestSelectTool, () => {
+            ExternalEventEmitter.emit(ExternalEventName.SelectTool, {
+                tool: filteredTools[0]
+            })
+        })
+        return () => {
+            ExternalEventEmitter.off(ExternalEventName.RequestSelectTool)
+        }
+    }, [filteredTools])
 
     return (
         <div className="flex gap-2 items-center">
@@ -172,7 +190,7 @@ export const Toolbar: FC = () => {
                 variant="ghost"
                 size="icon"
                 className="bg-background/50"
-                disabled={fromToolIndex === inventories.length - numVisibleInventories}
+                disabled={fromToolIndex >= inventories.length - numVisibleInventories}
                 onClick={() => {
                     dispatch(setFromToolIndex(fromToolIndex + 1))
                 }}

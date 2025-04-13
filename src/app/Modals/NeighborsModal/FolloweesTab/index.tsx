@@ -84,7 +84,6 @@ export const FolloweesTab: FC = () => {
                     <RefreshCcw className="h-4 w-4" />
                 </ExtendedButton>
             </div>
-
             <List
                 items={followees}
                 contentCallback={(item) => {

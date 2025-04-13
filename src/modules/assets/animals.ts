@@ -1,16 +1,21 @@
 import { AnimalId } from "@/modules/entities"
-import { AssetData, AssetMapData, AssetMapType } from "./types"
+import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig } from "./types"
 
 export enum AnimalAge {
     Baby = "baby",
     Adult = "adult",
 }
 
+export interface AnimalAssetMapData {
+    mapData: AssetMapData;
+    bubbleStateConfig?: BubbleStateConfig;
+}
+
 export interface AssetAnimalData {
     name: string;
     phaser: {
         map: {
-            ages: Record<AnimalAge, AssetMapData>
+            ages: Record<AnimalAge, AnimalAssetMapData>
         };
     };
     base: {
@@ -25,33 +30,49 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
             map: {
                 ages: {
                     [AnimalAge.Baby]: {
-                        type: AssetMapType.Spine,
-                        spine: {
-                            atlas: {
-                                assetKey: "animals-cow-baby-atlas",
-                                assetUrl: "animals/cow/baby/spine/baby.atlas",
-                                textureUrl: "animals/cow/baby/spine/baby.png",
+                        mapData: {
+                            type: AssetMapType.Spine,
+                            spine: {
+                                atlas: {
+                                    assetKey: "animals-cow-baby-atlas",
+                                    assetUrl: "animals/cow/baby/spine/baby.atlas",
+                                    textureUrl: "animals/cow/baby/spine/baby.png",
+                                },
+                                json: {
+                                    assetKey: "animals-cow-baby-json",
+                                    assetUrl: "animals/cow/baby/spine/baby.json",
+                                },
+                                extraOffsets: { x: 0, y: -80 },
                             },
-                            json: {
-                                assetKey: "animals-cow-baby-json",
-                                assetUrl: "animals/cow/baby/spine/baby.json",
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -20,
+                                y: -35,
                             },
-                            extraOffsets: { x: 0, y: -80 },
                         },
                     },
                     [AnimalAge.Adult]: {
-                        type: AssetMapType.Spine,
-                        spine: {
-                            atlas: {
-                                assetKey: "animals-cow-adult-atlas",
-                                assetUrl: "animals/cow/adult/spine/adult.atlas",
-                                textureUrl: "animals/cow/adult/spine/adult.png",
+                        mapData: {
+                            type: AssetMapType.Spine,
+                            spine: {
+                                atlas: {
+                                    assetKey: "animals-cow-adult-atlas",
+                                    assetUrl: "animals/cow/adult/spine/adult.atlas",
+                                    textureUrl: "animals/cow/adult/spine/adult.png",
+                                },
+                                json: {
+                                    assetKey: "animals-cow-adult-json",
+                                    assetUrl: "animals/cow/adult/spine/adult.json",
+                                },
+                                extraOffsets: { x: 0, y: -80 },
                             },
-                            json: {
-                                assetKey: "animals-cow-adult-json",
-                                assetUrl: "animals/cow/adult/spine/adult.json",
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -80,
                             },
-                            extraOffsets: { x: 0, y: -80 },
                         },
                     },
                 },
@@ -76,33 +97,49 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
             map: {
                 ages: {
                     [AnimalAge.Baby]: {
-                        type: AssetMapType.Spine,
-                        spine: {
-                            atlas: {
-                                assetKey: "animals-chicken-baby-atlas",
-                                assetUrl: "animals/chicken/baby/spine/baby.atlas",
-                                textureUrl: "animals/chicken/baby/spine/baby.png",
+                        mapData: {
+                            type: AssetMapType.Spine,
+                            spine: {
+                                atlas: {
+                                    assetKey: "animals-chicken-baby-atlas",
+                                    assetUrl: "animals/chicken/baby/spine/baby.atlas",
+                                    textureUrl: "animals/chicken/baby/spine/baby.png",
+                                },
+                                json: {
+                                    assetKey: "animals-chicken-baby-json",
+                                    assetUrl: "animals/chicken/baby/spine/baby.json",
+                                },
+                                extraOffsets: { x: 0, y: -80 },
                             },
-                            json: {
-                                assetKey: "animals-chicken-baby-json",
-                                assetUrl: "animals/chicken/baby/spine/baby.json",
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -40,
+                                y: -25,
                             },
-                            extraOffsets: { x: 0, y: -80 },
                         },
                     },
                     [AnimalAge.Adult]: {
-                        type: AssetMapType.Spine,
-                        spine: {
-                            atlas: {
-                                assetKey: "animals-chicken-adult-atlas",
-                                assetUrl: "animals/chicken/adult/spine/adult.atlas",
-                                textureUrl: "animals/chicken/adult/spine/adult.png",
+                        mapData: {
+                            type: AssetMapType.Spine,
+                            spine: {
+                                atlas: {
+                                    assetKey: "animals-chicken-adult-atlas",
+                                    assetUrl: "animals/chicken/adult/spine/adult.atlas",
+                                    textureUrl: "animals/chicken/adult/spine/adult.png",
+                                },
+                                json: {
+                                    assetKey: "animals-chicken-adult-json",
+                                    assetUrl: "animals/chicken/adult/spine/adult.json",
+                                },
+                                extraOffsets: { x: 0, y: -80 },
                             },
-                            json: {
-                                assetKey: "animals-chicken-adult-json",
-                                assetUrl: "animals/chicken/adult/spine/adult.json",
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -65,
+                                y: -45,
                             },
-                            extraOffsets: { x: 0, y: -80 },
                         },
                     },
                 },

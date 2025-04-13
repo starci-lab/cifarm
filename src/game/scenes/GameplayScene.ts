@@ -2,6 +2,7 @@ import { Scene } from "phaser"
 import { SceneEventEmitter, SceneEventName } from "../events"
 import { SceneName } from "../scene"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
+import { ExternalEventEmitter, ExternalEventName } from "../events"
 
 export class GameplayScene extends Scene
 {
@@ -25,6 +26,7 @@ export class GameplayScene extends Scene
 
     create ()
     {   
+        ExternalEventEmitter.emit(ExternalEventName.ShowGameUI, true)
         // launch the UI scene parallel to the gameplay scene
         // this.scene.launch(SceneName.UI)
 

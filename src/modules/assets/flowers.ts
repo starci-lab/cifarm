@@ -1,10 +1,15 @@
 import { FlowerId } from "../entities"
-import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
+import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
+
+export interface FlowerAssetMapData {
+    mapData: AssetMapData,
+    bubbleStateConfig?: BubbleStateConfig;
+}
 
 export interface AssetFlowerData extends Metadata {
     phaser: {
         map: {
-            stages: Record<number, AssetMapData>
+            stages: Record<number, FlowerAssetMapData>
         };
     };
     base: {
@@ -21,57 +26,97 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "flower-daisy-1",
-                            assetUrl: `${PREFIX}/daisy/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-daisy-1",
+                                assetUrl: `${PREFIX}/daisy/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "flower-daisy-2",
-                            assetUrl: `${PREFIX}/daisy/2.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-daisy-2",
+                                assetUrl: `${PREFIX}/daisy/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "flower-daisy-3",
-                            assetUrl: `${PREFIX}/daisy/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-daisy-3",
+                                assetUrl: `${PREFIX}/daisy/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "flower-daisy-4",
-                            assetUrl: `${PREFIX}/daisy/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-daisy-4",
+                                assetUrl: `${PREFIX}/daisy/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "flower-daisy-5",
-                            assetUrl: `${PREFIX}/daisy/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-daisy-5",
+                                assetUrl: `${PREFIX}/daisy/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },

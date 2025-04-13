@@ -36,7 +36,7 @@ export const assetBootstrapMap: Record<AssetBootstrapId, BootstrapAssetData> = {
     [AssetBootstrapId.LoadingBar]: {
         phaser: {
             base: {
-                assetUrl: "loading-bar.png",
+                assetUrl: `${PREFIX}/loading-bar.png`,
                 assetKey: "loading-bar",
             },
         },
@@ -44,7 +44,7 @@ export const assetBootstrapMap: Record<AssetBootstrapId, BootstrapAssetData> = {
     [AssetBootstrapId.LoadingFill]: {
         phaser: {
             base: {
-                assetUrl: "loading-fill.png",
+                assetUrl: `${PREFIX}/loading-fill.png`,
                 assetKey: "loading-fill",
             },
         },

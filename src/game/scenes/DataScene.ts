@@ -28,6 +28,9 @@ export class DataScene extends Scene {
                 this.cache.obj.add(CacheKey.SelectedTool, tool)
             }
         )
+        //emit immediately after the scene is created
+        ExternalEventEmitter.emit(ExternalEventName.RequestSelectTool)
+
         ExternalEventEmitter.on(
             ExternalEventName.PlacedItemsSynced,
             async (placedItems: Array<PlacedItemSchema>) => {

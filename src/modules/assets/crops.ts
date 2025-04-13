@@ -1,10 +1,16 @@
 import { CropId } from "@/modules/entities"
-import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
+import { AssetData, AssetMapData, AssetMapType, Metadata, BubbleStateConfig } from "./types"
+
+
+export interface CropAssetMapData {
+    mapData: AssetMapData,
+    bubbleStateConfig?: BubbleStateConfig;
+}
 
 export interface AssetCropData extends Metadata {
     phaser: {
         map: {
-            stages: Record<number, AssetMapData>
+            stages: Record<number, CropAssetMapData>
         };
     };
     base: {
@@ -22,58 +28,98 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-turnip-1",
-                            assetUrl: `${PREFIX}/turnip/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-turnip-1",
+                                assetUrl: `${PREFIX}/turnip/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -15,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-turnip-2",
-                            assetUrl: `${PREFIX}/turnip/2.png`,
-                            extraOffsets: {
-                                x: 0,
-                                y: -90,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-turnip-2",
+                                assetUrl: `${PREFIX}/turnip/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                                version: 2,
                             },
-                            version: 2,
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -15,
+                            },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-turnip-3",
-                            assetUrl: `${PREFIX}/turnip/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-turnip-3",
+                                assetUrl: `${PREFIX}/turnip/3.png`,
+                                extraOffsets: {
+                                    x: -10,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -10,
-                                y: -90,
+                                x: -25,
+                                y: -15,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-turnip-4",
-                            assetUrl: `${PREFIX}/turnip/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-turnip-4",
+                                assetUrl: `${PREFIX}/turnip/4.png`,
+                                extraOffsets: {
+                                    x: -10,
+                                    y: -87,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -10,
-                                y: -90,
+                                x: -25,
+                                y: -15,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-turnip-5",
-                            assetUrl: `${PREFIX}/turnip/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-turnip-5",
+                                assetUrl: `${PREFIX}/turnip/5.png`,
+                                extraOffsets: {
+                                    x: -10,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -10,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
@@ -112,57 +158,97 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-carrot-1",
-                            assetUrl: `${PREFIX}/carrot/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-carrot-1",
+                                assetUrl: `${PREFIX}/carrot/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-carrot-2",
-                            assetUrl: `${PREFIX}/carrot/2.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-carrot-2",
+                                assetUrl: `${PREFIX}/carrot/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-carrot-3",
-                            assetUrl: `${PREFIX}/carrot/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-carrot-3",
+                                assetUrl: `${PREFIX}/carrot/3.png`,
+                                extraOffsets: {
+                                    x: 15,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 15,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-carrot-4",
-                            assetUrl: `${PREFIX}/carrot/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-carrot-4",
+                                assetUrl: `${PREFIX}/carrot/4.png`,
+                                extraOffsets: {
+                                    x: 15,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 15,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-carrot-5",
-                            assetUrl: `${PREFIX}/carrot/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-carrot-5",
+                                assetUrl: `${PREFIX}/carrot/5.png`,
+                                extraOffsets: {
+                                    x: 15,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 15,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
@@ -201,57 +287,97 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-potato-1",
-                            assetUrl: `${PREFIX}/potato/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-potato-1",
+                                assetUrl: `${PREFIX}/potato/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-potato-2",
-                            assetUrl: `${PREFIX}/potato/2.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-potato-2",
+                                assetUrl: `${PREFIX}/potato/2.png`,
+                                extraOffsets: {
+                                    x: -10,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -10,
-                                y: -90,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-potato-3",
-                            assetUrl: `${PREFIX}/potato/3.png`,
-                            extraOffsets: {
-                                x: 0,
-                                y: -50,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-potato-3",
+                                assetUrl: `${PREFIX}/potato/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -50,
+                                },
                             },
                         },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },  
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-potato-4",
-                            assetUrl: `${PREFIX}/potato/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-potato-4",
+                                assetUrl: `${PREFIX}/potato/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -50,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -50,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-potato-5",
-                            assetUrl: `${PREFIX}/potato/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-potato-5",
+                                assetUrl: `${PREFIX}/potato/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -50,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -50,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
@@ -290,57 +416,97 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-pineapple-1",
-                            assetUrl: "crops/pineapple/1.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pineapple-1",
+                                assetUrl: "crops/pineapple/1.png",
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-pineapple-2",
-                            assetUrl: "crops/pineapple/2.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pineapple-2",
+                                assetUrl: "crops/pineapple/2.png",
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -70,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -70,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-pineapple-3",
-                            assetUrl: "crops/pineapple/3.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pineapple-3",
+                                assetUrl: "crops/pineapple/3.png",
+                                extraOffsets: {
+                                    x: -0,
+                                    y: -45,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -0,
-                                y: -45,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-pineapple-4",
-                            assetUrl: "crops/pineapple/4.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pineapple-4",
+                                assetUrl: "crops/pineapple/4.png",
+                                extraOffsets: {
+                                    x: -0,
+                                    y: -45,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -0,
-                                y: -45,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-pineapple-5",
-                            assetUrl: "crops/pineapple/5.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pineapple-5",
+                                assetUrl: "crops/pineapple/5.png",
+                                extraOffsets: {
+                                    x: -0,
+                                    y: -45,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -0,
-                                y: -45,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
@@ -379,57 +545,97 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-watermelon-1",
-                            assetUrl: "crops/watermelon/1.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-watermelon-1",
+                                assetUrl: "crops/watermelon/1.png",
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-watermelon-1",
-                            assetUrl: "crops/watermelon/2.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-watermelon-1",
+                                assetUrl: "crops/watermelon/2.png",
+                                extraOffsets: {
+                                    x: 5,
+                                    y: -40,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 5,
-                                y: -40,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-watermelon-2",
-                            assetUrl: "crops/watermelon/3.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-watermelon-2",
+                                assetUrl: "crops/watermelon/3.png",
+                                extraOffsets: {
+                                    x: 5,
+                                    y: -40,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 5,
-                                y: -40,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-watermelon-3",
-                            assetUrl: "crops/watermelon/4.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-watermelon-3",
+                                assetUrl: "crops/watermelon/4.png",
+                                extraOffsets: {
+                                    x: 5,
+                                    y: -40,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 5,
-                                y: -40,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-watermelon-4",
-                            assetUrl: "crops/watermelon/5.png",
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-watermelon-4",
+                                assetUrl: "crops/watermelon/5.png",
+                                extraOffsets: {
+                                    x: 5,
+                                    y: -40,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 5,
-                                y: -40,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
@@ -468,57 +674,97 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-cucumber-1",
-                            assetUrl: `${PREFIX}/cucumber/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cucumber-1",
+                                assetUrl: `${PREFIX}/cucumber/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-cucumber-2",
-                            assetUrl: `${PREFIX}/cucumber/2.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cucumber-2",
+                                assetUrl: `${PREFIX}/cucumber/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -60,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -60,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-cucumber-3",
-                            assetUrl: `${PREFIX}/cucumber/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cucumber-3",
+                                assetUrl: `${PREFIX}/cucumber/3.png`,
+                                extraOffsets: {
+                                    x: 20,
+                                    y: -60,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 20,
-                                y: -60,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-cucumber-4",
-                            assetUrl: `${PREFIX}/cucumber/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cucumber-4",
+                                assetUrl: `${PREFIX}/cucumber/4.png`,
+                                extraOffsets: {
+                                    x: 20,
+                                    y: -60,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 20,
-                                y: -60,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-cucumber-5",
-                            assetUrl: `${PREFIX}/cucumber/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cucumber-5",
+                                assetUrl: `${PREFIX}/cucumber/5.png`,
+                                extraOffsets: {
+                                    x: 20,
+                                    y: -60,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 20,
-                                y: -60,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
@@ -557,57 +803,97 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-bell-pepper-1",
-                            assetUrl: `${PREFIX}/bell-pepper/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-bell-pepper-1",
+                                assetUrl: `${PREFIX}/bell-pepper/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-bell-pepper-2",
-                            assetUrl: `${PREFIX}/bell-pepper/2.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-bell-pepper-2",
+                                assetUrl: `${PREFIX}/bell-pepper/2.png`,
+                                extraOffsets: {
+                                    x: 10,
+                                    y: -15,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 10,
-                                y: -15,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-bell-pepper-3",
-                            assetUrl: `${PREFIX}/bell-pepper/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-bell-pepper-3",
+                                assetUrl: `${PREFIX}/bell-pepper/3.png`,
+                                extraOffsets: {
+                                    x: 20,
+                                    y: -20,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 20,
-                                y: -20,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-bell-pepper-4",
-                            assetUrl: `${PREFIX}/bell-pepper/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-bell-pepper-4",
+                                assetUrl: `${PREFIX}/bell-pepper/4.png`,
+                                extraOffsets: {
+                                    x: 20,
+                                    y: -20,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 20,
-                                y: -20,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-bell-pepper-5",
-                            assetUrl: `${PREFIX}/bell-pepper/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-bell-pepper-5",
+                                assetUrl: `${PREFIX}/bell-pepper/5.png`,
+                                extraOffsets: {
+                                    x: 20,
+                                    y: -20,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 20,
-                                y: -20,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
@@ -646,57 +932,97 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-strawberry-1",
-                            assetUrl: `${PREFIX}/strawberry/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-strawberry-1",
+                                assetUrl: `${PREFIX}/strawberry/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -85,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-strawberry-2",
-                            assetUrl: `${PREFIX}/strawberry/2.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-strawberry-2",
+                                assetUrl: `${PREFIX}/strawberry/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -30,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-strawberry-3",
-                            assetUrl: `${PREFIX}/strawberry/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-strawberry-3",
+                                assetUrl: `${PREFIX}/strawberry/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -30,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-strawberry-4",
-                            assetUrl: `${PREFIX}/strawberry/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-strawberry-4",
+                                assetUrl: `${PREFIX}/strawberry/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -30,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "crop-strawberry-5",
-                            assetUrl: `${PREFIX}/strawberry/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-strawberry-5",
+                                assetUrl: `${PREFIX}/strawberry/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -30,
+                                x: -25,
+                                y: -25,
                             },
                         },
                     },

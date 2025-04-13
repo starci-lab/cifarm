@@ -180,7 +180,7 @@ export const getAssetDataRaw = ({
         if (!tile) {
             throw new Error("Tile not found")
         }
-        return assetTileMap[tile.displayId].phaser.map
+        return assetTileMap[tile.displayId].phaser.map.mapData
     }
     case PlacedItemType.Building: {
         if (!placedItemType.building) {
@@ -196,7 +196,7 @@ export const getAssetDataRaw = ({
         if (!building) {
             throw new Error("Building not found")
         }
-        return assetBuildingMap[building.displayId].phaser.map
+        return assetBuildingMap[building.displayId].phaser.map.mapData
     }
     case PlacedItemType.Animal: {
         if (!placedItemType.animal) {
@@ -213,7 +213,7 @@ export const getAssetDataRaw = ({
             throw new Error("Animal not found")
         }
         const age = isAdult ? AnimalAge.Adult : AnimalAge.Baby
-        return assetAnimalMap[animal.displayId].phaser.map.ages[age]
+        return assetAnimalMap[animal.displayId].phaser.map.ages[age].mapData
     }
     case PlacedItemType.Fruit: {
         if (!placedItemType.fruit) {
@@ -227,7 +227,7 @@ export const getAssetDataRaw = ({
         if (!fruit) {
             throw new Error("Fruit not found")
         }
-        return assetFruitMap[fruit.displayId].phaser.map.stages[fruitStage ?? 0]
+        return assetFruitMap[fruit.displayId].phaser.map.stages[fruitStage ?? 0].mapData
     }
     case PlacedItemType.Pet: {
         if (!placedItemType.pet) {
@@ -241,7 +241,7 @@ export const getAssetDataRaw = ({
         if (!pet) {
             throw new Error("Pet not found")
         }
-        return assetPetMap[pet.displayId].phaser.map
+        return assetPetMap[pet.displayId].phaser.map.mapData
     }
     }
 }

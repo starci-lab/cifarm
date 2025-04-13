@@ -1,9 +1,14 @@
 import { PetId } from "@/modules/entities"
-import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
+import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
+
+export interface PetAssetMapData {
+    mapData: AssetMapData,
+    bubbleStateConfig?: BubbleStateConfig;
+}
 
 export interface AssetPetData extends Metadata {
     phaser: {
-        map: AssetMapData
+        map: PetAssetMapData
     };
     base: AssetData
 }
@@ -16,24 +21,26 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
         description: "Loyal companion with playful nature.",
         phaser: {
             map: {
-                type: AssetMapType.Spine,
-                spine: {
-                    atlas: {
-                        assetKey: "pets-dog-baby-atlas",
-                        assetUrl: `${PREFIX}/dog/baby/spine/baby.atlas`,
-                        textureUrl: `${PREFIX}/dog/baby/spine/baby.png`,
+                mapData: {
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "pets-dog-atlas",
+                            assetUrl: `${PREFIX}/dog/spine/dog.atlas`,
+                            textureUrl: `${PREFIX}/dog/spine/dog.png`,
+                        },
+                        json: {
+                            assetKey: "pets-dog-json",
+                            assetUrl: `${PREFIX}/dog/spine/dog.json`,
+                        },
+                        extraOffsets: { x: 0, y: -80 },
                     },
-                    json: {
-                        assetKey: "pets-dog-baby-json",
-                        assetUrl: `${PREFIX}/dog/baby/spine/baby.json`,
-                    },
-                    extraOffsets: { x: 0, y: -80 },
                 },
             },
         },
         base: {
-            assetKey: "pets-dog-baby",
-            assetUrl: `${PREFIX}/dog/baby/spine/baby.png`,
+            assetKey: "pets-dog",
+            assetUrl: `${PREFIX}/dog/spine/dog.png`,
         },
     },
     [PetId.Cat]: {
@@ -41,24 +48,26 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
         description: "Independent feline with graceful movements.",
         phaser: {
             map: {
-                type: AssetMapType.Spine,
-                spine: {
-                    atlas: {
-                        assetKey: "pets-cat-baby-atlas",
-                        assetUrl: `${PREFIX}/cat/baby/spine/baby.atlas`,
-                        textureUrl: `${PREFIX}/cat/baby/spine/baby.png`,
+                mapData: {
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "pets-cat-atlas",
+                            assetUrl: `${PREFIX}/cat/spine/cat.atlas`,
+                            textureUrl: `${PREFIX}/cat/spine/cat.png`,
+                        },
+                        json: {
+                            assetKey: "pets-cat-json",
+                            assetUrl: `${PREFIX}/cat/spine/cat.json`,
+                        },
+                        extraOffsets: { x: 0, y: -80 },
                     },
-                    json: {
-                        assetKey: "pets-cat-baby-json",
-                        assetUrl: `${PREFIX}/cat/baby/spine/baby.json`,
-                    },
-                    extraOffsets: { x: 0, y: -80 },
                 },
             },
         },
         base: {
-            assetKey: "pets-cat-baby",
-            assetUrl: `${PREFIX}/cat/baby/spine/baby.png`,
+            assetKey: "pets-cat",
+            assetUrl: `${PREFIX}/cat/spine/cat.png`,
         },
     },
 } 

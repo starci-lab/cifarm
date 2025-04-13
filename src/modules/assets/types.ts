@@ -68,3 +68,7 @@ export interface AssetMapData {
     texture?: AssetTextureData;
     spine?: AssetSpineData;
 }
+
+export interface BubbleStateConfig {
+    extraOffsets?: { x: number; y: number };
+}

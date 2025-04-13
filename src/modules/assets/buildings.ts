@@ -1,14 +1,19 @@
 import { BuildingId } from "@/modules/entities"
-import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
+import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
 
 export interface StarsConfig {
     extraOffsets?: { x: number; y: number };
 }
 
+export interface BuildingAssetMapData {
+    mapData: AssetMapData,
+    starsConfig?: StarsConfig;
+    bubbleStateConfig?: BubbleStateConfig;
+}
+
 export interface AssetBuildingData extends Metadata {
     phaser: {
-        map: AssetMapData;
-        starsConfig?: StarsConfig;
+        map: BuildingAssetMapData;
     };
     base: AssetData;
 }
@@ -20,11 +25,19 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         description: "Your main residence where you can rest and manage your farm.",
         phaser: {
             map: {
-                type: AssetMapType.Texture,
-                texture: {
-                    assetKey: "buildings-home",
-                    assetUrl: `${PREFIX}/home/home.png`,
-                    extraOffsets: { x: -80, y: -130 },
+                mapData: {
+                    type: AssetMapType.Texture,
+                    texture: {
+                        assetKey: "buildings-home",
+                        assetUrl: `${PREFIX}/home/home.png`,
+                        extraOffsets: { x: -80, y: -130 },
+                    },
+                },
+                starsConfig: {
+                    extraOffsets: {
+                        x: -205,
+                        y: -730,
+                    },
                 },
             },
         },
@@ -38,17 +51,19 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         description: "A shelter for raising chickens and collecting eggs.",
         phaser: {
             map: {
-                type: AssetMapType.Texture,
-                texture: {
-                    assetKey: "buildings-coop",
-                    assetUrl: `${PREFIX}/coop/coop.png`,
-                    extraOffsets: { x: 0, y: -140 },
+                mapData: {
+                    type: AssetMapType.Texture,
+                    texture: {
+                        assetKey: "buildings-coop",
+                        assetUrl: `${PREFIX}/coop/coop.png`,
+                        extraOffsets: { x: 0, y: -140 },
+                    },
                 },
-            },
-            starsConfig: {
-                extraOffsets: {
-                    x: -120,
-                    y: -630,
+                starsConfig: {
+                    extraOffsets: {
+                        x: -120,
+                        y: -630,
+                    },
                 },
             },
         },
@@ -62,17 +77,19 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         description: "A large structure for housing and managing livestock.",
         phaser: {
             map: {
-                type: AssetMapType.Texture,
-                texture: {
-                    assetKey: "buildings-barn",
-                    assetUrl: `${PREFIX}/barn/barn.png`,
-                    extraOffsets: { x: 0, y: -120 },
+                mapData: {
+                    type: AssetMapType.Texture,
+                    texture: {
+                        assetKey: "buildings-barn",
+                        assetUrl: `${PREFIX}/barn/barn.png`,
+                        extraOffsets: { x: 0, y: -120 },
+                    },
                 },
-            },
-            starsConfig: {
-                extraOffsets: {
-                    x: -205,
-                    y: -730,
+                starsConfig: {
+                    extraOffsets: {
+                        x: -205,
+                        y: -730,
+                    },
                 },
             },
         },
@@ -86,24 +103,32 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         description: "A structure for housing bees and producing honey.",
         phaser: {
             map: {
-                type: AssetMapType.Spine,
-                spine: {
-                    atlas: {
-                        assetKey: "buildings-bee-house-atlas",
-                        assetUrl: `${PREFIX}/bee-house/spine/bee-house.atlas`,
-                        textureUrl: `${PREFIX}/bee-house/spine/bee-house.png`,
+                mapData: {
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "buildings-bee-house-atlas",
+                            assetUrl: `${PREFIX}/bee-house/spine/bee-house.atlas`,
+                            textureUrl: `${PREFIX}/bee-house/spine/bee-house.png`,
+                        },
+                        json: {
+                            assetKey: "buildings-bee-house-json",
+                            assetUrl: `${PREFIX}/bee-house/spine/bee-house.json`,
+                        },
+                        extraOffsets: { y: -130 },
                     },
-                    json: {
-                        assetKey: "buildings-bee-house-json",
-                        assetUrl: `${PREFIX}/bee-house/spine/bee-house.json`,
-                    },
-                    extraOffsets: { y: -130 },
                 },
-            },
-            starsConfig: {
-                extraOffsets: {
-                    x: -65,
-                    y: -450,
+                starsConfig: {
+                    extraOffsets: {
+                        x: -65,
+                        y: -450,
+                    },
+                },
+                bubbleStateConfig: {
+                    extraOffsets: {
+                        x: -75,
+                        y: -130,
+                    },
                 },
             },
         },
@@ -117,17 +142,19 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         description: "A cozy shelter for your farm pets to rest and play.",
         phaser: {
             map: {
-                type: AssetMapType.Texture,
-                texture: {
-                    assetKey: "buildings-pet-house",
-                    assetUrl: `${PREFIX}/pet-house/pet-house.png`,
-                    extraOffsets: { x: 0, y: -175 },
+                mapData: {
+                    type: AssetMapType.Texture,
+                    texture: {
+                        assetKey: "buildings-pet-house",
+                        assetUrl: `${PREFIX}/pet-house/pet-house.png`,
+                        extraOffsets: { x: 0, y: -175 },
+                    },
                 },
-            },
-            starsConfig: {
-                extraOffsets: {
-                    x: -185,
-                    y: -575,
+                starsConfig: {
+                    extraOffsets: {
+                        x: -185,
+                        y: -575,
+                    },
                 },
             },
         },

@@ -26,19 +26,19 @@ export const loadAnimalAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
     for (const animalData of Object.values(assetAnimalMap)) {
         for (const ageData of Object.values(animalData.phaser.map.ages)) {
-            switch (ageData.type) {
+            switch (ageData.mapData.type) {
             case AssetMapType.Spine: {
-                if (!ageData.spine) {
+                if (!ageData.mapData.spine) {
                     throw new Error("Spine config is undefined")
                 }
-                promises.push(loadSpine(scene, ageData.spine))
+                promises.push(loadSpine(scene, ageData.mapData.spine))
                 break
             }
             default: {
-                if (!ageData.texture) {
+                if (!ageData.mapData.texture) {
                     throw new Error("Texture config is undefined")
                 }
-                promises.push(loadTexture(scene, ageData.texture))
+                promises.push(loadTexture(scene, ageData.mapData.texture))
                 break
             }
             }
@@ -51,19 +51,19 @@ export const loadFlowerAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
     for (const flowerData of Object.values(assetFlowerMap)) {
         for (const stageData of Object.values(flowerData.phaser.map.stages)) {
-            switch (stageData.type) {
+            switch (stageData.mapData.type) {
             case AssetMapType.Spine: {
-                if (!stageData.spine) {
+                if (!stageData.mapData.spine) {
                     throw new Error("Spine config is undefined")
                 }
-                promises.push(loadSpine(scene, stageData.spine))
+                promises.push(loadSpine(scene, stageData.mapData.spine))
                 break
             }
             default: {
-                if (!stageData.texture) {
+                if (!stageData.mapData.texture) {
                     throw new Error("Texture config is undefined")
                 }
-                promises.push(loadTexture(scene, stageData.texture))
+                promises.push(loadTexture(scene, stageData.mapData.texture))
                 break
             }
             }
@@ -75,19 +75,19 @@ export const loadFlowerAssets = async (scene: Scene) => {
 export const loadBuildingAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
     for (const buildingData of Object.values(assetBuildingMap) as AssetBuildingData[]) {
-        switch (buildingData.phaser.map.type) {
+        switch (buildingData.phaser.map.mapData.type) {
         case AssetMapType.Spine: {
-            if (!buildingData.phaser.map.spine) {
+            if (!buildingData.phaser.map.mapData.spine) {
                 throw new Error("Spine config is undefined")
             }
-            promises.push(loadSpine(scene, buildingData.phaser.map.spine))
+            promises.push(loadSpine(scene, buildingData.phaser.map.mapData.spine))
             break
         }
         default: {
-            if (!buildingData.phaser.map.texture) {
+            if (!buildingData.phaser.map.mapData.texture) {
                 throw new Error("Texture config is undefined")
             }
-            promises.push(loadTexture(scene, buildingData.phaser.map.texture))
+            promises.push(loadTexture(scene, buildingData.phaser.map.mapData.texture))
             break
         }
         }
@@ -106,19 +106,19 @@ export const loadProductAssets = async (scene: Scene) => {
 export const loadTileAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
     for (const tileData of Object.values(assetTileMap) as AssetTileData[]) {
-        switch (tileData.phaser.map.type) {
+        switch (tileData.phaser.map.mapData.type) {
         case AssetMapType.Spine: {
-            if (!tileData.phaser.map.spine) {
+            if (!tileData.phaser.map.mapData.spine) {
                 throw new Error("Spine config is undefined")
             }
-            promises.push(loadSpine(scene, tileData.phaser.map.spine))
+            promises.push(loadSpine(scene, tileData.phaser.map.mapData.spine))
             break
         }
         default: {
-            if (!tileData.phaser.map.texture) {
+            if (!tileData.phaser.map.mapData.texture) {
                 throw new Error("Texture config is undefined")
             }
-            promises.push(loadTexture(scene, tileData.phaser.map.texture))
+            promises.push(loadTexture(scene, tileData.phaser.map.mapData.texture))
             break
         }
         }
@@ -129,19 +129,19 @@ export const loadTileAssets = async (scene: Scene) => {
 export const loadPetAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
     for (const petData of Object.values(assetPetMap) as AssetPetData[]) {
-        switch (petData.phaser.map.type) {
+        switch (petData.phaser.map.mapData.type) {
         case AssetMapType.Spine: {
-            if (!petData.phaser.map.spine) {
+            if (!petData.phaser.map.mapData.spine) {
                 throw new Error("Spine config is undefined")
             }
-            promises.push(loadSpine(scene, petData.phaser.map.spine))
+            promises.push(loadSpine(scene, petData.phaser.map.mapData.spine))
             break
         }
         default: {
-            if (!petData.phaser.map.texture) {
+            if (!petData.phaser.map.mapData.texture) {
                 throw new Error("Texture config is undefined")
             }
-            promises.push(loadTexture(scene, petData.phaser.map.texture))
+            promises.push(loadTexture(scene, petData.phaser.map.mapData.texture))
             break
         }
         }
@@ -153,19 +153,19 @@ export const loadFruitAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
     for (const fruitData of Object.values(assetFruitMap) as AssetFruitData[]) {
         for (const stageData of Object.values(fruitData.phaser.map.stages)) {
-            switch (stageData.type) {
+            switch (stageData.mapData.type) {
             case AssetMapType.Spine: {
-                if (!stageData.spine) {
+                if (!stageData.mapData.spine) {
                     throw new Error("Spine config is undefined")
                 }
-                promises.push(loadSpine(scene, stageData.spine))
+                promises.push(loadSpine(scene, stageData.mapData.spine))
                 break
             }
             default: {
-                if (!stageData.texture) {
+                if (!stageData.mapData.texture) {
                     throw new Error("Texture config is undefined")
                 }
-                promises.push(loadTexture(scene, stageData.texture))
+                promises.push(loadTexture(scene, stageData.mapData.texture))
                 break
             }
             }
@@ -217,19 +217,19 @@ export const loadCropAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
     for (const cropData of Object.values(assetCropMap)) {
         for (const stageData of Object.values(cropData.phaser.map.stages)) {
-            switch (stageData.type) {
+            switch (stageData.mapData.type) {
             case AssetMapType.Spine: {
-                if (!stageData.spine) {
+                if (!stageData.mapData.spine) {
                     throw new Error("Spine config is undefined")
                 }
-                promises.push(loadSpine(scene, stageData.spine))
+                promises.push(loadSpine(scene, stageData.mapData.spine))
                 break
             }
             default: {
-                if (!stageData.texture) {
+                if (!stageData.mapData.texture) {
                     throw new Error("Texture config is undefined")
                 }
-                promises.push(loadTexture(scene, stageData.texture))
+                promises.push(loadTexture(scene, stageData.mapData.texture))
                 break
             }
             }

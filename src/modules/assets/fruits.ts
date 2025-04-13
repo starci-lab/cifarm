@@ -1,12 +1,16 @@
 import { FruitId } from "@/modules/entities"
-import { AssetData, AssetMapData, AssetMapType } from "./types"
+import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig } from "./types"
 
+export interface FruitAssetMapData {
+    mapData: AssetMapData
+    bubbleStateConfig?: BubbleStateConfig
+}
 export interface AssetFruitData {
     name: string;
     phaser: {
         map: {
-            stages: Record<number, AssetMapData>
-        };
+        stages: Record<number, FruitAssetMapData>
+        }
     };
     base: {
         stages: Record<number, AssetData>
@@ -22,32 +26,56 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-banana-1",
-                            assetUrl: `${PREFIX}/banana/1.png`,
-                            extraOffsets: {
-                                x: -20,
-                                y: -173,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-banana-1",
+                                assetUrl: `${PREFIX}/banana/1.png`,
+                                extraOffsets: {
+                                    x: -20,
+                                    y: -173,
+                                }
                             },
                         },
-                    },
-                    1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-banana-2",
-                            assetUrl: `${PREFIX}/banana/2.png`,
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: -10,
-                                y: -175,
+                                x: 0,
+                                y: -100,
+                            },
+                        },
+                    },  
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-banana-2",
+                                assetUrl: `${PREFIX}/banana/2.png`,
+                                extraOffsets: {
+                                    x: -10,
+                                    y: -175,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -110,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-banana-3",
-                            assetUrl: `${PREFIX}/banana/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-banana-3",
+                                assetUrl: `${PREFIX}/banana/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -55,24 +83,40 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-banana-4",
-                            assetUrl: `${PREFIX}/banana/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-banana-4",
+                                assetUrl: `${PREFIX}/banana/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
-                                y: -170,
+                                y: -175,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-banana-5",
-                            assetUrl: `${PREFIX}/banana/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-banana-5",
+                                assetUrl: `${PREFIX}/banana/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
-                                y: -170,
+                                y: -175,
                             },
                         },
                     },
@@ -110,56 +154,96 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-apple-1",
-                            assetUrl: `${PREFIX}/apple/1.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-apple-1",
+                                assetUrl: `${PREFIX}/apple/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -190,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
-                                y: -190,
+                                x: -10,
+                                y: -100,
                             },
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-apple-2",
-                            assetUrl: `${PREFIX}/apple/2.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-apple-2",
+                                assetUrl: `${PREFIX}/apple/2.png`,
+                                extraOffsets: {
+                                    x: 10,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 10,
-                                y: -170,
+                                x: -10,
+                                y: -100,
                             },
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-apple-3",
-                            assetUrl: `${PREFIX}/apple/3.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-apple-3",
+                                assetUrl: `${PREFIX}/apple/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -150,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
+                                x: -50,
                                 y: -150,
                             },
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-apple-4",
-                            assetUrl: `${PREFIX}/apple/4.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-apple-4",
+                                assetUrl: `${PREFIX}/apple/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -150,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
+                                x: -50,
                                 y: -150,
                             },
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-apple-5",
-                            assetUrl: `${PREFIX}/apple/5.png`,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-apple-5",
+                                assetUrl: `${PREFIX}/apple/5.png`,
+                                extraOffsets: {
+                                    x: -0,
+                                    y: -150,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
-                                x: 0,
+                                x: -50,
                                 y: -150,
                             },
                         },
@@ -198,11 +282,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-dragon-fruit-1",
-                            assetUrl: `${PREFIX}/dragon-fruit/1.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-dragon-fruit-1",
+                                assetUrl: `${PREFIX}/dragon-fruit/1.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -210,11 +302,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-dragon-fruit-2",
-                            assetUrl: `${PREFIX}/dragon-fruit/2.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-dragon-fruit-2",
+                                assetUrl: `${PREFIX}/dragon-fruit/2.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -222,11 +322,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-dragon-fruit-3",
-                            assetUrl: `${PREFIX}/dragon-fruit/3.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-dragon-fruit-3",
+                                assetUrl: `${PREFIX}/dragon-fruit/3.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -234,11 +342,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-dragon-fruit-4",
-                            assetUrl: `${PREFIX}/dragon-fruit/4.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-dragon-fruit-4",
+                                assetUrl: `${PREFIX}/dragon-fruit/4.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -246,11 +362,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-dragon-fruit-5",
-                            assetUrl: `${PREFIX}/dragon-fruit/5.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-dragon-fruit-5",
+                                assetUrl: `${PREFIX}/dragon-fruit/5.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -291,11 +415,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             map: {
                 stages: {
                     0: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-jackfruit-1",
-                            assetUrl: `${PREFIX}/jackfruit/1.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-jackfruit-1",
+                                assetUrl: `${PREFIX}/jackfruit/1.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -303,11 +435,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     1: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-jackfruit-2",
-                            assetUrl: `${PREFIX}/jackfruit/2.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-jackfruit-2",
+                                assetUrl: `${PREFIX}/jackfruit/2.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -315,11 +455,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     2: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-jackfruit-3",
-                            assetUrl: `${PREFIX}/jackfruit/3.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-jackfruit-3",
+                                assetUrl: `${PREFIX}/jackfruit/3.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -327,11 +475,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     3: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-jackfruit-4",
-                            assetUrl: `${PREFIX}/jackfruit/4.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-jackfruit-4",
+                                assetUrl: `${PREFIX}/jackfruit/4.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
@@ -339,11 +495,19 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
                         },
                     },
                     4: {
-                        type: AssetMapType.Texture,
-                        texture: {
-                            assetKey: "fruit-jackfruit-5",
-                            assetUrl: `${PREFIX}/jackfruit/5.png`,
-                            packageId: 1,
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-jackfruit-5",
+                                assetUrl: `${PREFIX}/jackfruit/5.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
                             extraOffsets: {
                                 x: 0,
                                 y: -170,
