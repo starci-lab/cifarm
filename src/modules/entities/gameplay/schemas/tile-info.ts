@@ -5,7 +5,7 @@ export interface TileInfoSchema {
     placedItemId: string;
     placedItem?: PlacedItemSchema;
     growthAcceleration: number;
-    qualityYieldChance: number;
+    qualityYield: number;
     diseaseResistance: number;
     harvestYieldBonus: number;
 }

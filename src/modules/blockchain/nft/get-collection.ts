@@ -60,11 +60,17 @@ export const getSolanaCollection = async ({
     const promises: Array<Promise<void>> = []
     for (const asset of assets) {
         promises.push((async () => {
-            const metadata = await axios.get<MetaplexNFTMetadata>(asset.uri)
+            let metadata: MetaplexNFTMetadata | undefined
+            try {
+                const response = await axios.get<MetaplexNFTMetadata>(asset.uri)
+                metadata = response.data
+            } catch (ex) {
+                console.log("Error fetching NFT metadata:", ex)
+            }
             nfts.push({
-                name: metadata.data.name,
+                name: metadata?.name ?? "",
                 nftAddress: asset.publicKey.toString(),
-                imageUrl: metadata.data.image,
+                imageUrl: metadata?.image ?? "",
                 attributes: asset.attributes?.attributeList ?? [],
                 wrapped: asset.permanentFreezeDelegate?.frozen ?? false
             })

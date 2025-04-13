@@ -195,7 +195,7 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                 <Stats
                     harvestCount={placedItem.fruitInfo?.harvestCount}
                     growthAcceleration={placedItem.fruitInfo?.growthAcceleration}
-                    qualityYieldChance={placedItem.fruitInfo?.qualityYieldChance}
+                    qualityYield={placedItem.fruitInfo?.qualityYield}
                     diseaseResistance={placedItem.fruitInfo?.diseaseResistance}
                     harvestYieldBonus={placedItem.fruitInfo?.harvestYieldBonus}
                 />

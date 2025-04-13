@@ -12,7 +12,7 @@ const query1 = gql`
       y
       placedItemType
       tileInfo {
-        qualityYieldChance
+        qualityYield
         growthAcceleration
         harvestYieldBonus
         diseaseResistance
@@ -44,7 +44,7 @@ const query1 = gql`
         harvestQuantityDesired
         harvestQuantityMin
         growthAcceleration
-        qualityYieldChance
+        qualityYield
         diseaseResistance
         harvestYieldBonus
         harvestCount
@@ -59,7 +59,7 @@ const query1 = gql`
         isQuality
         thieves
         growthAcceleration
-        qualityYieldChance
+        qualityYield
         diseaseResistance
         harvestYieldBonus
         harvestCount
@@ -71,7 +71,7 @@ const query1 = gql`
         harvestQuantityRemaining
         isQuality
         thieves
-        qualityYieldChance
+        qualityYield
         growthAcceleration
         harvestYieldBonus
         diseaseResistance

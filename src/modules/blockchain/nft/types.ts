@@ -9,14 +9,14 @@ export enum AttributeName {
     Rarity = "rarity",
     Type = "type",
     GrowthAcceleration = "growthAcceleration",
-    QualityYieldChance = "qualityYieldChance",
+    QualityYieldChance = "qualityYield",
     DiseaseResistance = "diseaseResistance",
     HarvestYieldBonus = "harvestYieldBonus"
 }
 
 export enum StatsAttributeName {
     GrowthAcceleration = "growthAcceleration",
-    QualityYieldChance = "qualityYieldChance",
+    QualityYield = "qualityYield",
     DiseaseResistance = "diseaseResistance",
     HarvestYieldBonus = "harvestYieldBonus"
 }
@@ -32,7 +32,7 @@ export const statsAttributeNameMap: Record<StatsAttributeName, StatsAttributeDat
         name: "Growth Acceleration",
         tooltip: "Growth acceleration is the rate at which the item grows. It is a percentage that is applied to the item.",
     },
-    [StatsAttributeName.QualityYieldChance]: {
+    [StatsAttributeName.QualityYield]: {
         name: "Quality Yield Chance",
         tooltip: "Quality Yield Chance is the chance that the item will produce a higher quality yield.",
     },

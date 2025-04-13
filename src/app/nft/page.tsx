@@ -183,14 +183,11 @@ const Page: FC = () => {
                                         tooltip: "w-[14px] h-[14px]"
                                     }}
                                 />
-                                <div className="text-sm">{(Number(attribute?.value ?? 0) * 100)}%</div>
+                                <div className="text-sm">{Number(attribute?.value ?? 0)}</div>
                             </div>
                         </div>
                     )
                 }} />
-                {/* <Spacer y={12}/>
-                <Title title="Metadata" tooltipString="Metadata are the metadata of the NFT." />
-                <Spacer y={4}/> */}
             </div>
         </Container>
     )

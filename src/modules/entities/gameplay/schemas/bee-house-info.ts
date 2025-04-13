@@ -10,7 +10,7 @@ export interface BeeHouseInfoSchema extends AbstractSchema {
     harvestQuantityDesired?: number
     isQuality?: boolean
     growthAcceleration: number
-    qualityYieldChance: number
+    qualityYield: number
     diseaseResistance: number
     harvestYieldBonus: number
     harvestCount: number

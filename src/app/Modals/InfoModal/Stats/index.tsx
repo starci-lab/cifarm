@@ -6,12 +6,12 @@ import { HARVEST_COUNT } from "../types"
 interface StatsProps {
     harvestCount?: number
     growthAcceleration?: number
-    qualityYieldChance?: number
+    qualityYield?: number
     diseaseResistance?: number
     harvestYieldBonus?: number
 }
 
-export const Stats: FC<StatsProps> = ({ harvestCount, growthAcceleration, qualityYieldChance, diseaseResistance, harvestYieldBonus }) => {
+export const Stats: FC<StatsProps> = ({ harvestCount, growthAcceleration, qualityYield, diseaseResistance, harvestYieldBonus }) => {
     return <List
         enableScroll={false}
         items={
@@ -28,10 +28,10 @@ export const Stats: FC<StatsProps> = ({ harvestCount, growthAcceleration, qualit
                     <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
                     <div className="text-sm">{growthAcceleration}</div>
                 </div>
-            case StatsAttributeName.QualityYieldChance:
+            case StatsAttributeName.QualityYield:
                 return <div className="flex justify-between px-3 py-2">
                     <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>
-                    <div className="text-sm">{qualityYieldChance}</div>
+                    <div className="text-sm">{qualityYield}</div>
                 </div>
             case StatsAttributeName.DiseaseResistance:
                 return <div className="flex justify-between px-3 py-2">

@@ -19,7 +19,7 @@ export interface AnimalInfoSchema {
     placedItemId: string
     placedItem?: PlacedItemSchema
     growthAcceleration: number
-    qualityYieldChance: number
+    qualityYield: number
     diseaseResistance: number
     harvestYieldBonus: number
     harvestCount: number

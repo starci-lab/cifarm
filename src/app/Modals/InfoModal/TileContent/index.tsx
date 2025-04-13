@@ -254,7 +254,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                 <Stats
                     harvestCount={placedItem.plantInfo?.harvestCount}
                     growthAcceleration={placedItem.plantInfo?.growthAcceleration}
-                    qualityYieldChance={placedItem.plantInfo?.qualityYieldChance}
+                    qualityYield={placedItem.plantInfo?.qualityYield}
                     diseaseResistance={placedItem.plantInfo?.diseaseResistance}
                     harvestYieldBonus={placedItem.plantInfo?.harvestYieldBonus}
                 />

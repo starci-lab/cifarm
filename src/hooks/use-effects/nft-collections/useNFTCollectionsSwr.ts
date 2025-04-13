@@ -21,9 +21,6 @@ export const useNFTCollectionsSwr = ({
     const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
     const nftCollections = useAppSelector((state) => state.sessionReducer.nftCollections)
     const account = accounts.find((account) => account.id === accountId)
-
-    console.log(collectionKey)
-    console.log(nftCollections)
     //if tokenKey is set, tokenAddress is ignored
     const swr = useSWR(
         [chainKey, network, collectionAddress, collectionKey, account],

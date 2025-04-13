@@ -154,7 +154,7 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
                 <Stats
                     harvestCount={placedItem.beeHouseInfo?.harvestCount}
                     growthAcceleration={placedItem.beeHouseInfo?.growthAcceleration}
-                    qualityYieldChance={placedItem.beeHouseInfo?.qualityYieldChance}
+                    qualityYield={placedItem.beeHouseInfo?.qualityYield}
                     diseaseResistance={placedItem.beeHouseInfo?.diseaseResistance}
                     harvestYieldBonus={placedItem.beeHouseInfo?.harvestYieldBonus}
                 />
