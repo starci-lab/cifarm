@@ -279,7 +279,7 @@ export const SignTransactionModal: FC = () => {
                         }
                         case TransferTokenContent.RecipientAddress: {
                             return (
-                                <div className="flex items-center justify-between px-2 py-3">
+                                <div className="flex items-center justify-between px-2 py-1">
                                     <div className="text-sm font-semibold">
                         Recipient Address
                                     </div>
@@ -427,7 +427,7 @@ export const SignTransactionModal: FC = () => {
                         }
                         case TransferNFTContent.RecipientAddress: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="flex items-center justify-between gap-12 px-2 py-1">
                                     <div className="text-sm font-semibold">
                         Recipient Address
                                     </div>

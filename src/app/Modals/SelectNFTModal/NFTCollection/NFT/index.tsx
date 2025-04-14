@@ -1,5 +1,4 @@
 import { Card, CardContent, Image, ExtendedButton, Spacer } from "@/components"
-import { TraitDropdown } from "./TraitDropdown"
 import React, { FC } from "react"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -29,7 +28,7 @@ export const NFT: FC<NFTProps> = ({ nft }) => {
                     <div className="flex gap-2 flex-col">
                         <div className="text-sm">{nft.name}</div>
                         <div className="flex gap-2">
-                            <TraitDropdown traits={nft.traits} />
+                            {/* <TraitDropdown traits={nft.traits} /> */}
                             <ExtendedButton variant="outline" className="w-full">
                   View
                             </ExtendedButton>

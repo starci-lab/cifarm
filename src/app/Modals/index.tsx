@@ -11,7 +11,7 @@ import { MintModal } from "./MintModal"
 import { MintAmountModal } from "./MintAmountModal"
 import { SelectTokenModal } from "./SelectTokenModal"
 import { NFTModal } from "./NFTModal"
-import { TokenModal } from "./TokenModal"
+import { TransferTokenModal } from "./TransferTokenModal"
 import { SelectNFTModal } from "./SelectNFTModal"
 import { DownloadModal } from "./DownloadModal"
 import { InfoModal } from "./InfoModal"
@@ -25,6 +25,7 @@ import { SettingsModal } from "./SettingsModal"
 import { SellModal } from "./SellModal"
 import { UpgradeModal } from "./UpgradeModal"
 import { DailyModal } from "./DailyModal"
+import { TransferNFTModal } from "./TransferNFTModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -42,7 +43,8 @@ const Modals : FC = () => {
             <MintModal />
             <SelectTokenModal />
             <NFTModal />
-            <TokenModal />
+            <TransferTokenModal />
+            <TransferNFTModal />
             <SelectNFTModal />
             <DownloadModal />
             <DownloadingModal />

@@ -1,6 +1,7 @@
 import { Button, ButtonProps } from "@/components"
 import React, { useEffect, useRef } from "react"
 import { Loader2 } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export interface ExtendedButtonProps extends ButtonProps {
   isLoading?: boolean;
@@ -58,7 +59,7 @@ export const ExtendedButton = ({
     }, [onPress])
 
     return (
-        <Button ref={ref} {...props} disabled={isLoading || props.disabled}>
+        <Button ref={ref} {...props} disabled={isLoading || props.disabled} className={cn(props.className)}>
             {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
             {children}
         </Button>

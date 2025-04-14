@@ -43,6 +43,8 @@ export interface SessionState {
   collectionKey: string;
   // selected nft address
   nftAddress: string;
+  // selected token key
+  tokenKey: string;
   // placed item id
   placedItem?: PlacedItemSchema;
   inventories: Array<InventorySchema>;
@@ -89,6 +91,7 @@ const initialState: SessionState = {
     nftCollectionsSwrs: {},
     collectionKey: "",
     nftAddress: "",
+    tokenKey: "",
     inventories: [],
     placedItems: [],
     playerContext: PlayerContext.Home,
@@ -119,6 +122,9 @@ export const sessionSlice = createSlice({
             const token = state.tokens[id]
             if (!token) throw new Error("Token not found")
             token.enabled = enabled
+        },
+        setTokenKey: (state, action: PayloadAction<string>) => {
+            state.tokenKey = action.payload
         },
         setRetries: (state, action: PayloadAction<number>) => {
             state.retries = action.payload
@@ -197,6 +203,7 @@ export const {
     switchToken,
     importTokens,
     setRetries,
+    setTokenKey,
     setLoaded,
     setAuthenticated,
     setBalanceSwr,

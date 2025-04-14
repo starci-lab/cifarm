@@ -1,12 +1,11 @@
 "use client"
 import { TokenInfo } from "@/modules/blockchain"
 import { WithKey } from "@/modules/common"
-import { setTokenModal, useAppDispatch, useAppSelector, WithEnabled } from "@/redux"
+import { setTokenKey, useAppDispatch, useAppSelector, WithEnabled } from "@/redux"
 import { Image, PressableCard } from "@/components"
 import React, { FC } from "react"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { TOKEN_DISCLOSURE } from "@/app/constants"
-import { useDisclosure } from "react-use-disclosure"
+import { useRouterWithSearchParams } from "@/hooks"
+import { pathConstants } from "@/constants"
 
 export interface TokenProps {
   token: WithKey<WithEnabled<TokenInfo>>;
@@ -17,18 +16,15 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
         (state) => state.sessionReducer.balanceSwrs
     )
     const balanceSwr = balanceSwrs[token.key]
-    const { open } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(TOKEN_DISCLOSURE)
+    const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
     return (
         <PressableCard
             className="flex justify-between items-center p-3 rounded-none"
             showBorder={false}
             onClick={() => {
-                dispatch(setTokenModal({
-                    tokenKey: token.key,
-                }))
-                open()
+                dispatch(setTokenKey(token.key))
+                router.push(pathConstants.token)
             }}
         >
             <div className="flex justify-between items-center w-full">

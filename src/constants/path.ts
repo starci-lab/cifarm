@@ -16,4 +16,5 @@ export const pathConstants = {
     transfer: "/transfer",
     collections: "/collections",
     nft: "/nft",
+    token: "/token",
 }

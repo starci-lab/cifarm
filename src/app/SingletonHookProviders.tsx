@@ -60,12 +60,13 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             SHOP_DISCLOSURE: useDisclosure(),
             INVENTORY_DISCLOSURE: useDisclosure(),
             ROADSIDE_STAND_DISCLOSURE: useDisclosure(),
+            TRANSFER_TOKEN_DISCLOSURE: useDisclosure(),
+            TRANSFER_NFT_DISCLOSURE: useDisclosure(),
             SELECT_INVENTORY_DISCLOSURE: useDisclosure(),
             SETTINGS_DISCLOSURE: useDisclosure(),
             UPGRADE_DISCLOSURE: useDisclosure(),
             SELL_DISCLOSURE: useDisclosure(),
             DAILY_DISCLOSURE: useDisclosure(),
-
             // Using new constants with GraphQL mutations
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
