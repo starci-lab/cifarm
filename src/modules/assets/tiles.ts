@@ -24,13 +24,13 @@ export const assetTileMap: Record<TileId, AssetTileData> = {
                     type: AssetMapType.Texture,
                     texture: {
                         assetKey: "tiles-basic-tile",
-                        assetUrl: `${PREFIX}/basic-tile.png`,
+                        assetUrl: `${PREFIX}/basic-tile/basic-tile.png`,
                     },
                 },
             },
         },
         base: {
-            assetUrl: `${PREFIX}/basic-tile.png`,
+            assetUrl: `${PREFIX}/basic-tile/basic-tile.png`,
             assetKey: "tiles-basic-tile",
         },
     },

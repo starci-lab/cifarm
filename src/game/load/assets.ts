@@ -165,7 +165,13 @@ export const loadFruitAssets = async (scene: Scene) => {
                 if (!stageData.mapData.texture) {
                     throw new Error("Texture config is undefined")
                 }
-                promises.push(loadTexture(scene, stageData.mapData.texture))
+                console.log("stageData.mapData.texture", stageData.mapData.texture)
+                try {
+                    await loadTexture(scene, stageData.mapData.texture)
+                } catch (error) {
+                    console.error("Error loading texture", error)
+                }
+                
                 break
             }
             }

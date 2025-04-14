@@ -31,16 +31,18 @@ export const Token: FC<TokenProps> = ({ token }: TokenProps) => {
                 open()
             }}
         >
-            <div className="flex gap-2 items-center">
-                <Image src={token.imageUrl} alt={token.name} className="w-8 h-8" />
-                <div>
-                    <div className="text-sm">{token.name}</div>
-                    <div className="text-xs text-muted-foreground !text-start">
-                        {token.symbol}
+            <div className="flex justify-between items-center w-full">
+                <div className="flex gap-2 items-center">
+                    <Image src={token.imageUrl} alt={token.name} className="w-8 h-8" />
+                    <div>
+                        <div className="text-sm">{token.name}</div>
+                        <div className="text-xs text-muted-foreground !text-start">
+                            {token.symbol}
+                        </div>
                     </div>
                 </div>
+                <div className="text-sm">{balanceSwr.data}</div>
             </div>
-            <div className="text-sm">{balanceSwr.data}</div>
         </PressableCard>
     )
 }

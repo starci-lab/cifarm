@@ -29,13 +29,15 @@ body {
 @layer base {
   :root, .light {
 
-    --background: 0 0% 100%;
+    --background: 43 54% 95%;
 
-    --foreground: 0 0% 3.9%;
+    --foreground: 39 17% 26%;
 
     --card: 16 66% 92%;
 
     --card-foreground: 0 0% 3.9%;
+
+    --card-hover: 104 39% 88%;
 
     --dialog: 42 54% 80%;
 
@@ -65,7 +67,7 @@ body {
 
     --destructive-foreground: 0 0% 98%;
 
-    --border: 38 40% 73%;
+    --border: 0 0 100%;
 
     --input: 0 0% 89.8%;
 

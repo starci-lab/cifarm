@@ -48,7 +48,7 @@ export const loadTexture = async (
     try {
         const { assetKey, useExisting, packageId } = textureData
         if (!useExisting) {
-            let loaded = true
+            let loaded = true 
             if (packageId) {
                 const packageLoaded = !!(await sessionDb.packages
                     .filter((_package) => _package.packageId === packageId)

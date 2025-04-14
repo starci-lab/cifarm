@@ -39,14 +39,6 @@ const plantStateAssets: Partial<Record<PlantCurrentState, StateAssetData>> = {
             },
         },
     },
-    [PlantCurrentState.FullyMatured]: {
-        phaser: {
-            base: { 
-                assetKey: "fully-mature",
-                assetUrl: "states/is-ready.png",
-            },
-        },
-    },
 }
 
 // Animal State Assets
@@ -67,14 +59,6 @@ const animalStateAssets: Partial<Record<AnimalCurrentState, StateAssetData>> = {
             },
         },
     },
-    [AnimalCurrentState.Yield]: {
-        phaser: {
-            base: { 
-                assetKey: "animal-yield",
-                assetUrl: "states/animal-yield.png",
-            },
-        },
-    },
 }
 
 // Fruit State Assets
@@ -92,14 +76,6 @@ const fruitStateAssets: Partial<Record<FruitCurrentState, StateAssetData>> = {
             base: { 
                 assetKey: "is-buggy",
                 assetUrl: "states/is-buggy.png",
-            },
-        },
-    },
-    [FruitCurrentState.FullyMatured]: {
-        phaser: {
-            base: { 
-                assetKey: "fruit-mature",
-                assetUrl: "states/fruit-mature.png",
             },
         },
     },
