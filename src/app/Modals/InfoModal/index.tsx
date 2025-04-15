@@ -12,11 +12,6 @@ import {
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
 import { ModalHeader } from "@/components"
-import {
-    ExternalEventEmitter,
-    ExternalEventName,
-    ModalName,
-} from "@/game/events"
 import { useAppSelector } from "@/redux"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
@@ -26,6 +21,8 @@ import { FruitContent } from "./FruitContent"
 import { TileContent } from "./TileContent"
 import { AnimalContent } from "./AnimalContent"
 import { BuildingContent } from "./BuildingContent"
+import { getPlacedItemTypeName } from "./utils"
+
 export const InfoModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(INFO_DISCLOSURE)
@@ -61,6 +58,7 @@ export const InfoModal: FC = () => {
     const renderContent = () => {
         switch (placedItemType.type) {
         case PlacedItemType.Fruit: {
+            console.log(mapAssetData)
             return <FruitContent placedItem={placedItem} />
         }
         case PlacedItemType.Tile: {
@@ -81,20 +79,13 @@ export const InfoModal: FC = () => {
     return (
         <Dialog
             open={isOpen}
-            onOpenChange={(value) => {
-                toggle(value)
-                if (!value) {
-                    ExternalEventEmitter.emit(ExternalEventName.CloseModal, {
-                        modalName: ModalName.Info,
-                    })
-                }
-            }}
+            onOpenChange={toggle}
         >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
                         <ModalHeader
-                            title={placedItemTypeAssetMap[placedItemType.displayId].name}
+                            title={getPlacedItemTypeName(placedItemType.id, swr.data?.data)}
                         />
                     </DialogTitle>
                 </DialogHeader>

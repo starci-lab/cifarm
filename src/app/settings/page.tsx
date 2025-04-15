@@ -1,9 +1,17 @@
 "use client"
 
 import { useDisclosure } from "react-use-disclosure"
-import { Card, CardContent, CardHeader, Container, ExtendedButton, Header, Spacer, Title } from "@/components"
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    Container,
+    ExtendedButton,
+    Header,
+    Spacer,
+    Title,
+} from "@/components"
 import React, { FC } from "react"
-import { Theme } from "./Theme"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     MNEMONIC_DISCLOSURE,
@@ -24,11 +32,12 @@ const Page: FC = () => {
             <div className="h-full">
                 <Header title="Settings" description="Manage your settings." />
                 <Spacer y={6} />
-                <Theme />
-                <Spacer y={6} />
                 <Card>
                     <CardHeader>
-                        <Title title="Security" tooltipString="Manage your security settings." />
+                        <Title
+                            title="Security"
+                            tooltipString="Manage your security settings."
+                        />
                     </CardHeader>
                     <CardContent>
                         <div className="flex justify-between items-center">
@@ -38,7 +47,7 @@ const Page: FC = () => {
                                     dispatch(
                                         setWarningModal({
                                             message:
-                    "Are you sure you want to display your mnemonic phrase? This phrase grants full access to your account or wallet. If exposed, anyone can control your assets and data. Ensure you're in a secure environment and protect it from unauthorized access. Proceed with caution.",
+                        "Are you sure you want to display your mnemonic phrase? This phrase grants full access to your account or wallet. If exposed, anyone can control your assets and data. Ensure you're in a secure environment and protect it from unauthorized access. Proceed with caution.",
                                             nextModalToken: MNEMONIC_DISCLOSURE,
                                         })
                                     )
@@ -46,7 +55,7 @@ const Page: FC = () => {
                                 }}
                                 variant="outline"
                             >
-            Show
+                Show
                             </ExtendedButton>
                         </div>
                         <Spacer y={4} />
@@ -57,7 +66,7 @@ const Page: FC = () => {
                                     dispatch(
                                         setWarningModal({
                                             message:
-                    "Are you sure you want to reveal your private key? This key grants full control over your account or wallet. If exposed, anyone can access your assets and make transactions. Keep it secure and private at all times. Proceed with extreme caution.",
+                        "Are you sure you want to reveal your private key? This key grants full control over your account or wallet. If exposed, anyone can access your assets and make transactions. Keep it secure and private at all times. Proceed with extreme caution.",
                                             nextModalToken: PRIVATE_KEY_DISCLOSURE,
                                         })
                                     )
@@ -65,7 +74,7 @@ const Page: FC = () => {
                                 }}
                                 variant="outline"
                             >
-            Show
+                Show
                             </ExtendedButton>
                         </div>
                     </CardContent>
@@ -73,12 +82,14 @@ const Page: FC = () => {
                 <Spacer y={6} />
                 <Card className="border-destructive">
                     <CardHeader>
-                        <Title classNames={
-                            {
+                        <Title
+                            classNames={{
                                 title: "text-destructive",
                                 tooltip: "text-destructive",
-                            }
-                        } title="Danger zone" tooltipString="Dangerous actions are irreversible. Proceed with extreme caution." />
+                            }}
+                            title="Danger zone"
+                            tooltipString="Dangerous actions are irreversible. Proceed with extreme caution."
+                        />
                     </CardHeader>
                     <CardContent>
                         <ExtendedButton
@@ -87,7 +98,7 @@ const Page: FC = () => {
                                 dispatch(
                                     setWarningModal({
                                         message:
-                    "Are you sure you want to sign out? This will log you out of your current session and require you to sign in again via private key/mnemonic.",
+                      "Are you sure you want to sign out? This will log you out of your current session and require you to sign in again via private key/mnemonic.",
                                         callback: async () => {
                                             await sessionDb.delete()
                                             router.replace("/")
@@ -97,7 +108,7 @@ const Page: FC = () => {
                                 openWarningModal()
                             }}
                         >
-                                Sign out
+              Sign out
                         </ExtendedButton>
                     </CardContent>
                 </Card>

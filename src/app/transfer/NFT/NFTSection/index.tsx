@@ -7,6 +7,7 @@ import React, { FC } from "react"
 import { NFTData } from "@/modules/blockchain"
 import { PlusIcon } from "lucide-react"
 import { useDisclosure } from "react-use-disclosure"
+import { useNFTImage } from "@/app/utils"
 
 export const NFTSection: FC = () => {
     const formik =
@@ -34,6 +35,9 @@ export const NFTSection: FC = () => {
         return data
     }
     const data = getData()
+    if (!data) return null
+    const image = useNFTImage(formik.values.collectionKey, data)
+    
     return (
         <div>
             <Title
@@ -50,7 +54,7 @@ export const NFTSection: FC = () => {
             }}>
                 <div className="flex gap-1.5">
                     <Image
-                        src={data.imageUrl}
+                        src={image || ""}
                         className="w-12 h-12 object-contain"
                     />
                     <div>
@@ -68,7 +72,8 @@ export const NFTSection: FC = () => {
                 <div className="h-20 grid place-items-center w-full">
                     <PlusIcon className="w-5 h-5" />
                 </div>
-            </PressableCard>}
+            </PressableCard>
+            }
         </div>
     )
 }

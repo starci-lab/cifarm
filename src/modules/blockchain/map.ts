@@ -1,5 +1,6 @@
 import { envConfig } from "@/env"
 import { ChainKey, Network } from "./common"
+import { PlacedItemTypeId } from "../entities"
 
 export enum DefaultToken {
     Native = "native",
@@ -30,11 +31,13 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     name: "DragonFruit",
                     imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
                     collectionAddress: "FkJJyaMCMmNHGWQkBkrVBo9Trz8o9ZffKBcpyC3SdZx4",
+                    placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/solana.svg",
                     collectionAddress: "",
+                    placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 }
             },
             [Network.Mainnet]: {
@@ -42,11 +45,13 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     name: "DragonFruit",
                     imageUrl: "/solana.svg",
                     collectionAddress: "",
+                    placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/solana.svg",
                     collectionAddress: "",
+                    placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 }
             }
         },
@@ -158,11 +163,13 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     name: "DragonFruit",
                     imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
                     collectionAddress: "",
+                    placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/solana.svg",
                     collectionAddress: "",
+                    placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 },
             },
             [Network.Testnet]: {
@@ -170,11 +177,13 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     name: "DragonFruit",
                     imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
                     collectionAddress: "",
+                    placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/solana.svg",
                     collectionAddress: "",
+                    placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 }
             }
         }
@@ -219,6 +228,8 @@ export interface CollectionInfo {
     name: string
     imageUrl: string
     collectionAddress: string
+    // to determine which fruit is in the collection
+    placedItemTypeId: PlacedItemTypeId
 }
 
 export interface NFTInfo {

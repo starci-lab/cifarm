@@ -385,6 +385,11 @@ export class InputTilemap extends ItemTilemap {
                 ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
                     placedItem: data.object.currentPlacedItem,
                 })
+                ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
+                    ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                        modalName: ModalName.Info,
+                    })
+                })
                 ExternalEventEmitter.emit(
                     ExternalEventName.RequestForceSyncPlacedItems,
                     {

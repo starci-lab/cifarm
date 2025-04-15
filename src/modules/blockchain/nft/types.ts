@@ -8,8 +8,9 @@ export enum AttributeName {
     Stars = "stars",
     Rarity = "rarity",
     Type = "type",
+    Data = "data",
     GrowthAcceleration = "growthAcceleration",
-    QualityYieldChance = "qualityYield",
+    QualityYield = "qualityYield",
     DiseaseResistance = "diseaseResistance",
     HarvestYieldBonus = "harvestYieldBonus"
 }

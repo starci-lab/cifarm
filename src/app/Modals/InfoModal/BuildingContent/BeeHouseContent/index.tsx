@@ -8,8 +8,8 @@ import { sessionDb } from "@/modules/dexie"
 import { cn } from "@/lib/utils"
 import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge } from "@/components"
 import {
-    productAssetMap,
-} from "@/game"
+    assetProductMap,
+} from "@/modules/assets"
 import { formatTime } from "@/modules/common"
 import { Stats } from "../../Stats"
 interface BeeHouseContentProps {
@@ -77,7 +77,7 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
         let key: string | undefined
         switch (placedItem.beeHouseInfo?.currentState) {
         case BeeHouseCurrentState.Yield:
-            key = productAssetMap[product.displayId].base.textureConfig.key
+            key = assetProductMap[product.displayId].base.assetKey
             break
         }
         if (!key) {
@@ -152,7 +152,6 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
                     )
                 }
                 <Stats
-                    harvestCount={placedItem.beeHouseInfo?.harvestCount}
                     growthAcceleration={placedItem.beeHouseInfo?.growthAcceleration}
                     qualityYield={placedItem.beeHouseInfo?.qualityYield}
                     diseaseResistance={placedItem.beeHouseInfo?.diseaseResistance}

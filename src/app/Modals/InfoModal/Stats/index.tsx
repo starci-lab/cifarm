@@ -1,28 +1,21 @@
 import { StatsAttributeName, statsAttributeNameMap } from "@/modules/blockchain"
 import React, { FC } from "react"
 import { List } from "@/components"
-import { HARVEST_COUNT } from "../types"
 
 interface StatsProps {
-    harvestCount?: number
     growthAcceleration?: number
     qualityYield?: number
     diseaseResistance?: number
     harvestYieldBonus?: number
 }
 
-export const Stats: FC<StatsProps> = ({ harvestCount, growthAcceleration, qualityYield, diseaseResistance, harvestYieldBonus }) => {
+export const Stats: FC<StatsProps> = ({ growthAcceleration, qualityYield, diseaseResistance, harvestYieldBonus }) => {
     return <List
         enableScroll={false}
         items={
-            [HARVEST_COUNT, ...Object.values(StatsAttributeName)]
+            [...Object.values(StatsAttributeName)]
         } contentCallback={(name) => {
             switch (name) {
-            case HARVEST_COUNT:
-                return <div className="flex justify-between px-3 py-2">
-                    <div className="text-muted-foreground text-sm">Harvests</div>
-                    <div className="text-sm">{harvestCount}</div>
-                </div>
             case StatsAttributeName.GrowthAcceleration:
                 return <div className="flex justify-between px-3 py-2">
                     <div className="text-muted-foreground text-sm">{statsAttributeNameMap[name].name}</div>

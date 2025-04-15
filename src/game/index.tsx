@@ -5,12 +5,13 @@ import { CONTAINER_ID } from "./constants"
 import { useEffects } from "./hooks"
 import { ExternalEventEmitter, SceneEventEmitter } from "./events"
 import { ReactUI } from "./react-ui"
-
 export * from "./events"
+import { useAppDispatch, setShowGameUI } from "@/redux"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
-
+    const dispatch = useAppDispatch()
+    
     //ensure all swr queries are done
     useLayoutEffect(() => {
         if (game.current === null) {
@@ -24,6 +25,7 @@ export const Game: FC = () => {
                 game.current = null
                 gameState.data = undefined
             }
+            dispatch(setShowGameUI(false))
         }
     }, [])
     

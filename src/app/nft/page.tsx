@@ -90,6 +90,10 @@ const Page: FC = () => {
     ReturnType<typeof useDisclosure>
   >(TRANSFER_NFT_DISCLOSURE)
 
+    const data = nft?.attributes.find(
+        (attribute) => attribute.key === AttributeName.Data
+    )?.value
+    console.log(data)
     if (!nft) {
     // return skeleton
         return null
@@ -104,7 +108,7 @@ const Page: FC = () => {
                 <Spacer y={6} />
                 <div className="border rounded-md p-2 max-w-[300px]">
                     <Image
-                        src={nft.imageUrl}
+                        src={""}
                         className="w-full aspect-square object-contain"
                     />
                 </div>

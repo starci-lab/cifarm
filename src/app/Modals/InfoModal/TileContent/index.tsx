@@ -9,11 +9,11 @@ import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { Spacer, ExtendedBadge, Image } from "@/components"
 import {
-    productAssetMap,
-    cropAssetMap,
-    flowerAssetMap,
-    stateAssetMap,
-} from "@/game"
+    assetProductMap,
+    assetCropMap,
+    assetFlowerMap,
+    assetStateMap,
+} from "@/modules/assets"
 import { sessionDb } from "@/modules/dexie"
 import useSWR from "swr"
 import { cn } from "@/lib/utils"
@@ -57,11 +57,11 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                 throw new Error("Product not found")
             }
             return {
-                key: productAssetMap[product.displayId].base.textureConfig.key,
+                key: assetProductMap[product.displayId].base.assetKey,
                 timeElapsed:
             crop.growthStageDuration -
             placedItem.plantInfo?.currentStageTimeElapsed,
-                name: cropAssetMap[crop.displayId].name,
+                name: assetCropMap[crop.displayId].name,
             }
         }
         case PlantType.Flower: {
@@ -78,11 +78,11 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                 throw new Error("Product not found")
             }
             return {
-                key: productAssetMap[product.displayId].base.textureConfig.key,
+                key: assetProductMap[product.displayId].base.assetKey,
                 timeElapsed:
             flower.growthStageDuration -
             placedItem.plantInfo?.currentStageTimeElapsed,
-                name: flowerAssetMap[flower.displayId].name,
+                name: assetFlowerMap[flower.displayId].name,
             }
         }
         default: {
@@ -112,8 +112,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         switch (placedItem.plantInfo?.currentState) {
         case PlantCurrentState.NeedWater: {
             key =
-          stateAssetMap.plant[PlantCurrentState.NeedWater]?.base.textureConfig
-              .key
+          assetStateMap.plant[PlantCurrentState.NeedWater]?.phaser.base.assetKey
             break
         }
         case PlantCurrentState.FullyMatured: {
@@ -122,14 +121,12 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         }
         case PlantCurrentState.IsInfested: {
             key =
-          stateAssetMap.plant[PlantCurrentState.IsInfested]?.base.textureConfig
-              .key
+          assetStateMap.plant[PlantCurrentState.IsInfested]?.phaser.base.assetKey
             break
         }
         case PlantCurrentState.IsWeedy: {
             key =
-          stateAssetMap.plant[PlantCurrentState.IsWeedy]?.base.textureConfig
-              .key
+            assetStateMap.plant[PlantCurrentState.IsWeedy]?.phaser.base.assetKey
             break
         }
         }
@@ -252,7 +249,6 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                     </>
                 )}
                 <Stats
-                    harvestCount={placedItem.plantInfo?.harvestCount}
                     growthAcceleration={placedItem.plantInfo?.growthAcceleration}
                     qualityYield={placedItem.plantInfo?.qualityYield}
                     diseaseResistance={placedItem.plantInfo?.diseaseResistance}

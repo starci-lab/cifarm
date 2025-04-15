@@ -6,9 +6,9 @@ import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge } from "@/components"
 import {
-    productAssetMap,
-    stateAssetMap,
-} from "@/game"
+    assetProductMap,
+    assetStateMap,
+} from "@/modules/assets"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
 import { Stats } from "../Stats"
@@ -76,16 +76,14 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
         switch (placedItem.fruitInfo?.currentState) {
         case FruitCurrentState.NeedFertilizer:
             key =
-          stateAssetMap.fruit[FruitCurrentState.NeedFertilizer]?.base
-              .textureConfig.key
+          assetStateMap.fruit[FruitCurrentState.NeedFertilizer]?.phaser.base.assetKey
             break
         case FruitCurrentState.IsBuggy:
             key =
-          stateAssetMap.fruit[FruitCurrentState.IsBuggy]?.base.textureConfig
-              .key
+          assetStateMap.fruit[FruitCurrentState.IsBuggy]?.phaser.base.assetKey
             break
         case FruitCurrentState.FullyMatured:
-            key = productAssetMap[product.displayId].base.textureConfig.key
+            key = assetProductMap[product.displayId].base.assetKey
             break
         }
         if (!key) {
@@ -193,7 +191,6 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                     )
                 }
                 <Stats
-                    harvestCount={placedItem.fruitInfo?.harvestCount}
                     growthAcceleration={placedItem.fruitInfo?.growthAcceleration}
                     qualityYield={placedItem.fruitInfo?.qualityYield}
                     diseaseResistance={placedItem.fruitInfo?.diseaseResistance}

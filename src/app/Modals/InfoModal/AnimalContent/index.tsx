@@ -5,14 +5,11 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge } from "@/components"
-import {
-    productAssetMap,
-    stateAssetMap,
-} from "@/game"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
 import { cn } from "@/lib/utils"
 import { Stats } from "../Stats"
+import { assetStateMap, assetProductMap } from "@/modules/assets"
 
 interface AnimalContentProps {
   placedItem: PlacedItemSchema;
@@ -74,16 +71,14 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
         switch (placedItem.animalInfo?.currentState) {
         case AnimalCurrentState.Hungry:
             key =
-          stateAssetMap.animal[AnimalCurrentState.Hungry]?.base
-              .textureConfig.key
+          assetStateMap.animal[AnimalCurrentState.Hungry]?.phaser.base.assetKey
             break
         case AnimalCurrentState.Sick:
             key =
-          stateAssetMap.animal[AnimalCurrentState.Sick]?.base.textureConfig
-              .key
+            assetStateMap.animal[AnimalCurrentState.Sick]?.phaser.base.assetKey
             break
         case AnimalCurrentState.Yield:
-            key = productAssetMap[product.displayId].base.textureConfig.key
+            key = assetProductMap[product.displayId].base.assetKey
             break
         }
         if (!key) {
@@ -191,7 +186,6 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                     )
                 }
                 <Stats
-                    harvestCount={placedItem.animalInfo?.harvestCount}
                     growthAcceleration={placedItem.animalInfo?.growthAcceleration}
                     qualityYield={placedItem.animalInfo?.qualityYield}
                     diseaseResistance={placedItem.animalInfo?.diseaseResistance}
