@@ -6,7 +6,6 @@ import { defaultNetwork } from "../default"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { Attribute, fetchAssetsByCollection, mplCore } from "@metaplex-foundation/mpl-core"
 import { publicKey } from "@metaplex-foundation/umi"
-import axios from "axios"
 
 export interface GetCollectionParams {
   chainKey: ChainKey;
@@ -59,15 +58,8 @@ export const getSolanaCollection = async ({
     const promises: Array<Promise<void>> = []
     for (const asset of assets) {
         promises.push((async () => {
-            let metadata: MetaplexNFTMetadata | undefined
-            try {
-                const response = await axios.get<MetaplexNFTMetadata>(asset.uri)
-                metadata = response.data
-            } catch (ex) {
-                console.log("Error fetching NFT metadata:", ex)
-            }
             nfts.push({
-                name: metadata?.name ?? "",
+                name: asset.name,
                 nftAddress: asset.publicKey.toString(),
                 attributes: asset.attributes?.attributeList ?? [],
                 wrapped: asset.permanentFreezeDelegate?.frozen ?? false,

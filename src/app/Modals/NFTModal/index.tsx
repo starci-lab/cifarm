@@ -45,7 +45,7 @@ export const NFTModal: FC = () => {
                 </DialogHeader> 
                 <div>
                     <div className="border rounded-md p-2 w-fit">
-                        <Image src={nftData?.imageUrl ?? ""} alt={nftData?.name ?? ""} className="w-32 h-32 object-contain" />
+                        <Image src={""} alt={""} className="w-32 h-32 object-contain" />
                     </div>
                     <Spacer y={4} />
                     <div className="grid grid-cols-4 gap-2">

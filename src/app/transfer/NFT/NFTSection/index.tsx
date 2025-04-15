@@ -1,5 +1,5 @@
-import { SELECT_NFT_DISCLOSURE, TRANSFER_NFT_FORMIK } from "@/app/constants"
-import { useTransferNFTFormik } from "@/hooks"
+import { QUERY_STATIC_SWR_MUTATION, SELECT_NFT_DISCLOSURE, TRANSFER_NFT_FORMIK } from "@/app/constants"
+import { useGraphQLQueryStaticSwr, useTransferNFTFormik } from "@/hooks"
 import { Spacer, PressableCard, Title, Image } from "@/components"
 import { useSingletonHook2, useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
@@ -7,7 +7,7 @@ import React, { FC } from "react"
 import { NFTData } from "@/modules/blockchain"
 import { PlusIcon } from "lucide-react"
 import { useDisclosure } from "react-use-disclosure"
-import { useNFTImage } from "@/app/utils"
+import { getNFTImage } from "@/app/utils"
 
 export const NFTSection: FC = () => {
     const formik =
@@ -35,8 +35,11 @@ export const NFTSection: FC = () => {
         return data
     }
     const data = getData()
-    if (!data) return null
-    const image = useNFTImage(formik.values.collectionKey, data)
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+        QUERY_STATIC_SWR_MUTATION
+    )
+    if (!data || !staticSwr.data) return null
+    const image = getNFTImage({ collectionKey: formik.values.collectionKey, nft: data, collections, staticData: staticSwr.data.data })
     
     return (
         <div>

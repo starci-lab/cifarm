@@ -12,7 +12,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { DOWNLOADING_DISCLOSURE } from "@/app/constants"
-import { fruitAssetMap, productAssetMap, TextureConfig } from "@/game"
+import { assetFruitMap, assetProductMap, AssetTextureData } from "@/modules/assets"
 import {
     addDownloadProgress,
     setTotalDownloadBytes,
@@ -40,34 +40,45 @@ export const DownloadingModal: FC = () => {
         if (!downloadPackageModal.packageId) return
         const handleEffect = async () => {
             try {
-                const textureConfigs: Array<TextureConfig> = []
-                const fruitTextureConfigs = Object.values(fruitAssetMap)
+                const textureDatas: Array<AssetTextureData> = []
+                const fruitTextureDatas = Object.values(assetFruitMap)
                     .flatMap((fruit) =>
-                        Object.values(fruit.map).map((stage) => {
-                            if (!stage.textureConfig) {
-                                throw new Error("Texture config is undefined")
+                        Object.values(fruit.phaser.map.stages).map((stage) => {
+                            if (!stage.mapData) {
+                                throw new Error("Texture data is undefined")
                             }
-                            return stage.textureConfig
+                            if (!stage.mapData.texture) {
+                                throw new Error("Texture data is undefined")
+                            }
+                            return stage.mapData.texture
                         })
                     )
                     .filter(
-                        (textureConfig) =>
-                            textureConfig.packageId === downloadPackageModal.packageId
+                        (textureData) =>
+                            textureData?.packageId === downloadPackageModal.packageId
                     )
-                textureConfigs.push(...fruitTextureConfigs)
-                const productTextureConfigs = Object.values(productAssetMap)
+                textureDatas.push(...fruitTextureDatas)
+                const productTextureDatas = Object.values(assetProductMap)
                     .flatMap((product) =>
-                        Object.values(product.base.textureConfig)
+                        Object.values(product.phaser.base).map((stage) => {
+                            if (!stage.mapData) {
+                                throw new Error("Texture data is undefined")
+                            }
+                            if (!stage.mapData.texture) {
+                                throw new Error("Texture data is undefined")
+                            }
+                            return stage.mapData.texture
+                        })
                     ).filter(
-                        (textureConfig) =>
-                            textureConfig.packageId === downloadPackageModal.packageId
-                        && !textureConfig.useExisting
+                        (textureData) =>
+                            textureData?.packageId === downloadPackageModal.packageId
+                        && !textureData?.useExisting
                     )
-                textureConfigs.push(...productTextureConfigs)
-                const bytesMap = await getBytes(textureConfigs)
+                textureDatas.push(...productTextureDatas)
+                const bytesMap = await getBytes(textureDatas)
                 dispatch(setTotalDownloadBytes(bytesMap))
-                for (const textureConfig of textureConfigs) {
-                    await downloadTexture(textureConfig, (key, data) => {
+                for (const textureData of textureDatas) {
+                    await downloadTexture(textureData, (key, data) => {
                         dispatch(addDownloadProgress({ key, data }))
                     })
                 }

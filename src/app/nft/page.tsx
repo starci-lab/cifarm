@@ -14,6 +14,7 @@ import {
     toast,
     useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation,
     useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
+    useGraphQLQueryStaticSwr,
     useTransferNFTFormik,
 } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
@@ -40,6 +41,7 @@ import {
     SIGN_TRANSACTION_DISCLOSURE,
     TRANSFER_NFT_FORMIK,
     TRANSFER_NFT_DISCLOSURE,
+    QUERY_STATIC_SWR_MUTATION,
 } from "../constants"
 import { WrappedBadge } from "@/components"
 import {
@@ -50,6 +52,7 @@ import {
     statsAttributeNameMap,
 } from "@/modules/blockchain"
 import { useDisclosure } from "react-use-disclosure"
+import { getNFTImage } from "../utils"
 
 const Page: FC = () => {
     const collectionSwrs = useAppSelector(
@@ -90,14 +93,18 @@ const Page: FC = () => {
     ReturnType<typeof useDisclosure>
   >(TRANSFER_NFT_DISCLOSURE)
 
-    const data = nft?.attributes.find(
-        (attribute) => attribute.key === AttributeName.Data
-    )?.value
-    console.log(data)
-    if (!nft) {
+    // const data = nft?.attributes.find(
+    //     (attribute) => attribute.key === AttributeName.Data
+    // )?.value
+
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+        QUERY_STATIC_SWR_MUTATION
+    )
+    if (!nft || !staticSwr.data) {
     // return skeleton
         return null
     }
+    const nftImage = getNFTImage({ collectionKey, nft, collections, staticData: staticSwr.data.data })
     const rarity = nft.attributes.find(
         (attribute) => attribute.key === AttributeName.Rarity
     )?.value as NFTRarityEnum
@@ -108,7 +115,7 @@ const Page: FC = () => {
                 <Spacer y={6} />
                 <div className="border rounded-md p-2 max-w-[300px]">
                     <Image
-                        src={""}
+                        src={nftImage}
                         className="w-full aspect-square object-contain"
                     />
                 </div>
@@ -216,7 +223,7 @@ const Page: FC = () => {
                         name="View"
                     />
                 </div>
-                <Spacer y={12} />
+                <Spacer y={6} />
                 <Title
                     title="Stats"
                     tooltipString="Stats are the attributes of the NFT. They are used to determine the rarity of the NFT."

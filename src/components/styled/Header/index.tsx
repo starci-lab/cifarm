@@ -23,10 +23,15 @@ export const Header = ({ title, description }: HeaderProps) => {
                 </Button>
                 <div className="text-2xl font-bold">{title}</div>
             </div>
-            <Spacer y={4} />
-            { description &&  <div className="text-xs text-muted-foreground">
-                {description}
-            </div>}  
+            
+            { description &&  
+                <>
+                    <Spacer y={4} />
+                    <div className="text-xs text-muted-foreground">
+                        {description}
+                    </div>
+                </>
+            }  
         </div>
     )
 }
