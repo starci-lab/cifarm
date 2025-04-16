@@ -14,7 +14,7 @@ export const assetFontMap: Record<FontId, AssetFontData> = {
         phaser: {
             base: {
                 assetKey: "font-rowdies",
-                assetUrl: "fonts/Rowdies.ttf",
+                assetUrl: "fonts/rowdies.ttf",
             },
         },
     },
