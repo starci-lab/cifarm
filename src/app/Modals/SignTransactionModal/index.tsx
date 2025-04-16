@@ -1,5 +1,6 @@
 "use client"
 import {
+    GRAPHQL_QUERY_STATIC_SWR,
     HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION,
     HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION,
     SEND_UMI_SERIALIZED_TX_SWR_MUTATION,
@@ -22,6 +23,7 @@ import {
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
 import {
+    useGraphQLQueryStaticSwr,
     useHoneycombSendTransactionsSwrMutation,
     useHoneycombSendTransactionSwrMutation,
     useSendUmiSerializedTxSwrMutation,
@@ -40,6 +42,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
+import { getNFTImage } from "@/app/utils"
 
 interface ProviderInfo {
   name: string;
@@ -71,6 +74,10 @@ export const SignTransactionModal: FC = () => {
     const { swrMutation: transferNFTSwrMutation } = useSingletonHook<
     ReturnType<typeof useTransferNFTSwrMutation>
   >(TRANSFER_NFT_SWR_MUTATION)
+
+    const { swr: swrStatic } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+        GRAPHQL_QUERY_STATIC_SWR
+    )
 
     const type = useAppSelector(
         (state) => state.modalReducer.signTransactionModal.type
@@ -132,6 +139,7 @@ export const SignTransactionModal: FC = () => {
     const collections = useAppSelector(
         (state) => state.sessionReducer.nftCollections
     )
+    
 
     const { trigger, isMutating } = useSWRMutation(
         "SIGN_TRANSACTION",
@@ -417,7 +425,16 @@ export const SignTransactionModal: FC = () => {
                                     <div className="text-sm font-semibold">NFT</div>
                                     <div className="flex gap-2 items-center">
                                         <Image
-                                            src={nft.imageUrl}
+                                            src={(() => {
+                                                if (!swrStatic.data?.data) return ""
+                                                const imageUrl = getNFTImage({
+                                                    collectionKey,
+                                                    nft,
+                                                    collections,
+                                                    staticData: swrStatic.data.data,
+                                                })
+                                                return imageUrl
+                                            })()}
                                             className="rounded-none w-5 h-5 object-contain"
                                         />
                                         <div className="text-sm">{nft.name}</div>

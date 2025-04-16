@@ -12,6 +12,7 @@ export const CollectionComponent = ({
     collectionKey,
 }: CollectionComponentProps) => {
     const dispatch = useAppDispatch()
+    
     const { swr } = useNFTCollectionsSwr({
         collectionKey,
     })

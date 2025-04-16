@@ -17,7 +17,7 @@ import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
 import { useAppSelector } from "@/redux"
 import { UpgradeBuildingMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { getUpgradePrice } from "@/modules/entities"
-import { assetIconMap, AssetIcon } from "@/modules/assets"
+import { AssetIconId, assetIconMap } from "@/modules/assets"
 
 export const UpgradeModal: FC = () => {
     const { toggle, isOpen, close } =

@@ -20,10 +20,9 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDisclosure } from "react-use-disclosure"
-import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
 
 export const ProfileModal: FC = () => {
-    const { isOpen, toggle } =
+    const { toggle, isOpen, close } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(PROFILE_DISCLOSURE)
     const { swr } =
     useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
@@ -35,14 +34,7 @@ export const ProfileModal: FC = () => {
     const router = useRouterWithSearchParams()
 
     return (
-        <Dialog open={isOpen} onOpenChange={(value) => {
-            toggle(value)
-            if (!value) {
-                ExternalEventEmitter.emit(ExternalEventName.CloseExternalModal, {
-                    modalName: ModalName.Profile,
-                })
-            }
-        }}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
@@ -125,7 +117,7 @@ export const ProfileModal: FC = () => {
                         className="w-full" 
                         variant="destructive" 
                         onClick={() => {
-                            toggle(false)
+                            close()
                             router.push(pathConstants.home)
                         }}
                     >

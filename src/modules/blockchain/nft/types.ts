@@ -7,7 +7,6 @@ export enum NFTRarityEnum {
 export enum AttributeName {
     Stars = "stars",
     Rarity = "rarity",
-    Type = "type",
     Data = "data",
     GrowthAcceleration = "growthAcceleration",
     QualityYield = "qualityYield",

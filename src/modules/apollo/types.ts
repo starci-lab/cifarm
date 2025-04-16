@@ -3,10 +3,16 @@ export interface IPaginatedResponse<TSchema> {
     data: Array<TSchema>
 }
 
+export interface QuerySingleRequest {
+    id?: string
+}
+
 export interface QueryManyRequest {
     limit?: number
     offset?: number
 }
+
+
 
 export interface QueryVariables<TRequest> {
     request: TRequest

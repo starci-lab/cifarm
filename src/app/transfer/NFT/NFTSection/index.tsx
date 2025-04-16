@@ -15,7 +15,7 @@ export const NFTSection: FC = () => {
         TRANSFER_NFT_FORMIK
     )       
     const collectionSwrs = useAppSelector(
-        (state) => state.sessionReducer.nftCollectionsSwrs
+        (state) => state.sessionReducer.nftCollectionSwrs
     )
     const collections = useAppSelector(
         (state) => state.sessionReducer.nftCollections

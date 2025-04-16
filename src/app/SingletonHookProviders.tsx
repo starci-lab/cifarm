@@ -25,6 +25,7 @@ import {
     useSendUmiSerializedTxSwrMutation,
     useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
     useGraphQLQueryStoredPlacedItemsSwr,
+    useGraphQLQueryNFTsValidatedSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -87,6 +88,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION: useHoneycombSendTransactionsSwrMutation(),
             // queries
             GRAPHQL_QUERY_INVENTORIES_SWR: useGraphQLQueryInventoriesSwr(),
+            GRAPHQL_QUERY_NFTS_VALIDATED_SWR_MUTATION: useGraphQLQueryNFTsValidatedSwrMutation(),
             GRAPHQL_QUERY_STATIC_SWR: useGraphQLQueryStaticSwr(),
             GRAPHQL_QUERY_FOLLOWEES_SWR: useGraphQLQueryFolloweesSwr(),
             GRAPHQL_QUERY_NEIGHBORS_SWR: useGraphQLQueryNeighborsSwr(),

@@ -1,4 +1,5 @@
 import { BadgeProps, Badge } from "@/components"
+import { cn } from "@/lib/utils"
 import React, { FC } from "react"
 
 interface ExtendedBadgeProps extends BadgeProps {
@@ -11,11 +12,9 @@ export const ExtendedBadge: FC<ExtendedBadgeProps> = ({
     ...props
 }: ExtendedBadgeProps) => {
     return (
-        <Badge {...props}>
-            <div className="flex items-center gap-2">
-                {icon}
-                <div className="text-sm">{children}</div>
-            </div>
+        <Badge {...props} className={cn(props.className, "flex items-center gap-2")}>
+            {icon}
+            <div className="text-sm">{children}</div>
         </Badge>
     )
 }

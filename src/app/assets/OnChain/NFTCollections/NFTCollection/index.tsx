@@ -15,7 +15,7 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collectionKey }) => {
     const collection = collections[collectionKey]
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
-    const collectionSwrs = useAppSelector(state => state.sessionReducer.nftCollectionsSwrs)
+    const collectionSwrs = useAppSelector(state => state.sessionReducer.nftCollectionSwrs)
     const collectionSwr = collectionSwrs[collectionKey]
     return (
         <PressableCard className="relative" onClick={() => {

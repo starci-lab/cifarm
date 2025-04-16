@@ -27,6 +27,7 @@ export interface NFTData {
     nftAddress: string;
     attributes: Array<Attribute>
     wrapped: boolean
+    validated?: boolean
 }
 
 export interface CollectionResponse {
@@ -53,7 +54,6 @@ export const getSolanaCollection = async ({
         .use(mplCore())
     let assets = await fetchAssetsByCollection(umi, publicKey(collectionAddress))
     assets = assets.filter((asset) => asset.owner.toString() === accountAddress)
-
     const nfts: Array<NFTData> = []
     const promises: Array<Promise<void>> = []
     for (const asset of assets) {
@@ -67,7 +67,6 @@ export const getSolanaCollection = async ({
         })())
     }
     await Promise.all(promises)
-    console.log(nfts.map((nft) => nft.nftAddress))
     // with filters
     return {
         nfts

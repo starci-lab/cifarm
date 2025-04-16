@@ -1,5 +1,5 @@
 "use client"
-import { TRANSFER_NFT_DISCLOSURE, TRANSFER_NFT_FORMIK } from "@/app/constants"
+import { GRAPHQL_QUERY_STATIC_SWR, TRANSFER_NFT_DISCLOSURE, TRANSFER_NFT_FORMIK } from "@/app/constants"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import {
     useAppSelector,
@@ -22,8 +22,8 @@ import {
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { AtSignIcon } from "lucide-react"
-import { useTransferNFTFormik } from "@/hooks"
-
+import { useGraphQLQueryStaticSwr, useTransferNFTFormik } from "@/hooks"
+import { getNFTImage } from "@/app/utils"
 export const TransferNFTModal: FC = () => {
     const accounts = useAppSelector(
         (state) => state.sessionReducer.accounts.accounts
@@ -36,6 +36,12 @@ export const TransferNFTModal: FC = () => {
     useSingletonHook<ReturnType<typeof useDisclosure>>(TRANSFER_NFT_DISCLOSURE)
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(
         TRANSFER_NFT_FORMIK
+    )
+    const { swr: swrStatic } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+        GRAPHQL_QUERY_STATIC_SWR
+    )
+    const collections = useAppSelector(
+        (state) => state.sessionReducer.nftCollections
     )
     if (!account) {
         return null
@@ -52,7 +58,16 @@ export const TransferNFTModal: FC = () => {
                     <PressableCard disabled={true}>
                         <div className="flex gap-2 items-center">
                             <Image 
-                                src={formik.values.nft?.imageUrl ?? ""}
+                                src={(() => {
+                                    if (!formik.values.nft) return ""
+                                    if (!swrStatic.data?.data) return ""
+                                    return getNFTImage({
+                                        collectionKey: formik.values.nft?.collectionKey,
+                                        nft: formik.values.nft,
+                                        collections,
+                                        staticData: swrStatic.data?.data,
+                                    })
+                                })()}
                                 className="w-12 h-12 rounded-md"
                             />
                             <div>

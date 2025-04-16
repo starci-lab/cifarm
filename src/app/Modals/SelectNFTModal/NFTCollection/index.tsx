@@ -3,13 +3,14 @@ import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
 import { NFT } from "./NFT"
 import { NFTSkeleton } from "./NFTSkeleton"
+
 interface NFTCollectionProps {
   collectionKey: string;
 }
 
 export const NFTCollection: FC<NFTCollectionProps> = ({ collectionKey }) => {
     const collectionSwrs = useAppSelector(
-        (state) => state.sessionReducer.nftCollectionsSwrs
+        (state) => state.sessionReducer.nftCollectionSwrs
     )
     const collections = useAppSelector(
         (state) => state.sessionReducer.nftCollections

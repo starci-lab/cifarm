@@ -29,13 +29,13 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
             [Network.Testnet]: {
                 [DefaultCollection.DragonFruit]: {
                     name: "DragonFruit",
-                    imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
+                    imageUrl: "/products/dragon-fruit.png",
                     collectionAddress: "FkJJyaMCMmNHGWQkBkrVBo9Trz8o9ZffKBcpyC3SdZx4",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
-                    imageUrl: "/solana.svg",
+                    imageUrl: "/products/jackfruit.png",
                     collectionAddress: "",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 }

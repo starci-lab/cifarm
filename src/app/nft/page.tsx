@@ -9,11 +9,16 @@ import {
     Spacer,
     List,
     Title,
+    NFTValidatedBadge,
+    Alert,
+    AlertTitle,
+    ExtendedButton,
 } from "@/components"
 import {
     toast,
     useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation,
     useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
+    useGraphQLQueryNFTsValidatedSwrMutation,
     useGraphQLQueryStaticSwr,
     useTransferNFTFormik,
 } from "@/hooks"
@@ -32,7 +37,6 @@ import {
     PackageOpenIcon,
     WandSparklesIcon,
     EyeIcon,
-    CircleCheckBigIcon,
 } from "lucide-react"
 import React, { FC } from "react"
 import {
@@ -54,9 +58,10 @@ import {
 import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "../utils"
 
+
 const Page: FC = () => {
     const collectionSwrs = useAppSelector(
-        (state) => state.sessionReducer.nftCollectionsSwrs
+        (state) => state.sessionReducer.nftCollectionSwrs
     )
     const nftAddress = useAppSelector((state) => state.sessionReducer.nftAddress)
     const collectionKey = useAppSelector(
@@ -93,18 +98,20 @@ const Page: FC = () => {
     ReturnType<typeof useDisclosure>
   >(TRANSFER_NFT_DISCLOSURE)
 
-    // const data = nft?.attributes.find(
-    //     (attribute) => attribute.key === AttributeName.Data
-    // )?.value
+    const { swr: staticSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryStaticSwr>
+  >(QUERY_STATIC_SWR_MUTATION)
 
-    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
-        QUERY_STATIC_SWR_MUTATION
-    )
     if (!nft || !staticSwr.data) {
     // return skeleton
         return null
     }
-    const nftImage = getNFTImage({ collectionKey, nft, collections, staticData: staticSwr.data.data })
+    const nftImage = getNFTImage({
+        collectionKey,
+        nft,
+        collections,
+        staticData: staticSwr.data.data,
+    })
     const rarity = nft.attributes.find(
         (attribute) => attribute.key === AttributeName.Rarity
     )?.value as NFTRarityEnum
@@ -112,19 +119,52 @@ const Page: FC = () => {
         <Container hasPadding>
             <div className="h-full">
                 <Header title={nft?.name ?? ""} />
+                {(!nft.validated && nft.wrapped) && (
+                    <>
+                        <Spacer y={4} />
+                        <Alert variant="destructive">
+                            <AlertTitle className="flex items-center justify-between">
+                                <div className="text-sm">
+                  This NFT is not validated. Please validate to show the item
+                  in-game.
+                                </div>
+                                <ExtendedButton
+                                    isLoading={validateSolanaMetaplexNFTFrozenSwrMutation.isMutating}
+                                    onClick={
+                                        async () => {
+                                            await validateSolanaMetaplexNFTFrozenSwrMutation.trigger({
+                                                request: {
+                                                    nftAddress: nft.nftAddress,
+                                                },
+                                            })
+                                            toast({
+                                                title: "Success",
+                                                description: "Validated successfully",
+                                            })
+                                        }}
+                                >
+                  Validate
+                                </ExtendedButton>
+                            </AlertTitle>
+                        </Alert>
+                    </>
+                )}
                 <Spacer y={6} />
-                <div className="border rounded-md p-2 max-w-[300px]">
+                <div className="rounded-md bg-card p-2 max-w-[300px] relative">
                     <Image
                         src={nftImage}
                         className="w-full aspect-square object-contain"
                     />
+                    <div className="absolute top-3 left-3">
+                        <NFTRarityBadge rarity={rarity} />
+                    </div>
                 </div>
                 <Spacer y={4} />
-                <div className="flex gap-2">
-                    <NFTRarityBadge rarity={rarity} />
+                <div className="flex gap-2 items-center">
                     {nft.wrapped && <WrappedBadge />}
+                    {nft.validated && <NFTValidatedBadge />}
                 </div>
-                <Spacer y={4} />
+                <Spacer y={6} />
                 <div className="grid grid-cols-4 gap-2">
                     {nft.wrapped ? (
                         <PressableAction
@@ -139,7 +179,6 @@ const Page: FC = () => {
                                 if (!nft?.nftAddress) {
                                     throw new Error("NFT address is required")
                                 }
-
                                 const { data } =
                   await freezeSolanaMetaplexNFTSwrMutation.trigger({
                       request: {
@@ -169,26 +208,6 @@ const Page: FC = () => {
                             name="Wrap"
                         />
                     )}
-                    <PressableAction
-                        isLoading={validateSolanaMetaplexNFTFrozenSwrMutation.isMutating}
-                        icon={<CircleCheckBigIcon className="w-5 h-5 min-w-5 min-h-5" />}
-                        onClick={async () => {
-                            const { data } =
-                await validateSolanaMetaplexNFTFrozenSwrMutation.trigger({
-                    request: {
-                        nftAddress: nft.nftAddress,
-                    },
-                })
-                            if (!data) {
-                                throw new Error("Failed to verify NFT")
-                            }
-                            toast({
-                                title: "Success",
-                                description: "Validated successfully",
-                            })
-                        }}
-                        name="Validate"
-                    />
                     <PressableAction
                         disabled={nft.wrapped}
                         icon={<SendHorizonalIcon className="w-5 h-5 min-w-5 min-h-5" />}

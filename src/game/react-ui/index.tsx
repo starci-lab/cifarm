@@ -4,18 +4,24 @@ import React, { FC } from "react"
 import { useAppSelector } from "@/redux"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { Toolbar } from "./Toolbar"
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { PROFILE_DISCLOSURE } from "@/app/constants"
+import { useDisclosure } from "react-use-disclosure"
+
 export const ReactUI: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)
     const playerContext = useAppSelector(
         (state) => state.sessionReducer.playerContext
     )
     const showGameUI = useAppSelector((state) => state.sessionReducer.showGameUI)
-    
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        PROFILE_DISCLOSURE
+    )
     return (
         <>
             {showGameUI ? (
                 <>
-                    <div className="absolute top-6 left-6">
+                    <div className="absolute top-6 left-6" onClick={open}>
                         <div className="flex items-center">
                             <GameAvatar
                                 imgSrc={user?.avatarUrl}

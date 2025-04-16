@@ -1,5 +1,5 @@
+import { AssetMapData } from "@/modules/assets"
 import { PlacedItemSchema } from "@/modules/entities"
-import { MapAssetData } from "../assets"
 
 export enum CacheKey {
     PlacedItems = "placed-items",
@@ -46,11 +46,11 @@ export interface PlacedItemsData {
 
 export interface SellModalData {
     placedItem: PlacedItemSchema;
-    mapAssetData: MapAssetData
+    assetMapData: AssetMapData
 }
 
 export interface UpgradeModalData {
     placedItem: PlacedItemSchema;
-    mapAssetData: MapAssetData
+    assetMapData: AssetMapData
 }
 

@@ -38,7 +38,7 @@ export interface SessionState {
   loaded: boolean;
   authenticated: boolean;
   balanceSwrs: Record<string, SWRResponse<number>>;
-  nftCollectionsSwrs: Record<string, SWRResponse<CollectionResponse>>;
+  nftCollectionSwrs: Record<string, SWRResponse<CollectionResponse>>;
   // selected collection key
   collectionKey: string;
   // selected nft address
@@ -88,7 +88,7 @@ const initialState: SessionState = {
     loaded: false,
     authenticated: false,
     balanceSwrs: {},
-    nftCollectionsSwrs: {},
+    nftCollectionSwrs: {},
     collectionKey: "",
     nftAddress: "",
     tokenKey: "",
@@ -147,10 +147,10 @@ export const sessionSlice = createSlice({
             action: PayloadAction<SetNftCollectionsSwrParams>
         ) => {
             const { collectionKey, swr } = action.payload
-            state.nftCollectionsSwrs[collectionKey] = swr
+            state.nftCollectionSwrs[collectionKey] = swr
         },
         removeNftCollectionsSwr: (state, action: PayloadAction<string>) => {
-            delete state.nftCollectionsSwrs[action.payload]
+            delete state.nftCollectionSwrs[action.payload]
         },
         setCollectionKey: (state, action: PayloadAction<string>) => {
             state.collectionKey = action.payload
