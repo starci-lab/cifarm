@@ -3,8 +3,7 @@
     "version": "1",
     "name": "Cifarm",
     "iconUrl": "https://www.cifarm.xyz/logo.png",
-    "homeUrl": "https://www.cifarm.xyz/logo.png",
-    "imageUrl": "https://www.cifarm.xyz/logo.png",
+    "homeUrl": "https://www.cifarm.xyz",
     "buttonTitle": "Start",
     "splashImageUrl": "https://www.cifarm.xyz/logo.png",
     "splashBackgroundColor": "#f5f0ec"
