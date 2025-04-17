@@ -1,12 +1,17 @@
 {
-    "frame": {
-      "version": "1",
-      "name": "Cifarm",
-      "iconUrl": "https://www.cifarm.xyz/logo.png",
-      "homeUrl": "https://www.cifarm.xyz/logo.png",
-      "imageUrl": "https://www.cifarm.xyz/logo.png",
-      "buttonTitle": "Start",
-      "splashImageUrl": "https://www.cifarm.xyz/logo.png",
-      "splashBackgroundColor": "#f5f0ec"
-    }
+  "frame": {
+    "version": "1",
+    "name": "Cifarm",
+    "iconUrl": "https://www.cifarm.xyz/logo.png",
+    "homeUrl": "https://www.cifarm.xyz/logo.png",
+    "imageUrl": "https://www.cifarm.xyz/logo.png",
+    "buttonTitle": "Start",
+    "splashImageUrl": "https://www.cifarm.xyz/logo.png",
+    "splashBackgroundColor": "#f5f0ec"
+  },
+  "accountAssociation": {
+    "header": "eyJmaWQiOjM4MDU5OSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDZhRjI4ZkExRTE1MTY4MGQ1NjI4NzIxY2QzQTc2ODFjN2VDNzcyYkEifQ",
+    "payload": "eyJkb21haW4iOiJjaWZhcm0ueHl6In0",
+    "signature": "MHgzNTI3YWRiZDYwYjAyZTVhODAzNTBjNDA5N2M1MDlmMjI3ZDMzZmMwOGQ2NzM3YTQ3ODk1YjYzN2ViYzRkZWE5NzFkMDY0YWI4NjYxMDc4ZWVlNTk1NDU5MTk4YjJkZTE0NjlhZWQ2ZTNhM2NhZWQ5ZWUyMDg5ZjA2ZGQ4NTZlNjFj"
+  }
 }
