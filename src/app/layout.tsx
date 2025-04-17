@@ -14,8 +14,6 @@ export const metadata: Metadata = {
 const Layout: FC = ({
     children,
 }: PropsWithChildren) => {
- 
-    
     return (
         <html lang="en">      
             <WrappedLayout>{children}</WrappedLayout>

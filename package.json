@@ -11,6 +11,7 @@
   "dependencies": {
     "@civic/solana-gateway-react": "^1.2.4",
     "@esotericsoftware/spine-phaser": "^4.2.75",
+    "@farcaster/frame-sdk": "^0.0.34",
     "@heroicons/react": "^2.2.0",
     "@honeycomb-protocol/edge-client": "^0.0.7-beta.13",
     "@hookform/resolvers": "^3.10.0",
