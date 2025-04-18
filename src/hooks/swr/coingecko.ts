@@ -9,7 +9,7 @@ export const useNativeCoinGeckoSWR = (): UseSWR<CoinGeckoCoinData, ChainKey> => 
 
     //fetch the data from coingecko api
     const swr = useSWR<CoinGeckoCoinData>(
-        params,
+        params ?? null,
         async () => {
             try {
                 return await getNativeCoinData(params)

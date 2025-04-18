@@ -44,7 +44,7 @@ export const SelectInventoryModal: FC = () => {
         const inventoryType = staticSwr.data?.data.inventoryTypes.find(
             (inventoryType) => inventoryType.id === inventory.inventoryType
         )
-        if (!inventoryType) throw new Error("Inventory type not found")
+        if (!inventoryType) return false
         return inventoryType.type === InventoryType.Product && inventory.kind === InventoryKind.Storage
     })
 
