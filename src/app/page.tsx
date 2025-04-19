@@ -28,7 +28,6 @@ const Page: FC = () => {
                         <Image 
                             src="/logo.png" 
                             alt="CiFarm Logo"
-                            fill
                             className="object-contain"
                         />
                     </div>
