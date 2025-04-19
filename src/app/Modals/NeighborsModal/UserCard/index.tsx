@@ -32,7 +32,7 @@ import React, { FC } from "react"
 import { ExtendedButton } from "@/components"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import Image from "next/image"
+import { Image } from "@/components"
 
 export interface UserCardProps {
   user: UserSchema;

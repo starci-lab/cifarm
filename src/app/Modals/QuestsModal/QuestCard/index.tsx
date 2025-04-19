@@ -1,7 +1,7 @@
 import { CheckIcon } from "@heroicons/react/24/outline"
 import React, { FC } from "react"
 import { Progress } from "@/components/ui/progress"
-import Image from "next/image"
+import { Image } from "@/components"
 import { cn } from "@/lib/utils"
 import { PressableCard } from "@/components"
 

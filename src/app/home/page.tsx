@@ -3,7 +3,7 @@ import { Avatar, AvatarImage, Container } from "@/components"
 import React, { FC } from "react"
 import { Navbar } from "./Navbar"
 import { BottomNavbar } from "./BottomNavbar"
-import Image from "next/image"
+import { Image } from "@/components"
 import { Market } from "./Market"
 import { UpcomingEvents } from "./UpcomingEvents"
 

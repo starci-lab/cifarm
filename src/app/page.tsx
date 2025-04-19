@@ -14,7 +14,7 @@ import {
 import { ChainKey, createAccount, Network } from "@/modules/blockchain"
 import { setMnemonic, triggerLoadAccounts } from "@/redux"
 import { useDispatch } from "react-redux"
-import Image from "next/image"
+import { Image } from "@/components"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
