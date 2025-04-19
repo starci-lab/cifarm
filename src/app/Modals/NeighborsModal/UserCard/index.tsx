@@ -11,13 +11,19 @@ import {
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
 import { ExternalEventEmitter, ExternalEventName } from "@/game"
-import { useWs, useGraphQLMutationFollowSwrMutation, useGraphQLMutationUnfollowSwrMutation, useRouterWithSearchParams, VISIT_EVENT } from "@/hooks"
+import {
+    useWs,
+    useGraphQLMutationFollowSwrMutation,
+    useGraphQLMutationUnfollowSwrMutation,
+    useRouterWithSearchParams,
+    VISIT_EVENT,
+} from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { toastError, toastSuccess } from "@/modules/toast"
-import { setWarningModal, useAppDispatch } from "@/redux"
+import { setWarningModal, setVisitedUser, useAppDispatch } from "@/redux"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import { useDisclosure } from "react-use-disclosure"
 import { UserMinus2, UserPlus2 } from "lucide-react"
@@ -29,10 +35,10 @@ import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 
 export interface UserCardProps {
-    user: UserSchema;
-    onFollowCallback?: () => void | Promise<void>;
-    onUnfollowCallback?: () => void | Promise<void>;
-    followed?: boolean;
+  user: UserSchema;
+  onFollowCallback?: () => void | Promise<void>;
+  onUnfollowCallback?: () => void | Promise<void>;
+  followed?: boolean;
 }
 
 export const UserCard: FC<UserCardProps> = ({
@@ -42,27 +48,24 @@ export const UserCard: FC<UserCardProps> = ({
     followed: baseFollowed,
 }: UserCardProps) => {
     const { swrMutation: followSwrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationFollowSwrMutation>
-    >(GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION)
+    ReturnType<typeof useGraphQLMutationFollowSwrMutation>
+  >(GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION)
 
     const { swrMutation: unfollowSwrMutation } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
-    >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
+    ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
+  >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
 
-    const { close: closeNeighborsModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        NEIGHBORS_DISCLOSURE
-    )
+    const { close: closeNeighborsModal } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
 
-    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(
-        WS
-    )
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
-    const { open: openWarningModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        WARNING_DISCLOSURE
-    )
+    const { open: openWarningModal } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(WARNING_DISCLOSURE)
     const dispatch = useAppDispatch()
 
-    const avatarUrl = user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
+    const avatarUrl =
+    user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
     const pathname = usePathname()
     const router = useRouterWithSearchParams()
 
@@ -112,23 +115,25 @@ export const UserCard: FC<UserCardProps> = ({
                 {baseFollowed || user.followed ? (
                     <ExtendedButton
                         onClick={() => {
-                            dispatch(setWarningModal({
-                                message: "Are you sure you want to unfollow this user?",
-                                callback: async () => {
-                                    try {
-                                        await unfollowSwrMutation.trigger({
-                                            request: {
-                                                followeeUserId: user.id,
-                                            },
-                                        })
-                                        await onUnfollowCallback?.()
-                                        toastSuccess("Unfollowed successfully")
-                                    } catch (error) {
-                                        console.error(error)
-                                        toastError("Failed to unfollow user")
-                                    }
-                                }
-                            }))
+                            dispatch(
+                                setWarningModal({
+                                    message: "Are you sure you want to unfollow this user?",
+                                    callback: async () => {
+                                        try {
+                                            await unfollowSwrMutation.trigger({
+                                                request: {
+                                                    followeeUserId: user.id,
+                                                },
+                                            })
+                                            await onUnfollowCallback?.()
+                                            toastSuccess("Unfollowed successfully")
+                                        } catch (error) {
+                                            console.error(error)
+                                            toastError("Failed to unfollow user")
+                                        }
+                                    },
+                                })
+                            )
                             openWarningModal()
                         }}
                         variant="ghost"
@@ -159,14 +164,14 @@ export const UserCard: FC<UserCardProps> = ({
                         <UserPlus2 className="h-5 w-5" />
                     </ExtendedButton>
                 )}
-                <ExtendedButton 
+                <ExtendedButton
                     onClick={async () => {
                         closeNeighborsModal()
                         if (pathname !== pathConstants.play) {
                             router.push(pathConstants.play)
                             gameState.data = {
                                 watchingUser: user,
-                            }       
+                            }
                         } else {
                             if (!socket) {
                                 throw new Error("Socket is not connected")
@@ -174,6 +179,7 @@ export const UserCard: FC<UserCardProps> = ({
                             socket.emit(VISIT_EVENT, {
                                 neighborUserId: user.id,
                             })
+                            dispatch(setVisitedUser(user))
                             ExternalEventEmitter.emit(ExternalEventName.Visit, user)
                         }
                     }}

@@ -20,6 +20,7 @@ import {
     setInventories,
     setPlacedItems,
     setUser,
+    setVisitedUser,
 } from "@/redux"
 
 export const useSyncEffects = () => {
@@ -191,15 +192,14 @@ export const useSyncEffects = () => {
     // Handle return request events
     useEffect(() => {
         if (!socket) return
-
-        const handleEffect = () => {
+        ExternalEventEmitter.on(ExternalEventName.RequestReturn, () => {
+            dispatch(setVisitedUser())
             socket.emit(EmitterEventName.Return)
-        }
-
-        ExternalEventEmitter.on(ExternalEventName.RequestReturn, handleEffect)
+            ExternalEventEmitter.emit(ExternalEventName.Return)
+        })
 
         return () => {
             ExternalEventEmitter.off(ExternalEventName.RequestReturn)
         }
-    }, [socket])
+    }, [socket])    
 }

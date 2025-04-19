@@ -76,6 +76,7 @@ export const BottomNavbar: FC = () => {
                         <ExtendedButton
                             variant="ghost"
                             className="flex-1 flex flex-col items-center justify-center h-full"
+                            onClick={() => router.push(pathConstants.dapp)}
                         >
                             <BlocksIcon className="w-5 h-5 min-w-5 min-h-5" />
                             <div className="text-[10px] h-4 flex items-center">

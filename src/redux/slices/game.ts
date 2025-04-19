@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { UserSchema } from "@/modules/entities"
 
 export interface GameSlice {
-    visitedUserId?: string
+    visitedUser?: UserSchema
     gameStarted: boolean
 }
 
@@ -13,8 +14,8 @@ export const gameSlice = createSlice({
     name: "game",
     initialState,
     reducers: {
-        setVisitedUserId: (state, action: PayloadAction<string|undefined>) => {
-            state.visitedUserId = action.payload
+        setVisitedUser: (state, action: PayloadAction<UserSchema | undefined>) => {
+            state.visitedUser = action.payload
         },
         setGameStarted: (state, action: PayloadAction<boolean>) => {
             state.gameStarted = action.payload
@@ -23,4 +24,4 @@ export const gameSlice = createSlice({
 })
 
 export const gameReducer = gameSlice.reducer
-export const { setVisitedUserId, setGameStarted } = gameSlice.actions
+export const { setVisitedUser, setGameStarted } = gameSlice.actions

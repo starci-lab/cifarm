@@ -17,4 +17,6 @@ export const pathConstants = {
     collections: "/collections",
     nft: "/nft",
     token: "/token",
+    dapp: "/dapp",
+    dappStarterShop: "/dapp/starter-shop",
 }

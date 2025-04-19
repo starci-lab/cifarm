@@ -7,7 +7,6 @@ import React, { FC } from "react"
 
 const Page: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useImportAccountFormik>>(IMPORT_ACCOUNT_FORMIK)
-    console.log(formik.touched)
     return (
         <Container hasPadding>
             <form className="h-full flex flex-col gap-6 justify-between" onSubmit={formik.handleSubmit}>

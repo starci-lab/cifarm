@@ -22,6 +22,7 @@ export enum AssetIconId {
     Quests = "quests",
     Daily = "daily",
     Download = "download",
+    Next = "next",
 }
 
 const PREFIX = "icons"
@@ -189,5 +190,11 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
             assetUrl: `${PREFIX}/download.png`
         },
     },
+    [AssetIconId.Next]: {
+        base: {
+            assetKey: "icons-next",
+            assetUrl: `${PREFIX}/next.png`
+        },
+    }
 }
 

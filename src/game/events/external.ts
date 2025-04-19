@@ -182,6 +182,10 @@ export enum ExternalEventName {
     UpdateUpgradeModalContent = "update_upgrade_modal_content",
     // show game ui, from Phaser to React
     ShowGameUI = "show_game_ui",
+    // next, from React to Phaser
+    Next = "next",
+    // return, from React to Phaser
+    Return = "return",
 }
 
 export enum ModalName {

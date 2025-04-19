@@ -3,5 +3,6 @@ export enum SceneName {
     Loading = "loading",
     Gameplay = "gameplay",
     Data = "data",
+    UI = "ui",
     Sound = "sound",
 }

@@ -28,6 +28,9 @@ export const useImportAccountFormik = (): FormikProps<ImportAccountFormikValues>
         initialValues,
         validationSchema, // Pass Yup validation schema directly
         onSubmit: async ({ mnemonic }) => {
+            if (!sessionDb.isOpen()) {
+                sessionDb.open()
+            }
             // put mnemonic to key-value store in IndexedDB
             await sessionDb.keyValueStore.put({
                 key: SessionDbKey.Mnemonic,

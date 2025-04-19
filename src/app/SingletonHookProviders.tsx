@@ -26,6 +26,7 @@ import {
     useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
     useGraphQLQueryStoredPlacedItemsSwr,
     useGraphQLQueryNFTsValidatedSwrMutation,
+    useGraphQLMutationPurchaseSolanaNFTStarterBoxSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -77,6 +78,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION: useGraphQLMutationUpdateFollowXSwrMutation(),
             GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION: useGraphQLMutationUpdateReferralSwrMutation(),
             GRAPHQL_MUTATION_WRAP_SOLANA_METAPLEX_SWR_MUTATION: useGraphQLMutationWrapSolanaMetaplexSwrMutation(),
+            GRAPHQL_MUTATION_PURCHASE_SOLANA_NFT_STARTER_BOX_SWR_MUTATION: useGraphQLMutationPurchaseSolanaNFTStarterBoxSwrMutation(),
             MUTATION_GRAPHQL_FREEZE_SOLANA_METAPLEX_NFT_SWR_MUTATION: useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation(),
             MUTATION_GRAPHQL_VALIDATE_SOLANA_METAPLEX_NFT_FROZEN_SWR_MUTATION: useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation(),
             SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),

@@ -15,6 +15,7 @@ import {
     FreezeSolanaMetaplexNFTData,
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
+    PurchaseSolanaNFTStarterBoxData,
     TransactionType,
     TransferNFTData,
     TransferTokenData,
@@ -204,6 +205,15 @@ export const SignTransactionModal: FC = () => {
                     txHash = txHashResponse
                     break
                 }
+                case TransactionType.PurchaseSolanaNFTStarterBox: {
+                    const { serializedTx } = data as PurchaseSolanaNFTStarterBoxData
+                    // decode the serializedTx
+                    const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                        serializedTx,
+                    })
+                    txHash = txHashResponse
+                    break
+                }
                 case TransactionType.FreezeSolanaMetaplexNFT: {
                     const { serializedTx } = data as FreezeSolanaMetaplexNFTData
                     // decode the serializedTx
@@ -247,6 +257,9 @@ export const SignTransactionModal: FC = () => {
         },
         [TransactionType.FreezeSolanaMetaplexNFT]: {
             name: "Freeze Solana Metaplex NFT",
+        },
+        [TransactionType.PurchaseSolanaNFTStarterBox]: {
+            name: "Purchase Solana NFT Starter Box",
         },
     }
 
@@ -462,6 +475,32 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
+        case TransactionType.PurchaseSolanaNFTStarterBox: {
+            const { serializedTx } = data as PurchaseSolanaNFTStarterBoxData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(PurchaseSolanaNFTStarterBoxContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case PurchaseSolanaNFTStarterBoxContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">Serialized Tx</div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                            {truncateString(serializedTx, 30, 4)}
+                                        </div>
+                                        <Snippet code={serializedTx} />
+                                    </div>
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
         }
     }
 
@@ -531,4 +570,9 @@ export enum HoneycombProtocolRawTxsContent {
 export enum FreezeSolanaMetaplexNFTContent {
   SerializedTx = "serializedTx",
 }
+
+export enum PurchaseSolanaNFTStarterBoxContent {
+  SerializedTx = "serializedTx",
+}
+
 

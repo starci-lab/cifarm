@@ -190,7 +190,7 @@ export const sessionSlice = createSlice({
         },
         setShowGameUI: (state, action: PayloadAction<boolean>) => {
             state.showGameUI = action.payload
-        },
+        }
     },
 })
 

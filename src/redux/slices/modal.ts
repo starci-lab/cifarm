@@ -32,6 +32,7 @@ export enum TransactionType {
   TransferToken = "TransferToken",
   TransferNFT = "TransferNFT",
   FreezeSolanaMetaplexNFT = "FreezeSolanaMetaplexNFT",
+  PurchaseSolanaNFTStarterBox = "PurchaseSolanaNFTStarterBox",
 }
 
 export interface TokenModal {
@@ -65,6 +66,10 @@ export interface FreezeSolanaMetaplexNFTData {
   serializedTx: string;
 }
 
+export interface PurchaseSolanaNFTStarterBoxData {
+  serializedTx: string;
+}
+
 export type SignTransactionModal = (
   | {
       data: HoneycombProtocolRawTxData;
@@ -85,6 +90,10 @@ export type SignTransactionModal = (
   | {
       data: FreezeSolanaMetaplexNFTData;
       type: TransactionType.FreezeSolanaMetaplexNFT;
+    }
+  | {
+      data: PurchaseSolanaNFTStarterBoxData;
+      type: TransactionType.PurchaseSolanaNFTStarterBox;
     }
 ) & {
   // extra action to be taken after the transaction is signed

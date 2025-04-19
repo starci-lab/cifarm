@@ -16,6 +16,7 @@ export class GameplayScene extends Scene
         SceneEventEmitter.on(SceneEventName.CenterCamera, () => {
             this.setCameraCenter()
         })
+        this.scene.launch(SceneName.UI)
     }
 
     private setCameraCenter() {

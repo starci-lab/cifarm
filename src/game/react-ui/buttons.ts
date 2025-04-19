@@ -65,6 +65,14 @@ export const rightButtons: Array<ButtonData> = [
         },
         availableIn: [PlayerContext.Home],
     },
+    {
+        text: "Next",
+        imageSrc: assetIconMap[AssetIconId.Next].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.Next)
+        },
+        availableIn: [PlayerContext.Neighbor],
+    },
 ]
 
 export const leftButtons: Array<ButtonData> = [
@@ -96,7 +104,7 @@ export const leftButtons: Array<ButtonData> = [
                 modalName: ModalName.Neighbors,
             })
         },
-        availableIn: [PlayerContext.Neighbor, PlayerContext.Home],
+        availableIn: [PlayerContext.Home],
     },
     {
         text: "Back",
@@ -109,6 +117,16 @@ export const leftButtons: Array<ButtonData> = [
             PlayerContext.Selling,
             PlayerContext.PlacingNFT,
             PlayerContext.Buying,
+        ],
+    },
+    {
+        text: "Return",
+        imageSrc: assetIconMap[AssetIconId.Return].base.assetUrl,
+        onClick: () => {
+            ExternalEventEmitter.emit(ExternalEventName.RequestReturn)
+        },
+        availableIn: [
+            PlayerContext.Neighbor
         ],
     },
     {

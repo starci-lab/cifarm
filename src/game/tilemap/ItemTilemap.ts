@@ -61,6 +61,7 @@ import { SceneEventName } from "../events"
 import { sleep } from "@/modules/common"
 import { AssetIconId, assetProductMap } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
+import { PlayerContext } from "@/redux"
 
 const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
@@ -114,6 +115,11 @@ export abstract class ItemTilemap extends GroundTilemap {
         ExternalEventEmitter.on(ExternalEventName.Visit, (user: UserSchema) => {
             // save to cache
             this.scene.cache.obj.add(CacheKey.WatchingUser, user)
+            this.handeVisit()
+        })
+
+        ExternalEventEmitter.on(ExternalEventName.Return, () => {
+            this.scene.cache.obj.remove(CacheKey.WatchingUser)
             this.handeVisit()
         })
 
@@ -1535,7 +1541,10 @@ export abstract class ItemTilemap extends GroundTilemap {
       | UserSchema
       | undefined
         const userId = watchingUser?.id ?? undefined
-
+        // hide the neighbors modal
+        ExternalEventEmitter.emit(ExternalEventName.UpdatePlayerContext, {
+            playerContext: userId ? PlayerContext.Neighbor : PlayerContext.Home,
+        })  
         // turn the event into a promise for better readability
         await new Promise<void>((resolve) => {
             ExternalEventEmitter.once(ExternalEventName.PlacedItemsLoaded, async() => {
