@@ -46,12 +46,15 @@ export const TransferTokenModal: FC = () => {
     const balanceSwr = balanceSwrs[tokenKey ?? DefaultToken.Native]
 
     useEffect(() => {
-        if (balanceSwr.data) {
+        if (balanceSwr?.data) {
             formik.setFieldValue("balance", balanceSwr.data)
         }
-    }, [balanceSwr.data])
+    }, [balanceSwr?.data])
 
     if (!account) {
+        return null
+    }
+    if (!balanceSwr) {
         return null
     }
     return (

@@ -65,7 +65,6 @@ export const useAccounts = () => {
         handleEffect()
     }, [loadAccountsKey])
 
-    //hook that trigger when start the app
     useEffect(() => {
         const handleEffect = async () => {
             try {

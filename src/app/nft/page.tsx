@@ -18,7 +18,6 @@ import {
     toast,
     useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation,
     useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
-    useGraphQLQueryNFTsValidatedSwrMutation,
     useGraphQLQueryStaticSwr,
     useTransferNFTFormik,
 } from "@/hooks"
@@ -184,7 +183,7 @@ const Page: FC = () => {
                       request: {
                           nftAddress: nft.nftAddress,
                           collectionAddress:
-                        collections[collectionKey]?.collectionAddress,
+                        collections[collectionKey]?.address,
                       },
                   })
                                 if (!data) {

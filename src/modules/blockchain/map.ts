@@ -11,6 +11,8 @@ export enum DefaultToken {
 export enum DefaultCollection {
     DragonFruit = "DragonFruit",
     Jackfruit = "Jackfruit",
+    Pomegranate = "Pomegranate",
+    Rambutan = "Rambutan",
 }
 
 export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
@@ -30,28 +32,52 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                 [DefaultCollection.DragonFruit]: {
                     name: "DragonFruit",
                     imageUrl: "/products/dragon-fruit.png",
-                    collectionAddress: "FkJJyaMCMmNHGWQkBkrVBo9Trz8o9ZffKBcpyC3SdZx4",
+                    address: "FkJJyaMCMmNHGWQkBkrVBo9Trz8o9ZffKBcpyC3SdZx4",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/products/jackfruit.png",
-                    collectionAddress: "",
+                    address: "",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
+                },
+                [DefaultCollection.Pomegranate]: {
+                    name: "Pomegranate",
+                    imageUrl: "/products/pomegranate.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Pomegranate,
+                },
+                [DefaultCollection.Rambutan]: {
+                    name: "Rambutan",
+                    imageUrl: "/products/rambutan.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Rambutan,
                 }
             },
             [Network.Mainnet]: {
                 [DefaultCollection.DragonFruit]: {
                     name: "DragonFruit",
                     imageUrl: "/solana.svg",
-                    collectionAddress: "",
+                    address: "",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/solana.svg",
-                    collectionAddress: "",
+                    address: "",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
+                },
+                [DefaultCollection.Pomegranate]: {
+                    name: "Pomegranate",
+                    imageUrl: "/products/pomegranate.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Pomegranate,
+                },
+                [DefaultCollection.Rambutan]: {
+                    name: "Rambutan",
+                    imageUrl: "/products/rambutan.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Rambutan,
                 }
             }
         },
@@ -162,28 +188,52 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                 [DefaultCollection.DragonFruit]: {
                     name: "DragonFruit",
                     imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
-                    collectionAddress: "",
+                    address: "",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/solana.svg",
-                    collectionAddress: "",
+                    address: "",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 },
+                [DefaultCollection.Pomegranate]: {
+                    name: "Pomegranate",
+                    imageUrl: "/products/pomegranate.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Pomegranate,
+                },
+                [DefaultCollection.Rambutan]: {
+                    name: "Rambutan",
+                    imageUrl: "/products/rambutan.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Rambutan,
+                }
             },
             [Network.Testnet]: {
                 [DefaultCollection.DragonFruit]: {
                     name: "DragonFruit",
                     imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
-                    collectionAddress: "",
+                    address: "",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
                     imageUrl: "/solana.svg",
-                    collectionAddress: "",
+                    address: "",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
+                },
+                [DefaultCollection.Pomegranate]: {
+                    name: "Pomegranate",
+                    imageUrl: "/products/pomegranate.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Pomegranate,
+                },
+                [DefaultCollection.Rambutan]: {
+                    name: "Rambutan",
+                    imageUrl: "/products/rambutan.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Rambutan,
                 }
             }
         }
@@ -227,7 +277,7 @@ export interface TokenInfo {
 export interface CollectionInfo {
     name: string
     imageUrl: string
-    collectionAddress: string
+    address: string
     // to determine which fruit is in the collection
     placedItemTypeId: PlacedItemTypeId
 }

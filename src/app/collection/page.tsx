@@ -9,15 +9,18 @@ import {
     Spacer,
     WrappedBadge,
     NFTValidatedBadge,
+    Switch,
 } from "@/components"
 import { pathConstants } from "@/constants"
 import { useGraphQLQueryStaticSwr, useRouterWithSearchParams } from "@/hooks"
 import { AttributeName, NFTRarityEnum } from "@/modules/blockchain"
-import { setNftAddress, useAppDispatch, useAppSelector } from "@/redux"
+import { setNftAddress, switchNFTCollection, useAppDispatch, useAppSelector } from "@/redux"
 import React, { FC } from "react"
 import { QUERY_STATIC_SWR_MUTATION } from "../constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { getNFTImage } from "../utils"
+import { sessionDb } from "@/modules/dexie"
+import pluralize from "pluralize"
 
 const Page: FC = () => {
     const collectionKey = useAppSelector(
@@ -43,6 +46,34 @@ const Page: FC = () => {
         <Container hasPadding>
             <div className="h-full">
                 <Header title={collection.name} />
+                <Spacer y={6} />
+                <div>
+                    <div className="flex justify-between items-center">
+                        <div className="flex gap-2 items-end">
+                            <div className="text-4xl font-bold">{collectionSwr.data?.nfts.length ?? 0}</div>
+                            <div className="text-muted-foreground">{pluralize("NFT", collectionSwr.data?.nfts.length || 1)}</div>
+                        </div>
+                        <Switch
+                            checked={collection.enabled}
+                            onCheckedChange={async () => {
+                                dispatch(
+                                    switchNFTCollection({
+                                        key: collectionKey,
+                                        enabled: !collection.enabled,
+                                    })
+                                )
+                                // save token to IndexedDB
+                                const _collection = await sessionDb.nftCollections
+                                    .filter((collection) => collection.key === collectionKey)
+                                    .first()
+                                if (_collection) {
+                                    _collection.enabled = !collection.enabled
+                                    await sessionDb.nftCollections.put(_collection)
+                                }
+                            }}
+                        />
+                    </div>
+                </div>
                 <Spacer y={6} />
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                     {collectionSwr.data?.nfts.map((nft) => {

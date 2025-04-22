@@ -1,5 +1,6 @@
 // db.js
 import Dexie, { type EntityTable } from "dexie"
+import { PlacedItemTypeId } from "@/modules/entities"
 
 const sessionDb = new Dexie("SessionDB") as Dexie & {
   keyValueStore: EntityTable<
@@ -74,6 +75,7 @@ export interface Token {
   symbol: string;
   name: string;
   decimals: number;
+  key: string;
   imageUrl: string;
   enabled: boolean;
 }
@@ -109,9 +111,12 @@ export interface NFTCollection {
   id: number;
   chainKey: string;
   network: string;
-  collectionAddress: string;
+  address: string;
   name: string;
   imageUrl: string;
+  enabled: boolean;
+  key: string;
+  placedItemTypeId: PlacedItemTypeId;
 }
 
 //store all sessions
@@ -123,10 +128,10 @@ sessionDb.version(1).stores({
     "++id, chainKey, network, accountNumber, address, publicKey, privateKey, username, imageUrl",
     //tokens
     tokens:
-    "++id, chainKey, network, tokenKey, address, enabled, symbol, name, decimals, imageUrl",
+    "++id, chainKey, network, address, enabled, symbol, name, decimals, imageUrl",
     //collections
     nftCollections:
-    "++id, chainKey, network, collectionAddress, name, imageUrl",
+    "++id, chainKey, network, address, name, imageUrl, enabled, key, placedItemTypeId",
     //current selected account
     currentAccount: "++id, chainKey, network, accountId",
     //stored addresses

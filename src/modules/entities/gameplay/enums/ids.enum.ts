@@ -206,6 +206,8 @@ export enum PlacedItemTypeId {
     Jackfruit = "jackfruit",
     Banana = "banana",
     Apple = "apple",
+    Pomegranate = "pomegranate",
+    Rambutan = "rambutan",
 }
 
 // Pet Enum

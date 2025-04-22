@@ -28,7 +28,7 @@ export const solanaHttpRpcUrl = ({chainKey, network}: SolanaHttpRpcUrlParams) =>
         switch (chainKey) {
         case ChainKey.Solana:
             // we use honeycomb testnet for now, instead of devnet  
-            rpcUrl = "https://rpc.test.honeycombprotocol.com"
+            rpcUrl = clusterApiUrl("devnet")
             //rpcUrl = clusterApiUrl("devnet")
             break
         default:

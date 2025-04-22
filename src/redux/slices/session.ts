@@ -1,5 +1,4 @@
 import {
-    blockchainMap,
     ChainKey,
     CollectionInfo,
     CollectionResponse,
@@ -32,8 +31,8 @@ export interface SessionState {
   mnemonic: string;
   accounts: Accounts;
   chainKey: ChainKey;
-  tokens: Tokens;
-  nftCollections: NFTCollections;
+  tokens: StateTokens;
+  nftCollections: StateNFTCollections;
   retries: number;
   loaded: boolean;
   authenticated: boolean;
@@ -60,9 +59,8 @@ export interface SessionState {
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
-export type Tokens = Record<string, WithEnabled<TokenInfo>>;
-export type ImportedTokens = Record<string, WithEnabled<TokenInfo>>;
-export type NFTCollections = Record<string, WithEnabled<CollectionInfo>>;
+export type StateTokens = Record<string, WithEnabled<TokenInfo>>;
+export type StateNFTCollections = Record<string, WithEnabled<CollectionInfo>>;
 
 const initialState: SessionState = {
     network: defaultNetwork,
@@ -72,18 +70,8 @@ const initialState: SessionState = {
         currentId: 0,
     },
     chainKey: defaultChainKey,
-    tokens: Object.entries(
-        blockchainMap[defaultChainKey].defaultTokens[defaultNetwork]
-    ).reduce((tokens, [id, token]) => {
-        tokens[id] = { ...token, enabled: true }
-        return tokens
-    }, {} as Tokens),
-    nftCollections: Object.entries(
-        blockchainMap[defaultChainKey].defaultCollections[defaultNetwork]
-    ).reduce((collections, [id, collection]) => {
-        collections[id] = { ...collection, enabled: true }
-        return collections
-    }, {} as NFTCollections),
+    tokens: {},
+    nftCollections: {},
     retries: 0,
     loaded: false,
     authenticated: false,
@@ -114,14 +102,23 @@ export const sessionSlice = createSlice({
         setChainKey: (state, action: PayloadAction<ChainKey>) => {
             state.chainKey = action.payload
         },
-        importTokens: (state, action: PayloadAction<ImportedTokens>) => {
+        loadTokens: (state, action: PayloadAction<StateTokens>) => {
             state.tokens = { ...state.tokens, ...action.payload }
         },
+        loadNFTCollections: (state, action: PayloadAction<StateNFTCollections>) => {
+            state.nftCollections = { ...state.nftCollections, ...action.payload }
+        },
         switchToken: (state, action: PayloadAction<SwitchTokenParams>) => {
-            const { id, enabled } = action.payload
-            const token = state.tokens[id]
+            const { key, enabled } = action.payload
+            const token = state.tokens[key]
             if (!token) throw new Error("Token not found")
             token.enabled = enabled
+        },
+        switchNFTCollection: (state, action: PayloadAction<SwitchNFTCollectionParams>) => {
+            const { key, enabled } = action.payload
+            const collection = state.nftCollections[key]
+            if (!collection) throw new Error("Collection not found")
+            collection.enabled = enabled
         },
         setTokenKey: (state, action: PayloadAction<string>) => {
             state.tokenKey = action.payload
@@ -201,7 +198,9 @@ export const {
     setAccounts,
     setChainKey,
     switchToken,
-    importTokens,
+    switchNFTCollection,
+    loadTokens,
+    loadNFTCollections,
     setRetries,
     setTokenKey,
     setLoaded,
@@ -226,7 +225,7 @@ export const {
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
-  id: string;
+  key: string;
   enabled: boolean;
 }
 
@@ -239,3 +238,9 @@ export interface SetNftCollectionsSwrParams {
   collectionKey: string;
   swr: SWRResponse<CollectionResponse>;
 }
+
+export interface SwitchNFTCollectionParams {
+  key: string;
+  enabled: boolean;
+}
+

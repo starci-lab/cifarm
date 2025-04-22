@@ -1,10 +1,11 @@
 import { sessionDb } from "@/modules/dexie"
 import {
-    ImportedTokens,
-    importTokens,
+    StateTokens,
+    loadTokens,
     useAppDispatch,
     useAppSelector,
 } from "@/redux"
+import _ from "lodash"
 import { useEffect } from "react"
 
 export const useTokens = () => {
@@ -13,12 +14,13 @@ export const useTokens = () => {
     )
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
-    const dispatch = useAppDispatch()
+    const accounts = useAppSelector((state) => state.sessionReducer.accounts)
     
+    const dispatch = useAppDispatch()
     useEffect(() => {
     //do nothing if loadTokensKey is equal to 0
-        if (!loadTokensKey) return
-        //fetch all tokens from IndexedDB, then load it to the redux store
+        if (!loadTokensKey && _.isEmpty(accounts)) return
+        // fetch all tokens from IndexedDB, then load it to the redux store
         const handleEffect = async () => {
             //fetch all tokens from IndexedDB, then load it to the redux store
             const tokens = await sessionDb.tokens
@@ -27,8 +29,8 @@ export const useTokens = () => {
                 )
                 .toArray()
             //convert tokens to map
-            const tokenMap: ImportedTokens = tokens.reduce((tokens, token) => {
-                tokens[token.id.toString()] = {
+            const tokenMap: StateTokens = tokens.reduce((tokens, token) => {
+                tokens[token.key] = {
                     address: token.address,
                     decimals: token.decimals,
                     imageUrl: token.imageUrl,
@@ -37,10 +39,10 @@ export const useTokens = () => {
                     enabled: token.enabled,
                 }
                 return tokens
-            }, {} as ImportedTokens)
+            }, {} as StateTokens)
             //load tokens to redux store
-            dispatch(importTokens(tokenMap))
+            dispatch(loadTokens(tokenMap))
         }
         handleEffect()
-    }, [loadTokensKey])
+    }, [loadTokensKey, accounts])
 }

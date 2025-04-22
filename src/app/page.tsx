@@ -11,10 +11,11 @@ import {
     sessionDb,
     SessionDbKey,
 } from "@/modules/dexie"
-import { ChainKey, createAccount, Network } from "@/modules/blockchain"
-import { setMnemonic, triggerLoadAccounts } from "@/redux"
+import { blockchainMap, ChainKey, createAccount, defaultChainKey, defaultNetwork, Network } from "@/modules/blockchain"
+import { setMnemonic, StateNFTCollections, StateTokens, triggerLoadAccounts } from "@/redux"
 import { useDispatch } from "react-redux"
 import { Image } from "@/components"
+import { valuesWithKey } from "@/modules/common"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
@@ -103,6 +104,35 @@ const Page: FC = () => {
                                                 accountId,
                                             }
                                             await sessionDb.currentAccount.put(currentAccount)
+
+                                            // create tokens
+                                            const tokenMap = Object.entries(
+                                                blockchainMap[defaultChainKey].defaultTokens[defaultNetwork]
+                                            ).reduce((tokens, [id, token]) => {
+                                                tokens[id] = { ...token, enabled: true }
+                                                return tokens
+                                            }, {} as StateTokens)
+                                            await sessionDb.tokens.bulkAdd(
+                                                valuesWithKey(tokenMap).map((token) => ({
+                                                    ...token,
+                                                    chainKey,
+                                                    network,
+                                                }))
+                                            )
+                                            // create nft collections
+                                            const nftCollectionMap = Object.entries(
+                                                blockchainMap[defaultChainKey].defaultCollections[defaultNetwork]
+                                            ).reduce((collections, [id, collection]) => {
+                                                collections[id] = { ...collection, enabled: true }
+                                                return collections
+                                            }, {} as StateNFTCollections)       
+                                            await sessionDb.nftCollections.bulkAdd(
+                                                valuesWithKey(nftCollectionMap).map((collection) => ({
+                                                    ...collection,
+                                                    chainKey,
+                                                    network,
+                                                }))
+                                            )
                                         })()
                                     )
                                     await Promise.all(promises)

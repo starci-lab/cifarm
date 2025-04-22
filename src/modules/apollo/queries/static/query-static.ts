@@ -370,11 +370,13 @@ const query = gql`
     }
     nftCollections {
       dragonFruit {
-        testnet {
-          collectionAddress
-        }
-        mainnet {
-          collectionAddress
+        solana {
+          testnet {
+            collectionAddress
+          }
+          mainnet {
+            collectionAddress
+          }
         }
       }
     }  
