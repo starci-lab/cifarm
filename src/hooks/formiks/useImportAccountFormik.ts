@@ -129,6 +129,7 @@ export const useImportAccountFormik =
                                       ...collection,
                                       chainKey,
                                       network,
+                                      version: collection.version ?? 0,
                                   }))
                               )
                           })()

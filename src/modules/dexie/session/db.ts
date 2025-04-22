@@ -117,6 +117,7 @@ export interface NFTCollection {
   enabled: boolean;
   key: string;
   placedItemTypeId: PlacedItemTypeId;
+  version: number;
 }
 
 //store all sessions
@@ -131,7 +132,7 @@ sessionDb.version(1).stores({
     "++id, chainKey, network, address, enabled, symbol, name, decimals, imageUrl",
     //collections
     nftCollections:
-    "++id, chainKey, network, address, name, imageUrl, enabled, key, placedItemTypeId",
+    "++id, chainKey, network, address, name, imageUrl, enabled, key, placedItemTypeId, version",
     //current selected account
     currentAccount: "++id, chainKey, network, accountId",
     //stored addresses

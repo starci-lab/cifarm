@@ -122,8 +122,8 @@ const Page: FC = () => {
                                             // create nft collections
                                             const nftCollectionMap = Object.entries(
                                                 blockchainMap[defaultChainKey].defaultCollections[defaultNetwork]
-                                            ).reduce((collections, [id, collection]) => {
-                                                collections[id] = { ...collection, enabled: true }
+                                            ).reduce((collections, [key, collection]) => {
+                                                collections[key] = { ...collection, enabled: true }
                                                 return collections
                                             }, {} as StateNFTCollections)       
                                             await sessionDb.nftCollections.bulkAdd(
@@ -131,6 +131,7 @@ const Page: FC = () => {
                                                     ...collection,
                                                     chainKey,
                                                     network,
+                                                    version: collection.version ?? 0,
                                                 }))
                                             )
                                         })()

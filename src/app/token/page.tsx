@@ -49,6 +49,7 @@ const Page: FC = () => {
         <Container hasPadding>
             <div>
                 <Header title={token?.name} />
+                <Spacer y={6} />
                 <div>
                     <div className="flex justify-between items-center">
                         <div className="flex gap-2 items-end">

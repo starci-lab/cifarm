@@ -60,7 +60,7 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
     if (!assetData) return null
     const collection = Object.values(collections).find(
         (collection) =>
-            collection.collectionAddress === placedItem.nftMetadata?.collectionAddress
+            collection.address === placedItem.nftMetadata?.collectionAddress
     )
     return (
         <PressableCard

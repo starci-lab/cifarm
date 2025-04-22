@@ -22,8 +22,8 @@ export const Snippet: FC<SnippetProps> = ({
             variant="ghost-secondary"
             size="icon"
             className="min-w-9 min-h-9"
-            onClick={() => {
-                navigator.clipboard.writeText(code)
+            onClick={async () => {
+                await navigator.clipboard.writeText(code)
                 toast({
                     title: "Copied to clipboard",
                 })

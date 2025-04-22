@@ -16,7 +16,6 @@ export const NFTCollections: FC = () => {
     if (!collections) {
         return null
     }
-
     return (
         <div>
             <div className="flex justify-between items-center">

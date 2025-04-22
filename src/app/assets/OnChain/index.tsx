@@ -1,8 +1,7 @@
 import { valuesWithKey } from "@/modules/common"
 // import { TransactionType, useAppDispatch, useAppSelector } from "@/redux"
-import { ExtendedButton, List, Spacer, Title } from "@/components"
+import { ExtendedButton, List, Spacer, Title, Token } from "@/components"
 import React, { FC } from "react"
-import { Token } from "./Token"
 import {
     Settings2Icon,
     //UserRoundCheck,
@@ -14,12 +13,16 @@ import {
 } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { NFTCollections } from "./NFTCollections"
-import { useAppSelector } from "@/redux"
+import { setTokenKey, useAppDispatch, useAppSelector } from "@/redux"
 export const OnChain: FC = () => {
     //const { toast } = useToast()
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
     const router = useRouterWithSearchParams()
+    const balanceSwrs = useAppSelector(
+        (state) => state.sessionReducer.balanceSwrs
+    )
+    const dispatch = useAppDispatch()
     return (
         <>
             <div>
@@ -42,7 +45,10 @@ export const OnChain: FC = () => {
                         enableScroll={false}
                         items={tokensArray}
                         contentCallback={(item) => {
-                            return <Token token={item} />
+                            return <Token token={item} balanceSwr={balanceSwrs[item.key]} onClick={() => {
+                                dispatch(setTokenKey(item.key))
+                                router.push(pathConstants.token)
+                            }} />
                         }}
                     />
                 </div>

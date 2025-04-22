@@ -17,6 +17,7 @@ export const useTokens = () => {
     const accounts = useAppSelector((state) => state.sessionReducer.accounts)
     
     const dispatch = useAppDispatch()
+
     useEffect(() => {
     //do nothing if loadTokensKey is equal to 0
         if (!loadTokensKey && _.isEmpty(accounts)) return
