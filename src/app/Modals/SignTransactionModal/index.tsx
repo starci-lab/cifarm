@@ -27,6 +27,7 @@ import {
     useGraphQLQueryStaticSwr,
     useHoneycombSendTransactionsSwrMutation,
     useHoneycombSendTransactionSwrMutation,
+    useRouterWithSearchParams,
     useSendUmiSerializedTxSwrMutation,
     useTransferNFTSwrMutation,
     useTransferTokenSwrMutation,
@@ -44,6 +45,7 @@ import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "@/app/utils"
+import { pathConstants } from "@/constants"
 
 interface ProviderInfo {
   name: string;
@@ -79,6 +81,8 @@ export const SignTransactionModal: FC = () => {
     const { swr: swrStatic } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         GRAPHQL_QUERY_STATIC_SWR
     )
+
+    const router = useRouterWithSearchParams()
 
     const type = useAppSelector(
         (state) => state.modalReducer.signTransactionModal.type
@@ -203,6 +207,7 @@ export const SignTransactionModal: FC = () => {
                   collectionKey,
               })
                     txHash = txHashResponse
+                    router.push(pathConstants.collection)
                     break
                 }
                 case TransactionType.PurchaseSolanaNFTStarterBox: {

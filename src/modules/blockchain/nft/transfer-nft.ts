@@ -5,7 +5,7 @@ import { defaultNetwork } from "../default"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { mplCore, transferV1 } from "@metaplex-foundation/mpl-core"
 import { keypairIdentity, publicKey } from "@metaplex-foundation/umi"
-import { NFTCollections } from "@/redux"
+import { StateNFTCollections } from "@/redux"
 import { TransferResult } from "../types"
 import base58 from "bs58"
 
@@ -16,7 +16,7 @@ export interface TransferNFTParams {
     privateKey: string;
     recipientAddress: string;
     collectionKey: string;
-    collections: NFTCollections;
+    collections: StateNFTCollections;
 }
 
 export const transferSolanaNFT = async ({
@@ -38,7 +38,7 @@ export const transferSolanaNFT = async ({
     const { signature } = await transferV1(umi, {
         asset: publicKey(nftAddress),
         newOwner: publicKey(recipientAddress),
-        collection: publicKey(collection.collectionAddress),
+        collection: publicKey(collection.address),
     }).sendAndConfirm(umi)
     return {
         txHash: base58.encode(signature)

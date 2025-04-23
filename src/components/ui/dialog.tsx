@@ -61,7 +61,7 @@ const DialogHeader = ({
     <div
         className={cn(
             "flex flex-col space-y-1.5 text-center sm:text-left",
-            "uppercase mb-2",
+            "mb-2",
             className
         )}
         {...props}

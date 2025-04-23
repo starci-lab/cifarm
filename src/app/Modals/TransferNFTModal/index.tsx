@@ -24,6 +24,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { AtSignIcon } from "lucide-react"
 import { useGraphQLQueryStaticSwr, useTransferNFTFormik } from "@/hooks"
 import { getNFTImage } from "@/app/utils"
+
 export const TransferNFTModal: FC = () => {
     const accounts = useAppSelector(
         (state) => state.sessionReducer.accounts.accounts
@@ -42,6 +43,9 @@ export const TransferNFTModal: FC = () => {
     )
     const collections = useAppSelector(
         (state) => state.sessionReducer.nftCollections
+    )
+    const collectionKey = useAppSelector(
+        (state) => state.sessionReducer.collectionKey
     )
     if (!account) {
         return null
@@ -62,13 +66,13 @@ export const TransferNFTModal: FC = () => {
                                     if (!formik.values.nft) return ""
                                     if (!swrStatic.data?.data) return ""
                                     return getNFTImage({
-                                        collectionKey: formik.values.nft?.collectionKey,
+                                        collectionKey,
                                         nft: formik.values.nft,
                                         collections,
                                         staticData: swrStatic.data?.data,
                                     })
                                 })()}
-                                className="w-12 h-12 rounded-md"
+                                className="w-12 h-12 rounded-md object-contain"
                             />
                             <div>
                                 {formik.values.nft?.name}

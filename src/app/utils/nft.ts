@@ -5,12 +5,12 @@ import {
     FruitInfoSchema,
     StaticData,
 } from "@/modules/entities"
-import { NFTCollections } from "@/redux"
+import { StateNFTCollections } from "@/redux"
 
 export interface GetNFTImageParams {
   collectionKey: string;
   nft: NFTData;
-  collections: NFTCollections;
+  collections: StateNFTCollections;
   staticData: StaticData;
 }
 

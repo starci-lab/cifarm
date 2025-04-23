@@ -41,6 +41,8 @@ export enum FruitId {
     DragonFruit = "dragonFruit",
     //j97fruit
     Jackfruit = "jackfruit",
+    Pomegranate = "pomegranate",
+    Rambutan = "rambutan",
 }
 
 // Daily Reward Enum

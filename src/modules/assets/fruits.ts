@@ -542,4 +542,270 @@ export const assetFruitMap: Record<FruitId, AssetFruitData> = {
             },
         },
     },
+    [FruitId.Pomegranate]: {
+        name: "Pomegranate",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-pomegranate-1",
+                                assetUrl: `${PREFIX}/pomegranate/1.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-pomegranate-2",
+                                assetUrl: `${PREFIX}/pomegranate/2.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-pomegranate-3",
+                                assetUrl: `${PREFIX}/pomegranate/3.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-pomegranate-4",
+                                assetUrl: `${PREFIX}/pomegranate/4.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-pomegranate-5",
+                                assetUrl: `${PREFIX}/pomegranate/5.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "fruit-pomegranate-1",
+                    assetUrl: `${PREFIX}/pomegranate/1.png`,
+                },
+                1: {
+                    assetKey: "fruit-pomegranate-2",
+                    assetUrl: `${PREFIX}/pomegranate/2.png`,
+                },
+                2: {
+                    assetKey: "fruit-pomegranate-3",
+                    assetUrl: `${PREFIX}/pomegranate/3.png`,
+                },
+                3: {
+                    assetKey: "fruit-pomegranate-4",
+                    assetUrl: `${PREFIX}/pomegranate/4.png`,
+                },
+                4: {
+                    assetKey: "fruit-pomegranate-5",
+                    assetUrl: `${PREFIX}/pomegranate/5.png`,
+                },
+            },
+        },
+    },
+    [FruitId.Rambutan]: {
+        name: "Rambutan",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-rambutan-1",
+                                assetUrl: `${PREFIX}/rambutan/1.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-rambutan-2",
+                                assetUrl: `${PREFIX}/rambutan/2.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-rambutan-3",
+                                assetUrl: `${PREFIX}/rambutan/3.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-rambutan-4",
+                                assetUrl: `${PREFIX}/rambutan/4.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "fruit-rambutan-5",
+                                assetUrl: `${PREFIX}/rambutan/5.png`,
+                                packageId: 1,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -170,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: 0,
+                                y: -170,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "fruit-rambutan-1",
+                    assetUrl: `${PREFIX}/rambutan/1.png`,
+                },
+                1: {
+                    assetKey: "fruit-rambutan-2",
+                    assetUrl: `${PREFIX}/rambutan/2.png`,
+                },
+                2: {
+                    assetKey: "fruit-rambutan-3",
+                    assetUrl: `${PREFIX}/rambutan/3.png`,
+                },
+                3: {
+                    assetKey: "fruit-rambutan-4",
+                    assetUrl: `${PREFIX}/rambutan/4.png`,
+                },
+                4: {
+                    assetKey: "fruit-rambutan-5",
+                    assetUrl: `${PREFIX}/rambutan/5.png`,
+                },
+            },
+        },
+    }
 }
