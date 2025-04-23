@@ -179,6 +179,7 @@ export const ShopModal = () => {
                                 ownership={placedItemCount}
                                 limit={selectedLimit}
                                 showLimit={true}
+                                
                             />
                         )
                     }}
@@ -288,6 +289,7 @@ export const ShopModal = () => {
                                     imageUrl={
                                         assetShopMap.fruits[fruit.displayId]?.base.assetUrl ?? ""
                                     }
+                                    disabled={(totalPlacedItemCount || 0) >= (totalLimit || 0)}
                                     price={fruit.price ?? 0}
                                     unlockedLevel={fruit.unlockLevel}
                                 />
@@ -335,6 +337,7 @@ export const ShopModal = () => {
                                     imageUrl={
                                         assetShopMap.tiles[tile.displayId]?.base.assetUrl ?? ""
                                     }
+                                    disabled={(totalPlacedItemCount || 0) >= (totalLimit || 0)}
                                     price={tile.price ?? 0}
                                     unlockedLevel={tile.unlockLevel ?? 0}
                                 />

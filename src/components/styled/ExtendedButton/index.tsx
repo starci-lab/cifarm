@@ -17,49 +17,67 @@ export const ExtendedButton = ({
     ...props
 }: ExtendedButtonProps) => {
     const ref = useRef<HTMLButtonElement | null>(null)
-    
+
     useEffect(() => {
-        if (!onTap) {
-            return
-        }
-        const handleEffect = async () => {
+        if (!onTap) return
+    
+        let hammer: HammerManager | null = null
+        let isMounted = true
+        const setup = async () => {
             const Hammer = (await import("hammerjs")).default
-            const hammer = new Hammer(ref.current as HTMLElement)
-            hammer.on("tap", () => {
-                onTap?.()
-            })
-            return () => {
+            if (!isMounted || !ref.current) return
+            hammer = new Hammer(ref.current)
+            hammer.on("tap", onTap)
+        }
+        setup()
+        return () => {
+            isMounted = false
+            if (hammer) {
+                hammer.off("tap")
                 hammer.destroy()
             }
         }
-        handleEffect()
     }, [onTap])
 
     const pressTime = useRef(0)
-    
     useEffect(() => {
-        if (!onPress) {
-            return
-        }
-        const handleEffect = async () => {
+        if (!onPress) return
+    
+        let hammer: HammerManager | null = null
+        let isMounted = true
+    
+        const setup = async () => {
             const Hammer = (await import("hammerjs")).default
-            const hammer = new Hammer(ref.current as HTMLElement)
-        
+            if (!isMounted || !ref.current) return
+    
+            hammer = new Hammer(ref.current)
             hammer.on("press", (event) => {
                 pressTime.current = event.deltaTime
             })
             hammer.on("pressup", (event) => {
-                onPress?.(event.deltaTime - pressTime.current)
+                onPress(event.deltaTime - pressTime.current)
             })
-            return () => {
+        }
+    
+        setup()
+    
+        return () => {
+            isMounted = false
+            if (hammer) {
+                hammer.off("press")
+                hammer.off("pressup")
                 hammer.destroy()
             }
         }
-        handleEffect()
     }, [onPress])
 
     return (
-        <Button ref={ref} {...props} disabled={isLoading || props.disabled} className={cn(props.className)}>
+        <Button
+            ref={ref}
+            {...props}
+            disabled={isLoading || props.disabled}
+            className={cn(props.className)}
+        >
             {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
             {children}
         </Button>

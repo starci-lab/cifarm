@@ -37,7 +37,9 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
 
     const goldEnough = (userSwr.data?.data.user.golds ?? 0) >= price
     const levelEnough = (userSwr.data?.data.user.level ?? 0) >= unlockedLevel
-    const _disabled = disabled || (!goldEnough || !levelEnough || (!!limit && !!ownership && ownership >= limit))
+    const _disabled = disabled || (!goldEnough || !levelEnough || (
+        typeof ownership === "number" && typeof limit === "number" && ownership >= limit
+    ))
     const locked = !levelEnough
 
     if (!staticSwr.data) {
