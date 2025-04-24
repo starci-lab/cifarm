@@ -160,8 +160,7 @@ const query = gql`
       price
       unlockLevel
       perennialCount
-      minHarvestQuantity
-      maxHarvestQuantity
+      harvestQuantity
       basicHarvestExperiences
       qualityHarvestExperiences
       availableInShop
@@ -172,8 +171,7 @@ const query = gql`
       growthStageDuration
       price
       unlockLevel
-      minHarvestQuantity
-      maxHarvestQuantity
+      harvestQuantity
       basicHarvestExperiences
       qualityHarvestExperiences
       availableInShop
@@ -188,8 +186,7 @@ const query = gql`
       fertilizerTime
       price
       unlockLevel
-      minHarvestQuantity
-      maxHarvestQuantity
+      harvestQuantity
       basicHarvestExperiences
       qualityHarvestExperiences
       availableInShop
@@ -206,10 +203,7 @@ const query = gql`
       growthTime
       availableInShop
       hungerTime
-      qualityProductChanceStack
-      qualityProductChanceLimit
-      minHarvestQuantity
-      maxHarvestQuantity
+      harvestQuantity
       basicHarvestExperiences
       qualityHarvestExperiences
       type
@@ -243,8 +237,6 @@ const query = gql`
     tiles {
       displayId
       id
-      qualityProductChanceStack
-      qualityProductChanceLimit
       price
       displayId
       placedItemTypeKey
@@ -292,7 +284,6 @@ const query = gql`
       maxStack
       isQuality
       goldAmount
-      tokenAmount
       type
       crop
       animal
@@ -339,31 +330,26 @@ const query = gql`
     dailyRewardInfo {
       day1 {
         golds
-        tokens
         day
         lastDay
       }
       day2 {
         golds
-        tokens
         day
         lastDay
       }
       day3 {
         golds
-        tokens
         day
         lastDay
       }
       day4 {
         golds
-        tokens
         day
         lastDay
       }
       day5 {
         golds
-        tokens
         day
         lastDay
       }

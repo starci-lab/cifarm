@@ -24,6 +24,8 @@ const query1 = gql`
         currentStage
         currentState
         harvestQuantityRemaining
+        harvestQuantityDesired
+        harvestQuantityMin
         isFertilized
         isQuality
         thieves
@@ -55,6 +57,8 @@ const query1 = gql`
         currentYieldTime
         currentState
         harvestQuantityRemaining
+        harvestQuantityDesired
+        harvestQuantityMin
         isAdult
         isQuality
         thieves
@@ -69,6 +73,8 @@ const query1 = gql`
         currentStageTimeElapsed
         currentState
         harvestQuantityRemaining
+        harvestQuantityDesired
+        harvestQuantityMin
         isQuality
         thieves
         qualityYield

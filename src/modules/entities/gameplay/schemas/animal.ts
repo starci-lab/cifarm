@@ -18,8 +18,6 @@ export interface AnimalSchema extends StaticAbstractSchema<AnimalId> {
     sellPrice?: number
     hungerTime: number
     unlockLevel: number
-    qualityProductChanceStack: number
-    qualityProductChanceLimit: number
     minHarvestQuantity: number
     maxHarvestQuantity: number
     basicHarvestExperiences: number

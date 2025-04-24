@@ -23,4 +23,6 @@ export interface AnimalInfoSchema {
     diseaseResistance: number
     harvestYieldBonus: number
     harvestCount: number
+    harvestQuantityDesired: number
+    harvestQuantityMin: number
 }

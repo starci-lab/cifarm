@@ -1,5 +1,6 @@
 import { Card, CardContent, ScaledImage, TooltipTrigger, Tooltip, TooltipContent } from "@/components"
 import { cn } from "@/lib/utils"
+import { assetIconMap, AssetIconId } from "@/modules/assets"
 import React, { FC } from "react"
 
 export enum TintColor {
@@ -23,6 +24,7 @@ interface ItemCardProps {
   name?: string;
   description?: string;
   showTooltip?: boolean;
+  isQuality?: boolean;
 }
 
 export const ItemCard: FC<ItemCardProps> = ({
@@ -61,6 +63,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
     onClick,
     tint,
     tintColor,
+    isQuality,
     hideCardContentBg = false,
     classNames = {},
 }) => {
@@ -90,6 +93,21 @@ const ItemCardCore: FC<ItemCardProps> = ({
           (() => {
               return (
                   <div className="absolute w-12 h-12">
+                      {isQuality && (
+                          <ScaledImage
+                              src={assetIconMap[AssetIconId.PurpleStar].base.assetUrl}
+                              className="absolute top-0 left-0 z-20"
+                              scale={0.75}
+                              style={{
+                                  filter: tint ? tintMap[tintColor ?? TintColor.Default] : "grayscale(0%)",
+                              }}
+                          />
+                      )}
+                      {stackable && (
+                          <div className="absolute bottom-0 right-0 bg-background/50 text-xs grid place-items-center rounded-md p-0.5">
+                              {quantity}
+                          </div>
+                      )}
                       <ScaledImage
                           src={imageUrl ?? ""}
                           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"

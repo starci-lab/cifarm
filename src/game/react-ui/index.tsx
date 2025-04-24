@@ -7,6 +7,7 @@ import { Toolbar } from "./Toolbar"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { PROFILE_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
+import { getMaxEnergy } from "@/modules/common"
 
 export const ReactUI: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)
@@ -37,9 +38,8 @@ export const ReactUI: FC = () => {
                                 </div>
                             </div>
                             <div className="grid gap-4 absolute top-6 right-6">
-                                <ResourceCard amount={user?.energy ?? 0} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
-                                <ResourceCard amount={user?.golds ?? 0} iconImgSrc={assetIconMap[AssetIconId.Gold].base.assetUrl}/>
-                                <ResourceCard amount={user?.tokens ?? 0} iconImgSrc={assetIconMap[AssetIconId.Token].base.assetUrl}/>
+                                <ResourceCard text={`${user?.energy}/${getMaxEnergy(user?.level ?? 0)}`} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
+                                <ResourceCard text={`${user?.golds}`} iconImgSrc={assetIconMap[AssetIconId.Gold].base.assetUrl}/>
                             </div>
                         </div>
                     ) : (
@@ -57,11 +57,11 @@ export const ReactUI: FC = () => {
                                 </div>
                             </div>
                             <div className="grid gap-4 absolute top-6 right-6">
-                                <ResourceCard amount={user?.energy ?? 0} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
+                                <ResourceCard text={`${user?.energy}/${getMaxEnergy(user?.level ?? 0)}`} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col gap-4 absolute top-[175px] left-6">
+                    <div className="flex flex-col gap-4 absolute top-[150px] left-6">
                         {leftButtons
                             .filter((button) => button.availableIn.includes(playerContext))
                             .map((button, index) => (
@@ -73,7 +73,7 @@ export const ReactUI: FC = () => {
                                 />
                             ))}
                     </div>
-                    <div className="flex flex-col gap-4 absolute top-[175px] right-6">
+                    <div className="flex flex-col gap-4 absolute top-[150px] right-6">
                         {rightButtons
                             .filter((button) => button.availableIn.includes(playerContext))
                             .map((button, index) => (

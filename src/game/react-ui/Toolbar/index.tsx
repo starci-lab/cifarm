@@ -172,6 +172,12 @@ export const Toolbar: FC = () => {
                                 imageUrl={
                                     assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
                                 }
+                                isQuality={(() => {
+                                    const product = staticSwr.data?.data.products.find(
+                                        (product) => product.id === inventoryType?.product
+                                    )
+                                    return product?.isQuality
+                                })()}
                                 tint={toolLike.id !== selectedToolId}
                                 hideCardContentBg={true}
                                 frameOnly={false}

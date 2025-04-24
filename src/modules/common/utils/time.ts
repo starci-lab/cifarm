@@ -59,3 +59,7 @@ export const getNextMinuteCronExecution = (minutes: Array<number> = [0, 15, 30, 
 
     return nextCronTime.diff(now, "second")
 }
+
+export const getMaxEnergy = (level: number = 1): number => {
+    return 50 + (level - 1) * 3
+}

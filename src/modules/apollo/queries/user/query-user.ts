@@ -17,7 +17,6 @@ const query1 = gql`
       energyRegenTime
       experiences
       golds
-      tokens
       level
       referralUserId
       referredUserIds

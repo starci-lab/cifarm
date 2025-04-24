@@ -33,9 +33,12 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
             onClick={() => {
                 dispatch(setSelectedDeliveryInventoryId(inventory?.id))
             }}
-            classNames={{
-                
-            }}
+            isQuality={(() => {
+                const product = staticSwr.data?.data.products.find(
+                    (product) => product.id === inventoryType?.product
+                )
+                return product?.isQuality
+            })()}
             frameOnly={!inventoryType}
         />
     )

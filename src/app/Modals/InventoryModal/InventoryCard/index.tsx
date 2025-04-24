@@ -70,6 +70,12 @@ export const InventoryCard: FC<InventoryCardProps> = ({
                     )
                 }
             }}
+            isQuality={(() => {
+                const product = staticSwr.data?.data.products.find(
+                    (product) => product.id === inventoryType?.product
+                )
+                return product?.isQuality
+            })()}
             tintColor={TintColor.Green}
             frameOnly={!inventoryType}
         />

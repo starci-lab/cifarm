@@ -7,7 +7,6 @@ export interface UserSchema extends AbstractSchema {
     network: Network;
     accountAddress: string;
     golds: number;
-    tokens: number;
     experiences: number;
     energy: number;
     energyRegenTime: number;

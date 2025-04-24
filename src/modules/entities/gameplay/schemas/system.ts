@@ -103,7 +103,6 @@ export interface EnergyRegen {
 
 export interface DailyReward {
   golds: number;
-  tokens: number;
   day: number;
   lastDay: boolean;
 }

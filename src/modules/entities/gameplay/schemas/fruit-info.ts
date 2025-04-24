@@ -13,4 +13,6 @@ export interface FruitInfoSchema extends AbstractSchema {
   growthAcceleration: number
   harvestYieldBonus: number
   diseaseResistance: number
+  harvestQuantityDesired: number
+  harvestQuantityMin: number
 }

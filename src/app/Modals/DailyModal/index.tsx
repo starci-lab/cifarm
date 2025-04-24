@@ -90,18 +90,6 @@ export const DailyModal: FC = () => {
                                     }
                                 </div>
                             </div>
-                            <div className="flex gap-1 items-center">
-                                <Image
-                                    src={assetIconMap[AssetIconId.Token].base.assetUrl}
-                                    className="w-5 h-5"
-                                />
-                                <div className="text-sm">
-                                    {
-                                        staticSwr.data?.data.dailyRewardInfo[DailyRewardId.Day5]
-                                            .tokens
-                                    }
-                                </div>
-                            </div>
                         </div>
                     </Card>
                 </div>

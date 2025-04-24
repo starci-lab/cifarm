@@ -232,6 +232,9 @@ export class PlacedItemObject extends ContainerLite {
                 throw new Error("Product not found")
             }
 
+            // update the icon
+            // for state 0-3, use the icon in the fruit asset map
+            const text = `${this.nextPlacedItem.fruitInfo.harvestQuantityRemaining}/${this.nextPlacedItem.fruitInfo.harvestQuantityDesired}`
             // if the current state is different from the previous state
             if (
                 this.currentPlacedItem?.fruitInfo?.currentState !==
@@ -246,9 +249,14 @@ export class PlacedItemObject extends ContainerLite {
                     if (!this.placedItemType) {
                         throw new Error("Placed item type not found")
                     }
-                    const { x: centerX, y: centerY } = this.getCenterPosition(this.placedItemType.sizeX, this.placedItemType.sizeY)
+                    const { x: centerX, y: centerY } = this.getCenterPosition(
+                        this.placedItemType.sizeX,
+                        this.placedItemType.sizeY
+                    )
                     const { x: offsetX = 0, y: offsetY = 0 } = {
-                        ...assetFruitMap[fruit.displayId].phaser.map.stages[this.nextPlacedItem.fruitInfo.currentStage].bubbleStateConfig?.extraOffsets,
+                        ...assetFruitMap[fruit.displayId].phaser.map.stages[
+                            this.nextPlacedItem.fruitInfo.currentStage
+                        ].bubbleStateConfig?.extraOffsets,
                     }
                     this.bubbleState = this.scene.rexUI.add
                         .overlapSizer({
@@ -264,8 +272,6 @@ export class PlacedItemObject extends ContainerLite {
                 } else {
                     this.bubbleState.removeAll(true)
                 }
-                // update the icon
-                // for state 0-3, use the icon in the fruit asset map
                 if (
                     this.nextPlacedItem.fruitInfo.currentState !==
           FruitCurrentState.FullyMatured
@@ -292,10 +298,6 @@ export class PlacedItemObject extends ContainerLite {
                             .layout()
                     }
                 } else {
-                    const text = `${
-                        this.nextPlacedItem.fruitInfo.harvestQuantityRemaining || 0
-                    }/${fruit.maxHarvestQuantity || 0}`
-
                     this.quantityText = new Text({
                         baseParams: {
                             scene: this.scene,
@@ -327,13 +329,7 @@ export class PlacedItemObject extends ContainerLite {
                 if (!this.quantityText) {
                     throw new Error("Quantity text not found")
                 }
-                this.quantityText
-                    .setText(
-                        `${this.nextPlacedItem.fruitInfo?.harvestQuantityRemaining || 0}/${
-                            fruit.maxHarvestQuantity || 0
-                        }`
-                    )
-                    .setDepth(this.depth + 31)
+                this.quantityText.setText(text).setDepth(this.depth + 31)
             }
         } else {
             // if bubble state is present, remove it
@@ -500,7 +496,6 @@ export class PlacedItemObject extends ContainerLite {
         if (
             this.nextPlacedItem.plantInfo.currentState !== PlantCurrentState.Normal
         ) {
-            let maxHarvestQuantity = 0
             switch (this.nextPlacedItem.plantInfo.plantType) {
             case PlantType.Crop: {
                 const crop = this.crops.find((crop) => {
@@ -512,7 +507,6 @@ export class PlacedItemObject extends ContainerLite {
                 if (!crop) {
                     throw new Error("Crop not found")
                 }
-                maxHarvestQuantity = crop.maxHarvestQuantity
                 break
             }
             case PlantType.Flower: {
@@ -525,7 +519,6 @@ export class PlacedItemObject extends ContainerLite {
                 if (!flower) {
                     throw new Error("Flower not found")
                 }
-                maxHarvestQuantity = flower.maxHarvestQuantity
                 break
             }
             }
@@ -625,9 +618,7 @@ export class PlacedItemObject extends ContainerLite {
                             .layout()
                     }
                 } else {
-                    const text = `${
-                        this.nextPlacedItem.plantInfo.harvestQuantityRemaining || 0
-                    }/${maxHarvestQuantity || 0}`
+                    const text = `${this.nextPlacedItem.plantInfo.harvestQuantityRemaining}/${this.nextPlacedItem.plantInfo.harvestQuantityDesired}`
 
                     this.quantityText = new Text({
                         baseParams: {
@@ -661,9 +652,7 @@ export class PlacedItemObject extends ContainerLite {
                     throw new Error("Quantity text not found")
                 }
                 this.quantityText.setText(
-                    `${this.nextPlacedItem.plantInfo?.harvestQuantityRemaining || 0}/${
-                        maxHarvestQuantity || 0
-                    }`
+                    `${this.nextPlacedItem.plantInfo.harvestQuantityRemaining}/${this.nextPlacedItem.plantInfo.harvestQuantityDesired}`
                 )
             }
         } else {
@@ -859,7 +848,7 @@ export class PlacedItemObject extends ContainerLite {
                 } else {
                     const text = `${
                         this.nextPlacedItem.animalInfo.harvestQuantityRemaining || 0
-                    }/${animal.maxHarvestQuantity || 0}`
+                    }/${this.nextPlacedItem.animalInfo.harvestQuantityDesired}`
 
                     this.quantityText = new Text({
                         baseParams: {
@@ -894,7 +883,7 @@ export class PlacedItemObject extends ContainerLite {
                 this.quantityText
                     .setText(
                         `${this.nextPlacedItem.animalInfo?.harvestQuantityRemaining || 0}/${
-                            animal.maxHarvestQuantity || 0
+                            this.nextPlacedItem.animalInfo.harvestQuantityDesired
                         }`
                     )
                     .setDepth(this.depth + 31)
