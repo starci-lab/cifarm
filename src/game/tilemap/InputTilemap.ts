@@ -346,7 +346,6 @@ export class InputTilemap extends ItemTilemap {
                 if (selectedTool.default) {
                     return
                 }
-
                 switch (data.object.placedItemType.type) {
                 case PlacedItemType.Tile:
                     this.handlePressOnTile({ data })
@@ -1621,6 +1620,7 @@ export class InputTilemap extends ItemTilemap {
         ) as ToolLike
 
         const inventoryType = this.getInventoryTypeFromTool(selectedTool)
+        console.log(inventoryType)
         if (!inventoryType) {
             throw new Error(
                 `Inventory type not found for inventory id: ${selectedTool.id}`

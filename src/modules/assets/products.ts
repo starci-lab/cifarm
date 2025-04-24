@@ -474,4 +474,62 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
             },
         },
     },
-}
+    [ProductId.Rambutan]: {
+        name: "Rambutan",
+        description: "Fresh rambutan with sweet taste.",
+        base: {
+            assetKey: "products-rambutan",
+            assetUrl: `${PREFIX}/rambutan.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-rambutan",
+                assetUrl: `${PREFIX}/rambutan.png`,
+            },
+        },
+    },
+    [ProductId.RambutanQuality]: {
+        name: "Quality Rambutan",
+        description: "Premium rambutan with enhanced sweetness.",
+        base: {
+            assetKey: "products-rambutan-quality",
+            assetUrl: `${PREFIX}/rambutan.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-rambutan-quality",
+                assetUrl: `${PREFIX}/rambutan.png`,
+                useExisting: true,
+            },
+        },
+    },
+    [ProductId.Pomegranate]: {
+        name: "Pomegranate",
+        description: "Fresh pomegranate with sweet taste.",
+        base: {
+            assetKey: "products-pomegranate",
+            assetUrl: `${PREFIX}/pomegranate.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pomegranate",
+                assetUrl: `${PREFIX}/pomegranate.png`,
+            },
+        },
+    },
+    [ProductId.PomegranateQuality]: {
+        name: "Quality Pomegranate",
+        description: "Premium pomegranate with enhanced sweetness.",
+        base: {
+            assetKey: "products-pomegranate-quality",
+            assetUrl: `${PREFIX}/pomegranate.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pomegranate-quality",
+                assetUrl: `${PREFIX}/pomegranate.png`,
+                useExisting: true,
+            },
+        },
+    },
+}   

@@ -121,6 +121,10 @@ export enum ProductId {
     DragonFruitQuality = "dragonFruitQuality",
     Jackfruit = "jackfruit",
     JackfruitQuality = "jackfruitQuality",
+    Rambutan = "rambutan",
+    RambutanQuality = "rambutanQuality",
+    Pomegranate = "pomegranate",
+    PomegranateQuality = "pomegranateQuality",
 }
 
 export enum SystemId {
