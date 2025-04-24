@@ -60,15 +60,7 @@ export const DownloadingModal: FC = () => {
                 textureDatas.push(...fruitTextureDatas)
                 const productTextureDatas = Object.values(assetProductMap)
                     .flatMap((product) =>
-                        Object.values(product.phaser.base).map((stage) => {
-                            if (!stage.mapData) {
-                                throw new Error("Texture data is undefined")
-                            }
-                            if (!stage.mapData.texture) {
-                                throw new Error("Texture data is undefined")
-                            }
-                            return stage.mapData.texture
-                        })
+                        product.phaser.base
                     ).filter(
                         (textureData) =>
                             textureData?.packageId === downloadPackageModal.packageId
@@ -108,7 +100,6 @@ export const DownloadingModal: FC = () => {
                     <DialogTitle>
                         <ModalHeader
                             title="Downloading"
-                            description="Downloading the package..."
                         />
                     </DialogTitle>
                 </DialogHeader>
