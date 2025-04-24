@@ -4,7 +4,7 @@ import { computeDenomination } from "@/modules/common"
 import { PublicKey } from "@solana/web3.js"
 import { Platform, chainKeyToPlatform } from "../common"
 import { DefaultToken } from "../map"
-import { Tokens } from "@/redux"
+import { StateTokens } from "@/redux"
 import { defaultNetwork } from "../default"
 
 export interface GetBalanceParams {
@@ -16,7 +16,7 @@ export interface GetBalanceParams {
   network?: Network;
   accountAddress: string;
   //token list for the chainKey, if tokenKey is set but tokens not set, it will throw an error
-  tokens?: Tokens;
+  tokens?: StateTokens;
 }
 
 export const getSolanaBalance = async ({
