@@ -33,7 +33,7 @@ import {
     useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation,
-    useGraphQLMutationCreateSolanaNFTStarterBoxTransactionSwrMutation
+    useGraphQLMutationCreatePurchaseSolanaNFTStarterBoxTransactionSwrMutation
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -91,7 +91,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),
             SIGN_UMI_SERIALIZED_TX_SWR_MUTATION: useSignUmiSerializedTxSwrMutation(),
             GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendPurchaseSolanaNFTStarterBoxTransactionSwrMutation(),
-            GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateSolanaNFTStarterBoxTransactionSwrMutation(),
+            GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreatePurchaseSolanaNFTStarterBoxTransactionSwrMutation(),
             MUTATION_GRAPHQL_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateShipSolanaTransactionSwrMutation(),
             MUTATION_GRAPHQL_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendShipSolanaTransactionSwrMutation(),
             MUTATION_GRAPHQL_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation(),

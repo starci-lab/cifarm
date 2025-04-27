@@ -9,7 +9,6 @@ import {
     Spacer,
     List,
     Title,
-    NFTValidatedBadge,
 } from "@/components"
 import {
     toast,
@@ -135,7 +134,6 @@ const Page: FC = () => {
                 <Spacer y={4} />
                 <div className="flex gap-2 items-center">
                     {nft.wrapped && <WrappedBadge />}
-                    {nft.validated && <NFTValidatedBadge />}
                 </div>
                 <Spacer y={6} />
                 <div className="grid grid-cols-4 gap-2">

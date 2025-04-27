@@ -7,25 +7,25 @@ import {
     mutationCreatePurchaseSolanaNFTStarterBoxTransaction,
 } from "@/modules/apollo"
 
-export type UseGraphQLCreateSolanaNFTStarterBoxTransactionMutationArgs =
+export type UseGraphQLCreatePurchaseSolanaNFTStarterBoxTransactionMutationArgs =
   MutationCreatePurchaseSolanaNFTStarterBoxTransactionParams;
 
-export const useGraphQLMutationCreateSolanaNFTStarterBoxTransactionSwrMutation =
+export const useGraphQLMutationCreatePurchaseSolanaNFTStarterBoxTransactionSwrMutation =
   (): UseSWRMutation<
     CreatePurchaseSolanaNFTStarterBoxTransactionResponse,
-    UseGraphQLCreateSolanaNFTStarterBoxTransactionMutationArgs
+    UseGraphQLCreatePurchaseSolanaNFTStarterBoxTransactionMutationArgs
   > => {
       const swrMutation = useSWRMutation(
           v4(),
           async (
               _: string,
-              extraArgs: { arg: UseGraphQLCreateSolanaNFTStarterBoxTransactionMutationArgs }
+              extraArgs: { arg: UseGraphQLCreatePurchaseSolanaNFTStarterBoxTransactionMutationArgs }
           ) => {
               const params = { ...extraArgs.arg }
               const result = await mutationCreatePurchaseSolanaNFTStarterBoxTransaction(params)
               if (!result.data) {
                   throw new Error(
-                      "No data returned from create solana nft starter box transaction mutation"
+                      "No data returned from create purchase solana nft starter box transaction mutation"
                   )
               }
               return result.data.createPurchaseSolanaNFTStarterBoxTransaction

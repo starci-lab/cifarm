@@ -254,9 +254,12 @@ export const SignTransactionModal: FC = () => {
                 }
                 case TransactionType.WrapSolanaMetaplexNFT: {
                     const { serializedTx } = data as WrapSolanaMetaplexNFTData
+                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
+                        serializedTx,
+                    })
                     // decode the serializedTx
                     if (postActionHook) {
-                        txHash = await postActionHook(serializedTx)
+                        txHash = await postActionHook(signedSerializedTx)
                     } else {
                         const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
                             serializedTx,
@@ -267,12 +270,15 @@ export const SignTransactionModal: FC = () => {
                 }
                 case TransactionType.UnwrapSolanaMetaplexNFT: {
                     const { serializedTx } = data as UnwrapSolanaMetaplexNFTData
+                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
+                        serializedTx,
+                    })
                     // decode the serializedTx
                     if (postActionHook) {
-                        txHash = await postActionHook(serializedTx)
+                        txHash = await postActionHook(signedSerializedTx)
                     } else {
                         const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-                            serializedTx,
+                            serializedTx: signedSerializedTx,
                         })
                         txHash = txHashResponse
                     }

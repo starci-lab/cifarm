@@ -5,11 +5,11 @@ import { UseSWR } from "./types"
 
 export const useNativeCoinGeckoSWR = (): UseSWR<CoinGeckoCoinData, ChainKey> => {
     //state to indicate the chain key
+    console.log(defaultChainKey)
     const [params, setParams] = useState(defaultChainKey)
-
     //fetch the data from coingecko api
     const swr = useSWR<CoinGeckoCoinData>(
-        params ?? null,
+        params || null,
         async () => {
             try {
                 return await getNativeCoinData(params)

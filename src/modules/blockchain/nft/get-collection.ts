@@ -27,7 +27,6 @@ export interface NFTData {
     nftAddress: string;
     attributes: Array<Attribute>
     wrapped: boolean
-    validated?: boolean
 }
 
 export interface CollectionResponse {
