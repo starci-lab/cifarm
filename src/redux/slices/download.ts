@@ -19,7 +19,7 @@ export const downloadSlice = createSlice({
     name: "download",
     initialState,
     reducers: {
-       addDownloadProgress: (state, action: PayloadAction<{ key: string, data: DownloadData }>) => {
+        addDownloadProgress: (state, action: PayloadAction<{ key: string, data: DownloadData }>) => {
             state.downloadProgresses = {
                 ...state.downloadProgresses,
                 [action.payload.key]: action.payload.data

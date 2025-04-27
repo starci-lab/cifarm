@@ -29,7 +29,7 @@ export interface AssetShopData {
   pets: Partial<Record<PetId, ShopData>>;
 }
 
-const PREFIX = "shop"
+const PREFIX = "/shop"
 const PREFIX_CROPS = `${PREFIX}/crops`
 const PREFIX_FLOWERS = `${PREFIX}/flowers`
 const PREFIX_ANIMALS = `${PREFIX}/animals`

@@ -1,5 +1,6 @@
 import { Events } from "phaser"
 import { PlacedItemSchema } from "@/modules/entities"
+
 // external event emitter take care of events between Phaser and React
 export const SceneEventEmitter = new Events.EventEmitter()
 

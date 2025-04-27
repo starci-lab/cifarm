@@ -1,7 +1,7 @@
 import { ProductId } from "../entities"
 import { AssetData, AssetTextureData, Metadata } from "./types"
 
-const PREFIX = "products"
+const PREFIX = "/products"
 export interface AssetProductsData extends Metadata {
     base: AssetData
     phaser: {

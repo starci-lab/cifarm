@@ -5,6 +5,7 @@ import {
     HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION,
     SEND_UMI_SERIALIZED_TX_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
+    SIGN_UMI_SERIALIZED_TX_SWR_MUTATION,
     TRANSFER_NFT_SWR_MUTATION,
     TRANSFER_TOKEN_SWR_MUTATION,
 } from "@/app/constants"
@@ -12,14 +13,16 @@ import { truncateString } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Image, List, Snippet, Spacer } from "@/components"
 import {
-    FreezeSolanaMetaplexNFTData,
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
     PurchaseSolanaNFTStarterBoxData,
+    ShipSolanaData,
     TransactionType,
     TransferNFTData,
     TransferTokenData,
+    UnwrapSolanaMetaplexNFTData,
     useAppSelector,
+    WrapSolanaMetaplexNFTData,
 } from "@/redux"
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
@@ -29,6 +32,7 @@ import {
     useHoneycombSendTransactionSwrMutation,
     useRouterWithSearchParams,
     useSendUmiSerializedTxSwrMutation,
+    useSignUmiSerializedTxSwrMutation,
     useTransferNFTSwrMutation,
     useTransferTokenSwrMutation,
 } from "@/hooks"
@@ -74,6 +78,10 @@ export const SignTransactionModal: FC = () => {
     ReturnType<typeof useSendUmiSerializedTxSwrMutation>
   >(SEND_UMI_SERIALIZED_TX_SWR_MUTATION)        
 
+    const { swrMutation: signUmiSerializedTxSwrMutation } = useSingletonHook<
+    ReturnType<typeof useSignUmiSerializedTxSwrMutation>
+  >(SIGN_UMI_SERIALIZED_TX_SWR_MUTATION)    
+
     const { swrMutation: transferNFTSwrMutation } = useSingletonHook<
     ReturnType<typeof useTransferNFTSwrMutation>
   >(TRANSFER_NFT_SWR_MUTATION)
@@ -93,7 +101,9 @@ export const SignTransactionModal: FC = () => {
     const extraAction = useAppSelector(
         (state) => state.modalReducer.signTransactionModal.extraAction
     )
-
+    const postActionHook = useAppSelector(
+        (state) => state.modalReducer.signTransactionModal.postActionHook
+    )
     const network = useAppSelector((state) => state.sessionReducer.network)
 
     const { toast } = useToast()
@@ -212,21 +222,61 @@ export const SignTransactionModal: FC = () => {
                 }
                 case TransactionType.PurchaseSolanaNFTStarterBox: {
                     const { serializedTx } = data as PurchaseSolanaNFTStarterBoxData
-                    // decode the serializedTx
-                    const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
                         serializedTx,
                     })
-                    txHash = txHashResponse
+                    // decode the serializedTx
+                    if (postActionHook) {
+                        txHash = await postActionHook(signedSerializedTx)
+                    } else {
+                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                            serializedTx: signedSerializedTx,
+                        })
+                        txHash = txHashResponse
+                    }
                     break
                 }
-                case TransactionType.FreezeSolanaMetaplexNFT: {
-                    const { serializedTx } = data as FreezeSolanaMetaplexNFTData
-                    // decode the serializedTx
-                    const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                case TransactionType.ShipSolana: {
+                    const { serializedTx } = data as ShipSolanaData
+                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
                         serializedTx,
                     })
-                    txHash = txHashResponse
+                    // decode the serializedTx
+                    if (postActionHook) {
+                        txHash = await postActionHook(signedSerializedTx)
+                    } else {
+                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                            serializedTx: signedSerializedTx,
+                        })
+                        txHash = txHashResponse
+                    }
                     break
+                }
+                case TransactionType.WrapSolanaMetaplexNFT: {
+                    const { serializedTx } = data as WrapSolanaMetaplexNFTData
+                    // decode the serializedTx
+                    if (postActionHook) {
+                        txHash = await postActionHook(serializedTx)
+                    } else {
+                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                            serializedTx,
+                        })
+                        txHash = txHashResponse
+                    }
+                    break
+                }
+                case TransactionType.UnwrapSolanaMetaplexNFT: {
+                    const { serializedTx } = data as UnwrapSolanaMetaplexNFTData
+                    // decode the serializedTx
+                    if (postActionHook) {
+                        txHash = await postActionHook(serializedTx)
+                    } else {
+                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                            serializedTx,
+                        })
+                        txHash = txHashResponse
+                    }
+                    break   
                 }
                 default: {
                     throw new Error("Invalid transaction type")
@@ -260,11 +310,17 @@ export const SignTransactionModal: FC = () => {
         [TransactionType.HoneycombProtocolRawTxs]: {
             name: "Honeycomb Protocol Raw Txs",
         },
-        [TransactionType.FreezeSolanaMetaplexNFT]: {
-            name: "Freeze Solana Metaplex NFT",
+        [TransactionType.WrapSolanaMetaplexNFT]: {
+            name: "Wrap Solana Metaplex NFT",
+        },
+        [TransactionType.UnwrapSolanaMetaplexNFT]: {
+            name: "Unwrap Solana Metaplex NFT",
         },
         [TransactionType.PurchaseSolanaNFTStarterBox]: {
             name: "Purchase Solana NFT Starter Box",
+        },
+        [TransactionType.ShipSolana]: {
+            name: "Ship",
         },
     }
 
@@ -386,15 +442,15 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
-        case TransactionType.FreezeSolanaMetaplexNFT: {
-            const { serializedTx } = data as FreezeSolanaMetaplexNFTData
+        case TransactionType.WrapSolanaMetaplexNFT: {
+            const { serializedTx } = data as WrapSolanaMetaplexNFTData
             return (
                 <List
                     enableScroll={false}
-                    items={Object.values(FreezeSolanaMetaplexNFTContent)}
+                    items={Object.values(WrapSolanaMetaplexNFTContent)}
                     contentCallback={(item) => {
                         switch (item) {
-                        case FreezeSolanaMetaplexNFTContent.SerializedTx: {
+                        case WrapSolanaMetaplexNFTContent.SerializedTx: {
                             return (
                                 <div className="flex items-center justify-between gap-12 px-2 py-3">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
@@ -403,6 +459,31 @@ export const SignTransactionModal: FC = () => {
                                             {truncateString(serializedTx, 30, 4)}
                                         </div>
                                         <Snippet code={serializedTx} />
+                                    </div>
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
+        case TransactionType.UnwrapSolanaMetaplexNFT: {
+            const { serializedTx } = data as UnwrapSolanaMetaplexNFTData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(UnwrapSolanaMetaplexNFTContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case UnwrapSolanaMetaplexNFTContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">Serialized Tx</div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                            {truncateString(serializedTx, 30, 4)}
+                                        </div>
                                     </div>
                                 </div>
                             )
@@ -506,6 +587,32 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
+        case TransactionType.ShipSolana: {
+            const { serializedTx } = data as ShipSolanaData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(ShipSolanaContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case ShipSolanaContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">Serialized Tx</div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                            {truncateString(serializedTx, 30, 4)}
+                                        </div>
+                                        <Snippet code={serializedTx} />
+                                    </div>
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
         }
     }
 
@@ -572,7 +679,11 @@ export enum HoneycombProtocolRawTxsContent {
   SerializedTx = "serializedTxs",
 }
 
-export enum FreezeSolanaMetaplexNFTContent {
+export enum WrapSolanaMetaplexNFTContent {
+  SerializedTx = "serializedTx",
+}
+
+export enum UnwrapSolanaMetaplexNFTContent {
   SerializedTx = "serializedTx",
 }
 
@@ -580,4 +691,7 @@ export enum PurchaseSolanaNFTStarterBoxContent {
   SerializedTx = "serializedTx",
 }
 
+export enum ShipSolanaContent {
+  SerializedTx = "serializedTx",
+}
 

@@ -3,7 +3,7 @@ import { BuyToolMessage, toast, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EmitterEventName, ReceiverEventName, ToolBoughtMessage } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "../../../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { assetShopMap } from "@/modules/assets"
 
 export const useBuyToolEffects = () => {

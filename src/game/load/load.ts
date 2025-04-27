@@ -3,7 +3,7 @@ import { AssetTextureData, AssetSpineData, FontData, MusicData } from "@/modules
 import { sessionDb } from "@/modules/dexie"
 import axios from "axios"
 import { CacheKey } from "../types"
-import { ExternalEventEmitter, ExternalEventName } from "../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 export const PATH = "assets"
 
 export const downloadTexture = async (

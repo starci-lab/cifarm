@@ -56,8 +56,8 @@ import {
     ExternalEventEmitter,
     ExternalEventName,
     SceneEventEmitter,
-} from "../events"
-import { SceneEventName } from "../events"
+} from "@/modules/event-emitter"
+import { SceneEventName } from "@/modules/event-emitter"
 import { sleep } from "@/modules/common"
 import { AssetIconId, assetProductMap } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"

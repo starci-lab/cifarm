@@ -1,7 +1,7 @@
 import { TileId } from "@/modules/entities"
 import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
 
-const PREFIX = "tiles"
+const PREFIX = "/tiles"
 
 export interface TileAssetMapData {
     mapData: AssetMapData,

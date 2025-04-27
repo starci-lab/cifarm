@@ -10,4 +10,5 @@ export interface ProductSchema extends StaticAbstractSchema<ProductId> {
     fruit: string
     flower: string
     building: string
+    qualityVersionOf: string
 }

@@ -31,8 +31,10 @@ export enum TransactionType {
   HoneycombProtocolRawTxs = "HoneycombProtocolRawTxs",
   TransferToken = "TransferToken",
   TransferNFT = "TransferNFT",
-  FreezeSolanaMetaplexNFT = "FreezeSolanaMetaplexNFT",
   PurchaseSolanaNFTStarterBox = "PurchaseSolanaNFTStarterBox",
+  ShipSolana = "ShipSolana",
+  WrapSolanaMetaplexNFT = "WrapSolanaMetaplexNFT",
+  UnwrapSolanaMetaplexNFT = "UnwrapSolanaMetaplexNFT",
 }
 
 export interface TokenModal {
@@ -62,11 +64,19 @@ export interface TransferTokenData {
   recipientAddress: string;
 }
 
-export interface FreezeSolanaMetaplexNFTData {
+export interface WrapSolanaMetaplexNFTData {
+  serializedTx: string;
+}
+
+export interface UnwrapSolanaMetaplexNFTData {
   serializedTx: string;
 }
 
 export interface PurchaseSolanaNFTStarterBoxData {
+  serializedTx: string;
+}
+
+export interface ShipSolanaData {
   serializedTx: string;
 }
 
@@ -88,16 +98,26 @@ export type SignTransactionModal = (
       type: TransactionType.TransferNFT;
     }
   | {
-      data: FreezeSolanaMetaplexNFTData;
-      type: TransactionType.FreezeSolanaMetaplexNFT;
-    }
-  | {
       data: PurchaseSolanaNFTStarterBoxData;
       type: TransactionType.PurchaseSolanaNFTStarterBox;
+    }
+  | {
+      data: ShipSolanaData;
+      type: TransactionType.ShipSolana;
+    }
+  | {
+      data: WrapSolanaMetaplexNFTData;
+      type: TransactionType.WrapSolanaMetaplexNFT;
+    }
+  | {
+      data: UnwrapSolanaMetaplexNFTData;
+      type: TransactionType.UnwrapSolanaMetaplexNFT;
     }
 ) & {
   // extra action to be taken after the transaction is signed
   extraAction?: () => Promise<void> | void;
+  // after action instead of broadcast to the network, it will be sent to the network
+  postActionHook?: (signedTx: string) => Promise<string> | string;
 };
 
 export interface ExtendedNFTData extends NFTData {

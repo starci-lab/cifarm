@@ -17,7 +17,7 @@ export interface AssetFruitData {
     };
 }
 
-const PREFIX = "fruits"
+const PREFIX = "/fruits"
 // Fruit asset data map with the GID and asset URL for each fruit using FruitId as the key
 export const assetFruitMap: Record<FruitId, AssetFruitData> = {
     [FruitId.Banana]: {

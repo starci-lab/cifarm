@@ -22,7 +22,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { useGraphQLQueryStaticSwr, useGraphQLQueryUserSwr } from "@/hooks"
 import { DailyRewardId } from "@/modules/entities"
 import { AssetIconId, assetIconMap, AssetUIId, assetUiMap } from "@/modules/assets"
-import { ExternalEventEmitter, ExternalEventName } from "@/game"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { getCurrentDayMidnightUtc, getUtc } from "@/modules/common"
 export const DailyModal: FC = () => {
     const { isOpen, toggle } =

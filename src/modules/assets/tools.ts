@@ -1,7 +1,7 @@
 import { AssetData, Metadata } from "./types"
 import { ToolId } from "../entities"
 
-const PREFIX = "tools"
+const PREFIX = "/tools"
 
 export interface AssetToolsData extends Metadata {
     base: AssetData

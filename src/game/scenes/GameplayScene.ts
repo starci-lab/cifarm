@@ -1,8 +1,8 @@
 import { Scene } from "phaser"
-import { SceneEventEmitter, SceneEventName } from "../events"
+import { SceneEventEmitter, SceneEventName } from "@/modules/event-emitter"
 import { SceneName } from "../scene"
 import { HEIGHT, TILE_HEIGHT, TILE_WIDTH, Tilemap } from "../tilemap"
-import { ExternalEventEmitter, ExternalEventName } from "../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export class GameplayScene extends Scene
 {

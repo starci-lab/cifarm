@@ -18,7 +18,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { InventoryType, InventoryKind } from "@/modules/entities"
 import { InventoryCard } from "./InventoryCard"
 import { DeliverInventoryMessage, useGraphQLQueryStaticSwr } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "@/game"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { setSelectedDeliveryInventoryId, useAppDispatch } from "@/redux"
 
 export const SelectInventoryModal: FC = () => {

@@ -23,10 +23,17 @@ import {
     useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation,
     useHoneycombSendTransactionsSwrMutation,
     useSendUmiSerializedTxSwrMutation,
-    useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation,
     useGraphQLQueryStoredPlacedItemsSwr,
-    useGraphQLQueryNFTsValidatedSwrMutation,
     useGraphQLMutationPurchaseSolanaNFTStarterBoxSwrMutation,
+    useGraphQLMutationSendPurchaseSolanaNFTStarterBoxTransactionSwrMutation,
+    useGraphQLMutationCreateShipSolanaTransactionSwrMutation,
+    useGraphQLMutationSendShipSolanaTransactionSwrMutation,
+    useSignUmiSerializedTxSwrMutation,
+    useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation,
+    useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation,
+    useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation,
+    useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation,
+    useGraphQLMutationCreateSolanaNFTStarterBoxTransactionSwrMutation
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -69,6 +76,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             UPGRADE_DISCLOSURE: useDisclosure(),
             SELL_DISCLOSURE: useDisclosure(),
             DAILY_DISCLOSURE: useDisclosure(),
+            SHIP_DISCLOSURE: useDisclosure(),
             // Using new constants with GraphQL mutations
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
@@ -80,8 +88,16 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_WRAP_SOLANA_METAPLEX_SWR_MUTATION: useGraphQLMutationWrapSolanaMetaplexSwrMutation(),
             GRAPHQL_MUTATION_PURCHASE_SOLANA_NFT_STARTER_BOX_SWR_MUTATION: useGraphQLMutationPurchaseSolanaNFTStarterBoxSwrMutation(),
             MUTATION_GRAPHQL_FREEZE_SOLANA_METAPLEX_NFT_SWR_MUTATION: useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation(),
-            MUTATION_GRAPHQL_VALIDATE_SOLANA_METAPLEX_NFT_FROZEN_SWR_MUTATION: useGraphQLMutationValidateSolanaMetaplexNFTFrozenSwrMutation(),
             SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),
+            SIGN_UMI_SERIALIZED_TX_SWR_MUTATION: useSignUmiSerializedTxSwrMutation(),
+            GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendPurchaseSolanaNFTStarterBoxTransactionSwrMutation(),
+            GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateSolanaNFTStarterBoxTransactionSwrMutation(),
+            MUTATION_GRAPHQL_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateShipSolanaTransactionSwrMutation(),
+            MUTATION_GRAPHQL_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendShipSolanaTransactionSwrMutation(),
+            MUTATION_GRAPHQL_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation(),
+            MUTATION_GRAPHQL_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation(),
+            MUTATION_GRAPHQL_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation(),
+            MUTATION_GRAPHQL_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation(),           
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
             TRANSFER_NFT_SWR_MUTATION: useTransferNFTSwrMutation(),
@@ -90,7 +106,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION: useHoneycombSendTransactionsSwrMutation(),
             // queries
             GRAPHQL_QUERY_INVENTORIES_SWR: useGraphQLQueryInventoriesSwr(),
-            GRAPHQL_QUERY_NFTS_VALIDATED_SWR_MUTATION: useGraphQLQueryNFTsValidatedSwrMutation(),
             GRAPHQL_QUERY_STATIC_SWR: useGraphQLQueryStaticSwr(),
             GRAPHQL_QUERY_FOLLOWEES_SWR: useGraphQLQueryFolloweesSwr(),
             GRAPHQL_QUERY_NEIGHBORS_SWR: useGraphQLQueryNeighborsSwr(),

@@ -1,5 +1,5 @@
 import { pathConstants } from "@/constants"
-import { ExternalEventEmitter, ExternalEventName } from "@/game/events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { useRouterWithSearchParams } from "@/hooks"
 import { useAppDispatch } from "@/redux/hooks"
 import { setShowGameUI } from "@/redux/slices/session"

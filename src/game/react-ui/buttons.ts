@@ -1,4 +1,4 @@
-import { ExternalEventEmitter, ExternalEventName, ModalName } from "../events"
+import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/modules/event-emitter"
 import { assetIconMap, AssetIconId } from "@/modules/assets"
 import { PlayerContext } from "@/redux"
 

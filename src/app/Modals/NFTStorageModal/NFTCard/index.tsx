@@ -8,7 +8,7 @@ import {
     ExternalEventEmitter,
     ExternalEventName,
     PlaceNFTItemMessage,
-} from "@/game"
+} from "@/modules/event-emitter"
 import { useAppSelector } from "@/redux"
 import { useDisclosure } from "react-use-disclosure"
 import { AssetData, assetFruitMap } from "@/modules/assets"

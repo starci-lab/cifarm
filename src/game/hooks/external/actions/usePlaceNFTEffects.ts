@@ -3,7 +3,7 @@ import { PlaceNFTMessage, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { EmitterEventName } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "../../../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const usePlaceNFTEffects = () => {
     const { socket } =

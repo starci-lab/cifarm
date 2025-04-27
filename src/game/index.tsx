@@ -3,9 +3,8 @@ import React, { FC, useLayoutEffect, useRef } from "react"
 import { gameState, startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
 import { useEffects } from "./hooks"
-import { ExternalEventEmitter, SceneEventEmitter } from "./events"
+import { ExternalEventEmitter, SceneEventEmitter } from "@/modules/event-emitter"
 import { ReactUI } from "./react-ui"
-export * from "./events"
 import { useAppDispatch, setShowGameUI } from "@/redux"
 
 export const Game: FC = () => {

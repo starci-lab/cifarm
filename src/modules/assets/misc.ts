@@ -15,7 +15,7 @@ export enum AssetMiscId {
     No = "no",
 }
 
-const PREFIX = "misc"
+const PREFIX = "/misc"
 
 export const assetMiscMap: Record<AssetMiscId, MiscAssetData> = {
     [AssetMiscId.Grass]: {

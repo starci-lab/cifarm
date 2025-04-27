@@ -5,7 +5,7 @@ import {
     SceneEventEmitter,
     SceneEventName,
     SelectToolMessage,
-} from "../events"
+} from "@/modules/event-emitter"
 import {
     InventorySchema,
     UserSchema,

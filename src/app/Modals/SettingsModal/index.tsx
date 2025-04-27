@@ -11,7 +11,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { SETTINGS_DISCLOSURE } from "@/app/constants"
-import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { useAppSelector } from "@/redux"
 
 const TIMEOUT = 1000
@@ -60,14 +60,7 @@ export const SettingsModal: FC = () => {
     }, [ambient])
     
     return (
-        <Dialog open={isOpen} onOpenChange={(value) => {
-            toggle(value)
-            if (!value) {
-                ExternalEventEmitter.emit(ExternalEventName.CloseModal, {
-                    modalName: ModalName.Settings,
-                })
-            }
-        }}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>

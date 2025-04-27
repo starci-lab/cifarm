@@ -20,9 +20,9 @@ import {
     OpenModalMessage,
     UpdateSellModalContentMessage,
     UpdateUpgradeModalContentMessage,
-} from "../../../events"
+} from "@/modules/event-emitter"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/game/events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { setSellModal, setUpgradeModal, useAppDispatch } from "@/redux"
 
 export const useModalEffects = () => {

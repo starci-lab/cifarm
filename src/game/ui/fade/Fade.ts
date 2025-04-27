@@ -2,7 +2,7 @@
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import { ContainerLiteBaseConstructorParams } from "../../types"
 import { BLACK_COLOR, FADE_TIME } from "../../constants"
-import { SceneEventEmitter, SceneEventName } from "../../events"
+import { SceneEventEmitter, SceneEventName } from "@/modules/event-emitter"
 import { uiDepth } from "@/game/depth"
 
 export class Fade extends ContainerLite {

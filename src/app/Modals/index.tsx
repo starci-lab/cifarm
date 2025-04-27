@@ -26,6 +26,7 @@ import { SellModal } from "./SellModal"
 import { UpgradeModal } from "./UpgradeModal"
 import { DailyModal } from "./DailyModal"
 import { TransferNFTModal } from "./TransferNFTModal"
+import { ShipModal } from "./ShipModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -58,6 +59,7 @@ const Modals : FC = () => {
             <SellModal />
             <UpgradeModal />
             <DailyModal />
+            <ShipModal />
         </div>
     )
 }

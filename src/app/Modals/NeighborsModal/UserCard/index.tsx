@@ -10,7 +10,7 @@ import {
 } from "@/app/constants"
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
-import { ExternalEventEmitter, ExternalEventName } from "@/game"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import {
     useWs,
     useGraphQLMutationFollowSwrMutation,

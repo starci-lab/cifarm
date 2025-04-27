@@ -1,5 +1,4 @@
 import { WS } from "@/app/constants"
-import { ExternalEventEmitter, ExternalEventName } from "../../../events"
 import {
     useWs,
     ActionEmittedMessage,
@@ -22,9 +21,10 @@ import {
     setUser,
     setVisitedUser,
 } from "@/redux"
-
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+console.log(ExternalEventEmitter)
 export const useSyncEffects = () => {
-    const { socket, connect } = useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     const dispatch = useAppDispatch()
     const inventories = useAppSelector(
         (state) => state.sessionReducer.inventories
@@ -33,18 +33,11 @@ export const useSyncEffects = () => {
         (state) => state.sessionReducer.placedItems
     )
     const user = useAppSelector((state) => state.sessionReducer.user)
-
     // Handle socket connection
-    useEffect(() => {
-        if (!socket?.connected) {
-            connect()
-        }
-    }, [socket, connect])
-
+    // Ensure 1 time connection
     // Handle action emitted events
     useEffect(() => {
         if (!socket) return
-
         const handleEffect = (data: ActionEmittedMessage) => {
             ExternalEventEmitter.emit(ExternalEventName.ActionEmitted, data)
         }
@@ -59,7 +52,6 @@ export const useSyncEffects = () => {
     // Handle user sync events
     useEffect(() => {
         if (!socket) return
-
         const handleEffect = ({ data }: UserSyncedMessage) => {
             const _user = _.cloneDeep(user)
             if (!_user) {
@@ -80,7 +72,6 @@ export const useSyncEffects = () => {
     // Handle inventory sync events
     useEffect(() => {
         if (!socket) return
-
         const handleEffect = ({ data }: InventorySyncedMessage) => {
             const _inventories = _.cloneDeep(inventories)
             for (let i = 0; i < data.length; i++) {
@@ -136,7 +127,6 @@ export const useSyncEffects = () => {
     // Handle placed items sync events
     useEffect(() => {
         if (!socket) return
-
         const handleEffect = ({ data }: PlacedItemsSyncedMessage) => {
             const _placedItems = _.cloneDeep(placedItems)
             for (let i = 0; i < data.length; i++) {

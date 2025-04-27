@@ -16,9 +16,11 @@ const config: Phaser.Types.Core.GameConfig = {
     scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
+        resizeInterval: 100,
         width: "100%",
         height: "100%"
     },
+    antialias: true,
     autoMobilePipeline: true,
     powerPreference: "high-performance",
     fps: {

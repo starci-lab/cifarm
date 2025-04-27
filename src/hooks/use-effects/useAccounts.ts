@@ -2,6 +2,7 @@ import { pathConstants } from "@/constants"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import {
     setAccounts,
+    setAuthenticated,
     setLoaded,
     setMnemonic,
     triggerLoadAccounts,
@@ -14,7 +15,6 @@ import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationAuthenticationSwrMutation } from "../swr"
-
 export const useAccounts = () => {
     const loadAccountsKey = useAppSelector(
         (state) => state.hookDependencyReducer.loadAccountsKey
@@ -29,6 +29,7 @@ export const useAccounts = () => {
         useSingletonHook<ReturnType<typeof useGraphQLMutationAuthenticationSwrMutation>>(
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION
         )
+
     useEffect(() => {
     //do nothing if loadAccountsKey is equal to 0
         if (!loadAccountsKey) return
@@ -93,7 +94,9 @@ export const useAccounts = () => {
         const handleEffect = async () => {
             //trigger the swrMutation
             await swrMutation.trigger()
+            dispatch(setAuthenticated(true))
         }
         handleEffect()
     }, [accountsLoaded])
 }
+

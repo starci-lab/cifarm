@@ -2,7 +2,7 @@ import { WS } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { BuyBuildingMessage, EmitterEventName, useWs } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName, } from "../../../events"
+import { ExternalEventEmitter, ExternalEventName, } from "@/modules/event-emitter"
 
 export const useBuyBuildingEffects = () => {
 

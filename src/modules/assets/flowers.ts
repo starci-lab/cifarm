@@ -17,7 +17,7 @@ export interface AssetFlowerData extends Metadata {
     };
 }
 
-const PREFIX = "flowers"
+const PREFIX = "/flowers"
 export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
     [FlowerId.Daisy]: {
         name: "Daisy",

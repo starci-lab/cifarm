@@ -11,7 +11,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { GRAPHQL_QUERY_STATIC_SWR, SELL_DISCLOSURE } from "@/app/constants"
-import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/game"
+import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/modules/event-emitter"
 import { useAppSelector } from "@/redux"
 import { SellMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { getSellInfo } from "@/modules/entities"

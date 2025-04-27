@@ -18,7 +18,7 @@ export interface AssetCropData extends Metadata {
     };
 }
 
-const PREFIX = "crops"
+const PREFIX = "/crops"
 
 export const assetCropMap: Record<CropId, AssetCropData> = {
     [CropId.Turnip]: {

@@ -1,5 +1,5 @@
 import { GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
-import { ExternalEventEmitter, ExternalEventName } from "@/game/events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"

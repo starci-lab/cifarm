@@ -15,3 +15,7 @@ export interface CropGrowthLastSchedule {
 export interface EnergyGrowthLastSchedule {
     date: Date
 }
+
+export interface VaultInfo {
+    paidCount: number
+}

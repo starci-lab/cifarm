@@ -14,7 +14,7 @@ export enum AssetBootstrapId {
     LoadingFill = "loading-fill",
 }
 
-const PREFIX = "bootstrap"
+const PREFIX = "/bootstrap"
 
 export const assetBootstrapMap: Record<AssetBootstrapId, BootstrapAssetData> = {
     [AssetBootstrapId.Background]: {

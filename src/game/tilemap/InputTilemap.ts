@@ -72,8 +72,8 @@ import {
     PlaceNFTItemMessage,
     SceneEventEmitter,
     SceneEventName,
-} from "../events"
-import { ExternalEventEmitter } from "../events"
+} from "@/modules/event-emitter"
+import { ExternalEventEmitter } from "@/modules/event-emitter"
 import { gameplayDepth } from "../depth"
 import { LayerName } from "./types"
 import { PlayerContext } from "@/redux"

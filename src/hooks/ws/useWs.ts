@@ -21,7 +21,7 @@ export const useWs = (): UseWs => {
         const handleEffect = async () => {
             // create a new socket manager
             const manager = new Manager(envConfig().wsUrl, {
-                autoConnect: false
+                autoConnect: true
             })
             const accessToken = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)
             if (!accessToken) {

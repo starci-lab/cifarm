@@ -49,7 +49,8 @@ export enum PlacedItemType {
 export enum InventoryKind {
     Storage = "storage",
     Tool = "tool",
-    Delivery = "delivery"
+    Delivery = "delivery",
+    WholesaleMarket = "wholesaleMarket"
 }
 
 // Plant Type Enum
@@ -67,4 +68,10 @@ export enum PetType {
 export enum NFTType {
     DragonFruit = "dragonFruit",
     Jackfruit = "jackfruit",
+}
+
+export enum PaymentKind {
+    Token = "token",
+    USDC = "usdc",  
+    USDT = "usdt",
 }

@@ -1,5 +1,4 @@
 export * from "./useRouterWithSearchParams"
-export * from "./use-effects"
 export * from "./swr"
 export * from "./ws"
 export * from "./formiks"

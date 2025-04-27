@@ -3,7 +3,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { WS } from "@/app/constants"
 import { EmitterEventName } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "../../../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 
 export const useUseFruitFertilizerEffects = () => {

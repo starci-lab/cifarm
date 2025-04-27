@@ -56,6 +56,8 @@ export interface SessionState {
   selectedToolId?: string;
   playerContext: PlayerContext;
   showGameUI: boolean;
+  selectedShipProductId?: string;
+  selectedShipInventoryId?: string;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -187,7 +189,13 @@ export const sessionSlice = createSlice({
         },
         setShowGameUI: (state, action: PayloadAction<boolean>) => {
             state.showGameUI = action.payload
-        }
+        },
+        setSelectedShipProductId: (state, action: PayloadAction<string | undefined>) => {
+            state.selectedShipProductId = action.payload
+        },
+        setSelectedShipInventoryId: (state, action: PayloadAction<string | undefined>) => {
+            state.selectedShipInventoryId = action.payload
+        },
     },
 })
 
@@ -222,6 +230,8 @@ export const {
     setPlayerContext,
     setPlacedItems,
     setShowGameUI,
+    setSelectedShipProductId,
+    setSelectedShipInventoryId,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

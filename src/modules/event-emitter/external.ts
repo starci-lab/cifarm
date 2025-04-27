@@ -1,7 +1,8 @@
 import { Events } from "phaser"
 import { PlacedItemSchema } from "@/modules/entities"
 import { PlayerContext } from "@/redux"
-import { ToolLike } from "../react-ui"
+import { ToolLike } from "../../game/react-ui"
+
 // external event emitter take care of events between Phaser and React
 export const ExternalEventEmitter = new Events.EventEmitter()
 

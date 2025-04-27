@@ -45,3 +45,4 @@ export const sendUmiSerializedTx = async ({
     })
     return { txHash: base58.encode(txHash) }
 }
+

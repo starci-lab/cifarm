@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { ExternalEventEmitter, ExternalEventName } from "../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey, PlacedItemsData } from "../types"
 import {

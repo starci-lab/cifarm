@@ -20,7 +20,8 @@ import {
     CropInfo,
     FruitInfo,
     FlowerSchema,
-    NFTCollections
+    NFTCollections,
+    WholesaleMarket
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -129,6 +130,7 @@ const query = gql`
       storageCapacity
       toolCapacity
       deliveryCapacity
+      wholesaleMarketCapacity
       followeeLimit
       referredLimit
       referralRewardQuantity
@@ -290,6 +292,7 @@ const query = gql`
       fruit
       flower
       building
+      qualityVersionOf
     }
     supplies {
       displayId
@@ -365,7 +368,15 @@ const query = gql`
           }
         }
       }
-    }  
+    } 
+    wholesaleMarket {
+      paymentKind
+      price
+      products {
+        productId
+        quantity
+      }
+    }
   }
 `
 
@@ -390,6 +401,7 @@ export interface QueryStaticResponse {
   cropInfo: CropInfo
   animalInfo: AnimalInfo
   nftCollections: NFTCollections
+  wholesaleMarket: WholesaleMarket
 }
 
 export const queryStatic = async () => {

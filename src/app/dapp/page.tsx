@@ -18,6 +18,12 @@ const Page: FC = () => {
                         image="/images/dapp/starter-shop.png"
                         onClick={() => router.push(pathConstants.dappStarterShop)}
                     />
+                    <DAppCard 
+                        title="Wholesale Market"
+                        description="Buy and sell NFTs"
+                        image="/images/dapp/wholesale-market.png"
+                        onClick={() => router.push(pathConstants.dappWholesaleMarket)}
+                    />
                 </div>
             </div>
         </Container>

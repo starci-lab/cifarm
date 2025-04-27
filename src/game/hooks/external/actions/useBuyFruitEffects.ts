@@ -2,7 +2,7 @@ import { WS } from "@/app/constants"
 import { useEffect } from "react"
 import { BuyFruitMessage, useWs, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { ExternalEventEmitter, ExternalEventName } from "../../../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const useBuyFruitEffects = () => {
     const { socket } =

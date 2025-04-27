@@ -5,6 +5,8 @@ export enum AssetIconId {
     Energy = "energy",
     Experience = "experience",
     Token = "token",
+    USDC = "usdc",
+    USDT = "usdt",
     Inventory = "inventory",
     Shop = "shop",
     RoadsideStand = "roadside-stand",
@@ -25,7 +27,7 @@ export enum AssetIconId {
     Next = "next",
 }
 
-const PREFIX = "icons"
+const PREFIX = "/icons"
 
 export interface AssetIconData {
     base: AssetData
@@ -195,6 +197,18 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
             assetKey: "icons-next",
             assetUrl: `${PREFIX}/next.png`
         },
-    }
+    },
+    [AssetIconId.USDC]: {
+        base: {
+            assetKey: "icons-usdc",
+            assetUrl: `${PREFIX}/usdc.svg`
+        },
+    },
+    [AssetIconId.USDT]: {
+        base: {
+            assetKey: "icons-usdt",
+            assetUrl: `${PREFIX}/usdt.svg`
+        },
+    },
 }
 

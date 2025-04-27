@@ -1,5 +1,5 @@
 import { GRAPHQL_QUERY_INVENTORIES_SWR } from "@/app/constants"
-import { ExternalEventName, ExternalEventEmitter } from "../../../events"
+import { ExternalEventName, ExternalEventEmitter } from "@/modules/event-emitter"
 import { useGraphQLQueryInventoriesSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"

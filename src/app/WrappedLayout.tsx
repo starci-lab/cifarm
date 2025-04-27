@@ -3,9 +3,6 @@
 import React, { PropsWithChildren, Suspense, useLayoutEffect, useRef } from "react"
 import { Provider as ReduxProvider } from "react-redux"
 import { store } from "@/redux"
-import {
-    UseEffects,
-} from "@/hooks"
 import { useAppSelector } from "@/redux"
 import { LoadingScreen } from "@/components"
 import { SWRConfig } from "swr"
@@ -17,6 +14,10 @@ import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { Rowdies } from "next/font/google"
 
 const Modals = dynamic(() => import("./Modals"), {
+    ssr: false,
+})
+
+const UseEffects = dynamic(() => import("@/hooks/use-effects"), {
     ssr: false,
 })
 

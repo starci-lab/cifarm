@@ -2,7 +2,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { useWs, EmitterEventName, SellMessage } from "@/hooks"
 import { WS } from "@/app/constants"
-import { ExternalEventEmitter, ExternalEventName } from "../../../events"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const useSellEffects = () => {
     //authentication useEffect

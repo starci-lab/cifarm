@@ -7,7 +7,7 @@ export enum AssetUIId {
     Checked = "checked",
 }
 
-const PREFIX = "ui"
+const PREFIX = "/ui"
 
 export interface AssetUIData {
     base: AssetData

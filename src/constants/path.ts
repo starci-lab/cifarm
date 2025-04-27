@@ -20,4 +20,5 @@ export const pathConstants = {
     token: "/token",
     dapp: "/dapp",
     dappStarterShop: "/dapp/starter-shop",
+    dappWholesaleMarket: "/dapp/wholesale-market",
 }

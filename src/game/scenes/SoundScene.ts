@@ -5,7 +5,7 @@ import {
     ExternalEventEmitter,
     ExternalEventName,
     UpdateSoundMessage,
-} from "../events"
+} from "@/modules/event-emitter"
 import { loadMusicAssets } from "../load"
 import { assetMusicMap } from "@/modules/assets"
 import { MusicId } from "@/modules/assets"

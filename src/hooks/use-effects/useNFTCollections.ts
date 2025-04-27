@@ -7,9 +7,7 @@ import {
 } from "@/redux"
 import { useEffect } from "react"
 import _ from "lodash"
-import { defaultChainKey } from "@/modules/blockchain"
-import { defaultNetwork } from "@/modules/blockchain"
-import { blockchainMap } from "@/modules/blockchain"
+import { defaultChainKey, defaultNetwork, blockchainMap } from "@/modules/blockchain"
 
 export const useNFTCollections = () => {
     const loadNFTCollectionsKey = useAppSelector(

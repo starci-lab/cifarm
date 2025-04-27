@@ -21,4 +21,4 @@ export const httpLink = createHttpLink({
     uri: envConfig().graphqlUrl,
 })
 
-export const timeoutLink = new ApolloLinkTimeout(10000)
+export const timeoutLink = new ApolloLinkTimeout(300000)

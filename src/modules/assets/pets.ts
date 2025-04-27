@@ -13,7 +13,7 @@ export interface AssetPetData extends Metadata {
     base: AssetData
 }
 
-const PREFIX = "pets"
+const PREFIX = "/pets"
 
 export const assetPetMap: Record<PetId, AssetPetData> = {
     [PetId.Dog]: {

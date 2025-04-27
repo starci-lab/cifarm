@@ -2,7 +2,7 @@
 import { GRAPHQL_QUERY_STATIC_SWR, ROADSIDE_STAND_DISCLOSURE, SELECT_INVENTORY_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useState, useEffect } from "react"
-import { ModalName, ExternalEventEmitter, ExternalEventName } from "@/game"
+import { ModalName, ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import {
     Dialog,
     DialogContent,

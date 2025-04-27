@@ -1,6 +1,6 @@
 import { ChainKey, Network } from "@/modules/blockchain"
 import { Position } from "../base"
-import { CropId, DailyRewardId, NFTType } from "../enums"
+import { CropId, DailyRewardId, NFTType, PaymentKind } from "../enums"
 
 export interface SystemSchema {
   value: object;
@@ -87,6 +87,7 @@ export interface DefaultInfo {
   storageCapacity: number;
   toolCapacity: number;
   deliveryCapacity: number;
+  wholesaleMarketCapacity: number;
   followeeLimit: number;
   referredLimit: number;
   referralRewardQuantity: number;
@@ -131,5 +132,16 @@ export interface NFTCollection {
 export interface NFTCollections {
   [NFTType.DragonFruit]: NFTCollection;
   [NFTType.Jackfruit]: NFTCollection;
+}
+
+export interface WholesaleMarketProduct {
+  productId: string
+  quantity: number
+}
+
+export interface WholesaleMarket {
+  paymentKind: PaymentKind;
+  price: number;
+  products: Array<WholesaleMarketProduct>;
 }
 

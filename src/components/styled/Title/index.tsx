@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 
 export interface TitleProps {
   title: string;
-  tooltipString: string;
+  tooltipString?: string;
   classNames?: {
     title?: string;
     tooltip?: string;
@@ -30,7 +30,7 @@ export const Title: FC<TitleProps> = ({
             >
                 {title}
             </div>
-            <ExclamationTooltip message={tooltipString} className={tooltipClassName} />
+            {tooltipString && <ExclamationTooltip message={tooltipString} className={tooltipClassName} />}
         </div>
     )
 }

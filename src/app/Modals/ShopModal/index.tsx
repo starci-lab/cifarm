@@ -26,7 +26,7 @@ import {
     BuyItemMessage,
     ExternalEventEmitter,
     ExternalEventName,
-} from "@/game"
+} from "@/modules/event-emitter"
 
 export enum ShopTab {
   Seeds = "Seeds",

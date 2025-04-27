@@ -2,7 +2,7 @@ import {
     ExternalEventEmitter,
     ExternalEventName,
     UpdatePlayerContextMessage,
-} from "@/game/events"
+} from "@/modules/event-emitter"
 import { useRouterWithSearchParams } from "@/hooks"
 import { useAppDispatch } from "@/redux/hooks"
 import { setPlayerContext } from "@/redux/slices/session"

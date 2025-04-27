@@ -19,8 +19,8 @@ import {
 import { useMediaQuery } from "usehooks-ts"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { InventoryKind, ToolId } from "@/modules/entities"
-import { ExternalEventName } from "@/game"
-import { ExternalEventEmitter } from "@/game"
+import { ExternalEventName } from "@/modules/event-emitter"
+import { ExternalEventEmitter } from "@/modules/event-emitter"
 
 export interface ToolLike {
   id: string;
