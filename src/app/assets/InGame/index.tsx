@@ -1,76 +1,46 @@
-// import {
-//     GOLD_IMAGE_URL,
-//     GRAPHQL_QUERY_USER_SWR,
-//     TOKEN_IMAGE_URL,
-//     TOKENS_OFFCHAIN_DISCLOSURE,
-// } from "@/app/constants"
-// import { ExclamationTooltip } from "@/components"
-// import { useDisclosure, useGraphQLQueryUserSwr } from "@/hooks"
-// import { useSingletonHook } from "@/modules/singleton-hook"
+import { GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
+import { ExtendedButton, Image, Spacer, Title } from "@/components"
+import { assetIconMap, AssetIconId } from "@/modules/assets"
 import React, { FC } from "react"
-
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { useGraphQLQueryInventoriesSwr, useGraphQLQueryUserSwr } from "@/hooks"
+import { InventoryCard } from "./InventoryCard"
 export const InGame: FC = () => {
-    // const { onOpen: onTokensOffchainPress } = useSingletonHook<ReturnType<typeof useDisclosure>>(TOKENS_OFFCHAIN_DISCLOSURE)
-    // const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
-    // const user = swr.data?.data.user
+    const { swr: userSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryUserSwr>
+  >(GRAPHQL_QUERY_USER_SWR)
+
+    const { swr: inventoriesSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryInventoriesSwr>
+  >(GRAPHQL_QUERY_INVENTORIES_SWR)
     return (
-        <div>
-            {/* <div>
-                <div className="flex gap-2 items-center">
-                    <div className="text-lg font-bold">Assets</div>
-                    <ExclamationTooltip message="Achievements and badges earned by the user." />
-                </div>
+        <>
+            <div>
+                <Title title="Golds" tooltipString="The in-game golds" />
                 <Spacer y={4} />
-                <Card>
-                    <div className="grid">
-                        <Card
-                            radius="none"
-                            shadow="none"
-                            isPressable
-                            disableRipple
-                        >
-                            <CardBody className="flex gap-2">
-                                <div  className="flex gap-2 items-center">
-                                    <div className="w-full flex gap-2 items-center">
-                                        <Image
-                                            src={GOLD_IMAGE_URL}
-                                            radius="none"
-                                            className="w-12 h-12 min-w-12"
-                                        />
-                                        <div>
-                                            <div className="text-sm">Golds</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-sm">{user?.golds}</div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                        <Card
-                            radius="none"
-                            shadow="none"
-                            isPressable
-                            disableRipple
-                            onPress={onTokensOffchainPress}
-                        >
-                            <CardBody>
-                                <div  className="flex gap-2 items-center">
-                                    <div className="w-full flex gap-2 items-center">
-                                        <Image
-                                            src={TOKEN_IMAGE_URL}
-                                            radius="none"
-                                            className="w-12 h-12 min-w-12"
-                                        />
-                                        <div>
-                                            <div className="text-sm">$CARROT</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-sm">{user?.tokens}</div>
-                                </div>
-                            </CardBody>
-                        </Card>
+                <div className="flex justify-between">
+                    <div className="flex gap-2 items-center">
+                        <Image
+                            className="w-6 h-6"
+                            src={assetIconMap[AssetIconId.Gold].base.assetUrl}
+                        />
+                        <div>{userSwr.data?.data.user?.golds}</div>
                     </div>
-                </Card>
-            </div> */}
-        </div>
+                    <ExtendedButton>
+                    Buy
+                    </ExtendedButton>
+                </div>
+            </div>
+            <Spacer y={6} />
+            <div>
+                <Title title="Inventories" tooltipString="The items you have in your inventory." />
+                <Spacer y={4} />
+                <div className="flex flex-col gap-2">
+                    {inventoriesSwr.data?.data.inventories.map((inventory) => (
+                        <InventoryCard key={inventory.id} inventory={inventory} />
+                    ))}
+                </div>
+            </div>
+        </>
     )
 }
