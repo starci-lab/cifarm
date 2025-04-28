@@ -46,6 +46,11 @@ export const mutationCreateWrapSolanaMetaplexNFTTransaction = async ({
     mutation = MutationCreateWrapSolanaMetaplexNFTTransaction.Mutation1,
     request,
 }: MutationCreateWrapSolanaMetaplexNFTTransactionParams) => {
+    if (!request) {
+        throw new Error(
+            "Request is required for create wrap solana metaplex nft transaction mutation"
+        )
+    }
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<{
     createWrapSolanaMetaplexNFTTransaction: CreateWrapSolanaMetaplexNFTTransactionResponse;

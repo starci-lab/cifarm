@@ -25,6 +25,9 @@ export enum AssetIconId {
     Daily = "daily",
     Download = "download",
     Next = "next",
+    Golds1 = "golds1",
+    Golds2 = "golds2",
+    Golds3 = "golds3",
 }
 
 const PREFIX = "/icons"
@@ -208,6 +211,24 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
         base: {
             assetKey: "icons-usdt",
             assetUrl: `${PREFIX}/usdt.svg`
+        },
+    },
+    [AssetIconId.Golds1]: {
+        base: {
+            assetKey: "icons-golds-1",
+            assetUrl: `${PREFIX}/golds-1.png`
+        },
+    },  
+    [AssetIconId.Golds2]: {
+        base: {
+            assetKey: "icons-golds-2",
+            assetUrl: `${PREFIX}/golds-2.png`
+        },
+    },
+    [AssetIconId.Golds3]: {
+        base: {
+            assetKey: "icons-golds-3",
+            assetUrl: `${PREFIX}/golds-3.png`
         },
     },
 }

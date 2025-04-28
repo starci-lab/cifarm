@@ -17,3 +17,6 @@ export * from "./useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMuta
 export * from "./useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation"
 export * from "./useGraphQLMutationCreatePurchaseSolanaNFTStarterBoxTransactionSwrMutation"
 export * from "./useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation"
+export * from "./useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation"
+export * from "./useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation"
+

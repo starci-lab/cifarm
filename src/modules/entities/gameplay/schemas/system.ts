@@ -145,3 +145,19 @@ export interface WholesaleMarket {
   products: Array<WholesaleMarketProduct>;
 }
 
+
+export interface GoldPurchaseOption {   
+  price: number
+  amount: number
+  paymentKind: PaymentKind
+}
+
+export interface GoldPurchaseOptions {   
+  options: Array<GoldPurchaseOption>
+}
+
+
+export type GoldPurchase = Record<Network, GoldPurchaseOptions>
+export type GoldPurchases = Record<ChainKey, GoldPurchase>
+
+

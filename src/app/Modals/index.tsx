@@ -27,7 +27,7 @@ import { UpgradeModal } from "./UpgradeModal"
 import { DailyModal } from "./DailyModal"
 import { TransferNFTModal } from "./TransferNFTModal"
 import { ShipModal } from "./ShipModal"
-
+import { BuyGoldsModal } from "./BuyGoldsModal"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -60,6 +60,7 @@ const Modals : FC = () => {
             <UpgradeModal />
             <DailyModal />
             <ShipModal />
+            <BuyGoldsModal />
         </div>
     )
 }

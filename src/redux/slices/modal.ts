@@ -35,6 +35,7 @@ export enum TransactionType {
   ShipSolana = "ShipSolana",
   WrapSolanaMetaplexNFT = "WrapSolanaMetaplexNFT",
   UnwrapSolanaMetaplexNFT = "UnwrapSolanaMetaplexNFT",
+  BuyGoldsSolana = "BuyGoldsSolana",
 }
 
 export interface TokenModal {
@@ -80,6 +81,10 @@ export interface ShipSolanaData {
   serializedTx: string;
 }
 
+export interface BuyGoldsSolanaData {
+  serializedTx: string;
+}
+
 export type SignTransactionModal = (
   | {
       data: HoneycombProtocolRawTxData;
@@ -112,6 +117,10 @@ export type SignTransactionModal = (
   | {
       data: UnwrapSolanaMetaplexNFTData;
       type: TransactionType.UnwrapSolanaMetaplexNFT;
+    }
+  | {
+      data: BuyGoldsSolanaData;
+      type: TransactionType.BuyGoldsSolana;
     }
 ) & {
   // extra action to be taken after the transaction is signed

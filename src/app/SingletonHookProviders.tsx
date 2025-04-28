@@ -33,7 +33,9 @@ import {
     useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation,
-    useGraphQLMutationCreatePurchaseSolanaNFTStarterBoxTransactionSwrMutation
+    useGraphQLMutationCreatePurchaseSolanaNFTStarterBoxTransactionSwrMutation,
+    useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation,
+    useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -77,6 +79,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             SELL_DISCLOSURE: useDisclosure(),
             DAILY_DISCLOSURE: useDisclosure(),
             SHIP_DISCLOSURE: useDisclosure(),
+            BUY_GOLDS_DISCLOSURE: useDisclosure(),
             // Using new constants with GraphQL mutations
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
@@ -87,17 +90,20 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION: useGraphQLMutationUpdateReferralSwrMutation(),
             GRAPHQL_MUTATION_WRAP_SOLANA_METAPLEX_SWR_MUTATION: useGraphQLMutationWrapSolanaMetaplexSwrMutation(),
             GRAPHQL_MUTATION_PURCHASE_SOLANA_NFT_STARTER_BOX_SWR_MUTATION: useGraphQLMutationPurchaseSolanaNFTStarterBoxSwrMutation(),
-            MUTATION_GRAPHQL_FREEZE_SOLANA_METAPLEX_NFT_SWR_MUTATION: useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation(),
+            GRAPHQL_MUTATION_FREEZE_SOLANA_METAPLEX_NFT_SWR_MUTATION: useGraphQLMutationFreezeSolanaMetaplexNFTSwrMutation(),
             SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),
             SIGN_UMI_SERIALIZED_TX_SWR_MUTATION: useSignUmiSerializedTxSwrMutation(),
             GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendPurchaseSolanaNFTStarterBoxTransactionSwrMutation(),
             GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreatePurchaseSolanaNFTStarterBoxTransactionSwrMutation(),
-            MUTATION_GRAPHQL_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateShipSolanaTransactionSwrMutation(),
-            MUTATION_GRAPHQL_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendShipSolanaTransactionSwrMutation(),
-            MUTATION_GRAPHQL_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation(),
-            MUTATION_GRAPHQL_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation(),
-            MUTATION_GRAPHQL_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation(),
-            MUTATION_GRAPHQL_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation(),           
+            GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateShipSolanaTransactionSwrMutation(),
+            GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendShipSolanaTransactionSwrMutation(),
+            GRAPHQL_MUTATION_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation(),
+            GRAPHQL_MUTATION_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation(),
+            GRAPHQL_MUTATION_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation(),
+            GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation(),           
+            GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation(),
+            GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
+            
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
             TRANSFER_NFT_SWR_MUTATION: useTransferNFTSwrMutation(),

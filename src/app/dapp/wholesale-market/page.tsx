@@ -3,7 +3,7 @@
 import React, { FC } from "react"
 import { Container, Header, ItemCard, GridTable } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { MUTATION_GRAPHQL_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, MUTATION_GRAPHQL_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, QUERY_STATIC_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, QUERY_STATIC_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { useGraphQLQueryStaticSwr, useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation } from "@/hooks"
 import { assetProductMap } from "@/modules/assets"
 import {
@@ -23,8 +23,8 @@ const Page: FC = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
     
-    const { swrMutation: createShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationCreateShipSolanaTransactionSwrMutation>>(MUTATION_GRAPHQL_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
-    const { swrMutation: sendShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationSendShipSolanaTransactionSwrMutation>>(MUTATION_GRAPHQL_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
+    const { swrMutation: createShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationCreateShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
+    const { swrMutation: sendShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationSendShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
     
     const dispatch = useAppDispatch()
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(

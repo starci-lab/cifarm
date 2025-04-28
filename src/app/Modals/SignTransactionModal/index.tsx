@@ -13,6 +13,7 @@ import { truncateString } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Image, List, Snippet, Spacer } from "@/components"
 import {
+    BuyGoldsSolanaData,
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
     PurchaseSolanaNFTStarterBoxData,
@@ -52,7 +53,7 @@ import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "@/app/utils"
 import { pathConstants } from "@/constants"
-import { sessionDb } from "@/modules/dexie/session/db"
+import { sessionDb } from "@/modules/dexie"
 
 interface ProviderInfo {
   name: string;
@@ -277,6 +278,22 @@ export const SignTransactionModal: FC = () => {
                     }
                     break
                 }
+                case TransactionType.BuyGoldsSolana: {
+                    const { serializedTx } = data as BuyGoldsSolanaData
+                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
+                        serializedTx,
+                    })
+                    // decode the serializedTx
+                    if (postActionHook) {
+                        txHash = await postActionHook(signedSerializedTx)
+                    } else {
+                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                            serializedTx: signedSerializedTx,
+                        })
+                        txHash = txHashResponse
+                    }
+                    break
+                }
                 case TransactionType.UnwrapSolanaMetaplexNFT: {
                     const { serializedTx } = data as UnwrapSolanaMetaplexNFTData
                     const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
@@ -360,6 +377,9 @@ export const SignTransactionModal: FC = () => {
         },
         [TransactionType.ShipSolana]: {
             name: "Ship",
+        },
+        [TransactionType.BuyGoldsSolana]: {
+            name: "Buy Golds",
         },
     }
 
@@ -516,6 +536,32 @@ export const SignTransactionModal: FC = () => {
                     contentCallback={(item) => {
                         switch (item) {
                         case UnwrapSolanaMetaplexNFTContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                    <div className="text-sm font-semibold">Serialized Tx</div>
+                                    <div className="flex gap-2 items-center">
+                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
+                                            {truncateString(serializedTx, 30, 4)}
+                                        </div>
+                                        <Snippet code={serializedTx} />
+                                    </div>
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
+        case TransactionType.BuyGoldsSolana: {
+            const { serializedTx } = data as BuyGoldsSolanaData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(BuyGoldsSolanaContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case BuyGoldsSolanaContent.SerializedTx: {
                             return (
                                 <div className="flex items-center justify-between gap-12 px-2 py-3">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
@@ -735,3 +781,6 @@ export enum ShipSolanaContent {
   SerializedTx = "serializedTx",
 }
 
+export enum BuyGoldsSolanaContent {
+  SerializedTx = "serializedTx",
+}

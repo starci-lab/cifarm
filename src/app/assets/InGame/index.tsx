@@ -1,10 +1,11 @@
-import { GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
+import { BUY_GOLDS_DISCLOSURE, GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
 import { ExtendedButton, Image, Spacer, Title } from "@/components"
 import { assetIconMap, AssetIconId } from "@/modules/assets"
 import React, { FC } from "react"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryInventoriesSwr, useGraphQLQueryUserSwr } from "@/hooks"
 import { InventoryCard } from "./InventoryCard"
+import { useDisclosure } from "react-use-disclosure"
 export const InGame: FC = () => {
     const { swr: userSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryUserSwr>
@@ -13,6 +14,8 @@ export const InGame: FC = () => {
     const { swr: inventoriesSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryInventoriesSwr>
   >(GRAPHQL_QUERY_INVENTORIES_SWR)
+
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_DISCLOSURE)
     return (
         <>
             <div>
@@ -26,7 +29,7 @@ export const InGame: FC = () => {
                         />
                         <div>{userSwr.data?.data.user?.golds}</div>
                     </div>
-                    <ExtendedButton>
+                    <ExtendedButton onClick={open}>
                     Buy
                     </ExtendedButton>
                 </div>

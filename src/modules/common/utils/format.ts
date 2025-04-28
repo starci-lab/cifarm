@@ -2,9 +2,11 @@ import numeral from "numeral"
 import dayjs from "dayjs"
 
 export const NUMBER_PATTERN_1 = "0.0000a"
+export const NUMBER_PATTERN_2 = "0.0a"
 
 export enum NumberPattern {
   First = NUMBER_PATTERN_1,
+  Second = NUMBER_PATTERN_2,
 }
 
 export const formatNumber = (

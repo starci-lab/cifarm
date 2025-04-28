@@ -1,5 +1,3 @@
-export * from "./freeze-solana-metaplex-nft"
-export * from "./validate-solana-metaplex-nft-frozen"
 export * from "./purchase-solana-nft-starter-box"
 export * from "./send-purchase-solana-nft-starter-box-transaction"
 export * from "./create-purchase-solana-nft-starter-box-transaction"
@@ -9,3 +7,6 @@ export * from "./create-wrap-solana-metaplex-nft-transaction"
 export * from "./send-wrap-solana-metaplex-nft-transaction"
 export * from "./create-unwrap-solana-metaplex-nft-transaction"
 export * from "./send-unwrap-solana-metaplex-nft-transaction"
+export * from "./create-buy-golds-solana-transaction"
+export * from "./send-buy-golds-solana-transaction"
+

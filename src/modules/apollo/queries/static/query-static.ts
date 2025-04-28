@@ -21,7 +21,8 @@ import {
     FruitInfo,
     FlowerSchema,
     NFTCollections,
-    WholesaleMarket
+    WholesaleMarket,
+    GoldPurchases
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -377,6 +378,24 @@ const query = gql`
         quantity
       }
     }
+    goldPurchases {
+      solana {
+        testnet {
+          options {
+            price
+            amount
+            paymentKind
+          }
+        }
+        mainnet {
+          options {
+            price
+            amount
+            paymentKind
+          }
+        }
+      }
+    }
   }
 `
 
@@ -402,6 +421,7 @@ export interface QueryStaticResponse {
   animalInfo: AnimalInfo
   nftCollections: NFTCollections
   wholesaleMarket: WholesaleMarket
+  goldPurchases: GoldPurchases
 }
 
 export const queryStatic = async () => {
