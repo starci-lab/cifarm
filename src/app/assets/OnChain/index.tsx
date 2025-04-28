@@ -3,6 +3,7 @@ import { valuesWithKey } from "@/modules/common"
 import { ExtendedButton, List, Spacer, Title, Token } from "@/components"
 import React, { FC } from "react"
 import {
+    RotateCcwIcon,
     Settings2Icon,
     //UserRoundCheck,
 } from "lucide-react"
@@ -13,7 +14,7 @@ import {
 } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { NFTCollections } from "./NFTCollections"
-import { setTokenKey, useAppDispatch, useAppSelector } from "@/redux"
+import { setTokenKey, useAppDispatch, useAppSelector, triggerRefreshTokens } from "@/redux"
 export const OnChain: FC = () => {
     //const { toast } = useToast()
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -31,13 +32,20 @@ export const OnChain: FC = () => {
                         title="Tokens"
                         tooltipString="The tokens you have added to your wallet."
                     />
-                    <ExtendedButton
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => router.push(pathConstants.manageTokens)}
-                    >
-                        <Settings2Icon className="w-5 h-5" />
-                    </ExtendedButton>
+                    <div className="flex gap-2 items-center">
+                        <ExtendedButton variant="ghost" size="icon" onClick={() => {
+                            dispatch(triggerRefreshTokens())
+                        }}>
+                            <RotateCcwIcon className="w-5 h-5" />
+                        </ExtendedButton>
+                        <ExtendedButton
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => router.push(pathConstants.manageTokens)}
+                        >
+                            <Settings2Icon className="w-5 h-5" />
+                        </ExtendedButton>
+                    </div>
                 </div>
                 <Spacer y={4} />
                 <div>

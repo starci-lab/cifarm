@@ -23,10 +23,10 @@ export const useBalanceSwr = ({
     const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const account = accounts.find((account) => account.id === accountId)
-
+    const refreshTokensKey = useAppSelector((state) => state.hookDependencyReducer.refreshTokensKey)
     //if tokenKey is set, tokenAddress is ignored
     const swr = useSWR(
-        [chainKey, network, tokenAddress, tokenKey, account],
+        [chainKey, network, tokenAddress, tokenKey, account, refreshTokensKey],
         async () => {
             if (!account) {
                 return 0

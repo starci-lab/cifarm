@@ -27,10 +27,12 @@ export const useNFTCollectionsSwr = ({
         (state) => state.sessionReducer.nftCollections
     )
     const account = accounts.find((account) => account.id === accountId)
-
+    const refreshNFTCollectionsKey = useAppSelector(
+        (state) => state.hookDependencyReducer.refreshNFTCollectionsKey
+    )
     //if tokenKey is set, tokenAddress is ignored
     const swr = useSWR(
-        [chainKey, network, collectionAddress, collectionKey, account],
+        [chainKey, network, collectionAddress, collectionKey, account, refreshNFTCollectionsKey],
         async () => {
             if (!account) {
                 return {

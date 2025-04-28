@@ -523,6 +523,7 @@ export const SignTransactionModal: FC = () => {
                                         <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
                                             {truncateString(serializedTx, 30, 4)}
                                         </div>
+                                        <Snippet code={serializedTx} />
                                     </div>
                                 </div>
                             )

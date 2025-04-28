@@ -1,8 +1,8 @@
 import { Title, Spacer, ExtendedButton, NFTCollection } from "@/components"
-import { setCollectionKey, useAppDispatch, useAppSelector } from "@/redux"
+import { setCollectionKey, useAppDispatch, useAppSelector, triggerRefreshNFTCollections } from "@/redux"
 import React, { FC } from "react"
 import { useRouterWithSearchParams } from "@/hooks"
-import { Settings2Icon } from "lucide-react"
+import { Settings2Icon, RotateCcwIcon } from "lucide-react"
 import { pathConstants } from "@/constants"
 import { valuesWithKey } from "@/modules/common"
 
@@ -23,13 +23,22 @@ export const NFTCollections: FC = () => {
                     title="NFT Collections"
                     tooltipString="The NFT collections you have added to your wallet."
                 />
-                <ExtendedButton
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => router.push(pathConstants.manageNFTCollections)}
-                >
-                    <Settings2Icon className="w-5 h-5" />
-                </ExtendedButton>
+                <div className="flex gap-2 items-center">
+                    <ExtendedButton
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => dispatch(triggerRefreshNFTCollections())}
+                    >
+                        <RotateCcwIcon className="w-5 h-5" />
+                    </ExtendedButton>
+                    <ExtendedButton
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => router.push(pathConstants.manageNFTCollections)}
+                    >
+                        <Settings2Icon className="w-5 h-5" />
+                    </ExtendedButton>
+                </div>
             </div>
             <Spacer y={4} />
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
