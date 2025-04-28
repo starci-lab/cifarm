@@ -5,6 +5,7 @@ export interface HookDependencySlice {
   loadTokensKey: number;
   loadNFTCollectionsKey: number;
   startAppKey: number;
+  refreshAddressesKey: number;
 }
 
 const initialState: HookDependencySlice = {
@@ -12,6 +13,7 @@ const initialState: HookDependencySlice = {
     loadTokensKey: 0,
     loadNFTCollectionsKey: 0,
     startAppKey: 0,
+    refreshAddressesKey: 0,
 }
 
 export const hookDependencySlice = createSlice({
@@ -29,9 +31,12 @@ export const hookDependencySlice = createSlice({
         },
         triggerStartApp: (state) => {
             state.startAppKey += 1
+        },
+        triggerRefreshAddresses: (state) => {
+            state.refreshAddressesKey += 1
         }
     },
 })
 
 export const hookDependencyReducer = hookDependencySlice.reducer
-export const { triggerLoadAccounts, triggerLoadTokens, triggerLoadNFTCollections, triggerStartApp } = hookDependencySlice.actions
+export const { triggerLoadAccounts, triggerLoadTokens, triggerLoadNFTCollections, triggerStartApp, triggerRefreshAddresses } = hookDependencySlice.actions

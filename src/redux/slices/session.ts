@@ -58,6 +58,7 @@ export interface SessionState {
   showGameUI: boolean;
   selectedShipProductId?: string;
   selectedShipInventoryId?: string;
+  addresses: Array<string>;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -86,6 +87,7 @@ const initialState: SessionState = {
     placedItems: [],
     playerContext: PlayerContext.Home,
     showGameUI: false,
+    addresses: [],
 }
 
 export const sessionSlice = createSlice({
@@ -196,6 +198,21 @@ export const sessionSlice = createSlice({
         setSelectedShipInventoryId: (state, action: PayloadAction<string | undefined>) => {
             state.selectedShipInventoryId = action.payload
         },
+        updateToken: (state, action: PayloadAction<UpdateTokenParams>) => {
+            const { key, token } = action.payload
+            const existingToken = state.tokens[key]
+            if (!existingToken) throw new Error("Token not found")
+            state.tokens[key] = { ...existingToken, ...token }
+        },
+        updateNFTCollection: (state, action: PayloadAction<UpdateNFTCollectionParams>) => {
+            const { key, collection } = action.payload
+            const existingCollection = state.nftCollections[key]
+            if (!existingCollection) throw new Error("Collection not found")
+            state.nftCollections[key] = { ...existingCollection, ...collection }
+        },  
+        setAddresses: (state, action: PayloadAction<Array<string>>) => {
+            state.addresses = action.payload
+        },
     },
 })
 
@@ -232,6 +249,9 @@ export const {
     setShowGameUI,
     setSelectedShipProductId,
     setSelectedShipInventoryId,
+    updateToken,
+    updateNFTCollection,
+    setAddresses,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
@@ -252,5 +272,15 @@ export interface SetNftCollectionsSwrParams {
 export interface SwitchNFTCollectionParams {
   key: string;
   enabled: boolean;
+}
+
+export interface UpdateTokenParams {
+  key: string;
+  token: Partial<TokenInfo>;
+}
+
+export interface UpdateNFTCollectionParams {
+  key: string;
+  collection: Partial<CollectionInfo>;
 }
 

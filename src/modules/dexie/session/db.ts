@@ -35,6 +35,10 @@ const sessionDb = new Dexie("SessionDB") as Dexie & {
     NFTCollection,
     "id" // primary key "id" (for the typings only)
   >;
+  addresses: EntityTable<
+    Address,
+    "id" // primary key "id" (for the typings only)
+  >;
 }
 
 export enum SessionDbKey {
@@ -120,6 +124,14 @@ export interface NFTCollection {
   version: number;
 }
 
+export interface Address {
+  id: number;
+  chainKey: string;
+  network: string;
+  address: string;
+  index?: number;
+}
+
 //store all sessions
 sessionDb.version(1).stores({
     //store all key-value pairs
@@ -140,6 +152,8 @@ sessionDb.version(1).stores({
     //assets
     packages: "++id, packageId",
     assets: "++id, key, data, version",
+    //addresses
+    addresses: "++id, chainKey, network, address, index",
 })
 
 export { sessionDb }

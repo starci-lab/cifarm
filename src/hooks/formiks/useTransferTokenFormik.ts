@@ -60,6 +60,7 @@ export const useTransferTokenFormik = (): FormikProps<TransferFormikValues> => {
                         amount: Number.parseFloat(stringAmount),
                         tokenKey: tokenKey || DefaultToken.Native,
                     },
+                    saveAddress: recipientAddress,
                 })
             )
             open()

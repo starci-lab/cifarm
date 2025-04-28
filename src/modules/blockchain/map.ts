@@ -4,8 +4,9 @@ import { PlacedItemTypeId } from "../entities"
 
 export enum DefaultToken {
     Native = "native",
-    $CARROT = "$CARROT",
     $CAULI = "$CAULI",
+    USDC = "USDC",
+    USDT = "USDT",
 }
 
 export enum DefaultCollection {
@@ -86,30 +87,6 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
             }
         },
         defaultTokens: {
-            [Network.Mainnet]: {
-                [DefaultToken.Native]: {
-                    name: "Solana",
-                    symbol: "SOL",
-                    address: "",
-                    decimals: 9,
-                    imageUrl: "/solana.svg",
-                },
-                [DefaultToken.$CARROT]: {
-                    name: "$CARROT",
-                    symbol: "$CARROT",
-                    address: "",
-                    decimals: 9,
-                    imageUrl: "/$CARROT.png",
-                    useHoneycombProtocol: true,
-                },
-                [DefaultToken.$CAULI]: {
-                    name: "$CAULI",
-                    symbol: "$CAULI",
-                    address: "",
-                    decimals: 9,
-                    imageUrl: "/$CAULI.png",
-                }
-            },
             [Network.Testnet]: {
                 [DefaultToken.Native]: {
                     name: "Solana",
@@ -118,13 +95,28 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     decimals: 9,
                     imageUrl: "/solana.svg",
                 },
-                [DefaultToken.$CARROT]: {
-                    name: "$CARROT",
-                    symbol: "$CARROT",
-                    address: envConfig().honeycombTokenAddress[Network.Testnet],
+                [DefaultToken.$CAULI]: {
+                    name: "$CAULI",
+                    symbol: "$CAULI",
+                    address: "",
                     decimals: 9,
-                    imageUrl: "/$CARROT.png",
-                    useHoneycombProtocol: true,
+                    imageUrl: "/$CAULI.png",
+                },
+                [DefaultToken.USDC]: {
+                    name: "USDC",
+                    symbol: "USDC",
+                    address: "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+                    decimals: 6,
+                    imageUrl: "/icons/usdc.svg",
+                }
+            },
+            [Network.Mainnet]: {
+                [DefaultToken.Native]: {
+                    name: "Solana",
+                    symbol: "SOL",
+                    address: "",
+                    decimals: 9,
+                    imageUrl: "/solana.svg",
                 },
                 [DefaultToken.$CAULI]: {
                     name: "$CAULI",
@@ -148,13 +140,6 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     decimals: 8,
                     imageUrl: "/sui.svg",
                 },
-                [DefaultToken.$CARROT]: {
-                    name: "$CARROT",
-                    symbol: "$CARROT",
-                    address: "",
-                    decimals: 8,
-                    imageUrl: "/$CARROT.png",
-                },
                 [DefaultToken.$CAULI]: {
                     name: "$CAULI",
                     symbol: "$CAULI",
@@ -170,13 +155,6 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     address: "",
                     decimals: 8,
                     imageUrl: "/sui.svg",
-                },
-                [DefaultToken.$CARROT]: {
-                    name: "$CARROT",
-                    symbol: "$CARROT",
-                    address: "",
-                    decimals: 8,
-                    imageUrl: "/$CARROT.png",
                 },
                 [DefaultToken.$CAULI]: {
                     name: "$CAULI",
@@ -253,8 +231,8 @@ export const networkMap: Record<Network, NetworkInfo> = {
     }
 }
 
-export type DefaultTokens = Record<DefaultToken, TokenInfo>
-export type DefaultCollections = Record<DefaultCollection, CollectionInfo>
+export type DefaultTokens = Partial<Record<DefaultToken, TokenInfo>>
+export type DefaultCollections = Partial<Record<DefaultCollection, CollectionInfo>>
 
 export interface HoneycombProtocol {
     projectAddress: string

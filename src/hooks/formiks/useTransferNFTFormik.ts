@@ -45,6 +45,7 @@ export const useTransferNFTFormik = (): FormikProps<TransferNFTFormikValues> => 
                         collectionKey,
                         nft,
                     },
+                    saveAddress: recipientAddress,
                 })
             )
             open()

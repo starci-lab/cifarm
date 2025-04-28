@@ -42,7 +42,7 @@ export const ExtendedInput: FC<ExtendedInputProps> = ({
             <div className={
                 cn(
                     "gap-2 bg-card",
-                    "flex items-center h-9 w-full rounded-md px-3 py-1 text-base shadow transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-within:ring-1 focus-within:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                    "flex items-center h-9 w-full rounded-md px-3 py-1 text-base transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-within:ring-1 focus-within:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
                     isInvalid && "focus-within:border-destructive border-destructive focus-within:ring-destructive",
                 )
             }

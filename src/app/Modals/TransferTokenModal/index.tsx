@@ -12,16 +12,15 @@ import {
     Title,
     ExtendedNumberInput,
     ExtendedInput,
-    Link,
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     Image,
     DialogFooter,
+    Addresses,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { AtSignIcon } from "lucide-react"
 import { useTransferTokenFormik } from "@/hooks"
 import { DefaultToken } from "@/modules/blockchain"
 
@@ -33,7 +32,6 @@ export const TransferTokenModal: FC = () => {
         (state) => state.sessionReducer.accounts.currentId
     )
     const account = accounts.find((account) => account.id === currentId)
-    const { tokenKey } = useAppSelector((state) => state.modalReducer.tokenModal)
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(TRANSFER_TOKEN_DISCLOSURE)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -43,7 +41,7 @@ export const TransferTokenModal: FC = () => {
     const balanceSwrs = useAppSelector(
         (state) => state.sessionReducer.balanceSwrs
     )
-    const balanceSwr = balanceSwrs[tokenKey ?? DefaultToken.Native]
+    const balanceSwr = balanceSwrs[formik.values.tokenKey ?? DefaultToken.Native]
 
     useEffect(() => {
         if (balanceSwr?.data) {
@@ -51,12 +49,16 @@ export const TransferTokenModal: FC = () => {
         }
     }, [balanceSwr?.data])
 
+    const addresses = useAppSelector(
+        (state) => state.sessionReducer.addresses
+    )
     if (!account) {
         return null
     }
     if (!balanceSwr) {
         return null
     }
+    
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
@@ -72,13 +74,13 @@ export const TransferTokenModal: FC = () => {
                         className="w-full justify-start"
                     >
                         <Image
-                            src={tokens[tokenKey ?? DefaultToken.Native].imageUrl}
-                            alt={tokens[tokenKey ?? DefaultToken.Native].name}
+                            src={tokens[formik.values.tokenKey ?? DefaultToken.Native].imageUrl}
+                            alt={tokens[formik.values.tokenKey ?? DefaultToken.Native].name}
                             width={20}
                             height={20}
                             className="w-5 h-5"
                         />
-                        {tokens[tokenKey ?? DefaultToken.Native].name}
+                        {tokens[formik.values.tokenKey ?? DefaultToken.Native].name}
                     </ExtendedButton>
                     <Spacer y={4} />
                     <div>
@@ -142,9 +144,12 @@ export const TransferTokenModal: FC = () => {
                             undefined
                             }
                             endContent={
-                                <Link>
-                                    <AtSignIcon className="w-5 h-5" />
-                                </Link>
+                                <Addresses 
+                                    addresses={addresses}
+                                    onAddressClick={(address: string) => {
+                                        formik.setFieldValue("recipientAddress", address)
+                                    }}
+                                />
                             }
                         />
                     </div>

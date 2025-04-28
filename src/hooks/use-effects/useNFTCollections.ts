@@ -2,10 +2,11 @@ import { sessionDb } from "@/modules/dexie"
 import {
     loadNFTCollections,
     StateNFTCollections,
+    updateNFTCollection,
     useAppDispatch,
     useAppSelector,
 } from "@/redux"
-import { useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import _ from "lodash"
 import { defaultChainKey, defaultNetwork, blockchainMap } from "@/modules/blockchain"
 
@@ -20,7 +21,7 @@ export const useNFTCollections = () => {
         (state) => state.sessionReducer.nftCollections
     )
     const dispatch = useAppDispatch()
-
+    const [nftCollectionsLoaded, setNftCollectionsLoaded] = useState(false)
     useEffect(() => {
     //do nothing if loadTokensKey is equal to 0
         if (!loadNFTCollectionsKey && _.isEmpty(accounts)) return
@@ -120,13 +121,17 @@ export const useNFTCollections = () => {
             )
             //load tokens to redux store
             dispatch(loadNFTCollections(nftCollectionMap))
+            setNftCollectionsLoaded(true)
         }
         handleEffect()
     }, [loadNFTCollectionsKey, accounts])
 
-    // migration in case the default tokens show missing
+    // migration in case the default tokens show 
+    const migrationOccured = useRef(false)  
     useEffect(() => {
-        if (_.isEmpty(nftCollections)) return
+        if (!nftCollectionsLoaded) return
+        if (migrationOccured.current) return
+        migrationOccured.current = true
         const handleEffect = async () => {
             const defaultNFTCollections = Object.entries(
                 blockchainMap[defaultChainKey].defaultCollections[defaultNetwork]
@@ -135,8 +140,8 @@ export const useNFTCollections = () => {
                 return collections
             }, {} as StateNFTCollections)
             // check if any additional keys
-            const additionalKeys = Object.keys(nftCollections).filter(
-                (key) => !defaultNFTCollections[key]
+            const additionalKeys = Object.keys(defaultNFTCollections).filter(
+                (key) => !nftCollections[key]
             )
             if (additionalKeys.length > 0) {
                 // add missing keys
@@ -153,14 +158,34 @@ export const useNFTCollections = () => {
                 dispatch(loadNFTCollections(defaultNFTCollections))
             }
             // check if any deleted keys
-            const deletedKeys = Object.keys(defaultNFTCollections).filter(
-                (key) => !nftCollections[key]
+            const deletedKeys = Object.keys(nftCollections).filter(
+                (key) => !defaultNFTCollections[key]
             )
             if (deletedKeys.length > 0) {
                 // update redux store
                 dispatch(loadNFTCollections(defaultNFTCollections))
             }
+            // check if any changes between defaultNFTCollections and nftCollections
+            for (const key in defaultNFTCollections) {
+                if (!_.isEqual(defaultNFTCollections[key], nftCollections[key])) {
+                    // update redux store
+                    const nftCollection = await sessionDb.nftCollections.filter(
+                        (nftCollection) => nftCollection.key === key
+                    ).first()
+                    if (!nftCollection) {
+                        throw new Error(`NFT collection ${key} not found`)
+                    }
+                    await sessionDb.nftCollections.put({
+                        ...nftCollection,
+                        ...defaultNFTCollections[key],
+                    })
+                    dispatch(updateNFTCollection({
+                        key,
+                        collection: defaultNFTCollections[key]
+                    }))
+                }
+            }
         }
         handleEffect()
-    }, [nftCollections])
+    }, [nftCollectionsLoaded, nftCollections])
 }

@@ -118,6 +118,8 @@ export type SignTransactionModal = (
   extraAction?: () => Promise<void> | void;
   // after action instead of broadcast to the network, it will be sent to the network
   postActionHook?: (signedTx: string) => Promise<string> | string;
+  // save the address to the database
+  saveAddress?: string;
 };
 
 export interface ExtendedNFTData extends NFTData {

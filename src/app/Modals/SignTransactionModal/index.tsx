@@ -20,7 +20,9 @@ import {
     TransactionType,
     TransferNFTData,
     TransferTokenData,
+    triggerRefreshAddresses,
     UnwrapSolanaMetaplexNFTData,
+    useAppDispatch,
     useAppSelector,
     WrapSolanaMetaplexNFTData,
 } from "@/redux"
@@ -50,6 +52,7 @@ import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "@/app/utils"
 import { pathConstants } from "@/constants"
+import { sessionDb } from "@/modules/dexie/session/db"
 
 interface ProviderInfo {
   name: string;
@@ -115,6 +118,12 @@ export const SignTransactionModal: FC = () => {
         (state) => state.sessionReducer.accounts.currentId
     )
     const account = accounts.find((account) => account.id === currentAccountId)
+
+    const saveAddress = useAppSelector(
+        (state) => state.modalReducer.signTransactionModal.saveAddress
+    )
+
+    const dispatch = useAppDispatch()
 
     const addTxHashToast = (txHash: string) =>
         toast({
@@ -295,6 +304,30 @@ export const SignTransactionModal: FC = () => {
             } catch (error) {
                 addErrorToast((error as Error).message)
             } finally {
+                // save the address to the database
+                if (saveAddress) {
+                    // check if the address already exists
+                    const existingAddress = await sessionDb.addresses.get({
+                        chainKey,
+                        network,
+                        address: saveAddress,
+                    })
+                    const nextIndex = (existingAddress?.index ?? 0) + 1
+                    if (!existingAddress) {
+                        await sessionDb.addresses.add({
+                            chainKey,
+                            network,
+                            address: saveAddress,
+                            index: nextIndex,
+                        })
+                    } else {
+                        //move the address to the top of the list
+                        await sessionDb.addresses.update(existingAddress.id, {
+                            index: nextIndex,
+                        })
+                    }
+                    dispatch(triggerRefreshAddresses()) 
+                }
                 toggle(false)
             }
         }
