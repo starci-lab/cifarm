@@ -4,6 +4,8 @@ import {
     GRAPHQL_QUERY_FOLLOWEES_SWR,
     GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
+    QUERY_USER_SWR_MUTATION,
+    QUERY_STATIC_SWR_MUTATION,
 } from "@/app/constants"
 import {
     DEFAULT_LIMIT,
@@ -12,14 +14,17 @@ import {
     useGraphQLQueryNeighborsSwr,
     useGraphQLMutationFollowSwrMutation,
     useGraphQLMutationUnfollowSwrMutation,
+    useGraphQLQueryUserSwr,
+    useGraphQLQueryStaticSwr,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { UserCard } from "../UserCard"
-import { FilterBar, List, Spacer } from "@/components"
+import { AdvancedSearchDropdown, FilterBar, List, Spacer } from "@/components"
 import { RefreshCcw } from "lucide-react"
 import { ExtendedButton, Pagination } from "@/components"
-
+import { AdvancedSearchContent, getLevelRange } from "../AdvancedSearchContent"
+import { useAppSelector } from "@/redux"
 export const NeighborsTab: FC = () => {
     const {
         swr: { data, mutate: neighborsMutate },
@@ -50,6 +55,49 @@ export const NeighborsTab: FC = () => {
     const offset = params?.request?.offset ?? DEFAULT_OFFSET
     const totalPage = Math.max(Math.ceil(count / limit), 1)
     const currentPage = Math.ceil(offset / limit) + 1
+
+    const appliedLevelRange = useAppSelector(
+        (state) => state.searchReducer.neighborsSearch.appliedLevelRange
+    )
+    const appliedStatus = useAppSelector(
+        (state) => state.searchReducer.neighborsSearch.appliedStatus
+    )
+
+    const { swr: userSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryUserSwr>
+  >(QUERY_USER_SWR_MUTATION)
+
+    const { swr: staticSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryStaticSwr>
+  >(QUERY_STATIC_SWR_MUTATION)
+
+    useEffect(() => {
+        if (!userSwr.data?.data.user.level) return
+        if (!staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold)
+            return
+        if (!setParams) throw new Error("setParams is not defined")
+        const { levelStart, levelEnd } = getLevelRange({
+            levelRange: appliedLevelRange,
+            startLevel:
+        staticSwr.data.data.interactionPermissions.thiefLevelGapThreshold,
+            yourLevel: userSwr.data.data.user.level,
+        })
+        setParams({
+            ...params,
+            request: {
+                ...params?.request,
+                levelStart,
+                levelEnd,
+                status: appliedStatus,
+            },
+        })
+    }, [
+        appliedLevelRange,
+        appliedStatus,
+        userSwr.data?.data.user.level,
+        staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold,
+    ])
+
     const setPage = (page: number) => {
         if (!setParams) throw new Error("setParams is not defined")
         setParams({
@@ -63,29 +111,52 @@ export const NeighborsTab: FC = () => {
 
     return (
         <div className="space-y-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full">
                 <FilterBar
+                    placeholder="Username, address, ..."
                     handleSearchResult={({ searchString }) => {
                         if (!setParams) throw new Error("setParams is not defined")
+                        if (!userSwr.data?.data.user.level)
+                            throw new Error("user level is not defined")
+                        if (
+                            !staticSwr.data?.data.interactionPermissions
+                                .thiefLevelGapThreshold
+                        )
+                            throw new Error("thief level gap threshold is not defined")
+                        const { levelStart, levelEnd } = getLevelRange({
+                            levelRange: appliedLevelRange,
+                            startLevel:
+                staticSwr.data.data.interactionPermissions
+                    .thiefLevelGapThreshold,
+                            yourLevel: userSwr.data.data.user.level,
+                        })
                         setParams({
                             ...params,
                             request: {
                                 ...params?.request,
                                 searchString,
+                                levelStart,
+                                levelEnd,
+                                status: appliedStatus,
                             },
                         })
                     }}
+                    className="flex-1"
                 />
-                <ExtendedButton
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => neighborsMutate()}
-                    className="shrink-0"
-                >
-                    <RefreshCcw className="h-4 w-4" />
-                </ExtendedButton>
+                <div className="flex items-center gap-2">
+                    <AdvancedSearchDropdown>
+                        <AdvancedSearchContent />
+                    </AdvancedSearchDropdown>
+                    <ExtendedButton
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => neighborsMutate()}
+                        className="shrink-0"
+                    >
+                        <RefreshCcw className="h-4 w-4" />
+                    </ExtendedButton>
+                </div>
             </div>
-
             <List
                 items={neighbors}
                 contentCallback={(item) => {
@@ -98,11 +169,11 @@ export const NeighborsTab: FC = () => {
                                         followeeUserId: item.id,
                                     },
                                 })
-                                
+
                                 await neighborsMutate()
                                 await followeesMutate()
                             }}
-                            onUnfollowCallback={async() => {
+                            onUnfollowCallback={async () => {
                                 await unfollowSwrMutation.trigger({
                                     request: {
                                         followeeUserId: item.id,
@@ -115,7 +186,7 @@ export const NeighborsTab: FC = () => {
                     )
                 }}
             />
-            <Spacer y={4}/>
+            <Spacer y={4} />
             <div className="flex justify-center">
                 <Pagination
                     currentPage={currentPage}

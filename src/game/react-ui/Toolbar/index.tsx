@@ -68,13 +68,14 @@ export const Toolbar: FC = () => {
     filteredTools.push(...defaultTools)
     filteredTools.push(
         ...inventories
+            .sort((prev, next) => prev.index - next.index)
             .slice(fromToolIndex, fromToolIndex + numVisibleInventories)
             .map((inventory) => ({
                 id: inventory.id,
                 default: false,
                 quantity: inventory.quantity,
             }))
-    )
+    )   
 
     const [selectAsDefault, setSelectAsDefault] = useState(false)
     useEffect(() => {

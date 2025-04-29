@@ -1,8 +1,7 @@
-import { FunnelIcon } from "@heroicons/react/24/outline"
-import { Button, ExtendedInput } from "@/components"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { ExtendedInput } from "@/components"
 import React, { FC, useEffect, useState } from "react"
 import { SearchIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export interface HandleSearchResultParams {
   searchString: string;
@@ -11,18 +10,19 @@ export interface HandleSearchResultParams {
 
 export interface FilterBarProps extends React.ComponentPropsWithoutRef<"input"> {
   handleSearchResult: (params: HandleSearchResultParams) => void | Promise<void>;
-  useAdvancedSearch?: boolean;
   timeout?: number;
   disableDebounce?: boolean;
+  className?: string;
 }
 
 const TIMEOUT = 500
 
 export const FilterBar: FC<FilterBarProps> = ({
     handleSearchResult,
-    useAdvancedSearch = false,
     timeout = TIMEOUT,
     disableDebounce = false,
+    className,
+    placeholder = "Search",
 }: FilterBarProps) => {
     const [searchString, setSearchString] = useState("")
     const [mounted, setMounted] = useState(false)
@@ -48,26 +48,12 @@ export const FilterBar: FC<FilterBarProps> = ({
     }, [searchString])
 
     return (
-        <div className="flex gap-2 w-full">
-            <ExtendedInput
-                startContent={<SearchIcon className="w-5 h-5 text-muted-foreground" />}
-                value={searchString}
-                onValueChange={(value) => setSearchString(value)}
-                placeholder="Search"
-                className="w-full"
-            />
-            {useAdvancedSearch && (
-                <Tooltip>
-                    <TooltipTrigger>
-                        <Button variant="outline" onClick={() => {}} className="flex items-center gap-2">
-                            <FunnelIcon className="w-5 h-5" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        Advanced Search
-                    </TooltipContent>
-                </Tooltip>
-            )}
-        </div>
+        <ExtendedInput
+            startContent={<SearchIcon className="w-5 h-5 text-muted-foreground" />}
+            value={searchString}
+            onValueChange={(value) => setSearchString(value)}
+            placeholder={placeholder}
+            className={cn("w-full", className)}
+        />
     )
 }

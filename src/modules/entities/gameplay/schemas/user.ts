@@ -25,4 +25,6 @@ export interface UserSchema extends AbstractSchema {
     followXAwarded: boolean;
     sound: number
     ambient: number 
+    isOnline: boolean
+    lastOnlineTime?: Date
 }

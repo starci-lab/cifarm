@@ -11,6 +11,7 @@ import { Account } from "@/modules/dexie"
 import { PlacedItemSchema, InventorySchema, UserSchema } from "@/modules/entities"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
+import { NeighborsTab } from "./tab"
 
 export enum PlayerContext {
     Home = "home",
@@ -59,6 +60,7 @@ export interface SessionState {
   selectedShipProductId?: string;
   selectedShipInventoryId?: string;
   addresses: Array<string>;
+  activeNeighborCard?: NeighborsTab
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -213,6 +215,9 @@ export const sessionSlice = createSlice({
         setAddresses: (state, action: PayloadAction<Array<string>>) => {
             state.addresses = action.payload
         },
+        setActiveNeighborCard: (state, action: PayloadAction<NeighborsTab>) => {
+            state.activeNeighborCard = action.payload
+        },
     },
 })
 
@@ -252,6 +257,7 @@ export const {
     updateToken,
     updateNFTCollection,
     setAddresses,
+    setActiveNeighborCard,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

@@ -7,7 +7,7 @@ import {
     QueryParams,
     QueryVariables,
 } from "../../types"
-
+import { NeighborsSearchStatus } from "@/redux"
 const query1 = gql`
   query Followees($request: FolloweesRequest!) {
     followees(request: $request) {  
@@ -19,6 +19,8 @@ const query1 = gql`
         username
         chainKey
         golds
+        isOnline
+        lastOnlineTime
       }
       count
     }
@@ -39,6 +41,9 @@ const queryMap: Record<QueryFollowees, DocumentNode> = {
 
 export interface QueryFolloweesArgs extends QueryManyRequest {
   searchString?: string;
+  levelStart?: number
+  levelEnd?: number
+  status?: NeighborsSearchStatus
 }
 
 export type QueryFolloweesParams = QueryParams<QueryFollowees, QueryFolloweesArgs>;

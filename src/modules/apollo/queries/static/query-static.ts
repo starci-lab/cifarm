@@ -22,7 +22,8 @@ import {
     FlowerSchema,
     NFTCollections,
     WholesaleMarket,
-    GoldPurchases
+    GoldPurchases,
+    InteractionPermissions
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -396,6 +397,9 @@ const query = gql`
         }
       }
     }
+    interactionPermissions {
+      thiefLevelGapThreshold
+    }
   }
 `
 
@@ -422,6 +426,7 @@ export interface QueryStaticResponse {
   nftCollections: NFTCollections
   wholesaleMarket: WholesaleMarket
   goldPurchases: GoldPurchases
+  interactionPermissions: InteractionPermissions
 }
 
 export const queryStatic = async () => {

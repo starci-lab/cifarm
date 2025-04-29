@@ -9,7 +9,8 @@ import {
     gameReducer,
     collapsibleReducer,
     wrapReducer,
-    downloadReducer
+    downloadReducer,
+    searchReducer
 } from "./slices"
 
 export const store = configureStore({
@@ -22,7 +23,8 @@ export const store = configureStore({
         gameReducer,
         collapsibleReducer,
         wrapReducer,
-        downloadReducer
+        downloadReducer,
+        searchReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

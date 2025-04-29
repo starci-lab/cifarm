@@ -6,7 +6,7 @@ import React, { FC, ReactNode } from "react"
 import { FolloweesTab } from "./FolloweesTab"
 import { Dialog, DialogContent, DialogHeader } from "@/components"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { NeighborsTab } from "./Neighbors"
+import { NeighborsTab } from "./NeighborsTab"
 import { NeighborsTab as NeighborsTabEnum, setNeighborsTab, useAppDispatch, useAppSelector } from "@/redux"  
 
 export const NeighborsModal: FC = () => {

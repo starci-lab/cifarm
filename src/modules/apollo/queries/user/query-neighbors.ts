@@ -7,6 +7,7 @@ import {
     QueryParams,
     QueryVariables,
 } from "../../types"
+import { NeighborsSearchStatus } from "@/redux"
 
 const query1 = gql`
   query Neighbors($request: NeighborsRequest!) {
@@ -40,6 +41,9 @@ const queryMap: Record<QueryNeighbors, DocumentNode> = {
 
 export interface QueryNeighborsArgs extends QueryManyRequest {
    searchString?: string;
+   levelStart?: number
+   levelEnd?: number
+   status?: NeighborsSearchStatus
 }
 export type QueryNeighborsParams = QueryParams<QueryNeighbors, QueryNeighborsArgs>;
 export const queryNeighbors = async ({

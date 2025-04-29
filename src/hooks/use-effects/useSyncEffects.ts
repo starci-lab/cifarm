@@ -1,4 +1,4 @@
-import { WS } from "@/app/constants"
+import { GRAPHQL_QUERY_FOLLOWEES_SWR, GRAPHQL_QUERY_NEIGHBORS_SWR, WS } from "@/app/constants"
 import {
     useWs,
     ActionEmittedMessage,
@@ -6,7 +6,8 @@ import {
     PlacedItemsSyncedMessage,
     UserSyncedMessage,
     ReceiverEventName,
-    EmitterEventName,
+    useGraphQLQueryNeighborsSwr,
+    useGraphQLQueryFolloweesSwr,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
@@ -22,7 +23,7 @@ import {
     setVisitedUser,
 } from "@/redux"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-console.log(ExternalEventEmitter)
+import { NeighborsTab } from "@/redux"
 export const useSyncEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     const dispatch = useAppDispatch()
@@ -33,6 +34,9 @@ export const useSyncEffects = () => {
         (state) => state.sessionReducer.placedItems
     )
     const user = useAppSelector((state) => state.sessionReducer.user)
+
+    const { swr: neighborsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryNeighborsSwr>>(GRAPHQL_QUERY_NEIGHBORS_SWR)
+    const { swr: followeesSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryFolloweesSwr>>(GRAPHQL_QUERY_FOLLOWEES_SWR)
     // Handle socket connection
     // Ensure 1 time connection
     // Handle action emitted events
@@ -179,17 +183,55 @@ export const useSyncEffects = () => {
         }
     }, [socket, placedItems, dispatch])
 
-    // Handle return request events
+    //Handle return request events
     useEffect(() => {
         if (!socket) return
         ExternalEventEmitter.on(ExternalEventName.RequestReturn, () => {
             dispatch(setVisitedUser())
-            socket.emit(EmitterEventName.Return)
             ExternalEventEmitter.emit(ExternalEventName.Return)
         })
 
         return () => {
             ExternalEventEmitter.off(ExternalEventName.RequestReturn)
         }
-    }, [socket])    
+    }, [socket])  
+    
+    const visitedUser = useAppSelector((state) => state.gameReducer.visitedUser)
+    const activeNeighborCard = useAppSelector((state) => state.sessionReducer.activeNeighborCard)
+    //Handle next request events
+    useEffect(() => {
+        if (!socket) return
+        ExternalEventEmitter.on(ExternalEventName.RequestNext, () => {
+            // get the next user of the neighbors users
+            const neighbors = neighborsSwr.data?.data?.neighbors
+            const followees = followeesSwr.data?.data?.followees
+            
+            let nextUser: UserSchema | undefined
+            switch (activeNeighborCard) {
+            case NeighborsTab.Followees: {
+                const index = followees?.data?.findIndex((user) => user.id === visitedUser?.id)
+                if (index === undefined || index === -1) return
+                // get next index, if not exist, get the first user
+                const nextIndex = index + 1
+                nextUser = followees?.data?.[nextIndex] ?? followees?.data?.[0]
+                break
+            }
+            case NeighborsTab.Neighbors: {
+                const index = neighbors?.data?.findIndex((user) => user.id === visitedUser?.id)
+                if (index === undefined || index === -1) return
+                // get next index, if not exist, get the first user
+                const nextIndex = index + 1
+                nextUser = neighbors?.data?.[nextIndex] ?? neighbors?.data?.[0]
+                break
+            }
+            }
+            if (!nextUser) return
+            dispatch(setVisitedUser(nextUser))
+            ExternalEventEmitter.emit(ExternalEventName.Visit, nextUser)
+        })
+
+        return () => {
+            ExternalEventEmitter.off(ExternalEventName.RequestNext)
+        }
+    }, [socket, activeNeighborCard, neighborsSwr, followeesSwr, visitedUser])
 }

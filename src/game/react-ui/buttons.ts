@@ -69,7 +69,7 @@ export const rightButtons: Array<ButtonData> = [
         text: "Next",
         imageSrc: assetIconMap[AssetIconId.Next].base.assetUrl,
         onClick: () => {
-            ExternalEventEmitter.emit(ExternalEventName.Next)
+            ExternalEventEmitter.emit(ExternalEventName.RequestNext)
         },
         availableIn: [PlayerContext.Neighbor],
     },

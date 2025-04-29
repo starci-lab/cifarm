@@ -1,6 +1,8 @@
 import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
+import relativeTime from "dayjs/plugin/relativeTime"
 import utc from "dayjs/plugin/utc"
+dayjs.extend(relativeTime)
 dayjs.extend(duration)
 dayjs.extend(utc)
 
@@ -63,3 +65,8 @@ export const getNextMinuteCronExecution = (minutes: Array<number> = [0, 15, 30, 
 export const getMaxEnergy = (level: number = 1): number => {
     return 50 + (level - 1) * 3
 }
+
+export const formatDistanceToNow = (date: Date): string => {
+    return dayjs(date).fromNow()
+}
+

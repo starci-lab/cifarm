@@ -23,6 +23,8 @@ const query1 = gql`
       followXAwarded
       sound
       ambient
+      isOnline
+      lastOnlineTime
     }
   }
 `

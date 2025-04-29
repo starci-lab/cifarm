@@ -1,5 +1,5 @@
 import { Avatar, AvatarImage } from "../../ui"
-import React, { FC } from "react"
+import React, { FC, useState, useEffect } from "react"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { cn } from "@/lib/utils"
 
@@ -15,15 +15,17 @@ interface GameAvatarProps {
 }
 
 export const GameAvatar: FC<GameAvatarProps> = ({ imgSrc, jazzString, classNames = {} }) => {
-    let avatarUrl = ""
-    if (imgSrc) {
-        avatarUrl = imgSrc
-    } else {
-        if (!jazzString) {
-            throw new Error("Either imgSrc or jazzString must be provided")
+    const [avatarUrl, setAvatarUrl] = useState("")
+    useEffect(() => {
+        if (imgSrc) {
+            setAvatarUrl(imgSrc)
+        } else {
+            if (!jazzString) {
+                throw new Error("Either imgSrc or jazzString must be provided")
+            }
+            setAvatarUrl(createJazziconBlobUrl(jazzString))
         }
-        avatarUrl = createJazziconBlobUrl(jazzString)
-    }
+    }, [imgSrc, jazzString])
     return (
         <div className="relative">
             <Avatar className={

@@ -119,8 +119,17 @@ export abstract class ItemTilemap extends GroundTilemap {
         })
 
         ExternalEventEmitter.on(ExternalEventName.Return, () => {
+            // remove the watching user
             this.scene.cache.obj.remove(CacheKey.WatchingUser)
             this.handeVisit()
+        })
+
+        SceneEventEmitter.on(SceneEventName.UserRefreshed, () => {
+            this.user = this.scene.cache.obj.get(CacheKey.User)
+        })
+
+        SceneEventEmitter.on(SceneEventName.InventoriesRefreshed, () => {
+            this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         })
 
         SceneEventEmitter.on(SceneEventName.PlacedItemsRefreshed, () => {
@@ -1531,11 +1540,10 @@ export abstract class ItemTilemap extends GroundTilemap {
     }
 
     private async handeVisit() {
-    // save to cache
-    // console.log(toNeighbor)
+        // save to cache
+        // console.log(toNeighbor)
         SceneEventEmitter.emit(SceneEventName.FadeIn)
         await sleep(FADE_TIME)
-        SceneEventEmitter.emit(SceneEventName.UpdateWatchingStatus)
         // re-sync the placed items
         const watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as
       | UserSchema
@@ -1558,6 +1566,8 @@ export abstract class ItemTilemap extends GroundTilemap {
         await sleep(FADE_HOLD_TIME)
         SceneEventEmitter.emit(SceneEventName.FadeOut)
     }
+
+
 
     protected getCenterPosition({
         x,

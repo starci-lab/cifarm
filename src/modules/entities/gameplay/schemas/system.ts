@@ -160,4 +160,8 @@ export interface GoldPurchaseOptions {
 export type GoldPurchase = Record<Network, GoldPurchaseOptions>
 export type GoldPurchases = Record<ChainKey, GoldPurchase>
 
+export interface InteractionPermissions {
+  thiefLevelGapThreshold: number
+}
+
 

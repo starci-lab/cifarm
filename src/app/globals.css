@@ -27,6 +27,11 @@ body {
 } */
 
 @layer base {
+  *, ::before, ::after {
+    user-select: none;         /* Ngăn bôi đen văn bản */
+    -webkit-user-drag: none;   /* Ngăn drag hình ảnh hoặc nội dung */
+    -webkit-user-select: none; /* Safari */
+  }
   :root, .light {
 
     --background: 43 54% 95%;

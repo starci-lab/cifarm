@@ -33,7 +33,7 @@ export const Game: FC = () => {
 
     return (
         <div className="relative">
-            <div id={CONTAINER_ID} className="w-full h-full"/>
+            <div id={CONTAINER_ID} className="w-screen h-screen"/>
             <ReactUI />
         </div>
     )
