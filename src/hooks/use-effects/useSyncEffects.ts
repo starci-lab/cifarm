@@ -187,6 +187,7 @@ export const useSyncEffects = () => {
     useEffect(() => {
         if (!socket) return
         ExternalEventEmitter.on(ExternalEventName.RequestReturn, () => {
+            console.log("RequestReturn")
             dispatch(setVisitedUser())
             ExternalEventEmitter.emit(ExternalEventName.Return)
         })

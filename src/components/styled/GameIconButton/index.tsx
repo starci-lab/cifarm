@@ -1,16 +1,18 @@
 import React, { FC, useRef, useState, useEffect } from "react"
 import { ScaledImage } from "../Image"
-
+import { cn } from "@/lib/utils"
 interface GameIconButtonProps {
   imageSrc: string;
   text: string;
   onClick: () => void;
+  hidden?: boolean;
 }
 
 export const GameIconButton: FC<GameIconButtonProps> = ({
     text,
     imageSrc,
     onClick,
+    hidden = false,
 }) => {
     const divRef = useRef<HTMLDivElement | null>(null)
 
@@ -24,7 +26,7 @@ export const GameIconButton: FC<GameIconButtonProps> = ({
     }, [text])
     return (
         <div
-            className="flex flex-col items-center w-fit h-fit relative"
+            className={cn("flex flex-col items-center w-fit h-fit relative", hidden && "hidden")}
             onClick={onClick}
         >
             <ScaledImage src={imageSrc} />

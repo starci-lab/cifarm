@@ -63,25 +63,25 @@ export const ReactUI: FC = () => {
                     )}
                     <div className="flex flex-col gap-4 absolute top-[150px] left-6">
                         {leftButtons
-                            .filter((button) => button.availableIn.includes(playerContext))
                             .map((button, index) => (
                                 <GameIconButton
                                     key={index}
                                     text={button.text}
                                     imageSrc={button.imageSrc}
                                     onClick={button.onClick}
+                                    hidden={!button.availableIn.includes(playerContext)}
                                 />
                             ))}
                     </div>
                     <div className="flex flex-col gap-4 absolute top-[150px] right-6">
                         {rightButtons
-                            .filter((button) => button.availableIn.includes(playerContext))
                             .map((button, index) => (
                                 <GameIconButton
                                     key={index}
                                     text={button.text}
                                     imageSrc={button.imageSrc}
                                     onClick={button.onClick}
+                                    hidden={!button.availableIn.includes(playerContext)}
                                 />
                             ))}
                     </div>
