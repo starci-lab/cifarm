@@ -32,8 +32,8 @@ export const Game: FC = () => {
     useEffects()
 
     return (
-        <div className="relative">
-            <div id={CONTAINER_ID} className="w-screen h-screen"/>
+        <div className="relative w-full h-full">
+            <div id={CONTAINER_ID} className="w-full h-full"/>
             <ReactUI />
         </div>
     )

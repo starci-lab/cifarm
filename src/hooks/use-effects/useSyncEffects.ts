@@ -6,6 +6,7 @@ import {
     PlacedItemsSyncedMessage,
     UserSyncedMessage,
     ReceiverEventName,
+    EmitterEventName,
     useGraphQLQueryNeighborsSwr,
     useGraphQLQueryFolloweesSwr,
 } from "@/hooks"
@@ -187,8 +188,8 @@ export const useSyncEffects = () => {
     useEffect(() => {
         if (!socket) return
         ExternalEventEmitter.on(ExternalEventName.RequestReturn, () => {
-            console.log("RequestReturn")
             dispatch(setVisitedUser())
+            socket.emit(EmitterEventName.Return)
             ExternalEventEmitter.emit(ExternalEventName.Return)
         })
 
@@ -228,6 +229,9 @@ export const useSyncEffects = () => {
             }
             if (!nextUser) return
             dispatch(setVisitedUser(nextUser))
+            socket.emit(EmitterEventName.Visit, {
+                neighborUserId: nextUser.id,
+            })
             ExternalEventEmitter.emit(ExternalEventName.Visit, nextUser)
         })
 
