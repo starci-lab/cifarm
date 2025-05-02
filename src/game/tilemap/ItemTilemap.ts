@@ -14,6 +14,7 @@ import {
     ThiefBeeHouse,
     ThiefFruitData,
     ThiefPlantData,
+    ThiefPlantReasonCode,
 } from "@/hooks"
 import {
     Activities,
@@ -434,6 +435,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
                         ])
                     } else {
@@ -607,7 +612,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     break
                 case ActionName.ThiefPlant:
                     if (data.success) {
-                        const { quantity, productId } = data.data as ThiefPlantData
+                        const { quantity, productId, catAssistedSuccess } = data.data as ThiefPlantData
                         const product = this.products.find(
                             (product) => product.id === productId
                         )
@@ -636,17 +641,28 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
+                            ...(catAssistedSuccess ? [{
+                                iconAssetKey: assetIconMap[AssetIconId.Cat].phaser?.base.assetKey,
+                                x: position.x,
+                                y: position.y,
+                                text: "Assisted",
+                            }] : []),
                         ])
                     } else {
                         switch (data.reasonCode) {
-                        case 1:
+                        case ThiefPlantReasonCode.DogAssisted:
                             this.createFlyItems([
                                 {
+                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
                                     showIcon: false,
                                     x: position.x,
                                     y: position.y,
-                                    text: "You are already thieved",
+                                    text: "Assisted",
                                 },
                             ])
                             break
@@ -758,6 +774,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
                         ])
                     } else {
@@ -834,6 +854,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
                         ])
                     } else {
@@ -936,6 +960,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
                         ])
                     } else {
@@ -980,6 +1008,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
                         ])
                     } else {
@@ -1211,6 +1243,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
                         ])
                     } else {
@@ -1257,6 +1293,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity,
+                                badgeIconAssetKey:
+                                product.isQuality
+                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                    : undefined,
                             },
                         ])
                     } else {

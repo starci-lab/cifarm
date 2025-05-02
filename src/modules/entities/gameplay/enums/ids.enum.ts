@@ -11,6 +11,7 @@ export enum BuildingId {
     Home = "home",
     BeeHouse = "beeHouse",
     PetHouse = "petHouse",
+    FishPond = "fishPond",
 }
 
 // Upgrade Enum
@@ -20,7 +21,10 @@ export enum UpgradeId {
     CoopUpgrade3 = "coopUpgrade3",
     PastureUpgrade1 = "pastureUpgrade1",
     PastureUpgrade2 = "pastureUpgrade2",
-    PastureUpgrade3 = "pastureUpgrade3"
+    PastureUpgrade3 = "pastureUpgrade3",
+    FishPondUpgrade1 = "fishPondUpgrade1",
+    FishPondUpgrade2 = "fishPondUpgrade2",
+    FishPondUpgrade3 = "fishPondUpgrade3",
 }
 
 // Crop Enum

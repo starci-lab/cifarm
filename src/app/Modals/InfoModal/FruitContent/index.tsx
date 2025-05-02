@@ -47,9 +47,11 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
         ? fruit.matureGrowthStageDuration
         : fruit.youngGrowthStageDuration
 
-    const [timeElapsed, setTimeElapsed] = useState(
-        growthStageDuration - (placedItem.fruitInfo.currentStageTimeElapsed ?? 0)
-    )
+    const [timeElapsed, setTimeElapsed] = useState(0   )
+
+    useEffect(() => {
+        setTimeElapsed(growthStageDuration - (placedItem.fruitInfo?.currentStageTimeElapsed ?? 0))
+    }, [])
 
     useEffect(() => {
         if (

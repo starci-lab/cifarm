@@ -92,7 +92,10 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
     }
 
     const plantData = getPlantData()
-    const [timeElapsed, setTimeElapsed] = useState(plantData?.timeElapsed ?? 0)
+    const [timeElapsed, setTimeElapsed] = useState(0)
+    useEffect(() => {
+        setTimeElapsed(plantData?.timeElapsed ?? 0)
+    }, [])
 
     useEffect(() => {
         if (

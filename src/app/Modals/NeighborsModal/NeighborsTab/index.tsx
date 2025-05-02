@@ -163,6 +163,7 @@ export const NeighborsTab: FC = () => {
                     return (
                         <UserCard
                             user={item}
+                            followed={item.followed}
                             onFollowCallback={async () => {
                                 await followSwrMutation.trigger({
                                     request: {

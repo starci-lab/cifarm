@@ -187,6 +187,10 @@ export enum ExternalEventName {
     RequestNext = "request_next",
     // return, from React to Phaser
     Return = "return",
+    // request to select dog, from React to Phaser
+    RequestSelectDog = "request_select_dog",
+    // request to select cat, from React to Phaser
+    RequestSelectCat = "request_select_cat",
 }
 
 export enum ModalName {

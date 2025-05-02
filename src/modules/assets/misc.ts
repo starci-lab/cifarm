@@ -9,10 +9,12 @@ export interface MiscAssetData {
 
 export enum AssetMiscId {
     Grass = "grass",
+    GrassPartial = "grass-partial",
     BubbleState = "bubble-state",
     FertilizerParticle = "fertilizer-particle", 
     Yes = "yes",
     No = "no",
+    QualityBubbleState = "quality-bubble-state",
 }
 
 const PREFIX = "/misc"
@@ -23,6 +25,14 @@ export const assetMiscMap: Record<AssetMiscId, MiscAssetData> = {
             base: {
                 assetUrl: `${PREFIX}/grass.png`,
                 assetKey: "misc-grass",
+            },
+        },
+    },
+    [AssetMiscId.GrassPartial]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/grass-partial.png`,
+                assetKey: "misc-grass-partial",
             },
         },
     },
@@ -57,5 +67,13 @@ export const assetMiscMap: Record<AssetMiscId, MiscAssetData> = {
                 assetKey: "misc-no",
             }
         }
+    },
+    [AssetMiscId.QualityBubbleState]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/quality-bubble-state.png`,
+                assetKey: "misc-quality-bubble-state",
+            },
+        },
     },
 }

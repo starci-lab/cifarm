@@ -66,7 +66,6 @@ export const useSyncEffects = () => {
             dispatch(setUser(mergedUser as UserSchema))
             ExternalEventEmitter.emit(ExternalEventName.UserSynced, mergedUser)
         }
-
         socket.on(ReceiverEventName.UserSynced, handleEffect)
 
         return () => {

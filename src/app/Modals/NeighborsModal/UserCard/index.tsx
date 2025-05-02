@@ -1,27 +1,32 @@
 "use client"
 import {
-    GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
-    GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
     NEIGHBORS_DISCLOSURE,
     WARNING_DISCLOSURE,
     WS,
 } from "@/app/constants"
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 import {
     useWs,
-    useGraphQLMutationFollowSwrMutation,
-    useGraphQLMutationUnfollowSwrMutation,
     useRouterWithSearchParams,
     EmitterEventName,
+    toast,
 } from "@/hooks"
 import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { toastError, toastSuccess } from "@/modules/toast"
-import { setWarningModal, setVisitedUser, useAppDispatch, setActiveNeighborCard, useAppSelector } from "@/redux"
+import {
+    setWarningModal,
+    setVisitedUser,
+    useAppDispatch,
+    setActiveNeighborCard,
+    useAppSelector,
+} from "@/redux"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import { useDisclosure } from "react-use-disclosure"
 import { UserMinus2, UserPlus2 } from "lucide-react"
@@ -43,21 +48,29 @@ export interface UserCardProps {
 
 const renderOnlineStatus = (user: UserSchema) => {
     if (user.isOnline) {
-        return <div className="flex gap-1 items-center">
-            <div className="w-2 h-2 bg-muted-foreground rounded-full" />
-            <div className="text-sm">Online</div>
-        </div>
+        return (
+            <div className="flex gap-1 items-center">
+                <div className="w-2 h-2 bg-muted-foreground rounded-full" />
+                <div className="text-sm">Online</div>
+            </div>
+        )
     }
     if (!user.lastOnlineTime) {
-        return <div className="flex gap-1 items-center">
-            <div className="w-2 h-2 bg-muted-foreground rounded-full" />
-            <div className="text-sm">Offline</div>
-        </div>
+        return (
+            <div className="flex gap-1 items-center">
+                <div className="w-2 h-2 bg-muted-foreground rounded-full" />
+                <div className="text-sm">Offline</div>
+            </div>
+        )
     }
-    return <div className="flex gap-1 items-center">
-        <div className="w-2 h-2 bg-muted-foreground rounded-full" />
-        <div className="text-sm">Offline {formatDistanceToNow(user.lastOnlineTime)} ago</div>
-    </div>
+    return (
+        <div className="flex gap-1 items-center">
+            <div className="w-2 h-2 bg-muted-foreground rounded-full" />
+            <div className="text-sm">
+        Offline {formatDistanceToNow(user.lastOnlineTime)} ago
+            </div>
+        </div>
+    )
 }
 
 export const UserCard: FC<UserCardProps> = ({
@@ -67,14 +80,6 @@ export const UserCard: FC<UserCardProps> = ({
     followed: baseFollowed,
 }: UserCardProps) => {
     const [avatarUrl, setAvatarUrl] = useState("")
-
-    const { swrMutation: followSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationFollowSwrMutation>
-  >(GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION)
-
-    const { swrMutation: unfollowSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationUnfollowSwrMutation>
-  >(GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION)
 
     const { close: closeNeighborsModal } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
@@ -101,7 +106,7 @@ export const UserCard: FC<UserCardProps> = ({
                 </Avatar>
                 <div className="space-y-1">
                     <div className="font-medium">{user.username}</div>
-                    <Spacer y={1}/>
+                    <Spacer y={1} />
                     <div className="flex flex-wrap gap-2">
                         <Badge variant="secondary" className="flex items-center gap-1">
                             <Image
@@ -128,7 +133,7 @@ export const UserCard: FC<UserCardProps> = ({
                             <div className="text-sm">{user.golds}</div>
                         </Badge>
                     </div>
-                    <Spacer y={1}/>
+                    <Spacer y={1} />
                     {renderOnlineStatus(user)}
                 </div>
             </div>
@@ -141,16 +146,17 @@ export const UserCard: FC<UserCardProps> = ({
                                     message: "Are you sure you want to unfollow this user?",
                                     callback: async () => {
                                         try {
-                                            await unfollowSwrMutation.trigger({
-                                                request: {
-                                                    followeeUserId: user.id,
-                                                },
-                                            })
                                             await onUnfollowCallback?.()
-                                            toastSuccess("Unfollowed successfully")
+                                            toast({
+                                                title: "Unfollowed successfully",
+                                                description: "You are no longer following this user",
+                                            })
                                         } catch (error) {
                                             console.error(error)
-                                            toastError("Failed to unfollow user")
+                                            toast({
+                                                title: "Failed to unfollow user",
+                                                description: (error as Error).message,
+                                            })
                                         }
                                     },
                                 })
@@ -165,21 +171,21 @@ export const UserCard: FC<UserCardProps> = ({
                     </ExtendedButton>
                 ) : (
                     <ExtendedButton
-                        onClick={
-                            async () => {
-                                try {
-                                    await followSwrMutation.trigger({
-                                        request: {
-                                            followeeUserId: user.id,
-                                        },
-                                    })
-                                    await onFollowCallback?.()
-                                    toastSuccess("Followed successfully")
-                                } catch (error) {
-                                    console.error(error)
-                                    toastError("Failed to unfollow user")
-                                }
-                            }}
+                        onClick={async () => {
+                            try {
+                                await onFollowCallback?.()
+                                toast({
+                                    title: "Followed successfully",
+                                    description: "You are now following this user",
+                                })
+                            } catch (error) {
+                                console.error(error)
+                                toast({
+                                    title: "Failed to follow user",
+                                    description: (error as Error).message,
+                                })
+                            }
+                        }}
                         variant="ghost"
                         size="icon"
                     >

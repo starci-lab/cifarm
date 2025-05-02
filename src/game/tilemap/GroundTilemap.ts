@@ -31,7 +31,40 @@ export class GroundTilemap extends BaseTilemap {
 
         // create the layers
         this.createGroundLayer()
+        this.createBorder()
     }
+
+    // create the border layer
+    private createBorder() {
+        // get 4 corners of the map
+        const topLeft = this.getTileAt(0, 0)
+        if (!topLeft) {
+            throw new Error("Top left tile not found")
+        }
+        // add the border tileset to the top left corner
+        const topLeftGrassPartial = this.scene.add.image(
+            topLeft.getCenterX() - this.tileWidth/2, 
+            topLeft.getCenterY() - this.tileHeight * 3/2, 
+            assetMiscMap[AssetMiscId.GrassPartial].phaser.base.assetKey)
+        // rotate the top left grass partial 180 degrees
+        topLeftGrassPartial.setRotation(Math.PI)
+
+        // add the border tileset to the top right corner
+        const topRight = this.getTileAt(this.width - 1, 0)  
+        if (!topRight) {
+            throw new Error("Top right tile not found")
+        }
+        const topRightGrassPartial = this.scene.add.image(
+            topRight.getCenterX() + this.tileWidth/2, 
+            topRight.getCenterY() - this.tileHeight * 1/2, 
+            assetMiscMap[AssetMiscId.GrassPartial].phaser.base.assetKey)
+        // rotate the top right grass partial 90 degrees
+        topRightGrassPartial.setAngle(180/2)
+        // const topRight = this.getTileAt(this.width, 0)
+        // const bottomLeft = this.getTileAt(0, this.height)
+        // const bottomRight = this.getTileAt(this.width, this.height)
+    }   
+
     // create the ground layer
     private createGroundLayer() {
     // create the ground layer

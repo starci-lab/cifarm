@@ -25,6 +25,8 @@ const query1 = gql`
       ambient
       isOnline
       lastOnlineTime
+      selectedPlacedItemDogId
+      selectedPlacedItemCatId
     }
   }
 `

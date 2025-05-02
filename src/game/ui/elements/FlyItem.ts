@@ -13,6 +13,7 @@ export interface FlyItemOptions {
   y: number;
   flyHeight?: number;
   showIcon?: boolean;
+  badgeIconAssetKey?: string;
 }
 
 export class FlyItem extends Sizer {
@@ -38,6 +39,7 @@ export class FlyItem extends Sizer {
             text = "",
             flyHeight = 200,
             showIcon = true,
+            badgeIconAssetKey 
         } = options
 
         const flyItemText = new Text({
@@ -62,8 +64,19 @@ export class FlyItem extends Sizer {
             if (!iconAssetKey) {
                 throw new Error("FlyItem requires iconAssetKey")
             }
-            const productImage = scene.add.image(0, 0, iconAssetKey)
-            this.add(productImage, {
+            const background = scene.add.image(0, 0, iconAssetKey)
+            // badge icon
+            let badgeIcon: Phaser.GameObjects.Image | undefined
+            if (badgeIconAssetKey) {
+                badgeIcon = scene.add.image(0, 0, badgeIconAssetKey)
+            }
+            const badge = scene.rexUI.add.badgeLabel({
+                background,
+                width: background.width,
+                height: background.height,
+                leftTop: badgeIcon,
+            }).layout()
+            this.add(badge, {
                 align: "center",
             })
         }

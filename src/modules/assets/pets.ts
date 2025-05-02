@@ -4,6 +4,7 @@ import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } fr
 export interface PetAssetMapData {
     mapData: AssetMapData,
     bubbleStateConfig?: BubbleStateConfig;
+    selectedConfig?: BubbleStateConfig;
 }
 
 export interface AssetPetData extends Metadata {
@@ -28,14 +29,19 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                             assetKey: "pets-dog-atlas",
                             assetUrl: `${PREFIX}/dog/spine/dog.atlas`,
                             textureUrl: `${PREFIX}/dog/spine/dog.png`,
+                            version: 2,
                         },
                         json: {
                             assetKey: "pets-dog-json",
                             assetUrl: `${PREFIX}/dog/spine/dog.json`,
+                            version: 2,
                         },
                         extraOffsets: { x: 0, y: -80 },
                     },
                 },
+                selectedConfig: {
+                    extraOffsets: { x: 0, y: -80 },
+                },  
             },
         },
         base: {
@@ -55,13 +61,18 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                             assetKey: "pets-cat-atlas",
                             assetUrl: `${PREFIX}/cat/spine/cat.atlas`,
                             textureUrl: `${PREFIX}/cat/spine/cat.png`,
+                            version: 1,
                         },
                         json: {
                             assetKey: "pets-cat-json",
                             assetUrl: `${PREFIX}/cat/spine/cat.json`,
+                            version: 1,
                         },
                         extraOffsets: { x: 0, y: -80 },
                     },
+                },
+                selectedConfig: {
+                    extraOffsets: { x: 0, y: -80 },
                 },
             },
         },

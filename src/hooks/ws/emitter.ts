@@ -57,6 +57,8 @@ export enum EmitterEventName {
   ForceSyncPlacedItems = "force_sync_placed_items",
   PlaceNFT = "place_nft",
   UpdateSettings = "update_settings",
+  SelectDog = "select_dog",
+  SelectCat = "select_cat",
 }
 
 export interface BuySuppliesMessage {
@@ -255,3 +257,10 @@ export interface PlaceNFTMessage {
   position: Position;
 }
 
+export interface SelectDogMessage {
+  placedItemPetId: string;
+}
+
+export interface SelectCatMessage {
+  placedItemPetId: string;
+}

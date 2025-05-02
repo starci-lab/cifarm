@@ -1,7 +1,5 @@
 export const CONTAINER_ID = "container"
 
-// text colors
-
 // brown
 export const TEXT_COLOR_1 = "#553320"
 

@@ -40,16 +40,11 @@ export interface EmitActionPayload {
   action?: ActionName;
   success?: boolean;
   data?: unknown;
-  reasonCode?: number;
+  reasonCode?: string;
 }
 
-export interface EmitActionPayload {
-  userId: string;
-  placedItem: DeepPartial<PlacedItemSchema>;
-  action?: ActionName;
-  success?: boolean;
-  data?: unknown;
-  reasonCode?: number;
+export enum ThiefPlantReasonCode {
+  DogAssisted = "dog_assisted",
 }
 
 export interface ThiefPlantData {
@@ -125,6 +120,7 @@ export interface ThiefFruitData {
 export interface ThiefPlantData {
   quantity: number;
   productId: string;
+  catAssistedSuccess?: boolean;
 }
 
 export interface ThiefAnimalData {

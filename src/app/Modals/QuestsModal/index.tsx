@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector, useAppDispatch, QuestsTab as QuestsTabEnum, setQuestsTab } from "@/redux"
+import { ModalHeader } from "@/components"
 export const QuestsModal: FC = () => {
     const { toggle, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
@@ -38,7 +39,7 @@ export const QuestsModal: FC = () => {
         >
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    Quests
+                    <ModalHeader title="Quests" />
                 </DialogHeader>
                 <div>
                     <Tabs

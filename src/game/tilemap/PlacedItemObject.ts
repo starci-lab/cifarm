@@ -8,6 +8,8 @@ import {
     FlowerSchema,
     FruitCurrentState,
     FruitSchema,
+    PetSchema,
+    PetType,
     PlacedItemSchema,
     PlacedItemType,
     PlacedItemTypeSchema,
@@ -15,6 +17,7 @@ import {
     PlantType,
     Position,
     ProductSchema,
+    UserSchema,
 } from "@/modules/entities"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import {
@@ -32,8 +35,9 @@ import {
     assetCropMap,
     assetFlowerMap,
     assetAnimalMap,
-    AnimalAge,
     assetFruitMap,
+    assetPetMap,
+    AnimalAge,
 } from "@/modules/assets"
 import { CacheKey } from "../types"
 import { Text, TextColor } from "../ui"
@@ -46,10 +50,12 @@ import {
     getAssetData,
     getMainVisualOffsets,
 } from "./utils"
+import { SceneEventEmitter, SceneEventName } from "@/modules/event-emitter"
 
 export class PlacedItemObject extends ContainerLite {
     private plantInfoSprite: Phaser.GameObjects.Sprite | undefined
     public mainVisual: Phaser.GameObjects.Sprite | SpineGameObject | undefined
+    public selectedIcon: Phaser.GameObjects.Image | undefined
     private bubbleState: OverlapSizer | undefined
     private quantityText: Text | undefined
     public currentPlacedItem: PlacedItemSchema | undefined
@@ -63,6 +69,8 @@ export class PlacedItemObject extends ContainerLite {
     private buildings: Array<BuildingSchema>
     private fruits: Array<FruitSchema>
     private flowers: Array<FlowerSchema>
+    private pets: Array<PetSchema>
+    private user: UserSchema | undefined
 
     public ignoreCollision?: boolean
     public isPressedForAction = false
@@ -78,6 +86,20 @@ export class PlacedItemObject extends ContainerLite {
         this.buildings = scene.cache.obj.get(CacheKey.Buildings)
         this.fruits = scene.cache.obj.get(CacheKey.Fruits)
         this.flowers = scene.cache.obj.get(CacheKey.Flowers)
+        this.user = scene.cache.obj.get(CacheKey.User)
+        this.pets = scene.cache.obj.get(CacheKey.Pets)
+
+        SceneEventEmitter.on(SceneEventName.UserRefreshed, () => {
+            this.user = scene.cache.obj.get(CacheKey.User)
+            switch (this.placedItemType?.type) {
+            case PlacedItemType.Pet: {
+                this.updatePetSelected(true)
+                break
+            }
+            default:
+                break
+            }
+        })
     }
 
     public setIsPressedForAction() {
@@ -138,11 +160,97 @@ export class PlacedItemObject extends ContainerLite {
             this.updateFruitInfo()
             break
         }
+        case PlacedItemType.Pet: {
+            this.updatePetSelected()
+            break
+        }
         default:
             break
         }
         // set the placed item
         this.currentPlacedItem = placedItem
+    }
+
+    private updatePetSelected(useCurrentPlacedItem: boolean = false) {
+        const placedItem = useCurrentPlacedItem
+            ? this.currentPlacedItem
+            : this.nextPlacedItem
+        // we just add sword/shield icon on top the main visual
+        const placedItemType = this.placedItemTypes.find(
+            (placedItemType) => placedItemType.id === placedItem?.placedItemType
+        )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        const pet = this.pets.find((pet) => pet.id === placedItemType.pet)
+        if (!pet) {
+            throw new Error("Pet not found")
+        }
+
+        switch (pet.type) {
+        case PetType.Dog: {
+            if (this.selectedIcon) {
+                this.remove(this.selectedIcon, true)
+                this.selectedIcon = undefined
+            }
+            if (this.user?.selectedPlacedItemDogId === placedItem?.id) {
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) =>
+                        placedItemType.id === this.nextPlacedItem?.placedItemType
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                const { x: centerX, y: centerY } = this.getCenterPosition(
+                    placedItemType.sizeX,
+                    placedItemType.sizeY
+                )
+                const { x: offsetX = 0, y: offsetY = 0 } =
+            assetPetMap[pet.displayId].phaser.map.selectedConfig
+                ?.extraOffsets || {}
+                this.selectedIcon = this.scene.add
+                    .image(
+                        centerX + offsetX,
+                        centerY + offsetY,
+                        assetIconMap[AssetIconId.Attack].base.assetKey
+                    )
+                    .setDepth(this.depth + 11)
+                    .setOrigin(0.5, 1)
+                this.addLocal(this.selectedIcon)
+            }
+            break
+        }
+        case PetType.Cat: {
+            if (this.selectedIcon) {
+                this.remove(this.selectedIcon, true)
+                this.selectedIcon = undefined
+            }
+            if (this.user?.selectedPlacedItemCatId === placedItem?.id) {
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.id === placedItem?.placedItemType
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                const { x: centerX, y: centerY } = this.getCenterPosition(
+                    placedItemType.sizeX,
+                    placedItemType.sizeY
+                )
+                const { x: offsetX = 0, y: offsetY = 0 } =
+            assetPetMap[pet.displayId].phaser.map.selectedConfig
+                ?.extraOffsets || {}
+                this.selectedIcon = this.scene.add
+                    .image(
+                        centerX + offsetX,
+                        centerY + offsetY,
+                        assetIconMap[AssetIconId.Defense].base.assetKey
+                    )
+                    .setOrigin(0.5, 0)
+                this.addLocal(this.selectedIcon)
+            }
+            break
+        }
+        }
     }
 
     public setTexture() {
@@ -212,133 +320,114 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem?.fruitInfo) {
             throw new Error("Fruit info not found")
         }
-        if (
-            this.nextPlacedItem.fruitInfo.currentState !== FruitCurrentState.Normal
-        ) {
-            // use the product icon
-            const fruit = this.fruits.find((fruit) => {
-                if (!this.placedItemType?.fruit) {
-                    throw new Error("Placed item fruit not found")
-                }
-                return fruit.id === this.placedItemType.fruit
-            })
-            if (!fruit) {
-                throw new Error("Fruit not found")
-            }
-            const product = this.products.find(
-                (product) => product.fruit === fruit.id
-            )
-            if (!product) {
-                throw new Error("Product not found")
-            }
-
-            // update the icon
-            // for state 0-3, use the icon in the fruit asset map
-            const text = `${this.nextPlacedItem.fruitInfo.harvestQuantityRemaining}/${this.nextPlacedItem.fruitInfo.harvestQuantityDesired}`
-            // if the current state is different from the previous state
-            if (
-                this.currentPlacedItem?.fruitInfo?.currentState !==
-        this.nextPlacedItem.fruitInfo.currentState
-            ) {
-                if (!this.bubbleState) {
-                    const background = this.scene.add.image(
-                        0,
-                        0,
-                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
-                    )
-                    if (!this.placedItemType) {
-                        throw new Error("Placed item type not found")
-                    }
-                    const { x: centerX, y: centerY } = this.getCenterPosition(
-                        this.placedItemType.sizeX,
-                        this.placedItemType.sizeY
-                    )
-                    const { x: offsetX = 0, y: offsetY = 0 } = {
-                        ...assetFruitMap[fruit.displayId].phaser.map.stages[
-                            this.nextPlacedItem.fruitInfo.currentStage
-                        ].bubbleStateConfig?.extraOffsets,
-                    }
-                    this.bubbleState = this.scene.rexUI.add
-                        .overlapSizer({
-                            width: background.width,
-                            height: background.height,
-                            originY: 1,
-                            originX: 1,
-                        })
-                        .addBackground(background)
-                        .setDepth(this.depth + 30)
-                        .setPosition(centerX + offsetX, centerY + offsetY)
-                    this.addLocal(this.bubbleState)
-                } else {
-                    this.bubbleState.removeAll(true)
-                }
-                if (
-                    this.nextPlacedItem.fruitInfo.currentState !==
-          FruitCurrentState.FullyMatured
-                ) {
-                    const textureData =
-            assetStateMap.fruit[this.nextPlacedItem.fruitInfo.currentState]
-                ?.phaser.base
-                    if (!textureData) {
-                        throw new Error("Texture config not found")
-                    }
-                    const { assetKey } = textureData
-                    if (!assetKey) {
-                        throw new Error("State key not found")
-                    }
-                    const icon = this.scene.add
-                        .image(0, 0, assetKey)
-                        .setDepth(this.depth + 31)
-                    if (this.bubbleState) {
-                        this.bubbleState
-                            .add(icon, {
-                                align: "center",
-                                expand: false,
-                            })
-                            .layout()
-                    }
-                } else {
-                    this.quantityText = new Text({
-                        baseParams: {
-                            scene: this.scene,
-                            text,
-                            x: 0,
-                            y: 0,
-                        },
-                        options: {
-                            fontSize: 28,
-                            textColor: TextColor.Brown,
-                        },
-                    }).setDepth(this.depth + 31)
-
-                    this.scene.add.existing(this.quantityText)
-                    this.bubbleState
-                        .add(this.quantityText, {
-                            align: "center",
-                            expand: false,
-                        })
-                        .layout()
-                }
-            } else if (
-            // for fully matured state, update the quantity text if the fruit is thiefed
-                this.currentPlacedItem?.fruitInfo?.currentState ===
-          FruitCurrentState.FullyMatured &&
-        this.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining !==
-          this.nextPlacedItem.fruitInfo.harvestQuantityRemaining
-            ) {
-                if (!this.quantityText) {
-                    throw new Error("Quantity text not found")
-                }
-                this.quantityText.setText(text).setDepth(this.depth + 31)
-            }
-        } else {
-            // if bubble state is present, remove it
-            if (this.bubbleState) {
-                this.bubbleState.removeAll(true)
-                this.bubbleState.destroy()
-                this.bubbleState = undefined
-            }
+        // state change indicate the state is changed, quantity change indicate the quantity is changed
+        const stateChange = this.currentPlacedItem?.fruitInfo?.currentState !== this.nextPlacedItem.fruitInfo.currentState
+        const quantityChange = 
+        this.currentPlacedItem?.fruitInfo?.harvestQuantityRemaining &&
+        this.currentPlacedItem.fruitInfo.harvestQuantityRemaining !== this.nextPlacedItem.fruitInfo.harvestQuantityRemaining
+        // no changes, no need to update
+        if (!stateChange && !quantityChange) {
+            return
         }
+        // if bubble state is present, remove it
+        if (this.bubbleState) {
+            this.bubbleState.removeAll(true)
+            this.bubbleState.destroy()
+            this.bubbleState = undefined
+        }
+        // check if the plant is normal
+        if (
+            this.nextPlacedItem.fruitInfo.currentState === FruitCurrentState.Normal
+        ) {
+            return 
+        }
+        // get the bubble state key
+        const bubbleStateKey = this.nextPlacedItem.fruitInfo.isQuality
+            ? AssetMiscId.QualityBubbleState
+            : AssetMiscId.BubbleState
+        const background = this.scene.add.image(
+            0,
+            0,
+            assetMiscMap[bubbleStateKey].phaser.base.assetKey
+        )
+        if (!this.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        const { x: centerX, y: centerY } = this.getCenterPosition(
+            this.placedItemType.sizeX,
+            this.placedItemType.sizeY
+        )
+
+        // get the offset
+        const fruit = this.fruits.find((fruit) => fruit.id === this.placedItemType?.fruit)
+        if (!fruit) {
+            throw new Error("Fruit not found")
+        }
+        const { x: offsetX, y: offsetY } = assetFruitMap[fruit.displayId].phaser.map
+            .stages[this.nextPlacedItem.fruitInfo.currentStage]
+            .bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
+        // create the bubble state
+        this.bubbleState = this.scene.rexUI.add
+            .overlapSizer({
+                width: background.width,
+                height: background.height,
+                originY: 1,
+                originX: 1,
+            })
+            .addBackground(background)
+            .setDepth(this.depth + 30)
+            .setPosition(centerX + offsetX, centerY + offsetY)
+        this.addLocal(this.bubbleState)
+            
+        // update the icon
+        // for state 0-3, use the icon in the fruit asset map
+        if (
+            this.nextPlacedItem.fruitInfo.currentState !==
+          FruitCurrentState.FullyMatured
+        ) {
+            const stateKey =
+            assetStateMap.fruit[this.nextPlacedItem.fruitInfo.currentState]
+                ?.phaser.base.assetKey
+            if (!stateKey) {
+                throw new Error("State key not found")
+            }
+            const icon = this.scene.add
+                .image(0, 0, stateKey)
+                .setDepth(this.depth + 31)
+            this.bubbleState
+                .add(icon, {
+                    align: "center",
+                    expand: false,
+                })
+                .layout()
+            return
+        } 
+
+        // for fully matured state, either quantity change or state change
+        const text = `${this.nextPlacedItem.fruitInfo.harvestQuantityRemaining}/${this.nextPlacedItem.fruitInfo.harvestQuantityDesired}`
+        if (this.quantityText) {
+            this.bubbleState.remove(this.quantityText, true)
+            this.quantityText = undefined
+        }
+        this.quantityText = new Text({
+            baseParams: {
+                scene: this.scene,
+                text,
+                x: 0,
+                y: 0,
+            },
+            options: {
+                fontSize: 28,
+                textColor: TextColor.Brown,
+            },
+        }).setDepth(this.depth + 31)
+        this.scene.add.existing(this.quantityText)
+        this.bubbleState
+            .add(this.quantityText, {
+                align: "center",
+                expand: false,
+            })
+            .layout()
     }
 
     private updateBuildingUpgrade() {
@@ -380,6 +469,7 @@ export class PlacedItemObject extends ContainerLite {
             //destroy the previous stars
             this.starsSizer.removeAll(true)
             this.remove(this.starsSizer, true)
+            this.starsSizer = undefined
         }
         this.starsSizer = this.scene.rexUI.add.sizer({
             orientation: "x",
@@ -423,6 +513,10 @@ export class PlacedItemObject extends ContainerLite {
             this.starsSizer.removeAll(true)
             this.remove(this.starsSizer, true)
             this.starsSizer = undefined
+        }
+        if (this.selectedIcon) {
+            this.remove(this.selectedIcon, true)
+            this.selectedIcon = undefined
         }
     }
 
@@ -493,176 +587,145 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem?.plantInfo) {
             throw new Error("Plant info not found")
         }
+        // state change indicate the state is changed, quantity change indicate the quantity is changed
+        const stateChange = this.currentPlacedItem?.plantInfo?.currentState !== this.nextPlacedItem.plantInfo.currentState
+        const quantityChange = 
+        this.currentPlacedItem?.plantInfo?.harvestQuantityRemaining &&
+        this.currentPlacedItem.plantInfo.harvestQuantityRemaining !== this.nextPlacedItem.plantInfo.harvestQuantityRemaining
+        // no changes, no need to update
+        if (!stateChange && !quantityChange) {
+            return
+        }
+        // if bubble state is present, remove it
+        if (this.bubbleState) {
+            this.bubbleState.removeAll(true)
+            this.bubbleState.destroy()
+            this.bubbleState = undefined
+        }
+        // check if the plant is normal
         if (
-            this.nextPlacedItem.plantInfo.currentState !== PlantCurrentState.Normal
+            this.nextPlacedItem.plantInfo.currentState === PlantCurrentState.Normal
         ) {
-            switch (this.nextPlacedItem.plantInfo.plantType) {
-            case PlantType.Crop: {
-                const crop = this.crops.find((crop) => {
-                    if (!this.nextPlacedItem) {
-                        throw new Error("Current placed item not found")
-                    }
-                    return crop.id === this.nextPlacedItem.plantInfo?.crop
-                })
-                if (!crop) {
-                    throw new Error("Crop not found")
-                }
-                break
-            }
-            case PlantType.Flower: {
-                const flower = this.flowers.find((flower) => {
-                    if (!this.nextPlacedItem) {
-                        throw new Error("Current placed item not found")
-                    }
-                    return flower.id === this.nextPlacedItem.plantInfo?.flower
-                })
-                if (!flower) {
-                    throw new Error("Flower not found")
-                }
-                break
-            }
-            }
-            // if the current state is different from the previous state
-            if (
-                this.currentPlacedItem?.plantInfo?.currentState !==
-        this.nextPlacedItem.plantInfo.currentState
-            ) {
-                if (!this.bubbleState) {
-                    const background = this.scene.add.image(
-                        0,
-                        0,
-                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
-                    )
-                    if (!this.placedItemType) {
-                        throw new Error("Placed item type not found")
-                    }
-                    const { x: centerX, y: centerY } = this.getCenterPosition(
-                        this.placedItemType.sizeX,
-                        this.placedItemType.sizeY
-                    )
+            return 
+        }
+        // get the bubble state key
+        const bubbleStateKey = this.nextPlacedItem.plantInfo.isQuality
+            ? AssetMiscId.QualityBubbleState
+            : AssetMiscId.BubbleState
+        const background = this.scene.add.image(
+            0,
+            0,
+            assetMiscMap[bubbleStateKey].phaser.base.assetKey
+        )
+        if (!this.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        const { x: centerX, y: centerY } = this.getCenterPosition(
+            this.placedItemType.sizeX,
+            this.placedItemType.sizeY
+        )
 
-                    let offsetX = 0
-                    let offsetY = 0
-
-                    switch (this.nextPlacedItem.plantInfo.plantType) {
-                    case PlantType.Crop: {
-                        const crop = this.crops.find((crop) => {
-                            if (!this.nextPlacedItem) {
-                                throw new Error("Current placed item not found")
-                            }
-                            return crop.id === this.nextPlacedItem.plantInfo?.crop
-                        })
-                        if (!crop) {
-                            throw new Error("Crop not found")
-                        }
-                        const { x, y } = assetCropMap[crop.displayId].phaser.map.stages[
-                            this.nextPlacedItem.plantInfo.currentStage
-                        ].bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
-                        offsetX = x
-                        offsetY = y
-                        break
-                    }
-                    case PlantType.Flower: {
-                        const flower = this.flowers.find((flower) => {
-                            if (!this.nextPlacedItem) {
-                                throw new Error("Current placed item not found")
-                            }
-                            return flower.id === this.nextPlacedItem.plantInfo?.flower
-                        })
-                        if (!flower) {
-                            throw new Error("Flower not found")
-                        }
-                        const { x, y } = assetFlowerMap[flower.displayId].phaser.map
-                            .stages[this.nextPlacedItem.plantInfo.currentStage]
-                            .bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
-                        offsetX = x
-                        offsetY = y
-                        break
-                    }
-                    }
-                    this.bubbleState = this.scene.rexUI.add
-                        .overlapSizer({
-                            width: background.width,
-                            height: background.height,
-                            originY: 1,
-                            originX: 1,
-                        })
-                        .addBackground(background)
-                        .setDepth(this.depth + 30)
-                        .setPosition(centerX + offsetX, centerY + offsetY)
-                    this.addLocal(this.bubbleState)
-                } else {
-                    this.bubbleState.removeAll(true)
+        // get the offset
+        let offsetX = 0
+        let offsetY = 0
+        switch (this.nextPlacedItem.plantInfo.plantType) {
+        case PlantType.Crop: {
+            const crop = this.crops.find((crop) => {
+                if (!this.nextPlacedItem) {
+                    throw new Error("Current placed item not found")
                 }
-                // update the icon
-                // for state 0-3, use the icon in the crop asset map
-                if (
-                    this.nextPlacedItem.plantInfo.currentState !==
+                return crop.id === this.nextPlacedItem.plantInfo?.crop
+            })
+            if (!crop) {
+                throw new Error("Crop not found")
+            }
+            const { x, y } = assetCropMap[crop.displayId].phaser.map.stages[
+                this.nextPlacedItem.plantInfo.currentStage
+            ].bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
+            offsetX = x
+            offsetY = y
+            break
+        }
+        case PlantType.Flower: {
+            const flower = this.flowers.find((flower) => {
+                if (!this.nextPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                return flower.id === this.nextPlacedItem.plantInfo?.flower
+            })
+            if (!flower) {
+                throw new Error("Flower not found")
+            }
+            const { x, y } = assetFlowerMap[flower.displayId].phaser.map
+                .stages[this.nextPlacedItem.plantInfo.currentStage]
+                .bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
+            offsetX = x
+            offsetY = y
+            break
+        }
+        }
+        // create the bubble state
+        this.bubbleState = this.scene.rexUI.add
+            .overlapSizer({
+                width: background.width,
+                height: background.height,
+                originY: 1,
+                originX: 1,
+            })
+            .addBackground(background)
+            .setDepth(this.depth + 30)
+            .setPosition(centerX + offsetX, centerY + offsetY)
+        this.addLocal(this.bubbleState)
+            
+        // update the icon
+        // for state 0-3, use the icon in the crop asset map
+        if (
+            this.nextPlacedItem.plantInfo.currentState !==
           PlantCurrentState.FullyMatured
-                ) {
-                    const stateKey =
+        ) {
+            const stateKey =
             assetStateMap.plant[this.nextPlacedItem.plantInfo.currentState]
                 ?.phaser.base.assetKey
-                    if (!stateKey) {
-                        throw new Error("State key not found")
-                    }
-                    const icon = this.scene.add
-                        .image(0, 0, stateKey)
-                        .setDepth(this.depth + 31)
-                    if (this.bubbleState) {
-                        this.bubbleState
-                            .add(icon, {
-                                align: "center",
-                                expand: false,
-                            })
-                            .layout()
-                    }
-                } else {
-                    const text = `${this.nextPlacedItem.plantInfo.harvestQuantityRemaining}/${this.nextPlacedItem.plantInfo.harvestQuantityDesired}`
-
-                    this.quantityText = new Text({
-                        baseParams: {
-                            scene: this.scene,
-                            text,
-                            x: 0,
-                            y: 0,
-                        },
-                        options: {
-                            fontSize: 28,
-                            textColor: TextColor.Brown,
-                        },
-                    }).setDepth(this.depth + 31)
-
-                    this.scene.add.existing(this.quantityText)
-                    this.bubbleState
-                        .add(this.quantityText, {
-                            align: "center",
-                            expand: false,
-                        })
-                        .layout()
-                }
-            } else if (
-            // for fully matured state, update the quantity text if the crop is thiefed
-                this.currentPlacedItem?.plantInfo?.currentState ===
-          PlantCurrentState.FullyMatured &&
-        this.currentPlacedItem?.plantInfo?.harvestQuantityRemaining !==
-          this.nextPlacedItem.plantInfo.harvestQuantityRemaining
-            ) {
-                if (!this.quantityText) {
-                    throw new Error("Quantity text not found")
-                }
-                this.quantityText.setText(
-                    `${this.nextPlacedItem.plantInfo.harvestQuantityRemaining}/${this.nextPlacedItem.plantInfo.harvestQuantityDesired}`
-                )
+            if (!stateKey) {
+                throw new Error("State key not found")
             }
-        } else {
-            // if bubble state is present, remove it
-            if (this.bubbleState) {
-                this.bubbleState.removeAll(true)
-                this.bubbleState.destroy()
-                this.bubbleState = undefined
-            }
+            const icon = this.scene.add
+                .image(0, 0, stateKey)
+                .setDepth(this.depth + 31)
+            this.bubbleState
+                .add(icon, {
+                    align: "center",
+                    expand: false,
+                })
+                .layout()
+            return
+        } 
+
+        // for fully matured state, either quantity change or state change
+        const text = `${this.nextPlacedItem.plantInfo.harvestQuantityRemaining}/${this.nextPlacedItem.plantInfo.harvestQuantityDesired}`
+        if (this.quantityText) {
+            this.bubbleState.remove(this.quantityText, true)
+            this.quantityText = undefined
         }
+        this.quantityText = new Text({
+            baseParams: {
+                scene: this.scene,
+                text,
+                x: 0,
+                y: 0,
+            },
+            options: {
+                fontSize: 28,
+                textColor: TextColor.Brown,
+            },
+        }).setDepth(this.depth + 31)
+        this.scene.add.existing(this.quantityText)
+        this.bubbleState
+            .add(this.quantityText, {
+                align: "center",
+                expand: false,
+            })
+            .layout()
     }
 
     private updatePlantInfoFertilizer() {
@@ -747,6 +810,7 @@ export class PlacedItemObject extends ContainerLite {
 
         if (this.mainVisual) {
             this.remove(this.mainVisual, true)
+            this.mainVisual = undefined
         }
         this.mainVisual = createMainVisual({
             type,
@@ -767,235 +831,208 @@ export class PlacedItemObject extends ContainerLite {
         if (!this.nextPlacedItem?.animalInfo) {
             throw new Error("Animal info not found")
         }
-
-        if (
-            this.nextPlacedItem.animalInfo.currentState !== AnimalCurrentState.Normal
-        ) {
-            const animal = this.animals.find((animal) => {
-                if (!this.placedItemType?.animal) {
-                    throw new Error("Placed item type not found")
-                }
-                return animal.id === this.placedItemType.animal
-            })
-
-            if (!animal) {
-                throw new Error("Animal not found")
-            }
-
-            if (
-                this.currentPlacedItem?.animalInfo?.currentState !==
-        this.nextPlacedItem.animalInfo.currentState
-            ) {
-                if (!this.bubbleState) {
-                    const background = this.scene.add.image(
-                        0,
-                        0,
-                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
-                    )
-                    const age = this.nextPlacedItem.animalInfo.isAdult
-                        ? AnimalAge.Adult
-                        : AnimalAge.Baby
-                    if (!this.placedItemType) {
-                        throw new Error("Placed item type not found")
-                    }
-                    const { x: centerX, y: centerY } = this.getCenterPosition(
-                        this.placedItemType.sizeX,
-                        this.placedItemType.sizeY
-                    )
-                    const { x: offsetX = 0, y: offsetY = 0 } = {
-                        ...assetAnimalMap[animal.displayId].phaser.map.ages[age]
-                            .bubbleStateConfig?.extraOffsets,
-                    }
-                    this.bubbleState = this.scene.rexUI.add
-                        .overlapSizer({
-                            width: background.width,
-                            height: background.height,
-                            originY: 1,
-                            originX: 1,
-                        })
-                        .addBackground(background)
-                        .setDepth(this.depth + 30)
-                        .setPosition(centerX + offsetX, centerY + offsetY)
-                    this.addLocal(this.bubbleState)
-                } else {
-                    this.bubbleState.removeAll(true)
-                }
-                if (
-                    this.nextPlacedItem.animalInfo.currentState !==
-          AnimalCurrentState.Yield
-                ) {
-                    const textureData =
-            assetStateMap.animal[this.nextPlacedItem.animalInfo.currentState]
-                ?.phaser.base
-                    if (!textureData) {
-                        throw new Error("Texture config not found")
-                    }
-                    const { assetKey } = textureData
-                    if (!assetKey) {
-                        throw new Error("State key not found")
-                    }
-                    const icon = this.scene.add
-                        .image(0, 0, assetKey)
-                        .setDepth(this.depth + 31)
-                    if (this.bubbleState) {
-                        this.bubbleState
-                            .add(icon, {
-                                align: "center",
-                                expand: false,
-                            })
-                            .layout()
-                    }
-                } else {
-                    const text = `${
-                        this.nextPlacedItem.animalInfo.harvestQuantityRemaining || 0
-                    }/${this.nextPlacedItem.animalInfo.harvestQuantityDesired}`
-
-                    this.quantityText = new Text({
-                        baseParams: {
-                            scene: this.scene,
-                            text,
-                            x: 0,
-                            y: 0,
-                        },
-                        options: {
-                            fontSize: 28,
-                            textColor: TextColor.Brown,
-                        },
-                    }).setDepth(this.depth + 31)
-
-                    this.scene.add.existing(this.quantityText)
-                    this.bubbleState
-                        .add(this.quantityText, {
-                            align: "center",
-                            expand: false,
-                        })
-                        .layout()
-                }
-            } else if (
-                this.currentPlacedItem?.animalInfo?.currentState ===
-          AnimalCurrentState.Yield &&
-        this.currentPlacedItem?.animalInfo?.harvestQuantityRemaining !==
-          this.nextPlacedItem.animalInfo.harvestQuantityRemaining
-            ) {
-                if (!this.quantityText) {
-                    throw new Error("Quantity text not found")
-                }
-                this.quantityText
-                    .setText(
-                        `${this.nextPlacedItem.animalInfo?.harvestQuantityRemaining || 0}/${
-                            this.nextPlacedItem.animalInfo.harvestQuantityDesired
-                        }`
-                    )
-                    .setDepth(this.depth + 31)
-            }
-        } else {
-            // if bubble state is present, remove it
-            if (this.bubbleState) {
-                this.bubbleState.removeAll(true)
-                this.bubbleState.destroy()
-                this.bubbleState = undefined
-            }
+        // state change indicate the state is changed, quantity change indicate the quantity is changed
+        const stateChange = this.currentPlacedItem?.animalInfo?.currentState !== this.nextPlacedItem.animalInfo.currentState
+        const quantityChange = 
+        this.currentPlacedItem?.animalInfo?.harvestQuantityRemaining &&
+        this.currentPlacedItem.animalInfo.harvestQuantityRemaining !== this.nextPlacedItem.animalInfo.harvestQuantityRemaining
+        // no changes, no need to update
+        if (!stateChange && !quantityChange) {
+            return
         }
+        // if bubble state is present, remove it
+        if (this.bubbleState) {
+            this.bubbleState.removeAll(true)
+            this.bubbleState.destroy()
+            this.bubbleState = undefined
+        }
+        // check if the animal is normal
+        if (
+            this.nextPlacedItem.animalInfo.currentState === AnimalCurrentState.Normal
+        ) {
+            return 
+        }
+        // get the bubble state key
+        const bubbleStateKey = this.nextPlacedItem.animalInfo.isQuality
+            ? AssetMiscId.QualityBubbleState
+            : AssetMiscId.BubbleState
+        const background = this.scene.add.image(
+            0,
+            0,
+            assetMiscMap[bubbleStateKey].phaser.base.assetKey
+        )
+        if (!this.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        const { x: centerX, y: centerY } = this.getCenterPosition(
+            this.placedItemType.sizeX,
+            this.placedItemType.sizeY
+        )
+
+        // get the offset
+        const animal = this.animals.find((animal) => animal.id === this.placedItemType?.animal)
+        if (!animal) {
+            throw new Error("Animal not found")
+        }
+        const age = this.nextPlacedItem.animalInfo.isAdult
+            ? AnimalAge.Adult
+            : AnimalAge.Baby
+        const { x: offsetX, y: offsetY } = assetAnimalMap[animal.displayId].phaser.map
+            .ages[age]
+            .bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
+        // create the bubble state
+        this.bubbleState = this.scene.rexUI.add
+            .overlapSizer({
+                width: background.width,
+                height: background.height,
+                originY: 1,
+                originX: 1,
+            })
+            .addBackground(background)
+            .setDepth(this.depth + 30)
+            .setPosition(centerX + offsetX, centerY + offsetY)
+        this.addLocal(this.bubbleState)
+            
+        // update the icon
+        // for state 0-3, use the icon in the fruit asset map
+        if (
+            this.nextPlacedItem.animalInfo.currentState !==
+          AnimalCurrentState.Yield
+        ) {
+            const stateKey =
+            assetStateMap.animal[this.nextPlacedItem.animalInfo.currentState]
+                ?.phaser.base.assetKey
+            if (!stateKey) {
+                throw new Error("State key not found")
+            }
+            const icon = this.scene.add
+                .image(0, 0, stateKey)
+                .setDepth(this.depth + 31)
+            this.bubbleState
+                .add(icon, {
+                    align: "center",
+                    expand: false,
+                })
+                .layout()
+            return
+        } 
+
+        // for fully matured state, either quantity change or state change
+        const text = `${this.nextPlacedItem.animalInfo.harvestQuantityRemaining}/${this.nextPlacedItem.animalInfo.harvestQuantityDesired}`
+        if (this.quantityText) {
+            this.bubbleState.remove(this.quantityText, true)
+            this.quantityText = undefined
+        }
+        this.quantityText = new Text({
+            baseParams: {
+                scene: this.scene,
+                text,
+                x: 0,
+                y: 0,
+            },
+            options: {
+                fontSize: 28,
+                textColor: TextColor.Brown,
+            },
+        }).setDepth(this.depth + 31)
+        this.scene.add.existing(this.quantityText)
+        this.bubbleState
+            .add(this.quantityText, {
+                align: "center",
+                expand: false,
+            })
+            .layout()
     }
 
     private updateBeeHouseInfoBubble() {
-        const building = this.buildings.find((building) => {
-            return building.id === this.placedItemType?.building
-        })
+        const building = this.buildings.find((building) => building.id === this.placedItemType?.building)
         if (!building) {
             throw new Error("Building not found")
         }
         if (building.kind !== BuildingKind.BeeHouse) {
             return
         }
-
-        if (
-            this.nextPlacedItem?.beeHouseInfo?.currentState !==
-      BeeHouseCurrentState.Normal
-        ) {
-            if (
-                this.currentPlacedItem?.beeHouseInfo?.currentState !==
-        this.nextPlacedItem?.beeHouseInfo?.currentState
-            ) {
-                if (!this.bubbleState) {
-                    const background = this.scene.add.image(
-                        0,
-                        0,
-                        assetMiscMap[AssetMiscId.BubbleState].phaser.base.assetKey
-                    )
-                    if (!this.placedItemType) {
-                        throw new Error("Placed item type not found")
-                    }
-                    const { x: centerX, y: centerY } = this.getCenterPosition(
-                        this.placedItemType.sizeX,
-                        this.placedItemType.sizeY
-                    )
-                    const { x: offsetX = 0, y: offsetY = 0 } = {
-                        ...assetBuildingMap[building.displayId].phaser.map.bubbleStateConfig
-                            ?.extraOffsets,
-                    }
-                    this.bubbleState = this.scene.rexUI.add
-                        .overlapSizer({
-                            width: background.width,
-                            height: background.height,
-                            originY: 1,
-                            originX: 1,
-                        })
-                        .addBackground(background)
-                        .setDepth(this.depth + 30)
-                        .setPosition(centerX + offsetX, centerY + offsetY)
-                    this.addLocal(this.bubbleState)
-                } else {
-                    this.bubbleState.removeAll(true)
-                }
-
-                const text = `${
-                    this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0
-                }/${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0}`
-
-                this.quantityText = new Text({
-                    baseParams: {
-                        scene: this.scene,
-                        text,
-                        x: 0,
-                        y: 0,
-                    },
-                    options: {
-                        fontSize: 28,
-                        textColor: TextColor.Brown,
-                    },
-                }).setDepth(this.depth + 31)
-
-                this.scene.add.existing(this.quantityText)
-                this.bubbleState
-                    .add(this.quantityText, {
-                        align: "center",
-                        expand: false,
-                    })
-                    .layout()
-            } else if (
-                this.currentPlacedItem?.beeHouseInfo?.harvestQuantityRemaining !==
-        this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining
-            ) {
-                if (!this.quantityText) {
-                    throw new Error("Quantity text not found")
-                }
-                this.quantityText
-                    .setText(
-                        `${
-                            this.nextPlacedItem?.beeHouseInfo?.harvestQuantityRemaining || 0
-                        }/${this.nextPlacedItem?.beeHouseInfo?.harvestQuantityDesired || 0}`
-                    )
-                    .setDepth(this.depth + 31)
-            }
-        } else {
-            // if bubble state is present, remove it
-            if (this.bubbleState) {
-                this.bubbleState.removeAll(true)
-                this.bubbleState.destroy()
-                this.bubbleState = undefined
-            }
+        if (!this.nextPlacedItem?.beeHouseInfo) {
+            return
         }
+        // state change indicate the state is changed, quantity change indicate the quantity is changed
+        const stateChange = this.currentPlacedItem?.beeHouseInfo?.currentState !== this.nextPlacedItem.beeHouseInfo.currentState
+        const quantityChange = 
+        this.currentPlacedItem?.beeHouseInfo?.harvestQuantityRemaining &&
+        this.currentPlacedItem.beeHouseInfo.harvestQuantityRemaining !== this.nextPlacedItem.beeHouseInfo.harvestQuantityRemaining
+        // no changes, no need to update
+        if (!stateChange && !quantityChange) {
+            return
+        }
+        // if bubble state is present, remove it
+        if (this.bubbleState) {
+            this.bubbleState.removeAll(true)
+            this.bubbleState.destroy()
+            this.bubbleState = undefined
+        }
+        // check if the bee house is normal
+        if (
+            this.nextPlacedItem.beeHouseInfo.currentState === BeeHouseCurrentState.Normal
+        ) {
+            return 
+        }
+        // get the bubble state key
+        const bubbleStateKey = this.nextPlacedItem.beeHouseInfo.isQuality
+            ? AssetMiscId.QualityBubbleState
+            : AssetMiscId.BubbleState
+        const background = this.scene.add.image(
+            0,
+            0,
+            assetMiscMap[bubbleStateKey].phaser.base.assetKey
+        )
+        if (!this.placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+        const { x: centerX, y: centerY } = this.getCenterPosition(
+            this.placedItemType.sizeX,
+            this.placedItemType.sizeY
+        )
+
+        const { x: offsetX, y: offsetY } = assetBuildingMap[building.displayId].phaser.map
+            .bubbleStateConfig?.extraOffsets || { x: 0, y: 0 }
+        // create the bubble state
+        this.bubbleState = this.scene.rexUI.add
+            .overlapSizer({
+                width: background.width,
+                height: background.height,
+                originY: 1,
+                originX: 1,
+            })
+            .addBackground(background)
+            .setDepth(this.depth + 30)
+            .setPosition(centerX + offsetX, centerY + offsetY)
+        this.addLocal(this.bubbleState)
+            
+        // for fully matured state, either quantity change or state change
+        const text = `${this.nextPlacedItem.beeHouseInfo.harvestQuantityRemaining}/${this.nextPlacedItem.beeHouseInfo.harvestQuantityDesired}`
+        if (this.quantityText) {
+            this.bubbleState.remove(this.quantityText, true)
+            this.quantityText = undefined
+        }
+        this.quantityText = new Text({
+            baseParams: {
+                scene: this.scene,
+                text,
+                x: 0,
+                y: 0,
+            },
+            options: {
+                fontSize: 28,
+                textColor: TextColor.Brown,
+            },
+        }).setDepth(this.depth + 31)
+        this.scene.add.existing(this.quantityText)
+        this.bubbleState
+            .add(this.quantityText, {
+                align: "center",
+                expand: false,
+            })
+            .layout()
     }
 
     public setTint(tintColor: number) {

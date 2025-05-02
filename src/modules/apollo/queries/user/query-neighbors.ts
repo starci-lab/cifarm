@@ -17,10 +17,12 @@ const query1 = gql`
         level
         avatarUrl
         accountAddress
-        followed
         username
         chainKey
         golds
+        isOnline
+        followed
+        lastOnlineTime
       }
       count
     }

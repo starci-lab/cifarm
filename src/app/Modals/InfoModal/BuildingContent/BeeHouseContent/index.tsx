@@ -50,7 +50,11 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
 
     const _timeElapsed = building?.beeHouseYieldTime - (placedItem.beeHouseInfo.currentYieldTime ?? 0)
 
-    const [timeElapsed, setTimeElapsed] = useState(_timeElapsed)
+    const [timeElapsed, setTimeElapsed] = useState(0)
+
+    useEffect(() => {
+        setTimeElapsed(_timeElapsed)
+    }, [])
 
     useEffect(() => {
         if (

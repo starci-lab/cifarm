@@ -6,7 +6,6 @@ import {
     INVITE_USER_DISCLOSURE,
     GRAPHQL_QUERY_STATIC_SWR,
     GRAPHQL_QUERY_USER_SWR,
-    TOKEN_IMAGE_URL,
 } from "@/app/constants"
 import {
     useGraphQLMutationUpdateFollowXSwrMutation,
@@ -16,7 +15,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { List } from "@/components"
-
+import { AssetIconId, assetIconMap } from "@/modules/assets"
 export enum SocialQuest {
     FollowX = "Follow X",
     InviteUser = "Invite User",
@@ -48,7 +47,7 @@ export const SocialTab: FC = () => {
                             rewards={[
                                 {
                                     key: "follow-x-1",
-                                    imageUrl: TOKEN_IMAGE_URL,
+                                    imageUrl: assetIconMap[AssetIconId.Gold].base.assetUrl,
                                     amount:
                 staticSwr.data?.data.defaultInfo.followXRewardQuantity ?? 0,
                                 },
@@ -71,7 +70,7 @@ export const SocialTab: FC = () => {
                             rewards={[
                                 {
                                     key: "invite-user-1",
-                                    imageUrl: TOKEN_IMAGE_URL,
+                                    imageUrl: assetIconMap[AssetIconId.Gold].base.assetUrl,
                                     amount:
                     staticSwr.data?.data.defaultInfo.referredRewardQuantity ??
                     0,

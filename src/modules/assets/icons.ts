@@ -28,6 +28,11 @@ export enum AssetIconId {
     Golds1 = "golds1",
     Golds2 = "golds2",
     Golds3 = "golds3",
+    Attack = "attack",
+    Defense = "defense",
+    Dog = "dog",
+    Cat = "cat",
+    QualityStar = "quality-star",
 }
 
 const PREFIX = "/icons"
@@ -229,6 +234,66 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
         base: {
             assetKey: "icons-golds-3",
             assetUrl: `${PREFIX}/golds-3.png`
+        },
+    },
+    [AssetIconId.Attack]: {
+        base: {
+            assetKey: "icons-attack",
+            assetUrl: `${PREFIX}/attack.png`
+        },
+        phaser: {
+            base: {
+                assetKey: "icons-attack",
+                assetUrl: `${PREFIX}/attack.png`
+            },
+        },
+    },
+    [AssetIconId.Defense]: {
+        base: {
+            assetKey: "icons-defense",
+            assetUrl: `${PREFIX}/defense.png`
+        },
+        phaser: {
+            base: {
+                assetKey: "icons-defense",
+                assetUrl: `${PREFIX}/defense.png`
+            },
+        },
+    },
+    [AssetIconId.Dog]: {
+        base: {
+            assetKey: "icons-dog",
+            assetUrl: `${PREFIX}/dog.png`
+        },
+        phaser: {
+            base: {
+                assetKey: "icons-dog",
+                assetUrl: `${PREFIX}/dog.png`
+            },
+        },
+    },
+    [AssetIconId.Cat]: {
+        base: {
+            assetKey: "icons-cat",
+            assetUrl: `${PREFIX}/cat.png`
+        },
+        phaser: {
+            base: {
+                assetKey: "icons-cat",
+                assetUrl: `${PREFIX}/cat.png`
+            },
+        },
+    },
+    [AssetIconId.QualityStar]: {
+        base: {
+            assetKey: "icons-quality-star",
+            assetUrl: `${PREFIX}/quality-star.png`
+        },
+        phaser: {
+            base: {
+                assetKey: "icons-quality-star",
+                assetUrl: `${PREFIX}/quality-star.png`
+            },
         },
     },
 }

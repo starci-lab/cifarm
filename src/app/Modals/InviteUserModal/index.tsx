@@ -31,10 +31,14 @@ export const InviteUserModal: FC = () => {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        <ModalHeader title="Invite User" description="Share the link through your social network; users with the referral code will receive bonus tokens, and you will earn extra tokens as well." />
+                        <ModalHeader title="Invite User" />
                     </DialogTitle>
                 </DialogHeader>
                 <div>
+                    <div className="text-sm text-muted-foreground">
+                        Share the link through your social network; users with the referral code will receive bonus tokens, and you will earn extra tokens as well.
+                    </div>
+                    <Spacer y={4} />
                     <div>
                         <div className="text-sm mb-1.5">Web URL</div>
                         <Spacer y={1.5} />

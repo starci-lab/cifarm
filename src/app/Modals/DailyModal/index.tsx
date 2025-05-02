@@ -2,7 +2,6 @@
 import {
     DAILY_DISCLOSURE,
     QUERY_STATIC_SWR_MUTATION,
-    QUERY_USER_SWR_MUTATION,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
@@ -19,17 +18,16 @@ import {
     ScaledImage,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { useGraphQLQueryStaticSwr, useGraphQLQueryUserSwr } from "@/hooks"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { DailyRewardId } from "@/modules/entities"
 import { AssetIconId, assetIconMap, AssetUIId, assetUiMap } from "@/modules/assets"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { getCurrentDayMidnightUtc, getUtc } from "@/modules/common"
+import { useAppSelector } from "@/redux"
 export const DailyModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(DAILY_DISCLOSURE)
-    const { swr: userSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryUserSwr>
-  >(QUERY_USER_SWR_MUTATION)
+    const user = useAppSelector((state) => state.sessionReducer.user)
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
@@ -65,7 +63,7 @@ export const DailyModal: FC = () => {
                                         }
                                     </div>
                                 </div>
-                                {(userSwr.data?.data.user.dailyRewardStreak ?? 0) >= (index + 1) && (
+                                {(user?.dailyRewardStreak ?? 0) >= (index + 1) && (
                                     <div className="absolute top-0 right-0 w-full h-full grid place-items-center rounded-md bg-black/50">
                                         <ScaledImage src={assetUiMap[AssetUIId.Checked].base.assetUrl} />
                                     </div>
@@ -96,7 +94,7 @@ export const DailyModal: FC = () => {
                 <DialogFooter>
                     <ExtendedButton className="w-full"
                         disabled={getCurrentDayMidnightUtc().isBefore(
-                            getUtc(userSwr.data?.data.user.dailyRewardLastClaimTime)
+                            getUtc(user?.dailyRewardLastClaimTime ?? "")
                         )}
                         onClick={() => {
                             ExternalEventEmitter.emit(ExternalEventName.RequestClaimDailyReward)

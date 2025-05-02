@@ -40,6 +40,8 @@ import { useThiefBeeHouseEffects } from "./useThiefBeeHouseEffects"
 import { useBuyPetEffects } from "./useBuyPetEffects"
 import { usePlaceNFTEffects } from "./usePlaceNFTEffects"
 import { useUpdateSettingsEffects } from "./useUpdateSettingsEffects"
+import { useSelectDogEffects } from "./useSelectDogEffects"
+import { useSelectCatEffects } from "./useSelectCatEffects"
 
 export const useActionsEffects = () => {
     useBuyCropSeedsEffects()
@@ -84,4 +86,6 @@ export const useActionsEffects = () => {
     useBuyPetEffects()
     usePlaceNFTEffects()
     useUpdateSettingsEffects()
+    useSelectDogEffects()
+    useSelectCatEffects()
 }

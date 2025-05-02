@@ -31,6 +31,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
                         assetKey: "buildings-home",
                         assetUrl: `${PREFIX}/home/home.png`,
                         extraOffsets: { x: -80, y: -130 },
+                        version: 1,
                     },
                 },
                 starsConfig: {
@@ -57,6 +58,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
                         assetKey: "buildings-coop",
                         assetUrl: `${PREFIX}/coop/coop.png`,
                         extraOffsets: { x: 0, y: -140 },
+                        version: 1,
                     },
                 },
                 starsConfig: {
@@ -83,6 +85,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
                         assetKey: "buildings-barn",
                         assetUrl: `${PREFIX}/barn/barn.png`,
                         extraOffsets: { x: 0, y: -120 },
+                        version: 1,
                     },
                 },
                 starsConfig: {
@@ -110,10 +113,12 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
                             assetKey: "buildings-bee-house-atlas",
                             assetUrl: `${PREFIX}/bee-house/spine/bee-house.atlas`,
                             textureUrl: `${PREFIX}/bee-house/spine/bee-house.png`,
+                            version: 1,
                         },
                         json: {
                             assetKey: "buildings-bee-house-json",
                             assetUrl: `${PREFIX}/bee-house/spine/bee-house.json`,
+                            version: 1,
                         },
                         extraOffsets: { y: -130 },
                     },
@@ -148,6 +153,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
                         assetKey: "buildings-pet-house",
                         assetUrl: `${PREFIX}/pet-house/pet-house.png`,
                         extraOffsets: { x: 0, y: -175 },
+                        version: 1,
                     },
                 },
                 starsConfig: {
@@ -161,6 +167,41 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         base: {
             assetKey: "buildings-pet-house",
             assetUrl: `${PREFIX}/pet-house/pet-house.png`,
+        },
+    },
+    [BuildingId.FishPond]: {
+        name: "Fish Pond",
+        description: "A pond for raising fish and collecting fish.",
+        phaser: {
+            map: {
+                mapData: {
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "buildings-fish-pond-atlas",
+                            assetUrl: `${PREFIX}/fish-pond/spine/fish-pond.atlas`,
+                            textureUrl: `${PREFIX}/fish-pond/spine/fish-pond.png`,
+                            version: 2
+                        },
+                        json: {
+                            assetKey: "buildings-fish-pond-json",
+                            assetUrl: `${PREFIX}/fish-pond/spine/fish-pond.json`,
+                            version: 2
+                        },
+                        extraOffsets: { y: -375 },
+                    },
+                },
+                starsConfig: {
+                    extraOffsets: {
+                        y: -700,
+                        x: 0,
+                    },
+                },
+            },
+        },
+        base: {
+            assetKey: "buildings-fish-pond",
+            assetUrl: `${PREFIX}/fish-pond/fish-pond.png`,
         },
     },
 } 

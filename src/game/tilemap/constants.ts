@@ -1,6 +1,7 @@
 // tileset gids
 export const GRASS_GID = 0
 export const FLOWER_GRASS_GID = 1
+export const GRASS_PARTIAL_GID = 2
 
 // default tile width and height
 export const TILE_WIDTH = 400

@@ -83,6 +83,9 @@ const query1 = gql`
         diseaseResistance
         harvestCount
       }
+      petInfo {
+        helpedCount
+      }
       nftMetadata {
         nftAddress
         collectionAddress

@@ -20,6 +20,7 @@ const query1 = gql`
         chainKey
         golds
         isOnline
+        followed
         lastOnlineTime
       }
       count

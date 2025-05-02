@@ -28,12 +28,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Honey",
         description: "Premium honey with enhanced flavor.",
         base: {
-            assetKey: "products-honey-quality",
+            assetKey: "products-honey",
             assetUrl: `${PREFIX}/honey.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-honey-quality",
+                assetKey: "products-honey",
                 assetUrl: `${PREFIX}/honey.png`,
                 useExisting: true,
             },
@@ -57,12 +57,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Egg",
         description: "Premium egg with enhanced nutrition.",
         base: {
-            assetKey: "products-egg-quality",
+            assetKey: "products-egg",
             assetUrl: `${PREFIX}/egg.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-egg-quality",
+                assetKey: "products-egg",
                 assetUrl: `${PREFIX}/egg.png`,
                 useExisting: true,
             },
@@ -86,12 +86,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Milk",
         description: "Premium milk with enhanced nutrition.",
         base: {
-            assetKey: "products-milk-quality",
+            assetKey: "products-milk",
             assetUrl: `${PREFIX}/milk.png`,     
         },
         phaser: {
             base: {
-                assetKey: "products-milk-quality",
+                assetKey: "products-milk",
                 assetUrl: `${PREFIX}/milk.png`,
                 useExisting: true,
             },
@@ -115,12 +115,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Turnip",
         description: "Premium turnip with enhanced flavor.",
         base: {
-            assetKey: "products-turnip-quality",
+            assetKey: "products-turnip",
             assetUrl: `${PREFIX}/turnip.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-turnip-quality",
+                assetKey: "products-turnip",
                 assetUrl: `${PREFIX}/turnip.png`,
                 useExisting: true,
             },
@@ -144,12 +144,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Carrot",
         description: "Premium carrot with enhanced nutrition.",
         base: {
-            assetKey: "products-carrot-quality",
+            assetKey: "products-carrot",
             assetUrl: `${PREFIX}/carrot.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-carrot-quality",
+                assetKey: "products-carrot",
                 assetUrl: `${PREFIX}/carrot.png`,
                 useExisting: true,
             },
@@ -173,12 +173,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Potato",
         description: "Premium potato with enhanced flavor.",
         base: {
-            assetKey: "products-potato-quality",
+            assetKey: "products-potato",
             assetUrl: `${PREFIX}/potato.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-potato-quality",
+                assetKey: "products-potato",
                 assetUrl: `${PREFIX}/potato.png`,
                 useExisting: true,
             },
@@ -202,12 +202,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Pineapple",
         description: "Premium pineapple with enhanced flavor.",
         base: {
-            assetKey: "products-pineapple-quality",
+            assetKey: "products-pineapple",
             assetUrl: `${PREFIX}/pineapple.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-pineapple-quality",
+                assetKey: "products-pineapple",
                 assetUrl: `${PREFIX}/pineapple.png`,
                 useExisting: true,
             },
@@ -231,12 +231,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Watermelon",
         description: "Premium watermelon with enhanced sweetness.",
         base: {
-            assetKey: "products-watermelon-quality",
+            assetKey: "products-watermelon",
             assetUrl: `${PREFIX}/watermelon.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-watermelon-quality",
+                assetKey: "products-watermelon",
                 assetUrl: `${PREFIX}/watermelon.png`,
                 useExisting: true,
             },
@@ -260,12 +260,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Cucumber",
         description: "Premium cucumber with enhanced freshness.",
         base: {
-            assetKey: "products-cucumber-quality",
+            assetKey: "products-cucumber",
             assetUrl: `${PREFIX}/cucumber.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-cucumber-quality",
+                assetKey: "products-cucumber",
                 assetUrl: `${PREFIX}/cucumber.png`,
                 useExisting: true,
             },
@@ -289,12 +289,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Bell Pepper",
         description: "Premium bell pepper with enhanced color.",
         base: {
-            assetKey: "products-bell-pepper-quality",
+            assetKey: "products-bell-pepper",
             assetUrl: `${PREFIX}/bell-pepper.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-bell-pepper-quality",
+                assetKey: "products-bell-pepper",
                 assetUrl: `${PREFIX}/bell-pepper.png`,
                 useExisting: true,
             },
@@ -318,12 +318,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Banana",
         description: "Premium banana with enhanced sweetness.",
         base: {
-            assetKey: "products-banana-quality",
+            assetKey: "products-banana",
             assetUrl: `${PREFIX}/banana.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-banana-quality",
+                assetKey: "products-banana",
                 assetUrl: `${PREFIX}/banana.png`,
                 useExisting: true,
             },
@@ -347,12 +347,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Apple",
         description: "Premium apple with enhanced flavor.",
         base: {
-            assetKey: "products-apple-quality",
+            assetKey: "products-apple",
             assetUrl: `${PREFIX}/apple.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-apple-quality",
+                assetKey: "products-apple",
                 assetUrl: `${PREFIX}/apple.png`,
                 useExisting: true,
             },
@@ -376,12 +376,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Daisy",
         description: "Premium daisy with enhanced beauty.",
         base: {
-            assetKey: "products-daisy-quality",
+            assetKey: "products-daisy",
             assetUrl: `${PREFIX}/daisy.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-daisy-quality",
+                assetKey: "products-daisy",
                 assetUrl: `${PREFIX}/daisy.png`,
                 useExisting: true,
             },
@@ -405,12 +405,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Strawberry",
         description: "Premium strawberry with enhanced sweetness.",
         base: {
-            assetKey: "products-strawberry-quality",
+            assetKey: "products-strawberry",
             assetUrl: `${PREFIX}/strawberry.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-strawberry-quality",
+                assetKey: "products-strawberry",
                 assetUrl: `${PREFIX}/strawberry.png`,
                 useExisting: true,
             },
@@ -434,12 +434,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Dragon Fruit",
         description: "Premium dragon fruit with enhanced flavor.",
         base: {
-            assetKey: "products-dragon-fruit-quality",
+            assetKey: "products-dragon-fruit",
             assetUrl: `${PREFIX}/dragon-fruit.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-dragon-fruit-quality",
+                assetKey: "products-dragon-fruit",
                 assetUrl: `${PREFIX}/dragon-fruit.png`,
                 useExisting: true,
             },
@@ -463,12 +463,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Jackfruit",
         description: "Premium jackfruit with enhanced sweetness.",
         base: {
-            assetKey: "products-jackfruit-quality",
+            assetKey: "products-jackfruit",
             assetUrl: `${PREFIX}/jackfruit.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-jackfruit-quality",
+                assetKey: "products-jackfruit",
                 assetUrl: `${PREFIX}/jackfruit.png`,
                 useExisting: true,
             },
@@ -492,12 +492,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Rambutan",
         description: "Premium rambutan with enhanced sweetness.",
         base: {
-            assetKey: "products-rambutan-quality",
+            assetKey: "products-rambutan",
             assetUrl: `${PREFIX}/rambutan.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-rambutan-quality",
+                assetKey: "products-rambutan",
                 assetUrl: `${PREFIX}/rambutan.png`,
                 useExisting: true,
             },
@@ -521,12 +521,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         name: "Quality Pomegranate",
         description: "Premium pomegranate with enhanced sweetness.",
         base: {
-            assetKey: "products-pomegranate-quality",
+            assetKey: "products-pomegranate",
             assetUrl: `${PREFIX}/pomegranate.png`,
         },
         phaser: {
             base: {
-                assetKey: "products-pomegranate-quality",
+                assetKey: "products-pomegranate",
                 assetUrl: `${PREFIX}/pomegranate.png`,
                 useExisting: true,
             },

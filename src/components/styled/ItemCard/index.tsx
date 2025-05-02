@@ -95,9 +95,8 @@ const ItemCardCore: FC<ItemCardProps> = ({
                   <div className="absolute w-12 h-12">
                       {isQuality && (
                           <ScaledImage
-                              src={assetIconMap[AssetIconId.PurpleStar].base.assetUrl}
+                              src={assetIconMap[AssetIconId.QualityStar].base.assetUrl}
                               className="absolute top-0 left-0 z-20"
-                              scale={0.75}
                               style={{
                                   filter: tint ? tintMap[tintColor ?? TintColor.Default] : "grayscale(0%)",
                               }}

@@ -22,6 +22,7 @@ import { TileContent } from "./TileContent"
 import { AnimalContent } from "./AnimalContent"
 import { BuildingContent } from "./BuildingContent"
 import { getPlacedItemTypeName } from "./utils"
+import { PetContent } from "./PetContent"
 
 export const InfoModal: FC = () => {
     const { isOpen, toggle } =
@@ -69,6 +70,9 @@ export const InfoModal: FC = () => {
         }
         case PlacedItemType.Building: {
             return <BuildingContent placedItem={placedItem} />
+        }
+        case PlacedItemType.Pet: {
+            return <PetContent placedItem={placedItem} />
         }
         default: {
             throw new Error("Invalid placed item type")

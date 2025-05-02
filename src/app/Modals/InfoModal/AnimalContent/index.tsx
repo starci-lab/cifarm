@@ -43,8 +43,10 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
         ? animal.yieldTime - (placedItem.animalInfo.currentYieldTime ?? 0)
         : animal.growthTime - (placedItem.animalInfo.currentGrowthTime ?? 0)
 
-    
-    const [timeElapsed, setTimeElapsed] = useState(_timeElapsed)
+    const [timeElapsed, setTimeElapsed] = useState(0)
+    useEffect(() => {
+        setTimeElapsed(_timeElapsed)
+    }, [])
 
     useEffect(() => {
         if (

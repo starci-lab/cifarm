@@ -72,3 +72,8 @@ export interface AssetMapData {
 export interface BubbleStateConfig {
     extraOffsets?: { x: number; y: number };
 }
+
+export interface SelectedConfig {
+    extraOffsets?: { x: number; y: number };
+}
+

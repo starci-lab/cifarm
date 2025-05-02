@@ -27,4 +27,6 @@ export interface UserSchema extends AbstractSchema {
     ambient: number 
     isOnline: boolean
     lastOnlineTime?: Date
+    selectedPlacedItemDogId?: string
+    selectedPlacedItemCatId?: string
 }
