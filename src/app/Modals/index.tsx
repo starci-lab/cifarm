@@ -29,7 +29,7 @@ import { TransferNFTModal } from "./TransferNFTModal"
 import { ShipModal } from "./ShipModal"
 import { BuyGoldsModal } from "./BuyGoldsModal"
 import { NFTClaimedModal } from "./NFTClaimedModal"
-
+import { WelcomeModal } from "./WelcomeModal"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -40,6 +40,7 @@ const Modals : FC = () => {
             <ProfileModal />
             <SignTransactionModal />
             <NFTClaimedModal />
+            <WelcomeModal />
             <MintAmountModal />
             <InviteUserModal />
             <NeighborsModal />

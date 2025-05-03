@@ -15,6 +15,9 @@ import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION } from "@/app/constants"
 import { useGraphQLMutationAuthenticationSwrMutation } from "../swr"
+import { useDisclosure } from "react-use-disclosure"
+import { WELCOME_DISCLOSURE } from "@/app/constants"
+
 export const useAccounts = () => {
     const loadAccountsKey = useAppSelector(
         (state) => state.hookDependencyReducer.loadAccountsKey
@@ -89,12 +92,15 @@ export const useAccounts = () => {
         handleEffect()
     }, [])
 
+    const { open: openWelcomeModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(WELCOME_DISCLOSURE)
     useEffect(() => {
         if (!accountsLoaded) return
         const handleEffect = async () => {
             //trigger the swrMutation
             await swrMutation.trigger()
             dispatch(setAuthenticated(true))
+            //open the welcome modal
+            openWelcomeModal()
         }
         handleEffect()
     }, [accountsLoaded])
