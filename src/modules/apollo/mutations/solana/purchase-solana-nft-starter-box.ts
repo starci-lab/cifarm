@@ -4,8 +4,8 @@ import { MutationParams, UmiTxResponse } from "../../types"
 import { GraphQLResponse } from "../types"
 
 const mutation1 = gql`
-  mutation PurchaseSolanaNFTStarterBox {
-  purchaseSolanaNFTStarterBox {
+  mutation PurchaseSolanaNFTBox {
+  purchaseSolanaNFTBox {
     message
     success
     data {
@@ -15,27 +15,27 @@ const mutation1 = gql`
 }
 `
 
-export enum MutationPurchaseSolanaNFTStarterBox {
+export enum MutationPurchaseSolanaNFTBox {
   Mutation1 = "mutation1",
 }
 
-export type PurchaseSolanaNFTStarterBoxResponse = GraphQLResponse<UmiTxResponse>;
+export type PurchaseSolanaNFTBoxResponse = GraphQLResponse<UmiTxResponse>;
 
-const mutationMap: Record<MutationPurchaseSolanaNFTStarterBox, DocumentNode> = {
-    [MutationPurchaseSolanaNFTStarterBox.Mutation1]: mutation1,
+const mutationMap: Record<MutationPurchaseSolanaNFTBox, DocumentNode> = {
+    [MutationPurchaseSolanaNFTBox.Mutation1]: mutation1,
 }
 
-export type MutationPurchaseSolanaNFTStarterBoxParams = MutationParams<
-  MutationPurchaseSolanaNFTStarterBox
+export type MutationPurchaseSolanaNFTBoxParams = MutationParams<
+  MutationPurchaseSolanaNFTBox
 >;
 
-export const mutationPurchaseSolanaNFTStarterBox = async ({
-    mutation = MutationPurchaseSolanaNFTStarterBox.Mutation1,
+export const mutationPurchaseSolanaNFTBox = async ({
+    mutation = MutationPurchaseSolanaNFTBox.Mutation1,
     request,
-}: MutationPurchaseSolanaNFTStarterBoxParams) => {
+}: MutationPurchaseSolanaNFTBoxParams) => {
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
-        { purchaseSolanaNFTStarterBox: PurchaseSolanaNFTStarterBoxResponse }
+        { purchaseSolanaNFTBox: PurchaseSolanaNFTBoxResponse }
   >({
       mutation: mutationDocument,
       variables: { request },

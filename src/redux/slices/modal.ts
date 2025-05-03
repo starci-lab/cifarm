@@ -31,7 +31,7 @@ export enum TransactionType {
   HoneycombProtocolRawTxs = "HoneycombProtocolRawTxs",
   TransferToken = "TransferToken",
   TransferNFT = "TransferNFT",
-  PurchaseSolanaNFTStarterBox = "PurchaseSolanaNFTStarterBox",
+  PurchaseSolanaNFTBox = "PurchaseSolanaNFTBox",
   ShipSolana = "ShipSolana",
   WrapSolanaMetaplexNFT = "WrapSolanaMetaplexNFT",
   UnwrapSolanaMetaplexNFT = "UnwrapSolanaMetaplexNFT",
@@ -73,7 +73,7 @@ export interface UnwrapSolanaMetaplexNFTData {
   serializedTx: string;
 }
 
-export interface PurchaseSolanaNFTStarterBoxData {
+export interface PurchaseSolanaNFTBoxData {
   serializedTx: string;
 }
 
@@ -103,8 +103,8 @@ export type SignTransactionModal = (
       type: TransactionType.TransferNFT;
     }
   | {
-      data: PurchaseSolanaNFTStarterBoxData;
-      type: TransactionType.PurchaseSolanaNFTStarterBox;
+      data: PurchaseSolanaNFTBoxData;
+      type: TransactionType.PurchaseSolanaNFTBox;
     }
   | {
       data: ShipSolanaData;

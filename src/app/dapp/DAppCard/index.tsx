@@ -1,18 +1,31 @@
-import { PressableCard } from "@/components"
+import { PressableCard, Image, Spacer } from "@/components"
+import { Loader2 } from "lucide-react"
 import React, { FC } from "react"
 
 interface DAppCardProps {
     title: string
     description: string
-    image: string
+    imageUrl: string
     onClick: () => void
+    content?: React.ReactNode
+    isLoading?: boolean
 }
 
-export const DAppCard: FC<DAppCardProps> = ({ title, description, onClick }) => {
+export const DAppCard: FC<DAppCardProps> = ({ title, description, imageUrl, onClick, content, isLoading }) => {
     return (
-        <PressableCard className="flex flex-col gap-2" onClick={onClick}>
-            <div className="font-bold">{title}</div>
-            <div className="text-xs text-muted-foreground">{description}</div>
+        <PressableCard onClick={onClick} disabled={isLoading}>
+            <div className="flex gap-4">
+                <Image src={imageUrl} className="w-20 h-20 object-contain" />
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-1">
+                        {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                        <div>{title}</div>
+                    </div>
+                    <div className="text-xs text-muted-foreground">{description}</div>
+                    <Spacer y={2} />
+                    {content}
+                </div>
+            </div>
         </PressableCard>
     )
 }

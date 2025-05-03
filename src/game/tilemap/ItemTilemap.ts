@@ -882,6 +882,8 @@ export abstract class ItemTilemap extends GroundTilemap {
                         const { sellPrice } = getSellInfoFromPlacedItemType({
                             placedItemType,
                             staticData: {
+                                tiles: this._tiles,
+                                pets: this.pets,
                                 crops: this.crops,
                                 products: this.products,
                                 animals: this.animals,

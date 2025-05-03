@@ -37,7 +37,7 @@ export const QuestCard: FC<QuestCardProps> = ({
             showBorder={false}
             className={cn(
                 "flex items-center justify-between w-full p-3 rounded-none text-left",
-                !completed && "cursor-pointer hover:bg-accent/50 transition-colors"
+                !completed && " hover:bg-accent/50 transition-colors"
             )}
             onClick={!completed ? onClick : undefined}
         >

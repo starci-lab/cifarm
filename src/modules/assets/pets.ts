@@ -40,7 +40,7 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                     },
                 },
                 selectedConfig: {
-                    extraOffsets: { x: 0, y: -80 },
+                    extraOffsets: { x: 0, y: -140 },
                 },  
             },
         },
@@ -72,7 +72,7 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                     },
                 },
                 selectedConfig: {
-                    extraOffsets: { x: 0, y: -80 },
+                    extraOffsets: { x: 0, y: -100 },
                 },
             },
         },

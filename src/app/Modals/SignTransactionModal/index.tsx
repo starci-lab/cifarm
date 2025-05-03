@@ -16,7 +16,7 @@ import {
     BuyGoldsSolanaData,
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
-    PurchaseSolanaNFTStarterBoxData,
+    PurchaseSolanaNFTBoxData,
     ShipSolanaData,
     TransactionType,
     TransferNFTData,
@@ -230,8 +230,8 @@ export const SignTransactionModal: FC = () => {
                     router.push(pathConstants.collection)
                     break
                 }
-                case TransactionType.PurchaseSolanaNFTStarterBox: {
-                    const { serializedTx } = data as PurchaseSolanaNFTStarterBoxData
+                case TransactionType.PurchaseSolanaNFTBox: {
+                    const { serializedTx } = data as PurchaseSolanaNFTBoxData
                     const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
                         serializedTx,
                     })
@@ -372,8 +372,8 @@ export const SignTransactionModal: FC = () => {
         [TransactionType.UnwrapSolanaMetaplexNFT]: {
             name: "Unwrap Solana Metaplex NFT",
         },
-        [TransactionType.PurchaseSolanaNFTStarterBox]: {
-            name: "Purchase Solana NFT Starter Box",
+        [TransactionType.PurchaseSolanaNFTBox]: {
+            name: "Purchase Solana NFT Box",
         },
         [TransactionType.ShipSolana]: {
             name: "Ship",
@@ -647,15 +647,15 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
-        case TransactionType.PurchaseSolanaNFTStarterBox: {
-            const { serializedTx } = data as PurchaseSolanaNFTStarterBoxData
+        case TransactionType.PurchaseSolanaNFTBox: {
+            const { serializedTx } = data as PurchaseSolanaNFTBoxData
             return (
                 <List
                     enableScroll={false}
-                    items={Object.values(PurchaseSolanaNFTStarterBoxContent)}
+                    items={Object.values(PurchaseSolanaNFTBoxContent)}
                     contentCallback={(item) => {
                         switch (item) {
-                        case PurchaseSolanaNFTStarterBoxContent.SerializedTx: {
+                        case PurchaseSolanaNFTBoxContent.SerializedTx: {
                             return (
                                 <div className="flex items-center justify-between gap-12 px-2 py-3">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
@@ -773,7 +773,7 @@ export enum UnwrapSolanaMetaplexNFTContent {
   SerializedTx = "serializedTx",
 }
 
-export enum PurchaseSolanaNFTStarterBoxContent {
+export enum PurchaseSolanaNFTBoxContent {
   SerializedTx = "serializedTx",
 }
 

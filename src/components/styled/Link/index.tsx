@@ -19,7 +19,7 @@ export const Link: FC<LinkProps> = ({
     target,
 }) => {
     return (
-        <a className={cn(base, "w-fit cursor-pointer")} onClick={onPress} target={target}>
+        <a className={cn(base, "w-fit ")} onClick={onPress} target={target}>
             {children}
         </a>
     )

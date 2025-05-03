@@ -212,7 +212,7 @@ export class PlacedItemObject extends ContainerLite {
                     .image(
                         centerX + offsetX,
                         centerY + offsetY,
-                        assetIconMap[AssetIconId.Attack].base.assetKey
+                        assetIconMap[AssetIconId.Defense].base.assetKey
                     )
                     .setDepth(this.depth + 11)
                     .setOrigin(0.5, 1)
@@ -243,9 +243,10 @@ export class PlacedItemObject extends ContainerLite {
                     .image(
                         centerX + offsetX,
                         centerY + offsetY,
-                        assetIconMap[AssetIconId.Defense].base.assetKey
+                        assetIconMap[AssetIconId.Attack].base.assetKey
                     )
-                    .setOrigin(0.5, 0)
+                    .setDepth(this.depth + 11)
+                    .setOrigin(0.5, 1)
                 this.addLocal(this.selectedIcon)
             }
             break

@@ -164,4 +164,17 @@ export interface InteractionPermissions {
   thiefLevelGapThreshold: number
 }
 
+export interface NFTBoxChance {
+  nftType: NFTType
+  startChance: number 
+  endChance: number
+  rareRarityChance: number
+  epicRarityChance: number
+}
 
+export interface NFTBoxInfo {
+  chances: Array<NFTBoxChance>
+  boxPrice: number  
+  paymentKind: PaymentKind
+  feePercentage: number
+}

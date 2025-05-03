@@ -285,6 +285,9 @@ export class InputTilemap extends ItemTilemap {
                     const { sellable } = getSellInfoFromPlacedItemType({
                         placedItemType: data.object.placedItemType,
                         staticData: {
+                            tiles: this._tiles,
+                            pets: this.pets,
+                            crops: this.crops,
                             products: this.products,
                             animals: this.animals,
                             buildings: this.buildings,

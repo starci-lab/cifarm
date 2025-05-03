@@ -14,6 +14,7 @@ export enum AssetIconId {
     Settings = "settings",
     NFTMarketplace = "nft-marketplace",
     NFTBox = "nft-box",
+    WholesaleMarket = "wholesale-market",
     Move = "move",
     Sell = "sell",
     Return = "return",
@@ -134,6 +135,12 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
             assetUrl: `${PREFIX}/nft-box.png`
         },
     },
+    [AssetIconId.WholesaleMarket]: {
+        base: {
+            assetKey: "icons-wholesale-market",
+            assetUrl: `${PREFIX}/wholesale-market.png`
+        },
+    },
     [AssetIconId.Move]: {
         base: {
             assetKey: "icons-move",
@@ -244,7 +251,8 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
         phaser: {
             base: {
                 assetKey: "icons-attack",
-                assetUrl: `${PREFIX}/attack.png`
+                assetUrl: `${PREFIX}/attack.png`,
+                version: 1
             },
         },
     },
@@ -256,7 +264,8 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
         phaser: {
             base: {
                 assetKey: "icons-defense",
-                assetUrl: `${PREFIX}/defense.png`
+                assetUrl: `${PREFIX}/defense.png`,
+                version: 1
             },
         },
     },

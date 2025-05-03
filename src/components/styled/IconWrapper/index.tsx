@@ -21,7 +21,7 @@ export const IconWrapper: FC<IconWrapperProps> = ({
 }) => {
     return (
         <div
-            className={cn(base, "cursor-pointer transition-colors grid place-items-center")}
+            className={cn(base, " transition-colors grid place-items-center")}
             {...props}
         >
             {isValidElement(children)

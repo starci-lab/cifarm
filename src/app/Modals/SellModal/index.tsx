@@ -52,7 +52,8 @@ export const SellModal: FC = () => {
                             const placedItem = placedItems.find(
                                 (item) => item.id === placedItemId
                             )
-                            if (!placedItem) throw new Error("Placed item not found")
+                            //return only, if the item is deleted
+                            if (!placedItem) return
                             if (!staticSwr.data?.data) throw new Error("Static data not found")
                             const { sellable, sellPrice } = getSellInfo({
                                 placedItem,

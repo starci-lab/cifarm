@@ -24,6 +24,7 @@ import { AssetIconId, assetIconMap, AssetUIId, assetUiMap } from "@/modules/asse
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { getCurrentDayMidnightUtc, getUtc } from "@/modules/common"
 import { useAppSelector } from "@/redux"
+
 export const DailyModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(DAILY_DISCLOSURE)

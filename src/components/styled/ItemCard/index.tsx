@@ -75,7 +75,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
     return (
         <Card
             className={cn(
-                "w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none cursor-pointer bg-transparent",
+                "w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none  bg-transparent",
                 classNames.card
             )}
             onClick={onClick}

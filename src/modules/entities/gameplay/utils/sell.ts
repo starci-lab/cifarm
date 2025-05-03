@@ -46,6 +46,7 @@ export const getSellInfoFromPlacedItemType = ({
         }
     }
     case PlacedItemType.Tile: {
+        console.log(staticData.tiles)
         const tile = staticData.tiles?.find(
             (tile) => tile.id === placedItemType.tile
         )
@@ -53,6 +54,16 @@ export const getSellInfoFromPlacedItemType = ({
         return {
             sellable: tile.sellable ?? false,
             sellPrice: tile.sellPrice,
+        }
+    }
+    case PlacedItemType.Pet: {
+        const pet = staticData.pets?.find(
+            (pet) => pet.id === placedItemType.pet
+        )
+        if (!pet) throw new Error("Pet not found")
+        return {
+            sellable: pet.sellable ?? false,
+            sellPrice: pet.sellPrice,
         }
     }
     case PlacedItemType.Building: {
@@ -73,16 +84,6 @@ export const getSellInfoFromPlacedItemType = ({
         return {
             sellable: fruit.sellable ?? false,
             sellPrice: fruit.sellPrice,
-        }
-    }
-    case PlacedItemType.Pet: {
-        const pet = staticData.pets?.find(
-            (pet) => pet.id === placedItemType.pet
-        )
-        if (!pet) throw new Error("Pet not found")
-        return {
-            sellable: pet.sellable ?? false,
-            sellPrice: pet.sellPrice,
         }
     }
     }

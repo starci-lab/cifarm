@@ -59,7 +59,6 @@ export const InfoModal: FC = () => {
     const renderContent = () => {
         switch (placedItemType.type) {
         case PlacedItemType.Fruit: {
-            console.log(mapAssetData)
             return <FruitContent placedItem={placedItem} />
         }
         case PlacedItemType.Tile: {

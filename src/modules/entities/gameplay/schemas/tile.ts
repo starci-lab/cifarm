@@ -3,7 +3,7 @@ import { StaticAbstractSchema } from "./abstract"
 
 export interface TileSchema extends StaticAbstractSchema<TileId> {
     price?: number;
-    isNft: boolean;
+    isNFT: boolean;
     availableInShop: boolean;
     unlockLevel?: number;
     sellable?: boolean;

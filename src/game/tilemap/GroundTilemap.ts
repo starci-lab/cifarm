@@ -59,7 +59,7 @@ export class GroundTilemap extends BaseTilemap {
             topRight.getCenterY() - this.tileHeight * 1/2, 
             assetMiscMap[AssetMiscId.GrassPartial].phaser.base.assetKey)
         // rotate the top right grass partial 90 degrees
-        topRightGrassPartial.setAngle(180/2)
+        //topRightGrassPartial.setAngle(180/2)
         // const topRight = this.getTileAt(this.width, 0)
         // const bottomLeft = this.getTileAt(0, this.height)
         // const bottomRight = this.getTileAt(this.width, this.height)

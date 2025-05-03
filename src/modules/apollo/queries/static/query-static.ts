@@ -23,7 +23,8 @@ import {
     NFTCollections,
     WholesaleMarket,
     GoldPurchases,
-    InteractionPermissions
+    InteractionPermissions,
+    NFTBoxInfo
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -244,7 +245,7 @@ const query = gql`
       price
       displayId
       placedItemTypeKey
-      isNft
+      isNFT
       availableInShop
       sellable
       sellPrice
@@ -281,6 +282,7 @@ const query = gql`
       unlockLevel
       sellPrice
       type
+      sellable
     }
     products {
       id
@@ -400,6 +402,18 @@ const query = gql`
     interactionPermissions {
       thiefLevelGapThreshold
     }
+    nftBoxInfo {
+      boxPrice
+      paymentKind
+      feePercentage
+      chances {
+        nftType
+        startChance
+        endChance
+        rareRarityChance
+        epicRarityChance
+      }
+    }
   }
 `
 
@@ -427,6 +441,7 @@ export interface QueryStaticResponse {
   wholesaleMarket: WholesaleMarket
   goldPurchases: GoldPurchases
   interactionPermissions: InteractionPermissions
+  nftBoxInfo: NFTBoxInfo
 }
 
 export const queryStatic = async () => {
