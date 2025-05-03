@@ -2,6 +2,8 @@ import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams, MutationVariables } from "../../types"
 import { GraphQLResponse } from "../types"
+import { NFTType } from "@/modules/entities"
+import { NFTRarityEnum } from "@/modules/blockchain"
 
 const mutation1 = gql`
   mutation SendPurchaseSolanaNFTBoxTransaction(
@@ -10,6 +12,9 @@ const mutation1 = gql`
     sendPurchaseSolanaNFTBoxTransaction(request: $request) {
       data {
         txHash
+        nftType
+        rarity
+        nftName
       }
       message
       success
@@ -27,6 +32,9 @@ export interface SendPurchaseSolanaNFTBoxTransactionRequest {
 
 export type SendPurchaseSolanaNFTBoxTransactionResponse = GraphQLResponse<{
   txHash: string;
+  nftType: NFTType
+  rarity: NFTRarityEnum
+  nftName: string
 }>;
 
 const mutationMap: Record<

@@ -32,7 +32,7 @@ export const ProfileModal: FC = () => {
         : ""
     const quota = user ? computeExperiencesQuota(user.level) : 0
     const router = useRouterWithSearchParams()
-
+    console.log(user?.accountAddress)
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">

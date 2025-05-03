@@ -1,0 +1,55 @@
+import { DocumentNode, gql } from "@apollo/client"
+import { noCacheAuthClient } from "../../auth-client"
+import {
+    QueryParams,
+    QueryVariables,
+} from "../../types"
+import { ChainKey, Network } from "@/modules/blockchain"
+
+const query1 = gql`
+  query VaultCurrent($request: VaultCurrentRequest!) {
+    vaultCurrent(request: $request) {  
+      paidAmount
+      paidCount
+      tokenLocked
+    }
+  }
+`
+
+export interface QueryVaultCurrentResponse {
+  vaultCurrent: {
+    paidAmount: number
+    paidCount: number
+    tokenLocked: number
+  }
+}
+
+export enum QueryVaultCurrent {
+  Query1 = "query1",
+}
+
+const queryMap: Record<QueryVaultCurrent, DocumentNode> = {
+    [QueryVaultCurrent.Query1]: query1,
+}
+
+export interface QueryVaultCurrentArgs {
+  network: Network
+  chainKey: ChainKey
+}
+
+export type QueryVaultCurrentParams = QueryParams<QueryVaultCurrent, QueryVaultCurrentArgs>;
+export const queryVaultCurrent = async ({
+    query = QueryVaultCurrent.Query1,
+    request = { network: Network.Testnet, chainKey: ChainKey.Solana },
+}: QueryVaultCurrentParams) => {
+    const queryDocument = queryMap[query]
+    return await noCacheAuthClient.query<
+    QueryVaultCurrentResponse,
+    QueryVariables<QueryVaultCurrentArgs>
+  >({
+      query: queryDocument,
+      variables: {
+          request,
+      },
+  })
+}

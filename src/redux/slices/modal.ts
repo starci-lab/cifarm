@@ -1,6 +1,7 @@
-import { DefaultToken, NFTData } from "@/modules/blockchain"
+import { DefaultToken, NFTData, NFTRarityEnum } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse, TxResponses } from "@/modules/honeycomb"
+import { NFTType } from "@/modules/entities"
 
 export interface WarningModal {
   message: string;
@@ -45,6 +46,13 @@ export interface TokenModal {
 export interface NFTModal {
   nftData?: ExtendedNFTData;
 }
+
+export interface NFTClaimedModal {
+  nftType?: NFTType; 
+  rarity?: NFTRarityEnum;  
+  nftName?: string;
+}
+
 export interface HoneycombProtocolRawTxData {
   txResponse: TxResponse;
 }
@@ -144,6 +152,7 @@ export interface ModalSlice {
   downloadPackageModal: DownloadPackageModal;
   sellModal: SellModal;
   upgradeModal: UpgradeModal;
+  nftClaimedModal: NFTClaimedModal;
 }
 
 export interface DownloadPackageModal {
@@ -169,6 +178,7 @@ const initialState: ModalSlice = {
     downloadPackageModal: {},
     sellModal: {},
     upgradeModal: {},
+    nftClaimedModal: {},
 }
 
 export const modalSlice = createSlice({
@@ -202,6 +212,9 @@ export const modalSlice = createSlice({
         setUpgradeModal: (state, action: PayloadAction<UpgradeModal>) => {
             state.upgradeModal = action.payload
         },
+        setNFTClaimedModal: (state, action: PayloadAction<NFTClaimedModal>) => {
+            state.nftClaimedModal = action.payload
+        },
     },
 })
 
@@ -215,4 +228,5 @@ export const {
     setDownloadPackageModal,
     setSellModal,
     setUpgradeModal,
+    setNFTClaimedModal,
 } = modalSlice.actions

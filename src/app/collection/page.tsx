@@ -8,7 +8,6 @@ import {
     NFTRarityBadge,
     Spacer,
     WrappedBadge,
-    NFTValidatedBadge,
     Switch,
 } from "@/components"
 import { pathConstants } from "@/constants"
@@ -104,7 +103,7 @@ const Page: FC = () => {
                                                 nft.attributes.find(
                                                     (rarity) => rarity.key === AttributeName.Rarity
                                                 )?.value as NFTRarityEnum
-                                            }
+                                            }   
                                         />
                                     </div>
                                     <div className="flex gap-2 absolute left-3 bottom-3 bg-background/50 text-muted-background rounded-md px-2 py-1.5">
@@ -115,11 +114,6 @@ const Page: FC = () => {
                                                 {
                                                     nft.wrapped && (
                                                         <WrappedBadge />
-                                                    )
-                                                }
-                                                {
-                                                    nft.validated && (
-                                                        <NFTValidatedBadge />
                                                     )
                                                 }
                                             </div>

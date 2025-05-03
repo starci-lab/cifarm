@@ -3,8 +3,8 @@
 import React, { FC } from "react"
 import { Container, Header, ItemCard, GridTable } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, QUERY_STATIC_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
-import { useGraphQLQueryStaticSwr, useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation } from "@/hooks"
+import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { useGraphQLQueryStaticSwr, useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryVaultCurrentSwr } from "@/hooks"
 import { assetProductMap } from "@/modules/assets"
 import {
     ExtendedButton,
@@ -22,6 +22,8 @@ const Page: FC = () => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
+
+    const { swr: vaultCurrentSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryVaultCurrentSwr>>(GRAPHQL_QUERY_VAULT_CURRENT_SWR)
     
     const { swrMutation: createShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationCreateShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
     const { swrMutation: sendShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationSendShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
@@ -94,7 +96,16 @@ const Page: FC = () => {
                                     className="w-8 h-8"
                                 />
                                 <div className="text-2xl">
-                                    {staticSwr.data?.data.wholesaleMarket.price}
+                                    {vaultCurrentSwr.data?.data.vaultCurrent.paidAmount}
+                                </div>
+                            </div>
+                            <Spacer y={2} />
+                            <div className="flex items-center gap-2 text-muted-foreground">
+                                <div className="text-xs">
+                                Token locked: {vaultCurrentSwr.data?.data.vaultCurrent.tokenLocked}  
+                                </div>
+                                <div className="text-xs">
+                            Paid count: {vaultCurrentSwr.data?.data.vaultCurrent.paidCount}
                                 </div>
                             </div>
                         </div>

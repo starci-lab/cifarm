@@ -12,6 +12,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     setSignTransactionModal,
+    setNFTClaimedModal,
     TransactionType,
     useAppDispatch,
 } from "@/redux"
@@ -21,6 +22,7 @@ import {
     QUERY_STATIC_SWR_MUTATION,
     GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
+    NFT_CLAIMED_DISCLOSURE,
 } from "../constants"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { PaymentKind } from "@/modules/entities"
@@ -51,6 +53,10 @@ const Page: FC = () => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
+
+    const { open: openNFTClaimedModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        NFT_CLAIMED_DISCLOSURE
+    )
     return (
         <Container hasPadding>
             <div>
@@ -63,7 +69,7 @@ const Page: FC = () => {
                     <DAppCard
                         title="NFT Box"
                         isLoading={createPurchaseSolanaNFTBoxTransactionSwrMutation.isMutating}
-                        description="Get your NFT Starter Box and begin collecting unique digital assets."
+                        description="Get your NFT Box and begin collecting unique digital assets."
                         content={
                             <div className="flex items-center gap-1">
                                 <PaymentIcon
@@ -91,6 +97,9 @@ const Page: FC = () => {
                                     data: {
                                         serializedTx: data.serializedTx,
                                     },
+                                    extraAction: async () => {
+                                        openNFTClaimedModal()
+                                    },
                                     postActionHook: async (signedTx: string) => {
                                         const { data } =
                       await sendPurchaseSolanaNFTBoxTransactionSwrMutation.trigger(
@@ -104,12 +113,20 @@ const Page: FC = () => {
                                             throw new Error(
                                                 "Failed to send purchase NFT Starter Box transaction"
                                             )
+                                        dispatch(
+                                            setNFTClaimedModal({
+                                                nftType: data.nftType,
+                                                rarity: data.rarity,
+                                                nftName: data.nftName,
+                                            })
+                                        )
                                         return data.txHash
                                     },
                                 })
                             )
                             open()
-                        }}
+                        }
+                        }
                     />
                     <DAppCard
                         title="Wholesale Market"

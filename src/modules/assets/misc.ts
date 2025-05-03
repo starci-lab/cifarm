@@ -9,7 +9,14 @@ export interface MiscAssetData {
 
 export enum AssetMiscId {
     Grass = "grass",
-    GrassPartial = "grass-partial",
+    GrassBorder1 = "grass-border-1",
+    GrassBorder2 = "grass-border-2",
+    GrassBorder3 = "grass-border-3",
+    GrassBorder4 = "grass-border-4",
+    GrassBorder5 = "grass-border-5",
+    GrassBorder6 = "grass-border-6",
+    GrassBorder7 = "grass-border-7",
+    GrassBorder8 = "grass-border-8",
     BubbleState = "bubble-state",
     FertilizerParticle = "fertilizer-particle", 
     Yes = "yes",
@@ -28,11 +35,75 @@ export const assetMiscMap: Record<AssetMiscId, MiscAssetData> = {
             },
         },
     },
-    [AssetMiscId.GrassPartial]: {
+    [AssetMiscId.GrassBorder1]: {
         phaser: {
             base: {
-                assetUrl: `${PREFIX}/grass-partial.png`,
-                assetKey: "misc-grass-partial",
+                assetUrl: `${PREFIX}/grass-border-1.png`,
+                assetKey: "misc-grass-border-1",
+                version: 1,
+            },
+        },
+    },
+    [AssetMiscId.GrassBorder2]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/grass-border-2.png`,
+                assetKey: "misc-grass-border-2",
+                version: 1,
+            },
+        },
+    },
+    [AssetMiscId.GrassBorder3]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/grass-border-3.png`,
+                assetKey: "misc-grass-border-3",
+                version: 1,
+            },
+        },
+    },
+    [AssetMiscId.GrassBorder4]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/grass-border-4.png`,
+                assetKey: "misc-grass-border-4",   
+                version: 1,
+            },
+        },
+    },
+    [AssetMiscId.GrassBorder5]: {
+        phaser: {
+            base: { 
+                assetUrl: `${PREFIX}/grass-border-5.png`,
+                assetKey: "misc-grass-border-5",
+                version: 1,
+            },
+        },
+    },
+    [AssetMiscId.GrassBorder6]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/grass-border-6.png`,
+                assetKey: "misc-grass-border-6",
+                version: 1,
+            },
+        },
+    },  
+    [AssetMiscId.GrassBorder7]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/grass-border-7.png`,
+                assetKey: "misc-grass-border-7",
+                version: 1,
+            },
+        },
+    },  
+    [AssetMiscId.GrassBorder8]: {
+        phaser: {
+            base: {
+                assetUrl: `${PREFIX}/grass-border-8.png`,
+                assetKey: "misc-grass-border-8",
+                version: 1,
             },
         },
     },

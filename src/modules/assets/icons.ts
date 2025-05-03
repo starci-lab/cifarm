@@ -272,12 +272,13 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
     [AssetIconId.Dog]: {
         base: {
             assetKey: "icons-dog",
-            assetUrl: `${PREFIX}/dog.png`
+            assetUrl: `${PREFIX}/dog.png`,
         },
         phaser: {
             base: {
                 assetKey: "icons-dog",
-                assetUrl: `${PREFIX}/dog.png`
+                assetUrl: `${PREFIX}/dog.png`,
+                version: 1
             },
         },
     },
@@ -289,7 +290,8 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
         phaser: {
             base: {
                 assetKey: "icons-cat",
-                assetUrl: `${PREFIX}/cat.png`
+                assetUrl: `${PREFIX}/cat.png`,
+                version: 1
             },
         },
     },
