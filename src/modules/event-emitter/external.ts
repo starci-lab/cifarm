@@ -238,7 +238,7 @@ export interface RequestForceSyncPlacedItemsMessage {
 }
 
 export interface SetPlacedItemInfoMessage {
-    placedItem: PlacedItemSchema
+    id: string
 }
 
 export interface BuyItemMessage {

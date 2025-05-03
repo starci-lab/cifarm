@@ -4,7 +4,7 @@ import {
     SetPlacedItemInfoMessage,
 } from "@/modules/event-emitter"
 import { useEffect } from "react"
-import { useAppDispatch, setPlacedItem } from "@/redux"
+import { useAppDispatch, setSelectedPlacedItemId } from "@/redux"
 
 export const usePlacedItemEffects = () => {
     const dispatch = useAppDispatch()
@@ -12,8 +12,8 @@ export const usePlacedItemEffects = () => {
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.SetPlacedItemInfo,
-            ({ placedItem }: SetPlacedItemInfoMessage) => {
-                dispatch(setPlacedItem(placedItem))
+            ({ id }: SetPlacedItemInfoMessage) => {
+                dispatch(setSelectedPlacedItemId(id))
             }
         )
 

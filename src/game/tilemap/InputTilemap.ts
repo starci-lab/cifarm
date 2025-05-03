@@ -385,7 +385,7 @@ export class InputTilemap extends ItemTilemap {
                     throw new Error("Placed item not found")
                 }
                 ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
-                    placedItem: data.object.currentPlacedItem,
+                    id: data.object.currentPlacedItem.id,
                 })
                 ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
                     ExternalEventEmitter.emit(ExternalEventName.OpenModal, {

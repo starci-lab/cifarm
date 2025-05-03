@@ -28,16 +28,24 @@ export const InfoModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(INFO_DISCLOSURE)
 
-    const placedItem = useAppSelector(
-        (state) => state.sessionReducer.placedItem
+    const selectedPlacedItemId = useAppSelector(
+        (state) => state.sessionReducer.selectedPlacedItemId
+    )
+    const placedItems = useAppSelector(
+        (state) => state.sessionReducer.placedItems
+    )
+    const placedItem = placedItems.find(
+        (placedItem) => placedItem.id === selectedPlacedItemId
     )
     const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         GRAPHQL_QUERY_STATIC_SWR
     )
+    if (!placedItem) {
+        return null
+    }
     const placedItemType = swr.data?.data.placedItemTypes.find(
         (placedItemType) => placedItemType.id === placedItem?.placedItemType
     )
-
     if (!placedItemType) {
         return null
     }

@@ -46,7 +46,7 @@ export interface SessionState {
   // selected token key
   tokenKey: string;
   // placed item id
-  placedItem?: PlacedItemSchema;
+  selectedPlacedItemId?: string;
   inventories: Array<InventorySchema>;
   placedItems: Array<PlacedItemSchema>;
   selectedInventoryId?: string;
@@ -161,8 +161,8 @@ export const sessionSlice = createSlice({
         setNftAddress: (state, action: PayloadAction<string>) => {
             state.nftAddress = action.payload
         },
-        setPlacedItem: (state, action: PayloadAction<PlacedItemSchema>) => {
-            state.placedItem = action.payload
+        setSelectedPlacedItemId: (state, action: PayloadAction<string>) => {
+            state.selectedPlacedItemId = action.payload
         },
         setInventories: (state, action: PayloadAction<InventorySchema[]>) => {
             state.inventories = action.payload
@@ -241,7 +241,7 @@ export const {
     removeNftCollectionsSwr,
     setCollectionKey,
     setNftAddress,
-    setPlacedItem,
+    setSelectedPlacedItemId,
     setInventories,
     setSelectedInventoryId,
     setSelectedDeliveryInventoryId,

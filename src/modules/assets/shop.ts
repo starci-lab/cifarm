@@ -169,6 +169,14 @@ export const assetShopMap: AssetShopData = {
                 assetUrl: `${PREFIX_BUILDINGS}/pet-house.png`,
             },
         },
+        [BuildingId.FishPond]: {
+            name: "Fish Pond",
+            description: "Specialized structure for fish breeding and harvesting.",
+            base: {
+                assetKey: "shop-fish-pond",
+                assetUrl: `${PREFIX_BUILDINGS}/fish-pond.png`,
+            },
+        },
     },
     fruits: {
         [FruitId.Apple]: {
