@@ -59,6 +59,7 @@ interface ProviderInfo {
   name: string;
 }
 
+const DURATION = 10000 // 10s
 export const SignTransactionModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
@@ -128,6 +129,7 @@ export const SignTransactionModal: FC = () => {
 
     const addTxHashToast = (txHash: string) =>
         toast({
+            duration: DURATION,
             title: "Tx hash",
             description: truncateString(txHash, 10, 4),
             action: (
@@ -153,6 +155,7 @@ export const SignTransactionModal: FC = () => {
 
     const addErrorToast = (errorMessage: string = "Failed to sign transaction") =>
         toast({
+            duration: DURATION,
             title: "Error",
             description: truncateString(errorMessage, 400, 0),
             variant: "destructive",
