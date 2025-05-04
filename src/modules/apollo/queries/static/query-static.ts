@@ -398,6 +398,22 @@ const query = gql`
           }
         }
       }
+      sui {
+        testnet {
+          options {
+            price
+            amount
+            paymentKind
+          }
+        }
+        mainnet {
+          options {
+            price
+            amount
+            paymentKind
+          }
+        }
+      }
     }
     interactionPermissions {
       thiefLevelGapThreshold

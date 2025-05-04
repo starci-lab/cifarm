@@ -124,6 +124,16 @@ export const ShopModal = () => {
                                         eventMessage
                                     )
                                 }}
+                                onPress={(pressTime) => {
+                                    const eventMessage: BuyFlowerSeedsMessage = {
+                                        flowerId: flower.displayId,
+                                        quantity: Math.floor(pressTime / 100),
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.RequestBuyFlowerSeeds,
+                                        eventMessage
+                                    )
+                                }}
                                 imageUrl={
                                     assetShopMap.flowers[flower.displayId]?.base.assetUrl ?? ""
                                 }

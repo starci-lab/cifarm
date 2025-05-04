@@ -4,7 +4,7 @@ import { sessionDb } from "@/modules/dexie"
 import axios from "axios"
 import { CacheKey } from "../types"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-export const PATH = "assets"
+import { getAssetUrl } from "./utils"
 
 export const downloadTexture = async (
     scene: Scene,
@@ -26,7 +26,7 @@ export const downloadTexture = async (
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(assetUrl, {
+    const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
             if (progress.progress) {
@@ -82,7 +82,7 @@ export const downloadJson = async (scene: Scene, spineData: AssetSpineData) => {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(assetUrl, {
+    const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
             ExternalEventEmitter.emit(
@@ -119,7 +119,7 @@ export const downloadAtlas = async (scene: Scene, spineData: AssetSpineData) => 
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         textureData = textureAsset.data
     } else {
-        const { data } = await axios.get(textureUrl, {
+        const { data } = await axios.get(getAssetUrl(textureUrl), {
             responseType: "blob",
             onDownloadProgress: (progress) => {
                 ExternalEventEmitter.emit(
@@ -142,7 +142,7 @@ export const downloadAtlas = async (scene: Scene, spineData: AssetSpineData) => 
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         atlasText = await asset.data.text()
     } else {
-        const { data } = await axios.get(assetUrl, {
+        const { data } = await axios.get(getAssetUrl(assetUrl), {
             responseType: "text",
             onDownloadProgress: (progress) => {
                 ExternalEventEmitter.emit(
@@ -221,7 +221,7 @@ export const downloadFont = async (scene: Scene, fontData: FontData) => {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(assetUrl, {
+    const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
             if (progress.progress) {
@@ -252,7 +252,7 @@ export const downloadMusic = async (scene: Scene, musicData: MusicData) => {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(assetUrl, {
+    const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
             ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)

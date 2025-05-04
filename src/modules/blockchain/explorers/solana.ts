@@ -7,8 +7,8 @@ export const solanaExplorerUrl = (
     switch (network) {
     case Network.Testnet:
         return {
-            address: `https://solscan.io/address/${value}?cluster=custom&customUrl=https%3A%2F%2Frpc.test.honeycombprotocol.com`,
-            tx: `https:/solscan.io/tx/${value}?cluster=custom&customUrl=https%3A%2F%2Frpc.test.honeycombprotocol.com`,
+            address: `https://solscan.io/address/${value}?cluster=devnet`,
+            tx: `https:/solscan.io/tx/${value}?cluster=devnet`,
         }
     case Network.Mainnet:
         return {

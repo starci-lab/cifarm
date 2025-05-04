@@ -32,28 +32,28 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
             [Network.Testnet]: {
                 [DefaultCollection.DragonFruit]: {
                     name: "Dragon Fruit",
-                    imageUrl: "/products/dragon-fruit.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/dragon_fruit_collection.png",
                     address: "8NC9J5AJZg3jmXnzopeiwwv9NJToLwnJjiPsJKFRdgKz",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                     version: 2,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
-                    imageUrl: "/products/jackfruit.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/jackfruit_collection.png",
                     address: "2Ap4nT8Pby5LUEB7TvbwsLUnr1q7NBBCoLQZR4Ei3dNh",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
                     version: 2,
                 },
                 [DefaultCollection.Pomegranate]: {
                     name: "Pomegranate",
-                    imageUrl: "/products/pomegranate.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/pomegranate_collection.png",
                     address: "CRUwWJr8eAPaHoj7kA5WrpKMSiotV9vdMxdXUJLZfe9b",
                     placedItemTypeId: PlacedItemTypeId.Pomegranate,
                     version: 2,
                 },
                 [DefaultCollection.Rambutan]: {
                     name: "Rambutan",
-                    imageUrl: "/products/rambutan.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/rambutan_collection.png",
                     address: "4rM1G8YE7JxJPWuENSv1X5gkn6PYEJ8Wuc6bS8DZBz8K",
                     placedItemTypeId: PlacedItemTypeId.Rambutan,
                     version: 2,
@@ -62,26 +62,26 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
             [Network.Mainnet]: {
                 [DefaultCollection.DragonFruit]: {
                     name: "DragonFruit",
-                    imageUrl: "/solana.svg",
-                    address: "",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/dragon_fruit_collection.png",
+                    address: "HJWgeQ1DBRkVhbPnJMh5kNKAngjBsoUmwZFRmPHa8Xy3",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
-                    imageUrl: "/solana.svg",
-                    address: "",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/jackfruit_collection.png",
+                    address: "7ek9uoCatAvTo4dbgUpeUjsDgDhCXwFPuizDwkTnYpvD",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 },
                 [DefaultCollection.Pomegranate]: {
                     name: "Pomegranate",
-                    imageUrl: "/products/pomegranate.png",
-                    address: "",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/pomegranate_collection.png",
+                    address: "B8pPptqT3vKeVmMDqkz1EoBr5fGFymJVeVCUPLgYe1kV",
                     placedItemTypeId: PlacedItemTypeId.Pomegranate,
                 },
                 [DefaultCollection.Rambutan]: {
                     name: "Rambutan",
-                    imageUrl: "/products/rambutan.png",
-                    address: "",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/rambutan_collection.png",
+                    address: "d1CTVb2B4fPkbQi6FVgZAWVvWbaHPNruwncoAjcejpL",
                     placedItemTypeId: PlacedItemTypeId.Rambutan,
                 }
             }
@@ -117,6 +117,13 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                     address: "",
                     decimals: 9,
                     imageUrl: "/solana.svg",
+                },
+                [DefaultToken.USDC]: {
+                    name: "USDC",
+                    symbol: "USDC",
+                    address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    decimals: 6,
+                    imageUrl: "/icons/usdc.svg",
                 },
                 [DefaultToken.$CAULI]: {
                     name: "$CAULI",
