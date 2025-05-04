@@ -7,8 +7,6 @@ import { InviteUserModal } from "./InviteUserModal"
 import { NeighborsModal } from "./NeighborsModal"
 import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
-import { MintModal } from "./MintModal"
-import { MintAmountModal } from "./MintAmountModal"
 import { SelectTokenModal } from "./SelectTokenModal"
 import { NFTModal } from "./NFTModal"
 import { TransferTokenModal } from "./TransferTokenModal"
@@ -41,11 +39,9 @@ const Modals : FC = () => {
             <SignTransactionModal />
             <NFTClaimedModal />
             <WelcomeModal />
-            <MintAmountModal />
             <InviteUserModal />
             <NeighborsModal />
             <QuestsModal />
-            <MintModal />
             <SelectTokenModal />
             <NFTModal />
             <TransferTokenModal />

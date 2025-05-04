@@ -48,7 +48,7 @@ export const Market: FC = () => {
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.Native
-                                            ].imageUrl
+                                            ]?.imageUrl ?? ""
                                         }
                                     />
                                     <div>
@@ -56,14 +56,14 @@ export const Market: FC = () => {
                                             {
                                                 blockchainMap[chainKey].defaultTokens[network][
                                                     DefaultToken.Native
-                                                ].name
+                                                ]?.name ?? ""
                                             }
                                         </div>
                                         <div className="text-xs text-muted-foreground">
                                             {`${
                                                 blockchainMap[chainKey].defaultTokens[network][
                                                     DefaultToken.Native
-                                                ].symbol
+                                                ]?.symbol ?? ""
                                             }`}
                                         </div>
                                     </div>
@@ -87,50 +87,6 @@ export const Market: FC = () => {
                             </div>
                         )
                     }
-                    case DefaultToken.$CARROT: {
-                        return (
-                            <div className="flex justify-between items-center w-full p-3">
-                                <div className="flex gap-2 items-center">
-                                    <Image
-                                        className="w-8 h-8"
-                                        src={
-                                            blockchainMap[chainKey].defaultTokens[network][
-                                                DefaultToken.$CARROT
-                                            ].imageUrl
-                                        }
-                                    />
-                                    <div>
-                                        <div className="text-sm">
-                                            {
-                                                blockchainMap[chainKey].defaultTokens[network][
-                                                    DefaultToken.$CARROT
-                                                ].name
-                                            }
-                                        </div>
-                                        <div className="text-xs text-muted-foreground">
-                                            {`${
-                                                blockchainMap[chainKey].defaultTokens[network][
-                                                    DefaultToken.$CARROT
-                                                ].symbol
-                                            }`}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2 items-center">
-                                    <div className="text-sm">{"0 USD"}</div>
-                                    <Badge 
-                                        variant="secondary" 
-                                        className={cn(
-                                            "border-0",
-                                            "bg-green-500 hover:bg-green-600"
-                                        )}
-                                    >
-                                        {"+0%"}
-                                    </Badge>
-                                </div>
-                            </div>
-                        )
-                    }
                     case DefaultToken.$CAULI: {
                         return (
                             <div className="flex justify-between items-center w-full p-3">
@@ -140,25 +96,25 @@ export const Market: FC = () => {
                                         src={
                                             blockchainMap[chainKey].defaultTokens[network][
                                                 DefaultToken.$CAULI
-                                            ].imageUrl
+                                            ]?.imageUrl ?? ""
                                         }
                                         alt={blockchainMap[chainKey].defaultTokens[network][
                                             DefaultToken.$CAULI
-                                        ].name}
+                                        ]?.name ?? ""}
                                     />
                                     <div>
                                         <div className="text-sm">
                                             {
                                                 blockchainMap[chainKey].defaultTokens[network][
                                                     DefaultToken.$CAULI
-                                                ].name
+                                                ]?.name ?? ""
                                             }
                                         </div>
                                         <div className="text-xs text-muted-foreground">
                                             {`${
                                                 blockchainMap[chainKey].defaultTokens[network][
                                                     DefaultToken.$CAULI
-                                                ].symbol
+                                                ]?.symbol ?? ""
                                             }`}
                                         </div>
                                     </div>
