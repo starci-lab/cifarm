@@ -13,7 +13,7 @@ import {
     Title,
 } from "@/components/styled"
 import { PaymentKind } from "@/modules/entities"
-import { useAppDispatch, setSelectedShipProductId, setSignTransactionModal, TransactionType } from "@/redux"
+import { useAppDispatch, setSignTransactionModal, TransactionType } from "@/redux"
 import { useDisclosure } from "react-use-disclosure"
 const Page: FC = () => {
     const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
@@ -60,10 +60,6 @@ const Page: FC = () => {
                                     if (!product) throw new Error("Product not found")
                                     return (
                                         <ItemCard
-                                            onClick={() => {
-                                                dispatch(setSelectedShipProductId(productId))
-                                                open()
-                                            }}
                                             name={assetProductMap[product?.displayId].name}
                                             imageUrl={
                                                 assetProductMap[product?.displayId].base.assetUrl

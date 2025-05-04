@@ -7,11 +7,11 @@ export enum NFTRarityEnum {
 export enum AttributeName {
     Stars = "stars",
     Rarity = "rarity",
-    Data = "data",
     GrowthAcceleration = "growthAcceleration",
     QualityYield = "qualityYield",
     DiseaseResistance = "diseaseResistance",
-    HarvestYieldBonus = "harvestYieldBonus"
+    HarvestYieldBonus = "harvestYieldBonus",
+    CurrentStage = "currentStage"
 }
 
 export enum StatsAttributeName {
@@ -21,11 +21,20 @@ export enum StatsAttributeName {
     HarvestYieldBonus = "harvestYieldBonus"
 }
 
+export enum FruitPropertiesName {
+    CurrentStage = "currentStage",
+}
+
 
 export interface StatsAttributeData {
     name: string
     tooltip: string
 }   
+
+export interface FruitPropertiesData {
+    name: string
+    tooltip: string
+}
 
 export const statsAttributeNameMap: Record<StatsAttributeName, StatsAttributeData> = {
     [StatsAttributeName.GrowthAcceleration]: {
@@ -45,3 +54,11 @@ export const statsAttributeNameMap: Record<StatsAttributeName, StatsAttributeDat
         tooltip: "Harvest Yield Bonus is the bonus that the item will produce when harvested.",
     },
 }
+
+export const fruitPropertiesNameMap: Record<FruitPropertiesName, FruitPropertiesData> = {
+    [FruitPropertiesName.CurrentStage]: {
+        name: "Current Stage",
+        tooltip: "Current Stage is the current stage of the item.",
+    },
+}
+

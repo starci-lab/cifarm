@@ -2,7 +2,6 @@ import { assetFruitMap } from "@/modules/assets"
 import { AttributeName, NFTData, NFTTypeToPlacedItemTypeId } from "@/modules/blockchain"
 import {
     PlacedItemType,
-    FruitInfoSchema,
     StaticData,
     NFTType,
 } from "@/modules/entities"
@@ -28,23 +27,19 @@ export const getNFTImage = ({
     if (!placedItemType) {
         throw new Error("Placed item type not found")
     }
-    const data = nft.attributes.find(
-        (attribute) => attribute.key === AttributeName.Data
-    )?.value as string
-
     const type = placedItemType.type ?? PlacedItemType.Fruit
     switch (type) {
     case PlacedItemType.Fruit: {
+        const rawCurrentStage = nft.attributes.find(
+            attribute => attribute.key === AttributeName.CurrentStage
+        )
+        const currentStage = rawCurrentStage ? Number.parseInt(rawCurrentStage.value) : 0
         const fruit = staticData.fruits?.find(
             (fruit) => fruit.id === placedItemType.fruit
         )
         if (!fruit) {
             throw new Error("Fruit not found")
         }
-        const parsedData = data
-            ? (JSON.parse(data) as Partial<FruitInfoSchema>)
-            : {}
-        const currentStage = parsedData.currentStage ?? 0
         return assetFruitMap[fruit.displayId].base.stages[currentStage].assetUrl
     }
     default: {

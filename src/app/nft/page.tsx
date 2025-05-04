@@ -53,9 +53,12 @@ import {
     explorerUrl,
     StatsAttributeName,
     statsAttributeNameMap,
+    FruitPropertiesName,
+    fruitPropertiesNameMap,
 } from "@/modules/blockchain"
 import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "../utils"
+import { PlacedItemType } from "@/modules/entities"
 
 
 const Page: FC = () => {
@@ -117,6 +120,46 @@ const Page: FC = () => {
     const rarity = nft.attributes.find(
         (attribute) => attribute.key === AttributeName.Rarity
     )?.value as NFTRarityEnum
+
+    // method to render properties
+    const renderProperties = () => {
+        const collection = collections[collectionKey]
+        const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
+            (placedItemType) => placedItemType.displayId === collection.placedItemTypeId
+        )
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }   
+        switch (placedItemType.type) {
+        case PlacedItemType.Fruit:
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(FruitPropertiesName)}
+                    contentCallback={(name) => {
+                        const attribute = nft.attributes.find(
+                            (attribute) => attribute.key === name
+                        )
+                        return (
+                            <div className="px-3 py-2">
+                                <div className="flex gap-2 items-center justify-between w-full">
+                                    <Title
+                                        title={fruitPropertiesNameMap[name].name}
+                                        tooltipString={fruitPropertiesNameMap[name].tooltip}
+                                        classNames={{
+                                            title: "text-sm",
+                                            tooltip: "w-[14px] h-[14px]",
+                                        }}
+                                    />
+                                    <div className="text-sm">{Number(attribute?.value ?? 0)}</div>
+                                </div>
+                            </div>
+                        )
+                    }}
+                />
+            )
+        }
+    }
     return (
         <Container hasPadding>
             <div className="h-full">
@@ -274,6 +317,13 @@ const Page: FC = () => {
                         name="View"
                     />
                 </div>
+                <Spacer y={6} />
+                <Title
+                    title="Properties"
+                    tooltipString="Properties are the properties of the NFT. They are used to determine the properties of the NFT."
+                />
+                <Spacer y={4} />
+                {renderProperties()}
                 <Spacer y={6} />
                 <Title
                     title="Stats"
