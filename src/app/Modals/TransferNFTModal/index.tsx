@@ -29,10 +29,10 @@ export const TransferNFTModal: FC = () => {
     const accounts = useAppSelector(
         (state) => state.sessionReducer.accounts.accounts
     )
-    const currentId = useAppSelector(
-        (state) => state.sessionReducer.accounts.currentId
+    const activateAccountId = useAppSelector(
+        (state) => state.sessionReducer.accounts.activateAccountId
     )
-    const account = accounts.find((account) => account.id === currentId)
+    const account = accounts.find((account) => account.id === activateAccountId)
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(TRANSFER_NFT_DISCLOSURE)
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(

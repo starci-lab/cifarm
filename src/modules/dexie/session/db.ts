@@ -1,6 +1,7 @@
 // db.js
 import Dexie, { type EntityTable } from "dexie"
 import { PlacedItemTypeId } from "@/modules/entities"
+import { ChainKey, Network } from "@/modules/blockchain"
 
 const sessionDb = new Dexie("SessionDB") as Dexie & {
   keyValueStore: EntityTable<
@@ -13,10 +14,6 @@ const sessionDb = new Dexie("SessionDB") as Dexie & {
   >;
   tokens: EntityTable<
     Token,
-    "id" // primary key "id" (for the typings only)
-  >;
-  currentAccount: EntityTable<
-    CurrentAccount,
     "id" // primary key "id" (for the typings only)
   >;
   storedAddresses: EntityTable<
@@ -43,10 +40,9 @@ const sessionDb = new Dexie("SessionDB") as Dexie & {
 
 export enum SessionDbKey {
   Mnemonic = "mnemonic",
+  CurrentAccountId = "currentAccountId",
   AccessToken = "accessToken",
   RefreshToken = "refreshToken",
-  HoneycombDailyRewardTransaction = "honeycombDailyRewardTransaction",
-  HoneycombMintOffchainTokensTransaction = "honeycombMintOffchainTokensTransaction",
 }
 
 export interface KeyValueStore {
@@ -61,14 +57,16 @@ export interface Package {
 
 export interface Account {
   id: number;
-  chainKey: string;
-  network: string;
+  chainKey: ChainKey;
+  network: Network;
   accountNumber: number | null;
   address: string;
   publicKey: string;
   privateKey: string;
   username: string;
   imageUrl?: string;
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface Token {
@@ -82,13 +80,6 @@ export interface Token {
   key: string;
   imageUrl: string;
   enabled: boolean;
-}
-
-export interface CurrentAccount {
-  id: number;
-  chainKey: string;
-  network: string;
-  accountId: number;
 }
 
 export enum StoredAddressType {
@@ -138,15 +129,13 @@ sessionDb.version(1).stores({
     keyValueStore: "key, value",
     //accounts
     accounts:
-    "++id, chainKey, network, accountNumber, address, publicKey, privateKey, username, imageUrl",
+    "++id, chainKey, network, accountNumber, address, publicKey, privateKey, username, imageUrl, accessToken, refreshToken",
     //tokens
     tokens:
     "++id, chainKey, network, address, enabled, symbol, name, decimals, imageUrl",
     //collections
     nftCollections:
     "++id, chainKey, network, address, name, imageUrl, enabled, key, placedItemTypeId, version",
-    //current selected account
-    currentAccount: "++id, chainKey, network, accountId",
     //stored addresses
     storedAddresses: "++id, chainKey, network, accountAddress, type",
     //assets

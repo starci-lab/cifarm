@@ -24,18 +24,19 @@ export enum PlayerContext {
 
 export interface Accounts {
   accounts: Array<Account>;
-  currentId: number;
+  activateAccountId: number;
 }
 
 export interface SessionState {
   network: Network;
   mnemonic: string;
   accounts: Accounts;
+  activeAccountId?: number;
   chainKey: ChainKey;
   tokens: StateTokens;
   nftCollections: StateNFTCollections;
   retries: number;
-  loaded: boolean;
+  accountsLoaded: boolean;
   authenticated: boolean;
   balanceSwrs: Record<string, SWRResponse<number>>;
   nftCollectionSwrs: Record<string, SWRResponse<CollectionResponse>>;
@@ -72,13 +73,13 @@ const initialState: SessionState = {
     mnemonic: "",
     accounts: {
         accounts: [],
-        currentId: 0,
+        activateAccountId: 0,
     },
     chainKey: defaultChainKey,
     tokens: {},
     nftCollections: {},
     retries: 0,
-    loaded: false,
+    accountsLoaded: false,
     authenticated: false,
     balanceSwrs: {},
     nftCollectionSwrs: {},
@@ -132,8 +133,8 @@ export const sessionSlice = createSlice({
         setRetries: (state, action: PayloadAction<number>) => {
             state.retries = action.payload
         },
-        setLoaded: (state, action: PayloadAction<boolean>) => {
-            state.loaded = action.payload
+        setAccountsLoaded: (state, action: PayloadAction<boolean>) => {
+            state.accountsLoaded = action.payload
         },
         setAuthenticated: (state, action: PayloadAction<boolean>) => {
             state.authenticated = action.payload
@@ -218,6 +219,9 @@ export const sessionSlice = createSlice({
         setActiveNeighborCard: (state, action: PayloadAction<NeighborsTab>) => {
             state.activeNeighborCard = action.payload
         },
+        setActiveAccountId: (state, action: PayloadAction<number>) => {
+            state.activeAccountId = action.payload
+        },
     },
 })
 
@@ -233,7 +237,7 @@ export const {
     loadNFTCollections,
     setRetries,
     setTokenKey,
-    setLoaded,
+    setAccountsLoaded,
     setAuthenticated,
     setBalanceSwr,
     removeBalanceSwr,
@@ -258,6 +262,7 @@ export const {
     updateNFTCollection,
     setAddresses,
     setActiveNeighborCard,
+    setActiveAccountId,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

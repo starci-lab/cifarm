@@ -76,7 +76,7 @@ export const ExtendedButton = ({
             ref={ref}
             {...props}
             disabled={isLoading || props.disabled}
-            className={cn(props.className)}
+            className={cn("rounded-full cursor", props.className)}
         >
             {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
             {children}

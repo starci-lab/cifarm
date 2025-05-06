@@ -1,9 +1,10 @@
 import { envConfig } from "@/env"
-import { sessionDb, SessionDbKey } from "@/modules/dexie"
+import { sessionDb } from "@/modules/dexie"
 import { useAppSelector } from "@/redux"
 import { useEffect, useRef, useState } from "react"
 import { Manager, Socket } from "socket.io-client"
 import { UseWs } from "./types"
+import { accountIdRef } from "@/modules/apollo"
 
 export const useWs = (): UseWs => {
     const socket = useRef<Socket | null>(null)
@@ -23,14 +24,15 @@ export const useWs = (): UseWs => {
             const manager = new Manager(envConfig().wsUrl, {
                 autoConnect: true
             })
-            const accessToken = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)
-            if (!accessToken) {
-                throw new Error("No access token found")
+            const account = await sessionDb.accounts.get(accountIdRef.current)
+            if (!account) {
+                return null
+                //throw new Error("Account not found")
             }
 
             socket.current = manager.socket("/gameplay", {
                 auth: {
-                    token: accessToken.value,
+                    token: account.accessToken,
                 },
             })
             setSetup(true)

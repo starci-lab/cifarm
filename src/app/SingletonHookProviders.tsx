@@ -35,6 +35,8 @@ import {
     useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation,
     useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation,
     useGraphQLQueryVaultCurrentSwr,
+    useFirebaseAuthSwrMutation,
+    useGraphQLMutationValidateGoogleTokenSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -81,7 +83,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             NFT_CLAIMED_DISCLOSURE: useDisclosure(),
             WELCOME_DISCLOSURE: useDisclosure(),
             BUY_GOLDS_DISCLOSURE: useDisclosure(),
-            // Using new constants with GraphQL mutations
+
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
             GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION: useGraphQLMutationUnfollowSwrMutation(),
@@ -103,6 +105,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
             
+            GRAPHQL_MUTATION_VALIDATE_GOOGLE_TOKEN_SWR_MUTATION: useGraphQLMutationValidateGoogleTokenSwrMutation(),
+
             // transfer token
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
             TRANSFER_NFT_SWR_MUTATION: useTransferNFTSwrMutation(),
@@ -118,6 +122,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION: useGraphQLQueryPlacedItemsSwrMutation(),        
             GRAPHQL_QUERY_STORED_PLACED_ITEMS_SWR: useGraphQLQueryStoredPlacedItemsSwr(),
             GRAPHQL_QUERY_VAULT_CURRENT_SWR: useGraphQLQueryVaultCurrentSwr(),
+            FIREBASE_AUTH_SWR_MUTATION: useFirebaseAuthSwrMutation(),
+            // Using new constants with GraphQL mutations
             //io
             WS: useWs(),
         }}

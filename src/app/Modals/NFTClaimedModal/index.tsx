@@ -23,14 +23,14 @@ export const NFTClaimedModal: FC = () => {
     const accounts = useAppSelector(
         (state) => state.sessionReducer.accounts.accounts
     )
-    const currentId = useAppSelector(
-        (state) => state.sessionReducer.accounts.currentId
+    const activateAccountId = useAppSelector(
+        (state) => state.sessionReducer.accounts.activateAccountId
     )
     const nftName = useAppSelector((state) => state.modalReducer.nftClaimedModal.nftName)
     const nftType = useAppSelector((state) => state.modalReducer.nftClaimedModal.nftType)
     const rarity = useAppSelector((state) => state.modalReducer.nftClaimedModal.rarity)
     
-    const account = accounts.find((account) => account.id === currentId)
+    const account = accounts.find((account) => account.id === activateAccountId)
     if (!account) {
         return null
     }

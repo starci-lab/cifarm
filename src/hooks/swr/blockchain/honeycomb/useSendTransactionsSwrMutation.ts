@@ -16,8 +16,8 @@ export const useHoneycombSendTransactionsSwrMutation = (): UseSWRMutation<
   Array<TransactionBundleResponse> | null,
   SendTransactionsParams
 > => {
-    const { accounts, currentId } = useAppSelector((state) => state.sessionReducer.accounts)
-    const account = accounts.find((account) => account.id === currentId)
+    const { accounts, activateAccountId } = useAppSelector((state) => state.sessionReducer.accounts)
+    const account = accounts.find((account) => account.id === activateAccountId)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey) 
     const network = useAppSelector((state) => state.sessionReducer.network)
     const swrMutation = useSWRMutation(

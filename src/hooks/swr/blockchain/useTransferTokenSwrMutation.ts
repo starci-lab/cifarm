@@ -18,10 +18,10 @@ export const useTransferTokenSwrMutation = (): UseSWRMutation<
     const accounts = useAppSelector(
         (state) => state.sessionReducer.accounts.accounts
     )
-    const currentId = useAppSelector(
-        (state) => state.sessionReducer.accounts.currentId
+    const activateAccountId = useAppSelector(
+        (state) => state.sessionReducer.accounts.activateAccountId
     )
-    const account = accounts.find((account) => account.id === currentId)
+    const account = accounts.find((account) => account.id === activateAccountId)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)

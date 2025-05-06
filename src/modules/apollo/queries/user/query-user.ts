@@ -7,7 +7,6 @@ const query1 = gql`
   query User { 
     user {
       id
-      accountAddress
       chainKey
       username
       dailyRewardLastClaimTime
@@ -27,6 +26,8 @@ const query1 = gql`
       lastOnlineTime
       selectedPlacedItemDogId
       selectedPlacedItemCatId
+      email
+      avatarUrl
     }
   }
 `

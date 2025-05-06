@@ -13,14 +13,14 @@ export const Header = ({ title, description }: HeaderProps) => {
     return (
         <div>
             <div className="flex gap-2 items-center">
-                <Button
+                {/* <Button
                     variant="ghost"
                     onClick={() => router.back()}
                     size="icon"
                     aria-label="Go Back"
                 >
                     <ArrowLeftIcon className="w-5 h-5" />
-                </Button>
+                </Button> */}
                 <div className="text-2xl font-bold">{title}</div>
             </div>
             

@@ -32,6 +32,7 @@ export const truncateString = (
     start: number = 6,
     end: number = 4
 ) => {
+    if (!address) return ""
     if (address.length < start + end) {
         return address
     }

@@ -19,7 +19,7 @@ export const useBalanceSwr = ({
     //default values
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
-    const accountId = useAppSelector((state) => state.sessionReducer.accounts.currentId)
+    const accountId = useAppSelector((state) => state.sessionReducer.accounts.activateAccountId)
     const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const account = accounts.find((account) => account.id === accountId)

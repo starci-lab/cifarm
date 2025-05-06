@@ -19,7 +19,8 @@ import {
 import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { Rowdies } from "next/font/google"
+import { Baloo_2 } from "next/font/google"
+import { SidebarProvider } from "@/components"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -30,7 +31,6 @@ const UseEffects = dynamic(() => import("@/hooks/use-effects"), {
 })
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
-    const loaded = useAppSelector((state) => state.sessionReducer.loaded)
     return (
         <Suspense>
             <TooltipProvider>
@@ -49,10 +49,12 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                 enableSystem
                                 disableTransitionOnChange
                             >
-                                {loaded ? children : <LoadingScreen />}
-                                <UseEffects />
-                                <Modals />
-                                <Toaster />
+                                <SidebarProvider>
+                                    {children}
+                                    <UseEffects />
+                                    <Modals />
+                                    <Toaster />
+                                </SidebarProvider>
                             </NextThemesProvider>
                         </SingletonHook2Provider>
                     </SingletonHookProvider>
@@ -62,51 +64,13 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     )
 }
 
-const font = Rowdies({ subsets: ["latin"], weight: ["300", "400", "700"] })
+const font = Baloo_2({ subsets: ["latin"], weight: ["400", "700"] })
 
 export const WrappedLayout = ({ children }: PropsWithChildren) => {
     const bodyRef = useRef<HTMLBodyElement>(null)
-    useLayoutEffect(() => {
-    // Function to calculate scale based on the screen width
-        const scaleContent = () => {
-            const screenWidth = window.outerWidth
-            const contentWidth = bodyRef.current?.clientWidth ?? 500
-            // Calculate scale ratio based on screen width vs content width
-            // Update the viewport meta tag dynamically based on the scale
-            const metaViewport = document.querySelector(
-                "meta[name='viewport']"
-            ) as HTMLMetaElement
-            const scale = screenWidth / contentWidth
-            // Only update the scale if the content width is larger than the screen width
-            if (scale < 1) {
-                // Set the viewport scale to the calculated scale ratio
-                if (metaViewport) {
-                    metaViewport.content = `width=device-width, initial-scale=${scale}, maximum-scale=1, user-scalable=no`
-                }
-            } else {
-                // Reset scale to 1 if content is smaller than screen width
-                if (metaViewport) {
-                    metaViewport.content =
-            "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-                }
-            }
-        }
-
-        // Initial scaling
-        scaleContent()
-
-        // Recalculate the scale on window resize
-        window.addEventListener("resize", scaleContent)
-
-        // Cleanup the event listener on unmount
-        return () => {
-            window.removeEventListener("resize", scaleContent)
-        }
-    }, [])
-
     return (
         <body
-            className={`${font.className} min-h-screen min-w-[500px]`}
+            className={`${font.className} min-h-screen`}
             ref={bodyRef}
         >
             <ReduxProvider store={store}>

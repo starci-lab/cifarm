@@ -18,7 +18,7 @@ export const useNFTCollectionsSwr = ({
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
     const accountId = useAppSelector(
-        (state) => state.sessionReducer.accounts.currentId
+        (state) => state.sessionReducer.accounts.activateAccountId
     )
     const accounts = useAppSelector(
         (state) => state.sessionReducer.accounts.accounts

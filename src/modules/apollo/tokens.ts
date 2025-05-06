@@ -1,7 +1,6 @@
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 
 export const saveTokens = async ({ accessToken, refreshToken }: SaveTokenParams) => {
-    //store the tokens in the indexeddb
     await Promise.all([
         sessionDb.keyValueStore.put({
             key: SessionDbKey.AccessToken,
@@ -9,8 +8,8 @@ export const saveTokens = async ({ accessToken, refreshToken }: SaveTokenParams)
         }),
         sessionDb.keyValueStore.put({
             key: SessionDbKey.RefreshToken,
-            value: refreshToken
-        })
+            value: refreshToken,
+        }),
     ])
 }
 

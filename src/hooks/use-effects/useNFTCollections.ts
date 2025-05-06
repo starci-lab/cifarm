@@ -16,7 +16,8 @@ export const useNFTCollections = () => {
     )
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = useAppSelector((state) => state.sessionReducer.network)
-    const accounts = useAppSelector((state) => state.sessionReducer.accounts)
+    const accounts = useAppSelector((state) => state.sessionReducer.accounts.accounts)
+    const accountsLoaded = useAppSelector((state) => state.sessionReducer.accountsLoaded)
     const nftCollections = useAppSelector(
         (state) => state.sessionReducer.nftCollections
     )
@@ -24,7 +25,7 @@ export const useNFTCollections = () => {
     const [nftCollectionsLoaded, setNftCollectionsLoaded] = useState(false)
     useEffect(() => {
     //do nothing if loadTokensKey is equal to 0
-        if (!loadNFTCollectionsKey && _.isEmpty(accounts)) return
+        if (!loadNFTCollectionsKey && !accountsLoaded) return
         // fetch all tokens from IndexedDB, then load it to the redux store
         const handleEffect = async () => {
             //fetch all tokens from IndexedDB, then load it to the redux store

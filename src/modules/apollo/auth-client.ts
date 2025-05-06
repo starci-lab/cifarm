@@ -9,16 +9,19 @@ import { mutationRefresh } from "./mutations"
 
 const authLink = setContext(async (_, { headers }) => {
     // get the authentication token from local storage if it exists
-    const accessToken = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)
+    const account = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)
+    if (!account) {
+        throw new Error("Account not found")
+    }
     // if token not exist, throw an error
-    if (!accessToken) {
+    if (!account.value) {
         throw new Error("Access token not found")
     }
     // return the headers to the context so httpLink can read them
     return {
         headers: {
             ...headers,
-            authorization: accessToken.value ? `Bearer ${accessToken.value}` : "",
+            authorization: account.value ? `Bearer ${account.value}` : "",
         }
     }
 })
@@ -32,7 +35,11 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
         // You can handle specific GraphQL errors here, e.g., unauthorized errors:
         graphQLErrors.forEach(async ({ message }) => {
             if (message === "Unauthorized") {
-                const refreshToken = await sessionDb.keyValueStore.get(SessionDbKey.RefreshToken)
+                const account = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)
+                if (!account) {
+                    throw new Error("Account not found")
+                }
+                const refreshToken = account.value
                 if (!refreshToken) {
                     // no refresh token, throw an error
                     throw new Error("Refresh token not found")
@@ -40,7 +47,7 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
                 // send refresh token request
                 const refreshResponse = await mutationRefresh({
                     request: {
-                        refreshToken: refreshToken.value,
+                        refreshToken,
                     },
                 })
                 if (!refreshResponse.data) {
@@ -50,7 +57,10 @@ const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) 
                 if (!refreshResponse.data.refresh.data) {
                     throw new Error("Refresh token request failed")
                 }
-                await saveTokens(refreshResponse.data.refresh.data)
+                await saveTokens({
+                    accessToken: refreshResponse.data.refresh.data.accessToken,
+                    refreshToken: refreshResponse.data.refresh.data.refreshToken,
+                })
                 // retry the request
                 return forward(operation)
             }

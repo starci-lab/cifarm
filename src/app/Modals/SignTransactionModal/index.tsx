@@ -117,7 +117,7 @@ export const SignTransactionModal: FC = () => {
         (state) => state.sessionReducer.accounts.accounts
     )
     const currentAccountId = useAppSelector(
-        (state) => state.sessionReducer.accounts.currentId
+        (state) => state.sessionReducer.accounts.activateAccountId
     )
     const account = accounts.find((account) => account.id === currentAccountId)
 

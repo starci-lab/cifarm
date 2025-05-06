@@ -1,40 +1,35 @@
 "use client"
-import { Avatar, AvatarImage, Container } from "@/components"
 import React, { FC } from "react"
 import { Navbar } from "./Navbar"
 import { BottomNavbar } from "./BottomNavbar"
-import { Image } from "@/components"
-import { Market } from "./Market"
-import { UpcomingEvents } from "./UpcomingEvents"
+import { AppSidebar } from "./AppSidebar"
+import { Container, ExtendedButton, Header, Image, Spacer } from "@/components"
 
 const Page: FC = () => {
     return (
         <Container>
-            <div className="h-full">
-                <Navbar />
-                <div className="relative -top-[4rem]">
-                    <Image 
-                        src="/background.png" 
-                        alt="Background"
-                        width={1920}
-                        height={1080}
-                        className="w-full"
-                    />
-                    <div className="relative">
-                        <Avatar className="absolute left-4 -bottom-8 z-20 w-28 h-28 ring-4 ring-background">
-                            <AvatarImage src="/logo.png" alt="Logo" />
-                        </Avatar>
-                    </div>
-                    <div className="h-10" />
-                    <div className="px-4">
-                        <div className="text-2xl font-bold">CiFarm</div>
-                        <div className="h-6" />
-                        <Market />
-                        <div className="h-6" />
-                        <UpcomingEvents />
+            <div className="h-full w-full">
+                <div className="flex">  
+                    <AppSidebar />
+                    <div className="flex-1">
+                        <Navbar />
+                        <div className="px-6 py-4">
+                            <Header title="Home" />
+                            <Spacer y={6}/>
+                            <Image src="/background.png" alt="Home" className="w-full rounded-lg" />
+                            <Spacer y={4}/>
+                            <div className="flex items-center gap-2">
+                                <ExtendedButton>
+                                    Play Now
+                                </ExtendedButton>
+                                <div className="text-sm text-muted-foreground">
+                                    5 playings
+                                </div>
+                            </div>
+                        </div>
+                        <BottomNavbar />
                     </div>
                 </div>
-                <BottomNavbar />
             </div>
         </Container>
     )
