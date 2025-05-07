@@ -1,7 +1,5 @@
 "use client"
-import {
-    CONNECT_DISCLOSURE,
-} from "@/app/constants"
+import { CONNECT_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import {
@@ -9,50 +7,99 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    Image,
     List,
-    IconSelection
+    Image,
+    IconSelection,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { SolanaConnect } from "./SolanaConnect"
+import { setSelectedChainKey, useAppSelector, useAppDispatch } from "@/redux"
+import { ChainKey, chainKeyMap } from "@/modules/blockchain"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { truncateString } from "@/modules/common"
+import { SuiConnect } from "./SuiConnect"
+import { useCurrentWallet } from "@mysten/dapp-kit"
 export const ConnectModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_DISCLOSURE)
 
-    const chains = [
-        {
-            name: "Sui",
-            icon: <Image src="/sui.svg" alt="Sui" className="w-10 h-10" />,
-            description: "Not connected",
-        },
-        {
-            name: "Solana",
-            icon: <Image src="/solana.svg" alt="Solana" className="w-10 h-10" />,
-            description: "Not connected",
-        },
-        {
-            name: "Sominia",
-            icon: <Image src="https://docs.somnia.network/~gitbook/image?url=https%3A%2F%2F1813806305-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Forganizations%252FXixzx30CXHthiaKhEu1D%252Fsites%252Fsite_m7x2t%252Ficon%252FjdslfIGTxvTkjBH77O7V%252Flogo.png%3Falt%3Dmedia%26token%3Dfbc7ca1b-24b9-4847-ad0c-574ac536eff3&width=32&dpr=4&quality=100&sign=4c1bc3e1&sv=2" alt="Sominia" className="w-10 h-10" />,
-            description: "Not connected",
-        },
-    ]   
+    const selectedChainKey = useAppSelector(
+        (state) => state.sessionReducer.selectedChainKey
+    )
+
+    const dispatch = useAppDispatch()
+
+    const { publicKey } = useWallet()
+
+    const { currentWallet } = useCurrentWallet()
+
+    const renderContent = () => {
+        if (selectedChainKey === ChainKey.Solana) {
+            return <SolanaConnect />
+        }
+        if (selectedChainKey === ChainKey.Sui) {
+            return <SuiConnect />
+        }
+        return (
+            <List
+                items={chainKeyMap}
+                enableScroll={false}
+                contentCallback={(item) => (
+                    <IconSelection
+                        icon={<Image src={item.iconUrl} className="w-10 h-10" />}
+                        text={item.name}
+                        onClick={() => {
+                            dispatch(setSelectedChainKey(item.key))
+                        }}
+                        description={
+                            (() => {
+                                const NOT_CONNECTED = "Not connected"
+                                if (item.key === ChainKey.Solana) {
+                                    return publicKey ? truncateString(publicKey.toBase58(), 4) : NOT_CONNECTED
+                                }
+                                if (item.key === ChainKey.Sui) {
+                                    return truncateString(currentWallet?.accounts[0]?.address || "", 4) || NOT_CONNECTED
+                                }
+                                return NOT_CONNECTED
+                            })()
+                        }
+                    />
+                )}
+                showSeparator={false}
+                classNames={{
+                    container: "gap-2",
+                }}
+            />
+        )
+    }
+
+    const renderTitle = () => {
+        if (selectedChainKey) {
+            return (
+                <DialogTitle
+                    showLeftChevron
+                    onLeftChevronClick={() => {
+                        dispatch(setSelectedChainKey())
+                    }}
+                >
+                    {chainKeyMap.find((item) => item.key === selectedChainKey)?.name}
+                </DialogTitle>
+            )
+        }
+        return (
+            <DialogTitle>
+                Connect
+            </DialogTitle>
+        )
+    }
+
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Connect</DialogTitle>
-                </DialogHeader>     
-                <SolanaConnect />
-                <List
-                    items={chains}
-                    contentCallback={(item) => (
-                        <IconSelection icon={item.icon} text={item.name} description={item.description} onClick={() => {}} />
-                    )}
-                    showSeparator={false}
-                    classNames={{
-                        container: "gap-2",
-                    }}
-                />
+                    {renderTitle()}
+                </DialogHeader>
+                {renderContent()}
             </DialogContent>
         </Dialog>
     )

@@ -77,3 +77,17 @@ export enum PaymentKind {
     USDC = "usdc",  
     USDT = "usdt",
 }
+
+export enum TokenType {
+    Native = "native",
+    Standard = "standard",
+}
+
+export enum TokenKey {
+    Native = "native",
+    USDC = "usdc",
+    USDT = "usdt",
+    CIFARM = "cifarm",
+}
+
+

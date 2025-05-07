@@ -15,24 +15,23 @@ export interface IconWrapperProps extends PropsWithChildren {
 export const IconWrapper: FC<IconWrapperProps> = ({
     children,
     classNames: {
-        base = "text-muted-foreground",
+        base = "",
     } = {},
     ...props
 }) => {
     return (
-        <div
-            className={cn(base, " transition-colors grid place-items-center")}
+        <button
+            className={cn(base, "transition-colors grid place-items-center")}
             {...props}
         >
             {isValidElement(children)
                 ? React.cloneElement(children as ReactElement, {
                     className: cn(
                         children.props.className,
-                        "hover:opacity-50",
-                        "active:opacity-75"
+                        "hover:opacity-75",
                     ),
                 })
                 : children}
-        </div>
+        </button>
     )
 }

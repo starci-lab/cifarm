@@ -27,6 +27,12 @@ export interface Accounts {
   activateAccountId: number;
 }
 
+export enum Sidebar {
+  Home = "home",
+  Assets = "assets",
+  DApps = "dapps",
+}
+
 export interface SessionState {
   network: Network;
   mnemonic: string;
@@ -61,7 +67,9 @@ export interface SessionState {
   selectedShipProductId?: string;
   selectedShipInventoryId?: string;
   addresses: Array<string>;
-  activeNeighborCard?: NeighborsTab
+  activeNeighborCard?: NeighborsTab;
+  selectedChainKey?: ChainKey;
+  selectedSidebar?: Sidebar;
 }
 
 export type WithEnabled<T> = T & { enabled: boolean };
@@ -222,6 +230,9 @@ export const sessionSlice = createSlice({
         setActiveAccountId: (state, action: PayloadAction<number>) => {
             state.activeAccountId = action.payload
         },
+        setSelectedChainKey: (state, action: PayloadAction<ChainKey | undefined>) => {
+            state.selectedChainKey = action.payload
+        },
     },
 })
 
@@ -263,6 +274,7 @@ export const {
     setAddresses,
     setActiveNeighborCard,
     setActiveAccountId,
+    setSelectedChainKey,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

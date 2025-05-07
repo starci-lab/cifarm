@@ -24,7 +24,8 @@ import {
     WholesaleMarket,
     GoldPurchases,
     InteractionPermissions,
-    NFTBoxInfo
+    NFTBoxInfo,
+    Tokens
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -430,6 +431,107 @@ const query = gql`
         epicRarityChance
       }
     }
+    tokens {
+      native {
+        solana {
+          testnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+          mainnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+        }
+      }
+      usdc {
+        solana {
+          testnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+          mainnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+        }
+        sui {
+          testnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+          mainnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+        }
+      }
+      usdt {
+        solana {
+          testnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+          mainnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+        }
+      }
+      cifarm {
+        solana {
+          testnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            imageUrl
+            name
+          }
+          mainnet {
+            id
+            tokenType
+            tokenAddress
+            decimals
+            imageUrl
+            name
+          }
+        }
+      }
+    }
   }
 `
 
@@ -458,6 +560,7 @@ export interface QueryStaticResponse {
   goldPurchases: GoldPurchases
   interactionPermissions: InteractionPermissions
   nftBoxInfo: NFTBoxInfo
+  tokens: Tokens
 }
 
 export const queryStatic = async () => {

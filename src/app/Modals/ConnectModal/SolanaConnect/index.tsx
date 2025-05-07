@@ -1,10 +1,17 @@
-import { Image, IconSelection, List, Spacer, ExtendedButton } from "@/components"
+import {
+    Image,
+    IconSelection,
+    List,
+    Spacer,
+    ExtendedButton,
+} from "@/components"
 import React, { FC, useEffect } from "react"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { WalletName } from "@solana/wallet-adapter-base"
 
 export const SolanaConnect: FC = () => {
-    const { connect, select, connecting, connected, wallet, disconnect } = useWallet()
+    const { connect, select, connecting, connected, wallet, disconnect } =
+    useWallet()
     useEffect(() => {
         if (!wallet?.adapter.name) {
             return
@@ -33,15 +40,19 @@ export const SolanaConnect: FC = () => {
     return (
         <div>
             <List
+                classNames={{
+                    container: "gap-2",
+                }}
                 enableScroll={false}
                 items={solanaWallets}
                 contentCallback={(item) => (
                     <IconSelection
+                        key={item.wallet}
                         disabled={connected}
                         icon={item.icon}
                         text={item.name}
                         onClick={item.onClick}
-                        isLoading={connecting}
+                        isLoading={connecting && wallet?.adapter.name === item.wallet}
                         description={
                             connected && wallet?.adapter.name === item.wallet
                                 ? "Connected"
@@ -52,18 +63,16 @@ export const SolanaConnect: FC = () => {
                 showSeparator={false}
             />
             <Spacer y={6} />
-            <div className="flex gap-2">
-                <ExtendedButton className="w-full" onClick={() => {
-                    connect()
-                }}>
-                    Return
-                </ExtendedButton>
-                <ExtendedButton className="w-full" variant="destructive" onClick={() => {
+            <ExtendedButton
+                disabled={!connected}
+                className="w-full"
+                variant="destructive"
+                onClick={() => {
                     disconnect()
-                }}>
-                    Disconnect
-                </ExtendedButton>
-            </div>
+                }}
+            >
+          Disconnect
+            </ExtendedButton>
         </div>
     )
 }

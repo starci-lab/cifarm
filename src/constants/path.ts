@@ -7,7 +7,7 @@ export const pathConstants = {
     selectChain: "/select-chain",
     manageNFTCollections: "/manage-nft-collections",
     manageTokens: "/manage-tokens",
-    assets: "/assets",
+    assets: "/home/assets",
     settings: "/settings",
     play: "/play",
     partnerships: "/partnerships",

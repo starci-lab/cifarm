@@ -10,7 +10,8 @@ import {
     collapsibleReducer,
     wrapReducer,
     downloadReducer,
-    searchReducer
+    searchReducer,
+    sidebarReducer
 } from "./slices"
 
 export const store = configureStore({
@@ -22,6 +23,7 @@ export const store = configureStore({
         modalReducer,
         gameReducer,
         collapsibleReducer,
+        sidebarReducer,
         wrapReducer,
         downloadReducer,
         searchReducer

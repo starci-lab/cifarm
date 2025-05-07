@@ -1,10 +1,20 @@
-import { Network } from "@/modules/blockchain/common"
+import { Network } from "@/modules/blockchain"
 
-export const envConfig = () => ({
+export interface EnvConfig {
+    restApiUrl: string
+    graphqlUrl: string
+    wsUrl: string
+    isLocal: boolean
+    network: Network
+    honeycombProjectAddress: Record<Network, string>
+    honeycombTokenAddress: Record<Network, string>
+
+}
+export const envConfig = (): EnvConfig => ({
     restApiUrl: process.env.NEXT_PUBLIC_REST_API_URL || "http://localhost:3001/api",
     graphqlUrl: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3006/graphql",
     wsUrl: process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3003",
-    isLocal: process.env.NEXT_PUBLIC_IS_LOCAL || false,
+    isLocal: Boolean(process.env.NEXT_PUBLIC_IS_LOCAL) || false,
     honeycombProjectAddress: {
         [Network.Testnet]: process.env.NEXT_PUBLIC_TESTNET_HONEYCOMB_PROJECT_ADDRESS || "",
         [Network.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_HONEYCOMB_PROJECT_ADDRESS || "",
@@ -13,5 +23,5 @@ export const envConfig = () => ({
         [Network.Testnet]: process.env.NEXT_PUBLIC_TESTNET_HONEYCOMB_TOKEN_ADDRESS || "",
         [Network.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_HONEYCOMB_TOKEN_ADDRESS || "",
     },
-    network: process.env.NEXT_PUBLIC_NETWORK || "testnet",
+    network: process.env.NEXT_PUBLIC_NETWORK as Network || Network.Testnet,
 })

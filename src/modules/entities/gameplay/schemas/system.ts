@@ -1,6 +1,6 @@
 import { ChainKey, Network } from "@/modules/blockchain"
 import { Position } from "../base"
-import { CropId, DailyRewardId, NFTType, PaymentKind } from "../enums"
+import { CropId, DailyRewardId, NFTType, PaymentKind, TokenKey, TokenType } from "../enums"
 
 export interface SystemSchema {
   value: object;
@@ -132,6 +132,8 @@ export interface NFTCollection {
 export interface NFTCollections {
   [NFTType.DragonFruit]: NFTCollection;
   [NFTType.Jackfruit]: NFTCollection;
+  [NFTType.Rambutan]: NFTCollection;
+  [NFTType.Pomegranate]: NFTCollection;
 }
 
 export interface WholesaleMarketProduct {
@@ -178,3 +180,16 @@ export interface NFTBoxInfo {
   paymentKind: PaymentKind
   feePercentage: number
 }
+
+export interface TokenData {
+  id: string
+  name: string
+  tokenType: TokenType
+  tokenAddress?: string
+  decimals: number
+  imageUrl?: string
+}
+
+export type TokenWrapped = Record<Network, TokenData>
+export type Token = Record<ChainKey, TokenWrapped>
+export type Tokens = Record<TokenKey, Token>

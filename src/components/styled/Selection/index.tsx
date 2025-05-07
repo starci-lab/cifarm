@@ -6,14 +6,15 @@ export interface SelectionProps {
     selected: boolean
     icon: React.ReactNode
     isExternal?: boolean
+    onClick?: () => void
 }
 
-export const Selection: FC<SelectionProps> = ({ title, selected, icon, isExternal = false }) => {
+export const Selection: FC<SelectionProps> = ({ title, selected, icon, isExternal = false, onClick }) => {
     return (
-        <div className={cn("px-3 py-2 rounded-full hover:bg-sidebar-foreground/50", {
+        <button className={cn("px-3 py-2 rounded-full hover:bg-sidebar-foreground/50", {
             "bg-sidebar-foreground/50": selected,
             "hover:bg-sidebar-foreground/50": !selected
-        })}>
+        })} onClick={onClick}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <div className={cn({
@@ -25,6 +26,6 @@ export const Selection: FC<SelectionProps> = ({ title, selected, icon, isExterna
                 </div>
                 {isExternal && <ExternalLinkIcon className="w-3.5 h-3.5" />}
             </div>
-        </div>
+        </button>
     )
 }
