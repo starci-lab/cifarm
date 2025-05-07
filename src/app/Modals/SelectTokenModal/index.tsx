@@ -1,5 +1,4 @@
 import { valuesWithKey } from "@/modules/common"
-import { useAppSelector } from "@/redux"
 import React, { useMemo, useState } from "react"
 import { Token } from "./Token"
 import { List, FilterBar, Spacer, ExtendedButton, ModalHeader } from "@/components"
@@ -13,18 +12,24 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { useDisclosure } from "react-use-disclosure"
-
+import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
+import { envConfig } from "@/env"
+import { useAppSelector } from "@/redux"
 export const SelectTokenModal = () => {
     const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(SELECT_TOKEN_DISCLOSURE)
-    const tokens = useAppSelector((state) => state.sessionReducer.tokens)
-    const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
+    const { swr: staticSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryStaticSwr>
+  >(QUERY_STATIC_SWR_MUTATION)
+    const tokens = valuesWithKey(staticSwr.data?.data.tokens || {})
     const [searchString, setSearchString] = useState("")
-
+    const network = envConfig().network
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const filteredTokensArray = useMemo(() => {
-        return tokensArray.filter((token) =>
-            token.name.toLowerCase().includes(searchString.toLowerCase())
+        return tokens.filter((token) =>
+            token[chainKey]?.[network]?.name.toLowerCase().includes(searchString.toLowerCase())
         )
     }, [searchString])
     

@@ -48,12 +48,12 @@ export const replace = (
     return str.split(search).join(replace)
 }
 
-export type WithKey<T> = T & { key: string }
+export type WithKey<K extends string, T> = T & { key: K }
 
-export const valuesWithKey = <T extends object>(
-    object: Record<string, T>
-): Array<WithKey<T>> => {
-    return Object.entries(object).map(([key, value]) => ({ ...value, key }))
+export const valuesWithKey = <K extends string, T extends object>(
+    object: Partial<Record<K, T>>
+): Array<WithKey<K, T>> => {
+    return Object.entries(object).map(([key, value]) => ({ ...(value as T), key: key as K }))
 }
 
 export const toMB = (bytes: number) => {

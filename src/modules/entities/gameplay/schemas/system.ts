@@ -118,23 +118,10 @@ export interface DailyRewardInfo {
 
 export interface NFTCollectionData {
   collectionAddress: string
+  imageUrl: string
 }
-
-export interface NFTCollectionWrapped {
-  [Network.Testnet]: NFTCollectionData;
-  [Network.Mainnet]: NFTCollectionData;
-}
-
-export interface NFTCollection {
-  [ChainKey.Solana]: NFTCollectionWrapped;
-}
-
-export interface NFTCollections {
-  [NFTType.DragonFruit]: NFTCollection;
-  [NFTType.Jackfruit]: NFTCollection;
-  [NFTType.Rambutan]: NFTCollection;
-  [NFTType.Pomegranate]: NFTCollection;
-}
+export type NFTCollection = Partial<Record<ChainKey, Partial<Record<Network, NFTCollectionData>>>>
+export type NFTCollections = Partial<Record<NFTType, NFTCollection>>
 
 export interface WholesaleMarketProduct {
   productId: string
@@ -182,7 +169,6 @@ export interface NFTBoxInfo {
 }
 
 export interface TokenData {
-  id: string
   name: string
   tokenType: TokenType
   tokenAddress?: string
@@ -190,6 +176,6 @@ export interface TokenData {
   imageUrl?: string
 }
 
-export type TokenWrapped = Record<Network, TokenData>
-export type Token = Record<ChainKey, TokenWrapped>
-export type Tokens = Record<TokenKey, Token>
+export type TokenWrapped = Partial<Record<Network, TokenData>>
+export type Token = Partial<Record<ChainKey, TokenWrapped>>
+export type Tokens = Partial<Record<TokenKey, Token>>

@@ -6,6 +6,7 @@ import { AppTabs } from "@/components"
 import { useAppSelector, useAppDispatch } from "@/redux"
 import { AssetTab, setAssetTab } from "@/redux/slices/tab"
 import { TokensTab } from "./TokensTab"
+import { NFTCollectionsTab } from "./NFTCollectionsTab"
 const Page = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
     const dispatch = useAppDispatch()
@@ -15,7 +16,7 @@ const Page = () => {
         case AssetTab.Tokens:
             return <TokensTab />
         case AssetTab.NFTs:
-            return <TokensTab />
+            return <NFTCollectionsTab />
         case AssetTab.InGame:
             return <TokensTab />
         }

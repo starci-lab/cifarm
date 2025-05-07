@@ -1,16 +1,17 @@
 import { Image, PressableCard } from "@/components"
-import { CollectionInfo, CollectionResponse } from "@/modules/blockchain"
-import { WithEnabled } from "@/redux"
+import { CollectionResponse } from "@/modules/blockchain"
+import { NFTCollectionData } from "@/modules/entities"
 import React, { FC } from "react"
 import { SWRResponse } from "swr"
 
 interface NFTCollectionProps {
     collectionSwr: SWRResponse<CollectionResponse>
     onClick: () => void
-    collection: WithEnabled<CollectionInfo>
+    collection: NFTCollectionData
 }
 
 export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSwr, onClick }) => {
+    console.log(collection)
     return (
         <PressableCard className="relative" onClick={onClick}>
             <div className="grid place-items-center p-3 w-full">

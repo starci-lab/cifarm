@@ -3,9 +3,10 @@ import React, { useEffect } from "react"
 import { useNFTCollectionsSwr } from "./useNFTCollectionsSwr"
 import { removeNftCollectionsSwr, setNftCollectionsSwr } from "@/redux"
 import { useAppDispatch } from "@/redux"
+import { NFTType } from "@/modules/entities"
 
 interface CollectionComponentProps {
-  collectionKey: string;
+  collectionKey: NFTType;
 }
 
 export const CollectionComponent = ({

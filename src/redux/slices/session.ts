@@ -8,7 +8,7 @@ import {
     TokenInfo,
 } from "@/modules/blockchain"
 import { Account } from "@/modules/dexie"
-import { PlacedItemSchema, InventorySchema, UserSchema } from "@/modules/entities"
+import { PlacedItemSchema, InventorySchema, UserSchema, NFTCollections } from "@/modules/entities"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 import { NeighborsTab } from "./tab"
@@ -39,8 +39,6 @@ export interface SessionState {
   accounts: Accounts;
   activeAccountId?: number;
   chainKey: ChainKey;
-  tokens: StateTokens;
-  nftCollections: StateNFTCollections;
   retries: number;
   accountsLoaded: boolean;
   authenticated: boolean;
@@ -72,10 +70,6 @@ export interface SessionState {
   selectedSidebar?: Sidebar;
 }
 
-export type WithEnabled<T> = T & { enabled: boolean };
-export type StateTokens = Record<string, WithEnabled<TokenInfo>>;
-export type StateNFTCollections = Record<string, WithEnabled<CollectionInfo>>;
-
 const initialState: SessionState = {
     network: defaultNetwork,
     mnemonic: "",
@@ -84,8 +78,6 @@ const initialState: SessionState = {
         activateAccountId: 0,
     },
     chainKey: defaultChainKey,
-    tokens: {},
-    nftCollections: {},
     retries: 0,
     accountsLoaded: false,
     authenticated: false,
@@ -116,24 +108,6 @@ export const sessionSlice = createSlice({
         },
         setChainKey: (state, action: PayloadAction<ChainKey>) => {
             state.chainKey = action.payload
-        },
-        loadTokens: (state, action: PayloadAction<StateTokens>) => {
-            state.tokens = { ...state.tokens, ...action.payload }
-        },
-        loadNFTCollections: (state, action: PayloadAction<StateNFTCollections>) => {
-            state.nftCollections = { ...state.nftCollections, ...action.payload }
-        },
-        switchToken: (state, action: PayloadAction<SwitchTokenParams>) => {
-            const { key, enabled } = action.payload
-            const token = state.tokens[key]
-            if (!token) throw new Error("Token not found")
-            token.enabled = enabled
-        },
-        switchNFTCollection: (state, action: PayloadAction<SwitchNFTCollectionParams>) => {
-            const { key, enabled } = action.payload
-            const collection = state.nftCollections[key]
-            if (!collection) throw new Error("Collection not found")
-            collection.enabled = enabled
         },
         setTokenKey: (state, action: PayloadAction<string>) => {
             state.tokenKey = action.payload
@@ -209,18 +183,6 @@ export const sessionSlice = createSlice({
         setSelectedShipInventoryId: (state, action: PayloadAction<string | undefined>) => {
             state.selectedShipInventoryId = action.payload
         },
-        updateToken: (state, action: PayloadAction<UpdateTokenParams>) => {
-            const { key, token } = action.payload
-            const existingToken = state.tokens[key]
-            if (!existingToken) throw new Error("Token not found")
-            state.tokens[key] = { ...existingToken, ...token }
-        },
-        updateNFTCollection: (state, action: PayloadAction<UpdateNFTCollectionParams>) => {
-            const { key, collection } = action.payload
-            const existingCollection = state.nftCollections[key]
-            if (!existingCollection) throw new Error("Collection not found")
-            state.nftCollections[key] = { ...existingCollection, ...collection }
-        },  
         setAddresses: (state, action: PayloadAction<Array<string>>) => {
             state.addresses = action.payload
         },
@@ -242,10 +204,6 @@ export const {
     setMnemonic,
     setAccounts,
     setChainKey,
-    switchToken,
-    switchNFTCollection,
-    loadTokens,
-    loadNFTCollections,
     setRetries,
     setTokenKey,
     setAccountsLoaded,
@@ -269,8 +227,6 @@ export const {
     setShowGameUI,
     setSelectedShipProductId,
     setSelectedShipInventoryId,
-    updateToken,
-    updateNFTCollection,
     setAddresses,
     setActiveNeighborCard,
     setActiveAccountId,

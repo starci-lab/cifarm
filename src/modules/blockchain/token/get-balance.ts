@@ -3,20 +3,19 @@ import { solanaClient, SUI_COIN_TYPE, suiClient } from "../rpcs"
 import { computeDenomination } from "@/modules/common"
 import { PublicKey } from "@solana/web3.js"
 import { Platform, chainKeyToPlatform } from "../common"
-import { DefaultToken } from "../map"
-import { StateTokens } from "@/redux"
 import { defaultNetwork } from "../default"
+import { TokenKey, Tokens } from "@/modules/entities"
 
 export interface GetBalanceParams {
   chainKey: ChainKey;
   //use token address incase you want to get balance of a specific token
   tokenAddress?: string;
   //use tokenKey incase you want to get balance of a defined token, if tokenKey is set, tokenAddress will be ignored
-  tokenKey?: string;
+  tokenKey?: TokenKey;
   network?: Network;
   accountAddress: string;
   //token list for the chainKey, if tokenKey is set but tokens not set, it will throw an error
-  tokens?: StateTokens;
+  tokens?: Tokens;
 }
 
 export const getSolanaBalance = async ({
@@ -30,16 +29,17 @@ export const getSolanaBalance = async ({
     network = network || defaultNetwork
     if (tokenKey) {
         if (!tokens) throw new Error("Cannot find balance without tokens")
-        const token = tokens[tokenKey]
+        const token = tokens[tokenKey]?.[chainKey]?.[network]
+        if (!token) throw new Error("Cannot find balance without token")
         //case native
-        if (tokenKey === DefaultToken.Native) {
+        if (tokenKey === TokenKey.Native) {
             const decimals = token.decimals
             const balance = await solanaClient({chainKey, network}).getBalance(
                 new PublicKey(accountAddress)
             )
             return computeDenomination(balance, decimals)
         }
-        tokenAddress = token.address
+        tokenAddress = token.tokenAddress
     }
     if (!tokenAddress)
         throw new Error("Cannot find balance without token address")
@@ -60,22 +60,25 @@ export const getSuiBalance = async ({
     network,
     accountAddress,
     tokenKey,
-    tokens
+    tokens,
+    chainKey,
 }: GetBalanceParams): Promise<number> => {
     network = network || defaultNetwork
     let decimals = 0
     if (tokenKey) {
         if (!tokens) throw new Error("Cannot find balance without tokens")
+        const token = tokens[tokenKey]?.[chainKey]?.[network]
+        if (!token) throw new Error("Cannot find balance without token")
         //case native
-        if (tokenKey === DefaultToken.Native) {
-            decimals = tokens[tokenKey].decimals
+        if (tokenKey === TokenKey.Native) {
+            decimals = token.decimals
             const balance = await suiClient(network).getBalance({
                 owner: accountAddress,
                 coinType: SUI_COIN_TYPE,
             })
             return computeDenomination(BigInt(balance.totalBalance), decimals)
         }
-        tokenAddress = tokens[tokenKey].address
+        tokenAddress = token.tokenAddress
     }
     if (!tokenAddress)
         throw new Error("Cannot find balance without token address")
@@ -103,4 +106,5 @@ export const getBalance = (params: GetBalanceParams) => {
     case Platform.Sui:
         return getSuiBalance(params)
     }
+    throw new Error("Invalid chain key")
 }

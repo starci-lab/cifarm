@@ -367,9 +367,47 @@ const query = gql`
         solana {
           testnet {
             collectionAddress
+            imageUrl
           }
           mainnet {
             collectionAddress
+            imageUrl
+          }
+        }
+      }
+      jackfruit {
+        solana {
+          testnet {
+            collectionAddress
+            imageUrl
+          }
+          mainnet {
+            collectionAddress
+            imageUrl
+          }
+        }
+      }
+      rambutan {
+        solana {
+          testnet {
+            collectionAddress
+            imageUrl
+          } 
+          mainnet {
+            collectionAddress
+            imageUrl
+          }
+        }
+      }
+      pomegranate {
+        solana {
+          testnet {
+            collectionAddress
+            imageUrl
+          }
+          mainnet {
+            collectionAddress
+            imageUrl
           }
         }
       }
@@ -435,7 +473,6 @@ const query = gql`
       native {
         solana {
           testnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -443,7 +480,6 @@ const query = gql`
             name
           }
           mainnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -455,7 +491,6 @@ const query = gql`
       usdc {
         solana {
           testnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -463,7 +498,6 @@ const query = gql`
             name
           }
           mainnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -473,7 +507,6 @@ const query = gql`
         }
         sui {
           testnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -481,7 +514,6 @@ const query = gql`
             name
           }
           mainnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -493,7 +525,6 @@ const query = gql`
       usdt {
         solana {
           testnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -501,7 +532,6 @@ const query = gql`
             name
           }
           mainnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -513,7 +543,6 @@ const query = gql`
       cifarm {
         solana {
           testnet {
-            id
             tokenType
             tokenAddress
             decimals
@@ -522,7 +551,6 @@ const query = gql`
             name
           }
           mainnet {
-            id
             tokenType
             tokenAddress
             decimals

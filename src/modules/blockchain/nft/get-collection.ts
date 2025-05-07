@@ -1,21 +1,20 @@
 import { ChainKey, Network } from "../common"
 import { solanaHttpRpcUrl } from "../rpcs"
 import { Platform, chainKeyToPlatform } from "../common"
-import { StateNFTCollections } from "@/redux"
 import { defaultNetwork } from "../default"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { Attribute, fetchAssetsByCollection, mplCore } from "@metaplex-foundation/mpl-core"
 import { publicKey } from "@metaplex-foundation/umi"
-
+import { NFTCollections, NFTType } from "@/modules/entities"
 export interface GetCollectionParams {
   chainKey: ChainKey;
   //use collection address
   collectionAddress?: string;
-  collectionKey?: string;
+  collectionKey?: NFTType;
   network?: Network;
   accountAddress: string;
   //collection list for the chainKey, if collectionKey is set but collections not set, it will throw an error
-  collections?: StateNFTCollections;
+  collections?: NFTCollections;
 }
 
 export interface NFTTrait {
@@ -46,7 +45,7 @@ export const getSolanaCollection = async ({
         if (!collections) throw new Error("Cannot find collection without collections")
         const collection = collections[collectionKey]
         if (!collection) throw new Error("Cannot find collection without collections")
-        collectionAddress = collection.address
+        collectionAddress = collection[network]?.collectionAddress
     }
     if (!collectionAddress) throw new Error("Cannot find collection without collection address")
     const umi = createUmi(solanaHttpRpcUrl({chainKey, network}))
@@ -79,6 +78,8 @@ export const getCollection = (params: GetCollectionParams) => {
         return getSolanaCollection(params)
     case Platform.Sui:
         throw new Error("Sui is not supported")
+    default:
+        throw new Error("Invalid platform")
     }
 }
 

@@ -1,19 +1,23 @@
 import React from "react"
-import { useAppSelector } from "@/redux"
-import { valuesWithKey } from "@/modules/common"
 import { BalanceComponent } from "./Component"
-export const UseBalances = () => {
-    const tokens = useAppSelector((state) => state.sessionReducer.tokens)
-    const tokensArray = valuesWithKey(tokens)
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
+import { useGraphQLQueryStaticSwr } from "@/hooks/swr"
+import { valuesWithKey } from "@/modules/common"
 
+export const UseBalances = () => {
+    const { swr: staticSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryStaticSwr>
+  >(QUERY_STATIC_SWR_MUTATION)
+    const tokens = staticSwr.data?.data.tokens
+    const tokensArray = valuesWithKey(tokens || {})
     return (
         <>
-            {tokensArray.map((token) => (
-                <BalanceComponent
-                    key={token.key}
-                    tokenKey={token.key}
-                />
-            ))}
+            {tokensArray.map((token) => {
+                return (
+                    <BalanceComponent key={token.key} tokenKey={token.key}/>
+                )
+            })}
         </>
     )
 }

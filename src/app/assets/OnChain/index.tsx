@@ -14,9 +14,13 @@ import {
 } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { NFTCollections } from "./NFTCollections"
-import { setTokenKey, useAppDispatch, useAppSelector, triggerRefreshTokens } from "@/redux"
+import {
+    setTokenKey,
+    useAppDispatch,
+    useAppSelector,
+    triggerRefreshTokens,
+} from "@/redux"
 export const OnChain: FC = () => {
-    //const { toast } = useToast()
     const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
     const router = useRouterWithSearchParams()
@@ -33,9 +37,13 @@ export const OnChain: FC = () => {
                         tooltipString="The tokens you have added to your wallet."
                     />
                     <div className="flex gap-2 items-center">
-                        <ExtendedButton variant="ghost" size="icon" onClick={() => {
-                            dispatch(triggerRefreshTokens())
-                        }}>
+                        <ExtendedButton
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                                dispatch(triggerRefreshTokens())
+                            }}
+                        >
                             <RotateCcwIcon className="w-5 h-5" />
                         </ExtendedButton>
                         <ExtendedButton
@@ -53,10 +61,16 @@ export const OnChain: FC = () => {
                         enableScroll={false}
                         items={tokensArray}
                         contentCallback={(item) => {
-                            return <Token token={item} balanceSwr={balanceSwrs[item.key]} onClick={() => {
-                                dispatch(setTokenKey(item.key))
-                                router.push(pathConstants.token)
-                            }} />
+                            return (
+                                <Token
+                                    token={item}
+                                    balanceSwr={balanceSwrs[item.key]}
+                                    onClick={() => {
+                                        dispatch(setTokenKey(item.key))
+                                        router.push(pathConstants.token)
+                                    }}
+                                />
+                            )
                         }}
                     />
                 </div>
