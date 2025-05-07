@@ -24,7 +24,7 @@ export const PressableCard: FC<PressableCardProps> = ({
             variant="ghost"
             size="icon"
             onClick={onClick}
-            className={cn("text-start justify-start w-full p-3 hover:bg-card-hover hover:text-inherit","whitespace-normal rounded-xl border-none bg-card h-fit", base, !showBorder && "border-none border-0 shadow-none", className)}
+            className={cn("text-start justify-start w-full p-3 hover:bg-content1/75 hover:text-inherit","whitespace-normal rounded-lg border-none bg-content1 h-fit", base, !showBorder && "border-none border-0 shadow-none", className)}
             {...props}
         >
             <div className="w-full">

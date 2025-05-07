@@ -13,4 +13,5 @@ export const envConfig = () => ({
         [Network.Testnet]: process.env.NEXT_PUBLIC_TESTNET_HONEYCOMB_TOKEN_ADDRESS || "",
         [Network.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_HONEYCOMB_TOKEN_ADDRESS || "",
     },
+    network: process.env.NEXT_PUBLIC_NETWORK || "testnet",
 })

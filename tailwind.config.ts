@@ -14,9 +14,12 @@ const config: Config = {
     			"gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))"
     		},
     		colors: {
-    			lightText: "var(--color-primary-light)",
-    			darkText: "var(--color-primary-dark)",
+    			light: "hsl(var(--light))",
+    			dark: "hsl(var(--dark))",
+                content1: "hsl(var(--content-1))",
+                content2: "hsl(var(--content-2))",
     			background: "hsl(var(--background))",
+                background2: "hsl(var(--background2))",
     			foreground: "hsl(var(--foreground))",
     			card: {
     				DEFAULT: "hsl(var(--card))",
