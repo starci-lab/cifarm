@@ -16,7 +16,7 @@ const config: Config = {
     		colors: {
     			light: "hsl(var(--light))",
     			dark: "hsl(var(--dark))",
-				content0: "hsl(var(--content-0))",
+                content0: "hsl(var(--content-0))",
                 content1: "hsl(var(--content-1))",
                 content2: "hsl(var(--content-2))",
     			background: "hsl(var(--background))",

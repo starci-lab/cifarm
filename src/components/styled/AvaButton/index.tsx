@@ -23,9 +23,7 @@ export const AvaButton: FC<AvaButtonProps> = ({
     return (
         <button className="flex items-center justify-between" onClick={onClick}>
             <div className="flex items-center gap-2 rounded-lg bg-content1 p-1 pr-2 hover:bg-content1/75 transition-all duration-300">
-                {React.cloneElement(icon as React.ReactElement, {
-                    className: classNames?.icon,
-                })}
+                {icon}
                 <div className={cn("text-sm", classNames?.text)}>{text}</div>
                 <ChevronDownIcon className={cn("w-3.5 h-3.5", classNames?.chevron)} />
             </div>

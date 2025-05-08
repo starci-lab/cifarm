@@ -110,6 +110,7 @@
     "react-svg-to-image": "^3.0.0",
     "react-toastify": "^11.0.5",
     "react-use-disclosure": "^8.0.3",
+    "react-youtube": "^10.1.0",
     "recharts": "^2.15.1",
     "sharp": "^0.33.5",
     "simple-icons": "^14.4.0",

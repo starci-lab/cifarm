@@ -7,6 +7,7 @@ export interface ExtendedButtonProps extends ButtonProps {
   isLoading?: boolean;
   onTap?: () => void;
   onPress?: (pressTime: number) => void;
+  useGradientBg?: boolean;
 }
 
 export const ExtendedButton = ({
@@ -14,6 +15,7 @@ export const ExtendedButton = ({
     isLoading,
     onTap,
     onPress,
+    useGradientBg,
     ...props
 }: ExtendedButtonProps) => {
     const ref = useRef<HTMLButtonElement | null>(null)
@@ -76,7 +78,10 @@ export const ExtendedButton = ({
             ref={ref}
             {...props}
             disabled={isLoading || props.disabled}
-            className={cn("rounded-lg cursor", props.className)}
+            className={cn(
+                "rounded-lg cursor",
+                useGradientBg && "bg-gradient-to-r from-primary-foreground to-primary hover:bg-primary",
+                props.className)}
         >
             {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
             {children}

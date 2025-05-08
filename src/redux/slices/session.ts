@@ -8,7 +8,7 @@ import {
     TokenInfo,
 } from "@/modules/blockchain"
 import { Account } from "@/modules/dexie"
-import { PlacedItemSchema, InventorySchema, UserSchema, NFTCollections } from "@/modules/entities"
+import { PlacedItemSchema, InventorySchema, UserSchema } from "@/modules/entities"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 import { NeighborsTab } from "./tab"
@@ -68,6 +68,7 @@ export interface SessionState {
   activeNeighborCard?: NeighborsTab;
   selectedChainKey?: ChainKey;
   selectedSidebar?: Sidebar;
+  selectedMainVisualKey: string;
 }
 
 const initialState: SessionState = {
@@ -91,6 +92,7 @@ const initialState: SessionState = {
     playerContext: PlayerContext.Home,
     showGameUI: false,
     addresses: [],
+    selectedMainVisualKey: "visual-1",
 }
 
 export const sessionSlice = createSlice({
@@ -195,6 +197,9 @@ export const sessionSlice = createSlice({
         setSelectedChainKey: (state, action: PayloadAction<ChainKey | undefined>) => {
             state.selectedChainKey = action.payload
         },
+        setSelectedMainVisualKey: (state, action: PayloadAction<string>) => {
+            state.selectedMainVisualKey = action.payload
+        },
     },
 })
 
@@ -231,6 +236,7 @@ export const {
     setActiveNeighborCard,
     setActiveAccountId,
     setSelectedChainKey,
+    setSelectedMainVisualKey,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {
