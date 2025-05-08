@@ -1,5 +1,4 @@
 import {
-    ChainKey,
     CollectionResponse,
     getCollection,
 } from "@/modules/blockchain"
@@ -8,11 +7,9 @@ import useSWR from "swr"
 import { UseSWR } from "../../swr/types"
 import { envConfig } from "@/env"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { useGlobalAccountAddress, useGraphQLQueryStaticSwr } from "@/hooks"
 import { QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
 import { valuesWithKey } from "@/modules/common"
-import { useWallet } from "@solana/wallet-adapter-react"
-import { useCurrentAccount } from "@mysten/dapp-kit"
 
 export interface UseNFTCollectionsSwrParams {
   //if collectionKey is set, collectionAddress is ignored
@@ -27,7 +24,7 @@ export const useNFTCollectionsSwr = ({
 }: UseNFTCollectionsSwrParams): UseSWR<CollectionResponse> => {
     //default values
     const chainKey = useAppSelector(
-        (state) => state.sidebarReducer.assetsChainKey
+        (state) => state.sessionReducer.chainKey
     )
     const network = envConfig().network
     const { swr: staticData } = useSingletonHook<
@@ -42,8 +39,8 @@ export const useNFTCollectionsSwr = ({
     const refreshNFTCollectionsKey = useAppSelector(
         (state) => state.hookDependencyReducer.refreshNFTCollectionsKey
     )
-    const { publicKey: solanaPublicKey } = useWallet()
-    const suiWalletAccount = useCurrentAccount()
+
+    const { accountAddress } = useGlobalAccountAddress()
     //if tokenKey is set, tokenAddress is ignored
     const swr = useSWR(
         [
@@ -52,24 +49,13 @@ export const useNFTCollectionsSwr = ({
             collectionAddress,
             collectionKey,
             refreshNFTCollectionsKey,
-            solanaPublicKey,
+            accountAddress,
         ],
         async () => {
-            if (!nftCollection) {
+            if (!nftCollection || !accountAddress) {
                 return {
                     nfts: [],
                 }
-            }
-            let accountAddress: string
-            switch (chainKey) {
-            case ChainKey.Sui:
-                accountAddress = suiWalletAccount?.address || ""
-                break
-            case ChainKey.Solana:
-                accountAddress = solanaPublicKey?.toBase58() || ""
-                break
-            default:
-                throw new Error("Invalid chain key")
             }
             try {
                 return await getCollection({

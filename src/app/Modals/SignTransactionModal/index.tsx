@@ -4,6 +4,8 @@ import {
     HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION,
     HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION,
     SEND_UMI_SERIALIZED_TX_SWR_MUTATION,
+    SIGN_SOLANA_TRANSACTION_SWR_MUTATION,
+    SIGN_SUI_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
     SIGN_UMI_SERIALIZED_TX_SWR_MUTATION,
     TRANSFER_NFT_SWR_MUTATION,
@@ -33,6 +35,7 @@ import {
     useGraphQLQueryStaticSwr,
     useHoneycombSendTransactionsSwrMutation,
     useHoneycombSendTransactionSwrMutation,
+    useSignSolanaTransactionTxSwrMutation,
     useRouterWithSearchParams,
     useSendUmiSerializedTxSwrMutation,
     useSignUmiSerializedTxSwrMutation,
@@ -54,6 +57,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "@/app/utils"
 import { pathConstants } from "@/constants"
 import { sessionDb } from "@/modules/dexie"
+import { useWallet } from "@solana/wallet-adapter-react"
 
 interface ProviderInfo {
   name: string;
@@ -113,14 +117,6 @@ export const SignTransactionModal: FC = () => {
 
     const { toast } = useToast()
 
-    const accounts = useAppSelector(
-        (state) => state.sessionReducer.accounts.accounts
-    )
-    const currentAccountId = useAppSelector(
-        (state) => state.sessionReducer.accounts.activateAccountId
-    )
-    const account = accounts.find((account) => account.id === currentAccountId)
-
     const saveAddress = useAppSelector(
         (state) => state.modalReducer.signTransactionModal.saveAddress
     )
@@ -164,10 +160,16 @@ export const SignTransactionModal: FC = () => {
     const balanceSwrs = useAppSelector(
         (state) => state.sessionReducer.balanceSwrs
     )
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
+
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+        GRAPHQL_QUERY_STATIC_SWR
     )
     
+    const collections = staticSwr.data?.data.nftCollections || {}
+
+    const { swrMutation: signSolanaTransactionSwrMutation } = useSingletonHook<
+    ReturnType<typeof useSignSolanaTransactionTxSwrMutation>
+  >(SIGN_SOLANA_TRANSACTION_SWR_MUTATION)
 
     const { trigger, isMutating } = useSWRMutation(
         "SIGN_TRANSACTION",
@@ -235,7 +237,7 @@ export const SignTransactionModal: FC = () => {
                 }
                 case TransactionType.PurchaseSolanaNFTBox: {
                     const { serializedTx } = data as PurchaseSolanaNFTBoxData
-                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
+                    const { serializedTx: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
                         serializedTx,
                     })
                     // decode the serializedTx
@@ -353,8 +355,7 @@ export const SignTransactionModal: FC = () => {
         }
     )
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const tokens = useAppSelector((state) => state.sessionReducer.tokens)
-    if (!account) return null
+    const tokens = staticSwr.data?.data.tokens || {}
 
     const providers: Record<TransactionType, ProviderInfo> = {
         [TransactionType.TransferToken]: {

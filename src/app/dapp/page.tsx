@@ -62,7 +62,6 @@ const Page: FC = () => {
             <div>
                 <Header
                     title="DApps"
-                    description="Discover and explore the best DApps on CiFarm"
                 />
                 <Spacer y={6} />
                 <div className="flex flex-col gap-4">

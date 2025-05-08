@@ -50,7 +50,7 @@ export const AppSidebar: FC = () => {
                             selected={sidebarTab === SidebarTab.Home}
                             onClick={() => {
                                 dispatch(setSidebarTab(SidebarTab.Home))
-                                router.push(pathConstants.home)
+                                router.push(`${pathConstants.home}`)
                             }}
                             icon={<HomeIcon className="w-5 h-5" />}
                         />
@@ -60,7 +60,7 @@ export const AppSidebar: FC = () => {
                             selected={sidebarTab === SidebarTab.Assets}
                             onClick={() => {
                                 dispatch(setSidebarTab(SidebarTab.Assets))
-                                router.push(pathConstants.assets)
+                                router.push(`${pathConstants.home}/${pathConstants.assets}`)
                             }}
                             icon={<WalletIcon className="w-5 h-5" />}
                         />
@@ -68,7 +68,10 @@ export const AppSidebar: FC = () => {
                         <Selection
                             title="DApps"
                             selected={sidebarTab === SidebarTab.DApps}
-                            onClick={() => dispatch(setSidebarTab(SidebarTab.DApps))}
+                            onClick={() => {
+                                dispatch(setSidebarTab(SidebarTab.DApps))
+                                router.push(`${pathConstants.home}/${pathConstants.dapps}`)
+                            }}
                             icon={<LayoutGridIcon className="w-5 h-5" />}
                         />
                         <Spacer y={4} />

@@ -9,10 +9,10 @@ export const UseNFTCollections = () => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         QUERY_STATIC_SWR_MUTATION
     )
-    const nftCollectionsArray = valuesWithKey(staticSwr.data?.data.nftCollections || {})
+    const nftCollections = valuesWithKey(staticSwr.data?.data.nftCollections || {})
     return (
         <>
-            {nftCollectionsArray.map((nftCollection) => (
+            {nftCollections.map((nftCollection) => (
                 <CollectionComponent
                     key={nftCollection.key}
                     collectionKey={nftCollection.key}

@@ -2,10 +2,13 @@ import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams, UmiTxResponse } from "../../types"
 import { GraphQLResponse } from "../types"
+import { Network } from "@/modules/blockchain"
 
 const mutation1 = gql`
-  mutation CreatePurchaseSolanaNFTBoxTransaction {
-  createPurchaseSolanaNFTBoxTransaction {
+  mutation CreatePurchaseSolanaNFTBoxTransaction (
+    $request: CreatePurchaseSolanaNFTBoxTransactionRequest!
+  ) {
+  createPurchaseSolanaNFTBoxTransaction (request: $request) {
     data {
       serializedTx
     }
@@ -25,17 +28,30 @@ const mutationMap: Record<MutationCreatePurchaseSolanaNFTBoxTransaction, Documen
     [MutationCreatePurchaseSolanaNFTBoxTransaction.Mutation1]: mutation1,
 }
 
+export interface CreatePurchaseSolanaNFTBoxTransactionRequest {
+  accountAddress: string;
+  network: Network;
+}
+
 export type MutationCreatePurchaseSolanaNFTBoxTransactionParams = MutationParams<
-  MutationCreatePurchaseSolanaNFTBoxTransaction
+  MutationCreatePurchaseSolanaNFTBoxTransaction,
+  CreatePurchaseSolanaNFTBoxTransactionRequest
 >;
 
 export const mutationCreatePurchaseSolanaNFTBoxTransaction = async ({
     mutation = MutationCreatePurchaseSolanaNFTBoxTransaction.Mutation1,
+    request,
 }: MutationCreatePurchaseSolanaNFTBoxTransactionParams) => {
+    if (!request) {
+        throw new Error("Request is required")
+    }
     const mutationDocument = mutationMap[mutation]
     return await authClient.mutate<
     { createPurchaseSolanaNFTBoxTransaction: CreatePurchaseSolanaNFTBoxTransactionResponse }
   >({
       mutation: mutationDocument,
+      variables: {
+          request,
+      },
   })
 }

@@ -6,6 +6,7 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { Attribute, fetchAssetsByCollection, mplCore } from "@metaplex-foundation/mpl-core"
 import { publicKey } from "@metaplex-foundation/umi"
 import { NFTCollections, NFTType } from "@/modules/entities"
+import axios from "axios"
 export interface GetCollectionParams {
   chainKey: ChainKey;
   //use collection address
@@ -26,6 +27,7 @@ export interface NFTData {
     nftAddress: string;
     attributes: Array<Attribute>
     wrapped: boolean
+    image: string
 }
 
 export interface CollectionResponse {
@@ -45,7 +47,7 @@ export const getSolanaCollection = async ({
         if (!collections) throw new Error("Cannot find collection without collections")
         const collection = collections[collectionKey]
         if (!collection) throw new Error("Cannot find collection without collections")
-        collectionAddress = collection[network]?.collectionAddress
+        collectionAddress = collection[chainKey]?.[network]?.collectionAddress
     }
     if (!collectionAddress) throw new Error("Cannot find collection without collection address")
     const umi = createUmi(solanaHttpRpcUrl({chainKey, network}))
@@ -56,11 +58,13 @@ export const getSolanaCollection = async ({
     const promises: Array<Promise<void>> = []
     for (const asset of assets) {
         promises.push((async () => {
+            const { data } = await axios.get<MetaplexNFTMetadata>(asset.uri)
             nfts.push({
                 name: asset.name,
                 nftAddress: asset.publicKey.toString(),
                 attributes: asset.attributes?.attributeList ?? [],
                 wrapped: asset.permanentFreezeDelegate?.frozen ?? false,
+                image: data.image,
             })
         })())
     }

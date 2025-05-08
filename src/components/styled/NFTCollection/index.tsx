@@ -11,7 +11,6 @@ interface NFTCollectionProps {
 }
 
 export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSwr, onClick }) => {
-    console.log(collection)
     return (
         <PressableCard className="relative" onClick={onClick}>
             <div className="grid place-items-center p-3 w-full">

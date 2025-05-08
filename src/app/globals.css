@@ -48,6 +48,8 @@ body {
 
     --dark: 0 0% 10%;
 
+    /* for content 0 */
+    --content-0: 0 0% 10%;
     /* for content 1 */
     --content-1: 0 0% 20%;  
 

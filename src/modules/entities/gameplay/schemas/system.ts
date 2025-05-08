@@ -117,6 +117,8 @@ export interface DailyRewardInfo {
 }
 
 export interface NFTCollectionData {
+  placedItemTypeId: string
+  name: string
   collectionAddress: string
   imageUrl: string
 }

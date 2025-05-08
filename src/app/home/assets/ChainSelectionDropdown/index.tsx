@@ -1,15 +1,15 @@
 import { SelectionDropdown, Image } from "@/components"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
-import { setAssetsChainKey, useAppDispatch, useAppSelector } from "@/redux"
+import { setChainKey, useAppDispatch, useAppSelector } from "@/redux"
 import React, { FC } from "react"
 
 export const ChainSelectionDropdown: FC = () => {
-    const { assetsChainKey } = useAppSelector((state) => state.sidebarReducer)
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const dispatch = useAppDispatch()
     return (
         <SelectionDropdown
-            selectedKey={assetsChainKey}
-            onSelectKeyChange={(key) => dispatch(setAssetsChainKey(key as ChainKey))}
+            selectedKey={chainKey}
+            onSelectKeyChange={(key) => dispatch(setChainKey(key as ChainKey))}
             options={Object.values(chainKeyMap).map((chain) => ({
                 key: chain.key,
                 label: chain.name,

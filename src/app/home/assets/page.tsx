@@ -3,10 +3,10 @@ import { Header, Spacer } from "@/components"
 import React from "react"
 import { ChainSelectionDropdown } from "./ChainSelectionDropdown"
 import { AppTabs } from "@/components"
-import { useAppSelector, useAppDispatch } from "@/redux"
-import { AssetTab, setAssetTab } from "@/redux/slices/tab"
+import { useAppSelector, useAppDispatch, AssetTab, setAssetTab } from "@/redux"
 import { TokensTab } from "./TokensTab"
 import { NFTCollectionsTab } from "./NFTCollectionsTab"
+
 const Page = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
     const dispatch = useAppDispatch()

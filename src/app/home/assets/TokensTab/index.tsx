@@ -13,7 +13,7 @@ export const TokensTab: FC = () => {
     >(QUERY_STATIC_SWR_MUTATION)
 
     const network = envConfig().network
-    const chainKey = useAppSelector((state) => state.sidebarReducer.assetsChainKey)
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     
     const tokens = valuesWithKey(staticData.data?.data.tokens || {})
 

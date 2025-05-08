@@ -1,12 +1,10 @@
-import { ChainKey, getBalance } from "@/modules/blockchain"
+import { getBalance } from "@/modules/blockchain"
 import { envConfig } from "@/env"
 import { useAppSelector } from "@/redux"
 import useSWR from "swr"
 import { UseSWR } from "../../swr/types"
-import { useCurrentAccount } from "@mysten/dapp-kit"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { TokenKey, Tokens } from "@/modules/entities"
-
+import { useGlobalAccountAddress } from "../../useGlobalAccountAddress"
 export interface UseBalanceSwrParams {
     //if tokenKey is set, tokenAddress is ignored
     tokenKey?: TokenKey
@@ -24,29 +22,21 @@ export const useBalanceSwr = ({
     tokens,
 }: UseBalanceSwrParams): UseSWR<number> => {
     //default values
-    const chainKey = useAppSelector((state) => state.sidebarReducer.assetsChainKey)
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
-    //if tokenKey is set, tokenAddress is ignored
-    const suiWalletAccount = useCurrentAccount()
-    const { publicKey: solanaPublicKey } = useWallet()
 
+    const { accountAddress } = useGlobalAccountAddress()
     const swr = useSWR(
-        [chainKey, network, tokenAddress, tokenKey, tokens, suiWalletAccount, solanaPublicKey],
+        [chainKey, network, tokenAddress, tokenKey, tokens, accountAddress],
         async () => {
             if (!tokenAddress && !tokenKey) {
                 return 0
             }
-            let accountAddress: string 
-            switch (chainKey) {
-            case ChainKey.Sui:
-                accountAddress = suiWalletAccount?.address || ""
-                break
-            case ChainKey.Solana:
-                accountAddress = solanaPublicKey?.toBase58() || ""
-                break
-            default:
-                throw new Error("Invalid chain key")
+
+            if (!accountAddress) {
+                return 0
             }
+
             try {
                 return await getBalance({
                     chainKey,

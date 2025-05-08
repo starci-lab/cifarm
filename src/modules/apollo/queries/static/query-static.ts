@@ -366,10 +366,14 @@ const query = gql`
       dragonFruit {
         solana {
           testnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           }
           mainnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           }
@@ -378,10 +382,14 @@ const query = gql`
       jackfruit {
         solana {
           testnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           }
           mainnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           }
@@ -390,10 +398,14 @@ const query = gql`
       rambutan {
         solana {
           testnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           } 
           mainnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           }
@@ -402,10 +414,14 @@ const query = gql`
       pomegranate {
         solana {
           testnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           }
           mainnet {
+            placedItemTypeId
+            name
             collectionAddress
             imageUrl
           }

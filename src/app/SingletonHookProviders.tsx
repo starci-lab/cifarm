@@ -37,6 +37,8 @@ import {
     useGraphQLQueryVaultCurrentSwr,
     useFirebaseAuthSwrMutation,
     useGraphQLMutationValidateGoogleTokenSwrMutation,
+    useSignSolanaTransactionTxSwrMutation,
+    useSignSuiTransactionTxSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -95,6 +97,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_WRAP_SOLANA_METAPLEX_SWR_MUTATION: useGraphQLMutationWrapSolanaMetaplexSwrMutation(),
             SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),
             SIGN_UMI_SERIALIZED_TX_SWR_MUTATION: useSignUmiSerializedTxSwrMutation(),
+            SIGN_SOLANA_TRANSACTION_SWR_MUTATION: useSignSolanaTransactionTxSwrMutation(),
+            SIGN_SUI_TRANSACTION_SWR_MUTATION: useSignSuiTransactionTxSwrMutation(),
             GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendPurchaseSolanaNFTBoxTransactionSwrMutation(),
             GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreatePurchaseSolanaNFTBoxTransactionSwrMutation(),
             GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateShipSolanaTransactionSwrMutation(),
@@ -126,6 +130,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             FIREBASE_AUTH_SWR_MUTATION: useFirebaseAuthSwrMutation(),
             // Using new constants with GraphQL mutations
             //io
+
+
             WS: useWs(),
         }}
     >
