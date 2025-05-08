@@ -20,6 +20,7 @@ const config: Phaser.Types.Core.GameConfig = {
         width: "100%",
         height: "100%"
     },
+    antialiasGL: true,
     antialias: true,
     autoMobilePipeline: true,
     powerPreference: "high-performance",

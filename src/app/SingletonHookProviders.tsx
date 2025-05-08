@@ -39,6 +39,7 @@ import {
     useGraphQLMutationValidateGoogleTokenSwrMutation,
     useSignSolanaTransactionTxSwrMutation,
     useSignSuiTransactionTxSwrMutation,
+    useGraphQLMutationRefreshSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -109,7 +110,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation(),           
             GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
-            
+            GRAPHQL_MUTATION_REFRESH_SWR_MUTATION: useGraphQLMutationRefreshSwrMutation(),
+
             GRAPHQL_MUTATION_VALIDATE_GOOGLE_TOKEN_SWR_MUTATION: useGraphQLMutationValidateGoogleTokenSwrMutation(),
 
             // transfer token

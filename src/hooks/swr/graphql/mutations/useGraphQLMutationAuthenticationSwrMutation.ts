@@ -25,7 +25,7 @@ export const useGraphQLMutationAuthenticationSwrMutation =
       const network = useAppSelector((state) => state.sessionReducer.network)
       const dispatch = useAppDispatch()
 
-      const swrMutation = useSWRMutation(v4(), async () => {
+      const swrMutation = useSWRMutation("AUTHENTICATION", async () => {
           if (!account) {
               throw new Error("Account not found")
           }
