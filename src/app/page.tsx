@@ -3,23 +3,6 @@
 import { useFirebaseAuthSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { Container, ExtendedButton } from "@/components"
 import React, { FC } from "react"
-import { pathConstants } from "@/constants"
-import { generateMnemonic } from "bip39"
-import { sessionDb, SessionDbKey } from "@/modules/dexie"
-import {
-    blockchainMap,
-    ChainKey,
-    createAccount,
-    defaultChainKey,
-    defaultNetwork,
-    Network,
-} from "@/modules/blockchain"
-import {
-    setMnemonic,
-    StateNFTCollections,
-    StateTokens,
-    triggerLoadAccounts,
-} from "@/redux"
 import { useDispatch } from "react-redux"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { FIREBASE_AUTH_SWR_MUTATION } from "./constants"

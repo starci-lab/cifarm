@@ -1,22 +1,29 @@
 "use client"
 
+import { SHEET_NFT_DISCLOSURE } from "@/app/constants"
 import { PressableCard, Image, WrappedBadge, Spacer, NFTRarityBadge } from "@/components"
-import { pathConstants } from "@/constants"
-import { useRouterWithSearchParams } from "@/hooks"
 import { AttributeName, NFTData, NFTRarityEnum } from "@/modules/blockchain"
+import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
-
+import { useDisclosure } from "react-use-disclosure"
+import { setNFTSheet, useAppDispatch } from "@/redux"
 interface NFTCardProps {
     nft: NFTData
 }
 
 export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
-    const router = useRouterWithSearchParams()
+    const { open: openNFTSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        SHEET_NFT_DISCLOSURE
+    )
+
+    
+    const dispatch = useAppDispatch()
     return <PressableCard key={nft.nftAddress} className="relative" onClick={
         () => {
-            router.push(`${nft.nftAddress}`, {
-                mergeWithCurrentPath: true,
-            })
+            dispatch(setNFTSheet({
+                nftAddress: nft.nftAddress,
+            })) 
+            openNFTSheet()
         }
     }>
         <div className="grid place-items-center p-3 w-full">
