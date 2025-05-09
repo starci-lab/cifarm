@@ -1,82 +1,29 @@
-"use client"
+import React from "react"
+import { Header, Footer, Section, StickySidebar } from "./_components"
+import { Roadmap } from "./_components/Roadmap"
 
-import { useFirebaseAuthSwrMutation, useRouterWithSearchParams } from "@/hooks"
-import { Container, ExtendedButton } from "@/components"
-import React, { FC } from "react"
-import { pathConstants } from "@/constants"
-import { generateMnemonic } from "bip39"
-import { sessionDb, SessionDbKey } from "@/modules/dexie"
-import {
-    blockchainMap,
-    ChainKey,
-    createAccount,
-    defaultChainKey,
-    defaultNetwork,
-    Network,
-} from "@/modules/blockchain"
-import {
-    setMnemonic,
-    StateNFTCollections,
-    StateTokens,
-    triggerLoadAccounts,
-} from "@/redux"
-import { useDispatch } from "react-redux"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { FIREBASE_AUTH_SWR_MUTATION } from "./constants"
-
-const Page: FC = () => {
-    const router = useRouterWithSearchParams()
-    const dispatch = useDispatch()
-
-    const { swrMutation } = useSingletonHook<ReturnType<typeof useFirebaseAuthSwrMutation>>(
-        FIREBASE_AUTH_SWR_MUTATION
-    )
+export default function LandingPage() {
     return (
-        <Container centerContent hasPadding>
-            
-        </Container>
+        <main className="relative w-full bg-sidebar-foreground">
+            <Header />
+            <div className="container mx-auto px-4 py-8">
+                <Section 
+                    title="Welcome to Cifarm"
+                    description="Your trusted platform for secure and efficient cryptocurrency management"
+                >
+                    <div className="h-screen w-full bg-sidebar-foreground" />
+                </Section>
+
+                <Section 
+                    title="Roadmap"
+                    description="Main goals and objectives"
+                >
+                    <Roadmap />
+                </Section>
+            </div>
+
+            <StickySidebar />
+            <Footer />
+        </main>
     )
 }
-
-export default Page
-
-{/* <div className="w-full">
-                <div className="grid place-items-center gap-4 w-full">
-                    <div className="relative w-[150px] h-[150px] rounded-full overflow-hidden">
-                        <Image
-                            src="/logo.png"
-                            alt="CiFarm Logo"
-                            className="object-contain"
-                        />
-                    </div>
-                </div>
-                <div className="h-6" />
-                <div className="text-center">
-                    <div className="text-4xl font-bold">CiFarm</div>
-                    <div className="text-muted-foreground text-sm">
-            The leading GameFixDeFi farming game
-                    </div>
-                </div>
-                <div className="h-12" />
-                <div className="grid gap-4 w-full">
-                    <ExtendedButton
-                        size="lg"
-                        className="w-full"
-                        onClick={async () => {
-                            const response = await swrMutation.trigger()
-                            const id = await response.user.getIdToken()
-                            console.log(id)
-                        }}
-                    >
-            Continue with 
-                    </ExtendedButton>
-                    <ExtendedButton
-                        variant="outline"
-                        size="lg"
-                        className="w-full"
-                        onClick={() => router.push(pathConstants.import)}
-                    >
-            Import existing account
-                    </ExtendedButton>
-                </div>
-            </div> */}

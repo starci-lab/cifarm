@@ -182,6 +182,9 @@ body {
 
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  .theme {
+    --animate-ripple: ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite;
+  }
 }
 
 @layer base {
@@ -193,4 +196,92 @@ body {
     cursor: url("data:image/png;base64,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"),
       pointer;
   }
+}
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--sidebar-primary-foreground)) hsl(var(--sidebar-foreground));
+  scroll-behavior: smooth;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 14px;
+  border-radius: none;
+}
+
+*::-webkit-scrollbar-track {
+  background: hsl(var(--sidebar-foreground));
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--sidebar-primary-foreground));
+  border-radius: 14px;
+  border: 3px solid hsl(var(--sidebar-foreground));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--sidebar-primary-foreground));
+}
+
+/* hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* hide number input arrow */
+/* Chrome, Safari, Edge, Opera */
+.hide-number-input-arrow::-webkit-outer-spin-button,
+.hide-number-input-arrow::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.hide-number-input-arrow[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Custom scroll */
+/* Firefox */
+.horizontal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--sidebar-primary-foreground)) hsl(var(--sidebar-foreground));
+}
+
+/* Chrome, Edge, and Safari */
+.horizontal-scroll::-webkit-scrollbar {
+  height: 4px;
+  border-radius: 14px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+  background-color: hsl(var(--sidebar-foreground));
+  border-radius: 80px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--sidebar-primary-foreground));
+  border-radius: 14px;
+  border: 3px solid hsl(var(--sidebar-foreground));
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--sidebar-primary-foreground));
 }
