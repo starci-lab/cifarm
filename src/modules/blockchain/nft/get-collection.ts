@@ -58,6 +58,7 @@ export const getSolanaCollection = async ({
     const promises: Array<Promise<void>> = []
     for (const asset of assets) {
         promises.push((async () => {
+            console.log(asset.uri)
             const { data } = await axios.get<MetaplexNFTMetadata>(asset.uri)
             nfts.push({
                 name: asset.name,

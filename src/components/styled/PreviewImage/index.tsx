@@ -9,11 +9,11 @@ export const PreviewImage: FC<PreviewImageProps> = ({ imageUrl }) => {
     return (
         <>
             {imageUrl ? (
-                <div className="p-3 rounded-lg max-w-full w-40 aspect-square grid place-items-center bg-content1">
+                <div className="p-3 rounded-lg max-w-full w-full aspect-square grid place-items-center bg-content1">
                     <Image src={imageUrl} className="object-contain w-full aspect-square" />
                 </div>
             ) : (
-                <Skeleton className="rounded-lg max-w-full w-40 aspect-square grid place-items-center" />
+                <Skeleton className="rounded-lg max-w-full w-full aspect-square grid place-items-center" />
             )}
         </>
     )

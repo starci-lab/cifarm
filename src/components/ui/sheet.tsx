@@ -3,9 +3,10 @@
 import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X } from "lucide-react"
+import { X, ChevronLeft } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { IconWrapper } from "../styled/IconWrapper"
 
 const Sheet = SheetPrimitive.Root
 
@@ -31,7 +32,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-    "fixed z-50 gap-4 bg-content0 p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
+    "fixed z-50 gap-4 bg-content0 p-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
     {
         variants: {
             side: {
@@ -64,10 +65,6 @@ const SheetContent = React.forwardRef<
             className={cn(sheetVariants({ side }), className)}
             {...props}
         >
-            <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-            </SheetPrimitive.Close>
             {children}
         </SheetPrimitive.Content>
     </SheetPortal>
@@ -76,15 +73,21 @@ SheetContent.displayName = SheetPrimitive.Content.displayName
 
 const SheetHeader = ({
     className,
+    children,
     ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
     <div
         className={cn(
-            "flex flex-col space-y-2 text-center sm:text-left",
+            "flex items-center justify-between text-foreground mb-2",
             className
         )}
         {...props}
-    />
+    >
+        {children}
+        <SheetPrimitive.Close className={cn("text-muted-foreground", className)}>
+            <X className="h-5 w-5" />
+        </SheetPrimitive.Close>
+    </div>
 )
 SheetHeader.displayName = "SheetHeader"
 
@@ -104,14 +107,37 @@ SheetFooter.displayName = "SheetFooter"
 
 const SheetTitle = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
->(({ className, ...props }, ref) => (
-    <SheetPrimitive.Title
-        ref={ref}
-        className={cn("text-xl font-semibold text-foreground", className)}
-        {...props}
-    />
-))
+  React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title> & {
+    showLeftChevron?: boolean;
+    onLeftChevronClick?: () => void;
+        }
+        >(
+        (
+            { className, children, showLeftChevron, onLeftChevronClick, ...props },
+            ref
+        ) => (
+            <SheetPrimitive.Title
+                ref={ref}
+                className={cn(
+                    "text-xl font-bold text-foreground",
+                    showLeftChevron && "flex flex-row items-center gap-2",
+                    className
+                )}
+                {...props}
+            >
+                {showLeftChevron && (
+                    <IconWrapper
+                        classNames={{
+                            base: "text-muted-foreground",
+                        }}
+                    >
+                        <ChevronLeft className="w-5 h-5" onClick={onLeftChevronClick} />
+                    </IconWrapper>
+                )}
+                {children}
+            </SheetPrimitive.Title>
+        )
+        )
 SheetTitle.displayName = SheetPrimitive.Title.displayName
 
 const SheetDescription = React.forwardRef<

@@ -1,6 +1,5 @@
 import React from "react"
-import { Header, Footer, Section, StickySidebar } from "./_components"
-import { Roadmap } from "./_components/Roadmap"
+import { Header, Footer, Section, StickySidebar, Roadmap } from "./_components"
 
 export default function LandingPage() {
     return (
@@ -13,7 +12,6 @@ export default function LandingPage() {
                 >
                     <div className="h-screen w-full bg-sidebar-foreground" />
                 </Section>
-
                 <Section 
                     title="Roadmap"
                     description="Main goals and objectives"
@@ -21,7 +19,6 @@ export default function LandingPage() {
                     <Roadmap />
                 </Section>
             </div>
-
             <StickySidebar />
             <Footer />
         </main>

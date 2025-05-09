@@ -53,7 +53,6 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
-import { getNFTImage } from "@/app/utils"
 import { pathConstants } from "@/constants"
 import { sessionDb } from "@/modules/dexie"
 
@@ -88,13 +87,9 @@ export const SignTransactionModal: FC = () => {
     ReturnType<typeof useSignUmiSerializedTxSwrMutation>
   >(SIGN_UMI_SERIALIZED_TX_SWR_MUTATION)    
 
-    const { swrMutation: transferNFTSwrMutation } = useSingletonHook<
+    const { swrMutation: transferNFTSwrMutation } = useSingletonHook2<
     ReturnType<typeof useTransferNFTSwrMutation>
   >(TRANSFER_NFT_SWR_MUTATION)
-
-    const { swr: swrStatic } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
-        GRAPHQL_QUERY_STATIC_SWR
-    )
 
     const router = useRouterWithSearchParams()
 
@@ -396,15 +391,17 @@ export const SignTransactionModal: FC = () => {
                     contentCallback={(item) => {
                         switch (item) {
                         case TransferTokenContent.Token: {
+                            const token = tokens[tokenKey]?.[chainKey]?.[network]
+                            if (!token) throw new Error("Token not found")
                             return (
                                 <div className="flex items-center justify-between px-2 py-3">
                                     <div className="text-sm font-semibold">Token</div>
                                     <div className="flex gap-2 items-center">
                                         <Image
-                                            src={tokens[tokenKey].imageUrl}
+                                            src={token.imageUrl || ""}
                                             className="rounded-none w-5 h-5"
                                         />
-                                        <div className="text-sm">{tokens[tokenKey].name}</div>
+                                        <div className="text-sm">{token.name}</div>
                                     </div>
                                 </div>
                             )
@@ -588,6 +585,8 @@ export const SignTransactionModal: FC = () => {
                     enableScroll={false}
                     items={Object.values(TransferNFTContent)}
                     contentCallback={(item) => {
+                        const collection = collections[collectionKey]?.[chainKey]?.[network]
+                        if (!collection) throw new Error("Collection not found")
                         switch (item) {
                         case TransferNFTContent.Collection: {
                             return (
@@ -595,11 +594,11 @@ export const SignTransactionModal: FC = () => {
                                     <div className="text-sm font-semibold">Collection</div>
                                     <div className="flex gap-2 items-center">
                                         <Image
-                                            src={collections[collectionKey].imageUrl}
+                                            src={collection.imageUrl}
                                             className="rounded-none w-5 h-5 object-contain"
                                         />
                                         <div className="text-sm">
-                                            {collections[collectionKey].name}
+                                            {collection.name}
                                         </div>
                                     </div>
                                 </div>
@@ -610,17 +609,8 @@ export const SignTransactionModal: FC = () => {
                                 <div className="flex items-center justify-between gap-12 px-2 py-3">
                                     <div className="text-sm font-semibold">NFT</div>
                                     <div className="flex gap-2 items-center">
-                                        <Image
-                                            src={(() => {
-                                                if (!swrStatic.data?.data) return ""
-                                                const imageUrl = getNFTImage({
-                                                    collectionKey,
-                                                    nft,
-                                                    collections,
-                                                    staticData: swrStatic.data.data,
-                                                })
-                                                return imageUrl
-                                            })()}
+                                        <Image 
+                                            src={nft.image || ""}
                                             className="rounded-none w-5 h-5 object-contain"
                                         />
                                         <div className="text-sm">{nft.name}</div>

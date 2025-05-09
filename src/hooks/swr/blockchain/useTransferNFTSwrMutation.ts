@@ -1,48 +1,44 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
-import { useAppSelector } from "@/redux"
-import { v4 } from "uuid"
 import { TransferResult, transferNFT } from "@/modules/blockchain"
+import { useAppSelector } from "@/redux"
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
+import { NFTType } from "@/modules/entities"
+import { useWallet } from "@solana/wallet-adapter-react"
 
 export interface UseTransferNFTSwrMutationArgs {
     nftAddress: string
     recipientAddress: string
-    collectionKey: string
+    collectionKey: NFTType
 }
 
 export const useTransferNFTSwrMutation = (): UseSWRMutation<
   TransferResult,
   UseTransferNFTSwrMutationArgs
 > => {
-    //get accounts
-    const accounts = useAppSelector(
-        (state) => state.sessionReducer.accounts.accounts
-    )
-    const activateAccountId = useAppSelector(
-        (state) => state.sessionReducer.accounts.activateAccountId
-    )
-    const account = accounts.find((account) => account.id === activateAccountId)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const network = useAppSelector((state) => state.sessionReducer.network)
-    const collections = useAppSelector((state) => state.sessionReducer.nftCollections)
-    
+    const { swr: swrStatic } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+        GRAPHQL_QUERY_STATIC_SWR
+    )
+    const collections = swrStatic.data?.data.nftCollections
+    const walletAdapter = useWallet()
     const swrMutation = useSWRMutation(
-        v4(),
+        "TRANSFER_NFT",
         async (
             _: string,
             extraArgs: { arg: UseTransferNFTSwrMutationArgs }
         ) => {
+            if (!collections) throw new Error("Collections not found")
             const { nftAddress, recipientAddress, collectionKey } = { ...extraArgs.arg }
-            if (!account) throw new Error("No account found")
-            
             return await transferNFT({
                 nftAddress,
                 recipientAddress,
                 chainKey,
-                network,
-                privateKey: account?.privateKey,
                 collectionKey,
                 collections,
+                walletAdapter
             })            
         }
     )

@@ -1,4 +1,4 @@
-import { DefaultToken, NFTData, NFTRarityEnum } from "@/modules/blockchain"
+import { NFTData, NFTRarityEnum } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse, TxResponses } from "@/modules/honeycomb"
 import { NFTType, TokenKey } from "@/modules/entities"
@@ -44,7 +44,7 @@ export interface TokenModal {
 }
 
 export interface NFTModal {
-  nftData?: ExtendedNFTData;
+  nftData?: NFTData;
 }
 
 export interface NFTClaimedModal {
@@ -62,8 +62,8 @@ export interface HoneycombProtocolRawTxsData {
 }
 
 export interface TransferNFTData {
-  collectionKey: string;
-  nft: ExtendedNFTData;
+  collectionKey: NFTType;
+  nft: NFTData;
   recipientAddress: string;
 }
 
@@ -139,9 +139,6 @@ export type SignTransactionModal = (
   saveAddress?: string;
 };
 
-export interface ExtendedNFTData extends NFTData {
-  collectionKey: string;
-}
 
 export interface ModalSlice {
   warningModal: WarningModal;
@@ -166,7 +163,7 @@ const initialState: ModalSlice = {
     },
     signTransactionModal: {
         data: {
-            tokenKey: DefaultToken.Native,
+            tokenKey: TokenKey.Native,
             amount: 0,
             recipientAddress: "",
         },

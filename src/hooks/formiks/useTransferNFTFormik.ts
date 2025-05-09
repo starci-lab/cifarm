@@ -8,11 +8,12 @@ import {
     TransactionType,
     useAppDispatch,
 } from "@/redux"
-import { ExtendedNFTData } from "@/redux"
+import { NFTData } from "@/modules/blockchain"
+import { NFTType } from "@/modules/entities"
 
 export interface TransferNFTFormikValues {
-  nft?: ExtendedNFTData;
-  collectionKey: string;
+  nft?: NFTData;
+  collectionKey: NFTType;
   recipientAddress: string;
 }
 
@@ -22,7 +23,7 @@ export const useTransferNFTFormik = (): FormikProps<TransferNFTFormikValues> => 
     )
     const dispatch = useAppDispatch()
     const initialValues: TransferNFTFormikValues = {
-        collectionKey: "",
+        collectionKey: NFTType.DragonFruit,
         recipientAddress: "",
     }
 
