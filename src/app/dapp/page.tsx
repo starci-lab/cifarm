@@ -92,7 +92,7 @@ const Page: FC = () => {
                             if (!data) throw new Error("Failed to purchase NFT Starter Box")
                             dispatch(
                                 setSignTransactionModal({
-                                    type: TransactionType.PurchaseSolanaNFTBox,
+                                    type: TransactionType.SolanaRawTx,
                                     data: {
                                         serializedTx: data.serializedTx,
                                     },

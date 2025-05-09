@@ -112,7 +112,7 @@ const Page: FC = () => {
                     const { data } = await createShipSolanaTransactionSwrMutation.trigger({})
                     if (!data) throw new Error("Failed to create ship solana transaction")
                     dispatch(setSignTransactionModal({
-                        type: TransactionType.ShipSolana,
+                        type: TransactionType.SolanaRawTx,
                         data: {
                             serializedTx: data.serializedTx
                         },

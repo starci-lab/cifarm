@@ -10,7 +10,6 @@ import { useRouterWithSearchParams, useGraphQLMutationCreatePurchaseSolanaNFTBox
 import { assetIconMap, AssetIconId } from "@/modules/assets"
 import { useDisclosure } from "react-use-disclosure"
 import { PaymentKind } from "@/modules/entities"
-import { envConfig } from "@/env"
 
 export const SolanaDApps: FC = () => {
     const router = useRouterWithSearchParams()
@@ -44,8 +43,6 @@ export const SolanaDApps: FC = () => {
         NFT_CLAIMED_DISCLOSURE
     )
 
-    const network = envConfig().network 
-
     const { accountAddress } = useGlobalAccountAddress()
     return (
         <div className="grid grid-cols-4 gap-4">
@@ -77,14 +74,13 @@ export const SolanaDApps: FC = () => {
                     {
                         request: {
                             accountAddress,
-                            network,
                         }
                     }
                 )
                     if (!data) throw new Error("Failed to purchase NFT Starter Box")
                     dispatch(
                         setSignTransactionModal({
-                            type: TransactionType.PurchaseSolanaNFTBox,
+                            type: TransactionType.SolanaRawTx,
                             data: {
                                 serializedTx: data.serializedTx,
                             },
