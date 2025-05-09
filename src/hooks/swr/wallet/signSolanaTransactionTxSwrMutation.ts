@@ -26,9 +26,11 @@ export const useSignSolanaTransactionTxSwrMutation = (): UseSWRMutation<
             const { serializedTx } = { ...extraArgs.arg }
             const umi = getUmi(network, walletAdapter)
             const tx = umi.transactions.deserialize(base58.decode(serializedTx))
+            console.log(tx)
             const signedTx = await umi.identity.signTransaction(
                 tx
             )
+            console.log(signedTx)
             return {
                 serializedTx: base58.encode(
                     umi.transactions.serialize(signedTx)

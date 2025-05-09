@@ -6,7 +6,6 @@ import {
     SEND_UMI_SERIALIZED_TX_SWR_MUTATION,
     SIGN_SOLANA_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
-    SIGN_UMI_SERIALIZED_TX_SWR_MUTATION,
     TRANSFER_NFT_SWR_MUTATION,
     TRANSFER_TOKEN_SWR_MUTATION,
 } from "@/app/constants"
@@ -14,19 +13,15 @@ import { truncateString } from "@/modules/common"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { Image, List, Snippet, Spacer } from "@/components"
 import {
-    BuyGoldsSolanaData,
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
-    PurchaseSolanaNFTBoxData,
-    ShipSolanaData,
+    SolanaRawTxData,
     TransactionType,
     TransferNFTData,
     TransferTokenData,
     triggerRefreshAddresses,
-    UnwrapSolanaMetaplexNFTData,
     useAppDispatch,
     useAppSelector,
-    WrapSolanaMetaplexNFTData,
 } from "@/redux"
 import React, { FC } from "react"
 import { blockchainMap, explorerUrl } from "@/modules/blockchain"
@@ -37,7 +32,6 @@ import {
     useSignSolanaTransactionTxSwrMutation,
     useRouterWithSearchParams,
     useSendUmiSerializedTxSwrMutation,
-    useSignUmiSerializedTxSwrMutation,
     useTransferNFTSwrMutation,
     useTransferTokenSwrMutation,
 } from "@/hooks"
@@ -83,10 +77,6 @@ export const SignTransactionModal: FC = () => {
     ReturnType<typeof useSendUmiSerializedTxSwrMutation>
   >(SEND_UMI_SERIALIZED_TX_SWR_MUTATION)        
 
-    const { swrMutation: signUmiSerializedTxSwrMutation } = useSingletonHook<
-    ReturnType<typeof useSignUmiSerializedTxSwrMutation>
-  >(SIGN_UMI_SERIALIZED_TX_SWR_MUTATION)    
-
     const { swrMutation: transferNFTSwrMutation } = useSingletonHook2<
     ReturnType<typeof useTransferNFTSwrMutation>
   >(TRANSFER_NFT_SWR_MUTATION)
@@ -112,7 +102,7 @@ export const SignTransactionModal: FC = () => {
     const saveAddress = useAppSelector(
         (state) => state.modalReducer.signTransactionModal.saveAddress
     )
-
+    
     const dispatch = useAppDispatch()
 
     const addTxHashToast = (txHash: string) =>
@@ -227,11 +217,13 @@ export const SignTransactionModal: FC = () => {
                     router.push(pathConstants.collection)
                     break
                 }
-                case TransactionType.PurchaseSolanaNFTBox: {
-                    const { serializedTx } = data as PurchaseSolanaNFTBoxData
+                case TransactionType.SolanaRawTx: {
+                    const { serializedTx } = data as SolanaRawTxData
+                    console.log("serializedTx", serializedTx)
                     const { serializedTx: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
                         serializedTx,
                     })
+                    console.log("signedSerializedTx", signedSerializedTx)
                     // decode the serializedTx
                     if (postActionHook) {
                         txHash = await postActionHook(signedSerializedTx)
@@ -242,70 +234,6 @@ export const SignTransactionModal: FC = () => {
                         txHash = txHashResponse
                     }
                     break
-                }
-                case TransactionType.ShipSolana: {
-                    const { serializedTx } = data as ShipSolanaData
-                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
-                        serializedTx,
-                    })
-                    // decode the serializedTx
-                    if (postActionHook) {
-                        txHash = await postActionHook(signedSerializedTx)
-                    } else {
-                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-                            serializedTx: signedSerializedTx,
-                        })
-                        txHash = txHashResponse
-                    }
-                    break
-                }
-                case TransactionType.WrapSolanaMetaplexNFT: {
-                    const { serializedTx } = data as WrapSolanaMetaplexNFTData
-                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
-                        serializedTx,
-                    })
-                    // decode the serializedTx
-                    if (postActionHook) {
-                        txHash = await postActionHook(signedSerializedTx)
-                    } else {
-                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-                            serializedTx,
-                        })
-                        txHash = txHashResponse
-                    }
-                    break
-                }
-                case TransactionType.BuyGoldsSolana: {
-                    const { serializedTx } = data as BuyGoldsSolanaData
-                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
-                        serializedTx,
-                    })
-                    // decode the serializedTx
-                    if (postActionHook) {
-                        txHash = await postActionHook(signedSerializedTx)
-                    } else {
-                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-                            serializedTx: signedSerializedTx,
-                        })
-                        txHash = txHashResponse
-                    }
-                    break
-                }
-                case TransactionType.UnwrapSolanaMetaplexNFT: {
-                    const { serializedTx } = data as UnwrapSolanaMetaplexNFTData
-                    const { serializedTx: signedSerializedTx } = await signUmiSerializedTxSwrMutation.trigger({
-                        serializedTx,
-                    })
-                    // decode the serializedTx
-                    if (postActionHook) {
-                        txHash = await postActionHook(signedSerializedTx)
-                    } else {
-                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-                            serializedTx: signedSerializedTx,
-                        })
-                        txHash = txHashResponse
-                    }
-                    break   
                 }
                 default: {
                     throw new Error("Invalid transaction type")
@@ -362,20 +290,8 @@ export const SignTransactionModal: FC = () => {
         [TransactionType.HoneycombProtocolRawTxs]: {
             name: "Honeycomb Protocol Raw Txs",
         },
-        [TransactionType.WrapSolanaMetaplexNFT]: {
-            name: "Wrap Solana Metaplex NFT",
-        },
-        [TransactionType.UnwrapSolanaMetaplexNFT]: {
-            name: "Unwrap Solana Metaplex NFT",
-        },
-        [TransactionType.PurchaseSolanaNFTBox]: {
-            name: "Purchase Solana NFT Box",
-        },
-        [TransactionType.ShipSolana]: {
-            name: "Ship",
-        },
-        [TransactionType.BuyGoldsSolana]: {
-            name: "Buy Golds",
+        [TransactionType.SolanaRawTx]: {
+            name: "Solana Raw Tx",
         },
     }
 
@@ -499,67 +415,15 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
-        case TransactionType.WrapSolanaMetaplexNFT: {
-            const { serializedTx } = data as WrapSolanaMetaplexNFTData
+        case TransactionType.SolanaRawTx: {
+            const { serializedTx } = data as SolanaRawTxData
             return (
                 <List
                     enableScroll={false}
-                    items={Object.values(WrapSolanaMetaplexNFTContent)}
+                    items={Object.values(SolanaRawTxContent)}
                     contentCallback={(item) => {
                         switch (item) {
-                        case WrapSolanaMetaplexNFTContent.SerializedTx: {
-                            return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                    <div className="text-sm font-semibold">Serialized Tx</div>
-                                    <div className="flex gap-2 items-center">
-                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
-                                            {truncateString(serializedTx, 30, 4)}
-                                        </div>
-                                        <Snippet code={serializedTx} />
-                                    </div>
-                                </div>
-                            )
-                        }
-                        }
-                    }}
-                />
-            )
-        }
-        case TransactionType.UnwrapSolanaMetaplexNFT: {
-            const { serializedTx } = data as UnwrapSolanaMetaplexNFTData
-            return (
-                <List
-                    enableScroll={false}
-                    items={Object.values(UnwrapSolanaMetaplexNFTContent)}
-                    contentCallback={(item) => {
-                        switch (item) {
-                        case UnwrapSolanaMetaplexNFTContent.SerializedTx: {
-                            return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                    <div className="text-sm font-semibold">Serialized Tx</div>
-                                    <div className="flex gap-2 items-center">
-                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
-                                            {truncateString(serializedTx, 30, 4)}
-                                        </div>
-                                        <Snippet code={serializedTx} />
-                                    </div>
-                                </div>
-                            )
-                        }
-                        }
-                    }}
-                />
-            )
-        }
-        case TransactionType.BuyGoldsSolana: {
-            const { serializedTx } = data as BuyGoldsSolanaData
-            return (
-                <List
-                    enableScroll={false}
-                    items={Object.values(BuyGoldsSolanaContent)}
-                    contentCallback={(item) => {
-                        switch (item) {
-                        case BuyGoldsSolanaContent.SerializedTx: {
+                        case SolanaRawTxContent.SerializedTx: {
                             return (
                                 <div className="flex items-center justify-between gap-12 px-2 py-3">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
@@ -638,58 +502,6 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
-        case TransactionType.PurchaseSolanaNFTBox: {
-            const { serializedTx } = data as PurchaseSolanaNFTBoxData
-            return (
-                <List
-                    enableScroll={false}
-                    items={Object.values(PurchaseSolanaNFTBoxContent)}
-                    contentCallback={(item) => {
-                        switch (item) {
-                        case PurchaseSolanaNFTBoxContent.SerializedTx: {
-                            return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                    <div className="text-sm font-semibold">Serialized Tx</div>
-                                    <div className="flex gap-2 items-center">
-                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
-                                            {truncateString(serializedTx, 30, 4)}
-                                        </div>
-                                        <Snippet code={serializedTx} />
-                                    </div>
-                                </div>
-                            )
-                        }
-                        }
-                    }}
-                />
-            )
-        }
-        case TransactionType.ShipSolana: {
-            const { serializedTx } = data as ShipSolanaData
-            return (
-                <List
-                    enableScroll={false}
-                    items={Object.values(ShipSolanaContent)}
-                    contentCallback={(item) => {
-                        switch (item) {
-                        case ShipSolanaContent.SerializedTx: {
-                            return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
-                                    <div className="text-sm font-semibold">Serialized Tx</div>
-                                    <div className="flex gap-2 items-center">
-                                        <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
-                                            {truncateString(serializedTx, 30, 4)}
-                                        </div>
-                                        <Snippet code={serializedTx} />
-                                    </div>
-                                </div>
-                            )
-                        }
-                        }
-                    }}
-                />
-            )
-        }
         }
     }
 
@@ -756,22 +568,6 @@ export enum HoneycombProtocolRawTxsContent {
   SerializedTx = "serializedTxs",
 }
 
-export enum WrapSolanaMetaplexNFTContent {
-  SerializedTx = "serializedTx",
-}
-
-export enum UnwrapSolanaMetaplexNFTContent {
-  SerializedTx = "serializedTx",
-}
-
-export enum PurchaseSolanaNFTBoxContent {
-  SerializedTx = "serializedTx",
-}
-
-export enum ShipSolanaContent {
-  SerializedTx = "serializedTx",
-}
-
-export enum BuyGoldsSolanaContent {
+export enum SolanaRawTxContent {
   SerializedTx = "serializedTx",
 }

@@ -68,7 +68,7 @@ export const getUmi = (network: Network, walletAdapter: WalletAdapter | WalletCo
         solanaHttpRpcUrl({ chainKey: ChainKey.Solana, network })
     )
         .use(mplCore())
-        .use(signerIdentity(createSignerFromWalletAdapter(walletAdapter)))
         .use(mplToolbox())
+        .use(signerIdentity(createSignerFromWalletAdapter(walletAdapter), true))
     return umi
 }

@@ -26,6 +26,7 @@ const mutationMap: Record<MutationCreateBuyGoldsSolanaTransaction, DocumentNode>
 
 export interface CreateBuyGoldsSolanaTransactionRequest {
   selectionIndex: number
+  accountAddress: string
 }
 
 export type MutationCreateBuyGoldsSolanaTransactionParams = MutationParams<

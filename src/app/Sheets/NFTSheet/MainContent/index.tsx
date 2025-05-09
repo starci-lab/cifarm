@@ -250,7 +250,7 @@ export const MainContent: FC = () => {
                                 }
                                 dispatch(
                                     setSignTransactionModal({
-                                        type: TransactionType.UnwrapSolanaMetaplexNFT,
+                                        type: TransactionType.SolanaRawTx,
                                         data: {
                                             serializedTx: data.serializedTx,
                                         },
@@ -302,7 +302,7 @@ export const MainContent: FC = () => {
                                 }
                                 dispatch(
                                     setSignTransactionModal({
-                                        type: TransactionType.WrapSolanaMetaplexNFT,
+                                        type: TransactionType.SolanaRawTx,
                                         data: {
                                             serializedTx: data.serializedTx,
                                         },

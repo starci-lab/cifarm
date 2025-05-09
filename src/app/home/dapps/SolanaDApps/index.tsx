@@ -3,17 +3,17 @@ import { PaymentIcon } from "@/components"
 import React, { FC } from "react"
 import { DAppCard } from "../DAppCard"
 import { setNFTClaimedModal, setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
-import { GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION, NFT_CLAIMED_DISCLOSURE, QUERY_STATIC_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_STARTER_BOX_TRANSACTION_SWR_MUTATION, NFT_CLAIMED_DISCLOSURE, QUERY_STATIC_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE, SHEET_WHOLSALE_MARKET_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { pathConstants } from "@/constants"
-import { useRouterWithSearchParams, useGraphQLMutationCreatePurchaseSolanaNFTBoxTransactionSwrMutation, useGraphQLMutationSendPurchaseSolanaNFTBoxTransactionSwrMutation, useGraphQLQueryStaticSwr, useGlobalAccountAddress } from "@/hooks"
+import { useGraphQLMutationCreatePurchaseSolanaNFTBoxTransactionSwrMutation, useGraphQLMutationSendPurchaseSolanaNFTBoxTransactionSwrMutation, useGraphQLQueryStaticSwr, useGlobalAccountAddress } from "@/hooks"
 import { assetIconMap, AssetIconId } from "@/modules/assets"
 import { useDisclosure } from "react-use-disclosure"
 import { PaymentKind } from "@/modules/entities"
-import { envConfig } from "@/env"
 
 export const SolanaDApps: FC = () => {
-    const router = useRouterWithSearchParams()
+    const { open: openWholesaleMarketSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        SHEET_WHOLSALE_MARKET_DISCLOSURE
+    )
     const { swrMutation: createPurchaseSolanaNFTBoxTransactionSwrMutation } =
     useSingletonHook<
       ReturnType<
@@ -43,8 +43,6 @@ export const SolanaDApps: FC = () => {
     const { open: openNFTClaimedModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NFT_CLAIMED_DISCLOSURE
     )
-
-    const network = envConfig().network 
 
     const { accountAddress } = useGlobalAccountAddress()
     return (
@@ -77,14 +75,13 @@ export const SolanaDApps: FC = () => {
                     {
                         request: {
                             accountAddress,
-                            network,
                         }
                     }
                 )
                     if (!data) throw new Error("Failed to purchase NFT Starter Box")
                     dispatch(
                         setSignTransactionModal({
-                            type: TransactionType.PurchaseSolanaNFTBox,
+                            type: TransactionType.SolanaRawTx,
                             data: {
                                 serializedTx: data.serializedTx,
                             },
@@ -123,7 +120,29 @@ export const SolanaDApps: FC = () => {
                 title="Wholesale Market"
                 description="Trade goods in bulk and earn tokens for each successful delivery."
                 imageUrl={assetIconMap[AssetIconId.WholesaleMarket].base.assetUrl}
-                onClick={() => router.push(pathConstants.dappWholesaleMarket)}
+                onClick={openWholesaleMarketSheet}
+            />
+            <DAppCard
+                title="NFT Marketplace"
+                description="Trade NFTs with other players."
+                imageUrl={assetIconMap[AssetIconId.NFTMarketplace].base.assetUrl}
+                onClick={() => {}}
+                content={
+                    <div className="text-muted-foreground">
+                        Coming soon
+                    </div>
+                }
+            />
+            <DAppCard
+                title="$CIFARM Staking"
+                description="Stake $CIFARM to earn rewards."
+                imageUrl={""}
+                onClick={() => {}}
+                content={
+                    <div className="text-muted-foreground">
+                        Coming soon
+                    </div>
+                }
             />
         </div>
     )

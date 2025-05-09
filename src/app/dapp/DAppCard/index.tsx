@@ -1,5 +1,4 @@
-import { PressableCard, Image, Spacer } from "@/components"
-import { Loader2 } from "lucide-react"
+import { PressableCard, Image, Spacer, Spinner } from "@/components"
 import React, { FC } from "react"
 
 interface DAppCardProps {
@@ -18,7 +17,7 @@ export const DAppCard: FC<DAppCardProps> = ({ title, description, imageUrl, onCl
                 <Image src={imageUrl} className="w-20 h-20 object-contain" />
                 <div className="flex flex-col">
                     <div className="flex items-center gap-1">
-                        {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                        {isLoading && <Spinner />}
                         <div>{title}</div>
                     </div>
                     <div className="text-xs text-muted-foreground">{description}</div>

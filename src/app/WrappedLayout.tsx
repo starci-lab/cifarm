@@ -64,7 +64,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                 <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
                     <WalletSuiProvider>
                         <ConnectionProvider endpoint={endpoint}>
-                            <WalletProvider wallets={[]} autoConnect>
+                            <WalletProvider wallets={[]}>
                                 <WalletModalProvider>
                                     <TooltipProvider>
                                         <SWRConfig

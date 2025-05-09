@@ -2,9 +2,8 @@
 
 import { Button, ButtonProps } from "@/components"
 import React, { useEffect, useRef } from "react"
-import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-
+import { Spinner } from "../Spinner"
 export interface ExtendedButtonProps extends ButtonProps {
   isLoading?: boolean;
   onTap?: () => void;
@@ -94,7 +93,7 @@ export const ExtendedButton = ({
             } as React.CSSProperties}
         >
             <div className="relative z-10 flex items-center gap-2">
-                {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                {isLoading && <Spinner />}
                 {children}
             </div>
             {

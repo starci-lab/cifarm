@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react"
 import { PressableCard, PressableCardProps } from "@/components"
-import { Loader2 } from "lucide-react"
+import { Spinner } from "../Spinner"
 export interface PressableActionProps extends PressableCardProps {
   name: string;
   icon: ReactNode;
@@ -13,7 +13,7 @@ export const PressableAction: FC<PressableActionProps> = ({ icon, name, isLoadin
             <div className="grid gap-2 place-items-center">
                 {icon}
                 <div className="text-sm text-center flex gap-2 items-center">  
-                    {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {isLoading && <Spinner />}
                     {name}
                 </div> 
             </div>
