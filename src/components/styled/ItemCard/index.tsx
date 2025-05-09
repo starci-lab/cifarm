@@ -75,7 +75,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
     return (
         <Card
             className={cn(
-                "w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none  bg-transparent",
+                "w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none bg-transparent",
                 classNames.card
             )}
             onClick={onClick}
@@ -85,7 +85,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
                     "grid place-items-center p-0 w-14 h-14 relative rounded-md",
                     classNames.cardContent,
                     {
-                        "bg-card": !hideCardContentBg,
+                        "bg-content2": !hideCardContentBg,
                     }
                 )}
             >

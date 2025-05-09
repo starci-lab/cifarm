@@ -1,28 +1,32 @@
-"use client"
-
-import React, { FC } from "react"
-import { Container, Header, ItemCard, GridTable } from "@/components"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
-import { useGraphQLQueryStaticSwr, useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryVaultCurrentSwr } from "@/hooks"
-import { assetProductMap } from "@/modules/assets"
 import {
     ExtendedButton,
+    GridTable,
+    ItemCard,
     PaymentIcon,
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
     Spacer,
     Title,
-} from "@/components/styled"
-import { PaymentKind } from "@/modules/entities"
-import { useAppDispatch, setSignTransactionModal, TransactionType } from "@/redux"
+} from "@/components"
+import React, { FC } from "react"
+import { useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useGraphQLQueryVaultCurrentSwr, useIsMobile, useGlobalAccountAddress } from "@/hooks"
+import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
-const Page: FC = () => {
-    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
-        QUERY_STATIC_SWR_MUTATION
-    )
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(QUERY_STATIC_SWR_MUTATION)
+import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
+import { assetProductMap } from "@/modules/assets"
+import { PaymentKind } from "@/modules/entities"
 
+export const WholesaleMarketSheet: FC = () => {
+    const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        SHEET_WHOLSALE_MARKET_DISCLOSURE
+    )
+
+    const isMobile = useIsMobile()
+
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(QUERY_STATIC_SWR_MUTATION) 
     const { swr: vaultCurrentSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryVaultCurrentSwr>>(GRAPHQL_QUERY_VAULT_CURRENT_SWR)
     
     const { swrMutation: createShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationCreateShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
@@ -32,15 +36,16 @@ const Page: FC = () => {
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
     )
+
+    const { accountAddress } = useGlobalAccountAddress()
+    
     return (
-        <Container hasPadding>
-            <div className="h-full justify-between flex flex-col">
+        <Sheet open={isOpen} onOpenChange={toggle}>
+            <SheetContent side={isMobile ? "bottom" : "right"} className="flex flex-col justify-between">
                 <div>
-                    <div>
-                        <Header
-                            title="Wholesale Market"
-                        />
-                    </div>
+                    <SheetHeader>
+                        <SheetTitle>Wholesale Market</SheetTitle>
+                    </SheetHeader>
                     <Spacer y={6} />
                     <div>
                         <Title
@@ -51,7 +56,7 @@ const Page: FC = () => {
                         <div>
                             <GridTable
                                 enableScroll={false}
-                                items={swr.data?.data.wholesaleMarket.products || []}
+                                items={staticSwr.data?.data.wholesaleMarket.products || []}
                                 contentCallback={({ quantity, productId }) => {
                                     const product = staticSwr.data?.data.products.find(
                                         (product) => product.id === productId
@@ -104,11 +109,16 @@ const Page: FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <Spacer y={6} />
                     </div>
+                    <Spacer y={6} />
                 </div>
                 <ExtendedButton className="w-full" onClick={async () => {
-                    const { data } = await createShipSolanaTransactionSwrMutation.trigger({})
+                    if (!accountAddress) throw new Error("Account address is required")
+                    const { data } = await createShipSolanaTransactionSwrMutation.trigger({
+                        request: {
+                            accountAddress
+                        }
+                    })
                     if (!data) throw new Error("Failed to create ship solana transaction")
                     dispatch(setSignTransactionModal({
                         type: TransactionType.SolanaRawTx,
@@ -129,9 +139,7 @@ const Page: FC = () => {
                 }}>
           Ship
                 </ExtendedButton>
-            </div>
-        </Container>
+            </SheetContent>
+        </Sheet>
     )
 }
-
-export default Page

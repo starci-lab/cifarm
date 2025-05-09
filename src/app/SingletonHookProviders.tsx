@@ -90,6 +90,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             SHEET_TOKEN_DISCLOSURE: useDisclosure(),
             SHEET_TRANSFER_TOKEN_DISCLOSURE: useDisclosure(),
             SHEET_NFT_DISCLOSURE: useDisclosure(),
+            SHEET_WHOLSALE_MARKET_DISCLOSURE: useDisclosure(),
 
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),

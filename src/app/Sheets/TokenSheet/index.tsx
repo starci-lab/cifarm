@@ -10,6 +10,7 @@ import { TokenSheetPage, useAppSelector } from "@/redux"
 import { MainContent } from "./MainContent"
 import { TransferContent } from "./TransferContent"
 import { SHEET_TOKEN_DISCLOSURE } from "@/app/constants"
+
 export const TokenSheet: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_TOKEN_DISCLOSURE

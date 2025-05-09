@@ -1,8 +1,7 @@
 import { Button, ButtonProps } from "@/components"
 import React, { useEffect, useRef } from "react"
-import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-
+import { Spinner } from "../Spinner"
 export interface ExtendedButtonProps extends ButtonProps {
   isLoading?: boolean;
   onTap?: () => void;
@@ -83,7 +82,7 @@ export const ExtendedButton = ({
                 useGradientBg && "bg-gradient-to-r from-primary-foreground to-primary hover:bg-primary",
                 props.className)}
         >
-            {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+            {isLoading && <Spinner />}
             {children}
         </Button>
     )
