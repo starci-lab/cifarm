@@ -1,3 +1,5 @@
+"use client"
+
 import { Button, ButtonProps } from "@/components"
 import React, { useEffect, useRef } from "react"
 import { Loader2 } from "lucide-react"
@@ -8,6 +10,8 @@ export interface ExtendedButtonProps extends ButtonProps {
   onTap?: () => void;
   onPress?: (pressTime: number) => void;
   useGradientBg?: boolean;
+  pulseColor?: string;
+  duration?: string;
 }
 
 export const ExtendedButton = ({
@@ -16,6 +20,8 @@ export const ExtendedButton = ({
     onTap,
     onPress,
     useGradientBg,
+    pulseColor,
+    duration = "1.5s",
     ...props
 }: ExtendedButtonProps) => {
     const ref = useRef<HTMLButtonElement | null>(null)
@@ -79,12 +85,23 @@ export const ExtendedButton = ({
             {...props}
             disabled={isLoading || props.disabled}
             className={cn(
-                "rounded-lg cursor",
+                "rounded-lg cursor relative",
                 useGradientBg && "bg-gradient-to-r from-primary-foreground to-primary hover:bg-primary",
                 props.className)}
+            style={{
+                "--pulse-color": pulseColor,
+                "--duration": duration,
+            } as React.CSSProperties}
         >
-            {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
-            {children}
+            <div className="relative z-10 flex items-center gap-2">
+                {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+                {children}
+            </div>
+            {
+                pulseColor && (
+                    <div className="absolute left-1/2 top-1/2 size-full -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-inherit" />
+                )
+            }
         </Button>
     )
 }

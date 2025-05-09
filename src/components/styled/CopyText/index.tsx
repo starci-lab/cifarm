@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components"
 import { ClipboardIcon } from "@heroicons/react/24/solid" // You can replace this with a ShadCN icon if needed
 import React, { useState } from "react"

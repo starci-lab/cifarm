@@ -1,8 +1,8 @@
 "use client"
-import React from "react"
 import { useIsMobile } from "@/hooks"
-import Link from "next/link"
-import { SOCIAL_LINKS } from "./constants"
+import { UrlItem } from "../../../components/styled/UrlItem"
+import { socialLinksConstants } from "../../../constants/socialLinks"
+import React from "react"
 
 interface StickySidebarProps {
     className?: string
@@ -16,18 +16,17 @@ export function StickySidebar({ className = "" }: StickySidebarProps) {
     }
 
     return (
-        <div className={`fixed top-56 right-4 w-12 h-fit ${className}`}>
+        <div className={`fixed top-56 right-4 w-12 h-fit z-50 ${className}`}>
             <div className="flex flex-col gap-4">
-                {SOCIAL_LINKS.map((social) => (
-                    <Link
+                {socialLinksConstants.map((social) => (
+                    <UrlItem
                         key={social.name}
-                        href={social.href || "#"}
-                        className={`${social.className} rounded-full p-3 text-white transition-colors`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <social.icon size={20} />
-                    </Link>
+                        href={social.href}
+                        label={social.label}
+                        isExternal={true}
+                        icon={social.icon}
+                        className={`${social.className} rounded-full p-3 text-white transition-colors flex items-center justify-center`}
+                    />
                 ))}
             </div>
         </div>

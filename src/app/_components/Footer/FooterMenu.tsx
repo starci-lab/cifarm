@@ -1,5 +1,5 @@
 import React from "react"
-import Link from "next/link"
+import { UrlItem } from "../../../components/styled/UrlItem"
 
 interface FooterMenuProps {
     title: string
@@ -17,20 +17,11 @@ export const FooterMenu = ({ title, items }: FooterMenuProps) => {
             <ul className="space-y-2">
                 {items.map((item, index) => (
                     <li key={index}>
-                        {item.isExternal ? (
-                            <a
-                                href={item.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="transition-colors"
-                            >
-                                {item.label}
-                            </a>
-                        ) : (
-                            <Link href={item.href} className="transition-colors">
-                                {item.label}
-                            </Link>
-                        )}
+                        <UrlItem
+                            href={item.href}
+                            label={item.label}
+                            isExternal={item.isExternal}
+                        />
                     </li>
                 ))}
             </ul>

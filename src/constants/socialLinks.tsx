@@ -1,5 +1,5 @@
 import React from "react"
-import { Twitter, Youtube } from "lucide-react"
+import { Twitter, Youtube, MessageCircle } from "lucide-react"
 import { LucideIcon } from "lucide-react"
 
 interface SocialLink {
@@ -7,14 +7,16 @@ interface SocialLink {
     icon: LucideIcon | React.FC
     href: string
     className: string
+    label: string
 }
 
-export const SOCIAL_LINKS: SocialLink[] = [
+export const socialLinksConstants: SocialLink[] = [
     {
         name: "Twitter",
         icon: Twitter,
         href: "#",
-        className: "bg-black hover:bg-gray-800"
+        className: "bg-black hover:bg-gray-800",
+        label: "X Link"
     },
     {
         name: "Discord",
@@ -24,12 +26,21 @@ export const SOCIAL_LINKS: SocialLink[] = [
             </svg>
         ),
         href: "#",
-        className: "bg-[#5865F2] hover:opacity-90"
+        className: "bg-[#5865F2] hover:opacity-90",
+        label: "Discord Link"
+    },
+    {
+        name: "Telegram",
+        icon: MessageCircle,
+        href: "#",
+        className: "bg-blue-500 hover:opacity-90",
+        label: "Telegram Link"
     },
     {
         name: "Youtube",
         icon: Youtube,
         href: "#",
-        className: "bg-red-600 hover:opacity-90"
+        className: "bg-red-600 hover:opacity-90",
+        label: "Youtube Link"
     }
 ] 

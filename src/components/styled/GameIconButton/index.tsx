@@ -1,3 +1,5 @@
+"use client"
+
 import React, { FC, useRef, useState, useEffect } from "react"
 import { ScaledImage } from "../Image"
 import { cn } from "@/lib/utils"

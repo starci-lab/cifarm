@@ -1,12 +1,12 @@
 import React from "react"
 
-interface SectionProps {
+interface WrappedSectionProps {
     title: string
     description?: string
     children: React.ReactNode
 }
 
-export const Section: React.FC<SectionProps> = ({ title, description, children }) => {
+export const WrappedSection: React.FC<WrappedSectionProps> = ({ title, description, children }) => {
     return (
         <section className="w-full py-16 px-4 md:px-8">
             <div className="max-w-7xl mx-auto">

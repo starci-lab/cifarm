@@ -65,6 +65,10 @@ body {
 
     --primary: 100 100% 20%;
 
+    --primary1: 100 100% 4%;
+
+    --primary2: 60 100% 59%;
+
     --primary-foreground: 100 100% 70%;
 
     --secondary: 0 0% 98%;
@@ -184,6 +188,10 @@ body {
   }
   .theme {
     --animate-ripple: ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite;
+    --animate-pulse: pulse var(--duration) ease-out infinite;
+    --animate-line-shadow: line-shadow 15s linear infinite;
+    --animate-shiny-text: shiny-text 8s infinite;
+    --animate-gradient: gradient 8s linear infinite;
   }
 }
 

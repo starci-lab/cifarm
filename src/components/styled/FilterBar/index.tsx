@@ -1,3 +1,5 @@
+"use client"
+
 import { ExtendedInput } from "@/components"
 import React, { FC, useEffect, useState } from "react"
 import { SearchIcon } from "lucide-react"

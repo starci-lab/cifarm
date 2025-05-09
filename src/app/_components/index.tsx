@@ -1,4 +1,6 @@
 export * from "./Header"
 export * from "./Footer"
-export * from "./Section"
 export * from "./StickySidebar"
+export * from "./Roadmap"
+export * from "./Hero"
+export * from "./Roadmap"

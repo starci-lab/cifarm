@@ -1,23 +1,22 @@
+"use client"
+
 import React from "react"
-import { Header, Footer, Section, StickySidebar, Roadmap } from "./_components"
+import { Header, Footer, StickySidebar, Roadmap, Hero } from "./_components"
+import { ScrollProgress, WrappedSection } from "@/components"
 
 export default function LandingPage() {
     return (
-        <main className="relative w-full bg-sidebar-foreground">
+        <main className="relative w-full bg-primary">
             <Header />
-            <div className="container mx-auto px-4 py-8">
-                <Section 
-                    title="Welcome to Cifarm"
-                    description="Your trusted platform for secure and efficient cryptocurrency management"
-                >
-                    <div className="h-screen w-full bg-sidebar-foreground" />
-                </Section>
-                <Section 
+            <ScrollProgress />
+            <div className="container mx-auto px-4">
+                <Hero />
+                <WrappedSection 
                     title="Roadmap"
                     description="Main goals and objectives"
                 >
                     <Roadmap />
-                </Section>
+                </WrappedSection>
             </div>
             <StickySidebar />
             <Footer />

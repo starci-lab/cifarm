@@ -34,7 +34,9 @@ const config: Config = {
     			},
     			primary: {
     				DEFAULT: "hsl(var(--primary))",
-    				foreground: "hsl(var(--primary-foreground))"
+    				foreground: "hsl(var(--primary-foreground))",
+                    "1": "hsl(var(--primary1))",
+                    "2": "hsl(var(--primary2))"
     			},
     			secondary: {
     				DEFAULT: "hsl(var(--secondary))",
@@ -102,12 +104,43 @@ const config: Config = {
                     "50%": {
                         transform: "translate(-50%, -50%) scale(0.9)"
                     }
+                },
+                "pulse": {
+                    "0%, 100%": {
+                        boxShadow: "0 0 0 0 var(--pulse-color)"
+                    },
+                    "50%": {
+                        boxShadow: "0 0 0 8px var(--pulse-color)"
+                    }
+                },
+                "line-shadow": {
+                    "0%": {
+                        backgroundPosition: "0 0"
+                    },
+                    "100%": {
+                        backgroundPosition: "100% -100%"
+                    }
+                },
+                "shiny-text": {
+                    "0%, 90%, 100%": {
+                        backgroundPosition: "calc(-100% - var(--shiny-width)) 0"
+                    },
+                    "30%, 60%": {
+                        backgroundPosition: "calc(100% + var(--shiny-width)) 0"
+                    }
+                },
+                "gradient": {
+                    "to": {
+                        backgroundPosition: "var(--bg-size, 300%) 0"
+                    }
                 }
     		},
     		animation: {
     			"accordion-down": "accordion-down 0.2s ease-out",
     			"accordion-up": "accordion-up 0.2s ease-out",
-                "ripple": "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite"
+                "ripple": "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
+                "pulse": "pulse var(--duration) ease-out infinite",
+                "line-shadow": "line-shadow 10s linear infinite"
     		}
     	}
     },

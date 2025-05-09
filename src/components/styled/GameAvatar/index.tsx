@@ -1,3 +1,5 @@
+"use client"
+
 import { Avatar, AvatarImage } from "../../ui"
 import React, { FC, useState, useEffect } from "react"
 import { createJazziconBlobUrl } from "@/modules/jazz"

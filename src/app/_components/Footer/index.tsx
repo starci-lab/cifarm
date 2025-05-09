@@ -1,54 +1,8 @@
 import React from "react"
 import Image from "next/image"
-import { Ripple } from "@/components/magicui/ripple"
+import { Ripple, UrlItem } from "@/components"
 import { FooterMenu } from "./FooterMenu"
-import { SocialLinks } from "./SocialLinks"
-
-const menuItems = {
-    token: {
-        title: "Token",
-        items: [
-            {
-                label: "CAULI Token",
-                href: "#about-farm"
-            }
-        ]
-    },
-    aboutGame: {
-        title: "About the Game",
-        items: [
-            {
-                label: "Play Now",
-                href: "/sign-in"
-            },
-            {
-                label: "How to play",
-                href: "/",
-                isExternal: true
-            }
-        ]
-    },
-    information: {
-        title: "Information",
-        items: [
-            {
-                label: "Docs",
-                href: "/",
-                isExternal: true
-            },
-            {
-                label: "Terms of Use",
-                href: "/wp-content/uploads/2024/05/en_cfm_tos_site.pdf",
-                isExternal: true
-            },
-            {
-                label: "Privacy Policy",
-                href: "/wp-content/uploads/2024/05/en_cfm_privacy_site.pdf",
-                isExternal: true
-            }
-        ]
-    }
-}
+import { footerConstants, socialLinksConstants } from "@/constants"
 
 export const Footer = () => {
     return (
@@ -59,9 +13,9 @@ export const Footer = () => {
                         {/* Footer menus */}
                         <div className="md:col-span-3">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                                <FooterMenu {...menuItems.token} />
-                                <FooterMenu {...menuItems.aboutGame} />
-                                <FooterMenu {...menuItems.information} />
+                                <FooterMenu {...footerConstants.token} />
+                                <FooterMenu {...footerConstants.aboutGame} />
+                                <FooterMenu {...footerConstants.information} />
                             </div>
                         </div>
 
@@ -72,7 +26,18 @@ export const Footer = () => {
                                     CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.
                                 </p>
 
-                                <SocialLinks />
+                                <div className="flex space-x-4">
+                                    {socialLinksConstants.map((link, index) => (
+                                        <UrlItem
+                                            key={index}
+                                            href={link.href}
+                                            label={link.label}
+                                            isExternal={true}
+                                            icon={link.icon}
+                                            className="transition-colors"
+                                        />
+                                    ))}
+                                </div>
 
                                 {/* Copyright */}
                                 <div className="text-sm">2025 © Cifarm. All Rights Reserved.</div>
