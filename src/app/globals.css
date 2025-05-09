@@ -39,22 +39,15 @@ body {
     /* for color-scheme: light */
     --background: 0 0% 2.5%;
 
-    --background2: 0 0% 7.5%;
-
     --foreground: 0 0% 98%; /* chữ sáng, dễ đọc */
 
-    /* for absolute white/black */
-    --light: 0 0% 98%;
-
-    --dark: 0 0% 10%;
-
     /* for content 0 */
-    --content-0: 0 0% 10%;
+    --content-0: 0 0% 5%;
     /* for content 1 */
-    --content-1: 0 0% 20%;  
+    --content-1: 0 0% 10%;  
 
     /* for content 2 */
-    --content-2: 100 100% 7%;
+    --content-2: 0 0% 15%;
 
     --card: 100 100% 7%;
 

@@ -5,6 +5,7 @@ import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { MainVisual } from "./MainVisual"
 import { Share2Icon } from "lucide-react"
+
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
     return (

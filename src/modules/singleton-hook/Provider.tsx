@@ -17,6 +17,10 @@ export const SingletonHook2Context = createContext<SingletonHookValue | null>(
     null
 )
 
+export const SingletonHook3Context = createContext<SingletonHookValue | null>(
+    null
+)
+
 export interface SingletonHookProviderProps extends PropsWithChildren {
   hooks?: HookReturnMap;
 }
@@ -42,5 +46,17 @@ export const SingletonHook2Provider: FC<SingletonHookProviderProps> = ({
         <SingletonHook2Context.Provider value={{ singletonHookRegistry }}>
             {children}
         </SingletonHook2Context.Provider>
+    )
+}
+
+export const SingletonHook3Provider: FC<SingletonHookProviderProps> = ({
+    children,
+    hooks = {},
+}: SingletonHookProviderProps) => {
+    const singletonHookRegistry = useSingletonHookRegistry(hooks)
+    return (
+        <SingletonHook3Context.Provider value={{ singletonHookRegistry }}>
+            {children}
+        </SingletonHook3Context.Provider>
     )
 }

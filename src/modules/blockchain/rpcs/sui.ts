@@ -1,4 +1,3 @@
-
 import { Network } from "../common"
 import { getFullnodeUrl, SuiClient } from "@mysten/sui/client"
 

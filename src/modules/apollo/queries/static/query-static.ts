@@ -492,6 +492,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -499,6 +500,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -510,6 +512,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -517,6 +520,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -526,6 +530,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -533,6 +538,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -544,6 +550,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -551,6 +558,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }
@@ -562,7 +570,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
-            imageUrl
+            symbol
             imageUrl
             name
           }
@@ -570,6 +578,7 @@ const query = gql`
             tokenType
             tokenAddress
             decimals
+            symbol
             imageUrl
             name
           }

@@ -8,13 +8,13 @@ import {
     TransactionType,
     useAppDispatch,
 } from "@/redux"
-import { DefaultToken } from "@/modules/blockchain"
+import { TokenKey } from "@/modules/entities"
 
 export interface TransferFormikValues {
-  recipientAddress: string;
-  stringAmount: string;
-  tokenKey?: string;
-  balance: number;
+    recipientAddress: string
+    stringAmount: string
+    tokenKey?: TokenKey
+    balance: number
 }
 
 export const useTransferTokenFormik = (): FormikProps<TransferFormikValues> => {
@@ -58,7 +58,7 @@ export const useTransferTokenFormik = (): FormikProps<TransferFormikValues> => {
                     data: {
                         recipientAddress,
                         amount: Number.parseFloat(stringAmount),
-                        tokenKey: tokenKey || DefaultToken.Native,
+                        tokenKey: tokenKey || TokenKey.Native,
                     },
                     saveAddress: recipientAddress,
                 })

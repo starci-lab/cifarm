@@ -1,7 +1,7 @@
 import { DefaultToken, NFTData, NFTRarityEnum } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse, TxResponses } from "@/modules/honeycomb"
-import { NFTType } from "@/modules/entities"
+import { NFTType, TokenKey } from "@/modules/entities"
 
 export interface WarningModal {
   message: string;
@@ -68,7 +68,7 @@ export interface TransferNFTData {
 }
 
 export interface TransferTokenData {
-  tokenKey: string;
+  tokenKey: TokenKey;
   amount: number;
   recipientAddress: string;
 }

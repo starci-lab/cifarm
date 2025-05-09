@@ -27,11 +27,16 @@ import { getFullnodeUrl } from "@mysten/sui/client"
 import { createNetworkConfig, SuiClientProvider, WalletProvider as WalletSuiProvider } from "@mysten/dapp-kit"
 import { Network } from "@/modules/blockchain"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
 })
 
 const UseEffects = dynamic(() => import("@/hooks/use-effects"), {
+    ssr: false,
+})
+
+const Sheets = dynamic(() => import("./Sheets"), {
     ssr: false,
 })
 
@@ -81,6 +86,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                                             {children}
                                                             <UseEffects />
                                                             <Modals />
+                                                            <Sheets />
                                                             <Toaster />
                                                         </SidebarProvider>
                                                     </NextThemesProvider>

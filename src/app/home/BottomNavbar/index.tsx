@@ -17,7 +17,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { ExtendedButton } from "@/components"
 import { BlocksIcon, GiftIcon, TwitterIcon, CoinsIcon } from "lucide-react"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/hooks/useIsMobile"
 
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()

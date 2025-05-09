@@ -28,7 +28,7 @@ const Page = () => {
                 <ChainSelectionDropdown />
             </div>
             <Spacer y={6} />
-            <div>
+            <div className="rounded-lg p-4 border">
                 <div className="flex justify-between items-center gap-4">
                     <AppTabs
                         tabs={[{
@@ -45,9 +45,9 @@ const Page = () => {
                         onSelectTab={(tab) => dispatch(setAssetTab(tab as AssetTab))}
                     />
                 </div>
+                <Spacer y={4} />
+                {renderContent()}
             </div>
-            <Spacer y={4} />
-            {renderContent()}
         </div>
     )
 }

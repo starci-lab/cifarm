@@ -5,14 +5,13 @@ import {
     HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION,
     SEND_UMI_SERIALIZED_TX_SWR_MUTATION,
     SIGN_SOLANA_TRANSACTION_SWR_MUTATION,
-    SIGN_SUI_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
     SIGN_UMI_SERIALIZED_TX_SWR_MUTATION,
     TRANSFER_NFT_SWR_MUTATION,
     TRANSFER_TOKEN_SWR_MUTATION,
 } from "@/app/constants"
 import { truncateString } from "@/modules/common"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { Image, List, Snippet, Spacer } from "@/components"
 import {
     BuyGoldsSolanaData,
@@ -57,7 +56,6 @@ import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "@/app/utils"
 import { pathConstants } from "@/constants"
 import { sessionDb } from "@/modules/dexie"
-import { useWallet } from "@solana/wallet-adapter-react"
 
 interface ProviderInfo {
   name: string;
@@ -78,10 +76,9 @@ export const SignTransactionModal: FC = () => {
       ReturnType<typeof useHoneycombSendTransactionsSwrMutation>
     >(HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION)
 
-    const { swrMutation: transferTokenSwrMutation } = useSingletonHook<
+    const { swrMutation: transferTokenSwrMutation } = useSingletonHook2<
     ReturnType<typeof useTransferTokenSwrMutation>
   >(TRANSFER_TOKEN_SWR_MUTATION)
-
     
     const { swrMutation: sendUmiSerializedTxSwrMutation } = useSingletonHook<
     ReturnType<typeof useSendUmiSerializedTxSwrMutation>

@@ -9,7 +9,6 @@ import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
 import { SelectTokenModal } from "./SelectTokenModal"
 import { NFTModal } from "./NFTModal"
-import { TransferTokenModal } from "./TransferTokenModal"
 import { SelectNFTModal } from "./SelectNFTModal"
 import { DownloadModal } from "./DownloadModal"
 import { InfoModal } from "./InfoModal"
@@ -29,6 +28,7 @@ import { BuyGoldsModal } from "./BuyGoldsModal"
 import { NFTClaimedModal } from "./NFTClaimedModal"
 import { WelcomeModal } from "./WelcomeModal"
 import { ConnectModal } from "./ConnectModal"
+
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -45,7 +45,6 @@ const Modals : FC = () => {
             <QuestsModal />
             <SelectTokenModal />
             <NFTModal />
-            <TransferTokenModal />
             <TransferNFTModal />
             <SelectNFTModal />
             <DownloadModal />

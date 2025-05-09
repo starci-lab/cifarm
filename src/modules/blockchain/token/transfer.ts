@@ -1,184 +1,156 @@
-import {
-    Connection,
-    Keypair,
-    PublicKey,
-    SystemProgram,
-    Transaction,
-    sendAndConfirmTransaction,
-} from "@solana/web3.js"
-import {
-    createTransferCheckedInstruction,
-    getOrCreateAssociatedTokenAccount,
-    TOKEN_2022_PROGRAM_ID,
-} from "@solana/spl-token"
-import base58 from "bs58"
 import { ChainKey, chainKeyToPlatform, Network, Platform } from "../common"
-import {
-    SerialTransactionExecutor,
-    Transaction as SuiTransaction,
-} from "@mysten/sui/transactions"
-import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519"
+import { Transaction as SuiTransaction } from "@mysten/sui/transactions"
 import { defaultNetwork } from "../default"
-import { solanaHttpRpcUrl, SUI_COIN_TYPE, suiClient } from "../rpcs"
 import { computeRaw } from "@/modules/common"
-import { DefaultToken } from "../map"
-import { StateTokens } from "@/redux"
 import { TransferResult } from "../types"
+import { Tokens } from "@/modules/entities"
+import { TokenKey } from "@/modules/entities"
+import {
+    publicKey,
+    transactionBuilder,
+    sol,
+    createNoopSigner,
+} from "@metaplex-foundation/umi"
+import { WalletAdapter } from "@solana/wallet-adapter-base"
+import { WalletContextState } from "@solana/wallet-adapter-react"
+import { getUmi, SUI_COIN_TYPE } from "../rpcs"
+import {
+    createTokenIfMissing,
+    findAssociatedTokenPda,
+    getSplAssociatedTokenProgramId,
+    transferSol,
+} from "@metaplex-foundation/mpl-toolbox"
+import { transferTokens } from "@metaplex-foundation/mpl-toolbox"
+import { useCurrentWallet } from "@mysten/dapp-kit"
+
+export type WalletWithRequiredFeatures = ReturnType<typeof useCurrentWallet>["currentWallet"]
 
 export interface TransferParams {
   chainKey: ChainKey;
-  tokenAddress?: string;
-  tokenKey?: string;
+  tokenKey?: TokenKey;
   network?: Network;
-  privateKey: string;
   recipientAddress: string;
   amount: number;
   fromAddress?: string;
-  tokens?: StateTokens;
+  tokens?: Tokens;
+
+  // adapters
+  // solana
+  walletAdapter?: WalletAdapter | WalletContextState;
+  // sui
+  currentWallet?: WalletWithRequiredFeatures;
 }
 
 export const _transferSolana = async ({
-    chainKey,
-    tokenAddress,
     network,
-    privateKey,
     recipientAddress,
     amount,
     fromAddress,
-    tokens,
     tokenKey,
+    walletAdapter,
+    tokens,
+    chainKey,
 }: TransferParams): Promise<TransferResult> => {
-    network = network || defaultNetwork
-    const recipientPublicKey = new PublicKey(recipientAddress)
-    const connection = new Connection(
-        solanaHttpRpcUrl({ chainKey, network })
-    )
-    const keypair = Keypair.fromSecretKey(base58.decode(privateKey))
-    if (tokenKey) {
-        if (!tokens) throw new Error("Cannot find balance without tokens")
-        const token = tokens[tokenKey]
-        //case native
-        if (tokenKey === DefaultToken.Native) {
-            const tx = new Transaction()
-            tx.add(
-                SystemProgram.transfer({
-                    fromPubkey: keypair.publicKey,
-                    toPubkey: recipientPublicKey,
-                    lamports: computeRaw(amount, token.decimals),
-                })
-            )
-            const signature = await sendAndConfirmTransaction(
-                connection,
-                tx,
-                [keypair],
-                {
-                    commitment: "confirmed",
-                }
-            )
-            return { txHash: signature }
-        }
-        tokenAddress = token.address
-    }
-    if (!tokenAddress)
-        throw new Error("Cannot transfer token without token address")
-    if (!fromAddress) throw new Error("Cannot transfer token without from address")
-    // get mint account
-    // check if mint account is valid
-    const sourceAssociatedTokenAddress = await getOrCreateAssociatedTokenAccount(
-        connection,
-        keypair,
-        new PublicKey(tokenAddress),
-        new PublicKey(fromAddress),
-        true,
-        "confirmed",
-        undefined,
-        TOKEN_2022_PROGRAM_ID,
-    )   
-    console.log(`Source token account: ${sourceAssociatedTokenAddress.address.toBase58()}`)
-    const destinationAssociatedTokenAddress = await getOrCreateAssociatedTokenAccount(
-        connection,
-        keypair,
-        new PublicKey(tokenAddress),
-        new PublicKey(recipientAddress),
-        true,
-        "confirmed",
-        undefined,
-        TOKEN_2022_PROGRAM_ID,
-    )
-    console.log(`Destination token account: ${destinationAssociatedTokenAddress.address.toBase58()}`)
-    // get token metadata
-    //console.log(`Destination token account: ${destinationAccount.address.toBase58()}`)
-    // get token metadata
-    const metadata = await connection.getTokenAccountBalance(sourceAssociatedTokenAddress.address)
-    if (!metadata) throw new Error("Token metadata not found")
-    console.log(amount)
-    //const decimals = metadata.value.decimals
-    console.log(metadata.value.decimals)
-    const tx = new Transaction()
-    tx.add(
-        createTransferCheckedInstruction(
-            sourceAssociatedTokenAddress.address,
-            new PublicKey(tokenAddress),
-            destinationAssociatedTokenAddress.address,
-            new PublicKey(fromAddress),
-            computeRaw(amount, metadata.value.decimals),
-            metadata.value.decimals,
-            undefined,
-            TOKEN_2022_PROGRAM_ID,
+    if (!tokenKey) throw new Error("Missing tokenKey")
+    network = network || Network.Testnet
+    if (!walletAdapter) throw new Error("Missing walletAdapter")
+
+    const umi = getUmi(network, walletAdapter)
+    if (!fromAddress) throw new Error("Missing fromAddress")
+    if (!recipientAddress) throw new Error("Missing recipientAddress")
+
+    const from = publicKey(fromAddress)
+    const to = publicKey(recipientAddress)
+
+    if (tokenKey === TokenKey.Native) {
+    // Native SOL transfer
+        const tx = transactionBuilder().add(
+            transferSol(umi, {
+                source: createNoopSigner(from),
+                destination: to,
+                amount: sol(amount),
+            })
         )
-    )
-    const signature = await sendAndConfirmTransaction(connection, tx, [keypair], {
-        commitment: "confirmed",
+
+        const txSignature = await tx.sendAndConfirm(umi)
+        return { txHash: txSignature.signature.toString() }
+    }
+
+    const token = tokens?.[tokenKey]?.[chainKey]?.[network]
+    if (!token) throw new Error("Missing token")
+    const { tokenAddress, decimals } = token
+    if (!tokenAddress) throw new Error("Missing token address")
+
+    const mint = publicKey(tokenAddress)
+
+    const sourceTokenTransaction = createTokenIfMissing(umi, {
+        mint,
+        ataProgram: getSplAssociatedTokenProgramId(umi),
+        owner: from,
     })
-    return { txHash: signature }
+
+    const destinationTokenTransaction = createTokenIfMissing(umi, {
+        mint,
+        ataProgram: getSplAssociatedTokenProgramId(umi),
+        owner: to,
+    })
+
+    const tx = transactionBuilder()
+        .add(sourceTokenTransaction)
+        .add(destinationTokenTransaction)
+        .add(
+            transferTokens(umi, {
+                source: findAssociatedTokenPda(umi, {
+                    mint,
+                    owner: publicKey(fromAddress),
+                }),
+                destination: findAssociatedTokenPda(umi, {
+                    mint,
+                    owner: publicKey(recipientAddress),
+                }),
+                authority: createNoopSigner(publicKey(fromAddress)),
+                amount: computeRaw(amount, decimals),
+            })
+        )
+
+    const txSignature = await tx.sendAndConfirm(umi)
+    return { txHash: txSignature.signature.toString() }
 }
 
 export const _transferSui = async ({
-    tokenAddress,
     network,
-    privateKey,
     recipientAddress,
     amount,
     tokens,
     tokenKey,
+    chainKey,
+    currentWallet,
 }: TransferParams): Promise<TransferResult> => {
+    if (!currentWallet) throw new Error("Missing currentWallet")
     network = network || defaultNetwork
-    const client = suiClient(network)
-    const executor = new SerialTransactionExecutor({
-        client,
-        signer: Ed25519Keypair.fromSecretKey(privateKey),
-    })
-    if (tokenKey) {
-        if (!tokens) throw new Error("Cannot find balance without tokens")
-
-        const decimals = tokens[tokenKey].decimals
-        //case native
-        if (tokenKey === DefaultToken.Native) {
-            const tx = new SuiTransaction()
-            const [coin] = tx.splitCoins(SUI_COIN_TYPE, [
-                computeRaw(amount, decimals),
-            ])
-            tx.transferObjects([coin], recipientAddress)
-            const { digest } = await executor.executeTransaction(tx)
-            return { txHash: digest }
-        } else {
-            tokenAddress = tokens[tokenKey].address
-        }
-    }
-    if (!tokenAddress)
-        throw new Error("Cannot find balance without token address")
-
-    const metadata = await client.getCoinMetadata({
-        coinType: tokenAddress,
-    })
-    if (!metadata) throw new Error("Sui coin metadata not found")
+    if (!tokens) throw new Error("Cannot find balance without tokens")
+    if (!tokenKey) throw new Error("Cannot find balance without tokenKey")
+    const token = tokens[tokenKey]?.[chainKey]?.[network]
+    if (!token) throw new Error("Cannot find balance without token")
+    const tokenAddress =
+    tokenKey === TokenKey.Native ? SUI_COIN_TYPE : token.tokenAddress
+    if (!tokenAddress) throw new Error("Missing token address")
+    //case native
+    const decimals = token.decimals
+    if (!decimals) throw new Error("Missing decimals")
     const tx = new SuiTransaction()
-    const [coin] = tx.splitCoins(tokenAddress, [
-        computeRaw(amount, metadata.decimals),
-    ])
+    const [coin] = tx.splitCoins(tokenAddress, [computeRaw(amount, decimals)])
     tx.transferObjects([coin], recipientAddress)
-    const { digest } = await executor.executeTransaction(tx)
-    return { txHash: digest }
+
+    const output = await currentWallet.features[
+        "sui:signAndExecuteTransaction"
+    ]?.signAndExecuteTransaction({
+        transaction: tx,
+        account: currentWallet.accounts[0],
+        chain: currentWallet.chains[0],
+    })
+    if (!output) throw new Error("Missing output")
+    return { txHash: output.digest }
 }
 
 export const transferToken = async (
@@ -190,5 +162,7 @@ export const transferToken = async (
         return _transferSolana(params)
     case Platform.Sui:
         return _transferSui(params)
+    default:
+        throw new Error(`Unsupported platform: ${platform}`)
     }
 }

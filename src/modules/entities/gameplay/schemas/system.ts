@@ -176,6 +176,7 @@ export interface TokenData {
   tokenAddress?: string
   decimals: number
   imageUrl?: string
+  symbol: string
 }
 
 export type TokenWrapped = Partial<Record<Network, TokenData>>

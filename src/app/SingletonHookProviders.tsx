@@ -87,6 +87,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             CONNECT_DISCLOSURE: useDisclosure(),
             WELCOME_DISCLOSURE: useDisclosure(),
             BUY_GOLDS_DISCLOSURE: useDisclosure(),
+            SHEET_TOKEN_DISCLOSURE: useDisclosure(),
+            SHEET_TRANSFER_TOKEN_DISCLOSURE: useDisclosure(),
 
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
@@ -115,7 +117,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_VALIDATE_GOOGLE_TOKEN_SWR_MUTATION: useGraphQLMutationValidateGoogleTokenSwrMutation(),
 
             // transfer token
-            TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(),
             TRANSFER_NFT_SWR_MUTATION: useTransferNFTSwrMutation(),
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
@@ -133,7 +134,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             // Using new constants with GraphQL mutations
             //io
 
-
             WS: useWs(),
         }}
     >
@@ -147,6 +147,7 @@ export const SingletonHook2Provider = ({ children }: PropsWithChildren) => (
             TRANSFER_TOKEN_FORMIK: useTransferTokenFormik(),
             IMPORT_ACCOUNT_FORMIK: useImportAccountFormik(),
             TRANSFER_NFT_FORMIK: useTransferNFTFormik(),
+            TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(), 
         }}
     >
         {children}

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { FC } from "react"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/hooks/useIsMobile"
 import {
     Avatar,
     AvatarImage,
