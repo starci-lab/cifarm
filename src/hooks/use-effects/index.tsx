@@ -2,14 +2,14 @@ import React, { FC } from "react"
 import { UseBalances } from "./balances"
 import { UseNFTCollections } from "./nft-collections"
 import { useAuthentication } from "./useAuthentication"
-
+import { useSyncEffects } from "./useSyncEffects"
 const UseEffects: FC  = () => {
     // useAccounts()
     // useTokens()
     // useNFTCollections()
     // useReferral()
     // useWarpcast()
-    // useSyncEffects()
+    useSyncEffects()
     // useAddresses()
     useAuthentication()
     return (<>

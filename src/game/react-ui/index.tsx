@@ -56,12 +56,12 @@ export const ReactUI: FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="grid gap-4 absolute top-6 right-6">
+                            <div className="grid gap-4 fixed top-6 right-6">
                                 <ResourceCard text={`${user?.energy}/${getMaxEnergy(user?.level ?? 0)}`} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col gap-4 absolute top-[150px] left-6">
+                    <div className="flex flex-col gap-4 fixed top-[150px] left-6">
                         {leftButtons
                             .map((button, index) => (
                                 <GameIconButton
@@ -73,7 +73,7 @@ export const ReactUI: FC = () => {
                                 />
                             ))}
                     </div>
-                    <div className="flex flex-col gap-4 absolute top-[150px] right-6">
+                    <div className="flex flex-col gap-4 fixed top-[150px] right-6">
                         {rightButtons
                             .map((button, index) => (
                                 <GameIconButton
@@ -85,7 +85,7 @@ export const ReactUI: FC = () => {
                                 />
                             ))}
                     </div>
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
                         <Toolbar />
                     </div>
                 </>

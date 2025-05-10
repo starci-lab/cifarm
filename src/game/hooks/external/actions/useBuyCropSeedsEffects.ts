@@ -10,6 +10,7 @@ export const useBuyCropSeedsEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
+        if (!socket) return
         socket?.on(ReceiverEventName.CropSeedsBought, ({
             quantity,
             cropId,
@@ -28,11 +29,10 @@ export const useBuyCropSeedsEffects = () => {
     }, [socket])
     
     useEffect(() => {
+        if (!socket) return
         ExternalEventEmitter.on(ExternalEventName.RequestBuyCropSeeds, async (message: BuyCropSeedsMessage) => {
-            if (!socket) {
-                return
-            }
-            socket.emit(EmitterEventName.BuyCropSeeds, message)
+            console.log("request buy crop seeds")
+            socket?.emit(EmitterEventName.BuyCropSeeds, message)
             // return the user to the phaser game
         })
     

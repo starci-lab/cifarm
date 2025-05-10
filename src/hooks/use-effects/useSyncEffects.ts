@@ -1,4 +1,8 @@
-import { GRAPHQL_QUERY_FOLLOWEES_SWR, GRAPHQL_QUERY_NEIGHBORS_SWR, WS } from "@/app/constants"
+import {
+    GRAPHQL_QUERY_FOLLOWEES_SWR,
+    GRAPHQL_QUERY_NEIGHBORS_SWR,
+    WS,
+} from "@/app/constants"
 import {
     useWs,
     ActionEmittedMessage,
@@ -13,7 +17,11 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { mergeObjects, SchemaStatus } from "@/modules/common"
-import { InventorySchema, PlacedItemSchema, UserSchema } from "@/modules/entities"
+import {
+    InventorySchema,
+    PlacedItemSchema,
+    UserSchema,
+} from "@/modules/entities"
 import _ from "lodash"
 import {
     useAppDispatch,
@@ -23,8 +31,12 @@ import {
     setUser,
     setVisitedUser,
 } from "@/redux"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 import { NeighborsTab } from "@/redux"
+
 export const useSyncEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     const dispatch = useAppDispatch()
@@ -36,11 +48,16 @@ export const useSyncEffects = () => {
     )
     const user = useAppSelector((state) => state.sessionReducer.user)
 
-    const { swr: neighborsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryNeighborsSwr>>(GRAPHQL_QUERY_NEIGHBORS_SWR)
-    const { swr: followeesSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryFolloweesSwr>>(GRAPHQL_QUERY_FOLLOWEES_SWR)
-    // Handle socket connection
-    // Ensure 1 time connection
-    // Handle action emitted events
+    const { swr: neighborsSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryNeighborsSwr>
+  >(GRAPHQL_QUERY_NEIGHBORS_SWR)
+
+    const { swr: followeesSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryFolloweesSwr>
+  >(GRAPHQL_QUERY_FOLLOWEES_SWR)
+  // Handle socket connection
+  // Ensure 1 time connection
+  // Handle action emitted events
     useEffect(() => {
         if (!socket) return
         const handleEffect = (data: ActionEmittedMessage) => {
@@ -195,10 +212,12 @@ export const useSyncEffects = () => {
         return () => {
             ExternalEventEmitter.off(ExternalEventName.RequestReturn)
         }
-    }, [socket])  
-    
+    }, [socket])
+
     const visitedUser = useAppSelector((state) => state.gameReducer.visitedUser)
-    const activeNeighborCard = useAppSelector((state) => state.sessionReducer.activeNeighborCard)
+    const activeNeighborCard = useAppSelector(
+        (state) => state.sessionReducer.activeNeighborCard
+    )
     //Handle next request events
     useEffect(() => {
         if (!socket) return
@@ -206,11 +225,13 @@ export const useSyncEffects = () => {
             // get the next user of the neighbors users
             const neighbors = neighborsSwr.data?.data?.neighbors
             const followees = followeesSwr.data?.data?.followees
-            
+
             let nextUser: UserSchema | undefined
             switch (activeNeighborCard) {
             case NeighborsTab.Followees: {
-                const index = followees?.data?.findIndex((user) => user.id === visitedUser?.id)
+                const index = followees?.data?.findIndex(
+                    (user) => user.id === visitedUser?.id
+                )
                 if (index === undefined || index === -1) return
                 // get next index, if not exist, get the first user
                 const nextIndex = index + 1
@@ -218,7 +239,9 @@ export const useSyncEffects = () => {
                 break
             }
             case NeighborsTab.Neighbors: {
-                const index = neighbors?.data?.findIndex((user) => user.id === visitedUser?.id)
+                const index = neighbors?.data?.findIndex(
+                    (user) => user.id === visitedUser?.id
+                )
                 if (index === undefined || index === -1) return
                 // get next index, if not exist, get the first user
                 const nextIndex = index + 1

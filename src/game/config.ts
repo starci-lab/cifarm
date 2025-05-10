@@ -10,64 +10,67 @@ import AwaitLoaderPlugin from "phaser3-rex-plugins/plugins/awaitloader-plugin.js
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
-const config: Phaser.Types.Core.GameConfig = {
-    type: AUTO,
-    parent: CONTAINER_ID,
-    scale: {
-        mode: Phaser.Scale.RESIZE,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        resizeInterval: 100,
-        width: "100%",
-        height: "100%"
-    },
-    antialiasGL: true,
-    antialias: true,
-    autoMobilePipeline: true,
-    powerPreference: "high-performance",
-    fps: {
-        smoothStep: true,
-        target: 60,
-        min: 60,
-    },
-    dom: {
-        createContainer: true
-    },
-    plugins: {
-        global: [{
-            key: "rexAwaitLoader",
-            plugin: AwaitLoaderPlugin,
-            start: true
+export const getConfig = (): Phaser.Types.Core.GameConfig => {
+    // get the mobile orientation
+    return {
+        type: AUTO,
+        parent: CONTAINER_ID,
+        scale: {
+            mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            resizeInterval: 100,
+            width: "200%",
+            height: "200%"
         },
-        // ...
-        // ...
-        ],
-        scene: [
+        antialiasGL: true,
+        antialias: true,
+        autoMobilePipeline: true,
+        powerPreference: "high-performance",
+        fps: {
+            smoothStep: true,
+            target: 60,
+            min: 60,
+        },
+        dom: {
+            createContainer: true
+        },
+        plugins: {
+            global: [{
+                key: "rexAwaitLoader",
+                plugin: AwaitLoaderPlugin,
+                start: true
+            },
+                // ...
+                // ...
+            ],
+            scene: [
             //add rexGestures plugin
-            {
-                key: "rexGestures",
-                plugin: GesturesPlugin,
-                mapping: "rexGestures",
-            },
-            //add MouseWheelScroller plugin
-            {
-                key: "rexMouseWheelScroller",
-                plugin: MouseWheelScrollerPlugin,
-                mapping: "rexMouseWheelScroller",
-            },
-            //add UI plugin
-            {
-                key: "rexUI",
-                plugin: UIPlugin,
-                mapping: "rexUI",
-            },
-            //add Spine plugin
-            { key: "spine.SpinePlugin", plugin: SpinePlugin, mapping: "spine" },
-        ],
-    },
-    scene: [BootstrapScene, SoundScene, LoadingScene, GameplayScene, DataScene, UIScene],
+                {
+                    key: "rexGestures",
+                    plugin: GesturesPlugin,
+                    mapping: "rexGestures",
+                },
+                //add MouseWheelScroller plugin
+                {
+                    key: "rexMouseWheelScroller",
+                    plugin: MouseWheelScrollerPlugin,
+                    mapping: "rexMouseWheelScroller",
+                },
+                //add UI plugin
+                {
+                    key: "rexUI",
+                    plugin: UIPlugin,
+                    mapping: "rexUI",
+                },
+                //add Spine plugin
+                { key: "spine.SpinePlugin", plugin: SpinePlugin, mapping: "spine" },
+            ],
+        },
+        scene: [BootstrapScene, SoundScene, LoadingScene, GameplayScene, DataScene, UIScene],
+    }
 }
 
-export const startGame = (parent?: string) => {
+export const startGame = (config: Phaser.Types.Core.GameConfig, parent?: string) => {
     if (parent) {
         config.parent = parent
     }
