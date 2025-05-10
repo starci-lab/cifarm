@@ -505,6 +505,24 @@ const query = gql`
             name
           }
         }
+        sui {
+          mainnet {
+            tokenType
+            tokenAddress
+            decimals
+            symbol
+            imageUrl
+            name  
+          }
+          testnet {
+            tokenType
+            tokenAddress
+            decimals
+            symbol
+            imageUrl
+            name
+          }
+        }
       }
       usdc {
         solana {
@@ -563,9 +581,45 @@ const query = gql`
             name
           }
         }
+        sui {
+          testnet {
+            tokenType
+            tokenAddress
+            decimals
+            symbol
+            imageUrl
+            name
+          }
+          mainnet {
+            tokenType
+            tokenAddress
+            decimals
+            symbol
+            imageUrl
+            name
+          }
+        }
       }
       cifarm {
         solana {
+          testnet {
+            tokenType
+            tokenAddress
+            decimals
+            symbol
+            imageUrl
+            name
+          }
+          mainnet {
+            tokenType
+            tokenAddress
+            decimals
+            symbol
+            imageUrl
+            name
+          }
+        }
+        sui {
           testnet {
             tokenType
             tokenAddress

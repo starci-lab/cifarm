@@ -14,7 +14,7 @@ import { envConfig } from "@/env"
 import { useGraphQLQueryStaticSwr, useTransferTokenFormik } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { useAppSelector, setTokenSheetPage, TokenSheetPage, useAppDispatch } from "@/redux"
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 
 export const TransferContent: FC = () => {
     const tokenKey = useAppSelector(
@@ -33,6 +33,14 @@ export const TransferContent: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
     )
+
+    useEffect(() => {
+        if (!tokenKey) {
+            return
+        }
+        const balanceSwr = balanceSwrs[tokenKey]
+        formik.setFieldValue("balance", balanceSwr.data)
+    }, [balanceSwrs])
 
     const dispatch = useAppDispatch()
 

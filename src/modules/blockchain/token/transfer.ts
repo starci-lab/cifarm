@@ -13,7 +13,7 @@ import {
 } from "@metaplex-foundation/umi"
 import { WalletAdapter } from "@solana/wallet-adapter-base"
 import { WalletContextState } from "@solana/wallet-adapter-react"
-import { getUmi, SUI_COIN_TYPE } from "../rpcs"
+import { getUmi } from "../rpcs"
 import {
     createTokenIfMissing,
     findAssociatedTokenPda,
@@ -132,13 +132,13 @@ export const _transferSui = async ({
     if (!tokenKey) throw new Error("Cannot find balance without tokenKey")
     const token = tokens[tokenKey]?.[chainKey]?.[network]
     if (!token) throw new Error("Cannot find balance without token")
+    const tx = new SuiTransaction()
     const tokenAddress =
-    tokenKey === TokenKey.Native ? SUI_COIN_TYPE : token.tokenAddress
+    tokenKey === TokenKey.Native ? tx.gas : token.tokenAddress
     if (!tokenAddress) throw new Error("Missing token address")
     //case native
     const decimals = token.decimals
     if (!decimals) throw new Error("Missing decimals")
-    const tx = new SuiTransaction()
     const [coin] = tx.splitCoins(tokenAddress, [computeRaw(amount, decimals)])
     tx.transferObjects([coin], recipientAddress)
 

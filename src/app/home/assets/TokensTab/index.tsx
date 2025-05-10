@@ -46,6 +46,7 @@ export const TokensTab: FC = () => {
 
     const tableData: Array<TableData> = tokens.map((token) => {
         const tokenData = token[chainKey]?.[network]
+        console.log(token[chainKey]?.[network])
         if (!tokenData) return null
         return {
             id: token.key,
