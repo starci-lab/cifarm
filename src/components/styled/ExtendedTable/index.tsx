@@ -66,11 +66,11 @@ export const ExtendedTable = <TData,>({
         <div className="w-full rounded-lg overflow-hidden">
             <div>
                 <Table>
-                    <TableHeader className="bg-content1">
+                    <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="text-sm font-bold p-3">
+                                    <TableHead key={header.id} className="p-3">
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(

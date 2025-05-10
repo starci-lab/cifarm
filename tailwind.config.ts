@@ -17,13 +17,30 @@ const config: Config = {
                 content0: "hsl(var(--content-0))",
                 content1: "hsl(var(--content-1))",
                 content2: "hsl(var(--content-2))",
-    			background: "hsl(var(--background))",
-    			foreground: "hsl(var(--foreground))",
+    			background: "var(--background)", 
+    			foreground: "var(--foreground)",
     			card: {
-    				DEFAULT: "hsl(var(--card))",
-    				foreground: "hsl(var(--card-foreground))",
-                    hover: "hsl(var(--card-hover))"
+    				DEFAULT: "var(--card)",
+                    hover: "var(--card-hover)",
+                    secondary: "var(--card-secondary)",
     			},
+                table: {
+                    header: {
+                        background: "var(--table-header-background)",
+                        text: "var(--table-header-text)",
+                    },
+                    row: {
+                        background: "var(--table-row-background)",
+                        text: "var(--table-row-text)",
+                    },
+                },
+                tab: {
+                    "active-background": "var(--tab-active-background)",
+                    "active-text": "var(--tab-active-text)",
+                    "default-background": "var(--tab-default-background)",
+                    "default-text": "var(--tab-default-text)",
+                    "default-border": "var(--tab-default-border)",
+                },
                 dialog: {
                     DEFAULT: "hsl(var(--dialog))",
                     foreground: "hsl(var(--dialog-foreground))"
@@ -54,7 +71,12 @@ const config: Config = {
     				DEFAULT: "hsl(var(--destructive))",
     				foreground: "hsl(var(--destructive-foreground))"
     			},
-    			border: "hsl(var(--border))",
+                text: {
+                    DEFAULT: "var(--text)",
+                    secondary: "var(--text-secondary)",
+                    foreground: "var(--text-foreground)"
+                },
+    			border: "var(--border)",
     			input: "hsl(var(--input))",
     			ring: "hsl(var(--ring))",
     			chart: {

@@ -1,17 +1,43 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { cva } from "class-variance-authority"
+
+const cardVariants = cva("rounded-lg", {
+    variants: {
+        variant: {
+            default: "bg-card-1",
+            destructive:
+        "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+            outline:
+        "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+            secondary: "bg-card-secondary",
+            ghost: "hover:bg-accent hover:text-accent-foreground",
+            "ghost-secondary": "hover:bg-accent/40 hover:text-accent-foreground",
+            link: "text-primary underline-offset-4 hover:underline",
+        },
+    },
+    defaultVariants: {
+        variant: "default",
+    },
+})
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & {
+    variant?:
+      | "default"
+      | "destructive"
+      | "outline"
+      | "secondary"
+      | "ghost"
+      | "ghost-secondary"
+      | "link";
+  }
+>(({ className, variant, ...props }, ref) => (
     <div
         ref={ref}
-        className={cn(
-            "rounded-md bg-content1",
-            className
-        )}
+        className={cn(cardVariants({ variant }), className)}
         {...props}
     />
 ))
@@ -57,7 +83,7 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-4 pt-0", className)} {...props} />
+    <div ref={ref} className={cn("p-4", className)} {...props} />
 ))
 CardContent.displayName = "CardContent"
 
@@ -73,4 +99,11 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export {
+    Card,
+    CardHeader,
+    CardFooter,
+    CardTitle,
+    CardDescription,
+    CardContent,
+}

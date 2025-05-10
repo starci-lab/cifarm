@@ -37,23 +37,47 @@ body {
   :root,
   .light {
     /* for color-scheme: light */
-    --background: 0 0% 2.5%;
+    --background: #5B574F;
 
-    --foreground: 0 0% 98%; /* chữ sáng, dễ đọc */
+    --foreground: #181818;
+
+    /* for card 1 */
+    --card: #f8f0e6;
+    /* for card hover */
+    --card-hover: #e8ded3;
+
+    --card-secondary: #E5D2C6;
+
+    --border: #eee8de;
+
+    /* for text */
+    --text: #312a1f;
+    --text-secondary: #dfb48e;
+    --text-foreground: #999999;
+
+    /* tabs */
+    --tab-active-background: #fcfcfc;
+    --tab-active-text: #dfb07b;
+    --tab-default-background: #5c5c52;
+    --tab-default-text: #9d968c;
+    --tab-default-border: #9d958d;
+
+    /* for table */
+    --table-header-background: #f8f0e6;
+    --table-header-text: #181818;
+    --table-row-background: #f8f0e6;
+    --table-row-background-hover: #e8ded3;
+    --table-row-text: #312a1f;
 
     /* for content 0 */
     --content-0: 0 0% 5%;
     /* for content 1 */
-    --content-1: 0 0% 10%;  
+    --content-1: 0 0% 10%;
 
     /* for content 2 */
     --content-2: 0 0% 15%;
 
-    --card: 100 100% 7%;
-
     --card-foreground: 0 0% 3.9%;
-
-    --card-hover: 104 39% 88%;
 
     --dialog: 42 54% 80%;
 
@@ -86,8 +110,6 @@ body {
     --destructive: 0 84.2% 60.2%;
 
     --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 20%;
 
     --input: 0 0% 89.8%;
 
@@ -187,7 +209,8 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .theme {
-    --animate-ripple: ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite;
+    --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s)
+      infinite;
     --animate-pulse: pulse var(--duration) ease-out infinite;
     --animate-line-shadow: line-shadow 15s linear infinite;
     --animate-shiny-text: shiny-text 8s infinite;
@@ -197,7 +220,7 @@ body {
 
 @layer base {
   * {
-    @apply border-border;
+    @apply font-semibold;
   }
   body {
     @apply bg-background text-foreground;
@@ -220,7 +243,8 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--sidebar-primary-foreground)) hsl(var(--sidebar-foreground));
+  scrollbar-color: hsl(var(--sidebar-primary-foreground))
+    hsl(var(--sidebar-foreground));
   scroll-behavior: smooth;
 }
 
@@ -270,7 +294,8 @@ body {
 /* Firefox */
 .horizontal-scroll {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--sidebar-primary-foreground)) hsl(var(--sidebar-foreground));
+  scrollbar-color: hsl(var(--sidebar-primary-foreground))
+    hsl(var(--sidebar-foreground));
 }
 
 /* Chrome, Edge, and Safari */
