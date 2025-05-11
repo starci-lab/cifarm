@@ -45,9 +45,7 @@ body {
     --card: #f8f0e6;
     /* for card hover */
     --card-hover: #e8ded3;
-
     --card-secondary: #E5D2C6;
-
     --border: #eee8de;
     --border-secondary: #473A2D;
 
@@ -60,6 +58,8 @@ body {
     --text-secondary: #dfb48e;
     --text-foreground: #999999;
     --text-default: #9d968c;
+    --text-teal: #84D4B9;
+    --text-highlight: #FFFF2E;
 
     /* tabs */
     --tab-active-background: #fcfcfc;

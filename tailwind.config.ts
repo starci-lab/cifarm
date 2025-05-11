@@ -91,6 +91,8 @@ const config: Config = {
                     secondary: "var(--text-secondary)",
                     foreground: "var(--text-foreground)",
                     default: "var(--text-default)",
+                    teal: "var(--text-teal)",
+                    highlight: "var(--text-highlight)",
                 },
     			border: {
                     DEFAULT: "var(--border)",

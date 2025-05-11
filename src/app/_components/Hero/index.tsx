@@ -8,7 +8,9 @@ import { FeatureItem } from "./FeatureItem"
 import { PulsatingActionButton } from "./PulsatingActionButton"
 import { FeaturedImage } from "./FeaturedImage"
 import { SplitTitle } from "./SplitTitle"
-import { WrappedAnimation } from "@/components"
+import { Image, Spacer, WrappedAnimation } from "@/components"
+import { assetProductMap } from "@/modules/assets"
+import { ProductId } from "@/modules/entities"
 
 interface HeroProps {
     announcementText?: string
@@ -49,24 +51,32 @@ export const Hero = ({
     const router = useRouter()
 
     return (
-        <div className="relative flex flex-col items-center justify-center min-h-[90vh] text-center overflow-hidden">
-            <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 md:py-16 lg:py-12 h-full relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 h-full items-center">
-                    <div className="space-y-6 md:space-y-8 z-10">
+        <div>
+            <div>
+                <div>
+                    <div>
                         <WrappedAnimation type="fade" delay={0.1}>
                             <AnnouncementBanner text={announcementText} />
                         </WrappedAnimation>
-
-                        <WrappedAnimation type="fade-slide" direction="up" delay={0.2}>
-                            <SplitTitle primaryText={primaryText} secondaryText={secondaryText} />
-                        </WrappedAnimation>
-
+                        <Spacer y={4}/>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex gap-2 items-center">
+                                <div className="text-4xl text-text-secondary">Farm, Thief, Earn</div>
+                                <div className="flex gap-2">
+                                    <Image src={assetProductMap[ProductId.Apple].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
+                                    <Image src={assetProductMap[ProductId.Banana].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
+                                </div>
+                            </div>
+                            <div className="text-4xl text-text-secondary text-start">then sell them for <span className="text-text-highlight">crypto</span>
+                            </div>
+                        </div>
+                        <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.3}>
-                            <p className="text-gray-300 text-base sm:text-lg md:text-xl max-w-xl text-left leading-relaxed">
+                            <p className="text-text-default text-base sm:text-lg md:text-xl max-w-xl text-left leading-relaxed">
                                 {description}
                             </p>
                         </WrappedAnimation>
-
+                        <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.4}>
                             <div className="flex flex-col sm:flex-row gap-4 items-start">
                                 <PulsatingActionButton onClick={() => router.push("/home")}>
