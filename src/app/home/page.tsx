@@ -23,7 +23,7 @@ const Page: FC = () => {
             <div className="flex gap-4">
                 <MainVisual />
                 <div className="flex flex-col gap-2">
-                    <ExtendedButton size="xl" className="w-[200px]" useGradientBg onClick={() => {
+                    <ExtendedButton size="xl" variant={"gradient"} className="w-[200px]" onClick={() => {
                         router.push(pathConstants.play)
                     }}>
                         Play
