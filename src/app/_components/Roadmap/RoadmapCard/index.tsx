@@ -14,18 +14,18 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
             className={cn(
                 "border-none transition-all duration-300 h-full",
                 item.type === 1
-                    ? "bg-gradient-to-br from-sidebar-primary-foreground/40 to-sidebar-primary-foreground/20 hover:from-sidebar-primary-foreground/50 hover:to-sidebar-primary-foreground/30"
+                    ? "bg-text-teal text-text"
                     : item.type === 2
-                        ? "bg-gradient-to-br from-amber-900/40 to-amber-800/20 hover:from-amber-800/50 hover:to-amber-700/30"
-                        : "bg-gradient-to-br from-gray-800/40 to-gray-700/20 hover:from-gray-700/50 hover:to-gray-600/30",
+                        ? "bg-selection-active-text"
+                        : "bg-text-foreground",
             )}
         >
             <CardHeader className="h-24 pb-0">
                 <div className="flex items-center gap-3 mb-4">
                     <div
                         className={cn(
-                            "relative w-12 h-12 rounded-full p-2  self-start",
-                            item.type === 1 ? "bg-green-800/50" : item.type === 2 ? "bg-amber-800/50" : "bg-gray-700/50",
+                            "relative w-12 h-12 rounded-full p-2 self-start",
+                            item.type === 1 ? "bg-primary-1/50" : item.type === 2 ? "bg-accent/50" : "bg-muted/50",
                         )}
                     >
                         <Image
@@ -38,13 +38,12 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
                     <div>
                         <h3
                             className={cn(
-                                "text-xl font-bold",
-                                item.type === 1 ? "text-green-400" : item.type === 2 ? "text-amber-400" : "text-gray-300",
+                                "text-xl font-bold text-text",
                             )}
                         >
                             {item.phase}
                         </h3>
-                        <p className="text-sm text-gray-400">{item.description}</p>
+                        <p className="text-sm">{item.description}</p>
                     </div>
                 </div>
             </CardHeader>
@@ -64,10 +63,10 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
                                 <div
                                     className={cn(
                                         "w-1.5 h-1.5 rounded-full mt-2",
-                                        item.type === 1 ? "bg-green-500" : item.type === 2 ? "bg-amber-500" : "bg-gray-500",
+                                        item.type === 1 ? "bg-primary" : item.type === 2 ? "bg-text-highlight" : "bg-text-contrast",
                                     )}
                                 />
-                                <span className="text-sm text-gray-300">{feature}</span>
+                                <span className="text-sm">{feature}</span>
                             </li>
                         ))}
                     </ul>
