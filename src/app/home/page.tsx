@@ -4,7 +4,7 @@ import { Card, ExtendedButton, Header, Image, Spacer } from "@/components"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { MainVisual } from "./MainVisual"
-import { Share2Icon } from "lucide-react"
+import { PlayIcon, Share2Icon } from "lucide-react"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
@@ -27,19 +27,20 @@ const Page: FC = () => {
 
                 <div className="flex flex-col gap-3 mt-4 md:mt-0 md:w-[200px]">
                     <ExtendedButton
-                        size="xl"
-                        variant={"gradient"}
-                        className="w-full md:w-[200px]"
+                        variant={"highlight"}
+                        className="flex justify-center md:justify-start gap-2 w-full md:w-auto"
+                        size="lg"
                         onClick={() => {
                             router.push(pathConstants.play)
                         }}
                     >
-                    Play
+                        <PlayIcon className="w-4 h-4" />
+                        Play
                     </ExtendedButton>
 
                     <ExtendedButton className="flex justify-center md:justify-start gap-2 w-full md:w-auto">
                         <Share2Icon className="w-4 h-4" />
-                    Share
+                        Share
                     </ExtendedButton>
                 </div>
             </div>

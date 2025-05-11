@@ -45,6 +45,7 @@ const config: Config = {
 				button: {
 					background: "var(--button-background)",
 					text: "var(--button-text)",
+					highlight: "var(--button-highlight)",
 				},
 				selection: {
 					"active-background": "var(--selection-active-background)",

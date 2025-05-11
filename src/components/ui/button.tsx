@@ -13,6 +13,8 @@ const buttonVariants = cva(
           "bg-button-background hover:bg-button-background/75 text-button-text",
                 gradient:
           "bg-gradient-button hover:bg-gradient-button/75",
+                highlight:
+          "bg-button-highlight hover:bg-button-highlight/75 text-text",
                 destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
                 outline:
@@ -25,8 +27,8 @@ const buttonVariants = cva(
             },
             size: {
                 default: "h-10 px-4 py-2",
+                lg: "h-12 rounded-md px-4 py-2",
                 sm: "h-8 rounded-md px-3 text-xs",
-                lg: "h-10 rounded-md px-8",
                 icon: "h-9 w-9",
                 xl: "h-12 rounded-lg px-12 text-xl",
             },

@@ -52,6 +52,7 @@ body {
     /* for button */
     --button-background: #fcfcfc;
     --button-text: #dfb07b;
+    --button-highlight: #FFFF2E;
 
     /* for text */
     --text: #312a1f;
