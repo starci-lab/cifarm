@@ -84,6 +84,9 @@ export const ExtendedButton = ({
             {...props}
             variant={props.variant || "default"}
             disabled={isLoading || props.disabled}
+            className={cn(
+                "relative",
+                props.className)}
             style={{
                 "--pulse-color": pulseColor,
                 "--duration": duration,
@@ -99,11 +102,11 @@ export const ExtendedButton = ({
                 {isLoading && <Spinner />}
                 {children}
             </div>
-            {
+            {/* {
                 pulseColor && (
                     <div className="absolute left-1/2 top-1/2 size-full -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-inherit" />
                 )
-            }
+            } */}
         </Button>
     )
 }

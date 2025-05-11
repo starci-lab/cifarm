@@ -14,7 +14,7 @@ export const PulsatingActionButton = ({ onClick, children }: PulsatingActionButt
         <ExtendedButton
             onClick={onClick}
             pulseColor="#FFFA2F"
-            className="bg-primary-2 hover:bg-primary-2/80 transition-colors text-black rounded-full py-3 px-6 text-base font-black flex items-center gap-2"
+            variant={"highlight"}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
         >
