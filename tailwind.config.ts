@@ -41,6 +41,15 @@ const config: Config = {
                     "default-text": "var(--tab-default-text)",
                     "default-border": "var(--tab-default-border)",
                 },
+				selection: {
+					"active-background": "var(--selection-active-background)",
+					"active-text": "var(--selection-active-text)",
+					"default-text": "var(--selection-default-text)",
+				},
+                sidebar: {
+                    DEFAULT: "var(--sidebar)",
+					background: "var(--sidebar-background)",
+                },
                 dialog: {
                     DEFAULT: "hsl(var(--dialog))",
                     foreground: "hsl(var(--dialog-foreground))"
@@ -74,9 +83,13 @@ const config: Config = {
                 text: {
                     DEFAULT: "var(--text)",
                     secondary: "var(--text-secondary)",
-                    foreground: "var(--text-foreground)"
+                    foreground: "var(--text-foreground)",
+                    default: "var(--text-default)",
                 },
-    			border: "var(--border)",
+    			border: {
+                    DEFAULT: "var(--border)",
+                    secondary: "var(--border-secondary)",
+                },
     			input: "hsl(var(--input))",
     			ring: "hsl(var(--ring))",
     			chart: {
@@ -86,16 +99,6 @@ const config: Config = {
     				"4": "hsl(var(--chart-4))",
     				"5": "hsl(var(--chart-5))",
     			},
-    			sidebar: {
-    				DEFAULT: "hsl(var(--sidebar-background))",
-    				foreground: "hsl(var(--sidebar-foreground))",
-    				primary: "hsl(var(--sidebar-primary))",
-    				"primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-    				accent: "hsl(var(--sidebar-accent))",
-    				"accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-    				border: "hsl(var(--sidebar-border))",
-    				ring: "hsl(var(--sidebar-ring))"
-    			}
     		},
     		borderRadius: {
     			lg: "var(--radius)",

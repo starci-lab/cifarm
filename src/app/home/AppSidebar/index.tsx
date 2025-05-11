@@ -34,16 +34,16 @@ export const AppSidebar: FC = () => {
     return (
         <>
             {!isMobile && (
-                <Sidebar className="px-6 py-4 text-sidebar-primary bg-sidebar">
+                <Sidebar className="px-6 py-4 text-sidebar-primary bg-sidebar-background">
                     <SidebarHeader className="p-0 gap-0">
                         <div className="flex items-center gap-2">
                             <Avatar>
                                 <AvatarImage src="/logo.png" alt="Logo" />
                             </Avatar>
-                            <div>CiFarm</div>
+                            <div className="text-text-default text-2xl">CiFarm</div>
                         </div>
                         <Spacer y={4} />
-                        <Separator />
+                        <Separator variant="secondary" />
                         <Spacer y={4} />
                         <Selection
                             title="Home"
@@ -75,7 +75,7 @@ export const AppSidebar: FC = () => {
                             icon={<LayoutGridIcon className="w-5 h-5" />}
                         />
                         <Spacer y={4} />
-                        <Separator />
+                        <Separator variant="secondary" />
                         <Spacer y={4} />
                         <Selection
                             title="Docs"
