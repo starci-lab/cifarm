@@ -89,7 +89,7 @@ export const ExtendedButton = ({
                 "--duration": duration,
             } as React.CSSProperties}
         >
-            <div className="relative z-10 flex items-center gap-2 w-full">
+            <div className="relative z-10 flex items-center gap-2 w-full text-inherit">
                 {isLoading && <Spinner />}
                 {children}
             </div>

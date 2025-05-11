@@ -10,7 +10,7 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-          "bg-content2 hover:bg-content2/75 text-foreground",
+          "bg-button-background hover:bg-button-background/75 text-button-text",
                 gradient:
           "bg-gradient-button hover:bg-gradient-button/75",
                 destructive:
