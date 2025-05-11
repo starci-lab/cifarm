@@ -3,6 +3,7 @@
 import React from "react"
 import { Header, Footer, StickySidebar, Roadmap, Hero, Intro } from "./_components"
 import { ScrollProgress, WrappedSection } from "@/components"
+import { Teams } from "./_components/Teams"
 
 const Page = () => {
     return (
@@ -13,11 +14,15 @@ const Page = () => {
                 <Hero />
                 <Intro />
                 <WrappedSection 
+                    title="Our teams"
+                >
+                    <Teams />
+                </WrappedSection>
+                <WrappedSection 
                     title="Roadmap"
                     description="Main goals and objectives"
                 >
                     <Roadmap />
-                    <Intro />
                 </WrappedSection>
             </div>
             <StickySidebar />
