@@ -33,7 +33,7 @@ export const HoverImage: FC<HoverImageProps> = ({
             <Image
                 src={imageUrl}
                 alt="hover image"
-                className={cn("rounded-lg", classNames?.image)}
+                className={cn("rounded-lg aspect-video", classNames?.image)}
             />
         </div>
     )

@@ -3,7 +3,13 @@ import { Image, Spacer, HoverImage, YouTubePlayer } from "@/components"
 import { RootState } from "@/redux/store"
 import { useAppDispatch, useAppSelector, setSelectedMainVisualKey } from "@/redux"
 
-export const MainVisual: FC = () => {
+interface MainVisualProps {
+    isBlur?: boolean;
+}
+
+export const MainVisual: FC<MainVisualProps> = ({
+    isBlur = false,
+}) => {
     const selectedMainVisualKey = useAppSelector(
         (state: RootState) => state.sessionReducer.selectedMainVisualKey
     )
@@ -22,6 +28,20 @@ export const MainVisual: FC = () => {
             selectedKey: "visual-2",
             thumbnailUrl:
         "https://cifarm.sgp1.cdn.digitaloceanspaces.com/visual_1.jpg",
+        },
+        {
+            type: MainVisualType.Image,
+            url: "https://picsum.photos/1000/1000?random=1",
+            selectedKey: "visual-3",
+            thumbnailUrl:
+        "https://picsum.photos/1000/1000?random=1",
+        },
+        {
+            type: MainVisualType.Image,
+            url: "https://picsum.photos/1000/1000?random=2",
+            selectedKey: "visual-4",
+            thumbnailUrl:
+        "https://picsum.photos/1000/1000?random=2",
         },
     ]
 
@@ -47,10 +67,21 @@ export const MainVisual: FC = () => {
         }
     }
 
+    const renderBlurImage = (key: string) => {
+        const visual = visuals.find((visual) => visual.selectedKey === key)
+        if (!visual) return null
+        return (
+            <Image src={visual.thumbnailUrl} alt={visual.selectedKey}
+                className="blur-[200px] absolute top-[-500px] left-1/2 -translate-x-1/2 -z-10 w-[400px] h-[400px]" />
+        )
+    }
+
     const dispatch = useAppDispatch()
 
     return (
-        <div className="flex-1">
+        <div className="flex-1 relative">
+            {isBlur && renderBlurImage(selectedMainVisualKey)}
+
             {renderContent(selectedMainVisualKey)}
             <Spacer y={4} />
             <div className="flex flex-wrap gap-2">
