@@ -60,7 +60,7 @@ export const SolanaDApps: FC = () => {
                             }
                             className="w-5 h-5"
                         />
-                        <div className="text-sm">
+                        <div className="text-primary">
                             {staticSwr.data?.data.nftBoxInfo.boxPrice}
                         </div>
                     </div>
@@ -128,7 +128,7 @@ export const SolanaDApps: FC = () => {
                 imageUrl={assetIconMap[AssetIconId.NFTMarketplace].base.assetUrl}
                 onClick={() => {}}
                 content={
-                    <div className="text-muted-foreground">
+                    <div className="text-primary">
                         Coming soon
                     </div>
                 }
@@ -139,7 +139,7 @@ export const SolanaDApps: FC = () => {
                 imageUrl={""}
                 onClick={() => {}}
                 content={
-                    <div className="text-muted-foreground">
+                    <div className="text-primary">
                         Coming soon
                     </div>
                 }

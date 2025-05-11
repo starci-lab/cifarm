@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority"
 const cardVariants = cva("rounded-lg", {
     variants: {
         variant: {
-            default: "bg-card",
+            default: "bg-content-2",
             destructive:
         "bg-destructive text-destructive-foreground hover:bg-destructive/90",
             outline:

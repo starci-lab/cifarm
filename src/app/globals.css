@@ -37,8 +37,12 @@ body {
   :root,
   .light {
     /* for color-scheme: light */
-    --background: #493A2A;
-    --foreground: #181818;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+
+    --content-1: 0 0% 10%;
+    --content-2: 33 56% 94%; /* cream - use in card and button */
+    --content-3: 34 20% 84%; /* teal - use in hover */
 
     /* for navbar */
     --navbar: 0 0% 3.9%;
@@ -94,14 +98,6 @@ body {
     --dialog-background: #E5D2C6;
     --dialog-foreground: #dfb07b;
 
-    /* for content 0 */
-    --content-0: 0 0% 5%;
-    /* for content 1 */
-    --content-1: 0 0% 10%;
-
-    /* for content 2 */
-    --content-2: 0 0% 15%;
-
     --card-foreground: 0 0% 3.9%;
 
     --dialog: 42 54% 80%;
@@ -112,7 +108,7 @@ body {
 
     --popover-foreground: 0 0% 3.9%;
 
-    --primary: 100 100% 20%;
+    --primary: 32 61% 68%;
 
     --primary1: 100 100% 4%;
 

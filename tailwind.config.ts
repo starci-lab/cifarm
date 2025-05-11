@@ -15,11 +15,13 @@ const config: Config = {
                 "gradient-button": "linear-gradient(90deg, #D9D9D9 0%, #A8E6CF 30.77%, #A0DDE8 52.88%, #E6F79B 100%)",
     		},
     		colors: {
-                content0: "hsl(var(--content-0))",
-                content1: "hsl(var(--content-1))",
-                content2: "hsl(var(--content-2))",
-    			background: "var(--background)", 
-    			foreground: "var(--foreground)",
+                content: {
+                    "1": "hsl(var(--content-1))",
+                    "2": "hsl(var(--content-2))",
+                    "3": "hsl(var(--content-3))",
+                },
+    			background: "hsl(var(--background))", 
+    			foreground: "hsl(var(--foreground))",
                 navbar: {
                     DEFAULT: "hsl(var(--navbar))",
                 },

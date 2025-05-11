@@ -9,7 +9,7 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-          "bg-button-background hover:bg-button-background-hover text-button-text",
+          "bg-content-2 hover:bg-content-2 text-primary hover:bg-content-3 transition-colors duration-200",
                 gradient:
           "bg-gradient-button hover:bg-gradient-button/75",
                 highlight:

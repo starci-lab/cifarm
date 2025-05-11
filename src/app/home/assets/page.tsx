@@ -1,5 +1,5 @@
 "use client"
-import { Header, Spacer, Card, CardContent } from "@/components"
+import { Header, Spacer } from "@/components"
 import React from "react"
 import { ChainSelectionDropdown } from "./ChainSelectionDropdown"
 import { AppTabs } from "@/components"
@@ -29,26 +29,22 @@ const Page = () => {
                 <ChainSelectionDropdown />
             </div>
             <Spacer y={6} />
-            <Card className="rounded-lg" variant="secondary">
-                <CardContent>
-                    <AppTabs
-                        tabs={[{
-                            label: "Tokens",
-                            value: AssetTab.Tokens,
-                        }, {
-                            label: "NFTs",
-                            value: AssetTab.NFTs, 
-                        }, {
-                            label: "In-Game",
-                            value: AssetTab.InGame,
-                        }]}
-                        selectedTab={assetTab}
-                        onSelectTab={(tab) => dispatch(setAssetTab(tab as AssetTab))}
-                    />
-                    <Spacer y={4} />
-                    {renderContent()}
-                </CardContent>
-            </Card>
+            <AppTabs
+                tabs={[{
+                    label: "Tokens",
+                    value: AssetTab.Tokens,
+                }, {
+                    label: "NFTs",
+                    value: AssetTab.NFTs, 
+                }, {
+                    label: "In-Game",
+                    value: AssetTab.InGame,
+                }]}
+                selectedTab={assetTab}
+                onSelectTab={(tab) => dispatch(setAssetTab(tab as AssetTab))}
+            />
+            <Spacer y={4} />
+            {renderContent()}
         </div>
     )
 }
