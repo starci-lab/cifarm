@@ -12,7 +12,7 @@ const config: Config = {
     		backgroundImage: {
     			"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
     			"gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-				"gradient-button": "linear-gradient(90deg, #D9D9D9 0%, #A8E6CF 30.77%, #A0DDE8 52.88%, #E6F79B 100%)",
+                "gradient-button": "linear-gradient(90deg, #D9D9D9 0%, #A8E6CF 30.77%, #A0DDE8 52.88%, #E6F79B 100%)",
     		},
     		colors: {
                 content0: "hsl(var(--content-0))",
@@ -20,6 +20,9 @@ const config: Config = {
                 content2: "hsl(var(--content-2))",
     			background: "var(--background)", 
     			foreground: "var(--foreground)",
+                navbar: {
+                    DEFAULT: "hsl(var(--navbar))",
+                },
     			card: {
     				DEFAULT: "var(--card)",
                     hover: "var(--card-hover)",
@@ -42,23 +45,26 @@ const config: Config = {
                     "default-text": "var(--tab-default-text)",
                     "default-border": "var(--tab-default-border)",
                 },
-				button: {
-					background: "var(--button-background)",
-					text: "var(--button-text)",
-					highlight: "var(--button-highlight)",
-				},
-				selection: {
-					"active-background": "var(--selection-active-background)",
-					"active-text": "var(--selection-active-text)",
-					"default-text": "var(--selection-default-text)",
-				},
+                button: {
+                    background: "var(--button-background)",
+                    text: "var(--button-text)",
+                    "background-hover": "var(--button-background-hover)",
+                    highlight: "var(--button-highlight)",
+                    "secondary-background": "hsl(var(--button-secondary-background))",
+                    "group-background": "hsl(var(--button-group-background))",   
+                },
+                selection: {
+                    "active-background": "var(--selection-active-background)",
+                    "active-text": "var(--selection-active-text)",
+                    "default-text": "var(--selection-default-text)",
+                },
                 sidebar: {
                     DEFAULT: "var(--sidebar)",
-					background: "var(--sidebar-background)",
+                    background: "var(--sidebar-background)",
                 },
                 dialog: {
                     DEFAULT: "var(--dialog-background)",
-					background: "var(--dialog-background)",
+                    background: "var(--dialog-background)",
                     foreground: "var(--dialog-foreground)"
                 },
     			popover: {

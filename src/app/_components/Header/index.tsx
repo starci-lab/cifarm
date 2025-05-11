@@ -1,6 +1,6 @@
 "use client"
 import React from "react"
-import { ExtendedButton } from "@/components/styled/ExtendedButton"
+import { ExtendedButton } from "@/components"
 import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
 import { Menu } from "lucide-react"
 import { useState } from "react"

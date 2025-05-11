@@ -24,7 +24,6 @@ const Page: FC = () => {
             <div>
                 <Header 
                     title="Assets"
-                    description="Manage your profile, tokens, NFTs, and in-game items"
                 />
                 <Spacer y={6}/>
                 <div>

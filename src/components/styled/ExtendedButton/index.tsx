@@ -2,8 +2,9 @@
 
 import { Button, ButtonProps } from "@/components"
 import React, { useEffect, useRef } from "react"
-import { cn } from "@/lib/utils"
 import { Spinner } from "../Spinner"
+import { cn } from "@/lib/utils"
+
 export interface ExtendedButtonProps extends ButtonProps {
   isLoading?: boolean;
   onTap?: () => void;
@@ -75,21 +76,26 @@ export const ExtendedButton = ({
             }
         }
     }, [onPress])
+    
 
     return (
         <Button
             ref={ref}
             {...props}
+            variant={props.variant || "default"}
             disabled={isLoading || props.disabled}
-            className={cn(
-                "rounded-lg cursor relative",
-                props.className)}
             style={{
                 "--pulse-color": pulseColor,
                 "--duration": duration,
             } as React.CSSProperties}
         >
-            <div className="relative z-10 flex items-center gap-2 w-full text-inherit">
+            <div className={cn(
+                "relative z-10 flex items-center gap-2 w-full text-inherit",
+                {
+                    "justify-center": props.variant === "icon",
+                },
+                props.className
+            )}>
                 {isLoading && <Spinner />}
                 {children}
             </div>

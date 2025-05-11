@@ -1,14 +1,16 @@
 import React, { FC } from "react"
-import { ExtendedButton, ExtendedButtonProps } from "../ExtendedButton" 
 import { cn } from "@/lib/utils"
 import { cva } from "class-variance-authority"
+import { Button } from "@/components/ui"
+import { ButtonProps } from "react-day-picker"
 
-export interface PressableCardProps extends ExtendedButtonProps {
+export interface PressableCardProps extends ButtonProps {
   showBorder?: boolean;
   classNames?: {
     base?: string;
   }
   className?: string;
+  variant?: "default" | "gradient" | "destructive" | "outline" | "secondary" | "ghost" | "ghost-secondary" | "link" | "icon" | "highlight";
 }
 
 const pressableCardVariants = cva("rounded-lg p-3", {
@@ -24,6 +26,8 @@ const pressableCardVariants = cva("rounded-lg p-3", {
             ghost: "hover:bg-accent hover:text-accent-foreground",
             "ghost-secondary": "hover:bg-accent/40 hover:text-accent-foreground",
             link: "text-primary underline-offset-4 hover:underline",
+            icon: "rounded-full hover:bg-accent/20",
+            highlight: "bg-gradient-to-r from-card-1 to-card-2 hover:bg-gradient-to-r hover:from-card-1/90 hover:to-card-2/90",
         },
     },
     defaultVariants: {
@@ -35,27 +39,26 @@ export const PressableCard: FC<PressableCardProps> = ({
     children,
     onClick,
     classNames = {},
-    showBorder = true,
     className,
     variant = "default",
     ...props
 }: PressableCardProps) => {
     const { base } = classNames
     return (
-        <ExtendedButton
+        <Button
             size="default"
             onClick={onClick}
+            removeClassName
             className={cn(
                 pressableCardVariants({ variant }),
                 "text-start justify-start w-full hover:text-inherit",
                 "whitespace-normal h-fit", 
                 base, 
-                !showBorder && "border-none border-0 shadow-none", 
                 className
             )}
             {...props}
         >
             {children}
-        </ExtendedButton>
+        </Button>
     )
 }

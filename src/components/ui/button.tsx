@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
@@ -10,7 +9,7 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 default:
-          "bg-button-background hover:bg-button-background/75 text-button-text",
+          "bg-button-background hover:bg-button-background-hover text-button-text",
                 gradient:
           "bg-gradient-button hover:bg-gradient-button/75",
                 highlight:
@@ -20,16 +19,17 @@ const buttonVariants = cva(
                 outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
                 secondary:
-          "bg-content2/50 text-foreground hover:bg-content2/25",
+          "bg-button-secondary-background text-text-contrast hover:bg-button-secondary-background/75",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
                 "ghost-secondary": "hover:bg-accent/40 hover:text-accent-foreground",
                 link: "text-primary underline-offset-4 hover:underline",
+                icon: "rounded-full hover:bg-accent/20 flex",
             },
             size: {
                 default: "h-10 px-4 py-2",
                 lg: "h-12 rounded-md px-4 py-2",
                 sm: "h-8 rounded-md px-3 text-xs",
-                icon: "h-9 w-9",
+                icon: "w-10 h-10 px-0",
                 xl: "h-12 rounded-lg px-12 text-xl",
             },
         },
@@ -44,14 +44,15 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  removeClassName?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, asChild = false, ...props }, ref) => {
+    ({ className, variant, size, asChild = false, removeClassName = false, ...props }, ref) => {
         const Comp = asChild ? Slot : "button"
         return (
             <Comp
-                className={cn(buttonVariants({ variant, size, className }))}
+                className={removeClassName ? className : cn(buttonVariants({ variant, size, className }))}
                 ref={ref}
                 {...props}
             />

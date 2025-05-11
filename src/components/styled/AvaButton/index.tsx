@@ -22,7 +22,7 @@ export const AvaButton: FC<AvaButtonProps> = ({
     text,
 }) => {
     return (
-        <ExtendedButton className="flex items-center justify-between" onClick={onClick}>
+        <ExtendedButton className="flex items-center justify-between" variant="secondary" onClick={onClick}>
             <div className="flex items-center gap-2 rounded-lg p-1 pr-2 transition-all duration-300">
                 {icon}
                 <div className={cn("text-sm", classNames?.text)}>{text}</div>

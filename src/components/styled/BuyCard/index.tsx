@@ -6,6 +6,7 @@ import {
     Spacer,
     Spinner,
     PressableCardProps,
+    Separator,
 } from "@/components"
 import { PaymentKind } from "@/modules/entities"
 
@@ -47,16 +48,17 @@ export const BuyCard: FC<BuyCardProps> = ({
                         scale={2}
                     />
                 </div>
-                <Spacer y={4} />
+                <Spacer y={2} />
                 <div className="flex gap-2 items-center">
                     {isLoading && <Spinner />}
-                    <div>{title}</div>
+                    <div className="text-lg text-text">{title}</div>
                 </div>
-                <Spacer y={4} />
+                <Separator />
+                <Spacer y={2} />
                 <div className="flex gap-2">
                     <div className="flex gap-1 items-center">
                         <PaymentIcon paymentKind={paymentKind} />
-                        <div>{price}</div>
+                        <div className="text-text-secondary">{price}</div>
                     </div>
                 </div>
             </div>

@@ -63,7 +63,7 @@ export const BuyGoldsModal: FC = () => {
                         staticSwr.data?.data.goldPurchases[chainKey][network].options.map((goldPurchase, index) => (
                             <BuyCard
                                 key={index}
-                                title={`${formatNumber(goldPurchase.amount, NumberPattern.Second)} Golds`}
+                                title={`${formatNumber(goldPurchase.amount, NumberPattern.Second)}`}
                                 imageUrl={iconMap[index]}
                                 price={goldPurchase.price}
                                 disabled={!!selectedIndex}

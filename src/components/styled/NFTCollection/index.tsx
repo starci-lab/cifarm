@@ -12,13 +12,9 @@ interface NFTCollectionProps {
 
 export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSwr, onClick }) => {
     return (
-        <PressableCard className="relative" onClick={onClick}>
-            <div className="grid place-items-start w-full">
+        <PressableCard className="relative" onClick={onClick} variant="default">
+            <div>
                 <Image src={collection.imageUrl} className="w-24 h-24 object-contain" />
-                {/* <div className="flex gap-2 absolute left-3 bottom-3 bg-background/50 text-muted-background rounded-md px-2 py-1.5">
-                    <div className="text-sm font-bold">{collection.name}</div>
-                    <div className="text-sm text-muted-foreground font-bold">{collectionSwr.data?.nfts.length}</div>
-                </div> */}
                 <Spacer y={2}/>
                 <div className="text-text text-lg">{collection.name}</div>
                 <div className="text-text-secondary">{collectionSwr.data?.nfts.length} NFTs</div>

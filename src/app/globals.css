@@ -38,13 +38,15 @@ body {
   .light {
     /* for color-scheme: light */
     --background: #493A2A;
-
     --foreground: #181818;
+
+    /* for navbar */
+    --navbar: 0 0% 3.9%;
 
     /* for card 1 */
     --card: #f8f0e6;
     /* for card hover */
-    --card-hover: #e8ded3;
+    --card-hover: color-mix(in srgb, var(--card), black 10%);
     --card-secondary: #E5D2C6;
     --border: #eee8de;
     --border-secondary: #473A2D;
@@ -52,7 +54,10 @@ body {
     /* for button */
     --button-background: #fcfcfc;
     --button-text: #dfb07b;
+    --button-background-hover: color-mix(in srgb, var(--button-background), black 10%);
     --button-highlight: #FFFF2E;
+    --button-secondary-background: 0 0 20%;
+    --button-group-background: 0 0 10%;
 
     /* for text */
     --text: #312a1f;
