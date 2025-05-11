@@ -49,6 +49,10 @@ body {
     --border: #eee8de;
     --border-secondary: #473A2D;
 
+    /* for button */
+    --button-background: #fcfcfc;
+    --button-text: #dfb07b;
+
     /* for text */
     --text: #312a1f;
     --text-secondary: #dfb48e;
@@ -78,6 +82,10 @@ body {
 
     /* sidebar */
     --sidebar-background: #322416;
+
+    /* for dialog */
+    --dialog-background: #E5D2C6;
+    --dialog-foreground: #dfb07b;
 
     /* for content 0 */
     --content-0: 0 0% 5%;

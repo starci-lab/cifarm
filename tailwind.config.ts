@@ -42,6 +42,10 @@ const config: Config = {
                     "default-text": "var(--tab-default-text)",
                     "default-border": "var(--tab-default-border)",
                 },
+				button: {
+					background: "var(--button-background)",
+					text: "var(--button-text)",
+				},
 				selection: {
 					"active-background": "var(--selection-active-background)",
 					"active-text": "var(--selection-active-text)",
@@ -52,8 +56,9 @@ const config: Config = {
 					background: "var(--sidebar-background)",
                 },
                 dialog: {
-                    DEFAULT: "hsl(var(--dialog))",
-                    foreground: "hsl(var(--dialog-foreground))"
+                    DEFAULT: "var(--dialog-background)",
+					background: "var(--dialog-background)",
+                    foreground: "var(--dialog-foreground)"
                 },
     			popover: {
     				DEFAULT: "hsl(var(--popover))",
