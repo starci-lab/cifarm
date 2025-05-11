@@ -33,6 +33,7 @@ export const ConnectModal: FC = () => {
 
     const { currentWallet } = useCurrentWallet()
 
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const renderContent = () => {
         if (selectedChainKey === ChainKey.Solana) {
             return <SolanaConnect />
@@ -51,18 +52,36 @@ export const ConnectModal: FC = () => {
                         onClick={() => {
                             dispatch(setSelectedChainKey(item.key))
                         }}
-                        description={
-                            (() => {
+                        description={(() => {
+                            const isActive = item.key === chainKey
+                            const getConnectText = () => {
                                 const NOT_CONNECTED = "Not connected"
                                 if (item.key === ChainKey.Solana) {
-                                    return publicKey ? truncateString(publicKey.toBase58(), 4) : NOT_CONNECTED
+                                    return publicKey
+                                        ? truncateString(publicKey.toBase58(), 4)
+                                        : NOT_CONNECTED
                                 }
                                 if (item.key === ChainKey.Sui) {
-                                    return truncateString(currentWallet?.accounts[0]?.address || "", 4) || NOT_CONNECTED
+                                    return (
+                                        truncateString(
+                                            currentWallet?.accounts[0]?.address || "",
+                                            4
+                                        ) || NOT_CONNECTED
+                                    )
                                 }
                                 return NOT_CONNECTED
-                            })()
-                        }
+                            }
+                            return (
+                                <div className="flex gap-2">
+                                    <div className="text-muted-foreground text-sm">
+                                        {getConnectText()}
+                                    </div>
+                                    {isActive && (
+                                        <div className="text-secondary text-sm">Selected</div>
+                                    )}
+                                </div>
+                            )
+                        })()}
                     />
                 )}
                 showSeparator={false}
@@ -86,20 +105,14 @@ export const ConnectModal: FC = () => {
                 </DialogTitle>
             )
         }
-        return (
-            <DialogTitle>
-                Connect
-            </DialogTitle>
-        )
+        return <DialogTitle>Connect</DialogTitle>
     }
 
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    {renderTitle()}
-                </DialogHeader>
-                {renderContent()}
+                <DialogHeader>{renderTitle()}</DialogHeader>
+                <div>{renderContent()}</div>
             </DialogContent>
         </Dialog>
     )

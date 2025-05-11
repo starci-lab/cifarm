@@ -12,9 +12,9 @@ export interface SelectionProps {
 
 export const Selection: FC<SelectionProps> = ({ title, selected, icon, isExternal = false, onClick }) => {
     return (
-        <button className={cn("px-3 py-2 rounded-lg hover:bg-selection-active-background", {
-            "bg-selection-active-background text-selection-active-text": selected,
-            "hover:bg-selection-active-background hover:text-selection-active-text text-selection-default-text": !selected,
+        <button className={cn("px-3 py-2 rounded-lg", {
+            "bg-content-2 text-primary": selected,
+            "hover:bg-content-2 hover:text-primary text-muted-foreground": !selected,
         })} onClick={onClick}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

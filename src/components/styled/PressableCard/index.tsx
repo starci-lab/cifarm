@@ -3,12 +3,14 @@ import { cn } from "@/lib/utils"
 import { cva } from "class-variance-authority"
 import { Button } from "@/components/ui"
 import { ButtonProps } from "react-day-picker"
+import { Spinner } from "@/components"
 
 export interface PressableCardProps extends ButtonProps {
   showBorder?: boolean;
   classNames?: {
     base?: string;
   }
+  isLoading?: boolean;
   className?: string;
   variant?: "default" | "gradient" | "destructive" | "outline" | "secondary" | "ghost" | "ghost-secondary" | "link" | "icon" | "highlight";
 }
@@ -40,6 +42,7 @@ export const PressableCard: FC<PressableCardProps> = ({
     onClick,
     classNames = {},
     className,
+    isLoading,
     variant = "default",
     ...props
 }: PressableCardProps) => {
@@ -57,8 +60,12 @@ export const PressableCard: FC<PressableCardProps> = ({
                 className
             )}
             {...props}
+            disabled={isLoading || props.disabled}
         >
-            {children}
+            <div className="flex items-center gap-2 w-full">
+                {isLoading && <Spinner />}
+                {children}
+            </div>
         </Button>
     )
 }

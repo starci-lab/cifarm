@@ -34,13 +34,13 @@ export const AppSidebar: FC = () => {
     return (
         <>
             {!isMobile && (
-                <Sidebar className="px-6 py-4 text-sidebar-primary bg-sidebar-background">
+                <Sidebar className="px-6 py-4 text-sidebar-primary bg-content-4">
                     <SidebarHeader className="p-0 gap-0">
                         <div className="flex items-center gap-2">
                             <Avatar>
                                 <AvatarImage src="/logo.png" alt="Logo" />
                             </Avatar>
-                            <div className="text-text-default text-2xl">CiFarm</div>
+                            <div className="text-foreground text-2xl">CiFarm</div>
                         </div>
                         <Spacer y={4} />
                         <Separator variant="secondary" />

@@ -93,7 +93,7 @@ export const ExtendedButton = ({
             } as React.CSSProperties}
         >
             <div className={cn(
-                "relative z-10 flex items-center gap-2 w-full text-inherit",
+                "relative z-10 flex items-center gap-2 w-full text-inherit justify-center",
                 {
                     "justify-center": props.variant === "icon",
                 },

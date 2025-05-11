@@ -1,7 +1,6 @@
 "use client"
 import { Header, Spacer } from "@/components"
 import React from "react"
-import { ChainSelectionDropdown } from "./ChainSelectionDropdown"
 import { AppTabs } from "@/components"
 import { useAppSelector, useAppDispatch, AssetTab, setAssetTab } from "@/redux"
 import { TokensTab } from "./TokensTab"
@@ -26,7 +25,6 @@ const Page = () => {
         <div>
             <div className="flex justify-between items-center gap-4">
                 <Header title="Assets" />
-                <ChainSelectionDropdown />
             </div>
             <Spacer y={6} />
             <AppTabs

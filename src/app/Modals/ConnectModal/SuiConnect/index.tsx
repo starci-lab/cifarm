@@ -7,6 +7,8 @@ import {
 } from "@/components"
 import React, { FC, useState } from "react"
 import { useConnectWallet, useWallets, useCurrentWallet, useDisconnectWallet } from "@mysten/dapp-kit"
+import { useAppSelector, useAppDispatch, setChainKey } from "@/redux"
+import { ChainKey } from "@/modules/blockchain"
 export const SuiConnect: FC = () => {
     const { mutate: connect } = useConnectWallet()
     const wallets = useWallets()
@@ -60,6 +62,9 @@ export const SuiConnect: FC = () => {
             },
         },
     ]
+
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
+    const dispatch = useAppDispatch()
     return (
         <div>
             <List
@@ -76,6 +81,9 @@ export const SuiConnect: FC = () => {
                                 disabled={isConnected}
                                 icon={item.icon}
                                 text={item.name}
+                                classNames={{
+                                    description: "text-secondary",
+                                }}
                                 onClick={item.onClick}
                                 isLoading={isConnecting && connectingWallet === item.wallet}
                                 description={
@@ -90,16 +98,28 @@ export const SuiConnect: FC = () => {
                 showSeparator={false}
             />
             <Spacer y={6} />
-            <ExtendedButton
-                disabled={!isConnected}
-                className="w-full"
-                variant="destructive"
-                onClick={() => {
-                    disconnect()
-                }}
-            >
+            <div className="grid grid-cols-2 gap-2">
+                <ExtendedButton
+                    disabled={!isConnected}
+                    className="w-full"
+                    variant="destructive"
+                    onClick={() => {
+                        disconnect()
+                    }}
+                >
           Disconnect
-            </ExtendedButton>
+                </ExtendedButton>
+                <ExtendedButton
+                    className="w-full"
+                    variant="default"
+                    disabled={chainKey === ChainKey.Sui || !isConnected}
+                    onClick={() => {
+                        dispatch(setChainKey(ChainKey.Sui))
+                    }}
+                >
+          Select
+                </ExtendedButton>
+            </div>
         </div>
     )
 }

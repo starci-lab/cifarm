@@ -16,8 +16,8 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSw
             <div>
                 <Image src={collection.imageUrl} className="w-24 h-24 object-contain" />
                 <Spacer y={2}/>
-                <div className="text-text text-lg">{collection.name}</div>
-                <div className="text-text-secondary">{collectionSwr.data?.nfts.length} NFTs</div>
+                <div className="text-foreground text-lg">{collection.name}</div>
+                <div className="text-secondary">{collectionSwr.data?.nfts.length} NFTs</div>
                 <Separator className="w-full"/>
                 <Spacer y={2}/>
                 <div className="text-text-foreground line-clamp-3">

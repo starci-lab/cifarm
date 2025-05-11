@@ -37,12 +37,13 @@ body {
   :root,
   .light {
     /* for color-scheme: light */
-    --background: 0 0% 100%;
+    --background: 33 56% 94%;
     --foreground: 0 0% 3.9%;
 
     --content-1: 0 0% 10%;
-    --content-2: 33 56% 94%; /* cream - use in card and button */
-    --content-3: 34 20% 84%; /* teal - use in hover */
+    --content-2: 33 60% 97%; /* cream - use in card and button */
+    --content-3: 30 12% 87%; /* teal - use in hover */
+    --content-4: 32 31% 89%; /* teal - use in hover */
 
     /* for navbar */
     --navbar: 0 0% 3.9%;
@@ -116,7 +117,7 @@ body {
 
     --primary-foreground: 100 100% 70%;
 
-    --secondary: 0 0% 98%;
+    --secondary: 160 48% 67%;
 
     --secondary-foreground: 100 100% 40%;
 

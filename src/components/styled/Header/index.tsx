@@ -12,7 +12,7 @@ export interface HeaderProps {
 export const Header = ({ title, showBackButton, isSkeleton = false }: HeaderProps) => {
     const router = useRouterWithSearchParams()
     return (
-        <div className="flex items-center gap-4 text-primary">
+        <div className="flex items-center gap-4 text-foreground">
             {showBackButton && (
                 <IconWrapper classNames={{ base: "text-muted-foreground" }}>
                     <ArrowLeftIcon className="w-5 h-5" onClick={() => router.back()} />
