@@ -1,4 +1,4 @@
-import { Card, CardContent, Image, Spacer, Separator } from "@/components"
+import { Card, CardContent, Image, Spacer, Separator, WrappedAnimation } from "@/components"
 import React from "react"
 
 const individuals = [
@@ -29,28 +29,38 @@ const individuals = [
 ]
 
 export const Teams = () => (
-    <div className="grid grid-cols-4 gap-4">
-        {individuals.map((individual) => (
-            <div key={individual.name}>
-                <Card variant="default">
-                    <CardContent>
-                        <div className="flex flex-col justify-start">
-                            <Image src={individual.imageUrl} className="w-40 h-40 rounded-full" />
-                            <Spacer y={2}/>
-                            <Separator />
-                            <Spacer y={2}/>
-                            <div className="flex gap-2">
-                                <div className="text-lg text-text">
-                                    {individual.name}
+    <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {individuals.map((individual, index) => (
+                <WrappedAnimation 
+                    key={individual.name}
+                    type="fade-slide" 
+                    direction="up" 
+                    delay={0.2 + (index * 0.1)}
+                >
+                    <Card variant="default" className="h-full">
+                        <CardContent className="h-full">
+                            <div className="flex flex-col items-center text-center">
+                                <Image 
+                                    src={individual.imageUrl} 
+                                    className="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover" 
+                                />
+                                <Spacer y={2}/>
+                                <Separator />
+                                <Spacer y={2}/>
+                                <div className="flex flex-col gap-2">
+                                    <div className="text-lg font-semibold text-text">
+                                        {individual.name}
+                                    </div>
+                                    <div className="text-sm text-text-secondary">
+                                        {individual.description}
+                                    </div>
                                 </div>
                             </div>
-                            <div className="text-sm text-text-secondary">
-                                {individual.description}
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-        ))}
+                        </CardContent>
+                    </Card>
+                </WrappedAnimation>
+            ))}
+        </div>
     </div>
 ) 

@@ -50,23 +50,25 @@ export const Hero = ({
     return (
         <div>
             <div>
-                <div>
+                <div className="flex flex-col xl:flex-row gap-10">
                     <div>
                         <WrappedAnimation type="fade" delay={0.1}>
                             <AnnouncementBanner text={announcementText} />
                         </WrappedAnimation>
                         <Spacer y={4}/>
-                        <div className="flex flex-col gap-2">
-                            <div className="flex gap-2 items-center">
-                                <div className="text-4xl text-text-secondary">Farm, Thief, Earn</div>
-                                <div className="flex gap-2">
-                                    <Image src={assetProductMap[ProductId.Apple].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
-                                    <Image src={assetProductMap[ProductId.Banana].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
+                        <WrappedAnimation type="fade-slide" direction="down" delay={0.3}>
+                            <div className="flex flex-col gap-2">
+                                <div className="flex gap-2 items-center">
+                                    <div className="text-4xl text-text-secondary">Farm, Thief, Earn</div>
+                                    <div className="flex gap-2">
+                                        <Image src={assetProductMap[ProductId.Apple].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
+                                        <Image src={assetProductMap[ProductId.Banana].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
+                                    </div>
+                                </div>
+                                <div className="text-4xl text-text-secondary text-start">then sell them for <span className="text-text-highlight">crypto</span>
                                 </div>
                             </div>
-                            <div className="text-4xl text-text-secondary text-start">then sell them for <span className="text-text-highlight">crypto</span>
-                            </div>
-                        </div>
+                        </WrappedAnimation>
                         <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.3}>
                             <div className="text-text-default text-base sm:text-lg md:text-xl max-w-xl text-left leading-relaxed">
@@ -81,9 +83,8 @@ export const Hero = ({
                                 </PulsatingActionButton>
                             </div>
                         </WrappedAnimation>
-
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.5}>
-                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-primary-2 mt-8">
+                            <div className="flex gap-4 pt-4 border-t border-primary-2 mt-8 self-center">
                                 {features.map((feature, index) => (
                                     <FeatureItem
                                         key={index}
@@ -96,9 +97,11 @@ export const Hero = ({
                         </WrappedAnimation>
                     </div>
 
-                    <WrappedAnimation type="scale" delay={0.6}>
-                        <FeaturedImage src={imageSrc} alt={imageAlt} />
-                    </WrappedAnimation>
+                    <div className="flex-1">
+                        <WrappedAnimation type="scale" delay={0.6}>
+                            <FeaturedImage src={imageSrc} alt={imageAlt} />
+                        </WrappedAnimation>
+                    </div>
                 </div>
             </div>
         </div>

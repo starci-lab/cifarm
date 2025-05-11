@@ -22,7 +22,7 @@ export const Footer = () => {
                         {/* Footer content column */}
                         <div className="md:col-span-1">
                             <div className="space-y-6">
-                                <p className="">
+                                <p className="text-text-contrast">
                                     CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.
                                 </p>
 
@@ -34,13 +34,13 @@ export const Footer = () => {
                                             label={link.label}
                                             isExternal={true}
                                             icon={link.icon}
-                                            className="transition-colors"
+                                            className="transition-colors text-text-contrast"
                                         />
                                     ))}
                                 </div>
 
                                 {/* Copyright */}
-                                <div className="text-sm">2025 © Cifarm. All Rights Reserved.</div>
+                                <div className="text-sm text-text-contrast">2025 © Cifarm. All Rights Reserved.</div>
                             </div>
                         </div>
                     </div>
