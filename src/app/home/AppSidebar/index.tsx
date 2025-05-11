@@ -40,7 +40,7 @@ export const AppSidebar: FC = () => {
                             <Avatar>
                                 <AvatarImage src="/logo.png" alt="Logo" />
                             </Avatar>
-                            <div className="text-foreground text-2xl">CiFarm</div>
+                            <div className="text-muted-foreground text-2xl">CiFarm</div>
                         </div>
                         <Spacer y={4} />
                         <Separator variant="secondary" />
