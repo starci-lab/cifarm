@@ -69,12 +69,11 @@ export const MainVisual: FC<MainVisualProps> = ({
 
     const renderBlurImage = (key: string) => {
         const visual = visuals.find((visual) => visual.selectedKey === key)
-        if (visual?.type === MainVisualType.Image) {
-            return (
-                <Image src={visual.url} alt={visual.selectedKey}
-                    className="blur-[200px] absolute top-[-500px] left-1/2 -translate-x-1/2 -z-10 w-[400px] h-[400px]" />
-            )
-        }
+        if (!visual) return null
+        return (
+            <Image src={visual.thumbnailUrl} alt={visual.selectedKey}
+                className="blur-[200px] absolute top-[-500px] left-1/2 -translate-x-1/2 -z-10 w-[400px] h-[400px]" />
+        )
     }
 
     const dispatch = useAppDispatch()
