@@ -14,10 +14,10 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
             className={cn(
                 "border-none transition-all duration-300 h-full",
                 item.type === 1
-                    ? "bg-text-teal text-text"
+                    ? "bg-secondary/80"
                     : item.type === 2
-                        ? "bg-selection-active-text"
-                        : "bg-text-foreground",
+                        ? "bg-text-highlight"
+                        : "bg-content-2",
             )}
         >
             <CardHeader className="h-24 pb-0">
@@ -62,8 +62,7 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
                             <li key={featureIndex} className="flex items-start gap-2">
                                 <div
                                     className={cn(
-                                        "w-1.5 h-1.5 rounded-full mt-2",
-                                        item.type === 1 ? "bg-primary" : item.type === 2 ? "bg-text-highlight" : "bg-text-contrast",
+                                        "w-1.5 h-1.5 rounded-full mt-2 bg-content-1",
                                     )}
                                 />
                                 <span className="text-sm">{feature}</span>

@@ -36,7 +36,7 @@ export const Intro = () => {
                 </div>
                 <div className="flex flex-col justify-center">
                     <WrappedAnimation type="fade-slide" direction="down" delay={0.4}>
-                        <div className="text-3xl text-text-contrast font-bold">
+                        <div className="text-3xl text-secondary font-bold">
                             New concepts for MMOs
                         </div>
                     </WrappedAnimation>

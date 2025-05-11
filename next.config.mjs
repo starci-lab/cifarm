@@ -8,6 +8,8 @@ const nextConfig = {
     images: {
         remotePatterns: [
             { hostname: "cifarm.sgp1.cdn.digitaloceanspaces.com" },
+            // for placeholder image - xoa sau
+            { hostname: "static.vecteezy.com" },
         ],
     },
 }

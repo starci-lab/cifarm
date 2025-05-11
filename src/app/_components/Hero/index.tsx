@@ -7,7 +7,7 @@ import { AnnouncementBanner } from "./AnnouncementBanner"
 import { FeatureItem } from "./FeatureItem"
 import { PulsatingActionButton } from "./PulsatingActionButton"
 import { FeaturedImage } from "./FeaturedImage"
-import { Image, Spacer, WrappedAnimation } from "@/components"
+import { Image, Separator, Spacer, WrappedAnimation } from "@/components"
 import { assetProductMap } from "@/modules/assets"
 import { ProductId } from "@/modules/entities"
 
@@ -29,7 +29,7 @@ interface HeroProps {
 export const Hero = ({
     announcementText = "New Season Starting Soon",
     description = "CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.",
-    imageSrc = "/placeholder.svg?height=600&width=600",
+    imageSrc = "https://static.vecteezy.com/system/resources/previews/008/505/420/non_2x/island-summer-with-tree-palm-3d-illustration-png.png",
     imageAlt = "CiFarm game illustration",
     buttonText = "Play Now",
     features = [
@@ -50,7 +50,7 @@ export const Hero = ({
     return (
         <div>
             <div>
-                <div className="flex flex-col xl:flex-row gap-10">
+                <div className="flex flex-col items-center xl:flex-row gap-10 mt-10">
                     <div>
                         <WrappedAnimation type="fade" delay={0.1}>
                             <AnnouncementBanner text={announcementText} />
@@ -59,13 +59,13 @@ export const Hero = ({
                         <WrappedAnimation type="fade-slide" direction="down" delay={0.3}>
                             <div className="flex flex-col gap-2">
                                 <div className="flex gap-2 items-center">
-                                    <div className="text-4xl text-text-secondary">Farm, Thief, Earn</div>
+                                    <div className="text-4xl text-muted-foreground">Farm, Thief, Earn</div>
                                     <div className="flex gap-2">
                                         <Image src={assetProductMap[ProductId.Apple].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
                                         <Image src={assetProductMap[ProductId.Banana].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
                                     </div>
                                 </div>
-                                <div className="text-4xl text-text-secondary text-start">then sell them for <span className="text-text-highlight">crypto</span>
+                                <div className="text-4xl text-muted-foreground text-start">then sell them for <span className="text-secondary">crypto</span>
                                 </div>
                             </div>
                         </WrappedAnimation>
@@ -84,7 +84,8 @@ export const Hero = ({
                             </div>
                         </WrappedAnimation>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.5}>
-                            <div className="flex gap-4 pt-4 border-t border-primary-2 mt-8 self-center">
+                            <Separator variant="secondary" className="my-4" />
+                            <div className="flex gap-4 self-center">
                                 {features.map((feature, index) => (
                                     <FeatureItem
                                         key={index}
@@ -99,7 +100,9 @@ export const Hero = ({
 
                     <div className="flex-1">
                         <WrappedAnimation type="scale" delay={0.6}>
-                            <FeaturedImage src={imageSrc} alt={imageAlt} />
+                            <div className="animate-float">
+                                <FeaturedImage src={imageSrc} alt={imageAlt} />
+                            </div>
                         </WrappedAnimation>
                     </div>
                 </div>

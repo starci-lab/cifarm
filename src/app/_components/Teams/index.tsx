@@ -12,7 +12,7 @@ const individuals = [
         name: "Uy Le",
         x: "https://x.com/uy_le",
         imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/uyle.jpg",
-        description: "CiFarm Technical Co-founder. Enthusiastic about Web3 and HTML5 game development.",
+        description: "CiFarm Technical Co-founder. Enthusiastic about Web3 and game development.",
     },
     {
         name: "Kyle Dong",
