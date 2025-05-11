@@ -12,7 +12,7 @@ const buttonVariants = cva(
                 default:
           "bg-content2 hover:bg-content2/75 text-foreground",
                 gradient:
-          "bg-gradient-bg hover:bg-gradient-bg/75",
+          "bg-gradient-button hover:bg-gradient-button/75",
                 destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
                 outline:

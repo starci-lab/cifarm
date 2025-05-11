@@ -12,7 +12,7 @@ const config: Config = {
     		backgroundImage: {
     			"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
     			"gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-				"gradient-bg": "linear-gradient(90deg, #D9D9D9 0%, #A8E6CF 30.77%, #A0DDE8 52.88%, #E6F79B 100%)",
+				"gradient-button": "linear-gradient(90deg, #D9D9D9 0%, #A8E6CF 30.77%, #A0DDE8 52.88%, #E6F79B 100%)",
     		},
     		colors: {
                 content0: "hsl(var(--content-0))",
