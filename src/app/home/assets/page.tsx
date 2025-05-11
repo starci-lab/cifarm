@@ -1,5 +1,5 @@
 "use client"
-import { Header, Spacer, Card, CardContent } from "@/components"
+import { Header, Spacer, Card, CardContent, ExtendedButton } from "@/components"
 import React from "react"
 import { ChainSelectionDropdown } from "./ChainSelectionDropdown"
 import { AppTabs } from "@/components"
@@ -7,6 +7,7 @@ import { useAppSelector, useAppDispatch, AssetTab, setAssetTab } from "@/redux"
 import { TokensTab } from "./TokensTab"
 import { NFTCollectionsTab } from "./NFTCollectionsTab"
 import { InGameTab } from "./InGameTab"
+import { Button } from "../../../components/ui/button"
 
 const Page = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
@@ -29,6 +30,18 @@ const Page = () => {
                 <ChainSelectionDropdown />
             </div>
             <Spacer y={6} />
+            <ExtendedButton variant={"default"}>
+                Hello
+            </ExtendedButton>
+            <ExtendedButton variant={"secondary"}>
+                Hello
+            </ExtendedButton>
+            <ExtendedButton variant={"gradient"}>
+                Hello
+            </ExtendedButton>
+            <Button variant={"gradient"} >
+                Hello Gradient
+            </Button>
             <Card className="rounded-lg" variant="secondary">
                 <CardContent>
                     <AppTabs
