@@ -37,7 +37,7 @@ body {
   :root,
   .light {
     /* for color-scheme: light */
-    --background: #5B574F;
+    --background: #493A2A;
 
     --foreground: #181818;
 
@@ -49,11 +49,13 @@ body {
     --card-secondary: #E5D2C6;
 
     --border: #eee8de;
+    --border-secondary: #473A2D;
 
     /* for text */
     --text: #312a1f;
     --text-secondary: #dfb48e;
     --text-foreground: #999999;
+    --text-default: #9d968c;
 
     /* tabs */
     --tab-active-background: #fcfcfc;
@@ -64,10 +66,18 @@ body {
 
     /* for table */
     --table-header-background: #f8f0e6;
-    --table-header-text: #181818;
+    --table-header-text: #dfb48e;
     --table-row-background: #f8f0e6;
     --table-row-background-hover: #e8ded3;
     --table-row-text: #312a1f;
+
+    /* selection */
+    --selection-active-background: #fcfcfc;
+    --selection-active-text: #dfb07b;
+    --selection-default-text: #9d968c;
+
+    /* sidebar */
+    --sidebar-background: #322416;
 
     /* for content 0 */
     --content-0: 0 0% 5%;
@@ -126,8 +136,6 @@ body {
     --chart-5: 27 87% 67%;
 
     --radius: 0.5rem;
-
-    --sidebar-background: 100 100% 4%;
 
     --sidebar-foreground: 100 100% 10%;
 

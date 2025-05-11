@@ -25,7 +25,7 @@ export const NFTCollectionsTab: FC = () => {
 
     const router = useRouterWithSearchParams()
     return (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-4">
+        <div className="grid gap-2 grid-cols-1 sm:grid-cols-4">
             {nftCollections.map((nftCollection) => {
                 const collectionSwr = nftCollectionSwrs[nftCollection.key]
                 if (!nftCollection || !collectionSwr) return null

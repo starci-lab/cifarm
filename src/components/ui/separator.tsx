@@ -4,13 +4,27 @@ import * as React from "react"
 import * as SeparatorPrimitive from "@radix-ui/react-separator"
 
 import { cn } from "@/lib/utils"
+import { cva } from "class-variance-authority"
+
+const separatorVariants = cva("shrink-0", {
+    variants: {
+        variant: {
+            primary: "bg-border",
+            secondary: "bg-border-secondary",
+        },
+    },
+    defaultVariants: {
+        variant: "primary",
+    },
+})
+
 
 const Separator = React.forwardRef<
   React.ElementRef<typeof SeparatorPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
+  React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root> & { variant?: "primary" | "secondary" }
 >(
     (
-        { className, orientation = "horizontal", decorative = true, ...props },
+        { className, orientation = "horizontal", decorative = true, variant = "primary", ...props },
         ref
     ) => (
         <SeparatorPrimitive.Root
@@ -18,7 +32,7 @@ const Separator = React.forwardRef<
             decorative={decorative}
             orientation={orientation}
             className={cn(
-                "shrink-0 bg-border",
+                separatorVariants({ variant }),
                 orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]",
                 className
             )}

@@ -11,7 +11,7 @@ export interface PressableCardProps extends ExtendedButtonProps {
   className?: string;
 }
 
-const pressableCardVariants = cva("rounded-xl p-3", {
+const pressableCardVariants = cva("rounded-lg p-3", {
     variants: {
         variant: {
             default: "bg-card hover:bg-card-hover",
