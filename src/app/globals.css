@@ -61,6 +61,7 @@ body {
     --text-default: #9d968c;
     --text-teal: #84D4B9;
     --text-highlight: #FFFF2E;
+    --text-contrast: #ECEDEE;
 
     /* tabs */
     --tab-active-background: #fcfcfc;

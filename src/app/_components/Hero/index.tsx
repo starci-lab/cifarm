@@ -7,7 +7,6 @@ import { AnnouncementBanner } from "./AnnouncementBanner"
 import { FeatureItem } from "./FeatureItem"
 import { PulsatingActionButton } from "./PulsatingActionButton"
 import { FeaturedImage } from "./FeaturedImage"
-import { SplitTitle } from "./SplitTitle"
 import { Image, Spacer, WrappedAnimation } from "@/components"
 import { assetProductMap } from "@/modules/assets"
 import { ProductId } from "@/modules/entities"
@@ -29,8 +28,6 @@ interface HeroProps {
 
 export const Hero = ({
     announcementText = "New Season Starting Soon",
-    primaryText = "Ci",
-    secondaryText = "Farm",
     description = "CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.",
     imageSrc = "/placeholder.svg?height=600&width=600",
     imageAlt = "CiFarm game illustration",
@@ -72,9 +69,9 @@ export const Hero = ({
                         </div>
                         <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.3}>
-                            <p className="text-text-default text-base sm:text-lg md:text-xl max-w-xl text-left leading-relaxed">
+                            <div className="text-text-default text-base sm:text-lg md:text-xl max-w-xl text-left leading-relaxed">
                                 {description}
-                            </p>
+                            </div>
                         </WrappedAnimation>
                         <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.4}>

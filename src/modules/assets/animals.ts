@@ -1,5 +1,5 @@
 import { AnimalId } from "@/modules/entities"
-import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig } from "./types"
+import { AssetMapData, AssetMapType, BubbleStateConfig } from "./types"
 
 export enum AnimalAge {
     Baby = "baby",
@@ -19,7 +19,7 @@ export interface AssetAnimalData {
         };
     };
     base: {
-        ages: Record<AnimalAge, AssetData>
+        ages: Record<AnimalAge, AssetMapData>
     };
 }
 
@@ -85,12 +85,36 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
         base: {
             ages: {
                 [AnimalAge.Baby]: {
-                    assetKey: "animals-cow-baby",
-                    assetUrl: "animals/cow/baby/spine/baby.png",
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "animals-cow-baby-atlas",
+                            assetUrl: "animals/cow/baby/spine/baby.atlas",
+                            textureUrl: "animals/cow/baby/spine/baby.png",
+                            version: 4,
+                        },
+                        json: {
+                            assetKey: "animals-cow-baby-json",
+                            assetUrl: "animals/cow/baby/spine/baby.json",
+                            version: 4,
+                        },
+                    },
                 },
                 [AnimalAge.Adult]: {
-                    assetKey: "animals-cow-adult",
-                    assetUrl: "animals/cow/adult/spine/adult.png",
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "animals-cow-adult-atlas",
+                            assetUrl: "animals/cow/adult/spine/adult.atlas",
+                            textureUrl: "animals/cow/adult/spine/adult.png",
+                            version: 3,
+                        },
+                        json: {
+                            assetKey: "animals-cow-adult-json",
+                            assetUrl: "animals/cow/adult/spine/adult.json",
+                            version: 3,
+                        },
+                    },
                 },
             },
         },
@@ -156,12 +180,36 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
         base: {
             ages: {
                 [AnimalAge.Baby]: {
-                    assetKey: "animals-chicken-baby",
-                    assetUrl: "animals/chicken/baby/spine/baby.png",
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "animals-chicken-baby-atlas",
+                            assetUrl: "animals/chicken/baby/spine/baby.atlas",
+                            textureUrl: "animals/chicken/baby/spine/baby.png",
+                            version: 3,
+                        },
+                        json: {
+                            assetKey: "animals-chicken-baby-json",
+                            assetUrl: "animals/chicken/baby/spine/baby.json",
+                            version: 3,
+                        },
+                    },
                 },
                 [AnimalAge.Adult]: {
-                    assetKey: "animals-chicken-adult",
-                    assetUrl: "animals/chicken/adult/spine/adult.png",
+                    type: AssetMapType.Spine,
+                    spine: {
+                        atlas: {
+                            assetKey: "animals-chicken-adult-atlas",
+                            assetUrl: "animals/chicken/adult/spine/adult.atlas",
+                            textureUrl: "animals/chicken/adult/spine/adult.png",
+                            version: 3,
+                        },
+                        json: {
+                            assetKey: "animals-chicken-adult-json",
+                            assetUrl: "animals/chicken/adult/spine/adult.json",
+                            version: 3,
+                        },
+                    },
                 },
             },
         },

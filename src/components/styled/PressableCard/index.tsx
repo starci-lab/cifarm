@@ -15,6 +15,7 @@ const pressableCardVariants = cva("rounded-lg p-3", {
     variants: {
         variant: {
             default: "bg-card hover:bg-card-hover",
+            gradient: "bg-gradient-to-r from-card-1 to-card-2 hover:bg-gradient-to-r hover:from-card-1/90 hover:to-card-2/90",
             destructive:
         "bg-destructive text-destructive-foreground hover:bg-destructive/90",
             outline:
@@ -36,6 +37,7 @@ export const PressableCard: FC<PressableCardProps> = ({
     classNames = {},
     showBorder = true,
     className,
+    variant = "default",
     ...props
 }: PressableCardProps) => {
     const { base } = classNames
@@ -44,7 +46,7 @@ export const PressableCard: FC<PressableCardProps> = ({
             size="default"
             onClick={onClick}
             className={cn(
-                pressableCardVariants({ variant: props.variant }),
+                pressableCardVariants({ variant }),
                 "text-start justify-start w-full hover:text-inherit",
                 "whitespace-normal h-fit", 
                 base, 

@@ -94,6 +94,7 @@ const config: Config = {
                     default: "var(--text-default)",
                     teal: "var(--text-teal)",
                     highlight: "var(--text-highlight)",
+                    contrast: "var(--text-contrast)",
                 },
     			border: {
                     DEFAULT: "var(--border)",
