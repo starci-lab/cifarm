@@ -4,7 +4,12 @@ const nextConfig = {
     eslint: {
         ignoreDuringBuilds: true,
     },
-    output: "standalone"
+    output: "standalone",
+    images: {
+        remotePatterns: [
+            { hostname: "cifarm.sgp1.cdn.digitaloceanspaces.com" },
+        ],
+    },
 }
 
 export default nextConfig

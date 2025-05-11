@@ -1,18 +1,17 @@
 "use client"
 import React from "react"
 import { ExtendedButton } from "@/components/styled/ExtendedButton"
-import { useIsMobile } from "@/hooks"
+import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
 import { Menu } from "lucide-react"
 import { useState } from "react"
 import { Logo } from "./Logo"
 import { MobileMenu } from "./MobileMenu"
 import { PulsatingActionButton } from "../Hero/PulsatingActionButton"
-import { useRouter } from "next/navigation"
 
-export function Header() {
+export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const isMobile = useIsMobile()
-    const router = useRouter()
+    const router = useRouterWithSearchParams()
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
@@ -25,7 +24,6 @@ export function Header() {
 
             <div className="container mx-auto px-4 py-4 flex items-center justify-between relative z-10">
                 <Logo />
-
                 {/* Desktop Navigation */}
                 {!isMobile && <div className="flex items-center gap-4">
                     <PulsatingActionButton
