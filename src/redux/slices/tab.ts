@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+export enum HomeTab {
+    Overview = "overview",
+    Items = "items",
+}
+
 export enum AssetTab {
     Tokens = "tokens",
     NFTs = "nfts",
@@ -39,6 +44,7 @@ export enum ShopTab {
 
 
 export interface TabSlice {
+    homeTab: HomeTab
     assetTab: AssetTab
     transferTab: TransferTab
     neighborsTab: NeighborsTab
@@ -47,6 +53,7 @@ export interface TabSlice {
 }
 
 const initialState: TabSlice = {
+    homeTab: HomeTab.Overview,
     assetTab: AssetTab.Tokens,
     transferTab: TransferTab.Token,
     neighborsTab: NeighborsTab.Neighbors,
@@ -58,6 +65,9 @@ export const tabSlice = createSlice({
     name: "tab",
     initialState,
     reducers: {
+        setHomeTab: (state, action) => {
+            state.homeTab = action.payload
+        },
         setAssetTab: (state, action) => {
             state.assetTab = action.payload
         },
@@ -77,4 +87,4 @@ export const tabSlice = createSlice({
 })
 
 export const tabReducer = tabSlice.reducer
-export const { setAssetTab, setTransferTab, setNeighborsTab, setQuestsTab, setShopTab } = tabSlice.actions
+export const { setHomeTab, setAssetTab, setTransferTab, setNeighborsTab, setQuestsTab, setShopTab } = tabSlice.actions

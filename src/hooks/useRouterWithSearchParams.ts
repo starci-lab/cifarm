@@ -4,10 +4,10 @@ import { formatUrl } from "url-lib"
 export const useRouterWithSearchParams = () => {
     const router = useRouter()
     const pathname = usePathname()
-    const push = (href: string, options?: RouterPushOptions) => {
-        if (options?.mergeWithCurrentPath) {
+    const push = (href: string, { mergeWithCurrentPath, params }: RouterPushOptions = {}) => {
+        if (mergeWithCurrentPath) {
             const currentPath = pathname
-            const newPath = formatUrl(href, options?.params)
+            const newPath = formatUrl(href, params)
             // check if / do not add it
             if (newPath.startsWith("/")) {
                 router.push(`${currentPath}${newPath}`)
@@ -15,7 +15,7 @@ export const useRouterWithSearchParams = () => {
                 router.push(`${currentPath}/${newPath}`)
             }
         } else {
-            router.push(formatUrl(href, options?.params))
+            router.push(formatUrl(href, params))
         }
     }
 

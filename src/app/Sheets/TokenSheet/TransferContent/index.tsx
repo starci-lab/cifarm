@@ -158,7 +158,6 @@ export const TransferContent: FC = () => {
             <ExtendedButton 
                 className="w-full"
                 onClick={() => formik.submitForm()}
-                size="lg"
             >
                     Transfer
             </ExtendedButton>

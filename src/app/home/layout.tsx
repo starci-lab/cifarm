@@ -4,7 +4,6 @@ import { Navbar } from "./Navbar"
 import { BottomNavbar } from "./BottomNavbar"
 import { AppSidebar } from "./AppSidebar"
 import { Container } from "@/components"
-
 const Layout: FC<PropsWithChildren> = ({ children }) => {
     return (
         <Container>
