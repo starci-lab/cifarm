@@ -1,50 +1,30 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Trophy, Users, LucideIcon } from "lucide-react"
+import { Trophy, Users } from "lucide-react"
 import React from "react"
 import { AnnouncementBanner } from "./AnnouncementBanner"
-import { FeatureItem } from "./FeatureItem"
+import { FeatureItem, FeatureItemProps } from "./FeatureItem"
 import { PulsatingActionButton } from "./PulsatingActionButton"
 import { FeaturedImage } from "./FeaturedImage"
 import { Image, Separator, Spacer, WrappedAnimation } from "@/components"
 import { assetProductMap } from "@/modules/assets"
 import { ProductId } from "@/modules/entities"
 
-interface HeroProps {
-    announcementText?: string
-    primaryText?: string
-    secondaryText?: string
-    description?: string
-    imageSrc?: string
-    imageAlt?: string
-    buttonText?: string
-    features?: Array<{
-        icon: LucideIcon
-        title: string
-        description: string
-    }>
-}
+const features: Array<FeatureItemProps> = [
+    {
+        icon: <Trophy className="w-5 h-5 text-secondary"/>,
+        title: "Seasonal Rewards",
+        description: "Earn as you play"
+    },
+    {
+        icon: <Users className="w-5 h-5 text-secondary"/>,
+        title: "Social Gaming",
+        description: "Play with friends"
+    }
+]
 
-export const Hero = ({
-    announcementText = "New Season Starting Soon",
-    description = "CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.",
-    imageSrc = "https://static.vecteezy.com/system/resources/previews/008/505/420/non_2x/island-summer-with-tree-palm-3d-illustration-png.png",
-    imageAlt = "CiFarm game illustration",
-    buttonText = "Play Now",
-    features = [
-        {
-            icon: Trophy,
-            title: "Seasonal Rewards",
-            description: "Earn as you play"
-        },
-        {
-            icon: Users,
-            title: "Social Gaming",
-            description: "Play with friends"
-        }
-    ]
-}: HeroProps) => {
+export const Hero = () => {
     const router = useRouter()
 
     return (
@@ -53,7 +33,7 @@ export const Hero = ({
                 <div className="flex flex-col items-center xl:flex-row gap-10 mt-10">
                     <div>
                         <WrappedAnimation type="fade" delay={0.1}>
-                            <AnnouncementBanner text={announcementText} />
+                            <AnnouncementBanner text={"New Season Starting Soon"} />
                         </WrappedAnimation>
                         <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="down" delay={0.3}>
@@ -72,14 +52,14 @@ export const Hero = ({
                         <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.3}>
                             <div className="text-text-default text-base sm:text-lg md:text-xl max-w-xl text-left leading-relaxed">
-                                {description}
+                            CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.
                             </div>
                         </WrappedAnimation>
                         <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.4}>
                             <div className="flex flex-col sm:flex-row gap-4 items-start">
                                 <PulsatingActionButton onClick={() => router.push("/home")}>
-                                    {buttonText}
+                                    Play now
                                 </PulsatingActionButton>
                             </div>
                         </WrappedAnimation>
@@ -101,7 +81,7 @@ export const Hero = ({
                     <div className="flex-1">
                         <WrappedAnimation type="scale" delay={0.6}>
                             <div className="animate-float">
-                                <FeaturedImage src={imageSrc} alt={imageAlt} />
+                                <FeaturedImage />
                             </div>
                         </WrappedAnimation>
                     </div>

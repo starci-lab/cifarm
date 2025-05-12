@@ -58,17 +58,18 @@ const Page: FC = () => {
                         // redirect to home
                         router.push(pathConstants.home)
                     }}
+                    variant="secondary"
                     className="w-full justify-start">
                     <Image src="/google.svg" className="w-4 h-4"/>
                     Continue with Google
                 </ExtendedButton>
                 <Spacer y={2}/>
-                <ExtendedButton className="w-full justify-start">
+                <ExtendedButton className="w-full justify-start" variant="secondary">
                     <Image src="/facebook.svg" className="w-4 h-4"/>
                     Continue with Facebook
                 </ExtendedButton>
                 <Spacer y={2}/>
-                <ExtendedButton className="w-full justify-start">
+                <ExtendedButton className="w-full justify-start" variant="secondary">
                     <Image src="/x.svg" className="w-4 h-4"/>
                     Continue with X</ExtendedButton>
             </div>
