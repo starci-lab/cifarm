@@ -25,7 +25,8 @@ import {
     GoldPurchases,
     InteractionPermissions,
     NFTBoxInfo,
-    Tokens
+    Tokens,
+    TerrainSchema
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -154,6 +155,7 @@ const query = gql`
       tile
       animal
       building
+      terrain
       fruit
       pet
       sizeX
@@ -307,6 +309,15 @@ const query = gql`
       price
       type
       unlockLevel
+    }
+    terrains {
+      id
+      displayId
+      type
+      availableInShop
+      sellPrice
+      sellable
+      price
     }
     fruitInfo {
       randomness {
@@ -661,6 +672,7 @@ export interface QueryStaticResponse {
   fruits: Array<FruitSchema>
   fruitInfo: FruitInfo
   cropInfo: CropInfo
+  terrains: Array<TerrainSchema>
   animalInfo: AnimalInfo
   nftCollections: NFTCollections
   wholesaleMarket: WholesaleMarket

@@ -43,6 +43,7 @@ export enum PlacedItemType {
     Animal = "animal",
     Fruit = "fruit",
     Pet = "pet",
+    Terrain = "terrain",
 }
 
 // Inventory Kind
@@ -90,4 +91,10 @@ export enum TokenKey {
     CIFARM = "cifarm",
 }
 
-
+export enum TerrainType {
+    Stone = "stone",
+    GrassPatch = "grassPatch",
+    OakTree = "oakTree",
+    PineTree = "pineTree",
+    MapleTree = "mapleTree",
+}

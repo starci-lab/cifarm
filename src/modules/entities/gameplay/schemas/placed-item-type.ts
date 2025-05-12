@@ -9,6 +9,7 @@ export interface PlacedItemTypeSchema extends StaticAbstractSchema<PlacedItemTyp
     animal?: string
     fruit?: string
     pet?: string
+    terrain?: string
     sizeX: number
     sizeY: number
 }

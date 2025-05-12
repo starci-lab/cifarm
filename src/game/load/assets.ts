@@ -18,6 +18,7 @@ import {
     assetBootstrapMap,
     assetMiscMap,
     assetIconMap,
+    assetTerrainMap,
 } from "@/modules/assets"
 import { Scene } from "phaser"
 import { loadFont, loadMusic, loadSpine, loadTexture } from "./load"
@@ -165,13 +166,11 @@ export const loadFruitAssets = async (scene: Scene) => {
                 if (!stageData.mapData.texture) {
                     throw new Error("Texture config is undefined")
                 }
-                console.log("stageData.mapData.texture", stageData.mapData.texture)
                 try {
                     await loadTexture(scene, stageData.mapData.texture)
                 } catch (error) {
                     console.error("Error loading texture", error)
                 }
-                
                 break
             }
             }
@@ -272,3 +271,30 @@ export const loadIconAssets = async (scene: Scene) => {
     }
     await Promise.all(promises)
 }
+
+export const loadTerrainAssets = async (scene: Scene) => {
+    const promises: Array<Promise<void>> = []
+    for (const terrainData of Object.values(assetTerrainMap)) {
+        switch (terrainData.phaser.map.type) {
+        case AssetMapType.Spine: {
+            if (!terrainData.phaser.map.spine) {
+                throw new Error("Spine config is undefined")
+            }
+            promises.push(loadSpine(scene, terrainData.phaser.map.spine))
+            break
+        }
+        default: {
+            if (!terrainData.phaser.map.texture) {
+                throw new Error("Texture config is undefined")
+            }
+            try {
+                await loadTexture(scene, terrainData.phaser.map.texture)
+            } catch (error) {
+                console.error("Error loading texture", error)
+            }
+            break
+        }
+        }
+    }
+    await Promise.all(promises)
+}   

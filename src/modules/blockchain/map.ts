@@ -226,7 +226,99 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                 }
             }
         }
-    }
+    },
+    [ChainKey.Somnia]: {
+        imageUrl: "/somnia.svg",
+        name: "Somnia",
+        defaultTokens: {
+            [Network.Mainnet]: {
+                [DefaultToken.Native]: {
+                    name: "SOMNIA",
+                    symbol: "SOMNIA",
+                    address: "",
+                    decimals: 8,
+                    imageUrl: "/somnia.svg",
+                },
+                [DefaultToken.$CAULI]: {
+                    name: "$CAULI",
+                    symbol: "$CAULI",
+                    address: "",
+                    decimals: 8,
+                    imageUrl: "/$CAULI.png",
+                }
+            },
+            [Network.Testnet]: {
+                [DefaultToken.Native]: {
+                    name: "SUI",
+                    symbol: "SUI",
+                    address: "",
+                    decimals: 8,
+                    imageUrl: "/sui.svg",
+                },
+                [DefaultToken.$CAULI]: {
+                    name: "$CAULI",
+                    symbol: "$CAULI",
+                    address: "",
+                    decimals: 8,
+                    imageUrl: "/$CAULI.png",
+                }
+            }
+        },
+        defaultCollections: {
+            [Network.Mainnet]: {
+                [DefaultCollection.DragonFruit]: {
+                    name: "Dragon Fruit",
+                    imageUrl: "https://violet-lazy-yak-333.mypinata.cloud/ipfs/bafkreidmxxbtbcgeceinnpnx5rggmcptbyxwbi25oiyijyfvyc72dytas4",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.DragonFruit,
+                },
+                [DefaultCollection.Jackfruit]: {
+                    name: "Jackfruit",
+                    imageUrl: "/solana.svg",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Jackfruit,
+                },
+                [DefaultCollection.Pomegranate]: {
+                    name: "Pomegranate",
+                    imageUrl: "/products/pomegranate.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Pomegranate,
+                },
+                [DefaultCollection.Rambutan]: {
+                    name: "Rambutan",
+                    imageUrl: "/products/rambutan.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Rambutan,
+                }
+            },
+            [Network.Testnet]: {
+                [DefaultCollection.DragonFruit]: {
+                    name: "Dragon Fruit",
+                    imageUrl: "/products/dragon-fruit.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.DragonFruit,
+                },
+                [DefaultCollection.Jackfruit]: {
+                    name: "Jackfruit",
+                    imageUrl: "/products/jackfruit.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Jackfruit,
+                },
+                [DefaultCollection.Pomegranate]: {
+                    name: "Pomegranate",
+                    imageUrl: "/products/pomegranate.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Pomegranate,
+                },
+                [DefaultCollection.Rambutan]: {
+                    name: "Rambutan",
+                    imageUrl: "/products/rambutan.png",
+                    address: "",
+                    placedItemTypeId: PlacedItemTypeId.Rambutan,
+                }
+            }
+        }
+    },
 }
 
 export const networkMap: Record<Network, NetworkInfo> = {

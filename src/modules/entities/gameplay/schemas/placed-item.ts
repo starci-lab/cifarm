@@ -8,6 +8,7 @@ import { PlantInfoSchema } from "./plant-info"
 import { BeeHouseInfoSchema } from "./bee-house-info"
 import { NFTMetadataSchema } from "./nft-metadata"
 import { PetInfoSchema } from "./pet-info"
+import { TerrainInfoSchema } from "./terrain-info"
 
 export interface PlacedItemSchema extends AbstractSchema {
     x: number
@@ -20,6 +21,7 @@ export interface PlacedItemSchema extends AbstractSchema {
     animalInfo?: AnimalInfoSchema
     buildingInfo?: BuildingInfoSchema
     beeHouseInfo?: BeeHouseInfoSchema
+    terrainInfo?: TerrainInfoSchema
     placedItemType: string
     fruitInfo?: FruitInfoSchema
     petInfo?: PetInfoSchema

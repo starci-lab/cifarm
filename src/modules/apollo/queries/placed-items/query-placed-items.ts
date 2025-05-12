@@ -18,6 +18,9 @@ const query1 = gql`
         diseaseResistance
         harvestCount
       }
+      terrainInfo {
+        chopCount
+      }
       plantInfo {
         currentPerennialCount
         crop

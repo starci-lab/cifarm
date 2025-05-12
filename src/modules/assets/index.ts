@@ -18,4 +18,4 @@ export * from "./font"
 export * from "./music"
 export * from "./bootstrap"
 export * from "./misc"
-
+export * from "./terrain"

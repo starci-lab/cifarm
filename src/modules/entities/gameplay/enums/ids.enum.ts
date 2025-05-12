@@ -218,6 +218,12 @@ export enum PlacedItemTypeId {
     Apple = "apple",
     Pomegranate = "pomegranate",
     Rambutan = "rambutan",
+    // terrain
+    SmallStone = "smallStone",
+    SmallGrassPatch = "smallGrassPatch",
+    OakTree = "oakTree",
+    PineTree = "pineTree",
+    MapleTree = "mapleTree",
 }
 
 // Pet Enum
@@ -230,4 +236,10 @@ export enum FlowerId {
     Daisy = "daisy",
 }
 
-
+export enum TerrainId {
+    SmallStone = "smallStone",
+    SmallGrassPatch = "smallGrassPatch",
+    OakTree = "oakTree",
+    PineTree = "pineTree",
+    MapleTree = "mapleTree",
+}

@@ -4,6 +4,7 @@ import {
     BuildingSchema,
     FruitSchema,
     PetSchema,
+    TerrainSchema,
     PlacedItemType,
     PlacedItemTypeSchema,
     TileSchema,
@@ -19,6 +20,7 @@ import {
     assetBuildingMap,
     assetFruitMap,
     assetPetMap,
+    assetTerrainMap,
 } from "@/modules/assets"
 
 export const setTintForMainVisual = (
@@ -136,6 +138,7 @@ export const getAssetData = ({
     const animals = scene.cache.obj.get(CacheKey.Animals) as Array<AnimalSchema>
     const fruits = scene.cache.obj.get(CacheKey.Fruits) as Array<FruitSchema>
     const pets = scene.cache.obj.get(CacheKey.Pets) as Array<PetSchema>
+    const terrains = scene.cache.obj.get(CacheKey.Terrains) as Array<TerrainSchema>
     return getAssetDataRaw({
         placedItemType,
         fruitStage,
@@ -146,6 +149,7 @@ export const getAssetData = ({
             animals,
             fruits,
             pets,
+            terrains,
         },
     })
 }
@@ -242,6 +246,20 @@ export const getAssetDataRaw = ({
             throw new Error("Pet not found")
         }
         return assetPetMap[pet.displayId].phaser.map.mapData
+    }
+    case PlacedItemType.Terrain: {
+        if (!placedItemType.terrain) {
+            throw new Error("Terrain ID not found")
+        }
+        const terrains = queryStaticResponsePartial.terrains
+        if (!terrains) {
+            throw new Error("Terrains not found")
+        }
+        const terrain = terrains.find((terrain) => terrain.id === placedItemType.terrain)
+        if (!terrain) {
+            throw new Error("Terrain not found")
+        }
+        return assetTerrainMap[terrain.displayId].phaser.map
     }
     }
 }
