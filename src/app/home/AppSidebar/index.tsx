@@ -3,8 +3,6 @@
 import React, { FC } from "react"
 import { useIsMobile } from "@/hooks/useIsMobile"
 import {
-    Avatar,
-    AvatarImage,
     Selection,
     Separator,
     Sidebar,

@@ -23,7 +23,7 @@ export const List = <TItem extends string | object>({
     showSeparator = true,
     classNames = {},
 }: ListProps<TItem>) => {
-    const content = (<div className={cn("overflow-hidden flex flex-col", classNames?.container)}>
+    const content = (<div className={cn("overflow-hidden flex flex-col rounded-lg", classNames?.container)}>
         {items.map((item, index) => {
             const last = index === items.length - 1
             return (

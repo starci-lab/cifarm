@@ -127,14 +127,14 @@ export const MainContent: FC = () => {
                             (attribute) => attribute.key === name
                         )
                         return (
-                            <div className="px-3 py-2 bg-content2 rounded-lg">
+                            <div className="px-3 py-2 bg-content-2 rounded-lg">
                                 <div className="flex gap-2 items-center justify-between w-full">
                                     <Title
                                         title={fruitPropertiesNameMap[name].name}
                                         tooltipString={fruitPropertiesNameMap[name].tooltip}
                                         classNames={{
-                                            title: "text-base",
-                                            tooltip: "w-4 h-4",
+                                            title: "text-base text-muted-foreground",
+                                            tooltip: "w-4 h-4 text-muted-foreground",
                                         }}
                                     />
                                     <div className="text-sm">
@@ -170,14 +170,14 @@ export const MainContent: FC = () => {
                             (attribute) => attribute.key === name
                         )
                         return (
-                            <div className="px-3 py-2 bg-content2 rounded-lg">
+                            <div className="px-3 py-2 bg-content-2">
                                 <div className="flex gap-2 items-center justify-between w-full">
                                     <Title
                                         title={statsAttributeNameMap[name].name}
                                         tooltipString={statsAttributeNameMap[name].tooltip}
                                         classNames={{
-                                            title: "text-base",
-                                            tooltip: "w-4 h-4",
+                                            title: "text-base text-muted-foreground",
+                                            tooltip: "w-4 h-4 text-muted-foreground",
                                         }}
                                     />
                                     <div className="text-sm">
