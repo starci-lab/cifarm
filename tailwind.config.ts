@@ -20,6 +20,7 @@ const config: Config = {
                     "2": "hsl(var(--content-2))",
                     "3": "hsl(var(--content-3))",
                     "4": "hsl(var(--content-4))",
+                    "5": "hsl(var(--content-5))",
                 },
     			background: "hsl(var(--background))", 
     			foreground: "hsl(var(--foreground))",

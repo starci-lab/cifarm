@@ -1,12 +1,13 @@
-import { Card, Image, Spacer } from "@/components"
+import { Card } from "@/components"
 import { ExtendedButton } from "@/components"
 import React, { FC } from "react"
 import { MainVisual } from "../MainVisual"
 import { pathConstants } from "@/constants"
 import { PlayIcon, Share2Icon } from "lucide-react"
-import router from "next/router"
+import { useRouterWithSearchParams } from "@/hooks"
 
 export const OverviewTab: FC = () => {
+    const router = useRouterWithSearchParams()
     return (
         <div>
             <div className="flex flex-col md:flex-row md:gap-4">

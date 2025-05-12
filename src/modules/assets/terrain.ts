@@ -23,7 +23,12 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-small-stone",
-                    assetUrl: `${PREFIX}/small-stone/small-stone.png`
+                    assetUrl: `${PREFIX}/small-stone/small-stone.png`,
+                    version: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -60,
+                    }
                 }
             },
         },
@@ -40,7 +45,12 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-small-grass-patch",
-                    assetUrl: `${PREFIX}/small-grass-patch/small-grass-patch.png`
+                    assetUrl: `${PREFIX}/small-grass-patch/small-grass-patch.png`,
+                    version: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -60,
+                    }
                 }
             },
         },
@@ -57,7 +67,12 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-maple-tree",
-                    assetUrl: `${PREFIX}/maple-tree/maple-tree.png`
+                    assetUrl: `${PREFIX}/maple-tree/maple-tree.png`,
+                    version: 3,
+                    extraOffsets: {
+                        x: 0,
+                        y: -150,
+                    },
                 }
             },
         },
@@ -74,7 +89,12 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-oak-tree",
-                    assetUrl: `${PREFIX}/oak-tree/oak-tree.png`
+                    assetUrl: `${PREFIX}/oak-tree/oak-tree.png`,
+                    version: 3,
+                    extraOffsets: {
+                        x: 0,
+                        y: -150,
+                    },
                 }
             },
         },
@@ -91,7 +111,12 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-pine-tree",
-                    assetUrl: `${PREFIX}/pine-tree/pine-tree.png`
+                    assetUrl: `${PREFIX}/pine-tree/pine-tree.png`,
+                    version: 1,
+                    extraOffsets: {
+                        x: 0,
+                        y: -150,
+                    },
                 }
             },
         },

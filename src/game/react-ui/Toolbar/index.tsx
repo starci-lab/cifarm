@@ -113,11 +113,10 @@ export const Toolbar: FC = () => {
     }, [filteredTools])
 
     return (
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center bg-content-4 rounded-t-lg p-2">
             <ExtendedButton
-                variant="ghost"
+                variant="secondary"
                 size="icon"
-                className="bg-background/50"
                 disabled={fromToolIndex === 0}
                 onClick={() => {
                     dispatch(setFromToolIndex(fromToolIndex - 1))
@@ -125,24 +124,21 @@ export const Toolbar: FC = () => {
             >
                 <ChevronLeftIcon className="w-5 h-5" />
             </ExtendedButton>
-            <div className="flex gap-2 p-2 bg-background/50 rounded-md">
+            <div className="flex gap-2 rounded-md">
                 {filteredTools.map((toolLike) => {
                     if (toolLike.default) {
                         return (
                             <div className="relative" key={toolLike.id}>
                                 <ItemCard
-                                    classNames={{
-                                        card: "",
-                                    }}
+                                    hideCardContentBg={false}
                                     onClick={() => {
                                         dispatch(setSelectedToolId(toolLike.id))
                                     }}
                                     key={toolLike.id}
+                                    frameOnly={false}
                                     quantity={toolLike.quantity}
                                     imageUrl={assetToolsMap[toolLike.id as ToolId]?.base.assetUrl}
                                     tint={toolLike.id !== selectedToolId}
-                                    hideCardContentBg={true}
-                                    frameOnly={false}
                                 />
                                 {toolLike.id === selectedToolId && (
                                     <ScaledImage
@@ -194,9 +190,8 @@ export const Toolbar: FC = () => {
                 })}
             </div>
             <ExtendedButton
-                variant="ghost"
+                variant="secondary"
                 size="icon"
-                className="bg-background/50"
                 disabled={fromToolIndex >= inventories.length - numVisibleInventories}
                 onClick={() => {
                     dispatch(setFromToolIndex(fromToolIndex + 1))

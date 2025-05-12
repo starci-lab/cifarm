@@ -31,7 +31,7 @@ export const ReactUI: FC = () => {
                                         imgSrc={user?.avatarUrl}
                                         jazzString={user?.accountAddress}  
                                     />
-                                    <div className="px-2 py-1.5 bg-background/50 rounded-r-md">
+                                    <div className="px-2 py-1.5 bg-content-4/50 rounded-r-md">
                                         <div className="uppercase text-sm">{user?.username}</div>
                                         <div className="text-xs text-muted-foreground">Lv.{user?.level}</div>
                                     </div>
@@ -85,7 +85,7 @@ export const ReactUI: FC = () => {
                                 />
                             ))}
                     </div>
-                    <div className="fixed bottom-6 left-1/2 -translate-x-1/2">
+                    <div className="fixed left-1/2 -translate-x-1/2 bottom-0">
                         <Toolbar />
                     </div>
                 </>

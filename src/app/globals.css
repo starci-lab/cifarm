@@ -43,7 +43,8 @@ body {
     --content-1: 0 0% 10%;
     --content-2: 33 60% 97%; /* cream - use in card and button */
     --content-3: 30 12% 87%; /* teal - use in hover */
-    --content-4: 32 31% 89%; /* teal - use in hover */
+    --content-4: 31 57% 88%; /* teal - use in hover */
+    --content-5: 22 58% 90%; /* cream - use in card and button */
 
     /* for navbar */
     --navbar: 0 0% 3.9%;
