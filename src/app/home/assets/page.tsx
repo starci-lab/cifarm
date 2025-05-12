@@ -1,5 +1,5 @@
 "use client"
-import { Header, Spacer } from "@/components"
+import { BlurEffect, Header, Spacer } from "@/components"
 import React from "react"
 import { AppTabs } from "@/components"
 import { useAppSelector, useAppDispatch, AssetTab, setAssetTab } from "@/redux"
@@ -22,7 +22,8 @@ const Page = () => {
         }
     }
     return (
-        <div>
+        <div className="relative">
+            <BlurEffect variant="secondary" size="lg" position="top" />
             <div className="flex justify-between items-center gap-4">
                 <Header title="Assets" />
             </div>

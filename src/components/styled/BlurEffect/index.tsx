@@ -17,7 +17,7 @@ const blurEffectVariants = cva(
                 lg: "w-96 h-48 blur-[150px]",
             },
             position: {
-                top: "top-0 left-1/2 -translate-x-1/2",
+                top: "-top-10 left-1/2 -translate-x-1/2",
                 bottom: "bottom-0 left-1/2 -translate-x-1/2",
                 center: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
             },

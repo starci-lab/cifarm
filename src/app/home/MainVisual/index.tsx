@@ -3,13 +3,7 @@ import { Image, Spacer, HoverImage, YouTubePlayer } from "@/components"
 import { RootState } from "@/redux/store"
 import { useAppDispatch, useAppSelector, setSelectedMainVisualKey } from "@/redux"
 
-interface MainVisualProps {
-    isBlur?: boolean;
-}
-
-export const MainVisual: FC<MainVisualProps> = ({
-    isBlur = false,
-}) => {
+export const MainVisual: FC = () => {
     const selectedMainVisualKey = useAppSelector(
         (state: RootState) => state.sessionReducer.selectedMainVisualKey
     )
@@ -67,21 +61,10 @@ export const MainVisual: FC<MainVisualProps> = ({
         }
     }
 
-    const renderBlurImage = (key: string) => {
-        const visual = visuals.find((visual) => visual.selectedKey === key)
-        if (!visual) return null
-        return (
-            <Image src={visual.thumbnailUrl} alt={visual.selectedKey}
-                className="blur-[200px] absolute top-[-500px] left-1/2 -translate-x-1/2 -z-10 w-[400px] h-[400px]" />
-        )
-    }
-
     const dispatch = useAppDispatch()
 
     return (
         <div className="flex-1 relative">
-            {isBlur && renderBlurImage(selectedMainVisualKey)}
-
             {renderContent(selectedMainVisualKey)}
             <Spacer y={4} />
             <div className="flex flex-wrap gap-2">

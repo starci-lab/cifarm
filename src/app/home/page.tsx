@@ -1,6 +1,6 @@
 "use client"
 import React, { FC } from "react"
-import { Card, ExtendedButton, Header, Image, Spacer } from "@/components"
+import { BlurEffect, Card, ExtendedButton, Header, Image, Spacer } from "@/components"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { MainVisual } from "./MainVisual"
@@ -9,7 +9,8 @@ import { PlayIcon, Share2Icon } from "lucide-react"
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
     return (
-        <div>
+        <div className="relative">
+            <BlurEffect variant="secondary" size="lg" position="top" />
             <Header title="Home" />
             <Spacer y={6}/>
             <div className="flex gap-4 items-center">   
@@ -22,7 +23,7 @@ const Page: FC = () => {
             <Spacer y={6} />
             <div className="flex flex-col md:flex-row md:gap-4">
                 <div className="w-full md:flex-1">
-                    <MainVisual isBlur={true} />
+                    <MainVisual />
                 </div>
 
                 <div className="flex flex-col gap-3 mt-4 md:mt-0 md:w-[200px]">
