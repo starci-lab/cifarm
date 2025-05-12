@@ -68,7 +68,7 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 texture: {
                     assetKey: "terrain-maple-tree",
                     assetUrl: `${PREFIX}/maple-tree/maple-tree.png`,
-                    version: 3,
+                    version: 4,
                     extraOffsets: {
                         x: 0,
                         y: -150,
@@ -90,7 +90,7 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 texture: {
                     assetKey: "terrain-oak-tree",
                     assetUrl: `${PREFIX}/oak-tree/oak-tree.png`,
-                    version: 3,
+                    version: 4,
                     extraOffsets: {
                         x: 0,
                         y: -150,
@@ -112,7 +112,7 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
                 texture: {
                     assetKey: "terrain-pine-tree",
                     assetUrl: `${PREFIX}/pine-tree/pine-tree.png`,
-                    version: 1,
+                    version: 2,
                     extraOffsets: {
                         x: 0,
                         y: -150,
