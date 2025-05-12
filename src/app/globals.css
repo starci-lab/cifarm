@@ -235,6 +235,8 @@ body {
     --animate-line-shadow: line-shadow 15s linear infinite;
     --animate-shiny-text: shiny-text 8s infinite;
     --animate-gradient: gradient 8s linear infinite;
+    --animate-marquee: marquee var(--duration) infinite linear;
+    --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
   }
 }
 
@@ -263,8 +265,7 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--sidebar-primary-foreground))
-    hsl(var(--sidebar-foreground));
+  scrollbar-color: hsl(var(--secondary)) hsl(var(--content-2));
   scroll-behavior: smooth;
 }
 
@@ -275,17 +276,17 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-  background: hsl(var(--sidebar-foreground));
+  background: hsl(var(--content-2));
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--sidebar-primary-foreground));
+  background-color: hsl(var(--secondary));
   border-radius: 14px;
-  border: 3px solid hsl(var(--sidebar-foreground));
+  border: 3px solid hsl(var(--content-2));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--sidebar-primary-foreground));
+  background-color: hsl(var(--secondary));
 }
 
 /* hide scrollbar */
@@ -314,8 +315,7 @@ body {
 /* Firefox */
 .horizontal-scroll {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--sidebar-primary-foreground))
-    hsl(var(--sidebar-foreground));
+  scrollbar-color: hsl(var(--secondary)) hsl(var(--content-2));
 }
 
 /* Chrome, Edge, and Safari */
@@ -325,16 +325,16 @@ body {
 }
 
 .horizontal-scroll::-webkit-scrollbar-track {
-  background-color: hsl(var(--sidebar-foreground));
+  background-color: hsl(var(--content-2));
   border-radius: 80px;
 }
 
 .horizontal-scroll::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--sidebar-primary-foreground));
+  background-color: hsl(var(--secondary));
   border-radius: 14px;
-  border: 3px solid hsl(var(--sidebar-foreground));
+  border: 3px solid hsl(var(--content-2));
 }
 
 .horizontal-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--sidebar-primary-foreground));
+  background-color: hsl(var(--secondary));
 }

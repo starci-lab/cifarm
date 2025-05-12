@@ -226,7 +226,7 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
                 }
             }
         }
-    }
+    },
 }
 
 export const networkMap: Record<Network, NetworkInfo> = {

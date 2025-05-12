@@ -1,6 +1,6 @@
 import React from "react"
 import Image from "next/image"
-import { Ripple, UrlItem } from "@/components"
+import { BlurEffect, UrlItem } from "@/components"
 import { FooterMenu } from "./FooterMenu"
 import { footerConstants, socialLinksConstants } from "@/constants"
 
@@ -56,7 +56,7 @@ export const Footer = () => {
                     className="w-full"
                 />
             </div>
-            <Ripple />
+            <BlurEffect variant="secondary" size="lg" position="center" />
         </footer>
     )
 }
