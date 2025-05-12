@@ -39,7 +39,7 @@ export const BuyCard: FC<BuyCardProps> = ({
             {...props}
             disabled={isLoading || disabled}
         >
-            <div>
+            <div className="w-full">
                 <div className="w-20 h-20 relative">
                     <ScaledImage
                         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -53,12 +53,12 @@ export const BuyCard: FC<BuyCardProps> = ({
                     {isLoading && <Spinner />}
                     <div className="text-lg text-text">{title}</div>
                 </div>
-                <Separator />
+                <Separator/>
                 <Spacer y={2} />
                 <div className="flex gap-2">
                     <div className="flex gap-1 items-center">
                         <PaymentIcon paymentKind={paymentKind} />
-                        <div className="text-text-secondary">{price}</div>
+                        <div className="text-secondary">{price}</div>
                     </div>
                 </div>
             </div>

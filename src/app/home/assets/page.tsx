@@ -1,15 +1,52 @@
 "use client"
 import { BlurEffect, Header, Spacer } from "@/components"
-import React from "react"
+import React, { useEffect } from "react"
 import { AppTabs } from "@/components"
-import { useAppSelector, useAppDispatch, AssetTab, setAssetTab } from "@/redux"
+import { useAppSelector, useAppDispatch, AssetTab, setAssetTab, SidebarTab } from "@/redux"
 import { TokensTab } from "./TokensTab"
 import { NFTCollectionsTab } from "./NFTCollectionsTab"
 import { InGameTab } from "./InGameTab"
+import { useRouterWithSearchParams } from "@/hooks"
+import { useSearchParams } from "next/navigation"
 
 const Page = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
     const dispatch = useAppDispatch()
+
+    const selectedAssetTab = useAppSelector(state => state.tabReducer.assetTab)
+    const selectedSidebarTab = useAppSelector(state => state.sidebarReducer.tab)
+    const router = useRouterWithSearchParams()
+    const searchParams = useSearchParams()
+    
+    //when mount
+    useEffect(() => {
+        const tab = searchParams.get("tab")
+        if (tab) {
+            dispatch(setAssetTab(tab as AssetTab))
+        }
+    }, [])
+    // when selectedAssetTab change
+    useEffect(() => {
+        if (selectedAssetTab) {
+            router.push("", {
+                params: {
+                    tab: selectedAssetTab
+                }
+            })
+        }
+    }, [selectedAssetTab])
+    
+    // when selectedSidebarTab change
+    useEffect(() => {
+        if (selectedSidebarTab === SidebarTab.Assets) {
+            router.push("", {
+                params: {
+                    tab: selectedAssetTab
+                }
+            })
+        }
+    }, [selectedSidebarTab])
+    
 
     const renderContent = () => {
         switch (assetTab) {

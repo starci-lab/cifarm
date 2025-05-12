@@ -13,6 +13,7 @@ import {
 import { useTransferNFTFormik } from "@/hooks"
 import { useSingletonHook2 } from "@/modules/singleton-hook"
 import { NFTSheetPage, setNFTSheetPage, useAppDispatch } from "@/redux"
+import { AtSignIcon } from "lucide-react"
 import React, { FC } from "react"
 
 export const TransferContent: FC = () => {
@@ -77,6 +78,9 @@ export const TransferContent: FC = () => {
                 formik.errors.recipientAddress) ||
               undefined
                             }
+                            endContent={
+                                <AtSignIcon className="w-4 h-4 text-secondary" />
+                            }
                         />
                     </div>
                     <Spacer y={6} />
@@ -87,8 +91,8 @@ export const TransferContent: FC = () => {
                     disabled={!formik.isValid}
                     isLoading={formik.isSubmitting}
                     className="w-full"
+                    variant="default"
                     onClick={() => formik.submitForm()}
-                    size="lg"
                 >
           Transfer
                 </ExtendedButton>

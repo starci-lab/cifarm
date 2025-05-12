@@ -39,7 +39,7 @@ export const NFTCollectionsTab: FC = () => {
                         collectionSwr={collectionSwr}
                         onClick={() => {
                             router.push(
-                                `${pathConstants.collection}/${nftCollection.key}`, 
+                                `${pathConstants.collections}/${nftCollection.key}`, 
                                 {
                                     mergeWithCurrentPath: true,
                                 }

@@ -15,7 +15,7 @@ export const pathConstants = {
     partnershipsHoneycombProtocolHoneycombDailyReward: "/partnerships/honeycomb-protocol/honeycomb-daily-reward",
     partnershipsHoneycombProtocolHoneycombStaking: "/partnerships/honeycomb-protocol/honeycomb-staking",
     transfer: "/transfer",
-    collection: "collection",
+    collections: "collections",
     nft: "nft",
     token: "/token",
     dapp: "/dapp",
