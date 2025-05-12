@@ -13,7 +13,7 @@ export const FeatureItem = ({ icon: Icon, title, description }: FeatureItemProps
             <Icon className="h-5 w-5 text-secondary" />
         </div>
         <div className="text-left">
-            <p className="font-semibold text-muted-foreground">{title}</p>
+            <p className="font-semibold text-foreground">{title}</p>
             <p className="text-sm text-muted-foreground">{description}</p>
         </div>
     </div>

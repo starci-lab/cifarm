@@ -59,13 +59,13 @@ export const Hero = ({
                         <WrappedAnimation type="fade-slide" direction="down" delay={0.3}>
                             <div className="flex flex-col gap-2">
                                 <div className="flex gap-2 items-center">
-                                    <div className="text-4xl text-muted-foreground">Farm, Thief, Earn</div>
+                                    <div className="text-4xl text-foreground">Farm, Thief, Earn</div>
                                     <div className="flex gap-2">
                                         <Image src={assetProductMap[ProductId.Apple].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
                                         <Image src={assetProductMap[ProductId.Banana].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
                                     </div>
                                 </div>
-                                <div className="text-4xl text-muted-foreground text-start">then sell them for <span className="text-secondary">crypto</span>
+                                <div className="text-4xl text-foreground text-start">then sell them for <span className="text-secondary">crypto</span>
                                 </div>
                             </div>
                         </WrappedAnimation>

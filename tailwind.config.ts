@@ -201,6 +201,16 @@ const config: Config = {
                     to: {
                         transform: "translateY(calc(-100% - var(--gap)))"
                     }
+                },
+                "blur-zoom": {
+                    "0%, 100%": {
+                        transform: "translate(-50%, -50%) scale(1)",
+                        opacity: "0.8"
+                    },
+                    "50%": {
+                        transform: "translate(-50%, -50%) scale(1.1)",
+                        opacity: "0.6"
+                    }
                 }
     		},
     		animation: {
@@ -211,7 +221,8 @@ const config: Config = {
                 "pulse": "pulse var(--duration) ease-out infinite",
                 "line-shadow": "line-shadow 10s linear infinite",
                 "marquee": "marquee var(--duration) linear infinite",
-                "marquee-vertical": "marquee-vertical var(--duration) linear infinite"
+                "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+                "blur-zoom": "blur-zoom 4s ease-in-out infinite"
     		}
     	}
     },

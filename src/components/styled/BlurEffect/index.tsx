@@ -20,12 +20,17 @@ const blurEffectVariants = cva(
                 top: "top-0 left-1/2 -translate-x-1/2",
                 bottom: "bottom-0 left-1/2 -translate-x-1/2",
                 center: "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
+            },
+            animate: {
+                none: "",
+                zoom: "animate-blur-zoom",
             }
         },
         defaultVariants: {
             variant: "secondary",
             size: "md",
-            position: "top"
+            position: "top",
+            animate: "none"
         }
     }
 )
@@ -39,11 +44,12 @@ export function BlurEffect({
     variant,
     size,
     position,
+    animate,
     ...props
 }: BlurEffectProps) {
     return (
         <div
-            className={cn(blurEffectVariants({ variant, size, position }), className)}
+            className={cn(blurEffectVariants({ variant, size, position, animate }), className)}
             {...props}
         />
     )
