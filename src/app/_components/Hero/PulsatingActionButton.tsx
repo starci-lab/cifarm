@@ -13,8 +13,7 @@ export const PulsatingActionButton = ({ onClick, children }: PulsatingActionButt
     return (
         <ExtendedButton
             onClick={onClick}
-            pulseColor="#FFFA2F"
-            variant={"highlight"}
+            variant={"gradient"}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
         >

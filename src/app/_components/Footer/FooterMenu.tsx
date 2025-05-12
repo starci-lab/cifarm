@@ -13,7 +13,7 @@ interface FooterMenuProps {
 export const FooterMenu = ({ title, items }: FooterMenuProps) => {
     return (
         <div>
-            <h3 className="text-xl font-bold mb-4 text-text-secondary">{title}</h3>
+            <h3 className="text-xl font-bold mb-4 text-muted-foreground">{title}</h3>
             <ul className="space-y-2">
                 {items.map((item, index) => (
                     <li key={index}>
@@ -21,7 +21,7 @@ export const FooterMenu = ({ title, items }: FooterMenuProps) => {
                             href={item.href}
                             label={item.label}
                             isExternal={item.isExternal}
-                            className="text-text-contrast"
+                            className="text-text-default"
                         />
                     </li>
                 ))}

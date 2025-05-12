@@ -25,6 +25,7 @@ import { useAppDispatch, useAppSelector } from "@/redux"
 import { setSidebarTab, SidebarTab } from "@/redux/slices"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
+import { Logo } from "@/app/_components/Header/Logo"
 
 export const AppSidebar: FC = () => {
     const isMobile = useIsMobile()
@@ -36,12 +37,7 @@ export const AppSidebar: FC = () => {
             {!isMobile && (
                 <Sidebar className="px-6 py-4 text-sidebar-primary bg-content-4">
                     <SidebarHeader className="p-0 gap-0">
-                        <div className="flex items-center gap-2">
-                            <Avatar>
-                                <AvatarImage src="/logo.png" alt="Logo" />
-                            </Avatar>
-                            <div className="text-muted-foreground text-2xl">CiFarm</div>
-                        </div>
+                        <Logo />
                         <Spacer y={4} />
                         <Separator variant="secondary" />
                         <Spacer y={4} />

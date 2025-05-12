@@ -141,6 +141,14 @@ const config: Config = {
     					height: "0"
     				}
     			},
+                "float": {
+                    "0%, 100%": {
+                        transform: "translateY(0)"
+                    },
+                    "50%": {
+                        transform: "translateY(-10px)"
+                    }
+                },
                 "ripple": {
                     "0%, 100%": {
                         transform: "translate(-50%, -50%) scale(1)"
@@ -177,14 +185,44 @@ const config: Config = {
                     "to": {
                         backgroundPosition: "var(--bg-size, 300%) 0"
                     }
+                },
+                "marquee": {
+                    from: {
+                        transform: "translateX(0)"
+                    },
+                    to: {
+                        transform: "translateX(calc(-100% - var(--gap)))"
+                    }
+                },
+                "marquee-vertical": {
+                    from: {
+                        transform: "translateY(0)"
+                    },
+                    to: {
+                        transform: "translateY(calc(-100% - var(--gap)))"
+                    }
+                },
+                "blur-zoom": {
+                    "0%, 100%": {
+                        transform: "translate(-50%, -50%) scale(1)",
+                        opacity: "0.8"
+                    },
+                    "50%": {
+                        transform: "translate(-50%, -50%) scale(1.1)",
+                        opacity: "0.6"
+                    }
                 }
     		},
     		animation: {
     			"accordion-down": "accordion-down 0.2s ease-out",
     			"accordion-up": "accordion-up 0.2s ease-out",
+                "float": "float 3s ease-in-out infinite",
                 "ripple": "ripple var(--duration,2s) ease calc(var(--i, 0)*.2s) infinite",
                 "pulse": "pulse var(--duration) ease-out infinite",
-                "line-shadow": "line-shadow 10s linear infinite"
+                "line-shadow": "line-shadow 10s linear infinite",
+                "marquee": "marquee var(--duration) linear infinite",
+                "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+                "blur-zoom": "blur-zoom 4s ease-in-out infinite"
     		}
     	}
     },

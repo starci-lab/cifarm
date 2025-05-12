@@ -6,7 +6,7 @@ interface HighlightBannerProps {
 }
 
 export const HighlightBanner = ({ text, icon }: HighlightBannerProps) => (
-    <div className="flex text-text-highlight items-center space-x-2 bg-primary-2/10 w-fit px-3 py-1.5 rounded-full border border-primary-2/20">
+    <div className="flex text-secondary items-center space-x-2 bg-content-2 w-fit px-3 py-1.5 rounded-full">
         <div>
             {text}
         </div>
