@@ -17,7 +17,7 @@ export const OverviewTab: FC = () => {
 
                 <div className="flex flex-col gap-3 mt-4 md:mt-0 md:w-[200px]">
                     <ExtendedButton
-                        variant={"highlight"}
+                        variant={"gradient"}
                         className="flex justify-center md:justify-start gap-2 w-full md:w-auto"
                         size="lg"
                         onClick={() => {
