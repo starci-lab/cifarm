@@ -61,7 +61,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     const queryClient = new QueryClient()
     return (
         <Suspense>
-            <GoogleOAuthProvider clientId={envConfig().googleClientId}> 
+            <GoogleOAuthProvider clientId={envConfig().authentication.google.clientId}> 
                 <QueryClientProvider client={queryClient}>
                     <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
                         <WalletSuiProvider>

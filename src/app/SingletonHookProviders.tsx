@@ -41,6 +41,8 @@ import {
     useGraphQLMutationRefreshSwrMutation,
     useGraphQLMutationAuthenticateGoogleSwrMutation,
     useGoogleLoginSwrMutation,
+    useXLoginSwrMutation,
+    
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -134,6 +136,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_VAULT_CURRENT_SWR: useGraphQLQueryVaultCurrentSwr(),
             FIREBASE_AUTH_SWR_MUTATION: useFirebaseAuthSwrMutation(),
             GOOGLE_LOGIN_SWR_MUTATION: useGoogleLoginSwrMutation(),
+            X_LOGIN_SWR_MUTATION: useXLoginSwrMutation(),
             // Using new constants with GraphQL mutations
             //io
 
