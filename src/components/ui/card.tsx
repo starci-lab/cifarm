@@ -16,13 +16,9 @@ const cardVariants = cva("rounded-lg transition-transform duration-200", {
             "ghost-secondary": "hover:bg-accent/40 hover:text-accent-foreground",
             link: "text-primary underline-offset-4 hover:underline",
         },
-        hoverAnimated: {
-            true: "hover:-translate-y-1",
-        },
     },
     defaultVariants: {
         variant: "default",
-        hoverAnimated: true,
     },
 })
 
@@ -37,12 +33,11 @@ const Card = React.forwardRef<
       | "ghost"
       | "ghost-secondary"
       | "link";
-    hoverAnimated?: boolean;
   }
->(({ className, variant, hoverAnimated, ...props }, ref) => (
+>(({ className, variant, ...props }, ref) => (
     <div
         ref={ref}
-        className={cn(cardVariants({ variant, hoverAnimated }), className)}
+        className={cn(cardVariants({ variant }), className)}
         {...props}
     />
 ))

@@ -9,6 +9,10 @@ export interface NFTSheet {
     nftAddress?: string;
 }
 
+export interface GameItemSheet {
+    gameItemKey?: string;
+}
+
 export enum NFTSheetPage {
     Main = "Main",
     Transfer = "Transfer",
@@ -19,10 +23,10 @@ export enum TokenSheetPage {
     Transfer = "Transfer",
 }
 
-
 export interface SheetSlice {
   tokenSheet: TokenSheet;
   nftSheet: NFTSheet;
+  gameItemSheet: GameItemSheet;
   tokenSheetPage: TokenSheetPage;
   nftSheetPage: NFTSheetPage;
 }
@@ -30,6 +34,7 @@ export interface SheetSlice {
 const initialState: SheetSlice = {
     tokenSheet: {},
     nftSheet: {},
+    gameItemSheet: {},
     tokenSheetPage: TokenSheetPage.Main,
     nftSheetPage: NFTSheetPage.Main,
 }
@@ -50,6 +55,9 @@ export const sheetSlice = createSlice({
         setNFTSheetPage: (state, action: PayloadAction<NFTSheetPage>) => {
             state.nftSheetPage = action.payload
         },
+        setGameItemSheet: (state, action: PayloadAction<GameItemSheet>) => {
+            state.gameItemSheet = action.payload
+        },
     },
 })
 
@@ -59,6 +67,7 @@ export const {
     setNFTSheet,
     setTokenSheetPage,
     setNFTSheetPage,
+    setGameItemSheet,
 } = sheetSlice.actions
 
 

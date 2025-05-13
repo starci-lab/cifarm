@@ -27,7 +27,7 @@ const Page: FC = () => {
                 <Image src="https://cifarm.sgp1.cdn.digitaloceanspaces.com/logo.png" alt="logo" className="w-20 h-20 rounded-lg" />
                 <div>
                     <div className="text-4xl font-bold text-text-default">CiFarm</div>
-                    <div className="text-text-secondary">Cuong Dep Trai</div>
+                    <div className="text-text-secondary">A Farm-Thief-Earn social MMO game</div>
                 </div>
             </div>
             <Spacer y={6}/>
