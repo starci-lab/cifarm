@@ -13,12 +13,13 @@ export interface PressableCardProps extends ButtonProps {
   isLoading?: boolean;
   className?: string;
   variant?: "default" | "gradient" | "destructive" | "outline" | "secondary" | "ghost" | "ghost-secondary" | "link" | "icon" | "highlight";
+  hoverAnimated?: boolean;
 }
 
 const pressableCardVariants = cva("rounded-lg p-3", {
     variants: {
         variant: {
-            default: "bg-content-2 hover:bg-content-3 transition-colors duration-200",
+            default: "bg-content-2 hover:bg-content-3/60 transition-colors duration-200",
             gradient: "bg-gradient-to-r from-card-1 to-card-2 hover:bg-gradient-to-r hover:from-card-1/90 hover:to-card-2/90",
             destructive:
         "bg-destructive text-destructive-foreground hover:bg-destructive/90",
@@ -31,9 +32,13 @@ const pressableCardVariants = cva("rounded-lg p-3", {
             icon: "rounded-full hover:bg-accent/20",
             highlight: "bg-gradient-to-r from-card-1 to-card-2 hover:bg-gradient-to-r hover:from-card-1/90 hover:to-card-2/90",
         },
+        hoverAnimated: {
+            true: "hover:-translate-y-2 transition-transform duration-500",
+        },
     },
     defaultVariants: {
         variant: "default",
+        hoverAnimated: true,
     },
 })
 
@@ -44,6 +49,7 @@ export const PressableCard: FC<PressableCardProps> = ({
     className,
     isLoading,
     variant = "default",
+    hoverAnimated = true,
     ...props
 }: PressableCardProps) => {
     const { base } = classNames
@@ -53,7 +59,7 @@ export const PressableCard: FC<PressableCardProps> = ({
             onClick={onClick}
             removeClassName
             className={cn(
-                pressableCardVariants({ variant }),
+                pressableCardVariants({ variant, hoverAnimated }),
                 "text-start justify-start w-full hover:text-inherit",
                 "whitespace-normal h-fit", 
                 base, 

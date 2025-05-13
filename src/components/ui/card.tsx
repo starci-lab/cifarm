@@ -3,7 +3,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { cva } from "class-variance-authority"
 
-const cardVariants = cva("rounded-lg", {
+const cardVariants = cva("rounded-lg transition-transform duration-200", {
     variants: {
         variant: {
             default: "bg-content-2",
@@ -16,9 +16,13 @@ const cardVariants = cva("rounded-lg", {
             "ghost-secondary": "hover:bg-accent/40 hover:text-accent-foreground",
             link: "text-primary underline-offset-4 hover:underline",
         },
+        hoverAnimated: {
+            true: "hover:-translate-y-1",
+        },
     },
     defaultVariants: {
         variant: "default",
+        hoverAnimated: true,
     },
 })
 
@@ -33,11 +37,12 @@ const Card = React.forwardRef<
       | "ghost"
       | "ghost-secondary"
       | "link";
+    hoverAnimated?: boolean;
   }
->(({ className, variant, ...props }, ref) => (
+>(({ className, variant, hoverAnimated, ...props }, ref) => (
     <div
         ref={ref}
-        className={cn(cardVariants({ variant }), className)}
+        className={cn(cardVariants({ variant, hoverAnimated }), className)}
         {...props}
     />
 ))
