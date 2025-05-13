@@ -15,7 +15,12 @@ const Layout: FC = ({
     children,
 }: PropsWithChildren) => {
     return (
-        <html lang="en">      
+        <html lang="en">   
+            <script
+                src="https://accounts.google.com/gsi/client"
+                async
+                defer
+            ></script>   
             <WrappedLayout>{children}</WrappedLayout>
         </html>
     )

@@ -1,27 +1,32 @@
 "use client"
 
-import { toast, useFirebaseAuthSwrMutation, useGraphQLMutationValidateGoogleTokenSwrMutation, useRouterWithSearchParams } from "@/hooks"
+import { toast, useGoogleLoginSwrMutation, useGraphQLMutationAuthenticateGoogleSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { Container, ExtendedButton, Spacer } from "@/components"
 import React, { FC } from "react"
 import { Image } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { FIREBASE_AUTH_SWR_MUTATION, GRAPHQL_MUTATION_VALIDATE_GOOGLE_TOKEN_SWR_MUTATION } from "../constants"
-import { pathConstants } from "@/constants"
-import { saveTokens } from "@/modules/apollo/tokens"
+import { GOOGLE_LOGIN_SWR_MUTATION, GRAPHQL_MUTATION_AUTHENTICATE_GOOGLE_SWR_MUTATION } from "../constants"
 import { setAuthenticated, useAppDispatch } from "@/redux"
+import { envConfig } from "@/env"
+import { saveTokens } from "@/modules/apollo/tokens"
+import { pathConstants } from "@/constants"
+import { useDisclosure } from "react-use-disclosure"
+import { AUTHENTICATING_DISCLOSURE } from "../constants"
 
 const Page: FC = () => {
     const dispatch = useAppDispatch()
-    const { swrMutation } = useSingletonHook<ReturnType<typeof useFirebaseAuthSwrMutation>>(
-        FIREBASE_AUTH_SWR_MUTATION
+    const { swrMutation } = useSingletonHook<ReturnType<typeof useGoogleLoginSwrMutation>>(
+        GOOGLE_LOGIN_SWR_MUTATION
     )
 
-    const { swrMutation: validateGoogleTokenMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationValidateGoogleTokenSwrMutation>>(
-        GRAPHQL_MUTATION_VALIDATE_GOOGLE_TOKEN_SWR_MUTATION
+    const { swrMutation: authenticateGoogleMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationAuthenticateGoogleSwrMutation>>(
+        GRAPHQL_MUTATION_AUTHENTICATE_GOOGLE_SWR_MUTATION
     )
+
+    const { open: openAuthenticatingModal, close: closeAuthenticatingModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(AUTHENTICATING_DISCLOSURE)
 
     const router = useRouterWithSearchParams()
-
+    const network = envConfig().network
     return (
         <Container centerContent hasPadding>
             <div className="grid place-items-center">
@@ -33,30 +38,48 @@ const Page: FC = () => {
                 <Spacer y={6}/>
                 <ExtendedButton isLoading={swrMutation.isMutating}
                     onClick={async () => {
-                        const response = await swrMutation.trigger()
-                        const id = await response.user.getIdToken()
-                        const validateGoogleTokenResponse = await validateGoogleTokenMutation.trigger({
-                            request: {
-                                token: id
+                        try {
+                            const response = await swrMutation.trigger()
+                            openAuthenticatingModal()
+                            try {
+                                const authenticateGoogleResponse = await authenticateGoogleMutation.trigger({
+                                    request: {
+                                        token: response.access_token,
+                                        network
+                                    }
+                                })
+                                if (!authenticateGoogleResponse.data) {
+                                    toast({
+                                        title: "Failed to authenticate google",
+                                        description: authenticateGoogleMutation.error?.message,
+                                        variant: "destructive"
+                                    })
+                                    return
+                                }
+                                // store key pair in items
+                                await saveTokens({
+                                    accessToken: authenticateGoogleResponse.data.accessToken,
+                                    refreshToken: authenticateGoogleResponse.data.refreshToken
+                                })
+                                dispatch(setAuthenticated(true))
+                            } catch (error) {
+                                toast({
+                                    title: "Failed to authenticate google",
+                                    description: error instanceof Error ? error.message : "Unknown error",
+                                    variant: "destructive"
+                                })
+                            } finally {
+                                closeAuthenticatingModal()        
                             }
-                        })
-                        if (!validateGoogleTokenResponse.data) {
+                            // redirect to home
+                            router.push(pathConstants.home)
+                        } catch (error) {
                             toast({
-                                title: "Failed to validate google token",
-                                description: validateGoogleTokenMutation.error?.message,
+                                title: "Failed to authenticate google",
+                                description: error instanceof Error ? error.message : "Unknown error",
                                 variant: "destructive"
                             })
-                            return
                         }
-                        // store key pair in items
-                        await saveTokens({
-                            accessToken: validateGoogleTokenResponse.data.accessToken,
-                            refreshToken: validateGoogleTokenResponse.data.refreshToken
-                        })
-
-                        dispatch(setAuthenticated(true))
-                        // redirect to home
-                        router.push(pathConstants.home)
                     }}
                     variant="secondary"
                     className="w-full justify-start">

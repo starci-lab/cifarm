@@ -1,4 +1,4 @@
 export * from "./mutation-request-message"
 export * from "./mutation-verify-signature"
 export * from "./mutation-refresh"
-export * from "./mutation-validate-google-token"
+export * from "./mutation-authenticate-google"

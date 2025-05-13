@@ -36,10 +36,11 @@ import {
     useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation,
     useGraphQLQueryVaultCurrentSwr,
     useFirebaseAuthSwrMutation,
-    useGraphQLMutationValidateGoogleTokenSwrMutation,
     useSignSolanaTransactionTxSwrMutation,
     useSignSuiTransactionTxSwrMutation,
     useGraphQLMutationRefreshSwrMutation,
+    useGraphQLMutationAuthenticateGoogleSwrMutation,
+    useGoogleLoginSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -91,6 +92,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             SHEET_TRANSFER_TOKEN_DISCLOSURE: useDisclosure(),
             SHEET_NFT_DISCLOSURE: useDisclosure(),
             SHEET_WHOLSALE_MARKET_DISCLOSURE: useDisclosure(),
+            AUTHENTICATING_DISCLOSURE: useDisclosure(),
 
             GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
@@ -116,7 +118,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_REFRESH_SWR_MUTATION: useGraphQLMutationRefreshSwrMutation(),
 
-            GRAPHQL_MUTATION_VALIDATE_GOOGLE_TOKEN_SWR_MUTATION: useGraphQLMutationValidateGoogleTokenSwrMutation(),
+            GRAPHQL_MUTATION_AUTHENTICATE_GOOGLE_SWR_MUTATION: useGraphQLMutationAuthenticateGoogleSwrMutation(),
 
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
@@ -131,6 +133,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_STORED_PLACED_ITEMS_SWR: useGraphQLQueryStoredPlacedItemsSwr(),
             GRAPHQL_QUERY_VAULT_CURRENT_SWR: useGraphQLQueryVaultCurrentSwr(),
             FIREBASE_AUTH_SWR_MUTATION: useFirebaseAuthSwrMutation(),
+            GOOGLE_LOGIN_SWR_MUTATION: useGoogleLoginSwrMutation(),
             // Using new constants with GraphQL mutations
             //io
 

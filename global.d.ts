@@ -9,3 +9,21 @@ declare module "phaser" {
     rexUI: RexUIPlugin;
   }
 }
+
+
+declare global {
+  interface Window {
+    google: {
+      accounts: {
+        id: IdConfiguration;
+      };
+      oauth2: IdConfiguration;
+    };
+  }
+}
+
+// Define the expected structure of the Google login response
+interface GoogleLoginResponse {
+  credential: string; // JWT token
+  clientId: string;   // Client ID used in the Google login
+}

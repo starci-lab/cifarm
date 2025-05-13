@@ -8,7 +8,7 @@ export interface EnvConfig {
     network: Network
     honeycombProjectAddress: Record<Network, string>
     honeycombTokenAddress: Record<Network, string>
-
+    googleClientId: string
 }
 export const envConfig = (): EnvConfig => ({
     restApiUrl: process.env.NEXT_PUBLIC_REST_API_URL || "http://localhost:3001/api",
@@ -24,4 +24,5 @@ export const envConfig = (): EnvConfig => ({
         [Network.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_HONEYCOMB_TOKEN_ADDRESS || "",
     },
     network: process.env.NEXT_PUBLIC_NETWORK as Network || Network.Testnet,
+    googleClientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "",
 })
