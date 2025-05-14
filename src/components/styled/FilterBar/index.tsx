@@ -49,7 +49,7 @@ const ButtonFilterBar: FC<FilterBarProps> = ({
                 container: "justify-start",
             }}
         >
-            <SearchIcon className="w-6 h-6 text-muted-foreground" />
+            <MagnifyingGlass className="w-6 h-6 text-muted-foreground" />
             <div className="text-muted-foreground">{placeholder}</div>
         </ExtendedButton>
     )
