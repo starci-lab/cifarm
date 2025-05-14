@@ -39,7 +39,7 @@ export const Header = () => {
                 {isMobile && (
                     <ExtendedButton
                         onClick={toggleMenu}
-                        className="text-white p-2 focus:outline-none bg-transparent hover:bg-transparent"
+                        className="text-secondary p-2 focus:outline-none bg-transparent hover:bg-transparent"
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                     >
                         <Menu size={32} />

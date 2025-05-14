@@ -65,7 +65,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                                 <Link
                                     key={social.name}
                                     href={social.href}
-                                    className={`${social.className} rounded-full p-3 text-white transition-colors`}
+                                    className={"rounded-full p-3 text-secondary transition-colors bg-content-2"}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={social.label}
