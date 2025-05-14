@@ -25,7 +25,7 @@ export function StickySidebar({ className = "" }: StickySidebarProps) {
                         label={social.label}
                         isExternal={true}
                         icon={social.icon}
-                        className={"rounded-full p-3 text-secondary bg-content-2 hover:bg-content-2/40 transition-colors flex items-center justify-center"}
+                        className={"rounded-full p-3 text-primary bg-content-2 hover:bg-content-2/40 transition-colors flex items-center justify-center"}
                     />
                 ))}
             </div>

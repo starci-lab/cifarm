@@ -1,21 +1,20 @@
-import { Title, Spacer, ExtendedButton, NFTCollection } from "@/components"
-import { setCollectionKey, useAppDispatch, useAppSelector, triggerRefreshNFTCollections } from "@/redux"
+import { Title, Spacer, ExtendedButton } from "@/components"
+import { useAppDispatch, useAppSelector, triggerRefreshNFTCollections } from "@/redux"
 import React, { FC } from "react"
 import { useRouterWithSearchParams } from "@/hooks"
 import { Settings2Icon, RotateCcwIcon } from "lucide-react"
 import { pathConstants } from "@/constants"
-import { valuesWithKey } from "@/modules/common"
 
 export const NFTCollections: FC = () => {
-    const collections = useAppSelector((state) => state.sessionReducer.nftCollections)
+    // const collections = useAppSelector((state) => state.sessionReducer.nftCollections)
     const collectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
-    const collectionsArray = valuesWithKey(collections)
-    const enabledCollectionsArray = collectionsArray.filter((collection) => collection.enabled)
-    if (!collections) {
-        return null
-    }
+    // const collectionsArray = valuesWithKey(collections)
+    // const enabledCollectionsArray = collectionsArray.filter((collection) => collection.enabled)
+    // if (!collections) {
+    //     return null
+    // }
     return (
         <div>
             <div className="flex justify-between items-center">
@@ -41,7 +40,7 @@ export const NFTCollections: FC = () => {
                 </div>
             </div>
             <Spacer y={4} />
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+            {/* <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 {enabledCollectionsArray.map((collection) => {
                     const collectionSwr = collectionSwrs[collection.key]
                     if (!collection || !collectionSwr) return null
@@ -57,7 +56,7 @@ export const NFTCollections: FC = () => {
                         />
                     )
                 })}
-            </div>
+            </div> */}
         </div>
     )
 }

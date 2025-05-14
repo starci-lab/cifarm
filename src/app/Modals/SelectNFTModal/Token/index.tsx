@@ -1,15 +1,22 @@
 "use client"
 import { SELECT_TOKEN_DISCLOSURE } from "@/app/constants"
-import { TokenInfo } from "@/modules/blockchain"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { WithKey } from "@/modules/common"
-import { useAppSelector, WithEnabled } from "@/redux"
-import { useDisclosure } from "react-use-disclosure"
-import React, { FC } from "react"
 import { Image, PressableCard } from "@/components"
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { useAppSelector } from "@/redux"
+import React, { FC } from "react"
+import { useDisclosure } from "react-use-disclosure"
 
 export interface TokenProps {
-    token: WithKey<WithEnabled<TokenInfo>>
+    // token: WithKey<WithEnabled<TokenInfo>>
+
+
+    //for building
+    token: {
+        key: string
+        name: string
+        symbol: string
+        imageUrl: string
+    }
 }
 
 export const Token: FC<TokenProps> = ({ token }: TokenProps) => {

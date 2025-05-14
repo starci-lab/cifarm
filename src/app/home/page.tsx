@@ -21,7 +21,7 @@ const Page: FC = () => {
     }
     return (
         <div className="relative">
-            <BlurEffect variant="secondary" size="lg" position="top" />
+            <BlurEffect size="lg" position="top" />
             <Header title="Home" />
             <Spacer y={4} />
             <div className="flex gap-4 items-center">   

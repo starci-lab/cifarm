@@ -17,10 +17,10 @@ import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 
 const Page: FC = () => {
-    const tokens = useAppSelector((state) => state.sessionReducer.tokens)
-    const tokensArray = valuesWithKey(tokens)
-    const selectedTokenArray = tokensArray.filter((token) => token.enabled)
-    const availableTokenArray = tokensArray.filter((token) => !token.enabled)
+    // const tokens = useAppSelector((state) => state.sessionReducer.tokens)
+    // const tokensArray = valuesWithKey(tokens)
+    // const selectedTokenArray = tokensArray.filter((token) => token.enabled)
+    // const availableTokenArray = tokensArray.filter((token) => !token.enabled)
     const dispatch = useAppDispatch()
     const router = useRouterWithSearchParams()
     const balanceSwrs = useAppSelector(
@@ -29,7 +29,7 @@ const Page: FC = () => {
     return (
         <Container hasPadding>
             <div>
-                <Header title="Manage Tokens" description="Manage the tokens" />
+                <Header title="Manage Tokens" />
                 <Spacer y={6} />
                 <FilterBar handleSearchResult={() => {}} />
                 <Spacer y={4} />
@@ -45,7 +45,7 @@ const Page: FC = () => {
                     </div>
                 </div>
                 <Spacer y={2} />
-                <List
+                {/* <List
                     enableScroll={false}
                     items={selectedTokenArray}
                     contentCallback={(item) => {
@@ -60,7 +60,7 @@ const Page: FC = () => {
                             />
                         )
                     }}
-                />
+                /> */}
                 <Spacer y={6} />
                 <div>
                     <Title
@@ -68,7 +68,7 @@ const Page: FC = () => {
                         tooltipString="Available tokens will not display in the list, but you can add them anytime."
                     />
                     <Spacer y={2} />
-                    <List
+                    {/* <List
                         enableScroll={false}
                         items={availableTokenArray}
                         contentCallback={(item) => {
@@ -83,7 +83,7 @@ const Page: FC = () => {
                                 />
                             )
                         }}
-                    />
+                    /> */}
                 </div>
             </div>
         </Container>

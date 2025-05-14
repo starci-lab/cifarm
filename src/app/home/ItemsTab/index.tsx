@@ -1,8 +1,8 @@
 import React, { FC, useState } from "react"
-import { assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainMap, assetTileMap, assetToolsMap } from "@/modules/assets"
+import { assetFruitMap, assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainMap, assetTileMap, assetToolsMap } from "@/modules/assets"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { ItemCard } from "./ItemCard"
-import { CropId, FlowerId } from "@/modules/entities"
+import { CropId, FlowerId, FruitId } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { SHEET_GAME_ITEM_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
@@ -61,12 +61,14 @@ const categoryMap: Array<Category> = [
         }))
     },
     { label: "Fruits", items: 
-        Object.values(assetShopMap.fruits).map(fruit => ({
-            name: fruit.name,
-            description: fruit.description,
-            assetKey: fruit.base.assetKey,
-            assetUrl: fruit.base.assetUrl
-        }))
+        Object.entries(assetProductMap)
+            .filter(([id]) => Object.values(FruitId).includes(id as FruitId))
+            .map(([, fruit]) => ({
+                name: fruit.name,
+                description: fruit.description,
+                assetKey: fruit.base.assetKey,
+                assetUrl: fruit.base.assetUrl
+            }))
     },
     { label: "Pets", items: 
         Object.values(assetShopMap.pets).map(pet => ({

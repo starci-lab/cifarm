@@ -8,7 +8,6 @@ import {
     modalReducer,
     gameReducer,
     collapsibleReducer,
-    wrapReducer,
     downloadReducer,
     searchReducer,
     sidebarReducer,
@@ -25,7 +24,6 @@ export const store = configureStore({
         gameReducer,
         collapsibleReducer,
         sidebarReducer,
-        wrapReducer,
         downloadReducer,
         searchReducer,
         sheetReducer

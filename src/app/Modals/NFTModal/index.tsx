@@ -1,7 +1,7 @@
 "use client"
 import { NFT_DISCLOSURE, TRANSFER_NFT_FORMIK } from "@/app/constants"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
-import { useAppSelector, useAppDispatch, setTransferTab, TransferTab, setWrapNFTData } from "@/redux"
+import { useAppSelector, useAppDispatch } from "@/redux"
 import React, { FC } from "react"
 import { ModalHeader, PressableAction, Image, Spacer } from "@/components"
 import {
@@ -49,7 +49,7 @@ export const NFTModal: FC = () => {
                     </div>
                     <Spacer y={4} />
                     <div className="grid grid-cols-4 gap-2">
-                        <PressableAction
+                        {/* <PressableAction
                             icon={<SendHorizonalIcon className="w-5 h-5 min-w-5 min-h-5" />}
                             onClick={() => {
                                 dispatch(setTransferTab(TransferTab.NFT))
@@ -59,7 +59,7 @@ export const NFTModal: FC = () => {
                                 close()
                             }}
                             name="Transfer"
-                        />
+                        /> */}
                         <PressableAction
                             icon={<QrCodeIcon className="w-5 h-5 min-w-5 min-h-5" />}
                             onClick={() => {
@@ -67,7 +67,7 @@ export const NFTModal: FC = () => {
                             }}
                             name="Receive"
                         />
-                        <PressableAction
+                        {/* <PressableAction
                             icon={<PackageIcon className="w-5 h-5 min-w-5 min-h-5" />}
                             onClick={() => {
                                 router.push("/wrap/solana")
@@ -78,7 +78,7 @@ export const NFTModal: FC = () => {
                                 close()
                             }}
                             name="Wrap"
-                        />
+                        /> */}
                         <PressableAction
                             icon={<ShoppingCartIcon className="w-5 h-5 min-w-5 min-h-5" />}
                             onClick={() => {

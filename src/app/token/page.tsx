@@ -1,38 +1,21 @@
 "use client"
-import React, { FC } from "react"
 import {
-    Container,
-    Header,
-    PressableAction,
-    Spacer,
-    Switch,
+    Container
 } from "@/components"
-import {
-    setTransferTab,
-    switchToken,
-    TransferTab,
-    useAppDispatch,
-    useAppSelector,
-} from "@/redux"
-import { DefaultToken } from "@/modules/blockchain"
-import {
-    SendHorizonalIcon,
-    QrCodeIcon,
-    ArrowLeftRightIcon,
-    HandCoinsIcon,
-    SendToBackIcon,
-    ShoppingCartIcon,
-    EllipsisIcon,
-} from "lucide-react"
-import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { useTransferTokenFormik } from "@/hooks"
-import { TRANSFER_TOKEN_FORMIK, TRANSFER_TOKEN_DISCLOSURE } from "../constants"
+import { DefaultToken } from "@/modules/blockchain"
+import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
+import {
+    useAppDispatch,
+    useAppSelector
+} from "@/redux"
+import { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
-import { sessionDb } from "@/modules/dexie"
+import { TRANSFER_TOKEN_DISCLOSURE, TRANSFER_TOKEN_FORMIK } from "../constants"
 
 const Page: FC = () => {
     const tokenKey = useAppSelector((state) => state.sessionReducer.tokenKey)
-    const tokens = useAppSelector((state) => state.sessionReducer.tokens)
+    // const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
     )
@@ -41,13 +24,13 @@ const Page: FC = () => {
         (state) => state.sessionReducer.balanceSwrs
     )
     const balanceSwr = balanceSwrs[tokenKey ?? DefaultToken.Native]
-    const token = tokens[tokenKey]
+    // const token = tokens[tokenKey]
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         TRANSFER_TOKEN_DISCLOSURE
     )
     return (
         <Container hasPadding>
-            <div>
+            {/* <div>
                 <Header title={token?.name} />
                 <Spacer y={6} />
                 <div>
@@ -134,7 +117,7 @@ const Page: FC = () => {
                         />
                     </div>
                 </div>
-            </div>
+            </div> */}
         </Container>
     )
 }

@@ -10,22 +10,21 @@ import {
 } from "@/components"
 import React, { FC } from "react"
 import { PlusIcon, RotateCcwIcon } from "lucide-react"
-import { valuesWithKey } from "@/modules/common"
 import { setCollectionKey, useAppDispatch, useAppSelector } from "@/redux"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 
 const Page: FC = () => {
-    const nftCollections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
-    const nftCollectionsArray = valuesWithKey(nftCollections)
-    const selectedNFTCollectionsArray = nftCollectionsArray.filter(
-        (nftCollection) => nftCollection.enabled
-    )
-    const availableNFTCollectionsArray = nftCollectionsArray.filter(
-        (nftCollection) => !nftCollection.enabled
-    )
+    // const nftCollections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
+    // const nftCollectionsArray = valuesWithKey(nftCollections)
+    // const selectedNFTCollectionsArray = nftCollectionsArray.filter(
+    //     (nftCollection) => nftCollection.enabled
+    // )
+    // const availableNFTCollectionsArray = nftCollectionsArray.filter(
+    //     (nftCollection) => !nftCollection.enabled
+    // )
     const nftCollectionsSwr = useAppSelector(
         (state) => state.sessionReducer.nftCollectionSwrs
     )
@@ -54,7 +53,7 @@ const Page: FC = () => {
                         </div>
                     </div>
                     <Spacer y={4} />
-                    {selectedNFTCollectionsArray.length > 0 ? (
+                    {/* {selectedNFTCollectionsArray.length > 0 ? (
                         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                             {selectedNFTCollectionsArray.map((nftCollection) => {
                                 return (
@@ -72,7 +71,7 @@ const Page: FC = () => {
                         </div>
                     ) : (
                         <div className="text-muted-foreground">No record found.</div>
-                    )}
+                    )} */}
                 </div>
                 <Spacer y={6} />
                 <div>
@@ -81,7 +80,7 @@ const Page: FC = () => {
                         tooltipString="Available collections will not display in the list, but you can add them anytime."
                     />
                     <Spacer y={4} />
-                    {availableNFTCollectionsArray.length > 0 ? (
+                    {/* {availableNFTCollectionsArray.length > 0 ? (
                         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                             {availableNFTCollectionsArray.map((nftCollection) => {
                                 return (
@@ -99,7 +98,7 @@ const Page: FC = () => {
                         </div>
                     ) : (
                         <div className="text-muted-foreground">No record found.</div>
-                    )}
+                    )} */}
                 </div>
             </div>
         </Container>

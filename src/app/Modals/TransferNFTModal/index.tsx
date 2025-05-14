@@ -41,12 +41,12 @@ export const TransferNFTModal: FC = () => {
     const { swr: swrStatic } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         GRAPHQL_QUERY_STATIC_SWR
     )
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
-    const collectionKey = useAppSelector(
-        (state) => state.sessionReducer.collectionKey
-    )
+    // const collections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
+    // const collectionKey = useAppSelector(
+    //     (state) => state.sessionReducer.collectionKey
+    // )
     if (!account) {
         return null
     }
@@ -61,7 +61,7 @@ export const TransferNFTModal: FC = () => {
                 <div>
                     <PressableCard disabled={true}>
                         <div className="flex gap-2 items-center">
-                            <Image 
+                            {/* <Image 
                                 src={(() => {
                                     if (!formik.values.nft) return ""
                                     if (!swrStatic.data?.data) return ""
@@ -73,7 +73,7 @@ export const TransferNFTModal: FC = () => {
                                     })
                                 })()}
                                 className="w-12 h-12 rounded-md object-contain"
-                            />
+                            /> */}
                             <div>
                                 {formik.values.nft?.name}
                             </div>

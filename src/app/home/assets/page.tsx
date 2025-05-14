@@ -60,7 +60,7 @@ const Page = () => {
     }
     return (
         <div className="relative">
-            <BlurEffect variant="secondary" size="lg" position="top" />
+            <BlurEffect size="lg" position="top" />
             <div className="flex justify-between items-center gap-4">
                 <Header title="Assets" />
             </div>

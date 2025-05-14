@@ -3,19 +3,16 @@
 import React, { FC } from "react"
 import { AssetTab, setAssetTab, useAppDispatch, useAppSelector } from "@/redux"
 import { Container, Header, Spacer, Tabs, TabsList, TabsTrigger } from "@/components"  // ShadCN UI Button
-import { OnChain } from "./OnChain"
-import { InGame } from "./InGame"
 
 const Page: FC = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
 
-    const renderContent = () => {
-        const contentMap = {
-            [AssetTab.OnChain]: <OnChain />,
-            [AssetTab.InGame]: <InGame />,
-        }
-        return contentMap[assetTab]
-    }
+    // const renderContent = () => {
+    //     const contentMap = {
+    //         [AssetTab.InGame]: <InGame />,
+    //     }
+    //     return contentMap[assetTab]
+    // }
 
     const dispatch = useAppDispatch()
 
@@ -29,9 +26,6 @@ const Page: FC = () => {
                 <div>
                     <Tabs className="w-full" value={assetTab} onValueChange={(value) => dispatch(setAssetTab(value as AssetTab))}>
                         <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value={AssetTab.OnChain}>
-                                On-chain
-                            </TabsTrigger>
                             <TabsTrigger value={AssetTab.InGame}>
                                 In-game
                             </TabsTrigger>
@@ -39,7 +33,7 @@ const Page: FC = () => {
                     </Tabs>
                 </div>
                 <Spacer y={6}/>
-                {renderContent()}
+                {/* {renderContent()} */}
             </div>
         </Container>
     )

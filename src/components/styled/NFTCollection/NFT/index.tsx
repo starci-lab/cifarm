@@ -1,9 +1,14 @@
 import { Image, PressableCard } from "@/components"
 import React, { FC } from "react"
-import { ExtendedNFTData } from "@/redux"
+// import { ExtendedNFTData } from "@/redux"
 
 interface NFTProps {
-    nft: ExtendedNFTData
+    // nft: ExtendedNFTData
+    nft: {
+        name: string
+        image: string
+        traits: string[]
+    }
 }
 
 export const NFT: FC<NFTProps> = ({ nft }) => {
