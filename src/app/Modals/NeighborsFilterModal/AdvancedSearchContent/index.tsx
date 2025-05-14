@@ -1,11 +1,9 @@
 import {
-    ExtendedButton,
     Slider,
     Spacer,
     Tabs,
     TabsList,
     TabsTrigger,
-    Title,
 } from "@/components"
 import React, { FC } from "react"
 import {
@@ -14,7 +12,6 @@ import {
     setNeighborsSearchStatus,
     NeighborsSearchStatus,
     setNeighborsSearchLevelRange,
-    setAppliedNeighborsSearch,
 } from "@/redux"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryUserSwr, useGraphQLQueryStaticSwr } from "@/hooks"
@@ -68,12 +65,7 @@ export const AdvancedSearchContent: FC = () => {
   >(QUERY_STATIC_SWR_MUTATION)
 
     return (
-        <div className="px-3 py-2 w-full">
-            <Title
-                title="Advanced Search"
-                tooltipString="Advanced search allows you to search for neighbors with more specific criteria."
-            />
-            <Spacer y={6} />
+        <div className="pt-6">
             <div>
                 <div className="flex gap-4 items-center justify-between">
                     <div className="text-sm">Level range</div>
@@ -121,20 +113,6 @@ export const AdvancedSearchContent: FC = () => {
                     </TabsList>
                 </Tabs>
             </div>
-            <Spacer y={6} />
-            <ExtendedButton
-                className="w-full"
-                onClick={() =>
-                    dispatch(
-                        setAppliedNeighborsSearch({
-                            levelRange: neighborsSearch.levelRange,
-                            status: neighborsSearch.status,
-                        })
-                    )
-                }
-            >
-        Apply
-            </ExtendedButton>
         </div>
     )
 }

@@ -91,7 +91,7 @@ export const UserCard: FC<UserCardProps> = ({
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        setAvatarUrl(user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress))
+        setAvatarUrl(user.avatarUrl ?? createJazziconBlobUrl(user.id))
     }, [user])
     const pathname = usePathname()
     const router = useRouterWithSearchParams()

@@ -25,7 +25,7 @@ export const NeighborsModal: FC = () => {
     
     return (
         <Dialog 
-            open={isOpen} 
+            open={true} 
             onOpenChange={toggle}
         >
             <DialogContent className="sm:max-w-[425px]">

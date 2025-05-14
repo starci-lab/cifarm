@@ -19,12 +19,14 @@ import {
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect } from "react"
-import { UserCard } from "../UserCard"
-import { AdvancedSearchDropdown, FilterBar, List, Spacer } from "@/components"
-import { RefreshCcw } from "lucide-react"
-import { ExtendedButton, Pagination } from "@/components"
-import { AdvancedSearchContent, getLevelRange } from "../AdvancedSearchContent"
+import { FilterBar, List, Spacer } from "@/components"
+import { ExtendedButton, Pagination, UserCard } from "@/components"
+import { getLevelRange } from "../../NeighborsFilterModal/AdvancedSearchContent"
 import { useAppSelector } from "@/redux"
+import { NEIGHBORS_FILTER_DISCLOSURE } from "@/app/constants"
+import { useDisclosure } from "react-use-disclosure"
+import { ArrowCounterClockwise } from "@phosphor-icons/react"
+
 export const NeighborsTab: FC = () => {
     const {
         swr: { data, mutate: neighborsMutate },
@@ -109,53 +111,24 @@ export const NeighborsTab: FC = () => {
         })
     }
 
+    const { open: openFilterModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_FILTER_DISCLOSURE)
+
     return (
         <div className="space-y-4">
             <div className="flex gap-2 w-full">
                 <FilterBar
-                    placeholder="Username, address, ..."
-                    handleSearchResult={({ searchString }) => {
-                        if (!setParams) throw new Error("setParams is not defined")
-                        if (!userSwr.data?.data.user.level)
-                            throw new Error("user level is not defined")
-                        if (
-                            !staticSwr.data?.data.interactionPermissions
-                                .thiefLevelGapThreshold
-                        )
-                            throw new Error("thief level gap threshold is not defined")
-                        const { levelStart, levelEnd } = getLevelRange({
-                            levelRange: appliedLevelRange,
-                            startLevel:
-                staticSwr.data.data.interactionPermissions
-                    .thiefLevelGapThreshold,
-                            yourLevel: userSwr.data.data.user.level,
-                        })
-                        setParams({
-                            ...params,
-                            request: {
-                                ...params?.request,
-                                searchString,
-                                levelStart,
-                                levelEnd,
-                                status: appliedStatus,
-                            },
-                        })
-                    }}
+                    asButton
+                    onClick={openFilterModal}
                     className="flex-1"
                 />
-                <div className="flex items-center gap-2">
-                    <AdvancedSearchDropdown>
-                        <AdvancedSearchContent />
-                    </AdvancedSearchDropdown>
-                    <ExtendedButton
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => neighborsMutate()}
-                        className="shrink-0"
-                    >
-                        <RefreshCcw className="h-4 w-4" />
-                    </ExtendedButton>
-                </div>
+                <ExtendedButton
+                    variant="icon-secondary"
+                    size="icon"
+                    onClick={() => neighborsMutate()}
+                    className="shrink-0"
+                >
+                    <ArrowCounterClockwise />
+                </ExtendedButton>
             </div>
             <List
                 items={neighbors}

@@ -29,6 +29,7 @@ import { NFTClaimedModal } from "./NFTClaimedModal"
 import { WelcomeModal } from "./WelcomeModal"
 import { ConnectModal } from "./ConnectModal"
 import { AuthenticatingModal } from "./AuthenticatingModal"
+import { NeighborsFilterModal } from "./NeighborsFilterModal"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -62,6 +63,7 @@ const Modals : FC = () => {
             <UpgradeModal />
             <DailyModal />
             <ShipModal />
+            <NeighborsFilterModal />
             <BuyGoldsModal />
         </div>
     )

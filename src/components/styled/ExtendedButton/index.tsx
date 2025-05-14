@@ -11,6 +11,10 @@ export interface ExtendedButtonProps extends ButtonProps {
   onPress?: (pressTime: number) => void;
   pulseColor?: string;
   duration?: string;
+  classNames?: {
+    base?: string;
+    container?: string;
+  }
 }
 
 export const ExtendedButton = ({
@@ -19,7 +23,14 @@ export const ExtendedButton = ({
     onTap,
     onPress,
     pulseColor,
+    disabled,
+    variant = "default",
+    size = "default",
     duration = "1.5s",
+    classNames = {
+        base: "",
+        container: "",
+    },
     ...props
 }: ExtendedButtonProps) => {
     const ref = useRef<HTMLButtonElement | null>(null)
@@ -82,26 +93,31 @@ export const ExtendedButton = ({
         <Button
             ref={ref}
             {...props}
-            variant={props.variant || "default"}
-            disabled={isLoading || props.disabled}
+            size={size}
+            variant={variant}
+            disabled={isLoading || disabled}
             className={cn(
                 "relative",
+                classNames.base,
                 props.className)}
             style={{
                 "--pulse-color": pulseColor,
                 "--duration": duration,
             } as React.CSSProperties}
         >
-            <div className={cn(
-                "relative z-10 flex items-center gap-2 w-full text-inherit justify-center",
-                {
-                    "justify-center": props.variant === "icon",
-                },
-                props.className
-            )}>
-                {isLoading && <Spinner />}
-                {children}
-            </div>
+            {
+                variant === "icon" ? (
+                    children
+                ) : (
+                    <div className={cn(
+                        "relative z-10 flex items-center gap-2 w-full text-inherit justify-center",
+                        classNames.container
+                    )}>
+                        {isLoading && <Spinner />}
+                        {children}
+                    </div>
+                )
+            }
             {
                 pulseColor && (
                     <div className="absolute left-1/2 top-1/2 size-full -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-lg bg-inherit" />

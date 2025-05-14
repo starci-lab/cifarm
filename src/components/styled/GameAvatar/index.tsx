@@ -19,6 +19,11 @@ interface GameAvatarProps {
 export const GameAvatar: FC<GameAvatarProps> = ({ imgSrc, jazzString, classNames = {} }) => {
     const [avatarUrl, setAvatarUrl] = useState("")
     useEffect(() => {
+        // if both imgSrc and jazzString are not provided, return
+        if (!imgSrc && !jazzString) {
+            return 
+        }
+        // if imgSrc is provided, set the avatarUrl to imgSrc
         if (imgSrc) {
             setAvatarUrl(imgSrc)
         } else {
@@ -28,6 +33,7 @@ export const GameAvatar: FC<GameAvatarProps> = ({ imgSrc, jazzString, classNames
             setAvatarUrl(createJazziconBlobUrl(jazzString))
         }
     }, [imgSrc, jazzString])
+    
     return (
         <div className="relative">
             <Avatar className={

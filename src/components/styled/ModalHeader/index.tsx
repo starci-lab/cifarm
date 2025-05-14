@@ -9,7 +9,7 @@ interface ModalHeaderProps {
 export const ModalHeader: FC<ModalHeaderProps> = ({ title, description }) => {
     return (
         <div>
-            <div className="text-lg font-bold">{title}</div>
+            <div className="text-xl font-bold">{title}</div>
             {description && (
                 <>
                     <Spacer y={1.5} />  

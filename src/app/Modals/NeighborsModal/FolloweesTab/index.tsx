@@ -15,7 +15,7 @@ import {
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
-import { UserCard } from "../UserCard"
+import { UserCard } from "@/components" 
 import { FilterBar, List, ExtendedButton, Pagination } from "@/components"
 import { RefreshCcw } from "lucide-react"
 

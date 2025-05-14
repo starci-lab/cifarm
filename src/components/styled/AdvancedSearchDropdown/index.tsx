@@ -4,9 +4,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { FunnelIcon } from "@heroicons/react/24/outline"
 import React, { FC, PropsWithChildren } from "react"
-import { IconWrapper } from "../IconWrapper"
+import { ExtendedButton } from "../ExtendedButton"
+import { FunnelIcon } from "lucide-react"
   
 export interface AdvancedSearchDropdownProps extends PropsWithChildren {
     className?: string
@@ -19,11 +19,9 @@ export const AdvancedSearchDropdown: FC<AdvancedSearchDropdownProps> = ({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className={cn(className)}>
-                <IconWrapper classNames={{
-                    base: "text-primary w-9 h-9",
-                }}>
-                    <FunnelIcon className="w-5 h-5" />
-                </IconWrapper>
+                <ExtendedButton variant="icon" size="icon">
+                    <FunnelIcon className="w-6 h-6" />
+                </ExtendedButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-w-[400px]">
                 {children}

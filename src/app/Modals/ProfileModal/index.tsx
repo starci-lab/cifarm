@@ -28,11 +28,10 @@ export const ProfileModal: FC = () => {
     useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
     const user = swr.data?.data.user
     const avatarUrl = user
-        ? user.avatarUrl ?? createJazziconBlobUrl(user.accountAddress)
+        ? user.avatarUrl ?? createJazziconBlobUrl(user.id)
         : ""
     const quota = user ? computeExperiencesQuota(user.level) : 0
     const router = useRouterWithSearchParams()
-    console.log(user?.accountAddress)
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">

@@ -19,15 +19,7 @@ import {
 import { useMediaQuery } from "usehooks-ts"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { InventoryKind, ToolId } from "@/modules/entities"
-import { ExternalEventName } from "@/modules/event-emitter"
-import { ExternalEventEmitter } from "@/modules/event-emitter"
-
-export interface ToolLike {
-  id: string;
-  quantity?: number;
-  default?: boolean;
-  stackable?: boolean;
-}
+import { ExternalEventName, ToolLike, ExternalEventEmitter } from "@/modules/event-emitter"
 
 export const Toolbar: FC = () => {
     const { swr: staticSwr } = useSingletonHook<
