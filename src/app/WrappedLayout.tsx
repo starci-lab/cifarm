@@ -61,7 +61,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     const queryClient = new QueryClient()
     return (
         <Suspense>
-            <IconContext.Provider value={{ size: 24, weight: "bold", className: "min-w-6 min-h-6" }}>
+            <IconContext.Provider value={{ size: 24, weight: "bold", className: "min-w-6 min-h-6 stroke-3" }}>
                 <QueryClientProvider client={queryClient}>
                     <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
                         <WalletSuiProvider>

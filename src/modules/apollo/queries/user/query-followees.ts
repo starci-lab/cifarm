@@ -15,9 +15,7 @@ const query1 = gql`
         id
         level
         avatarUrl
-        accountAddress
         username
-        chainKey
         golds
         isOnline
         followed

@@ -4,9 +4,9 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC } from "react"
 import { Dialog, DialogContent, DialogFooter, ExtendedButton, FilterBar } from "@/components"
-import { FunnelIcon, RefreshCcwIcon } from "lucide-react"
 import { AdvancedSearchContent } from "./AdvancedSearchContent"
-import { useAppDispatch, useAppSelector, SelectedSearch, setUseAdvancedNeighborsSearch } from "@/redux"
+import { useAppSelector, SelectedSearch } from "@/redux"
+import { ArrowCounterClockwise } from "@phosphor-icons/react"
 
 export const NeighborsFilterModal: FC = () => {
     const { toggle, isOpen } =
@@ -16,7 +16,6 @@ export const NeighborsFilterModal: FC = () => {
     const neighborsSearch = useAppSelector((state) => state.searchReducer.neighborsSearch)
     const followeesSearch = useAppSelector((state) => state.searchReducer.followeesSearch)
     const useAdvancedSearch = selectedSearch === SelectedSearch.Neighbors ? neighborsSearch.useAdvancedSearch : followeesSearch.useAdvancedSearch
-    const dispatch = useAppDispatch()
     
     return (
         <Dialog 
@@ -32,19 +31,11 @@ export const NeighborsFilterModal: FC = () => {
                         }} />
                         <div className="flex items-center gap-2">
                             <ExtendedButton
-                                variant="icon"
-                                onClick={() => dispatch(setUseAdvancedNeighborsSearch(!useAdvancedSearch))}
+                                variant="icon-secondary"
                                 size="icon"
                                 className="shrink-0"
                             >
-                                <FunnelIcon className="h-6 w-6" />
-                            </ExtendedButton>
-                            <ExtendedButton
-                                variant="icon"
-                                size="icon"
-                                className="shrink-0"
-                            >
-                                <RefreshCcwIcon className="h-6 w-6" />
+                                <ArrowCounterClockwise />
                             </ExtendedButton>
                         </div>
                     </div>

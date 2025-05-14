@@ -1,7 +1,7 @@
 "use client"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
-import React, { FC } from "react"
+import React, { FC, useState, useEffect } from "react"
 import { ExtendedButton, Spacer } from "@/components"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -52,11 +52,21 @@ export const UserCard: FC<UserCardProps> = ({
     onUnfollowCallback,
     onVisitClick,
 }: UserCardProps) => {
+    const [avatar, setAvatar] = useState(user.avatarUrl ?? createJazziconBlobUrl(user.id))
+
+    useEffect(() => {
+        if (user.avatarUrl) {
+            setAvatar(user.avatarUrl)
+        } else {
+            setAvatar(createJazziconBlobUrl(user.id))
+        }
+    }, [user.id])
+
     return (
         <div className="p-3 flex justify-between items-center bg-content-2">
             <div className="flex gap-2 items-center">
                 <Avatar className="h-10 w-10">
-                    <AvatarImage src={user.avatarUrl ?? createJazziconBlobUrl(user.id)} alt={user.username} />
+                    <AvatarImage src={avatar} alt={user.username} />
                 </Avatar>
                 <div className="space-y-1">
                     <div>{user.username}</div>
@@ -113,7 +123,7 @@ export const UserCard: FC<UserCardProps> = ({
                     variant="icon"
                     size="icon"
                 >
-                    <MapPinArea weight="fill" />
+                    <MapPinArea />
                 </ExtendedButton>
             </div>
         </div>
