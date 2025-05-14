@@ -38,8 +38,7 @@ body {
   .light {
     /* for color-scheme: light */
     --background: 33 56% 94%;
-    --foreground: 0 0% 3.9%;
-    --default: 0 0% 60%;
+    --foreground: 37 23% 16%;
 
     --content-1: 0 0% 10%;
     --content-2: 33 60% 97%; /* cream - use in card and button */

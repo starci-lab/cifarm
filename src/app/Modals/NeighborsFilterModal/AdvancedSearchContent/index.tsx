@@ -91,7 +91,6 @@ export const AdvancedSearchContent: FC = () => {
                         <Spacer y={2} />
                         <div className="h-5 place-items-center grid">
                             <Slider
-                                color="primary"
                                 value={[neighborsSearch.levelRange]}
                                 onValueChange={(value) =>
                                     dispatch(setNeighborsSearchLevelRange(value[0]))
