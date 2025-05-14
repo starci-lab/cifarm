@@ -2,8 +2,8 @@
 
 import { ExtendedButton, ExtendedInput } from "@/components"
 import React, { FC, useEffect, useState } from "react"
-import { SearchIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { MagnifyingGlass } from "@phosphor-icons/react"
 
 export interface HandleSearchResultParams {
   searchString: string;
@@ -49,7 +49,7 @@ const ButtonFilterBar: FC<FilterBarProps> = ({
                 container: "justify-start",
             }}
         >
-            <SearchIcon className="w-6 h-6 text-muted-foreground" />
+            <MagnifyingGlass className="w-6 h-6 text-muted-foreground" />
             <div className="text-muted-foreground">{placeholder}</div>
         </ExtendedButton>
     )
@@ -91,7 +91,7 @@ const SearchFilterBar: FC<FilterBarProps> = ({
 
     return (
         <ExtendedInput
-            startContent={<SearchIcon className="w-5 h-5 text-muted-foreground" />}
+            startContent={<MagnifyingGlass className="w-5 h-5 text-muted-foreground" />}
             value={searchString}
             classNames={{
                 base: classNames.base,

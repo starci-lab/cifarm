@@ -16,8 +16,8 @@ import {
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { ExtendedButton } from "@/components"
-import { BlocksIcon, GiftIcon, TwitterIcon, CoinsIcon } from "lucide-react"
 import { useIsMobile } from "@/hooks/useIsMobile"
+import { Coins, Cube, Gift, XLogo } from "@phosphor-icons/react"
 
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
@@ -51,7 +51,7 @@ export const BottomNavbar: FC = () => {
                                     className="flex-1 flex flex-col items-center justify-center h-full gap-1 w-fit"
                                     onClick={() => router.push(pathConstants.assets)}
                                 >
-                                    <CoinsIcon className="w-5 h-5 min-w-5 min-h-5" />
+                                    <Coins className="w-5 h-5 min-w-5 min-h-5" />
                                     <div className="text-[10px] h-4 flex items-center">Assets</div>
                                 </ExtendedButton>
                             </div>
@@ -61,7 +61,7 @@ export const BottomNavbar: FC = () => {
                                     className="flex-1 flex flex-col items-center justify-center h-full gap-1"
                                     onClick={() => router.push(pathConstants.partnerships)}
                                 >
-                                    <GiftIcon className="w-5 h-5 min-h-5 min-w-5" />
+                                    <Gift className="w-5 h-5 min-h-5 min-w-5" />
                                     <div className="text-[10px] h-4 flex items-center">Partner</div>
                                 </ExtendedButton>
                             </div>
@@ -83,7 +83,7 @@ export const BottomNavbar: FC = () => {
                                     className="flex-1 flex flex-col items-center justify-center h-full"
                                     onClick={() => router.push(pathConstants.dapp)}
                                 >
-                                    <BlocksIcon className="w-5 h-5 min-w-5 min-h-5" />
+                                    <Cube className="w-5 h-5 min-w-5 min-h-5" />
                                     <div className="text-[10px] h-4 flex items-center">
                             DApps
                                     </div>
@@ -94,7 +94,7 @@ export const BottomNavbar: FC = () => {
                                     variant="ghost"
                                     className="flex-1 flex flex-col items-center justify-center h-full"
                                 >
-                                    <TwitterIcon className="w-5 h-5 min-w-5 min-h-5" />
+                                    <XLogo className="w-5 h-5 min-w-5 min-h-5" />
                                     <div className="text-[10px] h-4 flex items-center">
                             Social
                                     </div>

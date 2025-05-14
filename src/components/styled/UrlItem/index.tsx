@@ -1,13 +1,12 @@
 import React from "react"
 import Link from "next/link"
-import { LucideIcon } from "lucide-react"
 
 interface UrlItemProps {
     href: string
     label: string
     isExternal?: boolean
     className?: string
-    icon?: LucideIcon | React.FC<{ size?: number }>
+    icon?:  React.FC
     iconSize?: number
 }
 
@@ -17,7 +16,6 @@ export const UrlItem = ({
     isExternal = false,
     className = "transition-colors",
     icon: Icon,
-    iconSize = 20,
 }: UrlItemProps) => {
     const commonProps = {
         className,
@@ -32,14 +30,14 @@ export const UrlItem = ({
                 rel="noopener noreferrer"
                 {...commonProps}
             >
-                {Icon ? <Icon size={iconSize} /> : label}
+                {Icon ? <Icon /> : label}
             </a>
         )
     }
 
     return (
         <Link href={href} {...commonProps}>
-            {Icon ? <Icon size={iconSize} /> : label}
+            {Icon ? <Icon /> : label}
         </Link>
     )
 } 

@@ -5,8 +5,7 @@ import { useDisclosure } from "react-use-disclosure"
 import React, { FC } from "react"
 import { Dialog, DialogContent, DialogFooter, ExtendedButton, FilterBar } from "@/components"
 import { AdvancedSearchContent } from "./AdvancedSearchContent"
-import { useAppSelector, SelectedSearch } from "@/redux"
-import { ArrowCounterClockwise } from "@phosphor-icons/react"
+import { useAppDispatch, useAppSelector, SelectedSearch, setUseAdvancedNeighborsSearch } from "@/redux"
 
 export const NeighborsFilterModal: FC = () => {
     const { toggle, isOpen } =
@@ -35,7 +34,14 @@ export const NeighborsFilterModal: FC = () => {
                                 size="icon"
                                 className="shrink-0"
                             >
-                                <ArrowCounterClockwise />
+                                <FunnelIcon className="h-6 w-6" />
+                            </ExtendedButton>
+                            <ExtendedButton
+                                variant="icon"
+                                size="icon"
+                                className="shrink-0"
+                            >
+                                <RefreshCcwIcon className="h-6 w-6" />
                             </ExtendedButton>
                         </div>
                     </div>

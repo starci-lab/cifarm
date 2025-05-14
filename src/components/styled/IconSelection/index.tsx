@@ -1,7 +1,7 @@
 "use client"
 import { PressableCard, PressableCardProps } from "@/components"
-import { ChevronRightIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { CaretRight } from "@phosphor-icons/react"
 import React, { FC, ReactNode } from "react"
 
 export type IconSelectionProps = PressableCardProps & {
@@ -11,7 +11,6 @@ export type IconSelectionProps = PressableCardProps & {
     classNames?: {
         text?: string;
         description?: string;
-        chevron?: string;
     }
 }
 
@@ -31,7 +30,7 @@ export const IconSelection: FC<IconSelectionProps> = ({ icon, onClick, className
                         {description && <div className={cn("text-sm",classNames?.description)}>{description}</div>}
                     </div>
                 </div>
-                <ChevronRightIcon className={cn("w-3.5 h-3.5", classNames?.chevron)}    />
+                <CaretRight />
             </div>
         </PressableCard>
     )

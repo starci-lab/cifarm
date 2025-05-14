@@ -49,16 +49,11 @@ import {
     StatsAttributeName,
     statsAttributeNameMap,
 } from "@/modules/blockchain"
-import {
-    SendHorizonalIcon,
-    EyeIcon,
-    PackageOpenIcon,
-    PackageIcon,
-    WandSparklesIcon,
-} from "lucide-react"
 import { useParams } from "next/navigation"
 import { NFTType, PlacedItemType } from "@/modules/entities"
 import { envConfig } from "@/env"
+import { Export, Package } from "@phosphor-icons/react"
+import { EyeIcon, SendHorizonalIcon, WandSparklesIcon } from "lucide-react"
 
 export const MainContent: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(
@@ -228,7 +223,7 @@ export const MainContent: FC = () => {
                 <div className="grid grid-cols-4 gap-2">
                     {nft?.wrapped ? (
                         <PressableAction
-                            icon={<PackageOpenIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            icon={<Export className="w-5 h-5 min-w-5 min-h-5" />}
                             isLoading={createUnwrapSolanaMetaplexNFTSwrMutation.isMutating}
                             onClick={async () => {
                                 if (!nft?.nftAddress) {
@@ -278,7 +273,7 @@ export const MainContent: FC = () => {
                         />
                     ) : (
                         <PressableAction
-                            icon={<PackageIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            icon={<Package className="w-5 h-5 min-w-5 min-h-5" />}
                             isLoading={createWrapSolanaMetaplexNFTSwrMutation.isMutating}
                             onClick={async () => {
                                 if (!nft?.nftAddress) {

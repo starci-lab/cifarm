@@ -12,18 +12,12 @@ import {
     SidebarHeader,
     Spacer,
 } from "@/components"
-import {
-    LayoutGridIcon,
-    WalletIcon,
-    HomeIcon,
-    TwitterIcon,
-    BookIcon,
-} from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/redux"
 import { setSidebarTab, SidebarTab } from "@/redux/slices"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { Logo } from "@/app/_components/Header/Logo"
+import { Book, House, Layout, Wallet, XLogo } from "@phosphor-icons/react"
 
 export const AppSidebar: FC = () => {
     const isMobile = useIsMobile()
@@ -46,7 +40,7 @@ export const AppSidebar: FC = () => {
                                 dispatch(setSidebarTab(SidebarTab.Home))
                                 router.push(`${pathConstants.home}`)
                             }}
-                            icon={<HomeIcon className="w-5 h-5" />}
+                            icon={<House className="w-5 h-5" />}
                         />
                         <Spacer y={2} />
                         <Selection
@@ -56,7 +50,7 @@ export const AppSidebar: FC = () => {
                                 dispatch(setSidebarTab(SidebarTab.Assets))
                                 router.push(`${pathConstants.home}/${pathConstants.assets}`)
                             }}
-                            icon={<WalletIcon className="w-5 h-5" />}
+                            icon={<Wallet className="w-5 h-5" />}
                         />
                         <Spacer y={2} />
                         <Selection
@@ -66,7 +60,7 @@ export const AppSidebar: FC = () => {
                                 dispatch(setSidebarTab(SidebarTab.DApps))
                                 router.push(`${pathConstants.home}/${pathConstants.dapps}`)
                             }}
-                            icon={<LayoutGridIcon className="w-5 h-5" />}
+                            icon={<Layout className="w-5 h-5" />}
                         />
                         <Spacer y={4} />
                         <Separator variant="secondary" />
@@ -75,14 +69,14 @@ export const AppSidebar: FC = () => {
                             title="Docs"
                             isExternal={true}
                             selected={false}
-                            icon={<BookIcon className="w-5 h-5" />}
+                            icon={<Book className="w-5 h-5" />}
                         />
                         <Spacer y={2} />
                         <Selection
                             title="X"
                             isExternal={true}
                             selected={false}
-                            icon={<TwitterIcon className="w-5 h-5" />}
+                            icon={<XLogo className="w-5 h-5" />}
                         />
                         <Spacer y={4} />
                     </SidebarHeader>

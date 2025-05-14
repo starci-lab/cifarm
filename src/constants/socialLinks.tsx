@@ -1,10 +1,9 @@
+import { TelegramLogo, XLogo, YoutubeLogo } from "@phosphor-icons/react"
 import React from "react"
-import { Twitter, Youtube, MessageCircle } from "lucide-react"
-import { LucideIcon } from "lucide-react"
 
 interface SocialLink {
     name: string
-    icon: LucideIcon | React.FC
+    icon: React.FC
     href: string
     className: string
     label: string
@@ -13,7 +12,7 @@ interface SocialLink {
 export const socialLinksConstants: SocialLink[] = [
     {
         name: "Twitter",
-        icon: Twitter,
+        icon: XLogo,
         href: "#",
         className: "bg-black hover:bg-gray-800",
         label: "X Link"
@@ -31,14 +30,14 @@ export const socialLinksConstants: SocialLink[] = [
     },
     {
         name: "Telegram",
-        icon: MessageCircle,
+        icon: TelegramLogo,
         href: "#",
         className: "bg-blue-500 hover:opacity-90",
         label: "Telegram Link"
     },
     {
         name: "Youtube",
-        icon: Youtube,
+        icon: YoutubeLogo,
         href: "#",
         className: "bg-red-600 hover:opacity-90",
         label: "Youtube Link"

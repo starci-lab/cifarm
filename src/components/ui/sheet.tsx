@@ -3,10 +3,10 @@
 import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
-import { X, ChevronLeft } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { IconWrapper } from "../styled/IconWrapper"
+import { CaretLeft, X } from "@phosphor-icons/react"
 
 const Sheet = SheetPrimitive.Root
 
@@ -131,7 +131,7 @@ const SheetTitle = React.forwardRef<
                             base: "text-muted-foreground",
                         }}
                     >
-                        <ChevronLeft className="w-5 h-5" onClick={onLeftChevronClick} />
+                        <CaretLeft className="w-5 h-5" onClick={onLeftChevronClick} />
                     </IconWrapper>
                 )}
                 {children}

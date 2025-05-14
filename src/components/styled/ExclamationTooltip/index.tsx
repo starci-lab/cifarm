@@ -4,7 +4,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { CircleAlertIcon } from "lucide-react"
+import { WarningCircle } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 interface ExclamationTooltipProps {
   message: string;
@@ -23,7 +23,7 @@ export const ExclamationTooltip: FC<ExclamationTooltipProps> = ({
     return (
         <Tooltip>
             <TooltipTrigger>
-                <CircleAlertIcon
+                <WarningCircle
                     className={cn("w-[18px] h-[18px] text-secondary", className, iconClassName)}
                 />
             </TooltipTrigger>

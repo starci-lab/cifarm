@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { cn } from "@/lib/utils"
-import { ExternalLinkIcon } from "lucide-react"
+import { ArrowSquareOut } from "@phosphor-icons/react"
 
 export interface SelectionProps {
     title: string
@@ -21,7 +21,7 @@ export const Selection: FC<SelectionProps> = ({ title, selected, icon, isExterna
                     <div>{icon}</div>
                     <div>{title}</div>
                 </div>
-                {isExternal && <ExternalLinkIcon className="w-3.5 h-3.5" />}
+                {isExternal && <ArrowSquareOut />}
             </div>
         </button>
     )

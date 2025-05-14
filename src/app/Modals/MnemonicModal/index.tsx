@@ -16,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useDisclosure } from "react-use-disclosure"
 import { cn } from "@/lib/utils"
-import { CopyIcon } from "lucide-react"
+import { Copy } from "@phosphor-icons/react"
 
 export const MnemonicModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<
@@ -74,7 +74,7 @@ export const MnemonicModal: FC = () => {
                         onClick={() => navigator.clipboard.writeText(mnemonic)}
                         className="gap-2"
                     >
-                        <CopyIcon className="w-5 h-5" strokeWidth={3 / 2} />
+                        <Copy className="w-5 h-5" />
                         Copy
                     </ExtendedButton>
                 </DialogFooter>

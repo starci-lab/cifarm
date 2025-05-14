@@ -9,10 +9,10 @@ import {
     Title,
 } from "@/components"
 import React, { FC } from "react"
-import { PlusIcon, RotateCcwIcon } from "lucide-react"
 import { setCollectionKey, useAppDispatch, useAppSelector } from "@/redux"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
+import { ArrowCounterClockwise, Plus } from "@phosphor-icons/react"
 
 const Page: FC = () => {
     // const nftCollections = useAppSelector(
@@ -45,10 +45,10 @@ const Page: FC = () => {
                         />
                         <div className="flex gap-2">
                             <Button variant="ghost" size="icon">
-                                <PlusIcon className="w-5 h-5" />
+                                <Plus className="w-5 h-5" />
                             </Button>
                             <Button variant="ghost" size="icon">
-                                <RotateCcwIcon className="w-5 h-5" />
+                                <ArrowCounterClockwise className="w-5 h-5" />
                             </Button>
                         </div>
                     </div>

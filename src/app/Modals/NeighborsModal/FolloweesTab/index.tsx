@@ -17,7 +17,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import { UserCard } from "@/components" 
 import { FilterBar, List, ExtendedButton, Pagination } from "@/components"
-import { RefreshCcw } from "lucide-react"
+import { ArrowCounterClockwise } from "@phosphor-icons/react"
 
 export const FolloweesTab: FC = () => {
     const {
@@ -81,7 +81,7 @@ export const FolloweesTab: FC = () => {
                     onClick={() => followeesMutate()}
                     className="shrink-0"
                 >
-                    <RefreshCcw className="h-4 w-4" />
+                    <ArrowCounterClockwise className="h-4 w-4" />
                 </ExtendedButton>
             </div>
             <List

@@ -17,9 +17,9 @@ import {
     AssetUIId,
 } from "@/modules/assets"
 import { useMediaQuery } from "usehooks-ts"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { InventoryKind, ToolId } from "@/modules/entities"
 import { ExternalEventName, ToolLike, ExternalEventEmitter } from "@/modules/event-emitter"
+import { CaretLeft, CaretRight } from "@phosphor-icons/react"
 
 export const Toolbar: FC = () => {
     const { swr: staticSwr } = useSingletonHook<
@@ -114,7 +114,7 @@ export const Toolbar: FC = () => {
                     dispatch(setFromToolIndex(fromToolIndex - 1))
                 }}
             >
-                <ChevronLeftIcon className="w-5 h-5" />
+                <CaretLeft className="w-5 h-5" />
             </ExtendedButton>
             <div className="flex gap-2 rounded-md">
                 {filteredTools.map((toolLike) => {
@@ -189,7 +189,7 @@ export const Toolbar: FC = () => {
                     dispatch(setFromToolIndex(fromToolIndex + 1))
                 }}
             >
-                <ChevronRightIcon className="w-5 h-5" />
+                <CaretRight className="w-5 h-5" />
             </ExtendedButton>
         </div>
     )

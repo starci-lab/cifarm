@@ -3,8 +3,8 @@ import { ExtendedButton } from "@/components"
 import React, { FC } from "react"
 import { MainVisual } from "../MainVisual"
 import { pathConstants } from "@/constants"
-import { PanelTop, Share2Icon } from "lucide-react"
 import { useRouterWithSearchParams } from "@/hooks"
+import { GameController, ShareNetwork } from "@phosphor-icons/react"
 
 const tags = [{ name: "Early Access" }, { name: "Farming" }, { name: "Strategy" }]
 
@@ -31,7 +31,7 @@ export const OverviewTab: FC = () => {
                     <BlurEffect size="sm" position="top" className="-z-20 hover:opacity-80 transition-opacity duration-200" />
 
                     <ExtendedButton className="flex items-center justify-center gap-2 w-full md:w-auto z-10" variant="secondary">
-                        <Share2Icon className="w-4 h-4" />
+                        <ShareNetwork className="w-4 h-4" />
                         Share
                     </ExtendedButton>
 
@@ -55,7 +55,7 @@ export const OverviewTab: FC = () => {
                                 <div className="flex items-center gap-2 font-light text-[12px]">PLATFORM</div>
                                 <Tooltip>
                                     <TooltipTrigger>
-                                        <PanelTop className="w-4 h-4" />
+                                        <GameController className="w-4 h-4" />
                                     </TooltipTrigger>
                                     <TooltipContent className="text-sm">Web</TooltipContent>
                                 </Tooltip>

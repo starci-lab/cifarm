@@ -2,8 +2,8 @@ import { Title, Spacer, ExtendedButton } from "@/components"
 import { useAppDispatch, useAppSelector, triggerRefreshNFTCollections } from "@/redux"
 import React, { FC } from "react"
 import { useRouterWithSearchParams } from "@/hooks"
-import { Settings2Icon, RotateCcwIcon } from "lucide-react"
 import { pathConstants } from "@/constants"
+import { ArrowCounterClockwise, GearSix } from "@phosphor-icons/react"
 
 export const NFTCollections: FC = () => {
     // const collections = useAppSelector((state) => state.sessionReducer.nftCollections)
@@ -28,14 +28,14 @@ export const NFTCollections: FC = () => {
                         variant="ghost"
                         onClick={() => dispatch(triggerRefreshNFTCollections())}
                     >
-                        <RotateCcwIcon className="w-5 h-5" />
+                        <ArrowCounterClockwise className="w-5 h-5" />
                     </ExtendedButton>
                     <ExtendedButton
                         size="icon"
                         variant="ghost"
                         onClick={() => router.push(pathConstants.manageNFTCollections)}
                     >
-                        <Settings2Icon className="w-5 h-5" />
+                        <GearSix className="w-5 h-5" />
                     </ExtendedButton>
                 </div>
             </div>

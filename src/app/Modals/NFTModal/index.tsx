@@ -11,9 +11,8 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { useDisclosure } from "react-use-disclosure"
-import { QrCodeIcon, SendHorizonalIcon, ShoppingCartIcon, EllipsisIcon, PackageIcon } from "lucide-react"
 import { useRouterWithSearchParams, useTransferNFTFormik } from "@/hooks" 
-import { pathConstants } from "@/constants"
+import { DotsThree, QrCode, ShoppingCart } from "@phosphor-icons/react"
 
 export const NFTModal: FC = () => {
     const { isOpen, toggle, close } = useSingletonHook<
@@ -61,7 +60,7 @@ export const NFTModal: FC = () => {
                             name="Transfer"
                         /> */}
                         <PressableAction
-                            icon={<QrCodeIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            icon={<QrCode className="w-5 h-5 min-w-5 min-h-5" />}
                             onClick={() => {
                                 console.log("Receive")
                             }}
@@ -80,14 +79,14 @@ export const NFTModal: FC = () => {
                             name="Wrap"
                         /> */}
                         <PressableAction
-                            icon={<ShoppingCartIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            icon={<ShoppingCart className="w-5 h-5 min-w-5 min-h-5" />}
                             onClick={() => {
                                 console.log("Receive")
                             }}
                             name="Buy"
                         />
                         <PressableAction
-                            icon={<EllipsisIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                            icon={<DotsThree className="w-5 h-5 min-w-5 min-h-5" />}
                             onClick={() => {
                                 console.log("Receive")
                             }}

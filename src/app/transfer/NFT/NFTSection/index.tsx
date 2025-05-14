@@ -4,7 +4,6 @@ import { Spacer, PressableCard, Title, Image } from "@/components"
 import { useSingletonHook2, useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
-import { PlusIcon } from "lucide-react"
 import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "@/app/utils"
 

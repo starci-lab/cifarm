@@ -1,7 +1,7 @@
 import * as React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components"
 import { cn } from "@/lib/utils"
+import { CaretLeft, CaretRight } from "@phosphor-icons/react"
 
 interface PaginationProps extends React.HTMLAttributes<HTMLDivElement> {
     currentPage: number
@@ -34,7 +34,7 @@ export function Pagination({
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
             >
-                <ChevronLeft className="h-4 w-4" />
+                <CaretLeft />
             </Button>
             {visiblePages.map((page) => (
                 <Button
@@ -51,7 +51,7 @@ export function Pagination({
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
             >
-                <ChevronRight className="h-4 w-4" />
+                <CaretRight />
             </Button>
         </div>
     )

@@ -1,7 +1,6 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Trophy, Users } from "lucide-react"
 import React from "react"
 import { AnnouncementBanner } from "./AnnouncementBanner"
 import { FeatureItem, FeatureItemProps } from "./FeatureItem"
@@ -10,15 +9,16 @@ import { FeaturedImage } from "./FeaturedImage"
 import { Image, Separator, Spacer, WrappedAnimation } from "@/components"
 import { assetProductMap } from "@/modules/assets"
 import { ProductId } from "@/modules/entities"
+import { Trophy, Users } from "@phosphor-icons/react"
 
 const features: Array<FeatureItemProps> = [
     {
-        icon: <Trophy className="w-5 h-5 text-secondary"/>,
+        icon: <Trophy />,
         title: "Seasonal Rewards",
         description: "Earn as you play"
     },
     {
-        icon: <Users className="w-5 h-5 text-secondary"/>,
+        icon: <Users />,
         title: "Social Gaming",
         description: "Play with friends"
     }

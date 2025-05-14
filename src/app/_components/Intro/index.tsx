@@ -3,9 +3,9 @@
 import React from "react"
 import { Spacer, SpinePlayer, WrappedAnimation, Image } from "@/components"
 import { HighlightBanner } from "../HighlighBanner"
-import { TrophyIcon } from "lucide-react"
 import { AnimalAge, assetAnimalMap, assetFruitMap } from "@/modules/assets"
 import { AnimalId, FruitId } from "@/modules/entities"
+import { Trophy } from "@phosphor-icons/react"
 
 export const Intro = () => {
     return (
@@ -50,14 +50,14 @@ export const Intro = () => {
                     <WrappedAnimation type="fade-slide" direction="up" delay={0.6}>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="flex flex-col gap-2">
-                                <HighlightBanner text="Competitive gameplay mechanics" icon={<TrophyIcon className="w-5 h-5"/>} />
-                                <HighlightBanner text="Unique business model" icon={<TrophyIcon className="w-5 h-5"/>} />
-                                <HighlightBanner text="Massive social features" icon={<TrophyIcon className="w-5 h-5"/>} />
+                                <HighlightBanner text="Competitive gameplay mechanics" icon={<Trophy />} />
+                                <HighlightBanner text="Unique business model" icon={<Trophy />} />
+                                <HighlightBanner text="Massive social features" icon={<Trophy />} />
                             </div>
                             <div className="flex flex-col gap-2">
-                                <HighlightBanner text="Signature Art Style & Animation" icon={<TrophyIcon className="w-5 h-5"/>} />
-                                <HighlightBanner text="Seasonal rewards" icon={<TrophyIcon className="w-5 h-5"/>} />
-                                <HighlightBanner text="The best farming game" icon={<TrophyIcon className="w-5 h-5"/>} />
+                                <HighlightBanner text="Signature Art Style & Animation" icon={<Trophy />} />
+                                <HighlightBanner text="Seasonal rewards" icon={<Trophy />} />
+                                <HighlightBanner text="The best farming game" icon={<Trophy />} />
                             </div>
                         </div>
                     </WrappedAnimation>

@@ -13,7 +13,7 @@ import {
 import { useTransferNFTFormik } from "@/hooks"
 import { useSingletonHook2 } from "@/modules/singleton-hook"
 import { NFTSheetPage, setNFTSheetPage, useAppDispatch } from "@/redux"
-import { AtSignIcon } from "lucide-react"
+import { At } from "@phosphor-icons/react"
 import React, { FC } from "react"
 
 export const TransferContent: FC = () => {
@@ -79,7 +79,7 @@ export const TransferContent: FC = () => {
               undefined
                             }
                             endContent={
-                                <AtSignIcon className="w-4 h-4 text-secondary" />
+                                <At />
                             }
                         />
                     </div>

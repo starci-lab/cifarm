@@ -21,9 +21,9 @@ import {
     Image,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { AtSignIcon } from "lucide-react"
 import { useGraphQLQueryStaticSwr, useTransferNFTFormik } from "@/hooks"
 import { getNFTImage } from "@/app/utils"
+import { At } from "@phosphor-icons/react"
 
 export const TransferNFTModal: FC = () => {
     const accounts = useAppSelector(
@@ -111,7 +111,7 @@ export const TransferNFTModal: FC = () => {
                             }
                             endContent={
                                 <Link>
-                                    <AtSignIcon className="w-5 h-5" />
+                                    <At />
                                 </Link>
                             }
                         />

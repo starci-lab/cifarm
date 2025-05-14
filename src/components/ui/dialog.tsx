@@ -3,8 +3,8 @@
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { cn } from "@/lib/utils"
-import { ChevronLeft, XIcon } from "lucide-react"
 import { IconWrapper } from "../styled/IconWrapper"
+import { CaretLeft, X } from "@phosphor-icons/react"
 
 const Dialog = DialogPrimitive.Root
 
@@ -68,7 +68,7 @@ const DialogHeader = ({
         <DialogClose
             className="text-muted-foreground"
         >
-            <XIcon className="w-5 h-5" />
+            <X />
         </DialogClose>
     </div>
 )
@@ -108,7 +108,7 @@ const DialogTitle = React.forwardRef<
                             base: "text-muted-foreground",
                         }}
                     >
-                        <ChevronLeft className="w-5 h-5" onClick={onLeftChevronClick} />
+                        <CaretLeft onClick={onLeftChevronClick} />
                     </IconWrapper>
                 )}
                 {children}

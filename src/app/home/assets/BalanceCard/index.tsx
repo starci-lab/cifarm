@@ -2,8 +2,7 @@ import { Card, ExtendedButton } from "@/components"
 import { IconWrapper } from "@/components/styled/IconWrapper"
 import { useGlobalAccountAddress } from "@/hooks"
 import { truncateString } from "@/modules/common"
-import { MoreHorizontal } from "lucide-react"
-import { Eye } from "lucide-react"
+import { DotsThreeVertical, Eye } from "@phosphor-icons/react"
 import React from "react"
 
 const BalanceCard = () => {
@@ -22,7 +21,7 @@ const BalanceCard = () => {
                         </ExtendedButton>
                     </div>
                     <IconWrapper>
-                        <MoreHorizontal className="h-5 w-5" />
+                        <DotsThreeVertical className="h-5 w-5" />
                     </IconWrapper>
                 </div>
 

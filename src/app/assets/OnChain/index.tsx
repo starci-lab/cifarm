@@ -1,9 +1,6 @@
 // import { TransactionType, useAppDispatch, useAppSelector } from "@/redux"
 import { ExtendedButton, Spacer, Title } from "@/components"
-import {
-    RotateCcwIcon,
-    Settings2Icon,
-} from "lucide-react"
+
 import React, { FC } from "react"
 //import { Action, ActionProps } from "./Action"
 import { pathConstants } from "@/constants"
@@ -17,6 +14,7 @@ import {
     useAppSelector
 } from "@/redux"
 import { NFTCollections } from "./NFTCollections"
+import { ArrowCounterClockwise, GearSix } from "@phosphor-icons/react"
 export const OnChain: FC = () => {
     // const tokens = useAppSelector((state) => state.sessionReducer.tokens)
     // const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
@@ -41,14 +39,14 @@ export const OnChain: FC = () => {
                                 dispatch(triggerRefreshTokens())
                             }}
                         >
-                            <RotateCcwIcon className="w-5 h-5" />
+                            <ArrowCounterClockwise className="w-5 h-5" />
                         </ExtendedButton>
                         <ExtendedButton
                             size="icon"
                             variant="ghost"
                             onClick={() => router.push(pathConstants.manageTokens)}
                         >
-                            <Settings2Icon className="w-5 h-5" />
+                            <GearSix className="w-5 h-5" />
                         </ExtendedButton>
                     </div>
                 </div>
