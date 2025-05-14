@@ -11,7 +11,7 @@ const Page: FC = () => {
     return (
         <Container hasPadding>
             <div className="h-full">
-                <Header title="Import account" description="Import your account from existing credentials." />
+                <Header title="Import account" />
                 <Spacer y={6} />
                 <List items={Object.values(ImportMethod)} 
                     contentCallback={(item) => {

@@ -38,7 +38,7 @@ const pressableCardVariants = cva("rounded-lg p-3", {
     },
     defaultVariants: {
         variant: "default",
-        hoverAnimated: true,
+        hoverAnimated: false,
     },
 })
 
@@ -49,7 +49,7 @@ export const PressableCard: FC<PressableCardProps> = ({
     className,
     isLoading,
     variant = "default",
-    hoverAnimated = true,
+    hoverAnimated = false,
     ...props
 }: PressableCardProps) => {
     const { base } = classNames

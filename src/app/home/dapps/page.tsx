@@ -15,7 +15,7 @@ const Page = () => {
     }   
     return (
         <div className="relative">
-            <BlurEffect variant="secondary" size="lg" position="top" className="-z-10" />
+            <BlurEffect size="lg" position="top" className="-z-10" />
             <div className="flex justify-between items-center gap-4">
                 <Header title="DApps" />
                 <ChainSelectionDropdown />

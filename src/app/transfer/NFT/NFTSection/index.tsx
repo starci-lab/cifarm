@@ -4,7 +4,6 @@ import { Spacer, PressableCard, Title, Image } from "@/components"
 import { useSingletonHook2, useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
-import { NFTData } from "@/modules/blockchain"
 import { PlusIcon } from "lucide-react"
 import { useDisclosure } from "react-use-disclosure"
 import { getNFTImage } from "@/app/utils"
@@ -17,29 +16,29 @@ export const NFTSection: FC = () => {
     const collectionSwrs = useAppSelector(
         (state) => state.sessionReducer.nftCollectionSwrs
     )
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
-    const collection = collections[formik.values.collectionKey]
+    // const collections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
+    // const collection = collections[formik.values.collectionKey]
     const { open: openSelectNFTModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_NFT_DISCLOSURE
     )
 
-    const getData = (): NFTData | null => {
-        if (!collection) return null
-        const collectionSwr = collectionSwrs[formik.values.collectionKey]
-        const data = collectionSwr.data?.nfts.find(
-            (nft) => nft.nftAddress === formik.values.nft?.nftAddress
-        )
-        if (!data) return null  
-        return data
-    }
-    const data = getData()
+    // const getData = (): NFTData | null => {
+    //     if (!collection) return null
+    //     const collectionSwr = collectionSwrs[formik.values.collectionKey]
+    //     const data = collectionSwr.data?.nfts.find(
+    //         (nft) => nft.nftAddress === formik.values.nft?.nftAddress
+    //     )
+    //     if (!data) return null  
+    //     return data
+    // }
+    // const data = getData()
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         QUERY_STATIC_SWR_MUTATION
     )
-    if (!data || !staticSwr.data) return null
-    const image = getNFTImage({ collectionKey: formik.values.collectionKey, nft: data, collections, staticData: staticSwr.data.data })
+    // if (!data || !staticSwr.data) return null
+    // const image = getNFTImage({ collectionKey: formik.values.collectionKey, nft: data, collections, staticData: staticSwr.data.data })
     
     return (
         <div>
@@ -52,7 +51,7 @@ export const NFTSection: FC = () => {
                 tooltipString="Select the NFT you want to transfer"
             />
             <Spacer y={1.5} />
-            {data ? <PressableCard onClick={() => {
+            {/* {data ? <PressableCard onClick={() => {
                 openSelectNFTModal()
             }}>
                 <div className="flex gap-1.5">
@@ -76,7 +75,7 @@ export const NFTSection: FC = () => {
                     <PlusIcon className="w-5 h-5" />
                 </div>
             </PressableCard>
-            }
+            } */}
         </div>
     )
 }

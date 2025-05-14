@@ -26,26 +26,26 @@ export const Token: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
     )
-    const tokens = useAppSelector((state) => state.sessionReducer.tokens)
-    const tokensArray = valuesWithKey(tokens)
-    const selectedTokenKey = formik.values.tokenKey || tokensArray[0].key
-    const balanceSwr = balanceSwrs[selectedTokenKey]
+    // const tokens = useAppSelector((state) => state.sessionReducer.tokens)
+    // const tokensArray = valuesWithKey(tokens)
+    // const selectedTokenKey = formik.values.tokenKey || tokensArray[0].key
+    // const balanceSwr = balanceSwrs[selectedTokenKey]
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_TOKEN_DISCLOSURE
     )
 
-    useEffect(() => {
-        if (balanceSwr.data) {
-            formik.setFieldValue("balance", balanceSwr.data)
-        }
-    }, [balanceSwr.data])
+    // useEffect(() => {
+    //     if (balanceSwr.data) {
+    //         formik.setFieldValue("balance", balanceSwr.data)
+    //     }
+    // }, [balanceSwr.data])
 
-    const dispatch = useAppDispatch()
+    // const dispatch = useAppDispatch()
     return (
         <div
             className="flex flex-col justify-between h-full"
         >
-            <div>
+            {/* <div>
                 <div>
                     <Title
                         title="Token"
@@ -147,7 +147,7 @@ export const Token: FC = () => {
                     />
                 </div>
                 <Spacer y={6} />
-            </div>
+            </div> */}
             <ExtendedButton 
                 onClick={() => formik.submitForm()}
                 size="lg"

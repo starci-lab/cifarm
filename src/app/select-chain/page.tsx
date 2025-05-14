@@ -26,7 +26,6 @@ const Page: FC = () => {
             <div className="h-full">
                 <Header
                     title="Select Chain"
-                    description="Select the chain you want to use."
                 />
                 <Spacer y={6} />
                 <div>

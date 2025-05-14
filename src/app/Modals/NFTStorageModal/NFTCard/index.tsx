@@ -53,15 +53,15 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
             throw new Error("Placed item type not found")
         }
     }, [data])
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
+    // const collections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
 
-    if (!assetData) return null
-    const collection = Object.values(collections).find(
-        (collection) =>
-            collection.address === placedItem.nftMetadata?.collectionAddress
-    )
+    // if (!assetData) return null
+    // const collection = Object.values(collections).find(
+    //     (collection) =>
+    //         collection.address === placedItem.nftMetadata?.collectionAddress
+    // )
     return (
         <PressableCard
             showBorder={false}
@@ -73,7 +73,7 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
                 ExternalEventEmitter.emit(ExternalEventName.PlaceNFTItem, eventMessage)
             }}
         >
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
                 <Image
                     className="w-16 aspect-square object-contain"
                     src={assetData.assetUrl}
@@ -89,7 +89,7 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </PressableCard>
     )
 }

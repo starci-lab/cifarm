@@ -1,28 +1,25 @@
-import { valuesWithKey } from "@/modules/common"
 // import { TransactionType, useAppDispatch, useAppSelector } from "@/redux"
-import { ExtendedButton, List, Spacer, Title, Token } from "@/components"
-import React, { FC } from "react"
+import { ExtendedButton, Spacer, Title } from "@/components"
 import {
     RotateCcwIcon,
     Settings2Icon,
-    //UserRoundCheck,
 } from "lucide-react"
+import React, { FC } from "react"
 //import { Action, ActionProps } from "./Action"
+import { pathConstants } from "@/constants"
 import {
     //useGraphQLMutationClaimHoneycombDailyRewardSwrMutation,
     useRouterWithSearchParams,
 } from "@/hooks"
-import { pathConstants } from "@/constants"
-import { NFTCollections } from "./NFTCollections"
 import {
-    setTokenKey,
-    useAppDispatch,
-    useAppSelector,
     triggerRefreshTokens,
+    useAppDispatch,
+    useAppSelector
 } from "@/redux"
+import { NFTCollections } from "./NFTCollections"
 export const OnChain: FC = () => {
-    const tokens = useAppSelector((state) => state.sessionReducer.tokens)
-    const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
+    // const tokens = useAppSelector((state) => state.sessionReducer.tokens)
+    // const tokensArray = valuesWithKey(tokens).filter((token) => token.enabled)
     const router = useRouterWithSearchParams()
     const balanceSwrs = useAppSelector(
         (state) => state.sessionReducer.balanceSwrs
@@ -56,7 +53,7 @@ export const OnChain: FC = () => {
                     </div>
                 </div>
                 <Spacer y={4} />
-                <div>
+                {/* <div>
                     <List
                         enableScroll={false}
                         items={tokensArray}
@@ -73,7 +70,7 @@ export const OnChain: FC = () => {
                             )
                         }}
                     />
-                </div>
+                </div> */}
             </div>
             <Spacer y={6} />
             <NFTCollections />

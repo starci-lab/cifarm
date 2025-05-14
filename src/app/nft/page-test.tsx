@@ -1,65 +1,34 @@
 "use client"
 
 import {
-    Container,
-    Header,
-    Image,
-    PressableAction,
-    NFTRarityBadge,
-    Spacer,
-    List,
-    Title,
+    Container
 } from "@/components"
 import {
-    toast,
     useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLQueryStaticSwr,
-    useTransferNFTFormik,
+    useTransferNFTFormik
 } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import {
-    setSignTransactionModal,
-    setTransferTab,
-    TransactionType,
-    TransferTab,
     useAppDispatch,
-    useAppSelector,
+    useAppSelector
 } from "@/redux"
-import {
-    SendHorizonalIcon,
-    PackageIcon,
-    PackageOpenIcon,
-    WandSparklesIcon,
-    EyeIcon,
-} from "lucide-react"
-import React, { FC } from "react"
-import {
-    SIGN_TRANSACTION_DISCLOSURE,
-    TRANSFER_NFT_FORMIK,
-    TRANSFER_NFT_DISCLOSURE,
-    QUERY_STATIC_SWR_MUTATION,
-    GRAPHQL_MUTATION_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
-    GRAPHQL_MUTATION_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
-    GRAPHQL_MUTATION_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
-    GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
-} from "../constants"
-import { WrappedBadge } from "@/components"
-import {
-    NFTRarityEnum,
-    AttributeName,
-    explorerUrl,
-    StatsAttributeName,
-    statsAttributeNameMap,
-    FruitPropertiesName,
-    fruitPropertiesNameMap,
-} from "@/modules/blockchain"
+import { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
-import { getNFTImage } from "../utils"
-import { PlacedItemType } from "@/modules/entities"
-
+import {
+    GRAPHQL_MUTATION_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
+    GRAPHQL_MUTATION_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
+    GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
+    GRAPHQL_MUTATION_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
+    QUERY_STATIC_SWR_MUTATION,
+    SIGN_TRANSACTION_DISCLOSURE,
+    TRANSFER_NFT_DISCLOSURE,
+    TRANSFER_NFT_FORMIK,
+} from "../constants"
+import React from "react"
 
 const Page: FC = () => {
     const collectionSwrs = useAppSelector(
@@ -80,9 +49,9 @@ const Page: FC = () => {
         TRANSFER_NFT_FORMIK
     )
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
+    // const collections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
     const { swrMutation: createWrapSolanaMetaplexNFTSwrMutation } = useSingletonHook<
     ReturnType<typeof useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation>
   >(GRAPHQL_MUTATION_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
@@ -111,58 +80,58 @@ const Page: FC = () => {
     // return skeleton
         return null
     }
-    const nftImage = getNFTImage({
-        collectionKey,
-        nft,
-        collections,
-        staticData: staticSwr.data.data,
-    })
-    const rarity = nft.attributes.find(
-        (attribute) => attribute.key === AttributeName.Rarity
-    )?.value as NFTRarityEnum
+    // const nftImage = getNFTImage({
+    //     collectionKey,
+    //     nft,
+    //     collections,
+    //     staticData: staticSwr.data.data,
+    // })
+    // const rarity = nft.attributes.find(
+    //     (attribute) => attribute.key === AttributeName.Rarity
+    // )?.value as NFTRarityEnum
 
-    // method to render properties
-    const renderProperties = () => {
-        const collection = collections[collectionKey]
-        const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
-            (placedItemType) => placedItemType.displayId === collection.placedItemTypeId
-        )
-        if (!placedItemType) {
-            throw new Error("Placed item type not found")
-        }   
-        switch (placedItemType.type) {
-        case PlacedItemType.Fruit:
-            return (
-                <List
-                    enableScroll={false}
-                    items={Object.values(FruitPropertiesName)}
-                    contentCallback={(name) => {
-                        const attribute = nft.attributes.find(
-                            (attribute) => attribute.key === name
-                        )
-                        return (
-                            <div className="px-3 py-2">
-                                <div className="flex gap-2 items-center justify-between w-full">
-                                    <Title
-                                        title={fruitPropertiesNameMap[name].name}
-                                        tooltipString={fruitPropertiesNameMap[name].tooltip}
-                                        classNames={{
-                                            title: "text-sm",
-                                            tooltip: "w-[14px] h-[14px]",
-                                        }}
-                                    />
-                                    <div className="text-sm">{Number(attribute?.value ?? 0)}</div>
-                                </div>
-                            </div>
-                        )
-                    }}
-                />
-            )
-        }
-    }
+    // // method to render properties
+    // const renderProperties = () => {
+    //     const collection = collections[collectionKey]
+    //     const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
+    //         (placedItemType) => placedItemType.displayId === collection.placedItemTypeId
+    //     )
+    //     if (!placedItemType) {
+    //         throw new Error("Placed item type not found")
+    //     }   
+    //     switch (placedItemType.type) {
+    //     case PlacedItemType.Fruit:
+    //         return (
+    //             <List
+    //                 enableScroll={false}
+    //                 items={Object.values(FruitPropertiesName)}
+    //                 contentCallback={(name) => {
+    //                     const attribute = nft.attributes.find(
+    //                         (attribute) => attribute.key === name
+    //                     )
+    //                     return (
+    //                         <div className="px-3 py-2">
+    //                             <div className="flex gap-2 items-center justify-between w-full">
+    //                                 <Title
+    //                                     title={fruitPropertiesNameMap[name].name}
+    //                                     tooltipString={fruitPropertiesNameMap[name].tooltip}
+    //                                     classNames={{
+    //                                         title: "text-sm",
+    //                                         tooltip: "w-[14px] h-[14px]",
+    //                                     }}
+    //                                 />
+    //                                 <div className="text-sm">{Number(attribute?.value ?? 0)}</div>
+    //                             </div>
+    //                         </div>
+    //                     )
+    //                 }}
+    //             />
+    //         )
+    //     }
+    // }
     return (
         <Container hasPadding>
-            <div className="h-full">
+            {/* <div className="h-full">
                 <Header title={nft?.name ?? ""} />
                 <Spacer y={6} />
                 <div className="rounded-md bg-card p-2 max-w-[300px] relative">
@@ -354,7 +323,7 @@ const Page: FC = () => {
                         )
                     }}
                 />
-            </div>
+            </div> */}
         </Container>
     )
 }

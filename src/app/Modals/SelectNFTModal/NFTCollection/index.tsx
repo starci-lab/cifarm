@@ -12,15 +12,15 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collectionKey }) => {
     const collectionSwrs = useAppSelector(
         (state) => state.sessionReducer.nftCollectionSwrs
     )
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
-    const collection = collections[collectionKey]
+    // const collections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
+    // const collection = collections[collectionKey]
     const collectionSwr = collectionSwrs[collectionKey]
 
     return (
         <Card>
-            <CardContent className="p-3">
+            {/* <CardContent className="p-3">
                 <div className="flex items-center gap-2">
                     <Image src={collection.imageUrl} className="w-6 h-6" />
                     <CardTitle className="text-normal">{collection.name}</CardTitle>
@@ -37,7 +37,7 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collectionKey }) => {
                             ))
                     }
                 </div>
-            </CardContent>
+            </CardContent> */}
         </Card>
     )
 }

@@ -56,7 +56,7 @@ export const Footer = () => {
                     className="w-full"
                 />
             </div>
-            <BlurEffect variant="secondary" size="lg" position="center" animate="zoom" />
+            <BlurEffect size="lg" position="center" animate="zoom" />
         </footer>
     )
 }

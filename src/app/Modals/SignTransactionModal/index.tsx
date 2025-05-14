@@ -153,127 +153,127 @@ export const SignTransactionModal: FC = () => {
     ReturnType<typeof useSignSolanaTransactionTxSwrMutation>
   >(SIGN_SOLANA_TRANSACTION_SWR_MUTATION)
 
-    const { trigger, isMutating } = useSWRMutation(
-        "SIGN_TRANSACTION",
-        async () => {
-            try {
-                let txHash = ""
-                switch (type) {
-                case TransactionType.HoneycombProtocolRawTx: {
-                    //return await honeycombSendTransactionSwrMutation.trigger(data)
-                    // get the edge client
-                    const { txResponse } = data as HoneycombProtocolRawTxData
-                    const response = await honeycombSendTransactionSwrMutation.trigger({
-                        transaction: txResponse,
-                    })
-                    if (!response) throw new Error("Failed to send transaction")
-                    if (response.error) {
-                        throw new Error(response.error)
-                    }
-                    txHash = response.signature?.toString() ?? ""
-                    break
-                }
-                case TransactionType.HoneycombProtocolRawTxs: {
-                    const { txResponses } = data as HoneycombProtocolRawTxsData
-                    const responses =
-              await honeycombSendTransactionsSwrMutation.trigger({
-                  transactions: txResponses,
-              })
-                    if (!responses) throw new Error("Failed to send transaction")
-                    // last transaction bundle response
-                    const lastResponse = responses.at(-1)?.responses[0]
-                    if (!lastResponse) throw new Error("Failed to send transaction")
-                    if (lastResponse.error) {
-                        throw new Error(lastResponse.error)
-                    }
-                    txHash = lastResponse.signature ?? ""
-                    break
-                }
-                case TransactionType.TransferToken: {
-                    const { tokenKey, amount, recipientAddress } =
-              data as TransferTokenData
-                    const { txHash: txHashResponse } =
-              await transferTokenSwrMutation.trigger({
-                  amount,
-                  tokenKey,
-                  recipientAddress,
-              })
-                    txHash = txHashResponse
+    // const { trigger, isMutating } = useSWRMutation(
+    //     "SIGN_TRANSACTION",
+    //     async () => {
+    //         try {
+    //             let txHash = ""
+    //             switch (type) {
+    //             case TransactionType.HoneycombProtocolRawTx: {
+    //                 //return await honeycombSendTransactionSwrMutation.trigger(data)
+    //                 // get the edge client
+    //                 const { txResponse } = data as HoneycombProtocolRawTxData
+    //                 const response = await honeycombSendTransactionSwrMutation.trigger({
+    //                     transaction: txResponse,
+    //                 })
+    //                 if (!response) throw new Error("Failed to send transaction")
+    //                 if (response.error) {
+    //                     throw new Error(response.error)
+    //                 }
+    //                 txHash = response.signature?.toString() ?? ""
+    //                 break
+    //             }
+    //             case TransactionType.HoneycombProtocolRawTxs: {
+    //                 const { txResponses } = data as HoneycombProtocolRawTxsData
+    //                 const responses =
+    //           await honeycombSendTransactionsSwrMutation.trigger({
+    //               transactions: txResponses,
+    //           })
+    //                 if (!responses) throw new Error("Failed to send transaction")
+    //                 // last transaction bundle response
+    //                 const lastResponse = responses.at(-1)?.responses[0]
+    //                 if (!lastResponse) throw new Error("Failed to send transaction")
+    //                 if (lastResponse.error) {
+    //                     throw new Error(lastResponse.error)
+    //                 }
+    //                 txHash = lastResponse.signature ?? ""
+    //                 break
+    //             }
+    //             case TransactionType.TransferToken: {
+    //                 const { tokenKey, amount, recipientAddress } =
+    //           data as TransferTokenData
+    //                 const { txHash: txHashResponse } =
+    //           await transferTokenSwrMutation.trigger({
+    //               amount,
+    //               tokenKey,
+    //               recipientAddress,
+    //           })
+    //                 txHash = txHashResponse
 
-                    await balanceSwrs[tokenKey].mutate()
+    //                 await balanceSwrs[tokenKey].mutate()
 
-                    break
-                }
-                case TransactionType.TransferNFT: {
-                    const { nft, recipientAddress, collectionKey } =
-              data as TransferNFTData
-                    const { txHash: txHashResponse } =
-              await transferNFTSwrMutation.trigger({
-                  nftAddress: nft.nftAddress,
-                  recipientAddress,
-                  collectionKey,
-              })
-                    txHash = txHashResponse
-                    router.push(pathConstants.collection)
-                    break
-                }
-                case TransactionType.SolanaRawTx: {
-                    const { serializedTx } = data as SolanaRawTxData
-                    console.log("serializedTx", serializedTx)
-                    const { serializedTx: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
-                        serializedTx,
-                    })
-                    console.log("signedSerializedTx", signedSerializedTx)
-                    // decode the serializedTx
-                    if (postActionHook) {
-                        txHash = await postActionHook(signedSerializedTx)
-                    } else {
-                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-                            serializedTx: signedSerializedTx,
-                        })
-                        txHash = txHashResponse
-                    }
-                    break
-                }
-                default: {
-                    throw new Error("Invalid transaction type")
-                }
-                }
-                if (extraAction) {
-                    await extraAction()
-                }
-                addTxHashToast(txHash)
-            } catch (error) {
-                addErrorToast((error as Error).message)
-            } finally {
-                // save the address to the database
-                if (saveAddress) {
-                    // check if the address already exists
-                    const existingAddress = await sessionDb.addresses.get({
-                        chainKey,
-                        network,
-                        address: saveAddress,
-                    })
-                    const nextIndex = (existingAddress?.index ?? 0) + 1
-                    if (!existingAddress) {
-                        await sessionDb.addresses.add({
-                            chainKey,
-                            network,
-                            address: saveAddress,
-                            index: nextIndex,
-                        })
-                    } else {
-                        //move the address to the top of the list
-                        await sessionDb.addresses.update(existingAddress.id, {
-                            index: nextIndex,
-                        })
-                    }
-                    dispatch(triggerRefreshAddresses()) 
-                }
-                toggle(false)
-            }
-        }
-    )
+    //                 break
+    //             }
+    //             case TransactionType.TransferNFT: {
+    //                 const { nft, recipientAddress, collectionKey } =
+    //           data as TransferNFTData
+    //                 const { txHash: txHashResponse } =
+    //           await transferNFTSwrMutation.trigger({
+    //               nftAddress: nft.nftAddress,
+    //               recipientAddress,
+    //               collectionKey,
+    //           })
+    //                 txHash = txHashResponse
+    //                 router.push(pathConstants.collection)
+    //                 break
+    //             }
+    //             case TransactionType.SolanaRawTx: {
+    //                 const { serializedTx } = data as SolanaRawTxData
+    //                 console.log("serializedTx", serializedTx)
+    //                 const { serializedTx: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
+    //                     serializedTx,
+    //                 })
+    //                 console.log("signedSerializedTx", signedSerializedTx)
+    //                 // decode the serializedTx
+    //                 if (postActionHook) {
+    //                     txHash = await postActionHook(signedSerializedTx)
+    //                 } else {
+    //                     const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+    //                         serializedTx: signedSerializedTx,
+    //                     })
+    //                     txHash = txHashResponse
+    //                 }
+    //                 break
+    //             }
+    //             default: {
+    //                 throw new Error("Invalid transaction type")
+    //             }
+    //             }
+    //             if (extraAction) {
+    //                 await extraAction()
+    //             }
+    //             addTxHashToast(txHash)
+    //         } catch (error) {
+    //             addErrorToast((error as Error).message)
+    //         } finally {
+    //             // save the address to the database
+    //             if (saveAddress) {
+    //                 // check if the address already exists
+    //                 const existingAddress = await sessionDb.addresses.get({
+    //                     chainKey,
+    //                     network,
+    //                     address: saveAddress,
+    //                 })
+    //                 const nextIndex = (existingAddress?.index ?? 0) + 1
+    //                 if (!existingAddress) {
+    //                     await sessionDb.addresses.add({
+    //                         chainKey,
+    //                         network,
+    //                         address: saveAddress,
+    //                         index: nextIndex,
+    //                     })
+    //                 } else {
+    //                     //move the address to the top of the list
+    //                     await sessionDb.addresses.update(existingAddress.id, {
+    //                         index: nextIndex,
+    //                     })
+    //                 }
+    //                 dispatch(triggerRefreshAddresses()) 
+    //             }
+    //             toggle(false)
+    //         }
+    //     }
+    // )
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const tokens = staticSwr.data?.data.tokens || {}
 
@@ -535,13 +535,13 @@ export const SignTransactionModal: FC = () => {
                     >
             Cancel
                     </ExtendedButton>
-                    <ExtendedButton
+                    {/* <ExtendedButton
                         className="w-full"
                         isLoading={isMutating}
                         onClick={() => trigger()}
                     >
             Sign
-                    </ExtendedButton>
+                    </ExtendedButton> */}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

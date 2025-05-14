@@ -28,9 +28,9 @@ export const OverviewTab: FC = () => {
                     >
                         Play
                     </ExtendedButton>
-                    <BlurEffect variant="secondary" size="sm" position="top" className="-z-20 hover:opacity-80 transition-opacity duration-200" />
+                    <BlurEffect size="sm" position="top" className="-z-20 hover:opacity-80 transition-opacity duration-200" />
 
-                    <ExtendedButton className="flex items-center justify-center gap-2 w-full md:w-auto z-10">
+                    <ExtendedButton className="flex items-center justify-center gap-2 w-full md:w-auto z-10" variant="secondary">
                         <Share2Icon className="w-4 h-4" />
                         Share
                     </ExtendedButton>
@@ -45,7 +45,7 @@ export const OverviewTab: FC = () => {
                                 {tags.map((tag, index) => (
                                     <div
                                         key={index}
-                                        className="bg-primary px-2 py-[0.5px] rounded-md text-[12px] font-semibold text-background hover:bg-primary/75 transition-colors duration-200"
+                                        className="bg-secondary px-2 py-[0.5px] rounded-md text-[12px] font-semibold text-background hover:bg-secondary/75 transition-colors duration-200"
                                     >
                                         {tag.name}
                                     </div>

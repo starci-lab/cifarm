@@ -24,7 +24,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     type="fade-slide"
                     direction="down"
                     duration={0.3}
-                    className="fixed inset-0 z-50 flex flex-col bg-primary bg-opacity-98 backdrop-blur-md"
+                    className="fixed inset-0 z-50 flex flex-col bg-background bg-opacity-98 backdrop-blur-md"
                 >
                     <WrappedAnimation
                         type="fade"
@@ -32,7 +32,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                         className="container mx-auto px-4 py-4 flex items-center justify-between"
                     >
                         <Logo />
-                        <ExtendedButton onClick={onClose} className="text-white p-2 focus:outline-none bg-transparent hover:bg-transparent" aria-label="Close menu">
+                        <ExtendedButton onClick={onClose} className="p-2 focus:outline-none bg-transparent hover:bg-transparent text-foreground" aria-label="Close menu">
                             <X size={32} />
                         </ExtendedButton>
                     </WrappedAnimation>
@@ -50,7 +50,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                         >
                             Play Now
                         </PulsatingActionButton>
-                        <div className="mt-8 max-w-md text-white text-center">
+                        <div className="mt-8 max-w-md text-foreground text-center">
                             <p>
                                 CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.
                             </p>
@@ -65,7 +65,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                                 <Link
                                     key={social.name}
                                     href={social.href}
-                                    className={"rounded-full p-3 text-secondary transition-colors bg-content-2"}
+                                    className={"rounded-full p-3 text-primary transition-colors bg-content-2"}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={social.label}

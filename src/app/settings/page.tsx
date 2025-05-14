@@ -30,7 +30,7 @@ const Page: FC = () => {
     return (
         <Container hasPadding>
             <div className="h-full">
-                <Header title="Settings" description="Manage your settings." />
+                <Header title="Settings" />
                 <Spacer y={6} />
                 <Card>
                     <CardHeader>

@@ -48,10 +48,10 @@ export const SelectTokenModal = () => {
                         }}
                     />
                     <Spacer y={4} />
-                    <List
+                    {/* <List
                         items={filteredTokensArray}
                         contentCallback={(token) => <Token token={token} />}
-                    />
+                    /> */}
                 </div>
                 <DialogFooter>
                     <ExtendedButton

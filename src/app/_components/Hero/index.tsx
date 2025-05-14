@@ -45,7 +45,7 @@ export const Hero = () => {
                                         <Image src={assetProductMap[ProductId.Banana].base.assetUrl} className="h-auto w-10 h-10 rounded-full" />
                                     </div>
                                 </div>
-                                <div className="text-4xl text-foreground text-start">then sell them for <span className="text-secondary">crypto</span>
+                                <div className="text-4xl text-foreground text-start">then sell them for <span className="text-primary">crypto</span>
                                 </div>
                             </div>
                         </WrappedAnimation>

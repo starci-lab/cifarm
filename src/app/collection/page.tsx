@@ -1,25 +1,13 @@
 "use client"
 
 import {
-    Container,
-    Header,
-    Image,
-    PressableCard,
-    NFTRarityBadge,
-    Spacer,
-    WrappedBadge,
-    Switch,
+    Container
 } from "@/components"
-import { pathConstants } from "@/constants"
 import { useGraphQLQueryStaticSwr, useRouterWithSearchParams } from "@/hooks"
-import { AttributeName, NFTRarityEnum } from "@/modules/blockchain"
-import { setNftAddress, switchNFTCollection, useAppDispatch, useAppSelector } from "@/redux"
-import React, { FC } from "react"
-import { QUERY_STATIC_SWR_MUTATION } from "../constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { getNFTImage } from "../utils"
-import { sessionDb } from "@/modules/dexie"
-import pluralize from "pluralize"
+import { useAppDispatch, useAppSelector } from "@/redux"
+import { FC } from "react"
+import { QUERY_STATIC_SWR_MUTATION } from "../constants"
 
 const Page: FC = () => {
     const collectionKey = useAppSelector(
@@ -29,10 +17,10 @@ const Page: FC = () => {
         (state) => state.sessionReducer.nftCollectionSwrs
     )
     const collectionSwr = collectionSwrs[collectionKey]
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
-    const collection = collections[collectionKey]
+    // const collections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
+    // const collection = collections[collectionKey]
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
@@ -43,7 +31,7 @@ const Page: FC = () => {
     }
     return (
         <Container hasPadding>
-            <div className="h-full">
+            {/* <div className="h-full">
                 <Header title={collection.name} />
                 <Spacer y={6} />
                 <div>
@@ -125,7 +113,7 @@ const Page: FC = () => {
                         )
                     })}
                 </div>
-            </div>
+            </div> */}
         </Container>
     )
 }

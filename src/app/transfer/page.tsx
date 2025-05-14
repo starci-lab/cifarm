@@ -25,7 +25,7 @@ const Page: FC = () => {
         <Container hasPadding>
             <div className="flex flex-col justify-between gap-6">
                 <div>
-                    <Header title="Transfer" description="Transfer your tokens" />
+                    <Header title="Transfer" />
                     <Spacer y={6} />
                     <Tabs className="w-full" value={transferTab} onValueChange={(value) => dispatch(setTransferTab(value as AssetTab))}>
                         <TabsList className="grid w-full grid-cols-2">

@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const blurEffectVariants = cva(
-    "absolute rounded-full",
+    "absolute rounded-full -z-10",
     {
         variants: {
             variant: {
@@ -27,7 +27,7 @@ const blurEffectVariants = cva(
             }
         },
         defaultVariants: {
-            variant: "secondary",
+            variant: "primary",
             size: "md",
             position: "top",
             animate: "none"

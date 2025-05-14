@@ -86,6 +86,8 @@ export const getSellInfoFromPlacedItemType = ({
             sellPrice: fruit.sellPrice,
         }
     }
+    default:
+        throw new Error(`Unsupported placed item type: ${placedItemType.type}`)
     }
 }
 

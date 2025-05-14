@@ -15,7 +15,6 @@ import {
     useGraphQLQueryUserSwr,
     useGraphQLQueryPlacedItemsSwrMutation,
     useGraphQLMutationUpdateFollowXSwrMutation,
-    useImportAccountFormik,
     useTransferNFTFormik,
     useTransferNFTSwrMutation,
     useGraphQLMutationWrapSolanaMetaplexSwrMutation,
@@ -138,7 +137,7 @@ export const SingletonHook2Provider = ({ children }: PropsWithChildren) => (
     <BaseSingletonHook2Provider
         hooks={{
             TRANSFER_TOKEN_FORMIK: useTransferTokenFormik(),
-            IMPORT_ACCOUNT_FORMIK: useImportAccountFormik(),
+            // IMPORT_ACCOUNT_FORMIK: useImportAccountFormik(),
             TRANSFER_NFT_FORMIK: useTransferNFTFormik(),
             TRANSFER_TOKEN_SWR_MUTATION: useTransferTokenSwrMutation(), 
             // transfer token

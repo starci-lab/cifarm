@@ -7,12 +7,19 @@ import {
     SELECT_NFT_DISCLOSURE,
     TRANSFER_NFT_FORMIK,
 } from "@/app/constants"
-import { ExtendedNFTData, useAppSelector } from "@/redux"
 import { useTransferNFTFormik } from "@/hooks/formiks"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { getNFTImage } from "../../../../utils"
 interface NFTProps {
-  nft: ExtendedNFTData;
+//   nft: ExtendedNFTData;
+    nft: {
+        name: string
+        collectionKey: string
+        nft: {
+            name: string
+            image: string
+            traits: string[]
+        }
+    }
 }
 export const NFT: FC<NFTProps> = ({ nft }) => {
     const { close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
@@ -25,26 +32,26 @@ export const NFT: FC<NFTProps> = ({ nft }) => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
-    const collections = useAppSelector(
-        (state) => state.sessionReducer.nftCollections
-    )
-    if (!collections || !staticSwr.data) return null
-    const image = getNFTImage({
-        collectionKey: nft.collectionKey,
-        nft,
-        collections,
-        staticData: staticSwr.data.data,
-    })
+    // const collections = useAppSelector(
+    //     (state) => state.sessionReducer.nftCollections
+    // )
+    // if (!collections || !staticSwr.data) return null
+    // const image = getNFTImage({
+    //     collectionKey: nft.collectionKey,
+    //     nft,
+    //     collections,
+    //     staticData: staticSwr.data.data,
+    // })
     return (
         <Card>
             <CardContent className="p-3">
                 <div>
                     <div className="flex gap-3">
-                        <Image
+                        {/* <Image
                             src={image}
                             alt={nft.name}
                             className="w-20 h-20 aspect-square object-contain rounded-md border"
-                        />
+                        /> */}
                         <div className="flex gap-2 flex-col">
                             <div className="text-sm">{nft.name}</div>
                             <div className="flex gap-2">
