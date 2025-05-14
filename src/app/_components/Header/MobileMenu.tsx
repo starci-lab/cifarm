@@ -1,5 +1,4 @@
 import React from "react"
-import { X } from "lucide-react"
 import { ExtendedButton } from "@/components/styled/ExtendedButton"
 import { PulsatingActionButton } from "../Hero/PulsatingActionButton"
 import { useRouter } from "next/navigation"
@@ -8,6 +7,7 @@ import Link from "next/link"
 import { AnimatePresence } from "framer-motion"
 import { WrappedAnimation } from "@/components"
 import { socialLinksConstants } from "@/constants"
+import { X } from "@phosphor-icons/react"
 
 interface MobileMenuProps {
     isOpen: boolean

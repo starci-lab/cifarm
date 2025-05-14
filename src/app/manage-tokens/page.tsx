@@ -12,9 +12,9 @@ import {
 import React, { FC } from "react"
 import { useAppSelector, useAppDispatch, setTokenKey } from "@/redux"
 import { valuesWithKey } from "@/modules/common"
-import { PlusIcon } from "lucide-react"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
+import { Plus } from "@phosphor-icons/react"
 
 const Page: FC = () => {
     // const tokens = useAppSelector((state) => state.sessionReducer.tokens)
@@ -40,7 +40,7 @@ const Page: FC = () => {
                     />
                     <div className="flex gap-2">
                         <Button variant="ghost" size="icon">
-                            <PlusIcon className="w-5 h-5" />
+                            <Plus className="w-5 h-5" />
                         </Button>
                     </div>
                 </div>

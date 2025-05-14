@@ -9,8 +9,8 @@ import {
 import { TRANSFER_NFT_FORMIK } from "@/app/constants"
 import { useTransferNFTFormik } from "@/hooks"
 import { useSingletonHook2 } from "@/modules/singleton-hook"
-import { AtSignIcon } from "lucide-react"
 import { NFTSection } from "./NFTSection"
+import { At } from "@phosphor-icons/react"
 
 export const NFT: FC = () => {
     const formik =
@@ -53,7 +53,7 @@ export const NFT: FC = () => {
                         }
                         endContent={
                             <Link>
-                                <AtSignIcon className="w-5 h-5" />
+                                <At className="w-5 h-5" />
                             </Link>
                         }
                     />

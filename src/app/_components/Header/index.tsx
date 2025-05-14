@@ -2,11 +2,11 @@
 import React from "react"
 import { ExtendedButton } from "@/components"
 import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
-import { Menu } from "lucide-react"
 import { useState } from "react"
 import { Logo } from "./Logo"
 import { MobileMenu } from "./MobileMenu"
 import { PulsatingActionButton } from "../Hero/PulsatingActionButton"
+import { List } from "@phosphor-icons/react"
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -42,7 +42,7 @@ export const Header = () => {
                         className="text-secondary p-2 focus:outline-none bg-transparent hover:bg-transparent"
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                     >
-                        <Menu size={32} />
+                        <List />
                     </ExtendedButton>
                 )}
             </div>

@@ -4,9 +4,9 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC } from "react"
 import { Dialog, DialogContent, DialogFooter, ExtendedButton, FilterBar } from "@/components"
-import { FunnelIcon, RefreshCcwIcon } from "lucide-react"
 import { AdvancedSearchContent } from "./AdvancedSearchContent"
 import { useAppDispatch, useAppSelector, SelectedSearch, setUseAdvancedNeighborsSearch } from "@/redux"
+import { ArrowCounterClockwise, Funnel } from "@phosphor-icons/react"
 
 export const NeighborsFilterModal: FC = () => {
     const { toggle, isOpen } =
@@ -37,14 +37,14 @@ export const NeighborsFilterModal: FC = () => {
                                 size="icon"
                                 className="shrink-0"
                             >
-                                <FunnelIcon className="h-6 w-6" />
+                                <Funnel className="h-6 w-6" />
                             </ExtendedButton>
                             <ExtendedButton
                                 variant="icon"
                                 size="icon"
                                 className="shrink-0"
                             >
-                                <RefreshCcwIcon className="h-6 w-6" />
+                                <ArrowCounterClockwise className="h-6 w-6" />
                             </ExtendedButton>
                         </div>
                     </div>

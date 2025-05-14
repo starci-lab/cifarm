@@ -12,9 +12,9 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
-import { CopyIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useDisclosure } from "react-use-disclosure"
+import { Copy } from "@phosphor-icons/react"
 
 export const PrivateKeyModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<
@@ -75,7 +75,7 @@ export const PrivateKeyModal: FC = () => {
                         onClick={() => navigator.clipboard.writeText(privateKey)}
                         className="gap-2"
                     >
-                        <CopyIcon className="w-5 h-5" strokeWidth={3 / 2} />
+                        <Copy className="w-5 h-5" />
                         Copy
                     </ExtendedButton>
                 </DialogFooter>

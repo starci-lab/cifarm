@@ -11,10 +11,10 @@ import {
 import { cn } from "@/lib/utils"
 import { blockchainMap, ChainKey, Network } from "@/modules/blockchain"
 import { setChainKey, useAppDispatch, useAppSelector } from "@/redux"
-import { CheckIcon } from "lucide-react"
 import React, { FC } from "react"
 import { NetworkDropdown } from "./NetworkDropdown"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Check } from "@phosphor-icons/react"
 
 const Page: FC = () => {
     const dispatch = useAppDispatch()
@@ -59,7 +59,7 @@ const Page: FC = () => {
                                             />
                                             <div>{blockchainMap[item].name}</div>
                                         </div>
-                                        {isSelected && <CheckIcon className="w-4 h-4" />}
+                                        {isSelected && <Check />}
                                     </div>
                                 </PressableCard>
                             )

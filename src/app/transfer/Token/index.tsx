@@ -18,7 +18,6 @@ import {
 import { valuesWithKey } from "@/modules/common"
 import { useTransferTokenFormik } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
-import { AtSignIcon } from "lucide-react"
 
 export const Token: FC = () => {
     const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)

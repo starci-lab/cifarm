@@ -29,7 +29,6 @@ import {
 } from "@/redux"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import { useDisclosure } from "react-use-disclosure"
-import { UserMinus2, UserPlus2 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import React, { FC, useState, useEffect } from "react"
 import { ExtendedButton, Spacer } from "@/components"
@@ -38,6 +37,7 @@ import { Badge } from "@/components/ui/badge"
 import { Image } from "@/components"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { formatDistanceToNow } from "@/modules/common"
+import { UserMinus, UserPlus } from "@phosphor-icons/react"
 
 export interface UserCardProps {
   user: UserSchema;
@@ -167,7 +167,7 @@ export const UserCard: FC<UserCardProps> = ({
                         size="icon"
                         className="text-destructive hover:text-destructive"
                     >
-                        <UserMinus2 className="h-5 w-5" />
+                        <UserMinus className="h-5 w-5" />
                     </ExtendedButton>
                 ) : (
                     <ExtendedButton
@@ -189,7 +189,7 @@ export const UserCard: FC<UserCardProps> = ({
                         variant="ghost"
                         size="icon"
                     >
-                        <UserPlus2 className="h-5 w-5" />
+                        <UserPlus className="h-5 w-5" />
                     </ExtendedButton>
                 )}
                 <ExtendedButton

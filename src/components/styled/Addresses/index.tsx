@@ -5,8 +5,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { AtSignIcon } from "lucide-react"
 import { truncateString } from "@/modules/common"
+import { At } from "@phosphor-icons/react"
 
 export interface AddressesProps {
     addresses: Array<string>
@@ -18,7 +18,7 @@ export const Addresses: FC<AddressesProps> = ({ addresses, onAddressClick, text 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <AtSignIcon className="w-5 h-5" />
+                <At />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="gap-2max-w-[400px]">
                 

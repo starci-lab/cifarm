@@ -22,7 +22,7 @@ import {
     useGraphQLQueryStoredPlacedItemsSwr,
 } from "@/hooks"
 import { NFTCard } from "./NFTCard"
-import { RefreshCcw } from "lucide-react"
+import { ArrowCounterClockwise } from "@phosphor-icons/react"
 export const NFTStorageModal: FC = () => {
     const { toggle, isOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NFT_STORAGE_DISCLOSURE
@@ -75,7 +75,7 @@ export const NFTStorageModal: FC = () => {
                             onClick={() => mutate()}
                             className="shrink-0"
                         >
-                            <RefreshCcw className="h-4 w-4" />
+                            <ArrowCounterClockwise className="h-4 w-4" />
                         </ExtendedButton>
                     </div>  
                     <Spacer y={4}/>

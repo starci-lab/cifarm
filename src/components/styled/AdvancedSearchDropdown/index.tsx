@@ -6,7 +6,7 @@ import {
 import { cn } from "@/lib/utils"
 import React, { FC, PropsWithChildren } from "react"
 import { ExtendedButton } from "../ExtendedButton"
-import { FunnelIcon } from "lucide-react"
+import { Funnel } from "@phosphor-icons/react"
   
 export interface AdvancedSearchDropdownProps extends PropsWithChildren {
     className?: string
@@ -20,7 +20,7 @@ export const AdvancedSearchDropdown: FC<AdvancedSearchDropdownProps> = ({
         <DropdownMenu>
             <DropdownMenuTrigger className={cn(className)}>
                 <ExtendedButton variant="icon" size="icon">
-                    <FunnelIcon className="w-6 h-6" />
+                    <Funnel className="w-6 h-6" />
                 </ExtendedButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="max-w-[400px]">

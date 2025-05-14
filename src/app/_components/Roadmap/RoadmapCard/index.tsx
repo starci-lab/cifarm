@@ -5,8 +5,8 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { CheckCircle2, Clock, CalendarClock } from "lucide-react"
 import type { IRoadMap } from "@/constants"
+import { CalendarDots, CheckCircle, Clock } from "@phosphor-icons/react"
 
 interface RoadmapCardProps {
   item: IRoadMap
@@ -21,7 +21,7 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
             color: "bg-emerald-50 hover:bg-emerald-100 border-emerald-200",
             iconBg: "bg-emerald-100 text-emerald-700",
             textColor: "text-emerald-700",
-            icon: <CheckCircle2 className="h-4 w-4" />,
+            icon: <CheckCircle className="h-4 w-4" />,
             bulletColor: "bg-emerald-500",
         },
         2: {
@@ -39,7 +39,7 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
             color: "bg-slate-50 hover:bg-slate-100 border-slate-200",
             iconBg: "bg-slate-100 text-slate-600",
             textColor: "text-slate-600",
-            icon: <CalendarClock className="h-4 w-4" />,
+            icon: <CalendarDots className="h-4 w-4" />,
             bulletColor: "bg-slate-400",
         },
     }[item.type]

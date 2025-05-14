@@ -1,8 +1,8 @@
 import { useToast } from "@/hooks"
 import { cn } from "@/lib/utils"
-import { CopyIcon } from "lucide-react"
 import React, { FC } from "react"
 import { Button } from "@/components"
+import { Copy } from "@phosphor-icons/react";
 
 export interface SnippetProps {
   code: string;
@@ -29,7 +29,7 @@ export const Snippet: FC<SnippetProps> = ({
                 })
             }}
         >
-            <CopyIcon className={cn(copyIcon, "w-5 h-5")} />
+            <Copy />
         </Button>
     )
 }

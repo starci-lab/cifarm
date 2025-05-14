@@ -2,9 +2,9 @@
 import { Container, Header, Spacer, PressableCard, List } from "@/components"
 import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
-import { FileLock2Icon } from "lucide-react"
 import React, { FC, ReactNode } from "react"
 import { ImportMethod } from "./types"
+import { FileLock } from "@phosphor-icons/react"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
@@ -20,7 +20,7 @@ const Page: FC = () => {
                                 onClick={() => router.push(pathConstants.importFromMnemonic)}
                                 showBorder={false} 
                                 className="flex items-center gap-2 rounded-none">
-                                <FileLock2Icon className="w-5 h-5"/>
+                                <FileLock className="w-5 h-5"/>
                                 <div className="text-sm">Import from mnemonic</div>
                             </PressableCard>,
                             // [ImportMethod.PrivateKey]: <PressableCard 
