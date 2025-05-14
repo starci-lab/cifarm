@@ -1,9 +1,12 @@
 import { useAppSelector } from "@/redux"
-import { Image, AvaButton, DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, Link, DropdownMenuContent } from "@/components"
+import { Image, AvaButton, DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, Link, DropdownMenuContent, Separator, PackageOpen} from "@/components"
 import React, { FC } from "react"
 import { Gear, SignOut, User } from "@phosphor-icons/react"
+import { useRouterWithSearchParams } from "@/hooks"
 export const UserDropdown: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)
+    const router = useRouterWithSearchParams()
+
     return (
         <div>
             <DropdownMenu>
@@ -13,23 +16,48 @@ export const UserDropdown: FC = () => {
                         text={user?.username || "Guest"}
                     />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuItem>
-                        <Link href="/profile">
-                            <User className="w-4 h-4" />
-                            Profile
+                <DropdownMenuContent align="end" className="p-2 w-52">
+                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary" 
+                        onClick={() => {
+                            router.push("/home/profile")
+                        }}
+                    >
+                        <Link classNames={{
+                            base: "flex items-center gap-3",
+                        }}
+                        >
+                            <User size={20} />
+                            <span>Profile</span>
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <Link href="/settings">
-                            <Gear className="w-4 h-4" />
-                            Settings
+                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary"
+                        onClick={() => {
+                            router.push("/home/settings")
+                        }}
+                    >
+                        <Link
+                            
+                            classNames={{
+                                base: "flex items-center gap-3",
+                            }}
+                        >
+                            <Gear className="w-5 h-5" />
+                            <span>Settings</span>
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <Link href="/logout">
-                            <SignOut className="w-4 h-4" />
-                            Logout
+                    <Separator className="my-1" />
+                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary"
+                        onClick={() => {
+                            router.push("/home/logout")
+                        }}
+                    >
+                        <Link
+                            classNames={{
+                                base: "flex items-center gap-3",
+                            }}
+                        >
+                            <SignOut className="w-5 h-5" />
+                            <span>Logout</span>
                         </Link>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
