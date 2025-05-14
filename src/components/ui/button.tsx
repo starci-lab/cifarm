@@ -24,7 +24,7 @@ const buttonVariants = cva(
                 ghost: "",
                 icon: "flex rounded-lg",
                 pill: "rounded-full",
-                flat: "", // no border, no bg
+                flat: "rounded-lg", // no border, no bg
             },
             size: {
                 default: "h-10 px-4 py-2",
@@ -39,6 +39,33 @@ const buttonVariants = cva(
             variant: "solid",
             size: "default",
         },
+        compoundVariants: [
+            {
+                variant: "flat",
+                color: "primary",
+                className: "text-primary bg-content-2 hover:bg-content-3",
+            },
+            {
+                variant: "flat",
+                color: "secondary",
+                className: "text-secondary bg-content-2 hover:bg-content-3",
+            },
+            {
+                variant: "flat",
+                color: "destructive",
+                className: "text-destructive bg-content-2 hover:bg-content-3",
+            },
+            {
+                variant: "flat",
+                color: "default",
+                className: "text-foreground bg-content-2 hover:bg-content-3",
+            },
+            {
+                variant: "flat",
+                color: "highlight",
+                className: "text-text bg-content-2 hover:bg-content-3",
+            },
+        ],  
     }
 )
   
@@ -48,7 +75,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   removeClassName?: boolean,
-  color?: "primary" | "secondary" | "destructive" | "highlight" | "outline" | "ghost" | "link" | "gradient" | "gradient-secondary"
+  color?: "primary" | "secondary" | "destructive" | "highlight" | "ghost" | "link"
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

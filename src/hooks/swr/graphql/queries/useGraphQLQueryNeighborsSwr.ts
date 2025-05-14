@@ -21,7 +21,7 @@ export const useGraphQLQueryNeighborsSwr = (): UseSWR<
         (state) => state.sessionReducer.authenticated
     )
     const swr = useSWR(
-        authenticated ? ["QUERY_NEIGHBORS", params] : null,
+        authenticated ? ["QUERY_NEIGHBORS"] : null,
         async () => {
             return await queryNeighbors(params)
         }

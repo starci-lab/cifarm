@@ -1,7 +1,7 @@
 "use client"
 
 import { ExtendedButton, ExtendedInput } from "@/components"
-import React, { FC, useEffect, useState } from "react"
+import React, { FC } from "react"
 import { cn } from "@/lib/utils"
 import { MagnifyingGlass } from "@phosphor-icons/react"
 
@@ -11,12 +11,9 @@ export interface HandleSearchResultParams {
 }
 
 export interface FilterBarProps {
-  handleSearchResult?: (
-    params: HandleSearchResultParams
-  ) => void | Promise<void>;
-  timeout?: number;
-  disableDebounce?: boolean;
+  onSearchStringChange: (searchString: string) => void;
   asButton?: boolean;
+  searchString: string;
   placeholder?: string;
   className?: string;
   onClick?: () => void;
@@ -25,8 +22,6 @@ export interface FilterBarProps {
     input?: string;
   }
 }
-
-const TIMEOUT = 500
 
 export const FilterBar: FC<FilterBarProps> = (props) => {
     return props.asButton ? (
@@ -56,39 +51,15 @@ const ButtonFilterBar: FC<FilterBarProps> = ({
 }
 
 const SearchFilterBar: FC<FilterBarProps> = ({
-    handleSearchResult,
-    timeout = TIMEOUT,
-    disableDebounce = false,
+    onSearchStringChange,
     className,
+    searchString,
     placeholder = "Search",
     classNames = {
         input: "",
         base: "",
     }
 }: FilterBarProps) => {
-    const [searchString, setSearchString] = useState("")
-    const [mounted, setMounted] = useState(false)
-
-    // Apply abort controller and debounce the search
-    useEffect(() => {
-        if (!mounted) {
-            setMounted(true)
-            return
-        }
-        if (disableDebounce) {
-            handleSearchResult?.({ searchString })
-            return
-        }
-        const abortController = new AbortController()
-        const debounceFn = setTimeout(() => {
-            handleSearchResult?.({ searchString, abortController })
-        }, timeout)
-        return () => {
-            clearTimeout(debounceFn)
-            abortController.abort()
-        }
-    }, [searchString])
-
     return (
         <ExtendedInput
             startContent={<MagnifyingGlass className="w-5 h-5 text-muted-foreground" />}
@@ -97,7 +68,7 @@ const SearchFilterBar: FC<FilterBarProps> = ({
                 base: classNames.base,
                 input: classNames.input,
             }}
-            onValueChange={(value) => setSearchString(value)}
+            onValueChange={(value) => onSearchStringChange(value)}
             placeholder={placeholder}
             className={cn("w-full", className)}
         />
