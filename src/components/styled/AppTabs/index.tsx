@@ -11,14 +11,15 @@ export interface AppTabsProps {
     tabs: Array<AppTap>
     selectedTab: string
     onSelectTab: (tab: string) => void
+    color?: "default" | "primary" | "secondary"
 }
 
-export const AppTabs: FC<AppTabsProps> = ({ tabs, selectedTab, onSelectTab }) => {
+export const AppTabs: FC<AppTabsProps> = ({ tabs, selectedTab, onSelectTab, color = "default" }) => {
     return (
         <Tabs onValueChange={onSelectTab} value={selectedTab}>
             <TabsList>
                 {tabs.map((tab) => (
-                    <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2 text-sm">
+                    <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2 text-sm" color={color}>
                         {tab.icon}
                         {tab.label}
                     </TabsTrigger>

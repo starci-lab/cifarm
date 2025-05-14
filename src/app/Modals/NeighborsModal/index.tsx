@@ -38,8 +38,8 @@ export const NeighborsModal: FC = () => {
                     className="w-full"
                 >
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value={NeighborsTabEnum.Neighbors}>Neighbors</TabsTrigger>
-                        <TabsTrigger value={NeighborsTabEnum.Followees}>Followees</TabsTrigger>
+                        <TabsTrigger value={NeighborsTabEnum.Neighbors} color="secondary">Neighbors</TabsTrigger>
+                        <TabsTrigger value={NeighborsTabEnum.Followees} color="secondary">Followees</TabsTrigger>
                     </TabsList>
                     <TabsContent value={selectedTab}>
                         {renderTab()}

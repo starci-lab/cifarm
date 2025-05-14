@@ -17,9 +17,6 @@ const config: Config = {
                 "gradient-secondary-hover": "linear-gradient(104.04deg, #82D3B8 0%, #82D3B8 100%)",
     		},
     		colors: {
-                default: {
-                    DEFAULT: "hsl(var(--default))",
-                },
                 content: {
                     "1": "hsl(var(--content-1))",
                     "2": "hsl(var(--content-2))",

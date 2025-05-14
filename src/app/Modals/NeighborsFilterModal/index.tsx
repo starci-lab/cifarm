@@ -3,7 +3,7 @@ import { NEIGHBORS_FILTER_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC } from "react"
-import { Dialog, DialogContent, DialogFooter, ExtendedButton, FilterBar } from "@/components"
+import { Dialog, DialogContent, DialogFooter, ExtendedButton, FilterBar, Spacer } from "@/components"
 import { AdvancedSearchContent } from "./AdvancedSearchContent"
 import { useAppSelector, SelectedSearch } from "@/redux"
 import { ArrowsCounterClockwise, Funnel } from "@phosphor-icons/react"
@@ -46,6 +46,7 @@ export const NeighborsFilterModal: FC = () => {
                             </ExtendedButton>
                         </div>
                     </div>
+                    <Spacer y={4} />
                     {!useAdvancedSearch && <AdvancedSearchContent />}
                     <DialogFooter>
                         <ExtendedButton variant="default" className="w-full">Search</ExtendedButton>

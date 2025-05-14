@@ -9,7 +9,7 @@ import { cva, VariantProps } from "class-variance-authority"
 const sliderVariants = cva("relative h-2.5 w-full grow overflow-hidden rounded-full", {
     variants: {
         color: {
-            default: "bg-default/20",
+            default: "bg-foreground/20",
             primary: "bg-primary/30",
             secondary: "bg-secondary/30",
         },
@@ -23,7 +23,7 @@ const sliderVariants = cva("relative h-2.5 w-full grow overflow-hidden rounded-f
 const rangeVariants = cva("absolute h-full", {
     variants: {
         color: {
-            default: "bg-default",
+            default: "bg-foreground",
             primary: "bg-primary",
             secondary: "bg-secondary",
         },
@@ -39,9 +39,9 @@ const thumbVariants = cva(
     {
         variants: {
             color: {
-                default: "bg-default border-default/40",
-                primary: "bg-primary border-primary/60",
-                secondary: "bg-secondary border-secondary/60",
+                default: "ring-2 bg-background ring-foreground",
+                primary: "ring-2 bg-primary ring-primary/60",
+                secondary: "ring-2 bg-secondary ring-secondary/60",
             },
         },
         defaultVariants: {
