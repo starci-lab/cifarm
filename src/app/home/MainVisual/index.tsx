@@ -58,7 +58,7 @@ export const MainVisual: FC = () => {
         <div className="flex-1 relative">
             {renderContent(selectedMainVisualKey)}
             <Spacer y={4} />
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 justify-center">
                 {visuals.map((visual) => (
                     <HoverImage
                         classNames={{

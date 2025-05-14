@@ -23,11 +23,12 @@ const Page: FC = () => {
         <div className="relative">
             <BlurEffect variant="secondary" size="lg" position="top" />
             <Header title="Home" />
+            <Spacer y={4} />
             <div className="flex gap-4 items-center">   
                 <Image src="https://cifarm.sgp1.cdn.digitaloceanspaces.com/logo.png" alt="logo" className="w-20 h-20 rounded-lg" />
                 <div>
-                    <div className="text-4xl font-bold text-text-default">CiFarm</div>
-                    <div className="text-text-secondary">A Farm-Thief-Earn social MMO game</div>
+                    <div className="text-4xl font-bold text-foreground">CiFarm</div>
+                    <div className="text-muted-foreground">A Farm-Thief-Earn social MMO game</div>
                 </div>
             </div>
             <Spacer y={6}/>

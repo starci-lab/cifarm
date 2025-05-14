@@ -23,21 +23,27 @@ export const useMainVisual = () => {
         },
         {
             type: MainVisualType.Youtube,
-            url: "https://youtu.be/OZmK0YuSmXU?list=RDRgvasEOP00A",
+            url: "https://youtu.be/embzVX0z5pk?t=69",
             selectedKey: "visual-2",
             thumbnailUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/visual_1.jpg",
         },
         {
             type: MainVisualType.Image,
-            url: "https://picsum.photos/1000/1000?random=1",
+            url: "https://i.imgur.com/MIukEfM.png",
             selectedKey: "visual-3",
-            thumbnailUrl: "https://picsum.photos/1000/1000?random=1",
+            thumbnailUrl: "https://i.imgur.com/MIukEfM.png",
         },
         {
             type: MainVisualType.Image,
-            url: "https://picsum.photos/1000/1000?random=2",
+            url: "https://i.imgur.com/A9wDaxI.png",
             selectedKey: "visual-4",
-            thumbnailUrl: "https://picsum.photos/1000/1000?random=2",
+            thumbnailUrl: "https://i.imgur.com/A9wDaxI.png",
+        },
+        {
+            type: MainVisualType.Image,
+            url: "https://i.imgur.com/O7iuGJZ.png",
+            selectedKey: "visual-5",
+            thumbnailUrl: "https://i.imgur.com/O7iuGJZ.png",
         },
     ]
 
@@ -65,7 +71,10 @@ export const useMainVisual = () => {
     }
 
     useEffect(() => {
-        startProgressTimer()
+        const currentVisual = visuals.find(v => v.selectedKey === selectedMainVisualKey)
+        if (currentVisual?.type !== MainVisualType.Youtube) {
+            startProgressTimer()
+        }
         return () => {
             if (progressInterval.current) {
                 clearInterval(progressInterval.current)
