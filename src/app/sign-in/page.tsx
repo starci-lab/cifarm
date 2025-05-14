@@ -28,14 +28,14 @@ const Page: FC = () => {
                             network
                         }))
                     }}
-                    variant="secondary"
+                    color="secondary"
                     className="w-full justify-start"
                 >
                     <Image src="/google.svg" className="w-4 h-4" />
           Continue with Google
                 </ExtendedButton>
                 <Spacer y={2} />
-                <ExtendedButton className="w-full justify-start" variant="secondary" onClick={async () => {
+                <ExtendedButton className="w-full justify-start" color="secondary" onClick={async () => {
                     router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
                         network
                     }))
@@ -52,7 +52,7 @@ const Page: FC = () => {
                         )
                     }}
                     className="w-full justify-start"
-                    variant="secondary"
+                    color="secondary"
                 >
                     <Image src="/x.svg" className="w-4 h-4" />
           Continue with X

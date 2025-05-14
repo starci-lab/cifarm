@@ -33,7 +33,7 @@ export const SelectionDropdown = ({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
-                <ExtendedButton className={cn(classNames?.trigger)} variant="secondary">
+                <ExtendedButton className={cn(classNames?.trigger)} color="secondary">
                     <div>
                         <div className="flex items-center gap-2">
                             {options.find((option) => option.key === selectedKey)?.icon}

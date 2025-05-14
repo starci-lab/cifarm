@@ -91,7 +91,7 @@ export const TransferContent: FC = () => {
                     disabled={!formik.isValid}
                     isLoading={formik.isSubmitting}
                     className="w-full"
-                    variant="default"
+                    color="primary"
                     onClick={() => formik.submitForm()}
                 >
           Transfer

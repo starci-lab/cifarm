@@ -3,15 +3,18 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { cva } from "class-variance-authority"
 
-const cardVariants = cva("rounded-lg transition-transform duration-200", {
+const cardVariants = cva("transition-transform duration-200", {
     variants: {
         variant: {
+            default: "rounded-lg",
+            flat: "rounded-none shadow-none",
+            bordered: "rounded-md border",
+        },
+        color: {
             default: "bg-content-2",
-            destructive:
-        "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-            outline:
-        "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
             secondary: "bg-card-secondary",
+            destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+            outline: "bg-background hover:bg-accent hover:text-accent-foreground",
             ghost: "hover:bg-accent hover:text-accent-foreground",
             "ghost-secondary": "hover:bg-accent/40 hover:text-accent-foreground",
             link: "text-primary underline-offset-4 hover:underline",
@@ -19,25 +22,21 @@ const cardVariants = cva("rounded-lg transition-transform duration-200", {
     },
     defaultVariants: {
         variant: "default",
+        color: "default",
     },
 })
+  
 
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
-    variant?:
-      | "default"
-      | "destructive"
-      | "outline"
-      | "secondary"
-      | "ghost"
-      | "ghost-secondary"
-      | "link";
+    variant?: "default" | "flat" | "bordered";
+    color?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "ghost-secondary" | "link";
   }
->(({ className, variant, ...props }, ref) => (
+>(({ className, variant, color, ...props }, ref) => (
     <div
         ref={ref}
-        className={cn(cardVariants({ variant }), className)}
+        className={cn(cardVariants({ variant, color }), className)}
         {...props}
     />
 ))

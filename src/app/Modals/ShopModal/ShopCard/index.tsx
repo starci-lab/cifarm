@@ -56,7 +56,6 @@ export const ShopCard: FC<ShopCardProps> = ({ imageUrl, price, unlockedLevel, ow
                         <div className="flex justify-center items-center">
                             <ExtendedButton
                                 className="w-full"
-                                variant="default"
                                 disabled={_disabled}  
                                 onTap={onTap}
                                 onPress={onPress}

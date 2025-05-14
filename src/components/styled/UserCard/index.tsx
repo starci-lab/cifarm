@@ -99,7 +99,7 @@ export const UserCard: FC<UserCardProps> = ({
                         onClick={() => {
                             onUnfollowCallback?.()
                         }}
-                        variant="icon-secondary"
+                        color="secondary"
                         size="icon"
                         className="text-destructive hover:text-destructive"
                     >
@@ -107,7 +107,7 @@ export const UserCard: FC<UserCardProps> = ({
                     </ExtendedButton>
                 ) : (
                     <ExtendedButton
-                        variant="icon-secondary"
+                        color="secondary"
                         onClick={() => {
                             onFollowCallback?.()
                         }}
@@ -120,7 +120,7 @@ export const UserCard: FC<UserCardProps> = ({
                     onClick={async () => {
                         onVisitClick?.()
                     }}
-                    variant="icon"
+                    color="secondary"
                     size="icon"
                 >
                     <MapPinArea />

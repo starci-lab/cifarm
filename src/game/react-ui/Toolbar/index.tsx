@@ -107,7 +107,7 @@ export const Toolbar: FC = () => {
     return (
         <div className="flex gap-2 items-center bg-content-4 rounded-t-lg p-2">
             <ExtendedButton
-                variant="secondary"
+                color="secondary"
                 size="icon"
                 disabled={fromToolIndex === 0}
                 onClick={() => {
@@ -182,7 +182,7 @@ export const Toolbar: FC = () => {
                 })}
             </div>
             <ExtendedButton
-                variant="secondary"
+                color="secondary"
                 size="icon"
                 disabled={fromToolIndex >= inventories.length - numVisibleInventories}
                 onClick={() => {

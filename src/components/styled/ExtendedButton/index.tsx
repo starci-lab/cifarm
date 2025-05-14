@@ -24,7 +24,7 @@ export const ExtendedButton = ({
     onPress,
     pulseColor,
     disabled,
-    variant = "default",
+    variant = "solid",
     size = "default",
     duration = "1.5s",
     classNames = {

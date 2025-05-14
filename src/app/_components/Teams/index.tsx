@@ -38,7 +38,7 @@ export const Teams = () => (
                     direction="up" 
                     delay={0.2 + (index * 0.1)}
                 >
-                    <Card variant="default" className="h-full">
+                    <Card className="h-full">
                         <CardContent className="h-full">
                             <div className="flex flex-col items-center text-center">
                                 <Image 

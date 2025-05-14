@@ -93,7 +93,7 @@ const Page: FC = () => {
                     </CardHeader>
                     <CardContent>
                         <ExtendedButton
-                            variant="destructive"
+                            color="destructive"
                             onClick={() => {
                                 dispatch(
                                     setWarningModal({
