@@ -4,13 +4,17 @@ import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION } from "@/app/constants"
 import { useEffect } from "react"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { saveTokens } from "@/modules/apollo"
-import { setAuthenticated, useAppDispatch } from "@/redux"
+import { setAuthenticated, useAppDispatch, useAppSelector } from "@/redux"
+import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
+import { pathConstants } from "@/constants"
 
 export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<
     ReturnType<typeof useGraphQLMutationRefreshSwrMutation>
   >(GRAPHQL_MUTATION_REFRESH_SWR_MUTATION)
-
+    
+    const router = useRouterWithSearchParams()
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const dispatch = useAppDispatch()
     useEffect(() => {
         const handleEffect = async () => {
@@ -40,4 +44,12 @@ export const useAuthentication = () => {
         }
         handleEffect()
     }, [])
+
+    // auto navigate to home if authenticated
+    useEffect(() => {
+        if (!authenticated) {
+            return
+        }
+        router.push(pathConstants.home)
+    }, [authenticated])
 }

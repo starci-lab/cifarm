@@ -1,48 +1,15 @@
 "use client"
 
 import {
-    toast,
-    useGoogleLoginSwrMutation,
-    useGraphQLMutationAuthenticateGoogleSwrMutation,
     useRouterWithSearchParams,
 } from "@/hooks"
 import { Container, ExtendedButton, Spacer } from "@/components"
 import React, { FC } from "react"
 import { Image } from "@/components"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import {
-    GOOGLE_LOGIN_SWR_MUTATION,
-    GRAPHQL_MUTATION_AUTHENTICATE_GOOGLE_SWR_MUTATION,
-    X_LOGIN_SWR_MUTATION,
-} from "../constants"
-import { setAuthenticated, useAppDispatch } from "@/redux"
 import { envConfig } from "@/env"
-import { saveTokens } from "@/modules/apollo/tokens"
-import { pathConstants } from "@/constants"
-import { useDisclosure } from "react-use-disclosure"
-import { AUTHENTICATING_DISCLOSURE } from "../constants"
-import { useXLoginSwrMutation } from "@/hooks/swr/x"
+import { formatUrl } from "url-lib"
 
 const Page: FC = () => {
-    const dispatch = useAppDispatch()
-    const { swrMutation: googleLoginMutation } = useSingletonHook<
-    ReturnType<typeof useGoogleLoginSwrMutation>
-  >(GOOGLE_LOGIN_SWR_MUTATION)
-
-    const { swrMutation: authenticateGoogleMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationAuthenticateGoogleSwrMutation>
-  >(GRAPHQL_MUTATION_AUTHENTICATE_GOOGLE_SWR_MUTATION)
-
-    const { swrMutation: xLoginMutation } =
-    useSingletonHook<ReturnType<typeof useXLoginSwrMutation>>(
-        X_LOGIN_SWR_MUTATION
-    )
-
-    const { open: openAuthenticatingModal, close: closeAuthenticatingModal } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(
-        AUTHENTICATING_DISCLOSURE
-    )
-
     const router = useRouterWithSearchParams()
     const network = envConfig().network
     return (
@@ -56,53 +23,10 @@ const Page: FC = () => {
                 <div className="text-2xl font-bold">Welcome to CiFarm 🌾</div>
                 <Spacer y={6} />
                 <ExtendedButton
-                    isLoading={googleLoginMutation.isMutating}
                     onClick={async () => {
-                        try {
-                            const response = await googleLoginMutation.trigger()
-                            openAuthenticatingModal()
-                            try {
-                                const authenticateGoogleResponse =
-                  await authenticateGoogleMutation.trigger({
-                      request: {
-                          token: response.access_token,
-                          network,
-                      },
-                  })
-                                if (!authenticateGoogleResponse.data) {
-                                    toast({
-                                        title: "Failed to authenticate google",
-                                        description: authenticateGoogleMutation.error?.message,
-                                        variant: "destructive",
-                                    })
-                                    return
-                                }
-                                // store key pair in items
-                                await saveTokens({
-                                    accessToken: authenticateGoogleResponse.data.accessToken,
-                                    refreshToken: authenticateGoogleResponse.data.refreshToken,
-                                })
-                                dispatch(setAuthenticated(true))
-                            } catch (error) {
-                                toast({
-                                    title: "Failed to authenticate google",
-                                    description:
-                    error instanceof Error ? error.message : "Unknown error",
-                                    variant: "destructive",
-                                })
-                            } finally {
-                                closeAuthenticatingModal()
-                            }
-                            // redirect to home
-                            router.push(pathConstants.home)
-                        } catch (error) {
-                            toast({
-                                title: "Failed to authenticate google",
-                                description:
-                  error instanceof Error ? error.message : "Unknown error",
-                                variant: "destructive",
-                            })
-                        }
+                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/google/redirect`, {
+                            network
+                        }))
                     }}
                     variant="secondary"
                     className="w-full justify-start"
@@ -111,16 +35,21 @@ const Page: FC = () => {
           Continue with Google
                 </ExtendedButton>
                 <Spacer y={2} />
-                <ExtendedButton className="w-full justify-start" variant="secondary">
+                <ExtendedButton className="w-full justify-start" variant="secondary" onClick={async () => {
+                    router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
+                        network
+                    }))
+                }}> 
                     <Image src="/facebook.svg" className="w-4 h-4" />
           Continue with Facebook
                 </ExtendedButton>
-                <Spacer y={2} />
                 <ExtendedButton
-                    isLoading={xLoginMutation.isMutating}
                     onClick={async () => {
-                        const response = await xLoginMutation.trigger()
-                        console.log(response)
+                        router.push(
+                            formatUrl(`${envConfig().socialAuthUrl}/auth/x/redirect`, {
+                                network
+                            })
+                        )
                     }}
                     className="w-full justify-start"
                     variant="secondary"

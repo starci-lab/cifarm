@@ -3,6 +3,7 @@ import { Network } from "@/modules/blockchain"
 export interface EnvConfig {
     graphqlUrl: string
     wsUrl: string
+    socialAuthUrl: string
     isLocal: boolean
     network: Network
     honeycombProjectAddress: Record<Network, string>
@@ -29,6 +30,7 @@ export interface EnvConfig {
 export const envConfig = (): EnvConfig => ({
     graphqlUrl: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3006/graphql",
     wsUrl: process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3003",
+    socialAuthUrl: process.env.NEXT_PUBLIC_SOCIAL_AUTH_URL || "http://localhost:3044",
     isLocal: Boolean(process.env.NEXT_PUBLIC_IS_LOCAL) || false,
     honeycombProjectAddress: {
         [Network.Testnet]: process.env.NEXT_PUBLIC_TESTNET_HONEYCOMB_PROJECT_ADDRESS || "",

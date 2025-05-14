@@ -1,4 +1,3 @@
-export * from "./useGraphQLMutationAuthenticationSwrMutation"
 export * from "./useGraphQLMutationMintOffchainTokensSwrMutation"
 export * from "./useGraphQLMutationFollowSwrMutation"
 export * from "./useGraphQLMutationUnfollowSwrMutation"
@@ -17,6 +16,5 @@ export * from "./useGraphQLMutationCreatePurchaseSolanaNFTBoxTransactionSwrMutat
 export * from "./useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation"
 export * from "./useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation"
 export * from "./useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation"
-export * from "./useGraphQLMutationAuthenticateGoogleSwrMutation"
 export * from "./useGraphQLMutationRefreshSwrMutation"
 

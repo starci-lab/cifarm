@@ -27,7 +27,6 @@ import { getFullnodeUrl } from "@mysten/sui/client"
 import { createNetworkConfig, SuiClientProvider, WalletProvider as WalletSuiProvider } from "@mysten/dapp-kit"
 import { Network } from "@/modules/blockchain"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { GoogleOAuthProvider } from "@react-oauth/google"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -61,48 +60,46 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     const queryClient = new QueryClient()
     return (
         <Suspense>
-            <GoogleOAuthProvider clientId={envConfig().authentication.google.clientId}> 
-                <QueryClientProvider client={queryClient}>
-                    <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
-                        <WalletSuiProvider>
-                            <ConnectionProvider endpoint={endpoint}>
-                                <WalletProvider wallets={[]}>
-                                    <WalletModalProvider>
-                                        <TooltipProvider>
-                                            <SWRConfig
-                                                value={{
-                                                    provider: () => new Map(),
-                                                    revalidateOnFocus: false,
-                                                    revalidateIfStale: false,
-                                                }}
-                                            >
-                                                <SingletonHookProvider>
-                                                    <SingletonHook2Provider>
-                                                        <NextThemesProvider
-                                                            attribute="class"
-                                                            defaultTheme="light"
-                                                            enableSystem
-                                                            disableTransitionOnChange
-                                                        >
-                                                            <SidebarProvider>
-                                                                {children}
-                                                                <UseEffects />
-                                                                <Modals />
-                                                                <Sheets />
-                                                                <Toaster />
-                                                            </SidebarProvider>
-                                                        </NextThemesProvider>
-                                                    </SingletonHook2Provider>
-                                                </SingletonHookProvider>
-                                            </SWRConfig>
-                                        </TooltipProvider>
-                                    </WalletModalProvider>
-                                </WalletProvider>
-                            </ConnectionProvider>
-                        </WalletSuiProvider>
-                    </SuiClientProvider>
-                </QueryClientProvider>
-            </GoogleOAuthProvider>
+            <QueryClientProvider client={queryClient}>
+                <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
+                    <WalletSuiProvider>
+                        <ConnectionProvider endpoint={endpoint}>
+                            <WalletProvider wallets={[]}>
+                                <WalletModalProvider>
+                                    <TooltipProvider>
+                                        <SWRConfig
+                                            value={{
+                                                provider: () => new Map(),
+                                                revalidateOnFocus: false,
+                                                revalidateIfStale: false,
+                                            }}
+                                        >
+                                            <SingletonHookProvider>
+                                                <SingletonHook2Provider>
+                                                    <NextThemesProvider
+                                                        attribute="class"
+                                                        defaultTheme="light"
+                                                        enableSystem
+                                                        disableTransitionOnChange
+                                                    >
+                                                        <SidebarProvider>
+                                                            {children}
+                                                            <UseEffects />
+                                                            <Modals />
+                                                            <Sheets />
+                                                            <Toaster />
+                                                        </SidebarProvider>
+                                                    </NextThemesProvider>
+                                                </SingletonHook2Provider>
+                                            </SingletonHookProvider>
+                                        </SWRConfig>
+                                    </TooltipProvider>
+                                </WalletModalProvider>
+                            </WalletProvider>
+                        </ConnectionProvider>
+                    </WalletSuiProvider>
+                </SuiClientProvider>
+            </QueryClientProvider>
         </Suspense>
     )
 }

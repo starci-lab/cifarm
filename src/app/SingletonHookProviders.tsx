@@ -1,6 +1,5 @@
 import {
     useNativeCoinGeckoSWR,
-    useGraphQLMutationAuthenticationSwrMutation,
     useGraphQLMutationMintOffchainTokensSwrMutation,
     useWs,
     useTransferTokenFormik,
@@ -35,14 +34,9 @@ import {
     useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation,
     useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation,
     useGraphQLQueryVaultCurrentSwr,
-    useFirebaseAuthSwrMutation,
     useSignSolanaTransactionTxSwrMutation,
     useSignSuiTransactionTxSwrMutation,
     useGraphQLMutationRefreshSwrMutation,
-    useGraphQLMutationAuthenticateGoogleSwrMutation,
-    useGoogleLoginSwrMutation,
-    useXLoginSwrMutation,
-    
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -96,8 +90,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             SHEET_GAME_ITEM_DISCLOSURE: useDisclosure(),
             SHEET_WHOLSALE_MARKET_DISCLOSURE: useDisclosure(),
             AUTHENTICATING_DISCLOSURE: useDisclosure(),
-
-            GRAPHQL_MUTATION_AUTHENTICATION_SWR_MUTATION: useGraphQLMutationAuthenticationSwrMutation(),
             GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION: useGraphQLMutationMintOffchainTokensSwrMutation(),
             GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION: useGraphQLMutationUnfollowSwrMutation(),
             GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION: useGraphQLMutationFollowSwrMutation(),
@@ -120,9 +112,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_REFRESH_SWR_MUTATION: useGraphQLMutationRefreshSwrMutation(),
-
-            GRAPHQL_MUTATION_AUTHENTICATE_GOOGLE_SWR_MUTATION: useGraphQLMutationAuthenticateGoogleSwrMutation(),
-
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
             HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION: useHoneycombSendTransactionsSwrMutation(),
@@ -135,9 +124,6 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION: useGraphQLQueryPlacedItemsSwrMutation(),        
             GRAPHQL_QUERY_STORED_PLACED_ITEMS_SWR: useGraphQLQueryStoredPlacedItemsSwr(),
             GRAPHQL_QUERY_VAULT_CURRENT_SWR: useGraphQLQueryVaultCurrentSwr(),
-            FIREBASE_AUTH_SWR_MUTATION: useFirebaseAuthSwrMutation(),
-            GOOGLE_LOGIN_SWR_MUTATION: useGoogleLoginSwrMutation(),
-            X_LOGIN_SWR_MUTATION: useXLoginSwrMutation(),
             // Using new constants with GraphQL mutations
             //io
 
