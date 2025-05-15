@@ -7,8 +7,9 @@ export interface ScrollableTabData {
 }
 export interface ScrollableTabsProps extends React.ComponentPropsWithoutRef<typeof Tabs>{
     items: Array<ScrollableTabData>
+    color?: "default" | "primary" | "secondary"
 }
-export const ScrollableTabs = ({ items, ...props }: ScrollableTabsProps) => {
+export const ScrollableTabs = ({ items, color, ...props }: ScrollableTabsProps) => {
     return (
         <div className="flex">
             <ScrollArea type="always" className="w-1 flex-1">
@@ -19,7 +20,7 @@ export const ScrollableTabs = ({ items, ...props }: ScrollableTabsProps) => {
                     <TabsList className="w-full flex justify-between">
                         {
                             items.map((item) => (
-                                <TabsTrigger key={item.label} value={item.label}>
+                                <TabsTrigger color={color} key={item.label} value={item.label}>
                                     <div className="flex items-center gap-2">
                                         {item.icon && (
                                             <div className="w-5 h-5">{item.icon}</div>

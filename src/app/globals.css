@@ -45,6 +45,8 @@ body {
     --content-3: 30 12% 87%; /* teal - use in hover */
     --content-4: 31 57% 88%; /* teal - use in hover */
     --content-5: 22 58% 90%; /* cream - use in card and button */
+    --content-6: 0 80% 96%; /* dark cream - use in card and button */
+    --content-7: 0 77% 93%; /* dark cream - use in card and button */
 
     /* for navbar */
     --navbar: 0 0% 3.9%;
@@ -300,6 +302,11 @@ body {
 @layer base {
   * {
     @apply font-semibold;
+  }
+  .last-left-align::after {
+    content: "";
+    display: block;
+    grid-column: 1; /* Hoặc vị trí bạn muốn */
   }
   body {
     @apply bg-background text-foreground;

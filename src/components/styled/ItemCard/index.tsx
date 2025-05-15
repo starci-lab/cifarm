@@ -14,6 +14,7 @@ interface ItemCardProps {
   imageUrl?: string;
   frameOnly?: boolean;
   onClick?: () => void;
+  isSelected?: boolean;
   tint?: boolean;
   tintColor?: TintColor;
   hideCardContentBg?: boolean;
@@ -60,6 +61,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
     stackable,
     imageUrl,
     frameOnly,
+    isSelected,
     onClick,
     tint,
     tintColor,
@@ -75,17 +77,18 @@ const ItemCardCore: FC<ItemCardProps> = ({
     return (
         <Card
             className={cn(
-                "w-fit h-fit p-0 min-w-fit min-h-fit border-none shadow-none",
+                "w-fit h-fit p-0 min-w-fit min-h-fit",
                 classNames.card
             )}
             onClick={onClick}
         >
             <CardContent
                 className={cn(
-                    "grid place-items-center p-0 w-14 h-14 relative rounded-md",
+                    "grid place-items-center p-0 w-14 h-14 relative rounded-lg",
                     classNames.cardContent,
                     {
-                        "bg-content-2": !hideCardContentBg,
+                        "bg-content-6": !hideCardContentBg,
+                        "bg-content-7": !frameOnly && isSelected,
                     }
                 )}
             >

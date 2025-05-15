@@ -11,8 +11,10 @@ export interface GridTableProps<TItem extends string | object> {
   classNames?: {
     container?: string;
     item?: string;
+    scrollAreaWrapper?: string;
     scrollArea?: string;
   };
+  useGridWrapCss?: boolean;
   keyCallback?: (item: TItem) => string;
 }
 
@@ -22,13 +24,16 @@ export const GridTable = <TItem extends string | object>({
     enableScroll = true,
     emptyMessage = "No items found",
     classNames = {},
+    useGridWrapCss = false,
     keyCallback,
 }: GridTableProps<TItem>) => {
     const content = (
         <>
             {items.map((item) => {
                 return (
-                    <React.Fragment key={keyCallback ? keyCallback(item) : serialize(item)}>
+                    <React.Fragment
+                        key={keyCallback ? keyCallback(item) : serialize(item)}
+                    >
                         {contentCallback(item)}
                     </React.Fragment>
                 )
@@ -39,13 +44,43 @@ export const GridTable = <TItem extends string | object>({
         <>
             {items.length > 0 ? (
                 enableScroll ? (
-                    <ScrollArea className={cn("h-[300px] w-fit min-w-fit relative -top-4 -left-4 p-4 w-[calc(100%+32px)]", classNames.scrollArea)}>
-                        <div className={cn("flex gap-2 flex-wrap", classNames?.container)}>
-                            {content}
-                        </div>
-                    </ScrollArea>
+                    <div
+                        className={cn(
+                            "relative h-[300px] max-h-[300px]",
+                            classNames.scrollAreaWrapper
+                        )}
+                    >
+                        <ScrollArea
+                            className={cn(
+                                "h-[calc(300px+32px)] max-h-[calc(300px+32px)] w-fit min-w-fit relative -top-4 -left-4 p-4 w-[calc(100%+32px)]",
+                                classNames.scrollArea
+                            )}
+                        >
+                            <div
+                                className={cn(
+                                    {
+                                        "justify-center [grid-template-columns:repeat(auto-fit,minmax(56px,max-content))]":
+                      useGridWrapCss,
+                                    },
+                                    "grid gap-2 w-fit relative w-full",
+                                    classNames?.container
+                                )}
+                            >
+                                {content}
+                            </div>
+                        </ScrollArea>
+                    </div>
                 ) : (
-                    <div className={cn("flex gap-2 flex-wrap", classNames?.container)}>
+                    <div
+                        className={cn(
+                            {
+                                "justify-center [grid-template-columns:repeat(auto-fit,minmax(56px,max-content))]":
+                  useGridWrapCss,
+                            },
+                            "grid gap-2 w-fit relative w-full",
+                            classNames?.container
+                        )}
+                    >
                         {content}
                     </div>
                 )

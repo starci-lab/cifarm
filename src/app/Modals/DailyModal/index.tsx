@@ -22,7 +22,7 @@ import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { DailyRewardId } from "@/modules/entities"
 import { AssetIconId, assetIconMap, AssetUIId, assetUiMap } from "@/modules/assets"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { getCurrentDayMidnightUtc, getUtc } from "@/modules/common"
+import { getCurrentDayMidnightUtc, getNextDayMidnightUtc, getUtc } from "@/modules/common"
 import { useAppSelector } from "@/redux"
 
 export const DailyModal: FC = () => {
@@ -91,6 +91,10 @@ export const DailyModal: FC = () => {
                             </div>
                         </div>
                     </Card>
+                    <Spacer y={4} />
+                    <div className="text-sm text-muted-foreground">
+                    Next claim in {getNextDayMidnightUtc().format("YYYY-MM-DD HH:mm:ss")}
+                    </div>
                 </div>
                 <DialogFooter>
                     <ExtendedButton className="w-full"

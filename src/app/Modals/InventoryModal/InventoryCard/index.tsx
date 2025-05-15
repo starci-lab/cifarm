@@ -1,4 +1,4 @@
-import { ItemCard, TintColor } from "@/components"
+import { ItemCard } from "@/components"
 import { InventoryKind, InventorySchema } from "@/modules/entities"
 import React, { FC } from "react"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -46,7 +46,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({
                 return assetInventoryTypesMap[inventoryType.displayId]?.description
             })()}
             showTooltip={true}
-            tint={inventory?.id === selectedInventoryId}
+            isSelected={inventory?.id === selectedInventoryId}
             quantity={inventory?.quantity}
             stackable={inventoryType?.stackable}
             imageUrl={(() => {
@@ -76,7 +76,6 @@ export const InventoryCard: FC<InventoryCardProps> = ({
                 )
                 return product?.isQuality
             })()}
-            tintColor={TintColor.Green}
             frameOnly={!inventoryType}
         />
     )   

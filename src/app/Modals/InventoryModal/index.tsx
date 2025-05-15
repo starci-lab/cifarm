@@ -3,9 +3,10 @@ import React from "react"
 import {
     DialogHeader,
     DialogTitle,
+    ExtendedButton,
     GridTable,
-    Separator,
     Spacer,
+    Title,
 } from "@/components"
 import {
     GRAPHQL_QUERY_STATIC_SWR,
@@ -14,11 +15,10 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { Dialog, DialogContent } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import {
-    useGraphQLQueryStaticSwr,
-} from "@/hooks"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/modules/entities"
+import { SortAscending, Trash } from "@phosphor-icons/react"
 
 export const InventoryModal = () => {
     const { isOpen, toggle } =
@@ -28,15 +28,19 @@ export const InventoryModal = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(GRAPHQL_QUERY_STATIC_SWR)
 
-    const inventories = useAppSelector(state => state.sessionReducer.inventories)
+    const inventories = useAppSelector(
+        (state) => state.sessionReducer.inventories
+    )
 
     const storageInventories = Array.from(
         { length: staticSwr.data?.data.defaultInfo.storageCapacity ?? 0 },
         (_, index) => {
-            const inventory = inventories.find(
-                (inventory) =>
-                    inventory.kind === InventoryKind.Storage && inventory.index === index
-            ) ?? null
+            const inventory =
+        inventories.find(
+            (inventory) =>
+                inventory.kind === InventoryKind.Storage &&
+            inventory.index === index
+        ) ?? null
             return {
                 index,
                 kind: InventoryKind.Storage,
@@ -48,17 +52,19 @@ export const InventoryModal = () => {
     const toolInventories = Array.from(
         { length: staticSwr.data?.data.defaultInfo.toolCapacity ?? 0 },
         (_, index) => {
-            const inventory = inventories.find(
-                (inventory) => inventory.kind === InventoryKind.Tool && inventory.index === index
-            ) ?? null
+            const inventory =
+        inventories.find(
+            (inventory) =>
+                inventory.kind === InventoryKind.Tool && inventory.index === index
+        ) ?? null
             return {
                 index,
                 kind: InventoryKind.Tool,
                 inventory: inventory,
             }
         }
-    )   
-    
+    )
+
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent>
@@ -66,24 +72,66 @@ export const InventoryModal = () => {
                     <DialogTitle>Inventory</DialogTitle>
                 </DialogHeader>
                 <div>
-                    <GridTable
-                        items={storageInventories}
-                        contentCallback={({ inventory, index, kind }) => (
-                            <InventoryCard inventory={inventory} index={index} kind={kind} />
-                        )}
-                        keyCallback={(item) => `${item.kind}-${item.index}`}
-                    />
+                    <div>
+                        <Title
+                            title="Tools"
+                            tooltipString="Tools are used to harvest crops and other items."
+                        />
+                        <Spacer y={2} />
+                        <GridTable
+                            useGridWrapCss={true}
+                            classNames={{
+                                container: "p-2 rounded-lg bg-content-2",
+                            }}
+                            enableScroll={false}
+                            items={toolInventories}
+                            contentCallback={({ inventory, index, kind }) => (
+                                <InventoryCard
+                                    inventory={inventory}
+                                    index={index}
+                                    kind={kind}
+                                />
+                            )}
+                            keyCallback={(item) => `${item.kind}-${item.index}`}
+                        />
+                    </div>
                     <Spacer y={4} />
-                    <Separator />
-                    <Spacer y={4} />
-                    <GridTable
-                        enableScroll={false}
-                        items={toolInventories}
-                        contentCallback={({ inventory, index, kind }) => (
-                            <InventoryCard inventory={inventory} index={index} kind={kind} />
-                        )}
-                        keyCallback={(item) => `${item.kind}-${item.index}`}
-                    />
+                    <div>
+                        <Title
+                            title="Storage"
+                            tooltipString="Storage is used to store items."
+                        />
+                        <Spacer y={2} />
+                        <GridTable
+                            useGridWrapCss={true}
+                            classNames={{
+                                scrollAreaWrapper: "max-h-[250px] h-[250px]",
+                                scrollArea: "max-h-[calc(250px+32px)] h-[calc(250px+32px)]",
+                                container: "p-2 rounded-lg bg-content-2",
+                            }}
+                            enableScroll={true}
+                            items={storageInventories}
+                            contentCallback={({ inventory, index, kind }) => (
+                                <InventoryCard
+                                    inventory={inventory}
+                                    index={index}
+                                    kind={kind}
+                                />
+                            )}
+                            keyCallback={(item) => `${item.kind}-${item.index}`}
+                        />
+                        <Spacer y={4} />
+                        <div className="flex justify-end">
+                            <div className="flex gap-2">
+                                <ExtendedButton size="icon" variant="flat" color="secondary">
+                                    <SortAscending  />
+                                </ExtendedButton>
+                                <ExtendedButton size="icon" variant="icon" color="destructive">
+                                    <Trash  />
+                                </ExtendedButton>
+                            </div>
+                        </div> 
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>

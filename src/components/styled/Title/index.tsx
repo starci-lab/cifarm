@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 export interface TitleProps {
   title: string;
   tooltipString?: string;
+  icon?: React.ReactNode;
   classNames?: {
     title?: string;
     tooltip?: string;
@@ -14,6 +15,7 @@ export interface TitleProps {
 export const Title: FC<TitleProps> = ({
     title,
     tooltipString,
+    icon,
     classNames = {},
 }: TitleProps) => {
     const {
@@ -22,12 +24,15 @@ export const Title: FC<TitleProps> = ({
     } = classNames
     return (
         <div className="flex items-center gap-2 text-secondary">
-            <div
-                className={cn(
-                    titleClassName
-                )}
-            >
-                {title}
+            <div className="flex items-center gap-1">
+                {icon}
+                <div
+                    className={cn(
+                        titleClassName
+                    )}
+                >
+                    {title}
+                </div>
             </div>
             {tooltipString && <ExclamationTooltip message={tooltipString} className={tooltipClassName} />}
         </div>

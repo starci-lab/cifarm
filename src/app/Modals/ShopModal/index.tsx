@@ -507,15 +507,15 @@ export const ShopModal = () => {
                 </DialogHeader>
                 <div>
                     <ScrollableTabs
+                        color="secondary"
                         value={shopTab}
                         onValueChange={(value) => dispatch(setShopTab(value as ShopTab))}
                         items={Object.values(shopTabMap)}
                     />
                     <Spacer y={4} />
                     <FilterBar
-                        handleSearchResult={({ searchString }) => {
-                            console.log(searchString)
-                        }}
+                        searchString={""}
+                        onSearchStringChange={(value) => console.log(value)}
                     />
                     <Spacer y={4} />
                     {renderGridTable()}

@@ -8,7 +8,7 @@ const cardVariants = cva("transition-transform duration-200 dark:border-none", {
         variant: {
             default: "rounded-lg",
             flat: "rounded-none shadow-none",
-            bordered: "rounded-md border",
+            bordered: "rounded-lg border",
         },
         color: {
             default: "bg-content-2",
