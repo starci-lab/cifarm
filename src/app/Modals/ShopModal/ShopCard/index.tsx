@@ -74,7 +74,7 @@ export const ShopCard: FC<ShopCardProps> = ({
                         </div>
                         <div className="flex justify-center items-center">
                             <ExtendedButton
-                                color="secondary"
+                                color="primary"
                                 className="w-full"
                                 disabled={_disabled}
                                 onTap={onTap}
