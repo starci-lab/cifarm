@@ -22,10 +22,10 @@ import React, { FC, useEffect } from "react"
 import { FilterBar, List, Spacer } from "@/components"
 import { ExtendedButton, Pagination, UserCard } from "@/components"
 import { getLevelRange } from "../../NeighborsFilterModal/AdvancedSearchContent"
-import { useAppSelector } from "@/redux"
+import { useAppSelector, useAppDispatch, setNeighborsSearchString } from "@/redux"
 import { NEIGHBORS_FILTER_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
-import { ArrowCounterClockwise } from "@phosphor-icons/react"
+import { ArrowsCounterClockwise } from "@phosphor-icons/react"
 
 export const NeighborsTab: FC = () => {
     const {
@@ -111,8 +111,13 @@ export const NeighborsTab: FC = () => {
         })
     }
 
-    const { open: openFilterModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_FILTER_DISCLOSURE)
+    const neighborsSearch = useAppSelector(
+        (state) => state.searchReducer.neighborsSearch
+    )
 
+    const { open: openFilterModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_FILTER_DISCLOSURE)
+    const dispatch = useAppDispatch()
+    
     return (
         <div className="space-y-4">
             <div className="flex gap-2 w-full">
@@ -120,14 +125,19 @@ export const NeighborsTab: FC = () => {
                     asButton
                     onClick={openFilterModal}
                     className="flex-1"
+                    onSearchStringChange={(searchString) => {
+                        dispatch(setNeighborsSearchString(searchString))
+                    }}
+                    searchString={neighborsSearch.searchString}
                 />
                 <ExtendedButton
-                    variant="icon-secondary"
+                    variant="flat"
                     size="icon"
+                    color="secondary"
                     onClick={() => neighborsMutate()}
                     className="shrink-0"
                 >
-                    <ArrowCounterClockwise />
+                    <ArrowsCounterClockwise />
                 </ExtendedButton>
             </div>
             <List

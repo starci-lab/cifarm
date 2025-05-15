@@ -120,7 +120,7 @@ export const UserCard: FC<UserCardProps> = ({
                     onClick={async () => {
                         onVisitClick?.()
                     }}
-                    color="secondary"
+                    color="primary"
                     size="icon"
                 >
                     <MapPinArea />

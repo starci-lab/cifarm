@@ -20,7 +20,7 @@ export const useGraphQLQueryFolloweesSwr = (): UseSWR<
         (state) => state.sessionReducer.authenticated
     )
     const swr = useSWR(
-        authenticated ? ["QUERY_FOLLOWEES", params] : null,
+        authenticated ? ["QUERY_FOLLOWEES"] : null,
         async () => {
             return await queryFollowees(params)
         }
