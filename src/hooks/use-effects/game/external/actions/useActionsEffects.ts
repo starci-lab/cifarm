@@ -7,7 +7,7 @@ import { useBuyTileEffects } from "./useBuyTileEffects"
 import { useClaimDailyRewardEffects } from "./useClaimDailyRewardEffects"
 import { useBuyBuildingEffects } from "./useBuyBuildingEffects"
 import { useUseAnimalMedicineEffects } from "./useUseAnimalMedicineEffects"
-import { useDeliverInventoryEffects } from "./useDeliverInventoryEffects"
+import { useDeliverInventoriesEffects } from "./useDeliverInventoriesEffects"
 import { useUseAnimalFeedEffects } from "./useUseAnimalFeedEffects"
 import { useHarvestPlantEffects } from "./useHarvestPlantEffects"
 import { useUseHerbicideEffects } from "./useUseHerbicideEffects"
@@ -15,7 +15,7 @@ import { useMoveEffects } from "./useMoveEffects"
 import { useMoveInventoryEffects } from "./useMoveInventoryEffects"
 import { useUsePesticideEffects } from "./useUsePesticideEffects"
 import { usePlantSeedEffects } from "./usePlantSeedEffects"
-import { useRetrieveInventoryEffects } from "./useRetrieveInventoryEffects"
+import { useRetrieveInventoriesEffects } from "./useRetrieveInventoriesEffects"
 import { useUpgradeBuildingEffects } from "./useUpgradeBuildingEffects"
 import { useUseFertilizerEffects } from "./useUseFertilizerEffects"
 import { useUseWateringCanEffects } from "./useUseWateringCanEffects"
@@ -56,8 +56,8 @@ export const useActionsEffects = () => {
     useBuyBuildingEffects()
     useBuyTileEffects()
     useMoveInventoryEffects()
-    useDeliverInventoryEffects()
-    useRetrieveInventoryEffects()
+    useDeliverInventoriesEffects()
+    useRetrieveInventoriesEffects()
     useHelpUseHerbicideEffects()
     useHelpUsePesticideEffects()
     useHelpUseWateringCanEffects()

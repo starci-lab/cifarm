@@ -80,9 +80,9 @@ export enum ExternalEventName {
     // request to deliver additional inventory, from Phaser to React
     RequestDeliverAdditionalInventory = "request_deliver_additional_inventory",
     // request to deliver inventory, from Phaser to React
-    RequestDeliverInventory = "request_deliver_inventory",
+    RequestDeliverInventories = "request_deliver_inventories",
     // request to retrieve inventory, from Phaser to React
-    RequestRetrieveInventory = "request_retrieve_inventory",
+    RequestRetrieveInventories = "request_retrieve_inventories",
     // request to harvest animal, from Phaser to React
     RequestHarvestAnimal = "request_harvest_animal",
     // request to harvest fruit, from Phaser to React

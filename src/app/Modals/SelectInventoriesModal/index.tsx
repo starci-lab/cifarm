@@ -4,7 +4,7 @@ import {
     SELECT_INVENTORY_DISCLOSURE,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useAppSelector } from "@/redux"
+import { useAppSelector, setSelectedDeliveryInventoryIds, useAppDispatch } from "@/redux"
 import React, { FC } from "react"
 import { ExtendedButton, GridTable } from "@/components"
 import {
@@ -17,18 +17,10 @@ import {
 import { useDisclosure } from "react-use-disclosure"
 import { InventoryType, InventoryKind } from "@/modules/entities"
 import { InventoryCard } from "./InventoryCard"
-import { DeliverInventoryMessage, useGraphQLQueryStaticSwr } from "@/hooks"
+import { DeliverInventoriesMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { setSelectedDeliveryInventoryId, useAppDispatch } from "@/redux"
 
-export const SelectInventoryModal: FC = () => {
-    const accounts = useAppSelector(
-        (state) => state.sessionReducer.accounts.accounts
-    )
-    const activateAccountId = useAppSelector(
-        (state) => state.sessionReducer.accounts.activateAccountId
-    )
-    const account = accounts.find((account) => account.id === activateAccountId)
+export const SelectInventoriesModal: FC = () => {
     const { isOpen, toggle, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_INVENTORY_DISCLOSURE
     )
@@ -48,24 +40,24 @@ export const SelectInventoryModal: FC = () => {
         return inventoryType.type === InventoryType.Product && inventory.kind === InventoryKind.Storage
     })
 
-    const selectedDeliveryInventoryId = useAppSelector(
-        (state) => state.sessionReducer.selectedDeliveryInventoryId
+    const selectedDeliveryInventoryIds = useAppSelector(
+        (state) => state.sessionReducer.selectedDeliveryInventoryIds
     )
     const dispatch = useAppDispatch()
-
-    if (!account) {
-        return null
-    }
+        
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Select Inventory</DialogTitle>
+                    <DialogTitle>Select Inventories</DialogTitle>
                 </DialogHeader>
                 <div>
                     <GridTable
+                        useGridWrapCss
                         classNames={{
-                            scrollArea: "h-[200px]",
+                            scrollAreaWrapper: "max-h-[200px] h-[200px]",
+                            scrollArea: "max-h-[calc(200px+32px)] h-[calc(200px+32px)]",
+                            container: "p-2 rounded-lg bg-content-2",
                         }}
                         items={productInventories}
                         contentCallback={(inventory) => (
@@ -77,24 +69,14 @@ export const SelectInventoryModal: FC = () => {
                 <DialogFooter>
                     <ExtendedButton
                         className="w-full"
-                        variant="ghost"
-                        disabled={!selectedDeliveryInventoryId}
+                        disabled={!selectedDeliveryInventoryIds.length}
                         onClick={() => {
-                            close()
-                            dispatch(setSelectedDeliveryInventoryId())
-                        }}
-                    >
-                        Cancel
-                    </ExtendedButton>
-                    <ExtendedButton
-                        className="w-full"
-                        disabled={!selectedDeliveryInventoryId}
-                        onClick={() => {
-                            if (!selectedDeliveryInventoryId) throw new Error("No inventory selected")
-                            const deliverInventoryMessage: DeliverInventoryMessage = {
-                                inventoryId: selectedDeliveryInventoryId,
+                            if (!selectedDeliveryInventoryIds.length) throw new Error("No inventory selected")
+                            const deliverInventoriesMessage: DeliverInventoriesMessage = {
+                                inventoryIds: selectedDeliveryInventoryIds,
                             }
-                            ExternalEventEmitter.emit(ExternalEventName.RequestDeliverInventory, deliverInventoryMessage)
+                            ExternalEventEmitter.emit(ExternalEventName.RequestDeliverInventories, deliverInventoriesMessage)
+                            dispatch(setSelectedDeliveryInventoryIds([]))
                             close()
                         }}
                     >

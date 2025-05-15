@@ -5,7 +5,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetInventoryTypesMap } from "@/modules/assets"
-import { setSelectedDeliveryInventoryId, useAppDispatch, useAppSelector } from "@/redux"
+import { setSelectedDeliveryInventoryIds, useAppDispatch, useAppSelector } from "@/redux"
 
 interface InventoryCardProps {
   inventory: InventorySchema | null;
@@ -20,7 +20,8 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
         (inventoryType) => inventoryType.id === inventory?.inventoryType
     )
     const dispatch = useAppDispatch()
-    const selectedDeliveryInventoryId = useAppSelector(state => state.sessionReducer.selectedDeliveryInventoryId)
+    const selectedDeliveryInventoryIds = useAppSelector(state => state.sessionReducer.selectedDeliveryInventoryIds)
+    const isSelected = selectedDeliveryInventoryIds.includes(inventory?.id ?? "")
     return (
         <ItemCard
             quantity={inventory?.quantity}
@@ -29,9 +30,13 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
                 if (!inventoryType) return
                 return assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
             })()}
-            tint={inventory?.id !== selectedDeliveryInventoryId}
+            isSelected={isSelected}
             onClick={() => {
-                dispatch(setSelectedDeliveryInventoryId(inventory?.id))
+                if (isSelected) {
+                    dispatch(setSelectedDeliveryInventoryIds(selectedDeliveryInventoryIds.filter(id => id !== inventory?.id)))
+                } else {
+                    dispatch(setSelectedDeliveryInventoryIds([...selectedDeliveryInventoryIds, inventory?.id ?? ""]))
+                }
             }}
             isQuality={(() => {
                 const product = staticSwr.data?.data.products.find(

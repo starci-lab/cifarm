@@ -55,8 +55,8 @@ export interface SessionState {
   inventories: Array<InventorySchema>;
   placedItems: Array<PlacedItemSchema>;
   selectedInventoryId?: string;
-  selectedDeliveryInventoryId?: string;
-  selectedRetrieveInventoryId?: string;
+  selectedDeliveryInventoryIds: Array<string>;
+  selectedRetrieveInventoryIds: Array<string>;
   user?: UserSchema;
   fromToolIndex?: number;
   selectedToolId?: string;
@@ -87,6 +87,8 @@ const initialState: SessionState = {
     collectionKey: "",
     nftAddress: "",
     tokenKey: "",
+    selectedDeliveryInventoryIds: [],
+    selectedRetrieveInventoryIds: [],
     inventories: [],
     placedItems: [],
     playerContext: PlayerContext.Home,
@@ -155,11 +157,11 @@ export const sessionSlice = createSlice({
         setSelectedInventoryId: (state, action: PayloadAction<string | undefined>) => {
             state.selectedInventoryId = action.payload
         },
-        setSelectedDeliveryInventoryId: (state, action: PayloadAction<string | undefined>) => {
-            state.selectedDeliveryInventoryId = action.payload
+        setSelectedDeliveryInventoryIds: (state, action: PayloadAction<Array<string>>) => {
+            state.selectedDeliveryInventoryIds = action.payload
         },
-        setSelectedRetrieveInventoryId: (state, action: PayloadAction<string | undefined>) => {
-            state.selectedRetrieveInventoryId = action.payload
+        setSelectedRetrieveInventoryIds: (state, action: PayloadAction<Array<string>>) => {
+            state.selectedRetrieveInventoryIds = action.payload
         },
         setUser: (state, action: PayloadAction<UserSchema>) => {
             state.user = action.payload
@@ -222,8 +224,8 @@ export const {
     setSelectedPlacedItemId,
     setInventories,
     setSelectedInventoryId,
-    setSelectedDeliveryInventoryId,
-    setSelectedRetrieveInventoryId,
+    setSelectedDeliveryInventoryIds,
+    setSelectedRetrieveInventoryIds,
     setUser,
     setFromToolIndex,
     setSelectedToolId,

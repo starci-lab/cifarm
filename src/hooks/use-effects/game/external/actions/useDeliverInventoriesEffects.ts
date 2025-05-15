@@ -1,31 +1,31 @@
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import {
-    DeliverInventoryMessage,
+    DeliverInventoriesMessage,
     EmitterEventName,
     useWs,
 } from "@/hooks"
 import { WS } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
-export const useDeliverInventoryEffects = () => {
+export const useDeliverInventoriesEffects = () => {
     const { socket } =
     useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(
-            ExternalEventName.RequestDeliverInventory,
-            async (message: DeliverInventoryMessage) => {
+            ExternalEventName.RequestDeliverInventories,
+            async (message: DeliverInventoriesMessage) => {
                 if (!socket) {
                     return
                 }
-                socket.emit(EmitterEventName.DeliverInventory, message)
+                socket.emit(EmitterEventName.DeliverInventories, message)
             }
         )
 
         return () => {
             ExternalEventEmitter.removeListener(
-                ExternalEventName.RequestDeliverInventory
+                ExternalEventName.RequestDeliverInventories
             )
         }
     }, [socket])

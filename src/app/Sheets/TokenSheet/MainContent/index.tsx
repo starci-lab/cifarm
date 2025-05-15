@@ -27,16 +27,8 @@ import {
 import {
     DefaultToken,
 } from "@/modules/blockchain"
-import {
-    SendHorizonalIcon,
-    EllipsisIcon,
-    ShoppingCartIcon,
-    ArrowLeftRightIcon,
-    HandCoinsIcon,
-    QrCodeIcon,
-    SendToBackIcon,
-} from "lucide-react"
 import { envConfig } from "@/env"
+import { HandArrowDown, HandCoins, PaperPlaneRight, QrCode, ArrowUpRight, ShoppingCart, DotsThree } from "@phosphor-icons/react"
 
 export const MainContent: FC = () => {  
     const tokenKey = useAppSelector((state) => state.sheetReducer.tokenSheet.tokenKey)
@@ -89,7 +81,7 @@ export const MainContent: FC = () => {
             <Spacer y={6} />
             <div className="grid grid-cols-3 gap-2">
                 <PressableAction
-                    icon={<SendHorizonalIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                    icon={<PaperPlaneRight />}
                     onClick={() => {
                         formik.setFieldValue(
                             "tokenKey",
@@ -101,42 +93,42 @@ export const MainContent: FC = () => {
                     name="Transfer"
                 />
                 <PressableAction
-                    icon={<QrCodeIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                    icon={<QrCode />}
                     onClick={() => {
                         console.log("Receive")
                     }}
                     name="Receive"
                 />
                 <PressableAction
-                    icon={<ArrowLeftRightIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                    icon={<HandArrowDown />}
                     onClick={() => {
                         console.log("Receive")
                     }}
                     name="Swap"
                 />
                 <PressableAction
-                    icon={<HandCoinsIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                    icon={<HandCoins />}
                     onClick={() => {
                         console.log("Receive")
                     }}
                     name="Stake"
                 />
                 <PressableAction
-                    icon={<SendToBackIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                    icon={<ArrowUpRight />}
                     onClick={() => {
                         console.log("Receive")
                     }}
                     name="Bridge"
                 />
                 <PressableAction
-                    icon={<ShoppingCartIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                    icon={<ShoppingCart />}
                     onClick={() => {
                         console.log("Receive")
                     }}
                     name="Buy"
                 />
                 <PressableAction
-                    icon={<EllipsisIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                    icon={<DotsThree />}
                     onClick={() => {
                         console.log("Receive")
                     }}

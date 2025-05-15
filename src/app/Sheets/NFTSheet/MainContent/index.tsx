@@ -52,8 +52,7 @@ import {
 import { useParams } from "next/navigation"
 import { NFTType, PlacedItemType } from "@/modules/entities"
 import { envConfig } from "@/env"
-import { Export, Package } from "@phosphor-icons/react"
-import { EyeIcon, SendHorizonalIcon, WandSparklesIcon } from "lucide-react"
+import { Export, Package, PaperPlaneRight, Sparkle, Eye } from "@phosphor-icons/react"
 
 export const MainContent: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(
@@ -326,7 +325,7 @@ export const MainContent: FC = () => {
                     )}
                     <PressableAction
                         disabled={nft?.wrapped}
-                        icon={<SendHorizonalIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                        icon={<PaperPlaneRight />}
                         onClick={() => {
                             formik.setFieldValue("collectionKey", collectionKey)
                             formik.setFieldValue("nft", nft)
@@ -335,14 +334,14 @@ export const MainContent: FC = () => {
                         name="Transfer"
                     />
                     <PressableAction
-                        icon={<WandSparklesIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                        icon={<Sparkle />}
                         onClick={() => {
                             console.log("Receive")
                         }}
                         name="Enchant"
                     />
                     <PressableAction
-                        icon={<EyeIcon className="w-5 h-5 min-w-5 min-h-5" />}
+                        icon={<Eye />}
                         onClick={() => {
                             window.open(
                                 explorerUrl({

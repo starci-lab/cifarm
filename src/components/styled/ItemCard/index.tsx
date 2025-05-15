@@ -88,7 +88,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
                     classNames.cardContent,
                     {
                         "bg-content-6": !hideCardContentBg,
-                        "bg-content-7": !frameOnly && isSelected,
+                        "bg-secondary transition-transform transform scale-110 duration-300 ease-in-out shadow-lg": !frameOnly && isSelected,
                     }
                 )}
             >
@@ -106,7 +106,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
                           />
                       )}
                       {stackable && (
-                          <div className="absolute bottom-0 right-0 bg-background/50 text-xs grid place-items-center rounded-md p-0.5">
+                          <div className="absolute bottom-0 right-0 bg-background/75 text-xs grid place-items-center rounded-md p-0.5">
                               {quantity}
                           </div>
                       )}
@@ -118,7 +118,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
                           }}
                       />
                       {stackable && (
-                          <div className="absolute bottom-0 right-0 bg-background/50 text-xs grid place-items-center rounded-md p-0.5">
+                          <div className="absolute bottom-0 right-0 bg-background/75 text-xs grid place-items-center rounded-md p-0.5">
                               {quantity}
                           </div>
                       )}

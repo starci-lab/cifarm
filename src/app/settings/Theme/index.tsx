@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, CardHeader, Title } from "@/components"
-import { MoonIcon, SunIcon } from "@heroicons/react/24/solid"
+import { Moon, Sun } from "@phosphor-icons/react"
 import { useTheme } from "next-themes"
 import React, { FC } from "react"
 
@@ -16,9 +16,9 @@ export const Theme: FC = () => {
                     <Button size="icon" variant="outline" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
                         {
                             theme === "dark" ? (
-                                <SunIcon className="w-4 h-4" />
+                                <Sun />
                             ) : (
-                                <MoonIcon className="w-4 h-4" />
+                                <Moon />
                             )
                         }
                     </Button>

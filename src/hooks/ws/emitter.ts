@@ -40,9 +40,9 @@ export enum EmitterEventName {
   ThiefFruit = "thief_fruit",
   ThiefPlant = "thief_plant",
   ThiefAnimal = "thief_animal",
-  DeliverInventory = "deliver_inventory",
+  DeliverInventories = "deliver_inventories",
   DeliverAdditionalInventory = "deliver_additional_inventory",
-  RetrieveInventory = "retrieve_inventory",
+  RetrieveInventories = "retrieve_inventories",
   MoveInventory = "move_inventory",
   Move = "move",
   ClaimDailyReward = "claim_daily_reward",
@@ -202,8 +202,8 @@ export interface ThiefAnimalMessage {
   placedItemAnimalId: string;
 }
 
-export interface DeliverInventoryMessage {
-  inventoryId: string;
+export interface DeliverInventoriesMessage {
+  inventoryIds: Array<string>;
 }
 
 export interface UpdateSettingsMessage {
@@ -216,8 +216,8 @@ export interface UpdateProfileMessage {
   avatarUrl: string;
 }
 
-export interface RetrieveInventoryMessage {
-  inventoryId: string;
+export interface RetrieveInventoriesMessage {
+  inventoryIds: Array<string>;
 }
 
 export interface MoveInventoryMessage {

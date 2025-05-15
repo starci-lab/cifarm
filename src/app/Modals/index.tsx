@@ -17,7 +17,6 @@ import { NFTStorageModal } from "./NFTStorageModal"
 import { ShopModal } from "./ShopModal"
 import { InventoryModal } from "./InventoryModal"
 import { RoadsideStandModal } from "./RoadsideStandModal"
-import { SelectInventoryModal } from "./SelectInventoryModal"
 import { SettingsModal } from "./SettingsModal"
 import { SellModal } from "./SellModal"
 import { UpgradeModal } from "./UpgradeModal"
@@ -30,6 +29,7 @@ import { WelcomeModal } from "./WelcomeModal"
 import { ConnectModal } from "./ConnectModal"
 import { AuthenticatingModal } from "./AuthenticatingModal"
 import { NeighborsFilterModal } from "./NeighborsFilterModal"
+import { SelectInventoriesModal } from "./SelectInventoriesModal"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -57,7 +57,7 @@ const Modals : FC = () => {
             <RoadsideStandModal />
             <NFTStorageModal />
             <ShopModal />
-            <SelectInventoryModal />
+            <SelectInventoriesModal />
             <AuthenticatingModal />
             <SellModal />
             <UpgradeModal />
