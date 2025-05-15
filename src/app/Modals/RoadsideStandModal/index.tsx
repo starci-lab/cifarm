@@ -114,12 +114,12 @@ export const RoadsideStandModal: FC = () => {
                 </DialogHeader>
                 <div>
                     <GridTable
+                        useContainer={true}
                         enableScroll={false}
-                        useGridWrapCss={true}
+                        useGridWrap={true}
                         classNames={{
                             scrollAreaWrapper: "max-h-[250px] h-[250px]",
                             scrollArea: "max-h-[calc(250px+32px)] h-[calc(250px+32px)]",
-                            container: "p-2 rounded-lg bg-content-2",
                         }}
                         items={deliveryInventories}
                         contentCallback={({ inventory }) => (

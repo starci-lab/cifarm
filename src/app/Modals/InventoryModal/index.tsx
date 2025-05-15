@@ -84,10 +84,8 @@ export const InventoryModal = () => {
                         />
                         <Spacer y={2} />
                         <GridTable
-                            useGridWrapCss={true}
-                            classNames={{
-                                container: "p-2 rounded-lg bg-content-2",
-                            }}
+                            useContainer={true}
+                            useGridWrap={true}
                             enableScroll={false}
                             items={toolInventories}
                             contentCallback={({ inventory, index, kind }) => (
@@ -108,11 +106,11 @@ export const InventoryModal = () => {
                         />
                         <Spacer y={2} />
                         <GridTable
-                            useGridWrapCss={true}
+                            useGridWrap={true}
+                            useContainer={true}
                             classNames={{
                                 scrollAreaWrapper: "max-h-[250px] h-[250px]",
                                 scrollArea: "max-h-[calc(250px+32px)] h-[calc(250px+32px)]",
-                                container: "p-2 rounded-lg bg-content-2",
                             }}
                             enableScroll={true}
                             items={storageInventories}

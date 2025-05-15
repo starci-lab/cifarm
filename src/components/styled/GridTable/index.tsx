@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { serialize } from "@/modules/serialization"
@@ -14,7 +14,8 @@ export interface GridTableProps<TItem extends string | object> {
     scrollAreaWrapper?: string;
     scrollArea?: string;
   };
-  useGridWrapCss?: boolean;
+  useContainer?: boolean;
+  useGridWrap?: boolean;
   keyCallback?: (item: TItem) => string;
 }
 
@@ -24,7 +25,8 @@ export const GridTable = <TItem extends string | object>({
     enableScroll = true,
     emptyMessage = "No items found",
     classNames = {},
-    useGridWrapCss = false,
+    useGridWrap = false,
+    useContainer = false,
     keyCallback,
 }: GridTableProps<TItem>) => {
     const content = (
@@ -40,6 +42,38 @@ export const GridTable = <TItem extends string | object>({
             })}
         </>
     )
+
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [ gridCount, setGridCount ] = useState(0)
+
+    useEffect(() => {
+        if (!useGridWrap) return
+    
+        const minItemWidth = 56 // match minmax(56px, ...)
+        const containerPadding = 8 // ScrollArea wrapper has p-2 (8px * 2)
+        const containerOffset = 8
+    
+        const calculateGridCount = () => {
+            const width = (containerRef.current?.clientWidth ?? 0) - containerOffset
+            const count = Math.floor(width / (minItemWidth + containerPadding))
+            setGridCount(count)
+        }
+    
+        calculateGridCount()
+    
+        const resizeObserver = new ResizeObserver(() => {
+            calculateGridCount()
+        })
+    
+        if (containerRef.current) {
+            resizeObserver.observe(containerRef.current)
+        }
+    
+        return () => {
+            resizeObserver.disconnect()
+        }
+    }, [useGridWrap])
+
     return (
         <>
             {items.length > 0 ? (
@@ -56,30 +90,36 @@ export const GridTable = <TItem extends string | object>({
                                 classNames.scrollArea
                             )}
                         >
-                            <div
+                            <div   
+                                ref={containerRef}
                                 className={cn(
-                                    {
-                                        "justify-center [grid-template-columns:repeat(auto-fit,minmax(56px,max-content))]":
-                      useGridWrapCss,
-                                    },
-                                    "grid gap-2 w-fit relative w-full",
+                                    "justify-center grid gap-2 relative w-full",
+                                    useContainer && "p-2 rounded-lg bg-content-2",
                                     classNames?.container
                                 )}
+                                style={
+                                    useGridWrap
+                                        ? { gridTemplateColumns: `repeat(${gridCount}, minmax(0, 56px))` }
+                                        : undefined
+                                }
                             >
                                 {content}
                             </div>
                         </ScrollArea>
                     </div>
                 ) : (
-                    <div
+                    <div    
+                        ref={containerRef}            
                         className={cn(
-                            {
-                                "justify-center [grid-template-columns:repeat(auto-fit,minmax(56px,max-content))]":
-                  useGridWrapCss,
-                            },
-                            "grid gap-2 w-fit relative w-full",
+                            "justify-center grid gap-2 relative w-full",
+                            useContainer && " p-2 rounded-lg bg-content-2",
                             classNames?.container
                         )}
+                        style={
+                            useGridWrap
+                                ? { gridTemplateColumns: `repeat(${gridCount}, minmax(0, 56px))` }
+                                : undefined
+                        }
                     >
                         {content}
                     </div>

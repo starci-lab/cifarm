@@ -44,7 +44,7 @@ export const SelectInventoriesModal: FC = () => {
         (state) => state.sessionReducer.selectedDeliveryInventoryIds
     )
     const dispatch = useAppDispatch()
-        
+
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
@@ -53,7 +53,8 @@ export const SelectInventoriesModal: FC = () => {
                 </DialogHeader>
                 <div>
                     <GridTable
-                        useGridWrapCss
+                        useContainer={true}
+                        useGridWrap
                         classNames={{
                             scrollAreaWrapper: "max-h-[200px] h-[200px]",
                             scrollArea: "max-h-[calc(200px+32px)] h-[calc(200px+32px)]",

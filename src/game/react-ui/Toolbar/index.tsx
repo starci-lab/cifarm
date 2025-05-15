@@ -109,6 +109,7 @@ export const Toolbar: FC = () => {
             <ExtendedButton
                 color="secondary"
                 size="icon"
+                variant="flat"
                 disabled={fromToolIndex === 0}
                 onClick={() => {
                     dispatch(setFromToolIndex(fromToolIndex - 1))
@@ -130,7 +131,7 @@ export const Toolbar: FC = () => {
                                     frameOnly={false}
                                     quantity={toolLike.quantity}
                                     imageUrl={assetToolsMap[toolLike.id as ToolId]?.base.assetUrl}
-                                    tint={toolLike.id !== selectedToolId}
+                                    isSelected={toolLike.id === selectedToolId}
                                 />
                                 {toolLike.id === selectedToolId && (
                                     <ScaledImage
@@ -167,7 +168,7 @@ export const Toolbar: FC = () => {
                                     )
                                     return product?.isQuality
                                 })()}
-                                tint={toolLike.id !== selectedToolId}
+                                isSelected={toolLike.id === selectedToolId}
                                 hideCardContentBg={true}
                                 frameOnly={false}
                             />
@@ -184,6 +185,7 @@ export const Toolbar: FC = () => {
             <ExtendedButton
                 color="secondary"
                 size="icon"
+                variant="flat"
                 disabled={fromToolIndex >= inventories.length - numVisibleInventories}
                 onClick={() => {
                     dispatch(setFromToolIndex(fromToolIndex + 1))
