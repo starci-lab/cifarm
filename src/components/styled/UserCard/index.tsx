@@ -70,7 +70,7 @@ export const UserCard: FC<UserCardProps> = ({
                 </Avatar>
                 <div className="space-y-1">
                     <div>{user.username}</div>
-                    <Spacer y={1} />
+                    <Spacer y={0.5} />
                     <div className="flex flex-wrap gap-2">
                         <Badge className="flex items-center gap-1">
                             <Image
@@ -89,7 +89,7 @@ export const UserCard: FC<UserCardProps> = ({
                             <div className="text-sm">{user.golds}</div>
                         </Badge>
                     </div>
-                    <Spacer y={1} />
+                    <Spacer y={0.5} />
                     {renderOnlineStatus(user)}
                 </div>
             </div>

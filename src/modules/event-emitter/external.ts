@@ -199,6 +199,10 @@ export enum ExternalEventName {
     RequestUpdateProfile = "request_update_profile",
     // request to logout, from React to Phaser
     RequestLogout = "request_logout",
+    // request to delete inventory, from React to Phaser
+    RequestDeleteInventory = "request_delete_inventory",
+    // request to sort inventories, from React to Phaser
+    RequestSortInventories = "request_sort_inventories",
 }
 
 export enum ModalName {
@@ -219,6 +223,8 @@ export enum ModalName {
     Download = "download",
     Info = "info",
     RoadsideStand = "roadside-stand",
+    DeleteInventory = "delete-inventory",
+    SortInventories = "sort-inventories",
 }  
 
 export interface SelectToolMessage {

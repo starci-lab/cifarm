@@ -1,4 +1,4 @@
 import { useExternalEffects } from "./external"
-export const useEffects = () => {
+export const useGameEffects = () => {
     useExternalEffects()    
 }

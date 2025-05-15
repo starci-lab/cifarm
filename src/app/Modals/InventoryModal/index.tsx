@@ -19,6 +19,7 @@ import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/modules/entities"
 import { SortAscending, Trash } from "@phosphor-icons/react"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const InventoryModal = () => {
     const { isOpen, toggle } =
@@ -63,6 +64,10 @@ export const InventoryModal = () => {
                 inventory: inventory,
             }
         }
+    )
+
+    const selectedInventory = useAppSelector(
+        (state) => state.sessionReducer.selectedInventoryId
     )
 
     return (
@@ -123,10 +128,16 @@ export const InventoryModal = () => {
                         <Spacer y={4} />
                         <div className="flex justify-end">
                             <div className="flex gap-2">
-                                <ExtendedButton size="icon" variant="flat" color="secondary">
+                                <ExtendedButton size="icon" variant="flat" color="secondary" onClick={() => {
+                                    ExternalEventEmitter.emit(ExternalEventName.RequestSortInventories)
+                                }}>
                                     <SortAscending  />
                                 </ExtendedButton>
-                                <ExtendedButton size="icon" variant="icon" color="destructive">
+                                <ExtendedButton size="icon" variant="icon" color="destructive" onClick={() => {
+                                    ExternalEventEmitter.emit(ExternalEventName.RequestDeleteInventory, {
+                                        inventoryId: selectedInventory
+                                    })
+                                }}>
                                     <Trash  />
                                 </ExtendedButton>
                             </div>

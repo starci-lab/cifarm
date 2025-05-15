@@ -60,6 +60,8 @@ export enum EmitterEventName {
   UpdateProfile = "update_profile",
   SelectDog = "select_dog",
   SelectCat = "select_cat",
+  DeleteInventory = "delete_inventory",
+  SortInventories = "sort_inventories",
 }
 
 export interface BuySuppliesMessage {
@@ -269,4 +271,8 @@ export interface SelectDogMessage {
 
 export interface SelectCatMessage {
   placedItemPetId: string;
+}
+
+export interface DeleteInventoryMessage {
+  inventoryId: string;
 }

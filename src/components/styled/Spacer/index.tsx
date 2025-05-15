@@ -7,6 +7,9 @@ export interface SpacerProps {
 export const Spacer: FC<SpacerProps> = ({ y }: SpacerProps) => {
     let yValue = "h-1"
     switch (y) {
+    case 0.5:
+        yValue = "h-[2px]"
+        break
     case 1:
         yValue = "h-1"
         break

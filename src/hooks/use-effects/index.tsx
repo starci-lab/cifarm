@@ -4,6 +4,8 @@ import { UseNFTCollections } from "./nft-collections"
 import { useAuthentication } from "./useAuthentication"
 import { useSyncEffects } from "./useSyncEffects"
 import { useUpdateProfileEffects } from "./useUpdateProfileEffects"
+import { useGameEffects } from "./game"
+
 const UseEffects: FC  = () => {
     // useAccounts()
     // useTokens()
@@ -11,6 +13,7 @@ const UseEffects: FC  = () => {
     // useReferral()
     // useWarpcast()
     useSyncEffects()
+    useGameEffects()
     // useAddresses()
     useAuthentication()
     useUpdateProfileEffects()
