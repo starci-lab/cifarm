@@ -6,6 +6,8 @@ import {
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
     QUERY_USER_SWR_MUTATION,
     QUERY_STATIC_SWR_MUTATION,
+    WS,
+    NEIGHBORS_DISCLOSURE,
 } from "@/app/constants"
 import {
     DEFAULT_LIMIT,
@@ -14,18 +16,26 @@ import {
     useGraphQLQueryNeighborsSwr,
     useGraphQLMutationFollowSwrMutation,
     useGraphQLMutationUnfollowSwrMutation,
-    useGraphQLQueryUserSwr,
     useGraphQLQueryStaticSwr,
+    toast,
+    useWs,
+    EmitterEventName,
+    useGraphQLQueryUserSwr,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect } from "react"
 import { FilterBar, List, Spacer } from "@/components"
 import { ExtendedButton, Pagination, UserCard } from "@/components"
 import { getLevelRange } from "../../NeighborsFilterModal/AdvancedSearchContent"
-import { useAppSelector, useAppDispatch, setNeighborsSearchString } from "@/redux"
+import { useAppSelector, useAppDispatch, setNeighborsSearchString, setActiveNeighborCard } from "@/redux"
 import { NEIGHBORS_FILTER_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
 import { ArrowsCounterClockwise } from "@phosphor-icons/react"
+import { pathConstants } from "@/constants"
+import { usePathname, useRouter } from "next/navigation"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import { setVisitedUser } from "@/redux"
+import { gameState } from "@/game/config"
 
 export const NeighborsTab: FC = () => {
     const {
@@ -64,6 +74,9 @@ export const NeighborsTab: FC = () => {
     const appliedStatus = useAppSelector(
         (state) => state.searchReducer.neighborsSearch.appliedStatus
     )
+    const useAdvancedSearch = useAppSelector(
+        (state) => state.searchReducer.neighborsSearch.useAdvancedSearch
+    )
 
     const { swr: userSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryUserSwr>
@@ -91,6 +104,7 @@ export const NeighborsTab: FC = () => {
                 levelStart,
                 levelEnd,
                 status: appliedStatus,
+                useAdvancedSearch,
             },
         })
     }, [
@@ -98,6 +112,8 @@ export const NeighborsTab: FC = () => {
         appliedStatus,
         userSwr.data?.data.user.level,
         staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold,
+        setParams,
+        useAdvancedSearch,
     ])
 
     const setPage = (page: number) => {
@@ -117,7 +133,13 @@ export const NeighborsTab: FC = () => {
 
     const { open: openFilterModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_FILTER_DISCLOSURE)
     const dispatch = useAppDispatch()
-    
+    const { close: closeNeighborsModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
+    const neighborsTab = useAppSelector(
+        (state) => state.tabReducer.neighborsTab
+    )
+    const pathname = usePathname()
+    const router = useRouter()
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     return (
         <div className="space-y-4">
             <div className="flex gap-2 w-full">
@@ -147,24 +169,55 @@ export const NeighborsTab: FC = () => {
                         <UserCard
                             user={item}
                             followed={item.followed}
-                            onFollowCallback={async () => {
+                            onVisitClick={() => {
+                                closeNeighborsModal()
+                                dispatch(setActiveNeighborCard(neighborsTab))
+                                if (pathname !== pathConstants.play) {
+                                    router.push(pathConstants.play)
+                                    gameState.data = {
+                                        watchingUser: item,
+                                    }
+                                } else {
+                                    if (!socket) {
+                                        throw new Error("Socket is not connected")
+                                    }
+                                    socket.emit(EmitterEventName.Visit, {
+                                        neighborUserId: item.id,
+                                    })
+                                    dispatch(setVisitedUser(item))
+                                    ExternalEventEmitter.emit(ExternalEventName.Visit, item)
+                                }
+                            }}
+                            onFollowClick={async () => {
                                 await followSwrMutation.trigger({
                                     request: {
                                         followeeUserId: item.id,
                                     },
                                 })
 
-                                await neighborsMutate()
-                                await followeesMutate()
+                                await Promise.all([
+                                    neighborsMutate(),
+                                    followeesMutate(),
+                                ])
+
+                                toast({
+                                    title: "Followed successfully",
+                                })
                             }}
-                            onUnfollowCallback={async () => {
+                            onUnfollowClick={async () => {
                                 await unfollowSwrMutation.trigger({
                                     request: {
                                         followeeUserId: item.id,
                                     },
                                 })
-                                await neighborsMutate()
-                                await followeesMutate()
+                                await Promise.all([
+                                    neighborsMutate(),
+                                    followeesMutate(),
+                                ])
+
+                                toast({
+                                    title: "Unfollowed successfully",
+                                })
                             }}
                         />
                     )
@@ -173,6 +226,7 @@ export const NeighborsTab: FC = () => {
             <Spacer y={4} />
             <div className="flex justify-center">
                 <Pagination
+                    color="secondary"
                     currentPage={currentPage}
                     totalPages={totalPage}
                     onPageChange={setPage}

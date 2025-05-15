@@ -18,7 +18,20 @@ import {
     Spacer,
 } from "@/components"
 import { AdvancedSearchContent, getLevelRange } from "./AdvancedSearchContent"
-import { useAppSelector, NeighborsTab, useAppDispatch, setNeighborsSearchString, setFolloweesSearchString } from "@/redux"
+import {
+    useAppSelector,
+    NeighborsTab,
+    useAppDispatch,
+    setNeighborsSearchString,
+    setFolloweesSearchString,
+    setNeighborsSearchLevelRange,
+    setNeighborsSearchStatus,
+    setFolloweesSearchLevelRange,
+    setFolloweesSearchStatus,
+    NeighborsSearchStatus,
+    setUseAdvancedNeighborsSearch,
+    setUseAdvancedFolloweesSearch,
+} from "@/redux"
 import { ArrowCounterClockwise } from "@phosphor-icons/react"
 import {
     useGraphQLQueryUserSwr,
@@ -27,23 +40,17 @@ import {
     useGraphQLQueryStaticSwr,
 } from "@/hooks"
 export const NeighborsFilterModal: FC = () => {
-    const { toggle, isOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+    const { toggle, isOpen, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NEIGHBORS_FILTER_DISCLOSURE
     )
 
-    const neighborsTab = useAppSelector(
-        (state) => state.tabReducer.neighborsTab
-    )
+    const neighborsTab = useAppSelector((state) => state.tabReducer.neighborsTab)
     const neighborsSearch = useAppSelector(
         (state) => state.searchReducer.neighborsSearch
     )
     const followeesSearch = useAppSelector(
         (state) => state.searchReducer.followeesSearch
     )
-    const useAdvancedSearch =
-    neighborsTab === NeighborsTab.Neighbors
-        ? neighborsSearch.useAdvancedSearch
-        : followeesSearch.useAdvancedSearch
 
     const { swr: neighborsSwr, setParams: setNeighborsParams } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryNeighborsSwr>
@@ -120,18 +127,37 @@ export const NeighborsFilterModal: FC = () => {
                                     break
                                 }
                             }}
-                            searchString={
-                                (() => {
-                                    switch (neighborsTab) {
-                                    case NeighborsTab.Neighbors:
-                                        return neighborsSearch.searchString
-                                    case NeighborsTab.Followees:
-                                        return followeesSearch.searchString
-                                    }
-                                })()
-                            }
+                            searchString={(() => {
+                                switch (neighborsTab) {
+                                case NeighborsTab.Neighbors:
+                                    return neighborsSearch.searchString
+                                case NeighborsTab.Followees:
+                                    return followeesSearch.searchString
+                                }
+                            })()}
                         />
                         <ExtendedButton
+                            onClick={() => {
+                                // reset the search string, level range, and status, and useAdvancedSearch
+                                switch (neighborsTab) {
+                                case NeighborsTab.Neighbors:
+                                    dispatch(setNeighborsSearchString(""))
+                                    dispatch(setNeighborsSearchLevelRange(0))
+                                    dispatch(
+                                        setNeighborsSearchStatus(NeighborsSearchStatus.All)
+                                    )
+                                    dispatch(setUseAdvancedNeighborsSearch(false))
+                                    break
+                                case NeighborsTab.Followees:
+                                    dispatch(setFolloweesSearchString(""))
+                                    dispatch(setFolloweesSearchLevelRange(0))
+                                    dispatch(
+                                        setFolloweesSearchStatus(NeighborsSearchStatus.All)
+                                    )
+                                    dispatch(setUseAdvancedFolloweesSearch(false))
+                                    break
+                                }
+                            }}
                             variant="flat"
                             size="icon"
                             color="secondary"
@@ -141,7 +167,7 @@ export const NeighborsFilterModal: FC = () => {
                         </ExtendedButton>
                     </div>
                     <Spacer y={4} />
-                    {!useAdvancedSearch && <AdvancedSearchContent />}
+                    <AdvancedSearchContent />
                     <DialogFooter>
                         <ExtendedButton
                             isLoading={neighborsSwr.isValidating || followeesSwr.isValidating}
@@ -154,6 +180,7 @@ export const NeighborsFilterModal: FC = () => {
                                     await followeesSwr.mutate()
                                     break
                                 }
+                                close()
                             }}
                             color="primary"
                             className="w-full"

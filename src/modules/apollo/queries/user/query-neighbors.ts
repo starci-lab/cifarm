@@ -45,6 +45,7 @@ export interface QueryNeighborsArgs extends QueryManyRequest {
    levelStart?: number
    levelEnd?: number
    status?: NeighborsSearchStatus
+   useAdvancedSearch?: boolean
 }
 export type QueryNeighborsParams = QueryParams<QueryNeighbors, QueryNeighborsArgs>;
 export const queryNeighbors = async ({

@@ -8,9 +8,9 @@ const buttonVariants = cva(
     {
         variants: {
             color: {
-                default: "bg-default hover:bg-default/75 text-foreground",
+                default: "bg-content-2 hover:bg-content-3 text-foreground",
                 primary: "bg-primary hover:bg-primary/75 text-background",
-                secondary: "bg-content-2 hover:bg-content-3 text-secondary",
+                secondary: "bg-secondary hover:bg-secondary/75 text-background",
                 destructive: "bg-destructive hover:bg-destructive/90 text-destructive-foreground",
                 highlight: "bg-button-highlight hover:bg-button-highlight/75 text-text",
                 ghost: "hover:bg-accent hover:text-accent-foreground",
@@ -75,7 +75,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   removeClassName?: boolean,
-  color?: "primary" | "secondary" | "destructive" | "highlight" | "ghost" | "link" | "gradient" | "gradient-secondary"
+  color?: "default" | "primary" | "secondary" | "destructive" | "highlight" | "ghost" | "link" | "gradient" | "gradient-secondary"
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

@@ -20,6 +20,8 @@ import {
     setFolloweesSearchLevelRange,
     setFolloweesSearchStatus,
     NeighborsTab,
+    setUseAdvancedNeighborsSearch,
+    setUseAdvancedFolloweesSearch,
 } from "@/redux"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryUserSwr, useGraphQLQueryStaticSwr } from "@/hooks"
@@ -68,13 +70,9 @@ export const AdvancedSearchContent: FC = () => {
     const followeesSearch = useAppSelector(
         (state) => state.searchReducer.followeesSearch
     )
-    const selectedSearch = useAppSelector(
-        (state) => state.tabReducer.neighborsTab
-    )
+    const neighborsTab = useAppSelector((state) => state.tabReducer.neighborsTab)
     const search =
-    selectedSearch === NeighborsTab.Neighbors
-        ? neighborsSearch
-        : followeesSearch
+    neighborsTab === NeighborsTab.Neighbors ? neighborsSearch : followeesSearch
 
     const { swr: userSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryUserSwr>
@@ -91,7 +89,7 @@ export const AdvancedSearchContent: FC = () => {
     }).text
 
     const setSearchLevelRange = (value: number) => {
-        switch (selectedSearch) {
+        switch (neighborsTab) {
         case NeighborsTab.Neighbors:
             dispatch(setNeighborsSearchLevelRange(value))
             break
@@ -102,7 +100,7 @@ export const AdvancedSearchContent: FC = () => {
     }
 
     const setSearchStatus = (value: NeighborsSearchStatus) => {
-        switch (selectedSearch) {
+        switch (neighborsTab) {
         case NeighborsTab.Neighbors:
             dispatch(setNeighborsSearchStatus(value))
             break
@@ -112,9 +110,32 @@ export const AdvancedSearchContent: FC = () => {
         }
     }
 
+    const useAdvancedSearch = (() => {
+        switch (neighborsTab) {
+        case NeighborsTab.Neighbors:
+            return neighborsSearch.useAdvancedSearch
+        case NeighborsTab.Followees:
+            return followeesSearch.useAdvancedSearch
+        }
+    })()
+
     return (
-        <Accordion type="single" collapsible>
-            <AccordionItem value="advanced-search" className="border-none">
+        <Accordion
+            type="single"
+            collapsible
+            value={useAdvancedSearch ? OPEN : ""}
+            onValueChange={(value) => {
+                switch (neighborsTab) {
+                case NeighborsTab.Neighbors:
+                    dispatch(setUseAdvancedNeighborsSearch(value === OPEN))
+                    break
+                case NeighborsTab.Followees:
+                    dispatch(setUseAdvancedFolloweesSearch(value === OPEN))
+                    break
+                }
+            }}
+        >
+            <AccordionItem value={OPEN} className="border-none">
                 <AccordionTrigger>
                     <div className="text-sm text-primary hover:text-primary/75">
             Advanced Search
@@ -178,3 +199,5 @@ export const AdvancedSearchContent: FC = () => {
         </Accordion>
     )
 }
+
+const OPEN = "open"

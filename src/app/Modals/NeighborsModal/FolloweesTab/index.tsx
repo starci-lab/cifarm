@@ -5,6 +5,8 @@ import {
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
     QUERY_USER_SWR_MUTATION,
     QUERY_STATIC_SWR_MUTATION,
+    WS,
+    NEIGHBORS_DISCLOSURE,
 } from "@/app/constants"
 import {
     DEFAULT_LIMIT,
@@ -14,16 +16,25 @@ import {
     useGraphQLMutationUnfollowSwrMutation,
     useGraphQLQueryUserSwr,
     useGraphQLQueryStaticSwr,
+    toast,
+    useWs,
+    EmitterEventName,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect } from "react"
 import { FilterBar, List, Spacer } from "@/components"
 import { ExtendedButton, Pagination, UserCard } from "@/components"
 import { getLevelRange } from "../../NeighborsFilterModal/AdvancedSearchContent"
-import { useAppSelector, useAppDispatch, setFolloweesSearchString } from "@/redux"
+import { useAppSelector, useAppDispatch, setFolloweesSearchString, setActiveNeighborCard, setVisitedUser } from "@/redux"
 import { NEIGHBORS_FILTER_DISCLOSURE } from "@/app/constants"
+import { usePathname } from "next/navigation"
 import { useDisclosure } from "react-use-disclosure"
 import { ArrowsCounterClockwise } from "@phosphor-icons/react"
+import { useRouter } from "next/navigation"
+import { pathConstants } from "@/constants"
+import { gameState } from "@/game/config"
+import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+
 
 export const FolloweesTab: FC = () => {
     const {
@@ -69,6 +80,10 @@ export const FolloweesTab: FC = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
 
+    const useAdvancedSearch = useAppSelector(
+        (state) => state.searchReducer.followeesSearch.useAdvancedSearch
+    )
+
     useEffect(() => {
         if (!userSwr.data?.data.user.level) return
         if (!staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold)
@@ -87,6 +102,7 @@ export const FolloweesTab: FC = () => {
                 levelStart,
                 levelEnd,
                 status: appliedStatus,
+                useAdvancedSearch,
             },
         })
     }, [
@@ -94,6 +110,8 @@ export const FolloweesTab: FC = () => {
         appliedStatus,
         userSwr.data?.data.user.level,
         staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold,
+        setParams,
+        useAdvancedSearch,
     ])
 
     const setPage = (page: number) => {
@@ -112,7 +130,13 @@ export const FolloweesTab: FC = () => {
     )
 
     const { open: openFilterModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_FILTER_DISCLOSURE)
-
+    const { close: closeNeighborsModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
+    const neighborsTab = useAppSelector(
+        (state) => state.tabReducer.neighborsTab
+    )
+    const pathname = usePathname()
+    const router = useRouter()
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     return (
         <div className="space-y-4">
             <div className="flex gap-2 w-full">
@@ -141,19 +165,62 @@ export const FolloweesTab: FC = () => {
                     return (
                         <UserCard
                             user={item}
-                            followed={item.followed}
-                            onFollowCallback={async () => {
-                                // nothing due to the fact that the followees are not followed
+                            onVisitClick={async () => {
+                                closeNeighborsModal()
+                                dispatch(setActiveNeighborCard(neighborsTab))
+                                if (pathname !== pathConstants.play) {
+                                    router.push(pathConstants.play)
+                                    gameState.data = {
+                                        watchingUser: item,
+                                    }
+                                } else {
+                                    if (!socket) {
+                                        throw new Error("Socket is not connected")
+                                    }
+                                    socket.emit(EmitterEventName.Visit, {
+                                        neighborUserId: item.id,
+                                    })
+                                    dispatch(setVisitedUser(item))
+                                    ExternalEventEmitter.emit(ExternalEventName.Visit, item)
+                                }
                             }}
-                            onUnfollowCallback={async () => {
+                            followed={item.followed}
+                            onFollowClick={async () => {
+                                closeNeighborsModal()
+                                dispatch(setActiveNeighborCard(neighborsTab))
+                                if (pathname !== pathConstants.play) {
+                                    router.push(pathConstants.play)
+                                    gameState.data = {
+                                        watchingUser: item,
+                                    }
+                                } else {
+                                    if (!socket) {
+                                        throw new Error("Socket is not connected")
+                                    }
+                                    socket.emit(EmitterEventName.Visit, {
+                                        neighborUserId: item.id,
+                                    })
+                                    dispatch(setVisitedUser(item))
+                                    ExternalEventEmitter.emit(ExternalEventName.Visit, item)
+                                }
+                            }}
+                            onUnfollowClick={async () => {
                                 await unfollowSwrMutation.trigger({
                                     request: {
                                         followeeUserId: item.id,
                                     },
                                 })
-                                await neighborsMutate()
-                                await followeesMutate()
+
+                                await Promise.all([
+                                    neighborsMutate(),
+                                    followeesMutate(),
+                                ])
+
+                                toast({
+                                    title: "Unfollowed successfully",
+                                })
                             }}
+                            
                         />
                     )
                 }}
@@ -161,6 +228,7 @@ export const FolloweesTab: FC = () => {
             <Spacer y={4} />
             <div className="flex justify-center">
                 <Pagination
+                    color="secondary"
                     currentPage={currentPage}
                     totalPages={totalPage}
                     onPageChange={setPage}

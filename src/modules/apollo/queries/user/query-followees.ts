@@ -43,6 +43,7 @@ export interface QueryFolloweesArgs extends QueryManyRequest {
   levelStart?: number
   levelEnd?: number
   status?: NeighborsSearchStatus
+  useAdvancedSearch?: boolean
 }
 
 export type QueryFolloweesParams = QueryParams<QueryFollowees, QueryFolloweesArgs>;

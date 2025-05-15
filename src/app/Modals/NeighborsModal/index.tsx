@@ -5,9 +5,14 @@ import { useDisclosure } from "react-use-disclosure"
 import React, { FC, ReactNode } from "react"
 import { FolloweesTab } from "./FolloweesTab"
 import { Dialog, DialogContent, DialogHeader, ModalHeader } from "@/components"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components"
 import { NeighborsTab } from "./NeighborsTab"
-import { NeighborsTab as NeighborsTabEnum, setNeighborsTab, useAppDispatch, useAppSelector } from "@/redux"  
+import {
+    NeighborsTab as NeighborsTabEnum,
+    setNeighborsTab,
+    useAppDispatch,
+    useAppSelector,
+} from "@/redux"
 
 export const NeighborsModal: FC = () => {
     const { toggle, isOpen } =
@@ -22,28 +27,29 @@ export const NeighborsModal: FC = () => {
         }
         return map[selectedTab]
     }
-    
+
     return (
-        <Dialog 
-            open={true} 
-            onOpenChange={toggle}
-        >
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <ModalHeader title="Neighbors" />
                 </DialogHeader>
                 <Tabs
                     defaultValue={selectedTab}
-                    onValueChange={(value) => dispatch(setNeighborsTab(value as NeighborsTabEnum))}
+                    onValueChange={(value) =>
+                        dispatch(setNeighborsTab(value as NeighborsTabEnum))
+                    }
                     className="w-full"
                 >
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value={NeighborsTabEnum.Neighbors} color="secondary">Neighbors</TabsTrigger>
-                        <TabsTrigger value={NeighborsTabEnum.Followees} color="secondary">Followees</TabsTrigger>
+                        <TabsTrigger value={NeighborsTabEnum.Neighbors} color="secondary">
+              Neighbors
+                        </TabsTrigger>
+                        <TabsTrigger value={NeighborsTabEnum.Followees} color="secondary">
+              Followees
+                        </TabsTrigger>
                     </TabsList>
-                    <TabsContent value={selectedTab}>
-                        {renderTab()}
-                    </TabsContent>
+                    <TabsContent value={selectedTab}>{renderTab()}</TabsContent>
                 </Tabs>
             </DialogContent>
         </Dialog>

@@ -13,8 +13,8 @@ import { MapPinArea, UserMinus, UserPlus } from "@phosphor-icons/react"
 export interface UserCardProps {
   user: UserSchema;
   followed?: boolean;
-  onFollowCallback?: () => void | Promise<void>;
-  onUnfollowCallback?: () => void | Promise<void>;
+  onFollowClick?: () => void | Promise<void>;
+  onUnfollowClick?: () => void | Promise<void>;
   onVisitClick?: () => void | Promise<void>;
 }
 
@@ -48,8 +48,8 @@ const renderOnlineStatus = (user: UserSchema) => {
 export const UserCard: FC<UserCardProps> = ({
     user,
     followed: baseFollowed,
-    onFollowCallback,
-    onUnfollowCallback,
+    onFollowClick,
+    onUnfollowClick,
     onVisitClick,
 }: UserCardProps) => {
     const [avatar, setAvatar] = useState(user.avatarUrl ?? createJazziconBlobUrl(user.id))
@@ -97,8 +97,9 @@ export const UserCard: FC<UserCardProps> = ({
                 {baseFollowed || user.followed ? (
                     <ExtendedButton
                         onClick={() => {
-                            onUnfollowCallback?.()
+                            onUnfollowClick?.()
                         }}
+                        variant="flat"
                         color="secondary"
                         size="icon"
                         className="text-destructive hover:text-destructive"
@@ -107,9 +108,10 @@ export const UserCard: FC<UserCardProps> = ({
                     </ExtendedButton>
                 ) : (
                     <ExtendedButton
+                        variant="flat"
                         color="secondary"
                         onClick={() => {
-                            onFollowCallback?.()
+                            onFollowClick?.()
                         }}
                         size="icon"
                     >
