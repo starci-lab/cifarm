@@ -3,7 +3,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { cva } from "class-variance-authority"
 
-const cardVariants = cva("transition-transform duration-200", {
+const cardVariants = cva("transition-transform duration-200 dark:border-none", {
     variants: {
         variant: {
             default: "rounded-lg",

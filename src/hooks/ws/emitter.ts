@@ -57,6 +57,7 @@ export enum EmitterEventName {
   ForceSyncPlacedItems = "force_sync_placed_items",
   PlaceNFT = "place_nft",
   UpdateSettings = "update_settings",
+  UpdateProfile = "update_profile",
   SelectDog = "select_dog",
   SelectCat = "select_cat",
 }
@@ -206,6 +207,11 @@ export interface DeliverInventoryMessage {
 export interface UpdateSettingsMessage {
   sound?: number;
   ambient?: number;
+}
+
+export interface UpdateProfileMessage {
+  username: string;
+  avatarUrl: string;
 }
 
 export interface RetrieveInventoryMessage {

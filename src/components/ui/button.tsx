@@ -21,7 +21,7 @@ const buttonVariants = cva(
             variant: {
                 solid: "rounded-lg",
                 outline: "border border-input rounded-lg bg-background",
-                ghost: "",
+                ghost: "rounded-lg bg-transparent",
                 icon: "flex rounded-lg",
                 pill: "rounded-full",
                 flat: "", // no border, no bg
@@ -48,7 +48,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   removeClassName?: boolean,
-  color?: "primary" | "secondary" | "destructive" | "highlight" | "outline" | "ghost" | "link" | "gradient" | "gradient-secondary"
+  color?: "primary" | "secondary" | "destructive" | "highlight" | "ghost" | "link" | "gradient" | "gradient-secondary"
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

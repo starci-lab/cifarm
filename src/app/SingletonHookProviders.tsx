@@ -36,6 +36,7 @@ import {
     useSignSolanaTransactionTxSwrMutation,
     useSignSuiTransactionTxSwrMutation,
     useGraphQLMutationRefreshSwrMutation,
+    useGraphQLMutationLogoutSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -96,6 +97,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_CLAIM_HONEYCOMB_DAILY_REWARD_SWR_MUTATION: useGraphQLMutationClaimHoneycombDailyRewardSwrMutation(),
             GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION: useGraphQLMutationUpdateFollowXSwrMutation(),
             GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION: useGraphQLMutationUpdateReferralSwrMutation(),
+            GRAPHQL_MUTATION_LOGOUT_SWR_MUTATION: useGraphQLMutationLogoutSwrMutation(),
             GRAPHQL_MUTATION_WRAP_SOLANA_METAPLEX_SWR_MUTATION: useGraphQLMutationWrapSolanaMetaplexSwrMutation(),
             SEND_UMI_SERIALIZED_TX_SWR_MUTATION: useSendUmiSerializedTxSwrMutation(),
             SIGN_UMI_SERIALIZED_TX_SWR_MUTATION: useSignUmiSerializedTxSwrMutation(),

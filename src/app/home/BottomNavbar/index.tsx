@@ -17,7 +17,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { ExtendedButton } from "@/components"
 import { useIsMobile } from "@/hooks/useIsMobile"
-import { Coins, Cube, Gift, XLogo } from "@phosphor-icons/react"
+import { Coins, Cube, GameController, Gift, XLogo } from "@phosphor-icons/react"
 
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
@@ -42,27 +42,33 @@ export const BottomNavbar: FC = () => {
     return (
         <>
             {isMobile && (
-                <div className="m-auto fixed top-auto bottom-0 border-t h-16 z-50 max-w-[500px] w-full bg-background">
-                    <nav className="m-auto w-full h-full flex items-center justify-between px-4">
-                        <div className="flex-1 flex justify-between">
+                <div className="m-auto fixed top-auto bottom-0 border-t z-50 w-full bg-background h-[60px] md:h-16 safe-area-pb">
+                    <nav className="m-auto w-full h-full flex items-center justify-between px-2 sm:px-4">
+                        <div className="flex-1 flex justify-between max-w-[40%]">
                             <div className="flex flex-1 grid place-items-center">
                                 <ExtendedButton
+                                    color="secondary"
                                     variant="ghost"
-                                    className="flex-1 flex flex-col items-center justify-center h-full gap-1 w-fit"
+                                    classNames={{
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                    }}
                                     onClick={() => router.push(pathConstants.assets)}
                                 >
-                                    <Coins className="w-5 h-5 min-w-5 min-h-5" />
-                                    <div className="text-[10px] h-4 flex items-center">Assets</div>
+                                    <Coins className="w-4 h-4 sm:w-5 sm:h-5 min-w-4 min-h-4" />
+                                    <div className="text-[9px] sm:text-[10px] h-3 sm:h-4 flex items-center">Assets</div>
                                 </ExtendedButton>
                             </div>
                             <div className="flex flex-1 grid place-items-center">
                                 <ExtendedButton
+                                    color="secondary"
                                     variant="ghost"
-                                    className="flex-1 flex flex-col items-center justify-center h-full gap-1"
+                                    classNames={{
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                    }}
                                     onClick={() => router.push(pathConstants.partnerships)}
                                 >
-                                    <Gift className="w-5 h-5 min-h-5 min-w-5" />
-                                    <div className="text-[10px] h-4 flex items-center">Partner</div>
+                                    <Gift className="w-4 h-4 sm:w-5 sm:h-5 min-h-4 min-w-4" />
+                                    <div className="text-[9px] sm:text-[10px] h-3 sm:h-4 flex items-center">Partner</div>
                                 </ExtendedButton>
                             </div>
                         </div>
@@ -70,33 +76,43 @@ export const BottomNavbar: FC = () => {
                             <ExtendedButton
                                 disabled={!(authenticated && allDataLoaded)}
                                 size="lg"
-                                className="text-background"
+                                color="primary"
+                                classNames={{
+                                    container: "text-background text-sm sm:text-base px-4 sm:px-6"
+                                }}
                                 onClick={() => router.push(pathConstants.play)}
                             >
-                        Play
+                                <GameController className="w-4 h-4 sm:w-5 sm:h-5 min-w-4 min-h-4" />
+                                Play
                             </ExtendedButton>
                         </div>
-                        <div className="flex-1 flex justify-end">
+                        <div className="flex-1 flex justify-end max-w-[40%]">
                             <div className="flex flex-1 grid place-items-center">
                                 <ExtendedButton
+                                    color="secondary"
                                     variant="ghost"
-                                    className="flex-1 flex flex-col items-center justify-center h-full"
+                                    classNames={{
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                    }}
                                     onClick={() => router.push(pathConstants.dapp)}
                                 >
-                                    <Cube className="w-5 h-5 min-w-5 min-h-5" />
-                                    <div className="text-[10px] h-4 flex items-center">
-                            DApps
+                                    <Cube className="w-4 h-4 sm:w-5 sm:h-5 min-w-4 min-h-4" />
+                                    <div className="text-[9px] sm:text-[10px] h-3 sm:h-4 flex items-center">
+                                        DApps
                                     </div>
                                 </ExtendedButton>
                             </div>
                             <div className="flex flex-1 grid place-items-center">
                                 <ExtendedButton
+                                    color="secondary"
                                     variant="ghost"
-                                    className="flex-1 flex flex-col items-center justify-center h-full"
+                                    classNames={{
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                    }}
                                 >
-                                    <XLogo className="w-5 h-5 min-w-5 min-h-5" />
-                                    <div className="text-[10px] h-4 flex items-center">
-                            Social
+                                    <XLogo className="w-4 h-4 sm:w-5 sm:h-5 min-w-4 min-h-4" />
+                                    <div className="text-[9px] sm:text-[10px] h-3 sm:h-4 flex items-center">
+                                        Social
                                     </div>
                                 </ExtendedButton>
                             </div>

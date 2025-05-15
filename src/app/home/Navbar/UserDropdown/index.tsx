@@ -1,11 +1,14 @@
 import { useAppSelector } from "@/redux"
-import { Image, AvaButton, DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, Link, DropdownMenuContent, Separator, PackageOpen} from "@/components"
+import { Image, AvaButton, DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, Link, DropdownMenuContent, Separator, ToggleThemeButton } from "@/components"
 import React, { FC } from "react"
 import { Gear, SignOut, User } from "@phosphor-icons/react"
-import { useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLMutationLogoutSwrMutation, useRouterWithSearchParams } from "@/hooks"
+import { sessionDb, SessionDbKey } from "@/modules/dexie"
 export const UserDropdown: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)
     const router = useRouterWithSearchParams()
+
+    const { swrMutation: logoutSwrMutation } = useGraphQLMutationLogoutSwrMutation()
 
     return (
         <div>
@@ -17,6 +20,8 @@ export const UserDropdown: FC = () => {
                     />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="p-2 w-52">
+                    <h1>Test</h1>
+                    <ToggleThemeButton />
                     <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary" 
                         onClick={() => {
                             router.push("/home/profile")
@@ -47,8 +52,19 @@ export const UserDropdown: FC = () => {
                     </DropdownMenuItem>
                     <Separator className="my-1" />
                     <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary"
-                        onClick={() => {
-                            router.push("/home/logout")
+                        onClick={async () => {
+                            const refreshToken = await sessionDb.keyValueStore.get(
+                                SessionDbKey.RefreshToken
+                            )
+                            if (!refreshToken) {
+                                return
+                            }
+                            await logoutSwrMutation.trigger({
+                                request: {
+                                    refreshToken: refreshToken.value
+                                }
+                            })
+                            router.push("/sign-in")
                         }}
                     >
                         <Link

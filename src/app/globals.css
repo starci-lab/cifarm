@@ -161,69 +161,129 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 0 0% 3.9%;
+    /* for color-scheme: dark */
+    --background: 37 23% 10%;
+    --foreground: 33 56% 94%;
 
-    --foreground: 0 0% 98%;
+    --content-1: 0 0% 90%;
+    --content-2: 33 40% 15%; /* dark cream - use in card and button */
+    --content-3: 30 12% 25%; /* dark teal - use in hover */
+    --content-4: 31 37% 20%; /* dark teal - use in hover */
+    --content-5: 22 38% 15%; /* dark cream - use in card and button */
 
-    --card: 100 100% 10%;
+    /* for navbar */
+    --navbar: 0 0% 96.1%;
 
-    --card-foreground: 0 0% 98%;
+    /* for card 1 */
+    --card: #2a231b;
+    /* for card hover */
+    --card-hover: color-mix(in srgb, var(--card), white 10%);
+    --card-secondary: #3a2e24;
+    --border: #3a3226;
+    --border-secondary: #bfb6a8;
 
-    --popover: 0 0% 3.9%;
+    /* for button */
+    --button-background: #1c1914;
+    --button-text: #a07b4e;
+    --button-background-hover: color-mix(in srgb, var(--button-background), white 10%);
+    --button-highlight: #d9d926;
+    --button-secondary-background: 0 0% 80%;
+    --button-group-background: 0 0% 90%;
 
-    --popover-foreground: 0 0% 98%;
+    /* for text */
+    --text: #e5e0d8;
+    --text-secondary: #a07b4e;
+    --text-foreground: #666666;
+    --text-default: #a09890;
+    --text-teal: #5ab395;
+    --text-highlight: #d9d926;
+    --text-contrast: #232425;
 
-    --primary: 280 80% 70%;
+    /* tabs */
+    --tab-active-background: #1c1914;
+    --tab-active-text: #a07b4e;
+    --tab-default-background: #3a3a32;
+    --tab-default-text: #a09890;
+    --tab-default-border: #7d7569;
 
-    --primary-foreground: 0 0% 9%;
+    /* for table */
+    --table-header-background: #2a231b;
+    --table-header-text: #a07b4e;
+    --table-row-background: #2a231b;
+    --table-row-background-hover: #3a3226;
+    --table-row-text: #e5e0d8;
 
-    --secondary: 100 100% 10%;
+    /* selection */
+    --selection-active-background: #1c1914;
+    --selection-active-text: #a07b4e;
+    --selection-default-text: #a09890;
 
-    --secondary-foreground: 100 100% 50%;
+    /* sidebar */
+    --sidebar-background: #0f0c08;
 
-    --muted: 0 0% 14.9%;
+    /* for dialog */
+    --dialog-background: #3a2e24;
+    --dialog-foreground: #a07b4e;
 
-    --muted-foreground: 0 0% 63.9%;
+    --card-foreground: 0 0% 96.1%;
 
-    --accent: 0 0% 14.9%;
+    --dialog: 42 34% 25%;
 
-    --accent-foreground: 0 0% 98%;
+    --dialog-foreground: 0 0% 96.1%;
 
-    --destructive: 0 62.8% 30.6%;
+    --popover: 0 0% 10%;
+
+    --popover-foreground: 0 0% 96.1%;
+
+    --primary: 160 48% 40%;
+
+    --primary-foreground: 100 100% 90%;
+
+    --secondary: 32 61% 68%;
+
+    --secondary-foreground: 100 100% 90%;
+
+    --muted: 0 0% 20%;
+
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 0 0% 20%;
+
+    --accent-foreground: 0 0% 96.1%;
+
+    --destructive: 0 74% 40%;
 
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 14.9%;
+    --input: 0 0% 20%;
 
-    --input: 0 0% 14.9%;
+    --ring: 37 18% 40%;
 
-    --ring: 0 0% 83.1%;
+    --chart-1: 12 56% 41%;
 
-    --chart-1: 220 70% 50%;
+    --chart-2: 173 38% 29%;
 
-    --chart-2: 160 60% 45%;
+    --chart-3: 197 27% 34%;
 
-    --chart-3: 30 80% 55%;
+    --chart-4: 43 54% 46%;
 
-    --chart-4: 280 65% 60%;
+    --chart-5: 27 67% 47%;
 
-    --chart-5: 340 75% 55%;
+    --radius: 0.5rem;
 
-    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 100 100% 90%;
 
-    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 0 0% 20%;
 
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 100 100% 90%;
 
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 14% 25%;
 
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 14% 85%;
 
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 220 13% 25%;
 
-    --sidebar-border: 240 3.7% 15.9%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 217.2 71.2% 39.8%;
   }
   .theme {
     --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s)

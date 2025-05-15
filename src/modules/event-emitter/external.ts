@@ -195,6 +195,10 @@ export enum ExternalEventName {
     RequestSelectDog = "request_select_dog",
     // request to select cat, from React to Phaser
     RequestSelectCat = "request_select_cat",
+    // request to update profile, from React to Phaser
+    RequestUpdateProfile = "request_update_profile",
+    // request to logout, from React to Phaser
+    RequestLogout = "request_logout",
 }
 
 export enum ModalName {
