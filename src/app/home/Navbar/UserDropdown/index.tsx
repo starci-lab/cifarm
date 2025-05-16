@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/redux"
-import { Image, AvaButton, DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, Link, DropdownMenuContent, Separator, ToggleThemeButton } from "@/components"
+import { Image, AvaButton, DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, Link, DropdownMenuContent, Separator } from "@/components"
 import React, { FC } from "react"
 import { Gear, SignOut, User } from "@phosphor-icons/react"
 import { useGraphQLMutationLogoutSwrMutation, useRouterWithSearchParams } from "@/hooks"
@@ -19,10 +19,8 @@ export const UserDropdown: FC = () => {
                         text={user?.username || "Guest"}
                     />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="p-2 w-52">
-                    <h1>Test</h1>
-                    <ToggleThemeButton />
-                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary" 
+                <DropdownMenuContent align="end" className="p-2 w-52 bg-content-4">
+                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary  text-muted-foreground" 
                         onClick={() => {
                             router.push("/home/profile")
                         }}
@@ -31,17 +29,16 @@ export const UserDropdown: FC = () => {
                             base: "flex items-center gap-3",
                         }}
                         >
-                            <User size={20} />
+                            <User className="w-5 h-5" />
                             <span>Profile</span>
                         </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary"
+                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary text-muted-foreground"
                         onClick={() => {
                             router.push("/home/settings")
                         }}
                     >
                         <Link
-                            
                             classNames={{
                                 base: "flex items-center gap-3",
                             }}
@@ -51,7 +48,7 @@ export const UserDropdown: FC = () => {
                         </Link>
                     </DropdownMenuItem>
                     <Separator className="my-1" />
-                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-primary"
+                    <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary text-muted-foreground"
                         onClick={async () => {
                             const refreshToken = await sessionDb.keyValueStore.get(
                                 SessionDbKey.RefreshToken

@@ -44,13 +44,12 @@ export const BottomNavbar: FC = () => {
             {isMobile && (
                 <div className="m-auto fixed top-auto bottom-0 border-t z-50 w-full bg-background h-[60px] md:h-16 safe-area-pb">
                     <nav className="m-auto w-full h-full flex items-center justify-between px-2 sm:px-4">
-                        <div className="flex-1 flex justify-between max-w-[40%]">
-                            <div className="flex flex-1 grid place-items-center">
+                        <div className="flex-1 flex justify-between">
+                            <div className="flex-1 grid place-items-center">
                                 <ExtendedButton
                                     color="secondary"
-                                    variant="ghost"
                                     classNames={{
-                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit px-2"
                                     }}
                                     onClick={() => router.push(pathConstants.assets)}
                                 >
@@ -58,12 +57,11 @@ export const BottomNavbar: FC = () => {
                                     <div className="text-[9px] sm:text-[10px] h-3 sm:h-4 flex items-center">Assets</div>
                                 </ExtendedButton>
                             </div>
-                            <div className="flex flex-1 grid place-items-center">
+                            <div className="flex-1 grid place-items-center">
                                 <ExtendedButton
                                     color="secondary"
-                                    variant="ghost"
                                     classNames={{
-                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit px-2"
                                     }}
                                     onClick={() => router.push(pathConstants.partnerships)}
                                 >
@@ -71,28 +69,11 @@ export const BottomNavbar: FC = () => {
                                     <div className="text-[9px] sm:text-[10px] h-3 sm:h-4 flex items-center">Partner</div>
                                 </ExtendedButton>
                             </div>
-                        </div>
-                        <div className="flex justify-center w-fit">
-                            <ExtendedButton
-                                disabled={!(authenticated && allDataLoaded)}
-                                size="lg"
-                                color="primary"
-                                classNames={{
-                                    container: "text-background text-sm sm:text-base px-4 sm:px-6"
-                                }}
-                                onClick={() => router.push(pathConstants.play)}
-                            >
-                                <GameController className="w-4 h-4 sm:w-5 sm:h-5 min-w-4 min-h-4" />
-                                Play
-                            </ExtendedButton>
-                        </div>
-                        <div className="flex-1 flex justify-end max-w-[40%]">
-                            <div className="flex flex-1 grid place-items-center">
+                            <div className="flex-1 grid place-items-center">
                                 <ExtendedButton
                                     color="secondary"
-                                    variant="ghost"
                                     classNames={{
-                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit px-2"
                                     }}
                                     onClick={() => router.push(pathConstants.dapp)}
                                 >
@@ -102,12 +83,11 @@ export const BottomNavbar: FC = () => {
                                     </div>
                                 </ExtendedButton>
                             </div>
-                            <div className="flex flex-1 grid place-items-center">
+                            <div className="flex-1 grid place-items-center">
                                 <ExtendedButton
                                     color="secondary"
-                                    variant="ghost"
                                     classNames={{
-                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit"
+                                        container: "flex-1 flex flex-col items-center justify-center h-full gap-0.5 w-fit px-2"
                                     }}
                                 >
                                     <XLogo className="w-4 h-4 sm:w-5 sm:h-5 min-w-4 min-h-4" />

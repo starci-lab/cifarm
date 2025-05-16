@@ -35,13 +35,13 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             spine: {
                                 atlas: {
                                     assetKey: "animals-cow-baby-atlas",
-                                    assetUrl: "animals/cow/baby/spine/baby.atlas",
+                                    assetUrl: "/animals/cow/baby/spine/baby.atlas",
                                     textureUrl: "animals/cow/baby/spine/baby.png",
                                     version: 4,
                                 },
                                 json: {
                                     assetKey: "animals-cow-baby-json",
-                                    assetUrl: "animals/cow/baby/spine/baby.json",
+                                    assetUrl: "/animals/cow/baby/spine/baby.json",
                                     version: 4,
                                 },
                                 extraOffsets: { x: 0, y: -80 },
@@ -60,13 +60,13 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             spine: {
                                 atlas: {
                                     assetKey: "animals-cow-adult-atlas",
-                                    assetUrl: "animals/cow/adult/spine/adult.atlas",
+                                    assetUrl: "/animals/cow/adult/spine/adult.atlas",
                                     textureUrl: "animals/cow/adult/spine/adult.png",
                                     version: 3,
                                 },
                                 json: {
                                     assetKey: "animals-cow-adult-json",
-                                    assetUrl: "animals/cow/adult/spine/adult.json",
+                                    assetUrl: "/animals/cow/adult/spine/adult.json",
                                     version: 3,
                                 },
                                 extraOffsets: { x: 0, y: -80 },
@@ -89,19 +89,19 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                     spine: {
                         atlas: {
                             assetKey: "animals-cow-baby-atlas",
-                            assetUrl: "animals/cow/baby/spine/baby.atlas",
-                            textureUrl: "animals/cow/baby/spine/baby.png",
+                            assetUrl: "/animals/cow/baby/spine/baby.atlas",
+                            textureUrl: "/animals/cow/baby/spine/baby.png",
                             version: 4,
                         },
                         json: {
                             assetKey: "animals-cow-baby-json",
-                            assetUrl: "animals/cow/baby/spine/baby.json",
+                            assetUrl: "/animals/cow/baby/spine/baby.json",
                             version: 4,
                         },
                     },
                     texture: {
                         assetKey: "animals-cow-baby-texture",
-                        assetUrl: "animals/cow/baby/baby.png",
+                        assetUrl: "/animals/cow/baby/baby.png",
                         version: 4,
                     },
                 },
@@ -110,19 +110,19 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                     spine: {
                         atlas: {
                             assetKey: "animals-cow-adult-atlas",
-                            assetUrl: "animals/cow/adult/spine/adult.atlas",
-                            textureUrl: "animals/cow/adult/spine/adult.png",
+                            assetUrl: "/animals/cow/adult/spine/adult.atlas",
+                            textureUrl: "/animals/cow/adult/spine/adult.png",
                             version: 3,
                         },
                         json: {
                             assetKey: "animals-cow-adult-json",
-                            assetUrl: "animals/cow/adult/spine/adult.json",
+                            assetUrl: "/animals/cow/adult/spine/adult.json",
                             version: 3,
                         },
                     },
                     texture: {
                         assetKey: "animals-cow-adult-texture",
-                        assetUrl: "animals/cow/adult/adult.png",
+                        assetUrl: "/animals/cow/adult/adult.png",
                         version: 3,
                     },
                 },
@@ -140,13 +140,13 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             spine: {
                                 atlas: {
                                     assetKey: "animals-chicken-baby-atlas",
-                                    assetUrl: "animals/chicken/baby/spine/baby.atlas",
-                                    textureUrl: "animals/chicken/baby/spine/baby.png",
+                                    assetUrl: "/animals/chicken/baby/spine/baby.atlas",
+                                    textureUrl: "/animals/chicken/baby/spine/baby.png",
                                     version: 3,
                                 },
                                 json: {
                                     assetKey: "animals-chicken-baby-json",
-                                    assetUrl: "animals/chicken/baby/spine/baby.json",
+                                    assetUrl: "/animals/chicken/baby/spine/baby.json",
                                     version: 3,
                                 },
                                 extraOffsets: { x: 0, y: -80 },
@@ -165,13 +165,13 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             spine: {
                                 atlas: {
                                     assetKey: "animals-chicken-adult-atlas",
-                                    assetUrl: "animals/chicken/adult/spine/adult.atlas",
-                                    textureUrl: "animals/chicken/adult/spine/adult.png",
+                                    assetUrl: "/animals/chicken/adult/spine/adult.atlas",
+                                    textureUrl: "/animals/chicken/adult/spine/adult.png",
                                     version: 3,
                                 },
                                 json: {
                                     assetKey: "animals-chicken-adult-json",
-                                    assetUrl: "animals/chicken/adult/spine/adult.json",
+                                    assetUrl: "/animals/chicken/adult/spine/adult.json",
                                     version: 3,
                                 },
                                 extraOffsets: { x: 0, y: -80 },
@@ -194,19 +194,19 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                     spine: {
                         atlas: {
                             assetKey: "animals-chicken-baby-atlas",
-                            assetUrl: "animals/chicken/baby/spine/baby.atlas",
-                            textureUrl: "animals/chicken/baby/spine/baby.png",
+                            assetUrl: "/animals/chicken/baby/spine/baby.atlas",
+                            textureUrl: "/animals/chicken/baby/spine/baby.png",
                             version: 3,
                         },
                         json: {
                             assetKey: "animals-chicken-baby-json",
-                            assetUrl: "animals/chicken/baby/spine/baby.json",
+                            assetUrl: "/animals/chicken/baby/spine/baby.json",
                             version: 3,
                         },
                     },
                     texture: {
                         assetKey: "animals-chicken-baby-texture",
-                        assetUrl: "animals/chicken/baby/baby.png",
+                        assetUrl: "/animals/chicken/baby/baby.png",
                         version: 3,
                     },
                 },
@@ -215,19 +215,19 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                     spine: {
                         atlas: {
                             assetKey: "animals-chicken-adult-atlas",
-                            assetUrl: "animals/chicken/adult/spine/adult.atlas",
-                            textureUrl: "animals/chicken/adult/spine/adult.png",
+                            assetUrl: "/animals/chicken/adult/spine/adult.atlas",
+                            textureUrl: "/animals/chicken/adult/spine/adult.png",
                             version: 3,
                         },
                         json: {
                             assetKey: "animals-chicken-adult-json",
-                            assetUrl: "animals/chicken/adult/spine/adult.json",
+                            assetUrl: "/animals/chicken/adult/spine/adult.json",
                             version: 3,
                         },
                     },
                     texture: {
                         assetKey: "animals-chicken-adult-texture",
-                        assetUrl: "animals/chicken/adult/adult.png",
+                        assetUrl: "/animals/chicken/adult/adult.png",
                         version: 3,
                     },
                 },

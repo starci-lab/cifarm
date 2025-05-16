@@ -26,7 +26,7 @@ const Page: FC = () => {
             dispatch(setAuthenticated(true))
 
             //redirect to home
-            // router.push("/home")
+            router.push("/home")
         }
         handleEffect()
     }, [accessToken, refreshToken])
