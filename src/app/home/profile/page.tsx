@@ -21,7 +21,6 @@ const ProfilePage = () => {
             <BlurEffect size="lg" position="top" />
             <Header title="Profile" />
             <Spacer y={4} />
-
             <div>
                 <ExtendedButton onClick={handleClick}>
                     Hello

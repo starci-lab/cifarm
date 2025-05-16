@@ -15,7 +15,6 @@ const Page = () => {
             <Header />
             <ScrollProgress />
             <div className="container mx-auto px-4">
-                <LoadingScreen />
                 <Hero />
                 <Intro />
                 <WrappedSection 
