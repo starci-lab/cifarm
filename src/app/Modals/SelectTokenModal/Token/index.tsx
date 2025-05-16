@@ -1,8 +1,6 @@
 "use client"
 import { SELECT_TOKEN_DISCLOSURE } from "@/app/constants"
-import { TokenInfo } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { WithKey } from "@/modules/common"
 import { useAppSelector } from "@/redux"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC } from "react"

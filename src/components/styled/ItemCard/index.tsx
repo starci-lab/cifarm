@@ -44,7 +44,7 @@ export const ItemCard: FC<ItemCardProps> = ({
                     <TooltipContent>
                         <div>
                             <div className="text-sm">{name}</div>
-                            <div className="text-xs">{description}</div>
+                            <div className="text-xs text-muted-foreground">{description}</div>
                         </div>
                     </TooltipContent>    
                 </Tooltip>

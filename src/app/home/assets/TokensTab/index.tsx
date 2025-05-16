@@ -55,7 +55,7 @@ export const TokensTab: FC = () => {
                 name: tokenData?.name ?? "",
                 symbol: tokenData?.symbol ?? ""
             },
-            balance: balanceSwrs[token.key].data ?? 0,
+            balance: balanceSwrs[token.key]?.data ?? 0,
             price: 0,
         }
     }).filter((token) => token !== null)
