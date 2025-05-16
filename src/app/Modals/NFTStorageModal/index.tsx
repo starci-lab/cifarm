@@ -22,7 +22,8 @@ import {
     useGraphQLQueryStoredPlacedItemsSwr,
 } from "@/hooks"
 import { NFTCard } from "./NFTCard"
-import { ArrowCounterClockwise } from "@phosphor-icons/react"
+import { ArrowsCounterClockwise } from "@phosphor-icons/react"
+
 export const NFTStorageModal: FC = () => {
     const { toggle, isOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NFT_STORAGE_DISCLOSURE
@@ -66,16 +67,17 @@ export const NFTStorageModal: FC = () => {
                 <div>
                     <div className="flex gap-2">
                         <FilterBar
-                            handleSearchResult={() => {
-                            }}
+                            searchString={""}
+                            onSearchStringChange={() => {}}
                         />
                         <ExtendedButton
-                            variant="outline"
+                            variant="flat"
                             size="icon"
+                            color="secondary"
                             onClick={() => mutate()}
                             className="shrink-0"
                         >
-                            <ArrowCounterClockwise className="h-4 w-4" />
+                            <ArrowsCounterClockwise />
                         </ExtendedButton>
                     </div>  
                     <Spacer y={4}/>

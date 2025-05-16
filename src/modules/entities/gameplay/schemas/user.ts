@@ -29,4 +29,5 @@ export interface UserSchema extends AbstractSchema {
     lastOnlineTime?: Date
     selectedPlacedItemDogId?: string
     selectedPlacedItemCatId?: string
+    oauthProvider?: string
 }

@@ -29,7 +29,7 @@ export const DownloadPackage: FC<DownloadPackageProps> = ({ packageId, name, des
         }}>
             <div className="w-full justify-between items-center">
                 <div>
-                    <div className="font-base">{name}</div>
+                    <div className="text-secondary text-lg">{name}</div>
                     <div className="text-sm text-muted-foreground">{description}</div>
                 </div>
                 {

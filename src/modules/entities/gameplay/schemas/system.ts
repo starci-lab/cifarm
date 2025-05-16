@@ -1,6 +1,13 @@
 import { ChainKey, Network } from "@/modules/blockchain"
 import { Position } from "../base"
-import { CropId, DailyRewardId, NFTType, PaymentKind, TokenKey, TokenType } from "../enums"
+import {
+    CropId,
+    DailyRewardId,
+    NFTType,
+    PaymentKind,
+    TokenKey,
+    TokenType,
+} from "../enums"
 
 export interface SystemSchema {
   value: object;
@@ -27,21 +34,21 @@ export interface Activities {
   useAnimalMedicine: ActivityInfo;
   helpUseAnimalMedicine: ActivityInfo;
   harvestPlant: ActivityInfo;
-  helpFeedAnimal: ActivityInfo
-  useFruitFertilizer: ActivityInfo
-  useBugNet: ActivityInfo
-  helpUseFruitFertilizer: ActivityInfo
-  helpUseBugNet: ActivityInfo
-  harvestFruit: ActivityInfo
-  thiefFruit: ActivityInfo
-  harvestBeeHouse: ActivityInfo
-  thiefBeeHouse: ActivityInfo
+  helpFeedAnimal: ActivityInfo;
+  useFruitFertilizer: ActivityInfo;
+  useBugNet: ActivityInfo;
+  helpUseFruitFertilizer: ActivityInfo;
+  helpUseBugNet: ActivityInfo;
+  harvestFruit: ActivityInfo;
+  thiefFruit: ActivityInfo;
+  harvestBeeHouse: ActivityInfo;
+  thiefBeeHouse: ActivityInfo;
 }
 
 export interface CropInfo {
   randomness: CropRandomness;
-  nextGrowthStageAfterHarvest: number
-  growthStages: number
+  nextGrowthStageAfterHarvest: number;
+  growthStages: number;
 }
 
 export interface CropRandomness {
@@ -62,16 +69,16 @@ export interface AnimalInfo {
 }
 
 export interface FruitRandomness {
-  thief3: number
-  thief2: number
-  isBuggy: number
+  thief3: number;
+  thief2: number;
+  isBuggy: number;
 }
 
 export interface FruitInfo {
   randomness: FruitRandomness;
-  nextGrowthStageAfterHarvest: number
-  matureGrowthStage: number
-  growthStages: number
+  nextGrowthStageAfterHarvest: number;
+  matureGrowthStage: number;
+  growthStages: number;
 }
 
 export interface Positions {
@@ -117,17 +124,19 @@ export interface DailyRewardInfo {
 }
 
 export interface NFTCollectionData {
-  placedItemTypeId: string
-  name: string
-  collectionAddress: string
-  imageUrl: string
+  placedItemTypeId: string;
+  name: string;
+  collectionAddress: string;
+  imageUrl: string;
 }
-export type NFTCollection = Partial<Record<ChainKey, Partial<Record<Network, NFTCollectionData>>>>
-export type NFTCollections = Partial<Record<NFTType, NFTCollection>>
+export type NFTCollection = Partial<
+  Record<ChainKey, Partial<Record<Network, NFTCollectionData>>>
+>;
+export type NFTCollections = Partial<Record<NFTType, NFTCollection>>;
 
 export interface WholesaleMarketProduct {
-  productId: string
-  quantity: number
+  productId: string;
+  quantity: number;
 }
 
 export interface WholesaleMarket {
@@ -136,49 +145,63 @@ export interface WholesaleMarket {
   products: Array<WholesaleMarketProduct>;
 }
 
-
-export interface GoldPurchaseOption {   
-  price: number
-  amount: number
-  paymentKind: PaymentKind
+export interface GoldPurchaseOption {
+  price: number;
+  amount: number;
+  paymentKind: PaymentKind;
 }
 
-export interface GoldPurchaseOptions {   
-  options: Array<GoldPurchaseOption>
+export interface GoldPurchaseOptions {
+  options: Array<GoldPurchaseOption>;
 }
 
-
-export type GoldPurchase = Record<Network, GoldPurchaseOptions>
-export type GoldPurchases = Record<ChainKey, GoldPurchase>
+export type GoldPurchase = Record<Network, GoldPurchaseOptions>;
+export type GoldPurchases = Record<ChainKey, GoldPurchase>;
 
 export interface InteractionPermissions {
-  thiefLevelGapThreshold: number
+  thiefLevelGapThreshold: number;
 }
 
 export interface NFTBoxChance {
-  nftType: NFTType
-  startChance: number 
-  endChance: number
-  rareRarityChance: number
-  epicRarityChance: number
+  nftType: NFTType;
+  startChance: number;
+  endChance: number;
+  rareRarityChance: number;
+  epicRarityChance: number;
 }
 
 export interface NFTBoxInfo {
-  chances: Array<NFTBoxChance>
-  boxPrice: number  
-  paymentKind: PaymentKind
-  feePercentage: number
+  chances: Array<NFTBoxChance>;
+  boxPrice: number;
+  paymentKind: PaymentKind;
+  feePercentage: number;
 }
 
 export interface TokenData {
-  name: string
-  tokenType: TokenType
-  tokenAddress?: string
-  decimals: number
-  imageUrl?: string
-  symbol: string
+  name: string;
+  tokenType: TokenType;
+  tokenAddress?: string;
+  decimals: number;
+  imageUrl?: string;
+  symbol: string;
 }
 
-export type TokenWrapped = Partial<Record<Network, TokenData>>
-export type Token = Partial<Record<ChainKey, TokenWrapped>>
-export type Tokens = Partial<Record<TokenKey, Token>>
+export interface CatInfo {
+  chance: number;
+  percentQuantityBonus: number;
+  plusQuantity: number;
+}
+
+export interface DogInfo {
+  chance: number;
+  energyReduce: number;
+}
+
+export interface PetInfo {
+  cat: CatInfo;
+  dog: DogInfo;
+}
+
+export type TokenWrapped = Partial<Record<Network, TokenData>>;
+export type Token = Partial<Record<ChainKey, TokenWrapped>>;
+export type Tokens = Partial<Record<TokenKey, Token>>;

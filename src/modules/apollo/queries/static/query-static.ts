@@ -26,7 +26,8 @@ import {
     InteractionPermissions,
     NFTBoxInfo,
     Tokens,
-    TerrainSchema
+    TerrainSchema,
+    PetInfo
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -650,6 +651,17 @@ const query = gql`
         }
       }
     }
+    petInfo {
+      cat {
+        chance
+        percentQuantityBonus
+        plusQuantity
+      }
+      dog {
+        chance
+        energyReduce
+      }
+    }
   }
 `
 
@@ -657,6 +669,7 @@ export interface QueryStaticResponse {
   activities: Activities;
   defaultInfo: DefaultInfo;
   pets: Array<PetSchema>;
+  petInfo: PetInfo;
   energyRegen: EnergyRegen;
   placedItemTypes: Array<PlacedItemTypeSchema>;
   crops: Array<CropSchema>;

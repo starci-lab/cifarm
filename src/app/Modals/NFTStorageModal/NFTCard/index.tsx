@@ -3,15 +3,18 @@ import { PlacedItemSchema, PlacedItemType } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { NFT_STORAGE_DISCLOSURE, QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
-import { Image, PressableCard } from "@/components"
+import { PressableCard, Image } from "@/components"
 import {
     ExternalEventEmitter,
     ExternalEventName,
     PlaceNFTItemMessage,
 } from "@/modules/event-emitter"
-import { useAppSelector } from "@/redux"
 import { useDisclosure } from "react-use-disclosure"
 import { AssetData, assetFruitMap } from "@/modules/assets"
+import { valuesWithKey } from "@/modules/common"
+import { useAppSelector } from "@/redux"
+import { envConfig } from "@/env"
+
 export interface NFTCardProps {
   placedItem: PlacedItemSchema;
 }
@@ -53,15 +56,12 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
             throw new Error("Placed item type not found")
         }
     }, [data])
-    // const collections = useAppSelector(
-    //     (state) => state.sessionReducer.nftCollections
-    // )
 
-    // if (!assetData) return null
-    // const collection = Object.values(collections).find(
-    //     (collection) =>
-    //         collection.address === placedItem.nftMetadata?.collectionAddress
-    // )
+    const chainKey = useAppSelector(state => state.sessionReducer.chainKey)
+    const network = envConfig().network
+    const collection = valuesWithKey(data?.data.nftCollections ?? {}).find(
+        (collection) => placedItem.placedItemType === collection[chainKey]?.[network]?.placedItemTypeId
+    )
     return (
         <PressableCard
             showBorder={false}
@@ -73,23 +73,23 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
                 ExternalEventEmitter.emit(ExternalEventName.PlaceNFTItem, eventMessage)
             }}
         >
-            {/* <div className="flex gap-2">
+            <div className="flex gap-2">
                 <Image
                     className="w-16 aspect-square object-contain"
-                    src={assetData.assetUrl}
+                    src={assetData?.assetUrl ?? ""}
                 />
                 <div>
                     <div className="text-base">{placedItem.nftMetadata?.nftName}</div>
                     <div>
                         <div className="flex items-center gap-1">
-                            <Image src={collection?.imageUrl ?? ""} className="w-5 h-5" />
+                            <Image src={collection?.[chainKey]?.[network]?.imageUrl ?? ""} className="w-5 h-5" />
                             <div className="text-sm text-muted-foreground">
-                                {collection?.name}
+                                {collection?.[chainKey]?.[network]?.name ?? ""}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> */}
+            </div>
         </PressableCard>
     )
 }

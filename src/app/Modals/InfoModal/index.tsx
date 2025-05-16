@@ -81,6 +81,9 @@ export const InfoModal: FC = () => {
         case PlacedItemType.Pet: {
             return <PetContent placedItem={placedItem} />
         }
+        case PlacedItemType.Terrain: {
+            return <></>
+        }
         default: {
             throw new Error("Invalid placed item type")
         }

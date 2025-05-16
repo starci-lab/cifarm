@@ -48,10 +48,10 @@ export const QuestsModal: FC = () => {
                         className="w-full"
                     >
                         <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value={QuestsTabEnum.Social}>Social</TabsTrigger>
-                            <TabsTrigger value={QuestsTabEnum.Game}>Game</TabsTrigger>
-                            <TabsTrigger value={QuestsTabEnum.Daily}>Daily</TabsTrigger>
-                            <TabsTrigger value={QuestsTabEnum.Partnership}>Partnership</TabsTrigger>
+                            <TabsTrigger color="secondary" value={QuestsTabEnum.Social}>Social</TabsTrigger>
+                            <TabsTrigger color="secondary" value={QuestsTabEnum.Game}>Game</TabsTrigger>
+                            <TabsTrigger color="secondary" value={QuestsTabEnum.Daily}>Daily</TabsTrigger>
+                            <TabsTrigger color="secondary" value={QuestsTabEnum.Partnership}>Partnership</TabsTrigger>
                         </TabsList>
                         <TabsContent value={selectedTab}>
                             {renderTab()}

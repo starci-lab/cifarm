@@ -26,6 +26,7 @@ const query1 = gql`
       lastOnlineTime
       selectedPlacedItemDogId
       selectedPlacedItemCatId
+      oauthProvider
       email
       avatarUrl
     }
