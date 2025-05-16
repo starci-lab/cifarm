@@ -60,7 +60,7 @@ export const BuyGoldsModal: FC = () => {
                 </DialogHeader>     
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {
-                        staticSwr.data?.data.goldPurchases[chainKey][network].options.map((goldPurchase, index) => (
+                        staticSwr.data?.data.goldPurchases[chainKey][network]?.options.map((goldPurchase, index) => (
                             <BuyCard
                                 key={index}
                                 title={`${formatNumber(goldPurchase.amount, NumberPattern.Second)}`}
