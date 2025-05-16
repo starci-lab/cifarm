@@ -27,7 +27,7 @@ const Page: FC = () => {
                 <ExtendedButton
                     variant="flat"
                     onClick={async () => {
-                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/google/redirect`, {
+                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/google/redirect?network=${network}`, {
                             network
                         }))
                     }}
@@ -43,7 +43,7 @@ const Page: FC = () => {
                     className="w-full justify-start"
                     color="secondary"
                     onClick={async () => {
-                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
+                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect?network=${network}`, {
                             network
                         }))
                     }}
@@ -56,7 +56,7 @@ const Page: FC = () => {
                     variant="flat"
                     onClick={async () => {
                         router.push(
-                            formatUrl(`${envConfig().socialAuthUrl}/auth/x/redirect`, {
+                            formatUrl(`${envConfig().socialAuthUrl}/auth/x/redirect?network=${network}`, {
                                 network
                             })
                         )

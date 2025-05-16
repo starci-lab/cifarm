@@ -39,7 +39,7 @@ export const OverviewTab: FC = () => {
                     </ExtendedButton>
 
                     <Card variant="default">
-                        <CardHeader className="py-3">
+                        <CardHeader className="py-4 py-3">
                             <CardTitle className="text-xl font-bold text-foreground">Details</CardTitle>
                         </CardHeader>
                         <Separator />
