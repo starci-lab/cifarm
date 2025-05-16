@@ -2,7 +2,7 @@
 
 import React from "react"
 import { Header, Footer, StickySidebar, Roadmap, Hero, Intro } from "./_components"
-import { Image, Marquee, ScrollProgress, WrappedSection } from "@/components"
+import { Image, LoadingScreen, Marquee, ScrollProgress, WrappedSection } from "@/components"
 import { Teams } from "./_components/Teams"
 import { chainKeyMap } from "@/modules/blockchain"
 import { BlurEffect } from "@/components"
@@ -15,6 +15,7 @@ const Page = () => {
             <Header />
             <ScrollProgress />
             <div className="container mx-auto px-4">
+                <LoadingScreen />
                 <Hero />
                 <Intro />
                 <WrappedSection 

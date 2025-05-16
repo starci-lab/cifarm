@@ -1,5 +1,4 @@
 import { valuesWithKey } from "@/modules/common"
-import { useAppSelector } from "@/redux"
 import React, { useState } from "react"
 import { FilterBar, Spacer, ExtendedButton, ModalHeader } from "@/components"
 import { SELECT_NFT_DISCLOSURE } from "@/app/constants"
@@ -19,7 +18,7 @@ export const SelectNFTModal = () => {
     const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(SELECT_NFT_DISCLOSURE)
-    const [, setSearchString] = useState("")
+    const [searchString, setSearchString] = useState("")
 
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
@@ -35,9 +34,8 @@ export const SelectNFTModal = () => {
                 </DialogHeader>
                 <div>
                     <FilterBar
-                        handleSearchResult={({ searchString }) => {
-                            setSearchString(searchString)
-                        }}
+                        searchString={searchString}
+                        onSearchStringChange={setSearchString}
                     />
                     <Spacer y={4} />
                     <div className="grid gap-4">

@@ -43,6 +43,7 @@ const Page: FC = () => {
                     <Image src="/facebook.svg" className="w-4 h-4" />
           Continue with Facebook
                 </ExtendedButton>
+                <Spacer y={2} />
                 <ExtendedButton
                     onClick={async () => {
                         router.push(

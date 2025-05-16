@@ -74,7 +74,7 @@ export const SolanaConnect: FC = () => {
                 <ExtendedButton
                     disabled={!connected}
                     className="w-full"
-                    variant="destructive"
+                    color="destructive"
                     onClick={() => {
                         disconnect()
                     }}
@@ -83,7 +83,7 @@ export const SolanaConnect: FC = () => {
                 </ExtendedButton>
                 <ExtendedButton
                     className="w-full"
-                    variant="default"
+                    color="default"
                     disabled={chainKey === ChainKey.Solana || !connected}
                     onClick={() => {
                         dispatch(setChainKey(ChainKey.Solana))

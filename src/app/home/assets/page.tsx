@@ -76,6 +76,7 @@ const Page = () => {
                     label: "In-Game",
                     value: AssetTab.InGame,
                 }]}
+                color="secondary"
                 selectedTab={assetTab}
                 onSelectTab={(tab) => dispatch(setAssetTab(tab as AssetTab))}
             />

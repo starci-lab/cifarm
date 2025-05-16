@@ -102,7 +102,7 @@ export const SuiConnect: FC = () => {
                 <ExtendedButton
                     disabled={!isConnected}
                     className="w-full"
-                    variant="destructive"
+                    color="destructive"
                     onClick={() => {
                         disconnect()
                     }}
@@ -111,7 +111,7 @@ export const SuiConnect: FC = () => {
                 </ExtendedButton>
                 <ExtendedButton
                     className="w-full"
-                    variant="default"
+                    color="default"
                     disabled={chainKey === ChainKey.Sui || !isConnected}
                     onClick={() => {
                         dispatch(setChainKey(ChainKey.Sui))

@@ -12,7 +12,7 @@ interface NFTCollectionProps {
 
 export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSwr, onClick }) => {
     return (
-        <PressableCard className="relative" onClick={onClick} variant="default" hoverAnimated={true}>
+        <PressableCard className="relative" onClick={onClick} hoverAnimated={true}>
             <div>
                 <Image src={collection.imageUrl} className="w-24 h-24 object-contain" />
                 <Spacer y={2}/>

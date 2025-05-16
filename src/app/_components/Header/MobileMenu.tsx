@@ -70,7 +70,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                                     rel="noopener noreferrer"
                                     aria-label={social.label}
                                 >
-                                    <social.icon size={20} />
+                                    <social.icon />
                                 </Link>
                             ))}
                         </WrappedAnimation>

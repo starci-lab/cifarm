@@ -9,50 +9,47 @@ export interface IRoadMap {
 
 export const roadmapConstants: Array<IRoadMap> = [
     {
-        phase: "Phase 1 - 22/9",
-        description: "Release the Cifarm MVP on Aptos Testnet",
+        phase: "Phase 1 - Q4 2024",
+        description: "Social engagement",
         image: "/landing/background.png",
         icon: "/$CARROT.png",
         features: [
+            "The CiFarm demo has been announced",
             "Planting and harvesting crops",
             "Feeding and raising animals",
             "Purchasing and selling animals, and crops",
         ],
-        type: 1, // completed
+        type: 1,
     },
     {
-        phase: "Phase 2 - Late Nov 2024",
-        description: "Add More Features",
+        phase: "Phase 2 - Q1 2025",
+        description: "Gameplay",
         image: "/landing/background.png",
         icon: "/$CAULI.png",
-        features: ["New animals (10+)", "New pets (10+)", "New crops (20+)"],
+        features: ["CiFarm Alpha is on air! We've got 2,000 early users"],
         type: 1, 
     },
     {
-        phase: "Phase 3 - Late Dec 2024",
-        description: "Raising the Cifarm community",
+        phase: "Phase 3 - Q2 2025",
+        description: "Start the first season",
         image: "/landing/background.png",
         icon: "/icons/roadside-stand.png",
         features: [
-            "Launch the Cifarm community on Telegram",
-            "Launch in-game events where players can claim $CAU tokens through airdrops",
+            "CiFarm Beta is coming with NFTs and the first season",
+            "Attract seed funding",
         ],
         type: 2,
     },
     {
-        phase: "Phase 4 - Early Jan 2025",
-        description: "Presale tokens, create NFT marketplace",
-        image: "/landing/background.png",
-        icon: "/icons/nft-marketplace.png",
-        features: ["Presale tokens", "Create NFT marketplace"],
-        type: 3, // upcoming
-    },
-    {
-        phase: "Phase 5 - Feb 2025",
-        description: "Release the stable version",
+        phase: "Phase 4 - Q3 2025",
+        description: "Conduct TGE through DEX and CEX",
         image: "/landing/background.png",
         icon: "/icons/neighbors.png",
-        features: ["Release the stable version of Cifarm on AptosC-Chain Mainnet"],
+        features: [
+            "Add more game mechanics",
+            "Add more game content",
+            "Add more game features",
+        ],
         type: 3, // upcoming
     },
 ] 

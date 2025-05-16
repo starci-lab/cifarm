@@ -51,14 +51,14 @@ export const WarningModal: FC = () => {
                 </div>
                 <DialogFooter>
                     <ExtendedButton 
-                        variant="ghost" 
+                        color="ghost" 
                         onClick={() => toggle(false)}
                         className="text-muted-foreground"
                     >
                         Cancel
                     </ExtendedButton>
                     <ExtendedButton
-                        variant="destructive"
+                        color="destructive"
                         onClick={() => {
                             //close the current modal
                             toggle(false)

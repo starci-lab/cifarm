@@ -80,10 +80,10 @@ export const SellModal: FC = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <ExtendedButton variant="ghost" className="w-full" onClick={() => close()}>
+                    <ExtendedButton color="ghost" className="w-full" onClick={() => close()}>
                     Cancel
                     </ExtendedButton>
-                    <ExtendedButton variant="destructive" className="w-full" onClick={() => {
+                    <ExtendedButton color="destructive" className="w-full" onClick={() => {
                         close()
                         if (!placedItemId) throw new Error("Placed item id not found")
                         const eventMessage: SellMessage = {

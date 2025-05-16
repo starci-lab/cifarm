@@ -12,7 +12,7 @@ export const Navbar: FC = () => {
     const router = useRouterWithSearchParams()
 
     return (
-        <nav className="w-full py-4 z-50 sticky top-0 px-6">
+        <nav className="w-full py-4 z-50 sticky top-0 px-6 max-w-[1200px] mx-auto">
             <div className="flex items-center justify-between w-full">
                 <div/>
                 <div className="flex items-center gap-2">

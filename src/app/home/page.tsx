@@ -43,6 +43,7 @@ const Page: FC = () => {
                         value: HomeTab.Items,
                     },
                 ]}
+                color="secondary"
                 selectedTab={homeTab}
                 onSelectTab={(tab) => {
                     dispatch(setHomeTab(tab as HomeTab))

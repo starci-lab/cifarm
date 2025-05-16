@@ -1,8 +1,7 @@
 import React, { FC } from "react"
 import { cn } from "@/lib/utils"
 import { cva } from "class-variance-authority"
-import { Button } from "@/components/ui"
-import { ButtonProps } from "react-day-picker"
+import { Button, ButtonProps } from "@/components/ui"
 import { Spinner } from "@/components"
 
 export interface PressableCardProps extends ButtonProps {
@@ -12,32 +11,29 @@ export interface PressableCardProps extends ButtonProps {
   }
   isLoading?: boolean;
   className?: string;
-  variant?: "default" | "gradient" | "destructive" | "outline" | "secondary" | "ghost" | "ghost-secondary" | "link" | "icon" | "highlight";
+  color?: "default" | "gradient" | "destructive" | "secondary" | "ghost" | "link" | "highlight" | "primary" | "gradient-secondary";
   hoverAnimated?: boolean;
 }
 
 const pressableCardVariants = cva("rounded-lg p-3", {
     variants: {
-        variant: {
+        color: {
             default: "bg-content-2 hover:bg-content-3/60 transition-colors duration-200",
             gradient: "bg-gradient-to-r from-card-1 to-card-2 hover:bg-gradient-to-r hover:from-card-1/90 hover:to-card-2/90",
-            destructive:
-        "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-            outline:
-        "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+            destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
             secondary: "bg-content2/50 text-foreground hover:bg-content2/25",
             ghost: "hover:bg-accent hover:text-accent-foreground",
-            "ghost-secondary": "hover:bg-accent/40 hover:text-accent-foreground",
             link: "text-primary underline-offset-4 hover:underline",
-            icon: "rounded-full hover:bg-accent/20",
             highlight: "bg-gradient-to-r from-card-1 to-card-2 hover:bg-gradient-to-r hover:from-card-1/90 hover:to-card-2/90",
+            primary: "bg-primary hover:bg-primary/75 text-background",
+            "gradient-secondary": "bg-gradient-secondary hover:bg-gradient-secondary-hover text-background"
         },
         hoverAnimated: {
             true: "hover:-translate-y-2 transition-transform duration-500",
         },
     },
     defaultVariants: {
-        variant: "default",
+        color: "default",
         hoverAnimated: false,
     },
 })
@@ -48,7 +44,7 @@ export const PressableCard: FC<PressableCardProps> = ({
     classNames = {},
     className,
     isLoading,
-    variant = "default",
+    color = "default",
     hoverAnimated = false,
     ...props
 }: PressableCardProps) => {
@@ -59,7 +55,7 @@ export const PressableCard: FC<PressableCardProps> = ({
             onClick={onClick}
             removeClassName
             className={cn(
-                pressableCardVariants({ variant, hoverAnimated }),
+                pressableCardVariants({ color, hoverAnimated }),
                 "text-start justify-start w-full hover:text-inherit",
                 "whitespace-normal h-fit", 
                 base, 

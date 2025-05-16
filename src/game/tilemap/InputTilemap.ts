@@ -72,13 +72,13 @@ import {
     PlaceNFTItemMessage,
     SceneEventEmitter,
     SceneEventName,
+    ToolLike,
 } from "@/modules/event-emitter"
 import { ExternalEventEmitter } from "@/modules/event-emitter"
 import { gameplayDepth } from "../depth"
 import { LayerName } from "./types"
 import { PlayerContext } from "@/redux"
 import { AssetMapData } from "@/modules/assets"
-import { ToolLike } from "../react-ui"
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
 

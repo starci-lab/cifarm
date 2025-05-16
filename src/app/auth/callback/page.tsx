@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { saveTokens } from "@/modules/apollo/tokens"
 import { useAppDispatch, setAuthenticated } from "@/redux"
 import { useRouterWithSearchParams } from "@/hooks"
+import { LoadingScreen } from "@/components"
 const Page: FC = () => {
     const searchParams = useSearchParams()
     const accessToken = searchParams.get("accessToken")
@@ -25,11 +26,13 @@ const Page: FC = () => {
             dispatch(setAuthenticated(true))
 
             //redirect to home
-            router.push("/")
+            // router.push("/home")
         }
         handleEffect()
     }, [accessToken, refreshToken])
-    return <div>Page</div>
+    return <div className="h-screen w-screen">
+        <LoadingScreen />
+    </div>
 }
 
 export default Page

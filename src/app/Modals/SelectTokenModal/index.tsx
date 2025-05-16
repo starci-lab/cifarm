@@ -43,9 +43,8 @@ export const SelectTokenModal = () => {
                 </DialogHeader>
                 <div>
                     <FilterBar
-                        handleSearchResult={({ searchString }) => {
-                            setSearchString(searchString)
-                        }}
+                        searchString={searchString}
+                        onSearchStringChange={setSearchString}
                     />
                     <Spacer y={4} />
                     {/* <List
