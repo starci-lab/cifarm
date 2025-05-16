@@ -28,6 +28,9 @@ export const downloadTexture = async (
     }
     const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
         onDownloadProgress: (progress) => {
             if (progress.progress) {
                 ExternalEventEmitter.emit(
@@ -84,6 +87,9 @@ export const downloadJson = async (scene: Scene, spineData: AssetSpineData) => {
     }
     const { data } = await axios.get(getAssetUrl(assetUrl), {
         responseType: "blob",
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
         onDownloadProgress: (progress) => {
             ExternalEventEmitter.emit(
                 ExternalEventName.AssetsLoaded,
@@ -121,6 +127,9 @@ export const downloadAtlas = async (scene: Scene, spineData: AssetSpineData) => 
     } else {
         const { data } = await axios.get(getAssetUrl(textureUrl), {
             responseType: "blob",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
             onDownloadProgress: (progress) => {
                 ExternalEventEmitter.emit(
                     ExternalEventName.AssetsLoaded,
@@ -144,6 +153,9 @@ export const downloadAtlas = async (scene: Scene, spineData: AssetSpineData) => 
     } else {
         const { data } = await axios.get(getAssetUrl(assetUrl), {
             responseType: "text",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
             onDownloadProgress: (progress) => {
                 ExternalEventEmitter.emit(
                     ExternalEventName.AssetsLoaded,
