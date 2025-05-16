@@ -19,6 +19,7 @@ import useSWR from "swr"
 import { Stats } from "../Stats"
 import { formatTime } from "@/modules/common"
 import { StateContainer } from "../StateContainer"
+import { cn } from "@/lib/utils"
 
 interface TileContentProps {
   placedItem: PlacedItemSchema;
@@ -269,7 +270,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
             { placedItem.plantInfo &&
              <>
                  <div className="bg-content-2 rounded-lg overflow-hidden">
-                     <div className="px-3 py-2">
+                     <div className="px-3 py-2 text-lg text-secondary">
                          {plantInfo?.name}
                      </div>
                      <Separator />
@@ -281,7 +282,14 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                              <div>
                                  {`Stage ${(placedItem.plantInfo?.currentStage ?? 0) + 1}`}
                              </div>
-                             <div className="text-4xl text-primary">
+                             <div className={
+                                 cn(
+                                     "text-4xl text-primary",
+                                     {
+                                         "text-destructive": placedItem.plantInfo.currentState === PlantCurrentState.NeedWater
+                                     }
+                                 )
+                             }>
                                  {formatTime(timeElapsed)}
                              </div>
                          </div>
