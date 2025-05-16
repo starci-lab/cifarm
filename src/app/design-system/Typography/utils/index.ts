@@ -2,9 +2,9 @@
 //Minor Third 1.2
 //Major Second 1.125
 
-export const MAJOR_THIRD = 1.25 // desktop - lg
-export const MINOR_THIRD = 1.2 // tablet - md
-export const MAJOR_SECOND = 1.125 // mobile 
+export const MAJOR_THIRD = 1.22 // desktop - lg 1.25
+export const MINOR_THIRD = 1.2 // tablet - md 1.2
+export const MAJOR_SECOND = 1.125 // mobile 1.125
 
 export const FONT_BASE_SIZE = 16.0
 
@@ -31,7 +31,6 @@ export interface FontSizeValue{
     tablet: string
     desktop: string
 }
-
 //Font base size * major third
 export const fontSizeMap: Record<FontType, FontSizeValue> = {
     [FontType.H1]: {
@@ -80,3 +79,4 @@ export const fontSizeMap: Record<FontType, FontSizeValue> = {
         desktop: `lg:text-[${roundTo2Decimals(FONT_BASE_SIZE * Math.pow(MAJOR_THIRD, -2))}px]`
     }
 }
+console.log(fontSizeMap)
