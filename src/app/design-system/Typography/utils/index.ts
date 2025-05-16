@@ -2,8 +2,8 @@
 //Minor Third 1.2
 //Major Second 1.125
 
-export const MAJOR_THIRD = 1.25 // desktop - lg
-export const MINOR_THIRD = 1.2 // tablet - md
+export const MAJOR_THIRD = 1.2 // desktop - lg
+export const MINOR_THIRD = 1.15 // tablet - md
 export const MAJOR_SECOND = 1.125 // mobile 
 
 export const FONT_BASE_SIZE = 16.0
