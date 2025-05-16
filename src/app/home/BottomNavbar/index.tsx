@@ -16,6 +16,7 @@ export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
     const isMobile = useIsMobile()
     const pathname = usePathname()
+    console.log(pathname)
     const navItems = [
         {
             name: "Home",
@@ -25,22 +26,22 @@ export const BottomNavbar: FC = () => {
         {
             name: "Assets",
             icon: Coins,
-            path: pathConstants.assets,
+            path: `${pathConstants.home}${pathConstants.assets}`,
         },
         {
             name: "Partner",
             icon: Gift,
-            path: pathConstants.partnerships,
+            path: `${pathConstants.home}${pathConstants.partnerships}`,
         },
         {
             name: "DApps",
             icon: Cube,
-            path: pathConstants.dapp,
+            path: `${pathConstants.home}${pathConstants.dapps}`,
         },
         {
             name: "Social",
             icon: XLogo,
-            path: "#",
+            path: "https://x.com/CifarmOnSol",
         },
     ]
 
@@ -62,17 +63,17 @@ export const BottomNavbar: FC = () => {
                                                 isActive ? "text-secondary" : "text-muted-foreground hover:text-foreground",
                                             )}
                                         >
-                                            <div className="relative">
+                                            <ExtendedButton className="relative" variant="flat" color="ghost">
                                                 {isActive && (
                                                     <motion.div
                                                         layoutId="activeIndicator"
-                                                        className="absolute -inset-1 bg-primary/10 rounded-full"
+                                                        className="absolute -inset-1 bg-secondary/10 rounded-full"
                                                         initial={false}
                                                         transition={{ type: "spring", duration: 0.5 }}
                                                     />
                                                 )}
                                                 <item.icon className="w-5 h-5 relative" />
-                                            </div>
+                                            </ExtendedButton>
                                             <span className="text-[10px] font-medium">{item.name}</span>
                                         </button>
                                     </li>
