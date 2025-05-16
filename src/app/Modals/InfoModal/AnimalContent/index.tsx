@@ -4,28 +4,31 @@ import { formatTime } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge } from "@/components"
+import { DialogFooter, Spacer, ExtendedButton, ExtendedBadge } from "@/components"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
 import { cn } from "@/lib/utils"
 import { Stats } from "../Stats"
-import { assetStateMap, assetProductMap } from "@/modules/assets"
+import { assetStateMap, assetProductMap, 
+} from "@/modules/assets"
+import { StateContainer } from "../StateContainer"
 
 interface AnimalContentProps {
   placedItem: PlacedItemSchema;
 }
+
 export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
-    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         GRAPHQL_QUERY_STATIC_SWR
     )
 
-    const placedItemType = swr.data?.data.placedItemTypes.find(
+    const placedItemType = staticSwr.data?.data.placedItemTypes.find(
         (placedItemType) => placedItemType.id === placedItem?.placedItemType
     )
     if (!placedItemType) {
         throw new Error("Placed item type not found")
     }
-    const animal = swr.data?.data.animals.find(
+    const animal = staticSwr.data?.data.animals.find(
         (animal) => animal.id === placedItemType.animal
     )
 
@@ -34,10 +37,6 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
     }
     if (!placedItem.animalInfo) {
         throw new Error("Placed item animal info not found")
-    }
-    const animalInfo = swr.data?.data.animalInfo
-    if (!animalInfo) {
-        throw new Error("Animal info not found")
     }
     const _timeElapsed = placedItem.animalInfo.isAdult
         ? animal.yieldTime - (placedItem.animalInfo.currentYieldTime ?? 0)
@@ -61,7 +60,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
         return () => clearInterval(interval)
     }, [timeElapsed])
 
-    const product = swr.data?.data.products.find(
+    const product = staticSwr.data?.data.products.find(
         (product) => product.animal === animal.id
     )
     if (!product) {
@@ -99,10 +98,9 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
         switch (placedItem.animalInfo?.currentState) {
         case AnimalCurrentState.Hungry:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
-                    <Image
-                        src={asset?.data ? URL.createObjectURL(asset.data) : ""}
-                        className="w-16 h-16 object-contain"
+                <div className="p-3 flex items-center gap-4 bg-content-6">
+                    <StateContainer
+                        assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
               The animal is hungry. Purchase animal feed from the shop and feed it to the animal to resume its growth.
@@ -111,10 +109,9 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
             )
         case AnimalCurrentState.Sick:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
-                    <Image
-                        src={asset?.data ? URL.createObjectURL(asset.data) : ""}
-                        className="w-16 h-16 object-contain"
+                <div className="p-3 flex items-center gap-4 bg-content-6">
+                    <StateContainer
+                        assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
                     The animal is sick. Consider purchasing animal medicine from the shop and using it on your animal to get rid of the sickness.
@@ -123,10 +120,9 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
             )
         case AnimalCurrentState.Yield:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
-                    <Image
-                        src={asset?.data ? URL.createObjectURL(asset.data) : ""}
-                        className="w-16 h-16 object-contain"
+                <div className="p-3 flex items-center gap-4 bg-content-6">
+                    <StateContainer
+                        assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="flex flex-col">
                         <div className="text-sm text-muted-foreground">
@@ -148,45 +144,50 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
     return (
         <>
             <div>
-                {
-                    placedItem.nftMetadata && (
-                        <>
-                            <div className="flex items-center gap-2">
-                                <ExtendedBadge>
+                <div className="flex items-center gap-4">
+                    {
+                        <ExtendedBadge>
+                            {placedItem.animalInfo?.isAdult ? "Adult" : "Baby"}
+                        </ExtendedBadge>
+                    }
+                    {
+                        placedItem.nftMetadata && (
+                            <>
+                                <div className="flex items-center gap-2">
+                                    <ExtendedBadge>
                                     NFT
-                                </ExtendedBadge>
-                                <div className="text-sm text-muted-foreground">
-                                    {placedItem.nftMetadata.nftName}
-                                </div>
-                            </div>
-                            <Spacer y={4}/>
-                        </>
-                    )
-                }
-                {
-                    placedItem.animalInfo?.currentState !==
-          AnimalCurrentState.Yield && (
-                        <>
-                            <div>
-                                <div className="flex gap-1 items-center">
-                                    <div className={cn("text-4xl font-bold", {
-                                        "text-destructive": placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry,
-                                    })}>
-                                        {`${formatTime(timeElapsed)}`}
+                                    </ExtendedBadge>
+                                    <div className="text-sm text-muted-foreground">
+                                        {placedItem.nftMetadata.nftName}
                                     </div>
                                 </div>
-                            </div>
-                            <Spacer y={4}/>
-                        </>
-                    )}
-                {
-                    placedItem.animalInfo?.currentState !== AnimalCurrentState.Normal && (
+                                <Spacer y={4}/>
+                            </>
+                        )
+                    }
+                </div>
+                <Spacer y={4}/>
+                <div className="bg-content-2 rounded-lg overflow-hidden">
+                    <div className="flex gap-4 p-3 items-center">
+                        <div className={
+                            cn(
+                                "text-4xl text-primary",
+                                {
+                                    "text-destructive": placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry || placedItem.animalInfo?.currentState === AnimalCurrentState.Sick
+                                }
+                            )
+                        }>
+                            {formatTime(timeElapsed)}
+                        </div>
+                    </div>
+                    {placedItem.animalInfo &&
+          placedItem.animalInfo.currentState !== AnimalCurrentState.Normal && (
                         <>
                             {renderState()}
-                            <Spacer y={4}/>
                         </>
-                    )
-                }
+                    )}
+                </div>
+                <Spacer y={4}/>
                 <Stats
                     growthAcceleration={placedItem.animalInfo?.growthAcceleration}
                     qualityYield={placedItem.animalInfo?.qualityYield}

@@ -100,24 +100,31 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
         switch (placedItem.beeHouseInfo?.currentState) {
         case BeeHouseCurrentState.Yield:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
+                <div className="bg-content-6 p-2 flex items-center gap-4">
                     <Image
                         src={asset?.data ? URL.createObjectURL(asset.data) : ""}
                         className="w-16 h-16 object-contain"
                     />
-                    <div className="text-sm text-muted-foreground">
-                        The bee house is ready to yield. Use the crate to harvest.
+                    <div className="flex flex-col">
+                        <div className="text-sm text-muted-foreground">
+                Your bee house is ready to harvest. Use the crate to harvest it.
+                        </div>
+                        <div className="flex items-center">
+                            <div className="text-lg font-bold">
+                                {`${placedItem.beeHouseInfo.harvestQuantityRemaining}/${placedItem.beeHouseInfo.harvestQuantityDesired}`}
+                            </div>
+                        </div>
                     </div>
                 </div>
             )
         case BeeHouseCurrentState.Normal:
-            throw new Error("Bee house is not ready to yield")
+            throw new Error("Bee house is not in a special state")
         }
     }
 
     return (
-        <>
-            <div>
+        <div>
+            <div className="flex items-center gap-4">
                 {
                     placedItem.nftMetadata && (
                         <>
@@ -133,49 +140,47 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
                         </>
                     )
                 }
-                {
-                    placedItem.beeHouseInfo?.currentState !==
-          BeeHouseCurrentState.Yield && (
-                        <>
-                            <div>
-                                <div className="flex gap-1 items-center">
-                                    <div className={cn("text-4xl font-bold")}>
-                                        {`${formatTime(timeElapsed)}`}
-                                    </div>
-                                </div>
-                            </div>
-                            <Spacer y={4}/>
-                        </>
-                    )}
-                {
-                    placedItem.beeHouseInfo?.currentState !== BeeHouseCurrentState.Normal && (
-                        <>
-                            {renderState()}
-                            <Spacer y={4}/>
-                        </>
-                    )
-                }
-                <Stats
-                    growthAcceleration={placedItem.beeHouseInfo?.growthAcceleration}
-                    qualityYield={placedItem.beeHouseInfo?.qualityYield}
-                    diseaseResistance={placedItem.beeHouseInfo?.diseaseResistance}
-                    harvestYieldBonus={placedItem.beeHouseInfo?.harvestYieldBonus}
-                />
-                {placedItem.nftMetadata && (
-                    <>
-                        <Spacer y={4}/>
-                        <DialogFooter>
+            </div>   
+            <div className="rounded-lg bg-content-2 overflow-hidden">
+                <div className="p-3">
+                    <div className={
+                        cn(
+                            "text-4xl text-primary",
                             {
-                                <ExtendedButton className="w-full">
-                                        Manage
-                                </ExtendedButton>
+                                "text-destructive": placedItem.beeHouseInfo?.currentState === BeeHouseCurrentState.Yield
                             }
-                        </DialogFooter>
+                        )
+                    }>
+                        {formatTime(timeElapsed)}
+                    </div>
+                </div>
+                {placedItem.beeHouseInfo &&
+          placedItem.beeHouseInfo.currentState !== BeeHouseCurrentState.Normal && (
+                    <>
+                        {renderState()}
                     </>
-                ) 
-                }
+                )}
             </div>
-
-        </>
+            <Spacer y={4}/>
+            <Stats
+                growthAcceleration={placedItem.beeHouseInfo?.growthAcceleration}
+                qualityYield={placedItem.beeHouseInfo?.qualityYield}
+                diseaseResistance={placedItem.beeHouseInfo?.diseaseResistance}
+                harvestYieldBonus={placedItem.beeHouseInfo?.harvestYieldBonus}
+            />
+            {placedItem.nftMetadata && (
+                <>
+                    <Spacer y={4}/>
+                    <DialogFooter>
+                        {
+                            <ExtendedButton className="w-full">
+                                        Manage
+                            </ExtendedButton>
+                        }
+                    </DialogFooter>
+                </>
+            ) 
+            }
+        </div>
     )
 }

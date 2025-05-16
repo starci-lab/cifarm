@@ -1043,6 +1043,16 @@ export class PlacedItemObject extends ContainerLite {
         if (this.plantInfoSprite) {
             this.plantInfoSprite.setTint(tintColor)
         }
+        if (this.bubbleState) {
+            for (const child of this.bubbleState.getChildren()) {
+                if (child instanceof Phaser.GameObjects.Image) {
+                    child.setTint(tintColor)
+                }
+            }
+        }
+        if (this.selectedIcon) {
+            this.selectedIcon.setTint(tintColor)
+        }
     }
 
     public clearTint() {
@@ -1051,6 +1061,16 @@ export class PlacedItemObject extends ContainerLite {
         }
         if (this.plantInfoSprite) {
             this.plantInfoSprite.clearTint()
+        }
+        if (this.bubbleState) {
+            for (const child of this.bubbleState.getChildren()) {
+                if (child instanceof Phaser.GameObjects.Image) {
+                    child.clearTint()
+                }
+            }
+        }
+        if (this.selectedIcon) {
+            this.selectedIcon.clearTint()
         }
     }
 

@@ -99,6 +99,11 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             version: 4,
                         },
                     },
+                    texture: {
+                        assetKey: "animals-cow-baby-texture",
+                        assetUrl: "animals/cow/baby/baby.png",
+                        version: 4,
+                    },
                 },
                 [AnimalAge.Adult]: {
                     type: AssetMapType.Spine,
@@ -114,6 +119,11 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             assetUrl: "animals/cow/adult/spine/adult.json",
                             version: 3,
                         },
+                    },
+                    texture: {
+                        assetKey: "animals-cow-adult-texture",
+                        assetUrl: "animals/cow/adult/adult.png",
+                        version: 3,
                     },
                 },
             },
@@ -194,6 +204,11 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             version: 3,
                         },
                     },
+                    texture: {
+                        assetKey: "animals-chicken-baby-texture",
+                        assetUrl: "animals/chicken/baby/baby.png",
+                        version: 3,
+                    },
                 },
                 [AnimalAge.Adult]: {
                     type: AssetMapType.Spine,
@@ -209,6 +224,11 @@ export const assetAnimalMap: Record<AnimalId, AssetAnimalData> = {
                             assetUrl: "animals/chicken/adult/spine/adult.json",
                             version: 3,
                         },
+                    },
+                    texture: {
+                        assetKey: "animals-chicken-adult-texture",
+                        assetUrl: "animals/chicken/adult/adult.png",
+                        version: 3,
                     },
                 },
             },

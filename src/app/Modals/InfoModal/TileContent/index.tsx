@@ -31,6 +31,13 @@ interface PlantData {
   name: string;
 }
 
+interface PlantInfo {
+  name: string;
+  description: string;
+  assetUrl: string;
+  stageAssetUrl: string;
+}
+
 export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
     const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         GRAPHQL_QUERY_STATIC_SWR
@@ -193,11 +200,11 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                     />
                     <div className="flex flex-col">
                         <div className="text-sm text-muted-foreground">
-                Your plant is ready to harvest.
+                Your plant is ready to harvest. Use the crate to harvest it.
                         </div>
                         <div className="flex items-center">
                             <div className="text-lg font-bold">
-                                {`${placedItem.plantInfo.harvestQuantityRemaining}/20`}
+                                {`${placedItem.plantInfo.harvestQuantityRemaining}/${placedItem.plantInfo.harvestQuantityDesired}`}
                             </div>
                         </div>
                     </div>
@@ -208,7 +215,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         }
     }
 
-    const getPlantInfo = () => {
+    const getPlantInfo = (): PlantInfo | null => {
         if (!placedItem.plantInfo?.plantType) {
             return null
         }
@@ -229,12 +236,12 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                 throw new Error("Product not found")
             }
             const assetUrl = assetProductMap[product.displayId].base.assetUrl
-            const stage = stages[placedItem.plantInfo?.currentStage ?? 0]
+            const stageAssetUrl = stages[placedItem.plantInfo?.currentStage ?? 0].assetUrl
             return {
                 name,
                 description,
                 assetUrl,
-                stage,
+                stageAssetUrl,
             }
         }
         case PlantType.Flower: {
@@ -253,12 +260,12 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                 throw new Error("Product not found")
             }
             const assetUrl = assetProductMap[product.displayId].base.assetUrl
-            const stage = stages[placedItem.plantInfo?.currentStage ?? 0]
+            const stageAssetUrl = stages[placedItem.plantInfo?.currentStage ?? 0].assetUrl
             return {
                 name,
                 description,
                 assetUrl,
-                stage,
+                stageAssetUrl,
             }
         }
         }
@@ -276,7 +283,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                      <Separator />
                      <div className="flex gap-4 p-3 items-center">
                          <ScaledImage
-                             src={plantInfo?.stage.assetUrl ?? ""}
+                             src={plantInfo?.stageAssetUrl ?? ""}
                          />
                          <div>
                              <div>
