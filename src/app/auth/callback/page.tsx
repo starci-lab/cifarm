@@ -5,6 +5,7 @@ import { saveTokens } from "@/modules/apollo/tokens"
 import { useAppDispatch, setAuthenticated } from "@/redux"
 import { useRouterWithSearchParams } from "@/hooks"
 import { LoadingScreen } from "@/components"
+import { pathConstants } from "@/constants"
 const Page: FC = () => {
     const searchParams = useSearchParams()
     const accessToken = searchParams.get("accessToken")
@@ -26,7 +27,7 @@ const Page: FC = () => {
             dispatch(setAuthenticated(true))
 
             //redirect to home
-            router.push("/home")
+            router.push(pathConstants.home)
         }
         handleEffect()
     }, [accessToken, refreshToken])
