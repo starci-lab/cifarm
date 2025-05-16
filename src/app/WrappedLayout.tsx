@@ -64,7 +64,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
         <Suspense>
             <ThemeProvider
                 attribute="class"
-                defaultTheme="system"
+                defaultTheme="light"
                 enableSystem
                 disableTransitionOnChange
             >
