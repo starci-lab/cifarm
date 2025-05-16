@@ -3,7 +3,7 @@
 import {
     useRouterWithSearchParams,
 } from "@/hooks"
-import { Container, ExtendedButton, Spacer } from "@/components"
+import { BlurEffect, Container, ExtendedButton, Spacer } from "@/components"
 import React, { FC } from "react"
 import { Image } from "@/components"
 import { envConfig } from "@/env"
@@ -15,6 +15,8 @@ const Page: FC = () => {
     return (
         <Container centerContent hasPadding>
             <div className="grid place-items-center">
+                <BlurEffect />
+                <BlurEffect position="center" />
                 <Image
                     src="/logo.png"
                     className="w-40 h-40 rounded-full ring-2 ring-white"
