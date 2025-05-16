@@ -1,11 +1,17 @@
 import type { Config } from "tailwindcss"
 import tailwindcssAnimate from "tailwindcss-animate"
+import { typographySafelist } from "./src/app/design-system/Typography/utils/safelist"
+
+console.log(typographySafelist)
 
 const config: Config = {
     content: [
         "./pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    ],
+    safelist: [
+        ...typographySafelist
     ],
     theme: {
     	extend: {
