@@ -23,6 +23,7 @@ const Page: FC = () => {
                 <div className="text-2xl font-bold">Welcome to CiFarm 🌾</div>
                 <Spacer y={6} />
                 <ExtendedButton
+                    variant="flat"
                     onClick={async () => {
                         router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/google/redirect`, {
                             network
@@ -35,16 +36,22 @@ const Page: FC = () => {
           Continue with Google
                 </ExtendedButton>
                 <Spacer y={2} />
-                <ExtendedButton className="w-full justify-start" color="secondary" onClick={async () => {
-                    router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
-                        network
-                    }))
-                }}> 
+                <ExtendedButton
+                    variant="flat"
+                    className="w-full justify-start"
+                    color="secondary"
+                    onClick={async () => {
+                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
+                            network
+                        }))
+                    }}
+                > 
                     <Image src="/facebook.svg" className="w-4 h-4" />
           Continue with Facebook
                 </ExtendedButton>
                 <Spacer y={2} />
                 <ExtendedButton
+                    variant="flat"
                     onClick={async () => {
                         router.push(
                             formatUrl(`${envConfig().socialAuthUrl}/auth/x/redirect`, {
