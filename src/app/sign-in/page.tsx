@@ -3,7 +3,7 @@
 import {
     useRouterWithSearchParams,
 } from "@/hooks"
-import { Container, ExtendedButton, Spacer } from "@/components"
+import { BlurEffect, Container, ExtendedButton, Spacer } from "@/components"
 import React, { FC } from "react"
 import { Image } from "@/components"
 import { envConfig } from "@/env"
@@ -15,6 +15,8 @@ const Page: FC = () => {
     return (
         <Container centerContent hasPadding>
             <div className="grid place-items-center">
+                <BlurEffect />
+                <BlurEffect position="center" />
                 <Image
                     src="/logo.png"
                     className="w-40 h-40 rounded-full ring-2 ring-white"
@@ -23,6 +25,7 @@ const Page: FC = () => {
                 <div className="text-2xl font-bold">Welcome to CiFarm 🌾</div>
                 <Spacer y={6} />
                 <ExtendedButton
+                    variant="flat"
                     onClick={async () => {
                         router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/google/redirect`, {
                             network
@@ -35,16 +38,22 @@ const Page: FC = () => {
           Continue with Google
                 </ExtendedButton>
                 <Spacer y={2} />
-                <ExtendedButton className="w-full justify-start" color="secondary" onClick={async () => {
-                    router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
-                        network
-                    }))
-                }}> 
+                <ExtendedButton
+                    variant="flat"
+                    className="w-full justify-start"
+                    color="secondary"
+                    onClick={async () => {
+                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
+                            network
+                        }))
+                    }}
+                > 
                     <Image src="/facebook.svg" className="w-4 h-4" />
           Continue with Facebook
                 </ExtendedButton>
                 <Spacer y={2} />
                 <ExtendedButton
+                    variant="flat"
                     onClick={async () => {
                         router.push(
                             formatUrl(`${envConfig().socialAuthUrl}/auth/x/redirect`, {
