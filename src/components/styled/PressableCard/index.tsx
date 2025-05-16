@@ -18,7 +18,7 @@ export interface PressableCardProps extends ButtonProps {
 const pressableCardVariants = cva("rounded-lg p-3", {
     variants: {
         color: {
-            default: "bg-content-2 hover:bg-content-3/60 transition-colors duration-200",
+            default: "bg-content-2 hover:bg-content-3 transition-colors duration-200",
             gradient: "bg-gradient-to-r from-card-1 to-card-2 hover:bg-gradient-to-r hover:from-card-1/90 hover:to-card-2/90",
             destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
             secondary: "bg-content2/50 text-foreground hover:bg-content2/25",
@@ -29,7 +29,8 @@ const pressableCardVariants = cva("rounded-lg p-3", {
             "gradient-secondary": "bg-gradient-secondary hover:bg-gradient-secondary-hover text-background"
         },
         hoverAnimated: {
-            true: "hover:-translate-y-2 transition-transform duration-500",
+            true: "transition-transform transform duration-300 ease-in-out hover:shadow-lg transition-colors hover:translate-y-[-2px]",
+            false: "",
         },
     },
     defaultVariants: {

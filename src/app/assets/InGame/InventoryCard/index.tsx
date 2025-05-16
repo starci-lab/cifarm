@@ -22,7 +22,6 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
             inventoryType.type === InventoryType.Product &&
             product.id === inventoryType.product
     )
-    if (!product) return null
     return (
         <Card>
             <CardContent className="p-3">
@@ -35,7 +34,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
                     })()}
                     stackable={inventoryType.stackable}
                     quantity={inventory.quantity}
-                    isQuality={product.isQuality}
+                    isQuality={product?.isQuality}
                     />
                     <div>
                         <div className="text-sm">{assetInventoryTypesMap[inventoryType.displayId]?.name}</div>

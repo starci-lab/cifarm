@@ -16,6 +16,7 @@ export const useAuthentication = () => {
     const router = useRouterWithSearchParams()
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const dispatch = useAppDispatch()
+    
     useEffect(() => {
         const handleEffect = async () => {
             const refreshToken = await sessionDb.keyValueStore.get(

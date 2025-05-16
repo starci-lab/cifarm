@@ -40,7 +40,7 @@ export const AppSidebar: FC = () => {
                                 dispatch(setSidebarTab(SidebarTab.Home))
                                 router.push(`${pathConstants.home}`)
                             }}
-                            icon={<House className="w-5 h-5" />}
+                            icon={<House />}
                         />
                         <Spacer y={2} />
                         <Selection
@@ -50,7 +50,7 @@ export const AppSidebar: FC = () => {
                                 dispatch(setSidebarTab(SidebarTab.Assets))
                                 router.push(`${pathConstants.home}/${pathConstants.assets}`)
                             }}
-                            icon={<Wallet className="w-5 h-5" />}
+                            icon={<Wallet />}
                         />
                         <Spacer y={2} />
                         <Selection
@@ -60,7 +60,7 @@ export const AppSidebar: FC = () => {
                                 dispatch(setSidebarTab(SidebarTab.DApps))
                                 router.push(`${pathConstants.home}/${pathConstants.dapps}`)
                             }}
-                            icon={<Layout className="w-5 h-5" />}
+                            icon={<Layout />}
                         />
                         <Spacer y={4} />
                         <Separator variant="secondary" />
@@ -69,14 +69,14 @@ export const AppSidebar: FC = () => {
                             title="Docs"
                             isExternal={true}
                             selected={false}
-                            icon={<Book className="w-5 h-5" />}
+                            icon={<Book />}
                         />
                         <Spacer y={2} />
                         <Selection
                             title="X"
                             isExternal={true}
                             selected={false}
-                            icon={<XLogo className="w-5 h-5" />}
+                            icon={<XLogo />}
                         />
                         <Spacer y={4} />
                     </SidebarHeader>
