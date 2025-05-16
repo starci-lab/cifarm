@@ -7,7 +7,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { Spacer, ExtendedBadge, Image } from "@/components"
+import { Spacer, Separator, ScaledImage } from "@/components"
 import {
     assetProductMap,
     assetCropMap,
@@ -16,9 +16,10 @@ import {
 } from "@/modules/assets"
 import { sessionDb } from "@/modules/dexie"
 import useSWR from "swr"
-import { cn } from "@/lib/utils"
-import { formatTime } from "@/modules/common"
 import { Stats } from "../Stats"
+import { formatTime } from "@/modules/common"
+import { StateContainer } from "../StateContainer"
+
 interface TileContentProps {
   placedItem: PlacedItemSchema;
 }
@@ -149,10 +150,9 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         switch (placedItem.plantInfo?.currentState) {
         case PlantCurrentState.NeedWater:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
-                    <Image
-                        src={asset?.data ? URL.createObjectURL(asset.data) : ""}
-                        className="w-16 h-16 object-contain"
+                <div className="flex items-center gap-4 p-3 bg-content-6">
+                    <StateContainer
+                        assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
               The plant needs watering to continue growing. Use a watering can
@@ -162,10 +162,9 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
             )
         case PlantCurrentState.IsWeedy:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
-                    <Image
-                        src={asset?.data ? URL.createObjectURL(asset.data) : ""}
-                        className="w-16 h-16 object-contain"
+                <div className="flex items-center gap-4 p-3 bg-content-6">
+                    <StateContainer
+                        assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
               The plant is weedy, which may reduce the yield when harvested. Use
@@ -175,10 +174,9 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
             )
         case PlantCurrentState.IsInfested:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
-                    <Image
-                        src={asset?.data ? URL.createObjectURL(asset.data) : ""}
-                        className="w-16 h-16 object-contain"
+                <div className="flex items-center gap-4 p-3 bg-content-6">
+                    <StateContainer
+                        assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
               The plant is infested, which may reduce the yield when harvested.
@@ -188,10 +186,9 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
             )
         case PlantCurrentState.FullyMatured:
             return (
-                <div className="border p-2 rounded-md flex items-center gap-4">
-                    <Image
-                        src={asset?.data ? URL.createObjectURL(asset.data) : ""}
-                        className="w-16 h-16 object-contain"
+                <div className="flex items-center gap-4 p-3 bg-content-6">
+                    <StateContainer
+                        assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="flex flex-col">
                         <div className="text-sm text-muted-foreground">
@@ -210,54 +207,101 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         }
     }
 
+    const getPlantInfo = () => {
+        if (!placedItem.plantInfo?.plantType) {
+            return null
+        }
+        switch (placedItem.plantInfo?.plantType) {
+        case PlantType.Crop: {
+            const crop = swr.data?.data.crops.find(
+                (crop) => crop.id === placedItem.plantInfo?.crop
+            )
+            if (!crop) {
+                throw new Error("Crop not found")
+            }
+            const displayId = crop.displayId
+            const { name, description, base: { stages } } = assetCropMap[displayId]
+            const product = swr.data?.data.products.find(
+                (product) => product.crop === crop.id
+            )
+            if (!product) {
+                throw new Error("Product not found")
+            }
+            const assetUrl = assetProductMap[product.displayId].base.assetUrl
+            const stage = stages[placedItem.plantInfo?.currentStage ?? 0]
+            return {
+                name,
+                description,
+                assetUrl,
+                stage,
+            }
+        }
+        case PlantType.Flower: {
+            const flower = swr.data?.data.flowers.find(
+                (flower) => flower.id === placedItem.plantInfo?.flower
+            )
+            if (!flower) {
+                throw new Error("Flower not found")
+            }
+            const displayId = flower.displayId
+            const { name, description, base: { stages } } = assetFlowerMap[displayId]
+            const product = swr.data?.data.products.find(
+                (product) => product.flower === flower.id
+            )
+            if (!product) {
+                throw new Error("Product not found")
+            }
+            const assetUrl = assetProductMap[product.displayId].base.assetUrl
+            const stage = stages[placedItem.plantInfo?.currentStage ?? 0]
+            return {
+                name,
+                description,
+                assetUrl,
+                stage,
+            }
+        }
+        }
+    }
+
+    const plantInfo = getPlantInfo()
     return (
-        <>
-            <div>
-                {placedItem.nftMetadata && (
-                    <>
-                        <div className="flex items-center gap-2">
-                            <ExtendedBadge>NFT</ExtendedBadge>
-                            <div className="text-sm text-muted-foreground">
-                                {placedItem.nftMetadata.nftName}
-                            </div>
-                        </div>
-                        <Spacer y={4} />
-                    </>
-                )}
-                {placedItem.plantInfo &&
-          placedItem.plantInfo?.currentState !==
-            PlantCurrentState.FullyMatured && (
-                    <>
-                        <div>
-                            <div className="flex gap-1 items-center">
-                                <div
-                                    className={cn("text-4xl font-bold", {
-                                        "text-destructive":
-                        placedItem.plantInfo?.currentState ===
-                        PlantCurrentState.NeedWater,
-                                    })}
-                                >
-                                    {`${formatTime(timeElapsed)}`}
-                                </div>
-                            </div>
-                        </div>
-                        <Spacer y={4} />
-                    </>
-                )}
-                {placedItem.plantInfo &&
+        <div>
+            { placedItem.plantInfo &&
+             <>
+                 <div className="bg-content-2 rounded-lg overflow-hidden">
+                     <div className="px-3 py-2">
+                         {plantInfo?.name}
+                     </div>
+                     <Separator />
+                     <div className="flex gap-4 p-3 items-center">
+                         <ScaledImage
+                             src={plantInfo?.stage.assetUrl ?? ""}
+                         />
+                         <div>
+                             <div>
+                                 {`Stage ${(placedItem.plantInfo?.currentStage ?? 0) + 1}`}
+                             </div>
+                             <div className="text-4xl text-primary">
+                                 {formatTime(timeElapsed)}
+                             </div>
+                         </div>
+                     </div>
+                     {placedItem.plantInfo &&
           placedItem.plantInfo.currentState !== PlantCurrentState.Normal && (
-                    <>
-                        {renderState()}
-                        <Spacer y={4} />
-                    </>
-                )}
-                <Stats
-                    growthAcceleration={placedItem.plantInfo?.growthAcceleration}
-                    qualityYield={placedItem.plantInfo?.qualityYield}
-                    diseaseResistance={placedItem.plantInfo?.diseaseResistance}
-                    harvestYieldBonus={placedItem.plantInfo?.harvestYieldBonus}
-                />
-            </div>
-        </>
+                         <>
+                             {renderState()}
+                         </>
+                     )}
+                 </div>
+                 <Spacer y={4} />
+             </>
+            }
+            <Stats
+                growthAcceleration={placedItem.plantInfo?.growthAcceleration ?? 0}
+                qualityYield={placedItem.plantInfo?.qualityYield ?? 0}
+                diseaseResistance={placedItem.plantInfo?.diseaseResistance ?? 0}
+                harvestYieldBonus={placedItem.plantInfo?.harvestYieldBonus ?? 0}
+            />
+        </div>
     )
 }

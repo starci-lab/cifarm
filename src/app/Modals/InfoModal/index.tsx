@@ -95,9 +95,9 @@ export const InfoModal: FC = () => {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        {/* <ModalHeader
-                            title={getPlacedItemTypeName(placedItemType.id, swr.data?.data)}
-                        /> */}
+                        <ModalHeader
+                            title={getPlacedItemTypeName(placedItemType.id, swr.data?.data) ?? ""}
+                        />
                     </DialogTitle>
                 </DialogHeader>
                 {renderContent()}
