@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import React, { FC } from "react"
 import { assetFruitMap, assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainMap, assetTileMap, assetToolsMap } from "@/modules/assets"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { ItemCard } from "./ItemCard"
@@ -20,8 +20,6 @@ type Category = {
     label: string
     items: Array<ItemData>
 }
-
-type ItemType = "crop" | "flower" | "fruit" | "animal" | "building" | "tile" | "supply" | "tool" | "pet" | "terrain"
 
 const categoryMap: Array<Category> = [
     { label: "Crops", items:

@@ -22,9 +22,9 @@ const ProfilePage = () => {
             <Header title="Profile" />
             <Spacer y={4} />
             <div>
-                <ExtendedButton onClick={handleClick}>
+                {/* <ExtendedButton onClick={handleClick}>
                     Hello
-                </ExtendedButton>
+                </ExtendedButton> */}
             </div>
         </div>
     )
