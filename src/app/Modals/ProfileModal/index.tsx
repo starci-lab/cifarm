@@ -1,8 +1,8 @@
 "use client"
-import { PROFILE_DISCLOSURE, GRAPHQL_QUERY_USER_SWR  } from "@/app/constants"
+import { PROFILE_DISCLOSURE } from "@/app/constants"
 import { List, ModalHeader, Snippet, Spacer, Title } from "@/components"
 import { pathConstants } from "@/constants"
-import { useGraphQLQueryUserSwr, useRouterWithSearchParams } from "@/hooks"
+import { useRouterWithSearchParams } from "@/hooks"
 import { computeExperiencesQuota, truncateString } from "@/modules/common"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -17,6 +17,7 @@ import {
 } from "@/components"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDisclosure } from "react-use-disclosure"
+import { useAppSelector } from "@/redux"
     
 export enum ProfileModalListItems {
     UID = "UID",
@@ -26,9 +27,7 @@ export enum ProfileModalListItems {
 export const ProfileModal: FC = () => {
     const { toggle, isOpen, close } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(PROFILE_DISCLOSURE)
-    const { swr } =
-    useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
-    const user = swr.data?.data.user
+    const user = useAppSelector(state => state.sessionReducer.user)
     const avatarUrl = user ? user.avatarUrl ?? createJazziconBlobUrl(user.id) : ""
     const quota = user ? computeExperiencesQuota(user.level) : 0
     const router = useRouterWithSearchParams()

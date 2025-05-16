@@ -17,6 +17,7 @@ export type IconSelectionProps = PressableCardProps & {
 export const IconSelection: FC<IconSelectionProps> = ({ icon, onClick, classNames, text, description, ...props }: IconSelectionProps) => {
     return (
         <PressableCard
+            hoverAnimated
             className="flex justify-between items-center p-3 rounded-lg"
             showBorder={false}
             onClick={onClick}
