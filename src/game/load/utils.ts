@@ -4,6 +4,6 @@
 //const LOCAL_BASE_URL = "http://localhost:3000"
 
 export const getAssetUrl = (assetKey: string) => {
-    return `/${assetKey}`
+    return `https://www.cifarm.xyz/${assetKey}`
 }
 
