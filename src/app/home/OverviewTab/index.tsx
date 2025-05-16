@@ -22,6 +22,7 @@ export const OverviewTab: FC = () => {
                         color="gradient-secondary"
                         className="flex items-center justify-center gap-2 w-full md:w-auto sticky top-16 z-50"
                         size="lg"
+                        variant="flat"
                         onClick={() => {
                             router.push(pathConstants.play)
                         }}
@@ -30,7 +31,9 @@ export const OverviewTab: FC = () => {
                     </ExtendedButton>
                     <BlurEffect size="sm" position="top" className="-z-20 hover:opacity-80 transition-opacity duration-200" />
 
-                    <ExtendedButton className="flex items-center justify-center gap-2 w-full md:w-auto z-10" color="secondary">
+                    <ExtendedButton className="flex items-center justify-center gap-2 w-full md:w-auto z-10" color="secondary"
+                        variant="flat"
+                    >
                         <ShareNetwork className="w-4 h-4" />
                         Share
                     </ExtendedButton>

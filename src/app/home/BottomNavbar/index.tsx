@@ -7,7 +7,7 @@ import {
 } from "@/hooks"
 import { useIsMobile } from "@/hooks/useIsMobile"
 import { cn } from "@/lib/utils"
-import { Coins, Cube, Gift, XLogo } from "@phosphor-icons/react"
+import { Coins, Cube, Gift, House, XLogo } from "@phosphor-icons/react"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 import React, { FC } from "react"
@@ -17,6 +17,11 @@ export const BottomNavbar: FC = () => {
     const isMobile = useIsMobile()
     const pathname = usePathname()
     const navItems = [
+        {
+            name: "Home",
+            icon: House,
+            path: pathConstants.home,
+        },
         {
             name: "Assets",
             icon: Coins,
@@ -44,7 +49,7 @@ export const BottomNavbar: FC = () => {
             {isMobile && (
                 <div className="m-auto fixed top-auto bottom-0 border-t z-50 w-full bg-background h-[60px] md:h-16 safe-area-pb">
                     <nav className="m-auto w-full h-full flex items-center justify-between px-2 sm:px-4">
-                        <ul className="h-full grid grid-cols-4 gap-1">
+                        <ul className="h-full grid grid-cols-5 gap-1 w-full">
                             {navItems.map((item) => {
                                 const isActive = pathname === item.path
 
@@ -54,7 +59,7 @@ export const BottomNavbar: FC = () => {
                                             onClick={() => router.push(item.path)}
                                             className={cn(
                                                 "w-full h-full flex flex-col items-center justify-center gap-1 transition-colors",
-                                                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                                                isActive ? "text-secondary" : "text-muted-foreground hover:text-foreground",
                                             )}
                                         >
                                             <div className="relative">
