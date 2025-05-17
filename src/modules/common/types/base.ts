@@ -1,4 +1,4 @@
-import { DeepPartial } from "react-hook-form"
+import { PartialDeep } from "type-fest"
 
 export type Atomic = string | number | boolean | null | undefined | object;
 
@@ -11,7 +11,7 @@ export enum SchemaStatus {
     Updated = "updated",
     Deleted = "deleted"
 }
-export type WithStatus<TSchema> = DeepPartial<TSchema> & {
+export type WithStatus<TSchema> = PartialDeep<TSchema> & {
     status: SchemaStatus
 }
 

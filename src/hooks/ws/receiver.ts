@@ -4,7 +4,7 @@ import {
     InventorySchema,
     PlacedItemSchema,
 } from "@/modules/entities"
-import { DeepPartial } from "react-hook-form"
+import { PartialDeep } from "type-fest"
 import { EmitActionPayload } from "./actions"
 
 // in constrast with server, Receiver => Emitter, Emitter => Receiver
@@ -29,7 +29,7 @@ export interface SyncPlacedItemsMessage {
 
 // sync user
 export interface UserSyncedMessage {
-  data: DeepPartial<UserSchema>;
+  data: PartialDeep<UserSchema>;
 }
 
 // sync inventories

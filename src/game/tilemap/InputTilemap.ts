@@ -645,6 +645,15 @@ export class InputTilemap extends ItemTilemap {
                 }
                 if (watchingUser) {
                     if (
+                        !this.checkLevelGap({
+                            user: watchingUser,
+                            neighbor: this.user,
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
                         !this.thiefPlantQuantityReactMinimum({
                             data,
                         })
@@ -904,6 +913,15 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     if (
+                        !this.checkLevelGap({
+                            user: watchingUser,
+                            neighbor: this.user,
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
                         !this.hasThievedAnimalProduct({
                             data,
                         })
@@ -919,7 +937,6 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    // emit the event to plant seed
                     const eventMessage: ThiefAnimalMessage = {
                         placedItemAnimalId: placedItemId,
                     }
@@ -1488,6 +1505,15 @@ export class InputTilemap extends ItemTilemap {
                 }
                 if (watchingUser) {
                     if (
+                        !this.checkLevelGap({
+                            user: watchingUser,
+                            neighbor: this.user,
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
                         !this.thiefBeeHouseQuantityReactMinimum({
                             data,
                         })
@@ -1623,7 +1649,7 @@ export class InputTilemap extends ItemTilemap {
         ) as ToolLike
 
         const inventoryType = this.getInventoryTypeFromTool(selectedTool)
-        console.log(inventoryType)
+
         if (!inventoryType) {
             throw new Error(
                 `Inventory type not found for inventory id: ${selectedTool.id}`
@@ -1712,6 +1738,15 @@ export class InputTilemap extends ItemTilemap {
                 if (watchingUser) {
                     if (
                         !this.thiefFruitQuantityReactMinimum({
+                            data,
+                        })
+                    ) {
+                        return
+                    }
+                    if (
+                        !this.checkLevelGap({
+                            user: watchingUser,
+                            neighbor: this.user,
                             data,
                         })
                     ) {
@@ -1902,6 +1937,33 @@ export class InputTilemap extends ItemTilemap {
                     x: position.x,
                     y: position.y,
                     text: "You are already thieved",
+                },
+            ])
+            return false
+        }
+        return true
+    }
+
+    public checkLevelGap({
+        user,
+        neighbor,
+        data
+    }: CheckLevelGapParams) {
+        if (!data.object.currentPlacedItem) {
+            throw new Error("Placed item not found")
+        }
+        if (
+            user.level >= neighbor.level - this.interactionPermissions.thiefLevelGapThreshold
+        ) {
+            const position = this.getPositionFromPlacedItem(
+                data.object.currentPlacedItem
+            )
+            this.createFlyItems([
+                {
+                    showIcon: false,
+                    x: position.x,
+                    y: position.y,
+                    text: "Your level is not enough to thief",
                 },
             ])
             return false
@@ -2267,3 +2329,10 @@ export interface ThiefBeeHouseQuantityReactMinimumParams {
 export interface HasThievedBeeHouseParams {
   data: PlacedItemObjectData;
 }
+
+export interface CheckLevelGapParams {
+  user: UserSchema;
+  neighbor: UserSchema;
+  data: PlacedItemObjectData;
+}
+

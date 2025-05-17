@@ -2,7 +2,7 @@
 
 import React, { PropsWithChildren, Suspense, useMemo, useRef } from "react"
 import { Provider as ReduxProvider } from "react-redux"
-import { store } from "@/redux"
+import { store, useAppSelector } from "@/redux"
 import { SWRConfig } from "swr"
 import dynamic from "next/dynamic"
 import {
@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { Baloo_2 } from "next/font/google"
-import { SidebarProvider } from "@/components"
+import { LoadingScene, SidebarProvider } from "@/components"
 import { envConfig } from "@/env"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 
@@ -58,8 +58,9 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
         [Network.Testnet]: { url: getFullnodeUrl("testnet") },
         [Network.Mainnet]: { url: getFullnodeUrl("mainnet") },
     })
-
     const queryClient = new QueryClient()
+    const loaded = useAppSelector(state => state.sessionReducer.loaded)
+
     return (
         <Suspense>
             <ThemeProvider
@@ -92,7 +93,13 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                                                 disableTransitionOnChange
                                                             >
                                                                 <SidebarProvider>
-                                                                    {children}
+                                                                    {
+                                                                        !loaded ? (
+                                                                            <LoadingScene />
+                                                                        ) : (
+                                                                            children
+                                                                        )
+                                                                    }
                                                                     <UseEffects />
                                                                     <Modals />
                                                                     <Sheets />

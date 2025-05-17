@@ -1,5 +1,5 @@
 import { PlacedItemSchema, PlacedItemType } from "@/modules/entities"
-import { DeepPartial } from "react-hook-form"
+import { PartialDeep } from "type-fest"
 
 export enum ActionName {
   UseWateringCan = "use_watering_can",
@@ -36,7 +36,7 @@ export enum ActionName {
 
 export interface EmitActionPayload {
   userId: string;
-  placedItem: DeepPartial<PlacedItemSchema>;
+  placedItem: PartialDeep<PlacedItemSchema>;
   action?: ActionName;
   success?: boolean;
   data?: unknown;

@@ -34,11 +34,11 @@ export const Toolbar: FC = () => {
 
     useEffect(() => {
         if (isSmallScreen) {
-            setNumVisibleInventories(4)
+            setNumVisibleInventories(3)
         } else {
-            setNumVisibleInventories(6)
+            setNumVisibleInventories(5)
         }
-    }, [isSmallScreen])
+    }, [isSmallScreen, setNumVisibleInventories])
 
     const dispatch = useAppDispatch()
     const fromToolIndex =

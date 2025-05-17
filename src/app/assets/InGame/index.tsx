@@ -8,6 +8,7 @@ import { InventoryCard } from "./InventoryCard"
 import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector } from "@/redux"
 import { InventoryKind } from "@/modules/entities"
+
 export const InGame: FC = () => {
     const { swr: userSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryUserSwr>

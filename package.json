@@ -119,6 +119,7 @@
     "swr": "^2.3.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "type-fest": "^4.41.0",
     "url-builder": "^0.2.1",
     "url-join": "^5.0.0",
     "url-lib": "^3.0.3",

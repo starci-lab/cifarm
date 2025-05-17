@@ -14,7 +14,7 @@ export const assetMusicMap: Record<MusicId, AssetMusicData> = {
         phaser: {
             base: {
                 assetKey: "music-main",
-                assetUrl: "music/main.mp3",
+                assetUrl: "/music/main.mp3",
             },
         },
     },

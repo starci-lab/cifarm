@@ -25,6 +25,7 @@ import {
     FlowerSchema,
     FruitSchema,
     getSellInfoFromPlacedItemType,
+    InteractionPermissions,
     InventorySchema,
     InventoryTypeSchema,
     PetSchema,
@@ -41,9 +42,7 @@ import {
     ToolSchema,
     UserSchema,
 } from "@/modules/entities"
-import _ from "lodash"
-import { DeepPartial } from "react-hook-form"
-import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
+import { PartialDeep } from "type-fest"
 import {
     CacheKey,
     PlacedItemsData,
@@ -64,6 +63,8 @@ import { sleep } from "@/modules/common"
 import { AssetIconId, assetProductMap } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { PlayerContext } from "@/redux"
+import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
+import _ from "lodash"
 
 const DEPTH_MULTIPLIER = 100
 export abstract class ItemTilemap extends GroundTilemap {
@@ -90,6 +91,7 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected pets: Array<PetSchema>
     protected inventories: Array<InventorySchema>
     protected terrains: Array<TerrainSchema>
+    protected interactionPermissions: InteractionPermissions
         
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
@@ -115,6 +117,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.pets = this.scene.cache.obj.get(CacheKey.Pets)
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         this.terrains = this.scene.cache.obj.get(CacheKey.Terrains)
+        this.interactionPermissions = this.scene.cache.obj.get(CacheKey.InteractionPermissions)
 
         ExternalEventEmitter.on(ExternalEventName.Visit, (user: UserSchema) => {
             // save to cache
@@ -1612,8 +1615,6 @@ export abstract class ItemTilemap extends GroundTilemap {
         SceneEventEmitter.emit(SceneEventName.FadeOut)
     }
 
-
-
     protected getCenterPosition({
         x,
         y,
@@ -1625,7 +1626,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
     }
 
-    protected getPositionFromPlacedItem(placedItem: DeepPartial<PlacedItemSchema>) {
+    protected getPositionFromPlacedItem(placedItem: PartialDeep<PlacedItemSchema>) {
         const {
             x,
             y,
@@ -1668,7 +1669,7 @@ export interface GetCenterPositionParams {
 }
 
 export interface UpdatePlacedItemLocalParams {
-  placedItem: DeepPartial<PlacedItemSchema>;
+  placedItem: PartialDeep<PlacedItemSchema>;
   type: PlacedItemType;
 }
 

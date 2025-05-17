@@ -6,6 +6,8 @@ import { CacheKey } from "../types"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { getAssetUrl } from "./utils"
 
+const axiosInstance = axios.create()
+
 export const downloadTexture = async (
     scene: Scene,
     textureData: AssetTextureData
@@ -26,11 +28,8 @@ export const downloadTexture = async (
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(getAssetUrl(assetUrl), {
+    const { data } = await axiosInstance.get(getAssetUrl(assetUrl), {
         responseType: "blob",
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-        },
         onDownloadProgress: (progress) => {
             if (progress.progress) {
                 ExternalEventEmitter.emit(
@@ -85,11 +84,8 @@ export const downloadJson = async (scene: Scene, spineData: AssetSpineData) => {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(getAssetUrl(assetUrl), {
+    const { data } = await axiosInstance.get(getAssetUrl(assetUrl), {
         responseType: "blob",
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-        },
         onDownloadProgress: (progress) => {
             ExternalEventEmitter.emit(
                 ExternalEventName.AssetsLoaded,
@@ -125,11 +121,8 @@ export const downloadAtlas = async (scene: Scene, spineData: AssetSpineData) => 
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         textureData = textureAsset.data
     } else {
-        const { data } = await axios.get(getAssetUrl(textureUrl), {
+        const { data } = await axiosInstance.get(getAssetUrl(textureUrl), {
             responseType: "blob",
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
             onDownloadProgress: (progress) => {
                 ExternalEventEmitter.emit(
                     ExternalEventName.AssetsLoaded,
@@ -151,11 +144,8 @@ export const downloadAtlas = async (scene: Scene, spineData: AssetSpineData) => 
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         atlasText = await asset.data.text()
     } else {
-        const { data } = await axios.get(getAssetUrl(assetUrl), {
+        const { data } = await axiosInstance.get(getAssetUrl(assetUrl), {
             responseType: "text",
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
             onDownloadProgress: (progress) => {
                 ExternalEventEmitter.emit(
                     ExternalEventName.AssetsLoaded,
@@ -233,7 +223,7 @@ export const downloadFont = async (scene: Scene, fontData: FontData) => {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(getAssetUrl(assetUrl), {
+    const { data } = await axiosInstance.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
             if (progress.progress) {
@@ -264,7 +254,7 @@ export const downloadMusic = async (scene: Scene, musicData: MusicData) => {
         ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, 1)
         return asset.data
     }
-    const { data } = await axios.get(getAssetUrl(assetUrl), {
+    const { data } = await axiosInstance.get(getAssetUrl(assetUrl), {
         responseType: "blob",
         onDownloadProgress: (progress) => {
             ExternalEventEmitter.emit(ExternalEventName.AssetsLoaded, progress.progress)

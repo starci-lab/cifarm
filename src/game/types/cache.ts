@@ -33,6 +33,7 @@ export enum CacheKey {
     SellModalData = "sell-modal-data",
     UpgradeModalData = "upgrade-modal-data",
     Terrains = "terrains",
+    InteractionPermissions = "interaction-permissions",
 }
 
 export interface DeliveryData {

@@ -40,8 +40,8 @@ export interface SessionState {
   activeAccountId?: number;
   chainKey: ChainKey;
   retries: number;
-  accountsLoaded: boolean;
   authenticated: boolean;
+  loaded: boolean;
   balanceSwrs: Record<string, SWRResponse<number>>;
   nftCollectionSwrs: Record<string, SWRResponse<CollectionResponse>>;
   // selected collection key
@@ -80,8 +80,8 @@ const initialState: SessionState = {
     },
     chainKey: defaultChainKey,
     retries: 0,
-    accountsLoaded: false,
     authenticated: false,
+    loaded: false,
     balanceSwrs: {},
     nftCollectionSwrs: {},
     collectionKey: "",
@@ -119,8 +119,8 @@ export const sessionSlice = createSlice({
         setRetries: (state, action: PayloadAction<number>) => {
             state.retries = action.payload
         },
-        setAccountsLoaded: (state, action: PayloadAction<boolean>) => {
-            state.accountsLoaded = action.payload
+        setLoaded: (state, action: PayloadAction<boolean>) => {
+            state.loaded = action.payload
         },
         setAuthenticated: (state, action: PayloadAction<boolean>) => {
             state.authenticated = action.payload
@@ -213,7 +213,7 @@ export const {
     setChainKey,
     setRetries,
     setTokenKey,
-    setAccountsLoaded,
+    setLoaded,
     setAuthenticated,
     setBalanceSwr,
     removeBalanceSwr,

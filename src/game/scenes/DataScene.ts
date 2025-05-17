@@ -13,8 +13,7 @@ import {
 } from "@/modules/entities"
 import { CacheKey, PlacedItemsData } from "../types"
 import { SceneName } from "../scene"
-import { DeepPartial } from "react-hook-form"
-
+import { PartialDeep } from "type-fest"
 //scene for handling all data
 export class DataScene extends Scene {
     constructor() {
@@ -56,7 +55,7 @@ export class DataScene extends Scene {
 
         ExternalEventEmitter.on(
             ExternalEventName.UserSynced,
-            (user: DeepPartial<UserSchema>) => {
+            (user: PartialDeep<UserSchema>) => {
                 this.cache.obj.add(CacheKey.User, user)
                 // emit the event to update the user
                 SceneEventEmitter.emit(SceneEventName.UserRefreshed)

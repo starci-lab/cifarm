@@ -4,6 +4,7 @@ import { UseNFTCollections } from "./nft-collections"
 import { useSyncEffects } from "./useSyncEffects"
 import { useUpdateProfileEffects } from "./useUpdateProfileEffects"
 import { useGameEffects } from "./game"
+import { useAuthentication } from "./useAuthentication"
 
 const UseEffects: FC  = () => {
     // useAccounts()
@@ -14,7 +15,7 @@ const UseEffects: FC  = () => {
     useSyncEffects()
     useGameEffects()
     // useAddresses()
-    // useAuthentication()
+    useAuthentication()
     useUpdateProfileEffects()
     return (<>
         <UseBalances />
