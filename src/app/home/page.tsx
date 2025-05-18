@@ -31,7 +31,7 @@ const Page: FC = () => {
             {/* fixed motion scroll down */}
             <div className={`z-[60] hidden md:block fixed top-0 left-64 right-0 transition-all duration-500 transform ${show ? "translate-y-0" : "-translate-y-full"} ${show ? "bg-background/60 backdrop-blur-xl" : ""}`}>
                 <div className="container mx-auto px-10 py-4 flex justify-between flex-col items-start gap-2">
-                    <ExtendedButton variant="flat" color="secondary" onClick={() => router.push("/")}>
+                    <ExtendedButton variant="flat" color="secondary" onPress={() => router.push("/")}>
                         <ArrowLeft />
                         <span>Back to landing page</span>
                     </ExtendedButton>
@@ -45,7 +45,7 @@ const Page: FC = () => {
                         </div>
 
                         <div className="flex gap-4 items-center">
-                            <ExtendedButton color="primary" onClick={() => router.push("/play")}>
+                            <ExtendedButton color="primary" onPress={() => router.push("/play")}>
                                 <GameController />
                                 <span>Play</span>
                             </ExtendedButton>
