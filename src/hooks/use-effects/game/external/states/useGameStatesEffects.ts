@@ -4,10 +4,11 @@ import { useRouterWithSearchParams } from "@/hooks"
 import { useAppDispatch } from "@/redux/hooks"
 import { setShowGameUI } from "@/redux/slices/session"
 import { useEffect } from "react"
-
+ 
 export const useGameStatesEffects = () => {
     const router = useRouterWithSearchParams()
     const dispatch = useAppDispatch()
+    
     useEffect(() => {
         ExternalEventEmitter.on(ExternalEventName.CloseGame, () => {
             router.push(pathConstants.home)

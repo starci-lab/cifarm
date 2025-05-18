@@ -6,7 +6,9 @@ import {
     Sheet,
     SheetContent,
     SheetHeader,
+    SheetFooter,
     SheetTitle,
+    SheetBody,
     Spacer,
     Title,
 } from "@/components"
@@ -46,8 +48,7 @@ export const WholesaleMarketSheet: FC = () => {
                     <SheetHeader>
                         <SheetTitle>Wholesale Market</SheetTitle>
                     </SheetHeader>
-                    <Spacer y={6} />
-                    <div>
+                    <SheetBody>
                         <Title
                             title="Requirements"
                             tooltipString="Requirements for the wholesale market"
@@ -55,6 +56,9 @@ export const WholesaleMarketSheet: FC = () => {
                         <Spacer y={4} />
                         <div>
                             <GridTable
+                                classNames={{
+                                    container: "grid-none flex flex-wrap gap-2 justify-start",
+                                }}
                                 enableScroll={false}
                                 items={staticSwr.data?.data.wholesaleMarket.products || []}
                                 contentCallback={({ quantity, productId }) => {
@@ -101,44 +105,45 @@ export const WholesaleMarketSheet: FC = () => {
                             </div>
                             <Spacer y={2} />
                             <div className="flex items-center gap-2 text-muted-foreground">
-                                <div className="text-xs">
+                                <div className="text-sm">
                                 Token locked: {vaultCurrentSwr.data?.data.vaultCurrent.tokenLocked}  
                                 </div>
-                                <div className="text-xs">
+                                <div className="text-sm">
                             Paid count: {vaultCurrentSwr.data?.data.vaultCurrent.paidCount}
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <Spacer y={6} />
+                    </SheetBody>
                 </div>
-                <ExtendedButton className="w-full" onClick={async () => {
-                    if (!accountAddress) throw new Error("Account address is required")
-                    const { data } = await createShipSolanaTransactionSwrMutation.trigger({
-                        request: {
-                            accountAddress
-                        }
-                    })
-                    if (!data) throw new Error("Failed to create ship solana transaction")
-                    dispatch(setSignTransactionModal({
-                        type: TransactionType.SolanaRawTx,
-                        data: {
-                            serializedTx: data.serializedTx
-                        },
-                        postActionHook: async (signedSerializedTx) => {
-                            const { data: sendShipSolanaTransactionData } = await sendShipSolanaTransactionSwrMutation.trigger({
-                                request: {
-                                    serializedTx: signedSerializedTx
-                                }
-                            })
-                            if (!sendShipSolanaTransactionData) throw new Error("Failed to send ship solana transaction")
-                            return sendShipSolanaTransactionData.txHash
-                        }
-                    }))
-                    open()
-                }}>
+                <SheetFooter>
+                    <ExtendedButton className="w-full" onClick={async () => {
+                        if (!accountAddress) throw new Error("Account address is required")
+                        const { data } = await createShipSolanaTransactionSwrMutation.trigger({
+                            request: {
+                                accountAddress
+                            }
+                        })
+                        if (!data) throw new Error("Failed to create ship solana transaction")
+                        dispatch(setSignTransactionModal({
+                            type: TransactionType.SolanaRawTx,
+                            data: {
+                                serializedTx: data.serializedTx
+                            },
+                            postActionHook: async (signedSerializedTx) => {
+                                const { data: sendShipSolanaTransactionData } = await sendShipSolanaTransactionSwrMutation.trigger({
+                                    request: {
+                                        serializedTx: signedSerializedTx
+                                    }
+                                })
+                                if (!sendShipSolanaTransactionData) throw new Error("Failed to send ship solana transaction")
+                                return sendShipSolanaTransactionData.txHash
+                            }
+                        }))
+                        open()
+                    }}>
           Ship
-                </ExtendedButton>
+                    </ExtendedButton>
+                </SheetFooter>
             </SheetContent>
         </Sheet>
     )

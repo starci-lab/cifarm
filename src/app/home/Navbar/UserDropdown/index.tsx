@@ -4,6 +4,8 @@ import React, { FC } from "react"
 import { Gear, SignOut, User } from "@phosphor-icons/react"
 import { useGraphQLMutationLogoutSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
+import { truncateString } from "@/modules/common"
+
 export const UserDropdown: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)
     const router = useRouterWithSearchParams()
@@ -16,7 +18,7 @@ export const UserDropdown: FC = () => {
                 <DropdownMenuTrigger>
                     <AvaButton
                         icon={<Image src={user?.avatarUrl || "https://avatar.iran.liara.run/public/boy"} className="rounded-full w-8 h-8"/>}
-                        text={user?.username.slice(0, 5) + "..." || "Guest"}
+                        text={truncateString(user?.username || "", 12, 0)}
                     />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="p-2 w-52 bg-content-4">

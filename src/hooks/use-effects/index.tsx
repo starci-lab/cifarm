@@ -5,6 +5,7 @@ import { useSyncEffects } from "./useSyncEffects"
 import { useUpdateProfileEffects } from "./useUpdateProfileEffects"
 import { useGameEffects } from "./game"
 import { useAuthentication } from "./useAuthentication"
+//import { useInit } from "./useInit"
 
 const UseEffects: FC  = () => {
     // useAccounts()
@@ -16,7 +17,9 @@ const UseEffects: FC  = () => {
     useGameEffects()
     // useAddresses()
     useAuthentication()
+    //useInit()
     useUpdateProfileEffects()
+
     return (<>
         <UseBalances />
         <UseNFTCollections />

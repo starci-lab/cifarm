@@ -47,6 +47,7 @@ export interface NFTClaimedModal {
   nftType?: NFTType; 
   rarity?: NFTRarityEnum;  
   nftName?: string;
+  nftImageUrl?: string;
 }
 
 export interface HoneycombProtocolRawTxData {

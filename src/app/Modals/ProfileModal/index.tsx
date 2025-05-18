@@ -48,7 +48,7 @@ export const ProfileModal: FC = () => {
                             <Skeleton className="h-[160px] w-[160px] rounded-full" />
                         )}
                         <div>
-                            <div className="text-xl uppercase">{user?.username}</div>
+                            <div className="text-xl uppercase">{truncateString(user?.username || "", 12, 4)}</div>
                             <div className="text-muted-foreground">Lv. {user?.level} ({user?.experiences} / {quota})</div>
                         </div>
                     </div>

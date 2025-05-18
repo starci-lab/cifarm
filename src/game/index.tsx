@@ -2,7 +2,7 @@
 import React, { FC, useLayoutEffect, useRef } from "react"
 import { gameState, getConfig, startGame } from "./config"
 import { CONTAINER_ID } from "./constants"
-import { ExternalEventEmitter, SceneEventEmitter } from "@/modules/event-emitter"
+// import { ExternalEventEmitter, SceneEventEmitter } from "@/modules/event-emitter"
 import { ReactUI } from "./react-ui"
 import { useAppDispatch, setShowGameUI } from "@/redux"
 //import { useIsMobile } from "@/hooks"
@@ -20,8 +20,8 @@ export const Game: FC = () => {
         return () => {
             if (game.current) {
                 game.current.destroy(true, false)
-                ExternalEventEmitter.removeAllListeners()
-                SceneEventEmitter.removeAllListeners()
+                // ExternalEventEmitter.removeAllListeners()
+                // SceneEventEmitter.removeAllListeners()
                 game.current = null
                 gameState.data = undefined
             }
