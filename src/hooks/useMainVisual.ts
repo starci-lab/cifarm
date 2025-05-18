@@ -22,28 +22,16 @@ export const useMainVisual = () => {
             thumbnailUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/visual_1.jpg",
         },
         {
-            type: MainVisualType.Youtube,
-            url: "https://youtu.be/embzVX0z5pk?t=69",
-            selectedKey: "visual-2",
-            thumbnailUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/visual_1.jpg",
-        },
-        {
             type: MainVisualType.Image,
-            url: "https://i.imgur.com/MIukEfM.png",
-            selectedKey: "visual-3",
-            thumbnailUrl: "https://i.imgur.com/MIukEfM.png",
-        },
-        {
-            type: MainVisualType.Image,
-            url: "https://i.imgur.com/A9wDaxI.png",
+            url: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/download%20(2).png",
             selectedKey: "visual-4",
-            thumbnailUrl: "https://i.imgur.com/A9wDaxI.png",
+            thumbnailUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/download%20(2).png",
         },
         {
             type: MainVisualType.Image,
-            url: "https://i.imgur.com/O7iuGJZ.png",
-            selectedKey: "visual-5",
-            thumbnailUrl: "https://i.imgur.com/O7iuGJZ.png",
+            url: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/0069009f-df5d-42b9-9a80-b925b8181127%20(1).jpg",
+            selectedKey: "visual-3",
+            thumbnailUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/0069009f-df5d-42b9-9a80-b925b8181127%20(1).jpg",
         },
     ]
 
