@@ -28,7 +28,7 @@ export const BottomNavSheet: FC = () => {
                 side={isMobile ? "bottom" : "right"}
                 className="flex flex-col justify-between w-full sm:w-[400px]"
             >
-                <div className="border-b">
+                <div>
                     <h3 className="text-lg font-semibold">Navigation</h3>
                 </div>
 
