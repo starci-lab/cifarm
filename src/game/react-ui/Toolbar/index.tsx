@@ -105,7 +105,7 @@ export const Toolbar: FC = () => {
     }, [filteredTools])
 
     return (
-        <div className="flex gap-2 items-center bg-content-4 rounded-t-lg p-2">
+        <div className="flex gap-2 items-center bg-content-4 rounded-t-lg p-2 fixed left-1/2 -translate-x-1/2 bottom-0 scale-75 origin-bottom sm:scale-100">
             <ExtendedButton
                 color="secondary"
                 size="icon"

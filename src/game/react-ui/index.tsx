@@ -25,7 +25,7 @@ export const ReactUI: FC = () => {
                 <>
                     {!visitedUser ? (
                         <div>
-                            <div className="top-6 left-6 fixed scale-75 origin-top-left sm:scale-100">
+                            <div className="top-4 md:top-6 left-4 md:left-6 fixed scale-75 origin-top-left sm:scale-100">
                                 <div className="flex items-center" onClick={open}>
                                     <GameAvatar
                                         imgSrc={user?.avatarUrl}
@@ -37,14 +37,14 @@ export const ReactUI: FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="grid gap-4 fixed top-6 right-6 scale-75 origin-top-right sm:scale-100">
+                            <div className="grid gap-4 fixed top-4 md:top-6 right-4 md:right-6 scale-75 origin-top-right sm:scale-100">
                                 <ResourceCard text={`${user?.energy}/${getMaxEnergy(user?.level ?? 0)}`} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
                                 <ResourceCard text={`${user?.golds}`} iconImgSrc={assetIconMap[AssetIconId.Gold].base.assetUrl}/>
                             </div>
                         </div>
                     ) : (
                         <div className="flex items-center justify-between w-full">
-                            <div className="top-6 left-6 fixed">
+                            <div className="top-4 md:top-6 left-4 md:left-6 fixed">
                                 <div className="flex items-center">
                                     <GameAvatar
                                         imgSrc={visitedUser?.avatarUrl}
@@ -56,12 +56,12 @@ export const ReactUI: FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="grid gap-4 fixed top-6 right-6 scale-75 origin-top-right sm:scale-100">
+                            <div className="grid gap-4 fixed top-4 md:top-6 right-4 md:right-6 scale-75 origin-top-right sm:scale-100">
                                 <ResourceCard text={`${user?.energy}/${getMaxEnergy(user?.level ?? 0)}`} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col gap-4 fixed top-[150px] left-6 scale-75 origin-top-left sm:scale-100">
+                    <div className="flex flex-col gap-4 fixed top-[150px] left-4 md:left-6 scale-75 origin-top-left sm:scale-100">
                         {leftButtons
                             .map((button, index) => (
                                 <GameIconButton
@@ -73,7 +73,7 @@ export const ReactUI: FC = () => {
                                 />
                             ))}
                     </div>
-                    <div className="flex flex-col gap-4 fixed top-[150px] right-6 scale-75 origin-top-right sm:scale-100">
+                    <div className="flex flex-col gap-4 fixed top-[150px] right-4 md:right-6 scale-75 origin-top-right sm:scale-100">
                         {rightButtons
                             .map((button, index) => (
                                 <GameIconButton
@@ -85,9 +85,7 @@ export const ReactUI: FC = () => {
                                 />
                             ))}
                     </div>
-                    <div className="fixed left-1/2 -translate-x-1/2 bottom-0 scale-75 origin-bottom-center sm:scale-100">
-                        <Toolbar />
-                    </div>
+                    <Toolbar />
                 </>
             ) : null}
         </>
