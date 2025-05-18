@@ -4,7 +4,8 @@ import {
     Spacer,
     PressableAction,
     Card,
-    CardContent,
+    SheetBody,
+    CardBody,
 } from "@/components"
 import React, { FC } from "react"
 import {
@@ -58,83 +59,84 @@ export const MainContent: FC = () => {
             <SheetHeader>
                 <SheetTitle>{token?.name}</SheetTitle>
             </SheetHeader>
-            <Spacer y={6} />
-            <Card>
-                <CardContent className="px-3 py-2">
-                    <div className="text-sm text-muted-foreground">
+            <SheetBody>
+                <Card>
+                    <CardBody className="px-3 py-2">
+                        <div className="text-sm text-muted-foreground">
                             Balance
-                    </div>
-                    <div className="flex gap-1 text-xl font-bold">
-                        <div>
-                            {
-                                balanceSwr.data
-                            }
                         </div>
-                        <div>
-                            {
-                                token?.symbol
-                            }
+                        <div className="flex gap-1 text-xl font-bold">
+                            <div>
+                                {
+                                    balanceSwr.data
+                                }
+                            </div>
+                            <div>
+                                {
+                                    token?.symbol
+                                }
+                            </div>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
-            <Spacer y={6} />
-            <div className="grid grid-cols-3 gap-2">
-                <PressableAction
-                    icon={<PaperPlaneRight />}
-                    onClick={() => {
-                        formik.setFieldValue(
-                            "tokenKey",
-                            tokenKey ?? DefaultToken.Native
-                        )
-                        dispatch(setTransferTab(TransferTab.Token))
-                        dispatch(setTokenSheetPage(TokenSheetPage.Transfer ))
-                    }}
-                    name="Transfer"
-                />
-                <PressableAction
-                    icon={<QrCode />}
-                    onClick={() => {
-                        console.log("Receive")
-                    }}
-                    name="Receive"
-                />
-                <PressableAction
-                    icon={<HandArrowDown />}
-                    onClick={() => {
-                        console.log("Receive")
-                    }}
-                    name="Swap"
-                />
-                <PressableAction
-                    icon={<HandCoins />}
-                    onClick={() => {
-                        console.log("Receive")
-                    }}
-                    name="Stake"
-                />
-                <PressableAction
-                    icon={<ArrowUpRight />}
-                    onClick={() => {
-                        console.log("Receive")
-                    }}
-                    name="Bridge"
-                />
-                <PressableAction
-                    icon={<ShoppingCart />}
-                    onClick={() => {
-                        console.log("Receive")
-                    }}
-                    name="Buy"
-                />
-                <PressableAction
-                    icon={<DotsThree />}
-                    onClick={() => {
-                        console.log("Receive")
-                    }}
-                    name="More"
-                />
-            </div>
+                    </CardBody>
+                </Card>
+                <Spacer y={6} />
+                <div className="grid grid-cols-3 gap-2">
+                    <PressableAction
+                        icon={<PaperPlaneRight />}
+                        onClick={() => {
+                            formik.setFieldValue(
+                                "tokenKey",
+                                tokenKey ?? DefaultToken.Native
+                            )
+                            dispatch(setTransferTab(TransferTab.Token))
+                            dispatch(setTokenSheetPage(TokenSheetPage.Transfer ))
+                        }}
+                        name="Transfer"
+                    />
+                    <PressableAction
+                        icon={<QrCode />}
+                        onClick={() => {
+                            console.log("Receive")
+                        }}
+                        name="Receive"
+                    />
+                    <PressableAction
+                        icon={<HandArrowDown />}
+                        onClick={() => {
+                            console.log("Receive")
+                        }}
+                        name="Swap"
+                    />
+                    <PressableAction
+                        icon={<HandCoins />}
+                        onClick={() => {
+                            console.log("Receive")
+                        }}
+                        name="Stake"
+                    />
+                    <PressableAction
+                        icon={<ArrowUpRight />}
+                        onClick={() => {
+                            console.log("Receive")
+                        }}
+                        name="Bridge"
+                    />
+                    <PressableAction
+                        icon={<ShoppingCart />}
+                        onClick={() => {
+                            console.log("Receive")
+                        }}
+                        name="Buy"
+                    />
+                    <PressableAction
+                        icon={<DotsThree />}
+                        onClick={() => {
+                            console.log("Receive")
+                        }}
+                        name="More"
+                    />
+                </div>
+            </SheetBody>
         </div>      
     )
 }

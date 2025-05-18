@@ -40,6 +40,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
+    DialogBody,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks"
@@ -330,7 +331,7 @@ export const SignTransactionModal: FC = () => {
                         switch (item) {
                         case HoneycombProtocolRawTxContent.SerializedTx: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3 bg-content-2">
+                                <div className="flex items-center justify-between gap-12 p-3 bg-content-2">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
                                     <div className="flex gap-2 items-center">
                                         <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
@@ -393,7 +394,7 @@ export const SignTransactionModal: FC = () => {
                         switch (item) {
                         case SolanaRawTxContent.SerializedTx: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3 bg-content-2">
+                                <div className="flex items-center justify-between gap-12 px-3 py-2 bg-content-2">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
                                     <div className="flex gap-2 items-center">
                                         <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
@@ -481,7 +482,7 @@ export const SignTransactionModal: FC = () => {
                         <ModalHeader title="Sign Transaction" />
                     </DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <div className="flex gap-2 items-center">
                         <Badge variant="secondary" className="flex gap-1">
                             <Image
@@ -494,18 +495,19 @@ export const SignTransactionModal: FC = () => {
                     </div>
                     <Spacer y={4} />
                     {renderContent()}
-                </div>
+                </DialogBody>
                 <DialogFooter className="w-full">
                     <ExtendedButton
                         variant="flat"
+                        className="flex-1"
                         color="secondary"
+                        size="icon"
                         onClick={() => toggle(false)}
-                        className="text-muted-foreground w-full"
                     >
             Cancel
                     </ExtendedButton>
                     <ExtendedButton
-                        className="w-full"
+                        className="flex-1"
                         isLoading={isMutating}
                         onClick={() => trigger()}
                     >

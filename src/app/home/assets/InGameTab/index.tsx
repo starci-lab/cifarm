@@ -36,7 +36,7 @@ export const InGameTab: FC = () => {
                     }}
                 />
                 <Spacer y={4} />
-                <div className="flex justify-between bg-content-2 rounded-lg px-3 py-6">
+                <div className="flex justify-between">
                     <div className="flex gap-2 items-center">
                         <Image
                             className="w-10 h-10"
@@ -58,7 +58,7 @@ export const InGameTab: FC = () => {
             />
             <Spacer y={4} />
             <div className="bg-content-2 rounded-lg">
-                <div className="p-3 pt-2">
+                <div className="p-4">
                     <Title
                         title="Tool"
                         tooltipString="The items you have in your inventory."
@@ -81,12 +81,12 @@ export const InGameTab: FC = () => {
                     />
                 </div>
                 <Separator />
-                <div className="p-3 pt-2">
+                <div className="p-4">
                     <Title
                         title="Storage"
                         tooltipString="The items you have in your storage."
                     />
-                    <Spacer y={2} />
+                    <Spacer y={4} />
                     <GridTable
                         classNames={{
                             container: "grid-none flex flex-wrap gap-2 justify-start",
@@ -104,12 +104,12 @@ export const InGameTab: FC = () => {
                     />
                 </div>
                 <Separator />
-                <div className="p-3 pt-2">
+                <div className="p-4">
                     <Title
                         title="Delivery"
                         tooltipString="The items you have in your delivery."
                     />
-                    <Spacer y={2} />
+                    <Spacer y={4} />
                     <GridTable
                         classNames={{
                             container: "grid-none flex flex-wrap gap-2 justify-start",

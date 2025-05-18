@@ -7,6 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { IconWrapper } from "../styled/IconWrapper"
 import { CaretLeft, X } from "@phosphor-icons/react"
+import { Separator } from "./separator"
 
 const Sheet = SheetPrimitive.Root
 
@@ -32,7 +33,7 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
 const sheetVariants = cva(
-    "fixed z-50 gap-4 bg-content-4 p-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
+    "fixed z-50 bg-content-4 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
     {
         variants: {
             side: {
@@ -76,20 +77,32 @@ const SheetHeader = ({
     children,
     ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-    <div
-        className={cn(
-            "flex items-center justify-between text-foreground mb-2",
-            className
-        )}
-        {...props}
-    >
-        {children}
-        <SheetPrimitive.Close className={cn("text-muted-foreground", className)}>
-            <X className="h-5 w-5" />
-        </SheetPrimitive.Close>
-    </div>
+    <>
+        <div
+            className={cn(
+                "flex items-center justify-between text-foreground p-4",
+                className
+            )}
+            {...props}
+        >
+            {children}
+            <SheetPrimitive.Close className={cn("text-muted-foreground", className)}>
+                <X className="h-5 w-5" />
+            </SheetPrimitive.Close>
+        </div>
+        <Separator variant="secondary" />
+    </>
 )
 SheetHeader.displayName = "SheetHeader"
+
+const SheetBody = ({
+    className,
+    children,
+    ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+    <div className={cn("p-4", className)} {...props}>{children}</div>
+)
+SheetBody.displayName = "SheetBody"
 
 const SheetFooter = ({
     className,
@@ -97,7 +110,7 @@ const SheetFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
     <div
         className={cn(
-            "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+            "flex flex-col-reverse p-4",
             className
         )}
         {...props}
@@ -163,4 +176,5 @@ export {
     SheetFooter,
     SheetTitle,
     SheetDescription,
+    SheetBody,
 }

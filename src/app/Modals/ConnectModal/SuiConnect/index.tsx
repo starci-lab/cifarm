@@ -2,8 +2,9 @@ import {
     Image,
     IconSelection,
     List,
-    Spacer,
     ExtendedButton,
+    DialogBody,
+    DialogFooter,
 } from "@/components"
 import React, { FC, useState } from "react"
 import { useConnectWallet, useWallets, useCurrentWallet, useDisconnectWallet } from "@mysten/dapp-kit"
@@ -66,39 +67,40 @@ export const SuiConnect: FC = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const dispatch = useAppDispatch()
     return (
-        <div>
-            <List
-                classNames={{
-                    container: "gap-2",
-                }}
-                enableScroll={false}
-                items={suiWallets}
-                contentCallback={(item) => (
-                    (() => {
-                        return (
-                            <IconSelection
-                                key={item.wallet}
-                                disabled={isConnected}
-                                icon={item.icon}
-                                text={item.name}
-                                classNames={{
-                                    description: "text-secondary",
-                                }}
-                                onClick={item.onClick}
-                                isLoading={isConnecting && connectingWallet === item.wallet}
-                                description={
-                                    isConnected && currentWallet?.name === item.wallet
-                                        ? "Connected"
-                                        : undefined
-                                }
-                            />
-                        )
-                    })()
-                )}
-                showSeparator={false}
-            />
-            <Spacer y={6} />
-            <div className="grid grid-cols-2 gap-2">
+        <>
+            <DialogBody>
+                <List
+                    classNames={{
+                        container: "gap-2",
+                    }}
+                    enableScroll={false}
+                    items={suiWallets}
+                    contentCallback={(item) => (
+                        (() => {
+                            return (
+                                <IconSelection
+                                    key={item.wallet}
+                                    disabled={isConnected}
+                                    icon={item.icon}
+                                    text={item.name}
+                                    classNames={{
+                                        description: "text-secondary",
+                                    }}
+                                    onClick={item.onClick}
+                                    isLoading={isConnecting && connectingWallet === item.wallet}
+                                    description={
+                                        isConnected && currentWallet?.name === item.wallet
+                                            ? "Connected"
+                                            : undefined
+                                    }
+                                />
+                            )
+                        })()
+                    )}
+                    showSeparator={false}
+                />
+            </DialogBody>
+            <DialogFooter>
                 <ExtendedButton
                     disabled={!isConnected}
                     className="w-full"
@@ -119,7 +121,7 @@ export const SuiConnect: FC = () => {
                 >
           Select
                 </ExtendedButton>
-            </div>
-        </div>
+            </DialogFooter >
+        </>
     )
 }

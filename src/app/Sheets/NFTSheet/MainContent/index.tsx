@@ -10,6 +10,7 @@ import {
     WrappedBadge,
     List,
     ScrollArea,
+    SheetBody,
 } from "@/components"
 import React, { FC } from "react"
 import {
@@ -193,92 +194,92 @@ export const MainContent: FC = () => {
   >(SIGN_TRANSACTION_DISCLOSURE)
 
     return (
-        <div className="w-full h-full">
+        <div className="h-full flex flex-col">
             <SheetHeader>
                 <SheetTitle>{nft?.name}</SheetTitle>
             </SheetHeader>
-            <Spacer y={6} />
-            <ScrollArea className="w-full h-full overflow-y-auto" hideScrollBar={true}>
-                <PreviewImage imageUrl={nft?.image} />
-                <Spacer y={4} />
-                {nft ? (
-                    <div className="flex gap-2 items-center">
-                        <NFTRarityBadge
-                            rarity={
+            <SheetBody className="flex-1 flex flex-col">
+                <ScrollArea className="w-full flex-1 overflow-y-auto" hideScrollBar={true}>
+                    <PreviewImage imageUrl={nft?.image} />
+                    <Spacer y={4} />
+                    {nft ? (
+                        <div className="flex gap-2 items-center">
+                            <NFTRarityBadge
+                                rarity={
                   nft.attributes.find(
                       (rarity) => rarity.key === AttributeName.Rarity
                   )?.value as NFTRarityEnum
-                            }
-                        />
-                        {nft?.wrapped && <WrappedBadge />}
-                    </div>
-                ) : (
-                    <div className="flex gap-2 items-center">
-                        <Skeleton className="w-[60px] h-6" />
-                        <Skeleton className="w-[60px] h-6" />
-                    </div>
-                )}
-                <Spacer y={6} />
-                <div className="grid grid-cols-4 gap-2">
-                    {nft?.wrapped ? (
-                        <PressableAction
-                            icon={<Export className="w-5 h-5 min-w-5 min-h-5" />}
-                            isLoading={createUnwrapSolanaMetaplexNFTSwrMutation.isMutating}
-                            onClick={async () => {
-                                if (!nft?.nftAddress) {
-                                    throw new Error("NFT address is required")
                                 }
-                                const { data } = await createUnwrapSolanaMetaplexNFTSwrMutation.trigger({
-                                    request: {
-                                        nftAddress: nft.nftAddress,
-                                        collectionAddress: collections[collectionKey]?.[chainKey]?.[network]?.collectionAddress,
-                                    },
-                                })
-                                if (!data) {
-                                    toast({
-                                        title: "Error",
-                                        description: "Failed to create unwrap NFT transaction",
-                                        variant: "destructive",
-                                    })
-                                    return ""
-                                }
-                                dispatch(
-                                    setSignTransactionModal({
-                                        type: TransactionType.SolanaRawTx,
-                                        data: {
-                                            serializedTx: data.serializedTx,
-                                        },
-                                        postActionHook: async (serializedTx: string) => {
-                                            const { data } = await sendUnwrapSolanaMetaplexNFTSwrMutation.trigger({
-                                                request: {
-                                                    serializedTx,
-                                                },
-                                            })
-                                            if (!data) {
-                                                toast({
-                                                    title: "Error",
-                                                    description: "Failed to send unwrap NFT transaction",
-                                                    variant: "destructive",
-                                                })
-                                                return ""
-                                            }
-                                            return data.txHash
-                                        },
-                                    })
-                                )
-                                openSignTransactionModal()
-                            }}
-                            name="Unwrap"
-                        />
+                            />
+                            {nft?.wrapped && <WrappedBadge />}
+                        </div>
                     ) : (
-                        <PressableAction
-                            icon={<Package className="w-5 h-5 min-w-5 min-h-5" />}
-                            isLoading={createWrapSolanaMetaplexNFTSwrMutation.isMutating}
-                            onClick={async () => {
-                                if (!nft?.nftAddress) {
-                                    throw new Error("NFT address is required")
-                                }
-                                const { data } =
+                        <div className="flex gap-2 items-center">
+                            <Skeleton className="w-[60px] h-6" />
+                            <Skeleton className="w-[60px] h-6" />
+                        </div>
+                    )}
+                    <Spacer y={6} />
+                    <div className="grid grid-cols-3 gap-2">
+                        {nft?.wrapped ? (
+                            <PressableAction
+                                icon={<Export />}
+                                isLoading={createUnwrapSolanaMetaplexNFTSwrMutation.isMutating}
+                                onClick={async () => {
+                                    if (!nft?.nftAddress) {
+                                        throw new Error("NFT address is required")
+                                    }
+                                    const { data } = await createUnwrapSolanaMetaplexNFTSwrMutation.trigger({
+                                        request: {
+                                            nftAddress: nft.nftAddress,
+                                            collectionAddress: collections[collectionKey]?.[chainKey]?.[network]?.collectionAddress,
+                                        },
+                                    })
+                                    if (!data) {
+                                        toast({
+                                            title: "Error",
+                                            description: "Failed to create unwrap NFT transaction",
+                                            variant: "destructive",
+                                        })
+                                        return ""
+                                    }
+                                    dispatch(
+                                        setSignTransactionModal({
+                                            type: TransactionType.SolanaRawTx,
+                                            data: {
+                                                serializedTx: data.serializedTx,
+                                            },
+                                            postActionHook: async (serializedTx: string) => {
+                                                const { data } = await sendUnwrapSolanaMetaplexNFTSwrMutation.trigger({
+                                                    request: {
+                                                        serializedTx,
+                                                    },
+                                                })
+                                                if (!data) {
+                                                    toast({
+                                                        title: "Error",
+                                                        description: "Failed to send unwrap NFT transaction",
+                                                        variant: "destructive",
+                                                    })
+                                                    return ""
+                                                }
+                                                return data.txHash
+                                            },
+                                        })
+                                    )
+                                    openSignTransactionModal()
+                                }}
+                                name="Unwrap"
+                            />
+                        ) : (
+                            <PressableAction
+                                icon={<Package />}
+                                isLoading={createWrapSolanaMetaplexNFTSwrMutation.isMutating}
+                                onClick={async () => {
+                                    if (!nft?.nftAddress) {
+                                        throw new Error("NFT address is required")
+                                    }
+                                    const { data } =
                   await createWrapSolanaMetaplexNFTSwrMutation.trigger({
                       request: {
                           nftAddress: nft.nftAddress,
@@ -286,89 +287,90 @@ export const MainContent: FC = () => {
                         collections[collectionKey]?.[chainKey]?.[network]?.collectionAddress,
                       },
                   })
-                                if (!data) {
-                                    toast({
-                                        title: "Error",
-                                        description: "Failed to wrap NFT",
-                                        variant: "destructive",
-                                    })
-                                    return
-                                }
-                                dispatch(
-                                    setSignTransactionModal({
-                                        type: TransactionType.SolanaRawTx,
-                                        data: {
-                                            serializedTx: data.serializedTx,
-                                        },
-                                        postActionHook: async (serializedTx: string) => {
-                                            const { data } = await sendWrapSolanaMetaplexNFTSwrMutation.trigger({
-                                                request: {
-                                                    serializedTx,
-                                                },
-                                            })
-                                            if (!data) {
-                                                toast({
-                                                    title: "Error",
-                                                    description: "Failed to send wrap NFT transaction",
-                                                    variant: "destructive",
+                                    if (!data) {
+                                        toast({
+                                            title: "Error",
+                                            description: "Failed to wrap NFT",
+                                            variant: "destructive",
+                                        })
+                                        return
+                                    }
+                                    dispatch(
+                                        setSignTransactionModal({
+                                            type: TransactionType.SolanaRawTx,
+                                            data: {
+                                                serializedTx: data.serializedTx,
+                                            },
+                                            postActionHook: async (serializedTx: string) => {
+                                                const { data } = await sendWrapSolanaMetaplexNFTSwrMutation.trigger({
+                                                    request: {
+                                                        serializedTx,
+                                                    },
                                                 })
-                                                return ""
-                                            }
-                                            return data.txHash
-                                        },
-                                    })
-                                )
-                                openSignTransactionModal()
+                                                if (!data) {
+                                                    toast({
+                                                        title: "Error",
+                                                        description: "Failed to send wrap NFT transaction",
+                                                        variant: "destructive",
+                                                    })
+                                                    return ""
+                                                }
+                                                return data.txHash
+                                            },
+                                        })
+                                    )
+                                    openSignTransactionModal()
+                                }}
+                                name="Wrap"
+                            />
+                        )}
+                        <PressableAction
+                            disabled={nft?.wrapped}
+                            icon={<PaperPlaneRight />}
+                            onClick={() => {
+                                formik.setFieldValue("collectionKey", collectionKey)
+                                formik.setFieldValue("nft", nft)
+                                dispatch(setNFTSheetPage(NFTSheetPage.Transfer))
                             }}
-                            name="Wrap"
+                            name="Transfer"
                         />
-                    )}
-                    <PressableAction
-                        disabled={nft?.wrapped}
-                        icon={<PaperPlaneRight />}
-                        onClick={() => {
-                            formik.setFieldValue("collectionKey", collectionKey)
-                            formik.setFieldValue("nft", nft)
-                            dispatch(setNFTSheetPage(NFTSheetPage.Transfer))
-                        }}
-                        name="Transfer"
-                    />
-                    <PressableAction
-                        icon={<Sparkle />}
-                        onClick={() => {
-                            console.log("Receive")
-                        }}
-                        name="Enchant"
-                    />
-                    <PressableAction
-                        icon={<Eye />}
-                        onClick={() => {
-                            window.open(
-                                explorerUrl({
-                                    type: "address",
-                                    value: nft?.nftAddress ?? "",
-                                    chainKey,
-                                    network,
-                                }),
-                                "_blank"
-                            )
-                        }}
-                        name="View"
-                    />
-                </div>  
-                <Spacer y={6} />
-                <div>
-                    <Title title="Properties" />
-                    <Spacer y={2} />
-                    {renderProperties()}
-                </div>
-                <Spacer y={6} />
-                <div>
-                    <Title title="Stats" />
-                    <Spacer y={2} />
-                    {renderStats()}
-                </div>
-            </ScrollArea>
+                        <PressableAction
+                            icon={<Sparkle />}
+                            onClick={() => {
+                                console.log("Receive")
+                            }}
+                            name="Enchant"
+                        />
+                        <PressableAction
+                            icon={<Eye />}
+                            onClick={() => {
+                                window.open(
+                                    explorerUrl({
+                                        type: "address",
+                                        value: nft?.nftAddress ?? "",
+                                        chainKey,
+                                        network,
+                                    }),
+                                    "_blank"
+                                )
+                            }}
+                            name="View"
+                        />
+                    </div>  
+                    <Spacer y={6} />
+                    <div>
+                        <Title title="Properties" />
+                        <Spacer y={2} />
+                        {renderProperties()}
+                    </div>
+                    <Spacer y={6} />
+                    <div>
+                        <Title title="Stats" />
+                        <Spacer y={2} />
+                        {renderStats()}
+                    </div>
+                </ScrollArea>
+            </SheetBody>
         </div>
     )
 }

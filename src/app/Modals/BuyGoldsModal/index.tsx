@@ -14,6 +14,7 @@ import {
     DialogHeader,
     DialogTitle,
     BuyCard,
+    DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { toast, useGlobalAccountAddress, useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation, useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr } from "@/hooks"
@@ -58,7 +59,7 @@ export const BuyGoldsModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>Buy Golds</DialogTitle>
                 </DialogHeader>     
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <DialogBody className="grid md:grid-cols-3 gap-2">
                     {
                         staticSwr.data?.data.goldPurchases[chainKey][network]?.options.map((goldPurchase, index) => (
                             <BuyCard
@@ -123,7 +124,7 @@ export const BuyGoldsModal: FC = () => {
                             />
                         ))
                     }
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

@@ -1,8 +1,7 @@
-import { ArrowLeftIcon } from "@heroicons/react/24/outline"
 import React from "react"
-import { IconWrapper } from "../IconWrapper"
 import { useRouterWithSearchParams } from "@/hooks"
-import { Skeleton } from "@/components"
+import { Button, Skeleton } from "@/components"
+import { ArrowLeft } from "@phosphor-icons/react"
 export interface HeaderProps {
   title?: string
   isSkeleton?: boolean
@@ -14,9 +13,9 @@ export const Header = ({ title, showBackButton, isSkeleton = false }: HeaderProp
     return (
         <div className="flex items-center gap-4 text-muted-foreground">
             {showBackButton && (
-                <IconWrapper classNames={{ base: "text-muted-foreground" }}>
-                    <ArrowLeftIcon className="w-5 h-5" onClick={() => router.back()} />
-                </IconWrapper>
+                <Button size="icon" variant="ghost" color="default" className="text-muted-foreground" onClick={() => router.back()}>
+                    <ArrowLeft />
+                </Button>
             )}
             {
                 isSkeleton ? (

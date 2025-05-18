@@ -1,14 +1,16 @@
 import { TRANSFER_NFT_FORMIK } from "@/app/constants"
 import {
-    DialogFooter,
     ExtendedButton,
     ExtendedInput,
-    PressableCard,
     Spacer,
     Title,
     Image,
     SheetTitle,
     SheetHeader,
+    CardBody,
+    Card,
+    SheetBody,
+    SheetFooter,
 } from "@/components"
 import { useTransferNFTFormik } from "@/hooks"
 import { useSingletonHook2 } from "@/modules/singleton-hook"
@@ -37,18 +39,17 @@ export const TransferContent: FC = () => {
           Transfer
                     </SheetTitle>
                 </SheetHeader>
-                <Spacer y={6} />
-                <div>
-                    <PressableCard disabled={true}>
-                        <div className="flex gap-2 items-center">
+                <SheetBody>
+                    <Card disabled={true} pressable className="w-full">
+                        <CardBody className="flex items-center gap-2">
                             <Image
                                 src={nft?.image || ""}
                                 className="w-12 h-12 rounded-md object-contain"
                             />
                             <div>{formik.values.nft?.name}</div>
-                        </div>
-                    </PressableCard>
-                    <Spacer y={6} />
+                        </CardBody>
+                    </Card>
+                    <Spacer y={4} />
                     <div>
                         <Title
                             title="Recipient"
@@ -79,14 +80,13 @@ export const TransferContent: FC = () => {
               undefined
                             }
                             endContent={
-                                <At />
+                                <At className="text-secondary"/>
                             }
                         />
                     </div>
-                    <Spacer y={6} />
-                </div>
+                </SheetBody>
             </div>
-            <DialogFooter>
+            <SheetFooter>
                 <ExtendedButton
                     disabled={!formik.isValid}
                     isLoading={formik.isSubmitting}
@@ -96,7 +96,7 @@ export const TransferContent: FC = () => {
                 >
           Transfer
                 </ExtendedButton>
-            </DialogFooter>
+            </SheetFooter>
         </>
     )
 }

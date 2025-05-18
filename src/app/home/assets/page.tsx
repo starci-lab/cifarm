@@ -80,7 +80,7 @@ const Page = () => {
                 selectedTab={assetTab}
                 onSelectTab={(tab) => dispatch(setAssetTab(tab as AssetTab))}
             />
-            <Spacer y={4} />
+            <Spacer y={6} />
             {renderContent()}
         </div>
     )

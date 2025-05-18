@@ -13,8 +13,8 @@ interface DAppCardProps {
 export const DAppCard: FC<DAppCardProps> = ({ title, description, imageUrl, onClick, content, isLoading }) => {
     return (
         <PressableCard onClick={onClick} disabled={isLoading}>
-            <div className="flex gap-4">
-                <Image src={imageUrl} className="w-20 h-20 object-contain" />
+            <div className="flex">
+                <Image src={imageUrl} className="w-20 h-20 object-contain p-4" />
                 <div className="flex flex-col">
                     <div className="flex items-center gap-1">
                         {isLoading && <Spinner />}
