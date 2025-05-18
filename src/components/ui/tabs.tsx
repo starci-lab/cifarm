@@ -15,7 +15,7 @@ const TabsList = React.forwardRef<
     <TabsPrimitive.List
         ref={ref}
         className={cn(
-            "inline-flex h-8 items-center justify-center rounded-lg bg-content-2",
+            "inline-flex h-10 items-center justify-center rounded-lg bg-content-2",
             className
         )}
         {...props}
@@ -25,7 +25,7 @@ TabsList.displayName = TabsPrimitive.List.displayName
 
 // 🔸 Define Trigger variants
 const tabsTriggerVariants = cva(
-    "inline-flex items-center justify-center whitespace-nowrap px-4 h-8 text-sm ring-offset-background transition-colors duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 rounded-lg",
+    "inline-flex items-center justify-center whitespace-nowrap px-4 h-8 ring-offset-background transition-colors duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 rounded-lg",
     {
         variants: {
             color: {

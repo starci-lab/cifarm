@@ -25,29 +25,31 @@ export const NFTCollectionsTab: FC = () => {
 
     const router = useRouterWithSearchParams()
     return (
-        <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {nftCollections.map((nftCollection) => {
-                const collectionSwr = nftCollectionSwrs[nftCollection.key]
-                if (!nftCollection || !collectionSwr) return null
-                const collectionData = nftCollection[chainKey]?.[network]
-                if (!collectionData) return null
+        <div>
+            <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {nftCollections.map((nftCollection) => {
+                    const collectionSwr = nftCollectionSwrs[nftCollection.key]
+                    if (!nftCollection || !collectionSwr) return null
+                    const collectionData = nftCollection[chainKey]?.[network]
+                    if (!collectionData) return null
 
-                return (
-                    <NFTCollection
-                        key={nftCollection.key}
-                        collection={collectionData}
-                        collectionSwr={collectionSwr}
-                        onClick={() => {
-                            router.push(
-                                `${pathConstants.collections}/${nftCollection.key}`, 
-                                {
-                                    mergeWithCurrentPath: true,
-                                }
-                            )
-                        }}
-                    />
-                )
-            })}
+                    return (
+                        <NFTCollection
+                            key={nftCollection.key}
+                            collection={collectionData}
+                            collectionSwr={collectionSwr}
+                            onClick={() => {
+                                router.push(
+                                    `${pathConstants.collections}/${nftCollection.key}`, 
+                                    {
+                                        mergeWithCurrentPath: true,
+                                    }
+                                )
+                            }}
+                        />
+                    )
+                })}
+            </div>
         </div>
     )
 }
