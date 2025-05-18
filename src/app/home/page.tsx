@@ -20,7 +20,7 @@ const Page: FC = () => {
         }
     }
     return (
-        <div className="relative overflow-x-hidden">
+        <div className="relative">
             <BlurEffect size="lg" position="top" />
             <Header title="Home" />
             <Spacer y={4} />

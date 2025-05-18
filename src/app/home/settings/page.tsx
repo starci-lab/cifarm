@@ -14,7 +14,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="relative overflow-x-hidden">
+        <div className="relative">
             <BlurEffect size="lg" position="top" />
             <Header title="Settings" />
             <Spacer y={4} />

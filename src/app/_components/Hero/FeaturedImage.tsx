@@ -3,7 +3,7 @@ import { BlurEffect, Image } from "@/components"
 
 
 export const FeaturedImage = () => (
-    <div className="relative z-0 w-full h-full min-h-[400px] lg:min-h-[600px] flex items-center justify-center overflow-x-hidden">
+    <div className="relative z-0 w-full h-full min-h-[400px] lg:min-h-[600px] flex items-center justify-center">
         <BlurEffect size="lg" position="center" />
         <div className="relative w-full h-full mx-auto">
             <Image
