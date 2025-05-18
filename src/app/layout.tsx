@@ -8,6 +8,12 @@ export const metadata: Metadata = {
     description: "CiFarm",
     icons: {
         icon: "logo.png",
+    },
+    viewport: {
+        width: "device-width",
+        initialScale: 1.0,
+        maximumScale: 1.0,
+        userScalable: false
     }
 }
 
@@ -20,7 +26,8 @@ const Layout: FC = ({
                 src="https://accounts.google.com/gsi/client"
                 async
                 defer
-            ></script>   
+            ></script>
+            
             <WrappedLayout>{children}</WrappedLayout>
         </html>
     )

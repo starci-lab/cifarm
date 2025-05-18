@@ -37,7 +37,7 @@ export const MainVisual: FC = () => {
         }
         if (visual?.type === MainVisualType.Youtube) {
             return (
-                <div className="relative">
+                <div className="relative self-stretch">
                     <YouTubePlayer
                         youtubeUrl={visual.url}
                         className="w-full rounded-lg aspect-video"
@@ -55,22 +55,24 @@ export const MainVisual: FC = () => {
     }
 
     return (
-        <div className="flex-1 relative">
+        <div className="relative justify-center flex flex-col items-center">
             {renderContent(selectedMainVisualKey)}
             <Spacer y={4} />
-            <div className="flex flex-wrap gap-2 justify-center">
-                {visuals.map((visual) => (
-                    <HoverImage
-                        classNames={{
-                            container: "w-32 rounded-lg aspect-video",
-                        }}
-                        onClick={() => {
-                            dispatch(setSelectedMainVisualKey(visual.selectedKey))
-                        }}
-                        key={visual.selectedKey}
-                        imageUrl={visual.thumbnailUrl}
-                    />
-                ))}
+            <div className="w-full flex gap-2 overflow-x-scroll no-scrollbar">
+                <div className="relative w-full flex items-center justify-start md:justify-center gap-2">
+                    {visuals.map((visual) => (
+                        <HoverImage
+                            classNames={{
+                                container: "w-32 flex-shrink-0 rounded-lg aspect-video",
+                            }}
+                            onClick={() => {
+                                dispatch(setSelectedMainVisualKey(visual.selectedKey))
+                            }}
+                            key={visual.selectedKey}
+                            imageUrl={visual.thumbnailUrl}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     )

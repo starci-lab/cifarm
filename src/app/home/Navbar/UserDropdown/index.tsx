@@ -16,7 +16,7 @@ export const UserDropdown: FC = () => {
                 <DropdownMenuTrigger>
                     <AvaButton
                         icon={<Image src={user?.avatarUrl || "https://avatar.iran.liara.run/public/boy"} className="rounded-full w-8 h-8"/>}
-                        text={user?.username || "Guest"}
+                        text={user?.username.slice(0, 5) + "..." || "Guest"}
                     />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="p-2 w-52 bg-content-4">

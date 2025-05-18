@@ -15,7 +15,7 @@ export const Container: FC<ContainerProps> = ({
         <div
             className={
                 cn(
-                    "relative mx-auto",
+                    "relative mx-auto w-screen overflow-x-hidden",
                     hasPadding ? "p-6" : "",
                     centerContent ? "grid place-items-center" : "",
                     "min-h-screen grid w-full"

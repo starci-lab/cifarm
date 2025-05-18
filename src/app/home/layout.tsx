@@ -12,7 +12,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                     <AppSidebar />
                     <div className="flex-1">
                         <Navbar />
-                        <div className="py-4 px-6 max-w-[1200px] mx-auto">
+                        <div className="py-4 px-6 max-w-[1200px] mx-auto w-full">
                             {children}
                         </div>
                         <BottomNavbar />
