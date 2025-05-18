@@ -127,7 +127,7 @@ const font = Baloo_2({ subsets: ["latin"], weight: ["400", "700"] })
 export const WrappedLayout = ({ children }: PropsWithChildren) => {
     const bodyRef = useRef<HTMLBodyElement>(null)
     return (
-        <body className={`${font.className} min-h-screen`} ref={bodyRef}>
+        <body className={`${font.className} h-screen overflow-x-hidden`} ref={bodyRef}>
             <ReduxProvider store={store}>
                 <LayoutContent> {children} </LayoutContent>
             </ReduxProvider>
