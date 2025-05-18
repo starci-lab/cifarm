@@ -34,10 +34,10 @@ export const NFTSheet: FC = () => {
     }
 
     return (
-        <Sheet open={isOpen} onOpenChange={toggle}>
+        <Sheet open={isOpen} onOpenChange={toggle} >
             <SheetContent
                 side={isMobile ? "bottom" : "right"}
-                className="flex flex-col justify-between"
+                className="flex flex-col justify-between max-h-screen overflow-y-scroll"
             >
                 {renderContent()}
             </SheetContent>

@@ -4,7 +4,6 @@ import { SolanaDApps } from "./SolanaDApps"
 import { useAppSelector } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
 import { Header, Spacer, BlurEffect } from "@/components"
-import { ChainSelectionDropdown } from "../assets/ChainSelectionDropdown"
 const Page = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const renderContent = () => {
@@ -16,10 +15,7 @@ const Page = () => {
     return (
         <div className="relative">
             <BlurEffect size="lg" position="top" className="-z-10" />
-            <div className="flex justify-between items-center gap-4">
-                <Header title="DApps" />
-                <ChainSelectionDropdown />
-            </div>
+            <Header title="DApps" />
             <Spacer y={6} />
             {renderContent()}
         </div>

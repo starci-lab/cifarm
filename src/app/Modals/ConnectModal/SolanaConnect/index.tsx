@@ -2,8 +2,9 @@ import {
     Image,
     IconSelection,
     List,
-    Spacer,
     ExtendedButton,
+    DialogBody,
+    DialogFooter,
 } from "@/components"
 import React, { FC, useEffect } from "react"
 import { useWallet } from "@solana/wallet-adapter-react"
@@ -42,35 +43,36 @@ export const SolanaConnect: FC = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const dispatch = useAppDispatch()
     return (
-        <div>
-            <List
-                classNames={{
-                    container: "gap-2",
-                }}
-                enableScroll={false}
-                items={solanaWallets}
-                contentCallback={(item) => (
-                    <IconSelection
-                        key={item.wallet}
-                        disabled={connected}
-                        icon={item.icon}
-                        text={item.name}
-                        classNames={{
-                            description: "text-secondary",
-                        }}
-                        onClick={item.onClick}
-                        isLoading={connecting && wallet?.adapter.name === item.wallet}
-                        description={
-                            connected && wallet?.adapter.name === item.wallet
-                                ? "Connected"
-                                : undefined
-                        }
-                    />
-                )}
-                showSeparator={false}
-            />
-            <Spacer y={6} />
-            <div className="grid grid-cols-2 gap-2">
+        <>
+            <DialogBody>
+                <List
+                    classNames={{
+                        container: "gap-2",
+                    }}
+                    enableScroll={false}
+                    items={solanaWallets}
+                    contentCallback={(item) => (
+                        <IconSelection
+                            key={item.wallet}
+                            disabled={connected}
+                            icon={item.icon}
+                            text={item.name}
+                            classNames={{
+                                description: "text-secondary",
+                            }}
+                            onClick={item.onClick}
+                            isLoading={connecting && wallet?.adapter.name === item.wallet}
+                            description={
+                                connected && wallet?.adapter.name === item.wallet
+                                    ? "Connected"
+                                    : undefined
+                            }
+                        />
+                    )}
+                    showSeparator={false}
+                />
+            </DialogBody>
+            <DialogFooter>
                 <ExtendedButton
                     disabled={!connected}
                     className="w-full"
@@ -91,7 +93,7 @@ export const SolanaConnect: FC = () => {
                 >
           Select
                 </ExtendedButton>
-            </div>
-        </div>
+            </DialogFooter>
+        </>
     )
 }

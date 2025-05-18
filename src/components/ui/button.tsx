@@ -13,7 +13,7 @@ const buttonVariants = cva(
                 secondary: "bg-secondary hover:bg-secondary/75 text-background",
                 destructive: "bg-destructive hover:bg-destructive/90 text-destructive-foreground",
                 highlight: "bg-button-highlight hover:bg-button-highlight/75 text-text",
-                ghost: "hover:bg-accent hover:text-accent-foreground",
+                ghost: "hover:bg-secondary/50 text-foreground",
                 link: "text-primary hover:underline underline-offset-4",
                 gradient: "bg-gradient-button hover:bg-gradient-button/75 text-background",
                 "gradient-secondary": "bg-gradient-secondary hover:bg-gradient-secondary-hover text-background",
@@ -31,7 +31,7 @@ const buttonVariants = cva(
                 sm: "h-8 px-3 text-sm",
                 lg: "h-12 px-6 text-base",
                 xl: "h-14 px-8 text-lg",
-                icon: "h-10 w-10 p-0",
+                icon: "h-10 w-10 p-0 min-w-10 min-h-10",
             },
         },
         defaultVariants: {

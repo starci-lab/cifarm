@@ -28,18 +28,36 @@ const cardVariants = cva("transition-transform duration-200 dark:border-none", {
   
 
 const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {
+  HTMLDivElement | HTMLButtonElement,
+  React.HTMLAttributes<HTMLDivElement | HTMLButtonElement> & {
     variant?: "default" | "flat" | "bordered";
     color?: "default" | "secondary" | "destructive" | "outline" | "ghost" | "ghost-secondary" | "link";
+    pressable?: boolean;
+    disabled?: boolean;
   }
->(({ className, variant, color, ...props }, ref) => (
-    <div
-        ref={ref}
-        className={cn(cardVariants({ variant, color }), className)}
-        {...props}
-    />
-))
+>(({ className, variant, color, pressable, disabled, ...props }, ref) => {
+    if (pressable) {
+
+        return (<button
+            ref={ref as React.RefObject<HTMLButtonElement>}
+            disabled={disabled}
+            className={cn(
+                cardVariants({ variant, color }), 
+                "transition-all hover:-translate-y-2 duration-200 hover:shadow-lg", 
+                "disabled:opacity-50 disabled:cursor-not-allowed",
+                "flex flex-col items-start justify-start text-left", // <- THIS IS KEY
+                className)}
+            {...props}
+        />)
+    }
+    return (
+        <div
+            ref={ref as React.RefObject<HTMLDivElement>}
+            className={cn(cardVariants({ variant, color }), className)}
+            {...props}
+        />
+    )
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<
@@ -98,6 +116,14 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
+const CardBody = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("p-4", className)} {...props} />
+))
+CardBody.displayName = "CardBody"
+
 export {
     Card,
     CardHeader,
@@ -105,4 +131,5 @@ export {
     CardTitle,
     CardDescription,
     CardContent,
+    CardBody,
 }

@@ -2,13 +2,16 @@ import { GRAPHQL_QUERY_STATIC_SWR, TRANSFER_TOKEN_FORMIK } from "@/app/constants
 import {
     ExtendedButton,
     ExtendedInput,
-    PressableCard,
     Spacer,
     Title,
     Image,
     SheetTitle,
     SheetHeader,
     ExtendedNumberInput,
+    SheetBody,
+    Card,
+    CardBody,
+    SheetFooter,
 } from "@/components"
 import { envConfig } from "@/env"
 import { useGraphQLQueryStaticSwr, useTransferTokenFormik } from "@/hooks"
@@ -64,8 +67,7 @@ export const TransferContent: FC = () => {
                         dispatch(setTokenSheetPage(TokenSheetPage.Main))
                     }}>Transfer</SheetTitle>
                 </SheetHeader>
-                <Spacer y={6} />
-                <div>
+                <SheetBody>
                     <Title
                         title="Token"
                         tooltipString="Select the token you want to transfer"
@@ -75,8 +77,8 @@ export const TransferContent: FC = () => {
                         }}
                     />
                     <Spacer y={1.5} />
-                    <PressableCard className="p-3" disabled={true}>
-                        <div className="flex items-center gap-2">
+                    <Card disabled={true} pressable className="w-full">
+                        <CardBody className="flex items-center gap-2">
                             <Image
                                 src={token?.imageUrl ?? ""}
                                 alt={token?.name ?? ""}
@@ -88,79 +90,84 @@ export const TransferContent: FC = () => {
                                     {token?.symbol}
                                 </div>
                             </div>
+                        </CardBody>
+                    </Card>
+                    <Spacer y={4} />
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <Title
+                                title="Amount"
+                                tooltipString="Enter the amount you want to transfer"
+                                classNames={{
+                                    title: "text-base",
+                                    tooltip: "w-4 h-4",
+                                }}
+                            />
+                            <div className="text-gray-400">{`Balance: ${balanceSwr.data}`}</div>
                         </div>
-                    </PressableCard>
-                </div>
-                <Spacer y={4} />
-                <div>
-                    <div className="flex items-center justify-between">
+                        <Spacer y={1.5} />
+                        <ExtendedNumberInput
+                            className="w-full"
+                            id="stringAmount"
+                            value={formik.values.stringAmount}
+                            onValueChange={(value: string) => {
+                                formik.setFieldValue("stringAmount", value)
+                            }}
+                            onBlur={formik.handleBlur}
+                            isInvalid={
+                                !!(formik.touched.stringAmount && formik.errors.stringAmount)
+                            }
+                            errorMessage={
+                                (formik.touched.stringAmount && formik.errors.stringAmount) ||
+                undefined
+                            }
+                        />
+                    </div>
+                    <Spacer y={4} />
+                    <div>
                         <Title
-                            title="Amount"
-                            tooltipString="Enter the amount you want to transfer"
+                            title="Recipient"
+                            tooltipString="Enter the recipient address"
                             classNames={{
                                 title: "text-base",
                                 tooltip: "w-4 h-4",
                             }}
                         />
-                        <div className="text-gray-400">{`Balance: ${balanceSwr.data}`}</div>
-                    </div>
-                    <Spacer y={1.5} />
-                    <ExtendedNumberInput
-                        className="w-full"
-                        id="stringAmount"
-                        value={formik.values.stringAmount}
-                        onValueChange={(value: string) => {
-                            formik.setFieldValue("stringAmount", value)
-                        }}
-                        onBlur={formik.handleBlur}
-                        isInvalid={
-                            !!(formik.touched.stringAmount && formik.errors.stringAmount)
-                        }
-                        errorMessage={
-                            (formik.touched.stringAmount && formik.errors.stringAmount) ||
-                undefined
-                        }
-                    />
-                </div>
-                <Spacer y={4} />
-                <div>
-                    <Title
-                        title="Recipient"
-                        tooltipString="Enter the recipient address"
-                        classNames={{
-                            title: "text-base",
-                            tooltip: "w-4 h-4",
-                        }}
-                    />
-                    <Spacer y={1.5} />
-                    <ExtendedInput
-                        className="w-full"
-                        id="recipientAddress"
-                        value={formik.values.recipientAddress}
-                        onValueChange={(value: string) => {
-                            formik.setFieldValue("recipientAddress", value)
-                        }}
-                        onBlur={formik.handleBlur}
-                        isInvalid={
-                            !!(
-                                formik.touched.recipientAddress &&
+                        <Spacer y={1.5} />
+                        <ExtendedInput
+                            className="w-full"
+                            id="recipientAddress"
+                            value={formik.values.recipientAddress}
+                            onValueChange={(value: string) => {
+                                formik.setFieldValue("recipientAddress", value)
+                            }}
+                            onBlur={formik.handleBlur}
+                            isInvalid={
+                                !!(
+                                    formik.touched.recipientAddress &&
                                 formik.errors.recipientAddress
-                            )
-                        }
-                        errorMessage={
-                            (formik.touched.recipientAddress &&
+                                )
+                            }
+                            errorMessage={
+                                (formik.touched.recipientAddress &&
                                 formik.errors.recipientAddress) ||
                             undefined
-                        }
-                    />
-                </div>
+                            }
+                        />
+                    </div>
+                </SheetBody>
             </div>
-            <ExtendedButton 
-                className="w-full"
-                onClick={() => formik.submitForm()}
-            >
+            <Spacer y={6} />
+            <SheetFooter>
+                <ExtendedButton 
+                    className="w-full"
+                    disabled={!formik.isValid}
+                    isLoading={formik.isSubmitting}
+                    onClick={() => formik.submitForm()}
+                >
                     Transfer
-            </ExtendedButton>
+                </ExtendedButton>
+            </SheetFooter>
         </>
     )
 }
