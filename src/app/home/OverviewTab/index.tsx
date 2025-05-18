@@ -20,7 +20,7 @@ export const OverviewTab: FC = () => {
                 <div className="flex flex-col gap-3 mt-4 md:mt-0 relative min-w-[200px] col-span-1 md:col-span-2 lg:col-span-1">
                     <ExtendedButton
                         color="gradient-secondary"
-                        className="items-center justify-center gap-2 w-[calc(100vw-4rem)] md:w-full z-50 fixed md:relative bottom-16 md:bottom-0 md:flex"
+                        className="items-center justify-center gap-2 w-[calc(100vw-3rem)] md:w-full z-50 fixed md:relative bottom-16 md:bottom-0 md:flex"
                         size="lg"
                         variant="flat"
                         onClick={() => {
