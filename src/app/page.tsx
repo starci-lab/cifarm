@@ -9,7 +9,7 @@ import { BlurEffect } from "@/components"
 
 const Page = () => {
     return (
-        <main className="relative w-full bg-background">
+        <main className="relative bg-background overflow-x-hidden w-screen">
             <BlurEffect />
 
             <Header />
