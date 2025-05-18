@@ -13,6 +13,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogBody,
 } from "@/components/ui/dialog"
 import { useDisclosure } from "react-use-disclosure"
 import { InventoryType, InventoryKind } from "@/modules/entities"
@@ -51,7 +52,7 @@ export const SelectInventoriesModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>Select Inventories</DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <GridTable
                         useContainer={true}
                         useGridWrap
@@ -66,7 +67,7 @@ export const SelectInventoriesModal: FC = () => {
                         )}
                         keyCallback={(item) => item.id}
                     />
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     <ExtendedButton
                         className="w-full"

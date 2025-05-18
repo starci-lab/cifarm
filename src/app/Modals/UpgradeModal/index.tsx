@@ -9,6 +9,7 @@ import {
     Image,
     ScaledImage,
     Spacer,
+    DialogBody,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -48,7 +49,7 @@ export const UpgradeModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>Upgrade</DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     {(() => {
                         if (!placedItemBuildingId) return
                         const placedItem = placedItems.find(
@@ -97,7 +98,7 @@ export const UpgradeModal: FC = () => {
                             </>
                         )
                     })()}
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     <ExtendedButton
                         variant="ghost"

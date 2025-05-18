@@ -7,6 +7,7 @@ import {
     DialogTitle,
     ExtendedButton,
     Image,
+    DialogBody,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -18,17 +19,52 @@ import { getSellInfo } from "@/modules/entities"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 
 export const SellModal: FC = () => {
-    const { toggle, isOpen, close } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(SELL_DISCLOSURE)
-    const { placedItemId } = useAppSelector(
-        (state) => state.modalReducer.sellModal
+    const { toggle, isOpen, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(SELL_DISCLOSURE)
+
+    const placedItemId = useAppSelector(
+        (state) => state.modalReducer.sellModal.placedItemId
     )
     const placedItems = useAppSelector(
         (state) => state.sessionReducer.placedItems
     )
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(GRAPHQL_QUERY_STATIC_SWR)
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
+
+    const renderSellContent = () => {
+        if (!placedItemId) return null
+
+        const placedItem = placedItems.find((item) => item.id === placedItemId)
+        if (!placedItem) return null
+
+        if (!staticSwr.data?.data) {
+            console.error("Static data not found")
+            return null
+        }
+
+        const { sellable, sellPrice } = getSellInfo({
+            placedItem,
+            staticData: staticSwr.data.data,
+        })
+
+        if (!sellable) {
+            console.error("Item is not sellable")
+            return null
+        }
+
+        return (
+            <div className="flex items-center gap-1">
+                <span>Do you want to sell this item for</span>
+                <div className="flex items-center gap-1">
+                    <Image
+                        src={assetIconMap[AssetIconId.Gold].base.assetUrl}
+                        className="w-5 h-5"
+                    />
+                    <span>{sellPrice}</span>
+                </div>
+                <span>?</span>
+            </div>
+        )
+    }
+
     return (
         <Dialog
             open={isOpen}
@@ -45,53 +81,27 @@ export const SellModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>Sell</DialogTitle>
                 </DialogHeader>
-                <div>
-                    <div>
-                        {(() => {
-                            if (!placedItemId) return
-                            const placedItem = placedItems.find(
-                                (item) => item.id === placedItemId
-                            )
-                            //return only, if the item is deleted
-                            if (!placedItem) return
-                            if (!staticSwr.data?.data) throw new Error("Static data not found")
-                            const { sellable, sellPrice } = getSellInfo({
-                                placedItem,
-                                staticData: staticSwr.data.data,
-                            })  
-                            if (!sellable) {
-                                throw new Error("Item is not sellable")
-                            }
-                            return (
-                                <div className="flex items-center gap-1 text-sm">
-                                    <div>
-                                    Do you want to sell this item for
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <Image src={assetIconMap[AssetIconId.Gold].base.assetUrl} className="w-5 h-5" />
-                                        {sellPrice}
-                                    </div>
-                                    <div>
-                                        ?
-                                    </div>
-                                </div>
-                            )
-                        })()}
-                    </div>
-                </div>
+                <DialogBody>{renderSellContent()}</DialogBody>
                 <DialogFooter>
-                    <ExtendedButton color="ghost" className="w-full" onClick={() => close()}>
-                    Cancel
+                    <ExtendedButton color="ghost" className="w-full" onClick={close}>
+                        Cancel
                     </ExtendedButton>
-                    <ExtendedButton color="destructive" className="w-full" onClick={() => {
-                        close()
-                        if (!placedItemId) throw new Error("Placed item id not found")
-                        const eventMessage: SellMessage = {
-                            placedItemId,
-                        }
-                        ExternalEventEmitter.emit(ExternalEventName.RequestSell, eventMessage)
-                    }}>
-                    Confirm
+                    <ExtendedButton
+                        color="destructive"
+                        className="w-full"
+                        onClick={() => {
+                            close()
+                            if (!placedItemId) {
+                                console.error("Placed item ID not found")
+                                return
+                            }
+                            const eventMessage: SellMessage = {
+                                placedItemId,
+                            }
+                            ExternalEventEmitter.emit(ExternalEventName.RequestSell, eventMessage)
+                        }}
+                    >
+                        Confirm
                     </ExtendedButton>
                 </DialogFooter>
             </DialogContent>

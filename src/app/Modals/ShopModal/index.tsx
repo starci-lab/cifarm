@@ -3,7 +3,7 @@ import React from "react"
 import { FilterBar, Spacer, ScrollableTabs, GridTable } from "@/components"
 import { GRAPHQL_QUERY_STATIC_SWR, SHOP_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { shopTabMap } from "./config"
 import {
@@ -505,7 +505,7 @@ export const ShopModal = () => {
                 <DialogHeader>
                     <DialogTitle>Shop</DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <ScrollableTabs
                         color="secondary"
                         value={shopTab}
@@ -519,7 +519,7 @@ export const ShopModal = () => {
                     />
                     <Spacer y={4} />
                     {renderGridTable()}
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

@@ -6,7 +6,7 @@ import React, { FC, useEffect, useState } from "react"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
 import { cn } from "@/lib/utils"
-import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge } from "@/components"
+import { DialogFooter, Spacer, Image, ExtendedButton, ExtendedBadge, DialogBody } from "@/components"
 import {
     assetProductMap,
 } from "@/modules/assets"
@@ -123,7 +123,7 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
     }
 
     return (
-        <div>
+        <DialogBody>
             <div className="flex items-center gap-4">
                 {
                     placedItem.nftMetadata && (
@@ -181,6 +181,6 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
                 </>
             ) 
             }
-        </div>
+        </DialogBody>
     )
 }

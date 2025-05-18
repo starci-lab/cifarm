@@ -6,9 +6,9 @@ import {
     DialogTitle,
     ExtendedButton,
     FilterBar,
-    List,
     Pagination,
     Spacer,
+    DialogBody,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -58,13 +58,13 @@ export const NFTStorageModal: FC = () => {
             open={isOpen}
             onOpenChange={toggle}
         >
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle>
                         NFT Storage
                     </DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <div className="flex gap-2">
                         <FilterBar
                             searchString={""}
@@ -81,26 +81,26 @@ export const NFTStorageModal: FC = () => {
                         </ExtendedButton>
                     </div>  
                     <Spacer y={4}/>
-                    <List
-                        items={storedPlacedItems}
-                        contentCallback={(item) => {
-                            return (
+                    <div className="grid sm:grid-cols-2 gap-4">
+                        {
+                            storedPlacedItems.map((item) => (
                                 <NFTCard
                                     key={item.id}
                                     placedItem={item}
                                 />
-                            )
-                        }}
-                    />
+                            ))
+                        }
+                    </div>
                     <Spacer y={4}/>
                     <div className="flex justify-center">
                         <Pagination
+                            color="secondary"
                             currentPage={currentPage}
                             totalPages={totalPage}
                             onPageChange={setPage}
                         />
                     </div>
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

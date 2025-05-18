@@ -7,6 +7,7 @@ import {
     GridTable,
     Spacer,
     Title,
+    DialogBody,
 } from "@/components"
 import {
     GRAPHQL_QUERY_STATIC_SWR,
@@ -76,7 +77,7 @@ export const InventoryModal = () => {
                 <DialogHeader>
                     <DialogTitle>Inventory</DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <div>
                         <Title
                             title="Tools"
@@ -141,7 +142,7 @@ export const InventoryModal = () => {
                             </div>
                         </div> 
                     </div>
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

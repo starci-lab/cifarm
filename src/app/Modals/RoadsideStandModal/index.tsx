@@ -20,6 +20,7 @@ import {
     Image,
     Title,
     Spacer,
+    DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import {
@@ -112,7 +113,7 @@ export const RoadsideStandModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>Roadside Stand</DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <GridTable
                         useContainer={true}
                         enableScroll={false}
@@ -145,7 +146,7 @@ export const RoadsideStandModal: FC = () => {
                             {formatTime(nextDeliveryTime)}
                         </div>
                     </div>
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     {selectedRetrieveInventoryIds.length > 0 ? (
                         <div className="flex gap-2 w-full">

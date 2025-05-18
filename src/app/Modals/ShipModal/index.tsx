@@ -9,6 +9,7 @@ import {
     Separator,
     ExtendedButton,
     DialogFooter,
+    DialogBody,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -80,7 +81,7 @@ export const ShipModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>Ship</DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <GridTable
                         items={storageInventories}
                         contentCallback={({ inventory, index, kind }) => (
@@ -101,7 +102,7 @@ export const ShipModal: FC = () => {
                         )}
                         keyCallback={(item) => `${item.kind}-${item.index}`}
                     />
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     <ExtendedButton className="w-full" disabled={true}>
             Earn

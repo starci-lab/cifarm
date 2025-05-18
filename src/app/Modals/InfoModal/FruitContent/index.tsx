@@ -3,8 +3,8 @@ import { FruitCurrentState, PlacedItemSchema } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { ExtendedBadge, Spacer, ExtendedButton, DialogFooter } from "@/components"
-import {
+import { ExtendedBadge, Spacer, ExtendedButton, DialogFooter, DialogBody } from "@/components"
+import {    
     assetProductMap,
     assetStateMap,
 } from "@/modules/assets"
@@ -124,7 +124,7 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
     }
 
     return (
-        <div>
+        <DialogBody>
             <div className="flex items-center gap-4">
                 <ExtendedBadge>
                     {`Stage ${(placedItem.fruitInfo?.currentStage ?? 0) + 1}`}
@@ -179,6 +179,6 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                     </DialogFooter>
                 </>
             )}
-        </div>
+        </DialogBody>
     )
 }

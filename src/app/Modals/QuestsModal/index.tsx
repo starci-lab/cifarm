@@ -10,6 +10,7 @@ import {
     Dialog,
     DialogContent,
     DialogHeader,
+    DialogBody,
 } from "@/components"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useDisclosure } from "react-use-disclosure"
@@ -41,7 +42,7 @@ export const QuestsModal: FC = () => {
                 <DialogHeader>
                     <ModalHeader title="Quests" />
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <Tabs
                         defaultValue={selectedTab}
                         onValueChange={(value) => dispatch(setQuestsTab(value as QuestsTabEnum))}
@@ -57,7 +58,7 @@ export const QuestsModal: FC = () => {
                             {renderTab()}
                         </TabsContent>
                     </Tabs>
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

@@ -7,7 +7,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { Spacer, Separator, ScaledImage } from "@/components"
+import { Spacer, Separator, ScaledImage, DialogBody } from "@/components"
 import {
     assetProductMap,
     assetCropMap,
@@ -273,7 +273,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
 
     const plantInfo = getPlantInfo()
     return (
-        <div>
+        <DialogBody>
             { placedItem.plantInfo &&
              <>
                  <div className="bg-content-2 rounded-lg overflow-hidden">
@@ -317,6 +317,6 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                 diseaseResistance={placedItem.plantInfo?.diseaseResistance ?? 0}
                 harvestYieldBonus={placedItem.plantInfo?.harvestYieldBonus ?? 0}
             />
-        </div>
+        </DialogBody>
     )
 }

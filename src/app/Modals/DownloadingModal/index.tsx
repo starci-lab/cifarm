@@ -8,6 +8,7 @@ import {
     ModalHeader,
     Progress,
     Spacer,
+    DialogBody,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -95,7 +96,7 @@ export const DownloadingModal: FC = () => {
     const totalBytes = Object.values(totalDownloadBytes).reduce((acc, curr) => acc + curr, 0)
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px]"> 
                 <DialogHeader>
                     <DialogTitle>
                         <ModalHeader
@@ -103,7 +104,7 @@ export const DownloadingModal: FC = () => {
                         />
                     </DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <Progress value={(downloadedBytes / totalBytes) * 100} />
                     <Spacer y={2} />
                     <div className="text-sm">
@@ -129,7 +130,7 @@ export const DownloadingModal: FC = () => {
                             </div>
                         </>
                     )}
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

@@ -2,6 +2,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { cva } from "class-variance-authority"
+import { Separator } from "./separator"
 
 const cardVariants = cva("transition-transform duration-200 dark:border-none", {
     variants: {
@@ -108,11 +109,14 @@ const CardFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-    <div
-        ref={ref}
-        className={cn("flex items-center p-6 pt-0", className)}
-        {...props}
-    />
+    <>
+        <Separator />
+        <div
+            ref={ref}
+            className={cn("flex items-center p-4 pt-2 gap-2", className)}
+            {...props}
+        />
+    </>
 ))
 CardFooter.displayName = "CardFooter"
 

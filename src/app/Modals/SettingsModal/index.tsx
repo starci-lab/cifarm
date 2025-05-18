@@ -7,6 +7,7 @@ import {
     DialogTitle,
     Title,
     Spacer,
+    DialogBody,
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -67,7 +68,7 @@ export const SettingsModal: FC = () => {
                         Settings
                     </DialogTitle>
                 </DialogHeader>
-                <div className="grid gap-4">
+                <DialogBody>
                     <div>
                         <Title title="Sound" tooltipString="This controls the audio settings." classNames={{
                             title: "text-base",
@@ -76,6 +77,7 @@ export const SettingsModal: FC = () => {
                         <Spacer y={1.5}/>
                         <Slider value={[sound * 100]} onValueChange={(value) => setSound(value[0] / 100)} />
                     </div>
+                    <Spacer y={4}/>
                     <div>
                         <Title title="Ambient" tooltipString="This controls the audio settings." classNames={{
                             title: "text-base",
@@ -84,7 +86,7 @@ export const SettingsModal: FC = () => {
                         <Spacer y={1.5}/>
                         <Slider value={[ambient * 100]} onValueChange={(value) => setAmbient(value[0] / 100)} />
                     </div>
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

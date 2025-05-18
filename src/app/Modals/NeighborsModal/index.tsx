@@ -4,7 +4,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC, ReactNode } from "react"
 import { FolloweesTab } from "./FolloweesTab"
-import { Dialog, DialogContent, DialogHeader, ModalHeader } from "@/components"
+import { Dialog, DialogContent, DialogHeader, ModalHeader, DialogBody } from "@/components"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components"
 import { NeighborsTab } from "./NeighborsTab"
 import {
@@ -34,23 +34,25 @@ export const NeighborsModal: FC = () => {
                 <DialogHeader>
                     <ModalHeader title="Neighbors" />
                 </DialogHeader>
-                <Tabs
-                    defaultValue={selectedTab}
-                    onValueChange={(value) =>
-                        dispatch(setNeighborsTab(value as NeighborsTabEnum))
-                    }
-                    className="w-full"
-                >
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value={NeighborsTabEnum.Neighbors} color="secondary">
+                <DialogBody>
+                    <Tabs
+                        defaultValue={selectedTab}
+                        onValueChange={(value) =>
+                            dispatch(setNeighborsTab(value as NeighborsTabEnum))
+                        }
+                        className="w-full"
+                    >
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value={NeighborsTabEnum.Neighbors} color="secondary">
               Neighbors
-                        </TabsTrigger>
-                        <TabsTrigger value={NeighborsTabEnum.Followees} color="secondary">
+                            </TabsTrigger>
+                            <TabsTrigger value={NeighborsTabEnum.Followees} color="secondary">
               Followees
-                        </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value={selectedTab}>{renderTab()}</TabsContent>
-                </Tabs>
+                            </TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={selectedTab}>{renderTab()}</TabsContent>
+                    </Tabs>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

@@ -16,6 +16,7 @@ import {
     ExtendedButton,
     DialogTitle,
     ScaledImage,
+    DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
@@ -46,7 +47,7 @@ export const DailyModal: FC = () => {
                 <DialogHeader>
                     <DialogTitle>Daily</DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <div className="flex items-center gap-2">
                         {Array.from({ length: 4 }).map((_, index) => (
                             <Card key={index} className="w-full px-3 py-2 relative">
@@ -95,7 +96,7 @@ export const DailyModal: FC = () => {
                     <div className="text-sm text-muted-foreground">
                     Next claim in {getNextDayMidnightUtc().format("YYYY-MM-DD HH:mm:ss")}
                     </div>
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     <ExtendedButton className="w-full"
                         disabled={getCurrentDayMidnightUtc().isBefore(

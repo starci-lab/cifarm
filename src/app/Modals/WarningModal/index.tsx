@@ -3,7 +3,7 @@ import { WARNING_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector } from "@/redux"
 import React, { FC } from "react"
-import { ExtendedButton, ModalHeader } from "@/components"
+import { ExtendedButton, ModalHeader, DialogBody } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -44,11 +44,11 @@ export const WarningModal: FC = () => {
                         <ModalHeader title="Warning" />
                     </DialogTitle>
                 </DialogHeader>
-                <div className="py-4">
+                <DialogBody>
                     <Alert variant="destructive">
                         <AlertDescription>{message}</AlertDescription>
                     </Alert>
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     <ExtendedButton 
                         color="ghost" 

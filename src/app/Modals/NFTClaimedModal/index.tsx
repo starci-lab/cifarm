@@ -9,6 +9,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogBody,
 } from "@/components/ui/dialog"
 import { useDisclosure } from "react-use-disclosure"
 import { NFTType } from "@/modules/entities"
@@ -49,7 +50,7 @@ export const NFTClaimedModal: FC = () => {
                         <ModalHeader title="NFT Claimed" />
                     </DialogTitle>
                 </DialogHeader> 
-                <div>
+                <DialogBody>
                     <div className="text-sm text-muted-foreground">
                         Congratulations! You have claimed the following NFT:
                     </div>
@@ -81,7 +82,7 @@ export const NFTClaimedModal: FC = () => {
                     >
                         Close
                     </ExtendedButton>
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

@@ -16,6 +16,7 @@ import {
     ExtendedButton,
     FilterBar,
     Spacer,
+    DialogBody,
 } from "@/components"
 import { AdvancedSearchContent, getLevelRange } from "./AdvancedSearchContent"
 import {
@@ -109,7 +110,7 @@ export const NeighborsFilterModal: FC = () => {
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
-                <div>
+                <DialogBody>
                     <div className="flex items-center gap-2">
                         <FilterBar
                             className="bg-transparent flex-1"
@@ -188,7 +189,7 @@ export const NeighborsFilterModal: FC = () => {
               Search
                         </ExtendedButton>
                     </DialogFooter>
-                </div>
+                </DialogBody>
             </DialogContent>
         </Dialog>
     )

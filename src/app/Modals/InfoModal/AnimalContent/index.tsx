@@ -4,7 +4,7 @@ import { formatTime } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { DialogFooter, Spacer, ExtendedButton, ExtendedBadge } from "@/components"
+import { DialogFooter, Spacer, ExtendedButton, ExtendedBadge, DialogBody } from "@/components"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
 import { cn } from "@/lib/utils"
@@ -143,7 +143,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
 
     return (
         <>
-            <div>
+            <DialogBody>
                 <div className="flex items-center gap-4">
                     {
                         <ExtendedBadge>
@@ -207,8 +207,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                     </>
                 ) 
                 }
-            </div>
-
+            </DialogBody>
         </>
     )
 }

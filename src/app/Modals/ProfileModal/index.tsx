@@ -14,6 +14,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
+    DialogBody,
 } from "@/components"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useDisclosure } from "react-use-disclosure"
@@ -39,7 +40,7 @@ export const ProfileModal: FC = () => {
                         <ModalHeader title="Profile" />
                     </DialogTitle>
                 </DialogHeader>
-                <div>
+                <DialogBody>
                     <div className="rounded-lg flex items-center gap-4">
                         {user ? (
                             <AvatarChart avatarUrl={avatarUrl} quota={quota} exp={user.experiences} />
@@ -85,7 +86,7 @@ export const ProfileModal: FC = () => {
                                 Currently, there are no achievements.
                         </div>
                     </div>
-                </div>
+                </DialogBody>
                 <DialogFooter>
                     <Button
                         className="w-full" 

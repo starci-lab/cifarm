@@ -3,7 +3,7 @@ import { PlacedItemSchema, PlacedItemType } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { NFT_STORAGE_DISCLOSURE, QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
-import { PressableCard, Image } from "@/components"
+import { Image, Card, CardBody, Spacer, ExtendedBadge, ExtendedButton, CardFooter } from "@/components"
 import {
     ExternalEventEmitter,
     ExternalEventName,
@@ -63,33 +63,48 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
         (collection) => placedItem.placedItemType === collection[chainKey]?.[network]?.placedItemTypeId
     )
     return (
-        <PressableCard
-            showBorder={false}
-            onClick={() => {
-                close()
-                const eventMessage: PlaceNFTItemMessage = {
-                    placedItem,
-                }
-                ExternalEventEmitter.emit(ExternalEventName.PlaceNFTItem, eventMessage)
-            }}
+        <Card
+            variant="default"
         >
-            <div className="flex gap-2">
+            <CardBody className="p-3">
                 <Image
-                    className="w-16 aspect-square object-contain"
+                    className="w-24 h-24 aspect-square object-contain"
                     src={assetData?.assetUrl ?? ""}
                 />
+                <Spacer y={2} />
                 <div>
-                    <div className="text-base">{placedItem.nftMetadata?.nftName}</div>
+                    <div className="text-lg">{placedItem.nftMetadata?.nftName}</div>
                     <div>
                         <div className="flex items-center gap-1">
-                            <Image src={collection?.[chainKey]?.[network]?.imageUrl ?? ""} className="w-5 h-5" />
-                            <div className="text-sm text-muted-foreground">
+                            <ExtendedBadge color="secondary" icon={<Image src={collection?.[chainKey]?.[network]?.imageUrl ?? ""} className="w-6 h-6" />}>
                                 {collection?.[chainKey]?.[network]?.name ?? ""}
-                            </div>
+                            </ExtendedBadge>
                         </div>
                     </div>
                 </div>
-            </div>
-        </PressableCard>
+            </CardBody>
+            <CardFooter className="p-3">
+                <ExtendedButton
+                    color="secondary"
+                    variant="flat"
+                    className="flex-1"
+                >
+                    Manage
+                </ExtendedButton>
+                <ExtendedButton
+                    className="flex-1"
+                    color="primary"
+                    onClick={() => {
+                        close()
+                        const eventMessage: PlaceNFTItemMessage = {
+                            placedItem,
+                        }
+                        ExternalEventEmitter.emit(ExternalEventName.PlaceNFTItem, eventMessage)
+                    }}
+                >
+                    Place
+                </ExtendedButton>
+            </CardFooter>
+        </Card>
     )
 }
