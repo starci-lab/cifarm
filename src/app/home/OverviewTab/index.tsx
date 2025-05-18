@@ -12,15 +12,15 @@ export const OverviewTab: FC = () => {
     const router = useRouterWithSearchParams()
     return (
         <div>
-            <div className="flex flex-col md:flex-row md:gap-4">
-                <div className="w-full md:flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="col-span-1 md:col-span-2 lg:col-span-2">
                     <MainVisual />
                 </div>
 
-                <div className="flex flex-col gap-3 mt-4 md:mt-0 md:w-[200px] relative">
+                <div className="flex flex-col gap-3 mt-4 md:mt-0 relative min-w-[200px] col-span-1 md:col-span-2 lg:col-span-1">
                     <ExtendedButton
                         color="gradient-secondary"
-                        className="flex items-center justify-center gap-2 w-full md:w-auto sticky top-16 z-50"
+                        className="items-center justify-center gap-2 w-[calc(100vw-4rem)] md:w-full z-50 fixed md:relative bottom-16 md:bottom-0 md:flex"
                         size="lg"
                         variant="flat"
                         onClick={() => {
@@ -66,14 +66,15 @@ export const OverviewTab: FC = () => {
             </div>
 
             {/* Description Section */}
-            <div className="mt-8">
+            <div className="mt-8 pb-32">
                 <h2 className="text-xl font-bold mb-4 text-foreground">Description</h2>
                 <Card className="py-5 px-6">
-                    <div className="text-muted-foreground">
+                    <div className="text-muted-foreground text-justify">
                     CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.
                     </div>
                 </Card>
             </div>
+
         </div>
         
     )

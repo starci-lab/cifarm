@@ -1,5 +1,5 @@
 import React, { FC } from "react"
-import { assetFruitMap, assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainMap, assetTileMap, assetToolsMap } from "@/modules/assets"
+import { assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainMap, assetTileMap, assetToolsMap } from "@/modules/assets"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { ItemCard } from "./ItemCard"
 import { CropId, FlowerId, FruitId } from "@/modules/entities"

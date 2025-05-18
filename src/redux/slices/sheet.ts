@@ -13,6 +13,16 @@ export interface GameItemSheet {
     gameItemKey?: string;
 }
 
+export interface BottomNavSheet {
+    items?: BottomNavSheetData[];
+}
+
+export interface BottomNavSheetData {
+    name: string;
+    icon: React.ElementType;
+    path: string;
+}
+
 export enum NFTSheetPage {
     Main = "Main",
     Transfer = "Transfer",
@@ -27,6 +37,7 @@ export interface SheetSlice {
   tokenSheet: TokenSheet;
   nftSheet: NFTSheet;
   gameItemSheet: GameItemSheet;
+  bottomNavSheet: BottomNavSheet;
   tokenSheetPage: TokenSheetPage;
   nftSheetPage: NFTSheetPage;
 }
@@ -35,6 +46,7 @@ const initialState: SheetSlice = {
     tokenSheet: {},
     nftSheet: {},
     gameItemSheet: {},
+    bottomNavSheet: {},
     tokenSheetPage: TokenSheetPage.Main,
     nftSheetPage: NFTSheetPage.Main,
 }
@@ -58,6 +70,9 @@ export const sheetSlice = createSlice({
         setGameItemSheet: (state, action: PayloadAction<GameItemSheet>) => {
             state.gameItemSheet = action.payload
         },
+        setBottomNavSheet: (state, action: PayloadAction<BottomNavSheet>) => {
+            state.bottomNavSheet = action.payload
+        },
     },
 })
 
@@ -68,6 +83,7 @@ export const {
     setTokenSheetPage,
     setNFTSheetPage,
     setGameItemSheet,
+    setBottomNavSheet,
 } = sheetSlice.actions
 
 
