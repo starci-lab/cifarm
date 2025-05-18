@@ -30,11 +30,12 @@ const Page: FC = () => {
             
             {/* fixed motion scroll down */}
             <div className={`z-[60] hidden md:block fixed top-0 left-64 right-0 transition-all duration-500 transform ${show ? "translate-y-0" : "-translate-y-full"} ${show ? "bg-background/60 backdrop-blur-xl" : ""}`}>
-                <div className="container mx-auto px-10 py-4 flex justify-between flex-col items-start gap-2">
+                <div className="container mx-auto px-10 py-4 flex justify-between flex-col items-start">
                     <ExtendedButton variant="flat" color="secondary" onPress={() => router.push("/")}>
                         <ArrowLeft />
-                        <span>Back to landing page</span>
+                        <div>Back to landing page</div>
                     </ExtendedButton>
+                    <Spacer y={4} />
                     <div className="flex gap-4 items-center justify-between w-full">   
                         <div className="flex gap-4 items-center flex-1">
                             <Image src="https://cifarm.sgp1.cdn.digitaloceanspaces.com/logo.png" alt="logo" className="w-12 h-12 md:w-20 md:h-20 rounded-lg" />

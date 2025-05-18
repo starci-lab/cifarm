@@ -11,7 +11,6 @@ export const UserDropdown: FC = () => {
     const router = useRouterWithSearchParams()
 
     const { swrMutation: logoutSwrMutation } = useGraphQLMutationLogoutSwrMutation()
-
     return (
         <div>
             <DropdownMenu>
