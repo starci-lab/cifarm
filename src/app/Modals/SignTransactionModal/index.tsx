@@ -19,8 +19,6 @@ import {
     TransactionType,
     TransferNFTData,
     TransferTokenData,
-    triggerRefreshAddresses,
-    useAppDispatch,
     useAppSelector,
 } from "@/redux"
 import React, { FC } from "react"
@@ -35,7 +33,6 @@ import {
     useTransferNFTSwrMutation,
     useTransferTokenSwrMutation,
 } from "@/hooks"
-import useSWRMutation from "swr/mutation"
 import { ExtendedButton, ModalHeader } from "@/components"
 import {
     Dialog,
@@ -47,8 +44,8 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
+import useSWRMutation from "swr/mutation"
 import { pathConstants } from "@/constants"
-import { sessionDb } from "@/modules/dexie"
 
 interface ProviderInfo {
   name: string;
@@ -99,12 +96,6 @@ export const SignTransactionModal: FC = () => {
 
     const { toast } = useToast()
 
-    const saveAddress = useAppSelector(
-        (state) => state.modalReducer.signTransactionModal.saveAddress
-    )
-    
-    const dispatch = useAppDispatch()
-
     const addTxHashToast = (txHash: string) =>
         toast({
             duration: DURATION,
@@ -153,127 +144,6 @@ export const SignTransactionModal: FC = () => {
     ReturnType<typeof useSignSolanaTransactionTxSwrMutation>
   >(SIGN_SOLANA_TRANSACTION_SWR_MUTATION)
 
-    // const { trigger, isMutating } = useSWRMutation(
-    //     "SIGN_TRANSACTION",
-    //     async () => {
-    //         try {
-    //             let txHash = ""
-    //             switch (type) {
-    //             case TransactionType.HoneycombProtocolRawTx: {
-    //                 //return await honeycombSendTransactionSwrMutation.trigger(data)
-    //                 // get the edge client
-    //                 const { txResponse } = data as HoneycombProtocolRawTxData
-    //                 const response = await honeycombSendTransactionSwrMutation.trigger({
-    //                     transaction: txResponse,
-    //                 })
-    //                 if (!response) throw new Error("Failed to send transaction")
-    //                 if (response.error) {
-    //                     throw new Error(response.error)
-    //                 }
-    //                 txHash = response.signature?.toString() ?? ""
-    //                 break
-    //             }
-    //             case TransactionType.HoneycombProtocolRawTxs: {
-    //                 const { txResponses } = data as HoneycombProtocolRawTxsData
-    //                 const responses =
-    //           await honeycombSendTransactionsSwrMutation.trigger({
-    //               transactions: txResponses,
-    //           })
-    //                 if (!responses) throw new Error("Failed to send transaction")
-    //                 // last transaction bundle response
-    //                 const lastResponse = responses.at(-1)?.responses[0]
-    //                 if (!lastResponse) throw new Error("Failed to send transaction")
-    //                 if (lastResponse.error) {
-    //                     throw new Error(lastResponse.error)
-    //                 }
-    //                 txHash = lastResponse.signature ?? ""
-    //                 break
-    //             }
-    //             case TransactionType.TransferToken: {
-    //                 const { tokenKey, amount, recipientAddress } =
-    //           data as TransferTokenData
-    //                 const { txHash: txHashResponse } =
-    //           await transferTokenSwrMutation.trigger({
-    //               amount,
-    //               tokenKey,
-    //               recipientAddress,
-    //           })
-    //                 txHash = txHashResponse
-
-    //                 await balanceSwrs[tokenKey].mutate()
-
-    //                 break
-    //             }
-    //             case TransactionType.TransferNFT: {
-    //                 const { nft, recipientAddress, collectionKey } =
-    //           data as TransferNFTData
-    //                 const { txHash: txHashResponse } =
-    //           await transferNFTSwrMutation.trigger({
-    //               nftAddress: nft.nftAddress,
-    //               recipientAddress,
-    //               collectionKey,
-    //           })
-    //                 txHash = txHashResponse
-    //                 router.push(pathConstants.collection)
-    //                 break
-    //             }
-    //             case TransactionType.SolanaRawTx: {
-    //                 const { serializedTx } = data as SolanaRawTxData
-    //                 console.log("serializedTx", serializedTx)
-    //                 const { serializedTx: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
-    //                     serializedTx,
-    //                 })
-    //                 console.log("signedSerializedTx", signedSerializedTx)
-    //                 // decode the serializedTx
-    //                 if (postActionHook) {
-    //                     txHash = await postActionHook(signedSerializedTx)
-    //                 } else {
-    //                     const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-    //                         serializedTx: signedSerializedTx,
-    //                     })
-    //                     txHash = txHashResponse
-    //                 }
-    //                 break
-    //             }
-    //             default: {
-    //                 throw new Error("Invalid transaction type")
-    //             }
-    //             }
-    //             if (extraAction) {
-    //                 await extraAction()
-    //             }
-    //             addTxHashToast(txHash)
-    //         } catch (error) {
-    //             addErrorToast((error as Error).message)
-    //         } finally {
-    //             // save the address to the database
-    //             if (saveAddress) {
-    //                 // check if the address already exists
-    //                 const existingAddress = await sessionDb.addresses.get({
-    //                     chainKey,
-    //                     network,
-    //                     address: saveAddress,
-    //                 })
-    //                 const nextIndex = (existingAddress?.index ?? 0) + 1
-    //                 if (!existingAddress) {
-    //                     await sessionDb.addresses.add({
-    //                         chainKey,
-    //                         network,
-    //                         address: saveAddress,
-    //                         index: nextIndex,
-    //                     })
-    //                 } else {
-    //                     //move the address to the top of the list
-    //                     await sessionDb.addresses.update(existingAddress.id, {
-    //                         index: nextIndex,
-    //                     })
-    //                 }
-    //                 dispatch(triggerRefreshAddresses()) 
-    //             }
-    //             toggle(false)
-    //         }
-    //     }
-    // )
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const tokens = staticSwr.data?.data.tokens || {}
 
@@ -295,6 +165,104 @@ export const SignTransactionModal: FC = () => {
         },
     }
 
+    const { trigger, isMutating } = useSWRMutation(
+        "SIGN_TRANSACTION",
+        async () => {
+            try {
+                let txHash = ""
+                switch (type) {
+                case TransactionType.HoneycombProtocolRawTx: {
+                    //return await honeycombSendTransactionSwrMutation.trigger(data)
+                    // get the edge client
+                    const { txResponse } = data as HoneycombProtocolRawTxData
+                    const response = await honeycombSendTransactionSwrMutation.trigger({
+                        transaction: txResponse,
+                    })
+                    if (!response) throw new Error("Failed to send transaction")
+                    if (response.error) {
+                        throw new Error(response.error)
+                    }
+                    txHash = response.signature?.toString() ?? ""
+                    break
+                }
+                case TransactionType.HoneycombProtocolRawTxs: {
+                    const { txResponses } = data as HoneycombProtocolRawTxsData
+                    const responses =
+              await honeycombSendTransactionsSwrMutation.trigger({
+                  transactions: txResponses,
+              })
+                    if (!responses) throw new Error("Failed to send transaction")
+                    // last transaction bundle response
+                    const lastResponse = responses.at(-1)?.responses[0]
+                    if (!lastResponse) throw new Error("Failed to send transaction")
+                    if (lastResponse.error) {
+                        throw new Error(lastResponse.error)
+                    }
+                    txHash = lastResponse.signature ?? ""
+                    break
+                }
+                case TransactionType.TransferToken: {
+                    const { tokenKey, amount, recipientAddress } =
+              data as TransferTokenData
+                    const { txHash: txHashResponse } =
+              await transferTokenSwrMutation.trigger({
+                  amount,
+                  tokenKey,
+                  recipientAddress,
+              })
+                    txHash = txHashResponse
+
+                    await balanceSwrs[tokenKey].mutate()
+
+                    break
+                }
+                case TransactionType.TransferNFT: {
+                    const { nft, recipientAddress, collectionKey } =
+              data as TransferNFTData
+                    const { txHash: txHashResponse } =
+              await transferNFTSwrMutation.trigger({
+                  nftAddress: nft.nftAddress,
+                  recipientAddress,
+                  collectionKey,
+              })
+                    txHash = txHashResponse
+                    router.push(pathConstants.collections)
+                    break
+                }
+                case TransactionType.SolanaRawTx: {
+                    const { serializedTx } = data as SolanaRawTxData
+                    console.log("serializedTx", serializedTx)
+                    const { serializedTx: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
+                        serializedTx,
+                    })
+                    console.log("signedSerializedTx", signedSerializedTx)
+                    // decode the serializedTx
+                    if (postActionHook) {
+                        txHash = await postActionHook(signedSerializedTx)
+                    } else {
+                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
+                            serializedTx: signedSerializedTx,
+                        })
+                        txHash = txHashResponse
+                    }
+                    break
+                }
+                default: {
+                    throw new Error("Invalid transaction type")
+                }
+                }
+                if (extraAction) {
+                    await extraAction()
+                }
+                addTxHashToast(txHash)
+            } catch (error) {
+                addErrorToast((error as Error).message)
+            } finally {
+                toggle(false)
+            }
+        }
+    )
+
     const renderContent = () => {
         switch (type) {
         case TransactionType.TransferToken: {
@@ -310,7 +278,7 @@ export const SignTransactionModal: FC = () => {
                             const token = tokens[tokenKey]?.[chainKey]?.[network]
                             if (!token) throw new Error("Token not found")
                             return (
-                                <div className="flex items-center justify-between px-2 py-3">
+                                <div className="flex items-center justify-between px-2 py-3 bg-content-2">
                                     <div className="text-sm font-semibold">Token</div>
                                     <div className="flex gap-2 items-center">
                                         <Image
@@ -324,7 +292,7 @@ export const SignTransactionModal: FC = () => {
                         }
                         case TransferTokenContent.Amount: {
                             return (
-                                <div className="flex items-center justify-between px-2 py-3">
+                                <div className="flex items-center justify-between px-2 py-3 bg-content-2">
                                     <div className="text-sm font-semibold">Amount</div>
                                     <div className="flex gap-2 items-center">
                                         <div className="text-sm">{amount}</div>
@@ -334,7 +302,7 @@ export const SignTransactionModal: FC = () => {
                         }
                         case TransferTokenContent.RecipientAddress: {
                             return (
-                                <div className="flex items-center justify-between px-2 py-1">
+                                <div className="flex items-center justify-between px-2 py-1 bg-content-2">
                                     <div className="text-sm font-semibold">
                         Recipient Address
                                     </div>
@@ -362,7 +330,7 @@ export const SignTransactionModal: FC = () => {
                         switch (item) {
                         case HoneycombProtocolRawTxContent.SerializedTx: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="flex items-center justify-between gap-12 px-2 py-3 bg-content-2">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
                                     <div className="flex gap-2 items-center">
                                         <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
@@ -388,7 +356,7 @@ export const SignTransactionModal: FC = () => {
                         switch (item) {
                         case HoneycombProtocolRawTxsContent.SerializedTx: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="flex items-center justify-between gap-12 px-2 py-3 bg-content-2">
                                     <div className="text-sm font-semibold">
                         Serialized Txs
                                     </div>
@@ -425,7 +393,7 @@ export const SignTransactionModal: FC = () => {
                         switch (item) {
                         case SolanaRawTxContent.SerializedTx: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="flex items-center justify-between gap-12 px-2 py-3 bg-content-2">
                                     <div className="text-sm font-semibold">Serialized Tx</div>
                                     <div className="flex gap-2 items-center">
                                         <div className="flex gap-2 items-center text-sm break-all whitespace-pre-wrap line-clamp-5">
@@ -454,7 +422,7 @@ export const SignTransactionModal: FC = () => {
                         switch (item) {
                         case TransferNFTContent.Collection: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="flex items-center justify-between gap-12 px-2 py-3 bg-content-2">
                                     <div className="text-sm font-semibold">Collection</div>
                                     <div className="flex gap-2 items-center">
                                         <Image
@@ -470,7 +438,7 @@ export const SignTransactionModal: FC = () => {
                         }
                         case TransferNFTContent.NFT: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-3">
+                                <div className="flex items-center justify-between gap-12 px-2 py-3 bg-content-2">
                                     <div className="text-sm font-semibold">NFT</div>
                                     <div className="flex gap-2 items-center">
                                         <Image 
@@ -484,7 +452,7 @@ export const SignTransactionModal: FC = () => {
                         }
                         case TransferNFTContent.RecipientAddress: {
                             return (
-                                <div className="flex items-center justify-between gap-12 px-2 py-1">
+                                <div className="flex items-center justify-between gap-12 px-2 py-1 bg-content-2">
                                     <div className="text-sm font-semibold">
                         Recipient Address
                                     </div>
@@ -529,19 +497,20 @@ export const SignTransactionModal: FC = () => {
                 </div>
                 <DialogFooter className="w-full">
                     <ExtendedButton
-                        variant="ghost"
+                        variant="flat"
+                        color="secondary"
                         onClick={() => toggle(false)}
                         className="text-muted-foreground w-full"
                     >
             Cancel
                     </ExtendedButton>
-                    {/* <ExtendedButton
+                    <ExtendedButton
                         className="w-full"
                         isLoading={isMutating}
                         onClick={() => trigger()}
                     >
             Sign
-                    </ExtendedButton> */}
+                    </ExtendedButton>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
