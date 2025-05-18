@@ -1,5 +1,5 @@
 "use client"
-import { Header, Spacer } from "@/components"
+import { ExtendedButton, FilterBar, Header, Spacer } from "@/components"
 import React, { useEffect } from "react"
 import { useAppSelector } from "@/redux"
 import { useParams } from "next/navigation"
@@ -13,6 +13,7 @@ import { envConfig } from "@/env"
 import { NFTCard } from "./NFTCard"
 import { NFTCardSkeleton } from "./NFTCardSkeleton"
 import { useMediaQuery } from "usehooks-ts"
+import { ArrowsClockwise } from "@phosphor-icons/react"
 const Page = () => {
     const params = useParams()
     const collectionKey = params.collectionKey as NFTType
@@ -46,7 +47,18 @@ const Page = () => {
                 <Header showBackButton={true} isSkeleton={!nftCollectionSwr?.data} title={`${collection?.name}`}/>
             </div>
             <Spacer y={6} />
-            {
+            <div className="flex gap-4 items-center">
+                <FilterBar
+                    onSearchStringChange={() => {}}
+                    searchString={""}
+                    className="max-w-[200px]"
+                />
+                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => nftCollectionSwr.mutate()}>
+                    <ArrowsClockwise />
+                </ExtendedButton>
+            </div>
+            <Spacer y={4} />
+            {   
                 (!collection || !nftCollectionSwr || !nftCollectionSwr.data) ? (
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                         {

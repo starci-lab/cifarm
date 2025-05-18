@@ -10,33 +10,42 @@ import {
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { BUY_GOLDS_DISCLOSURE, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
-import { useGraphQLQueryUserSwr } from "@/hooks"
+import { BUY_GOLDS_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR } from "@/app/constants"
+import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr } from "@/hooks"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/modules/entities"
 import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector } from "@/redux"
+import { ArrowsClockwise } from "@phosphor-icons/react"
 
 export const InGameTab: FC = () => {
-    const { swr: userSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryUserSwr>
-  >(GRAPHQL_QUERY_USER_SWR)
     const inventories = useAppSelector(
         (state) => state.sessionReducer.inventories
     )
+    const { swr: inventoriesSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryInventoriesSwr>
+    >(GRAPHQL_QUERY_INVENTORIES_SWR)
+    const { swr: userSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryUserSwr>
+    >(GRAPHQL_QUERY_USER_SWR)
     const { open: openBuyGoldsModal } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_DISCLOSURE)
     return (
         <div>
             <div>
-                <Title
-                    title="Golds"
-                    classNames={{
-                        title: "text-2xl text-muted-foreground",
-                    }}
-                />
+                <div className="flex gap-4 items-center justify-between">
+                    <Title
+                        title="Golds"
+                        classNames={{
+                            title: "text-2xl text-muted-foreground",
+                        }}
+                    />
+                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
+                        <ArrowsClockwise />
+                    </ExtendedButton>
+                </div>
                 <Spacer y={4} />
-                <div className="flex justify-between">
+                <div className="flex justify-between h-16 items-center">
                     <div className="flex gap-2 items-center">
                         <Image
                             className="w-10 h-10"
@@ -50,12 +59,17 @@ export const InGameTab: FC = () => {
                 </div>
             </div>
             <Spacer y={6} />
-            <Title
-                title="Inventories"
-                classNames={{
-                    title: "text-2xl text-muted-foreground",
-                }}
-            />
+            <div className="flex gap-4 items-center justify-between">
+                <Title
+                    title="Inventories"
+                    classNames={{
+                        title: "text-2xl text-muted-foreground",
+                    }}
+                />
+                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => inventoriesSwr.mutate()}>
+                    <ArrowsClockwise />
+                </ExtendedButton>
+            </div>  
             <Spacer y={4} />
             <div className="bg-content-2 rounded-lg">
                 <div className="p-4">

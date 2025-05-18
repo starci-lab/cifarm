@@ -23,11 +23,12 @@ export const useBalanceSwr = ({
 }: UseBalanceSwrParams): UseSWR<number> => {
     //default values
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
+    const refreshTokensKey = useAppSelector((state) => state.hookDependencyReducer.refreshTokensKey)
     const network = envConfig().network
 
     const { accountAddress } = useGlobalAccountAddress()
     const swr = useSWR(
-        [chainKey, network, tokenAddress, tokenKey, tokens, accountAddress],
+        [chainKey, network, tokenAddress, tokenKey, tokens, accountAddress, refreshTokensKey],
         async () => {
             if (!tokenAddress && !tokenKey) {
                 return 0

@@ -19,7 +19,7 @@ export const AppTabs: FC<AppTabsProps> = ({ tabs, selectedTab, onSelectTab, colo
         <Tabs onValueChange={onSelectTab} value={selectedTab}>
             <TabsList>
                 {tabs.map((tab) => (
-                    <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2 text-sm" color={color}>
+                    <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2" color={color}>
                         {tab.icon}
                         {tab.label}
                     </TabsTrigger>

@@ -6,14 +6,6 @@ import { Container, Header, Spacer, Tabs, TabsList, TabsTrigger } from "@/compon
 
 const Page: FC = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
-
-    // const renderContent = () => {
-    //     const contentMap = {
-    //         [AssetTab.InGame]: <InGame />,
-    //     }
-    //     return contentMap[assetTab]
-    // }
-
     const dispatch = useAppDispatch()
 
     return (
