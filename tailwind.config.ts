@@ -1,8 +1,5 @@
 import type { Config } from "tailwindcss"
 import tailwindcssAnimate from "tailwindcss-animate"
-import { typographySafelist } from "./src/components/styled/Typography/utils/safelist"
-
-console.log(typographySafelist)
 
 const config: Config = {
     content: [
@@ -11,7 +8,8 @@ const config: Config = {
         "./src/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     safelist: [
-        ...typographySafelist
+        //...typographySafelist,
+        //...sizeSafelistTailwind,
     ],
     theme: {
     	extend: {

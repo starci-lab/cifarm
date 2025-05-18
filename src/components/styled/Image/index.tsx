@@ -15,11 +15,12 @@ export const Image: FC<ImageProps> = ({ src, className }) => {
 export type ScaledImageProps = ImageProps;
 
 export const ScaledImage: FC<ScaledImageProps> = (props) => {
+    const baseCoefficient = 2.5
     return (
         <img
             {...props}
             className={cn("w-fit h-fit min-w-fit min-h-fit", props.className)}
-            srcSet={`${props.src} ${(1 / (props.scale ?? 1)) * 2.5}x`}
+            srcSet={`${props.src} ${(1 / (props.scale ?? 1)) * baseCoefficient}x`}
         />
     )
 }

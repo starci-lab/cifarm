@@ -69,7 +69,6 @@ const ItemCardCore: FC<ItemCardProps> = ({
     hideCardContentBg = false,
     classNames = {},
 }) => {
-
     const tintMap: Record<TintColor, string> = {
         [TintColor.Default]: "grayscale(100%)",
         [TintColor.Green]: "grayscale(100%)",
@@ -95,7 +94,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
                 {!frameOnly &&
           (() => {
               return (
-                  <div className="absolute w-12 h-12">
+                  <div className="absolute w-14 h-14">
                       {isQuality && (
                           <ScaledImage
                               src={assetIconMap[AssetIconId.QualityStar].base.assetUrl}

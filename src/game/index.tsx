@@ -30,10 +30,10 @@ export const Game: FC = () => {
     }, [])
 
     return (
-        <>
+        <div>
             <div id={CONTAINER_ID} className="w-screen h-screen static block"/>
-            <ReactUI />
-        </>
+            <ReactUI  />
+        </div>
     )
 }
 

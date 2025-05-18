@@ -1,2 +1,2 @@
 export * from "./font-map"
-export * from "./safelist"
+export * from "../../../../../safelist/typography"
