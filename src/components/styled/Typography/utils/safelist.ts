@@ -1,4 +1,4 @@
-import { FONT_BASE_SIZE, MAJOR_SECOND, MINOR_THIRD, MAJOR_THIRD } from "./index"
+import { FONT_BASE_SIZE, MAJOR_SECOND, MINOR_THIRD, MAJOR_THIRD } from "./font-map"
 
 const roundTo2Decimals = (value: number) => Math.round(value * 100) / 100
 

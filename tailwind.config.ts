@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss"
 import tailwindcssAnimate from "tailwindcss-animate"
-import { typographySafelist } from "./src/app/design-system/Typography/utils/safelist"
+import { typographySafelist } from "./src/components/styled/Typography/utils/safelist"
 
 console.log(typographySafelist)
 
