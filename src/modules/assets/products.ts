@@ -532,4 +532,149 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
             },
         },
     },
+    [ProductId.Eggplant]: {
+        name: "Eggplant",
+        description: "Fresh eggplant with mild flavor.",
+        base: {
+            assetKey: "products-eggplant",
+            assetUrl: `${PREFIX}/eggplant.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-eggplant",
+                assetUrl: `${PREFIX}/eggplant.png`,
+            },
+        },
+    },
+    [ProductId.EggplantQuality]: {
+        name: "Quality Eggplant",
+        description: "Premium eggplant with enhanced flavor.",  
+        base: {
+            assetKey: "products-eggplant",
+            assetUrl: `${PREFIX}/eggplant.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-eggplant",
+                assetUrl: `${PREFIX}/eggplant.png`,
+                useExisting: true,
+            },
+        },
+    },
+    [ProductId.Tomato]: {
+        name: "Tomato",
+        description: "Fresh tomato with sweet taste.",
+        base: {
+            assetKey: "products-tomato",
+            assetUrl: `${PREFIX}/tomato.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-tomato",
+                assetUrl: `${PREFIX}/tomato.png`,
+            },
+        },
+    },
+    [ProductId.TomatoQuality]: {
+        name: "Quality Tomato",
+        description: "Premium tomato with enhanced sweetness.",
+        base: { 
+            assetKey: "products-tomato",
+            assetUrl: `${PREFIX}/tomato.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-tomato",
+                assetUrl: `${PREFIX}/tomato.png`,
+                useExisting: true,
+            },
+        },
+    },  
+    [ProductId.Pumpkin]: {
+        name: "Pumpkin",
+        description: "Fresh pumpkin with sweet taste.",
+        base: {
+            assetKey: "products-pumpkin",
+            assetUrl: `${PREFIX}/pumpkin.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pumpkin",
+                assetUrl: `${PREFIX}/pumpkin.png`,
+            },
+        },
+    },  
+    [ProductId.PumpkinQuality]: {
+        name: "Quality Pumpkin",
+        description: "Premium pumpkin with enhanced sweetness.",
+        base: {
+            assetKey: "products-pumpkin",
+            assetUrl: `${PREFIX}/pumpkin.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pumpkin",
+                assetUrl: `${PREFIX}/pumpkin.png`,  
+                useExisting: true,  
+            },
+        },
+    },
+    [ProductId.Sunflower]: {
+        name: "Sunflower",
+        description: "Fresh sunflower with sweet taste.",
+        base: {
+            assetKey: "products-sunflower",
+            assetUrl: `${PREFIX}/sunflower.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-sunflower",
+                assetUrl: `${PREFIX}/sunflower.png`,
+            },
+        },
+    },
+    
+    [ProductId.SunflowerQuality]: {
+        name: "Quality Sunflower",
+        description: "Premium sunflower with enhanced sweetness.",
+        base: {
+            assetKey: "products-sunflower",
+            assetUrl: `${PREFIX}/sunflower.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-sunflower",
+                assetUrl: `${PREFIX}/sunflower.png`,
+                useExisting: true,
+            },
+        },
+    },
+    [ProductId.Pea]: {
+        name: "Pea",
+        description: "Fresh pea with sweet taste.",
+        base: {
+            assetKey: "products-pea",
+            assetUrl: `${PREFIX}/pea.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pea",
+                assetUrl: `${PREFIX}/pea.png`,
+            },
+        },
+    },  
+    [ProductId.PeaQuality]: {
+        name: "Pea",
+        description: "Fresh pea with sweet taste.",
+        base: {
+            assetKey: "products-pea",
+            assetUrl: `${PREFIX}/pea.png`,
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pea",
+                assetUrl: `${PREFIX}/pea.png`,
+            },
+        },
+    },
 }   

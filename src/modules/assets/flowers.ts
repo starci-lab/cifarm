@@ -148,5 +148,134 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
             },
         },
     },
+    [FlowerId.Sunflower]: {
+        name: "Sunflower",
+        description: "A large, yellow flower with a black center.",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-sunflower-1",
+                                assetUrl: `${PREFIX}/sunflower/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-sunflower-2",
+                                assetUrl: `${PREFIX}/sunflower/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-sunflower-3",
+                                assetUrl: `${PREFIX}/sunflower/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-sunflower-4",
+                                assetUrl: `${PREFIX}/sunflower/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "flower-sunflower-5",
+                                assetUrl: `${PREFIX}/sunflower/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -90,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "flower-sunflower-1",
+                    assetUrl: `${PREFIX}/sunflower/1.png`,
+                },
+                1: {
+                    assetKey: "flower-sunflower-2",
+                    assetUrl: `${PREFIX}/sunflower/2.png`,
+                },
+                2: {
+                    assetKey: "flower-sunflower-3",
+                    assetUrl: `${PREFIX}/sunflower/3.png`,
+                },
+                3: {
+                    assetKey: "flower-sunflower-4",
+                    assetUrl: `${PREFIX}/sunflower/4.png`,
+                },
+                4: {
+                    assetKey: "flower-sunflower-5",
+                    assetUrl: `${PREFIX}/sunflower/5.png`,
+                },
+            },
+        },
+    },
 }   
 

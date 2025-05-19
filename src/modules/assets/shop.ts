@@ -105,6 +105,38 @@ export const assetShopMap: AssetShopData = {
                 assetUrl: `${PREFIX_CROPS}/strawberry.png`,
             },
         },
+        [CropId.Eggplant]: {
+            name: "Eggplant seed",
+            description: "Long, slender vegetable with mild flavor.",
+            base: {
+                assetKey: "shop-eggplant-seed",
+                assetUrl: `${PREFIX_CROPS}/eggplant.png`,
+            },
+        },
+        [CropId.Tomato]: {
+            name: "Tomato seed",
+            description: "Tall, grain-bearing plant with large ears.",
+            base: {
+                assetKey: "shop-tomato-seed",
+                assetUrl: `${PREFIX_CROPS}/tomato.png`,
+            },
+        },
+        [CropId.Pea]: {
+            name: "Pea seed",
+            description: "Large, round fruit with a sweet, orange flesh.",
+            base: {
+                assetKey: "shop-pea-seed",
+                assetUrl: `${PREFIX_CROPS}/pea.png`,
+            },
+        },
+        [CropId.Pumpkin]: {
+            name: "Pumpkin seed",
+            description: "Large, round fruit with a sweet, orange flesh.",
+            base: {
+                assetKey: "shop-pumpkin-seed",
+                assetUrl: `${PREFIX_CROPS}/pumpkin.png`,
+            },
+        },
     },
     flowers: {
         [FlowerId.Daisy]: {
@@ -113,6 +145,14 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-daisy-seed",
                 assetUrl: `${PREFIX_FLOWERS}/daisy.png`,
+            },
+        },
+        [FlowerId.Sunflower]: {
+            name: "Sunflower seed",
+            description: "Flower with large, yellow petals and a central disk.",
+            base: {
+                assetKey: "shop-sunflower-seed",
+                assetUrl: `${PREFIX_FLOWERS}/sunflower.png`,
             },
         },
     },

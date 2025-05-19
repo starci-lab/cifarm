@@ -37,6 +37,11 @@ export enum CropId {
     Cucumber = "cucumber",
     BellPepper = "bellPepper",
     Strawberry = "strawberry",
+    Cauliflower = "cauliflower",
+    Tomato = "tomato",
+    Eggplant = "eggplant",
+    Pumpkin = "pumpkin",
+    Pea = "pea",
 }
 
 export enum FruitId {
@@ -129,6 +134,16 @@ export enum ProductId {
     RambutanQuality = "rambutanQuality",
     Pomegranate = "pomegranate",
     PomegranateQuality = "pomegranateQuality",
+    Eggplant = "eggplant",
+    EggplantQuality = "eggplantQuality",
+    Pea = "pea",
+    PeaQuality = "peaQuality",
+    Tomato = "tomato",
+    TomatoQuality = "tomatoQuality",
+    Sunflower = "sunflower",
+    SunflowerQuality = "sunflowerQuality",
+    Pumpkin = "pumpkin",
+    PumpkinQuality = "pumpkinQuality",
 }
 
 export enum SystemId {
@@ -199,6 +214,23 @@ export enum InventoryTypeId {
     DragonFruitQuality = "dragonFruitQuality",
     Jackfruit = "jackfruit",
     JackfruitQuality = "jackfruitQuality",
+    Rambutan = "rambutan",
+    RambutanQuality = "rambutanQuality",
+    Pomegranate = "pomegranate",
+    PomegranateQuality = "pomegranateQuality",
+    Eggplant = "eggplant",
+    EggplantQuality = "eggplantQuality",
+    Pea = "pea",
+    PeaQuality = "peaQuality",
+    Tomato = "tomato",
+    TomatoQuality = "tomatoQuality",
+    EggplantSeed = "eggplantSeed",
+    PeaSeed = "peaSeed",
+    TomatoSeed = "tomatoSeed",
+    Sunflower = "sunflower",
+    SunflowerQuality = "sunflowerQuality",
+    Pumpkin = "pumpkin",
+    PumpkinQuality = "pumpkinQuality",
 }
 
 export enum PlacedItemTypeId {
@@ -234,6 +266,7 @@ export enum PetId {
 
 export enum FlowerId {
     Daisy = "daisy",
+    Sunflower = "sunflower",
 }
 
 export enum TerrainId {

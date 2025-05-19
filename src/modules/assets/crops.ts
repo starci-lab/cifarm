@@ -808,6 +808,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                             texture: {
                                 assetKey: "crop-bell-pepper-1",
                                 assetUrl: `${PREFIX}/bell-pepper/1.png`,
+                                version: 1,
                                 extraOffsets: {
                                     x: 0,
                                     y: -85,
@@ -827,9 +828,10 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                             texture: {
                                 assetKey: "crop-bell-pepper-2",
                                 assetUrl: `${PREFIX}/bell-pepper/2.png`,
+                                version: 1,
                                 extraOffsets: {
-                                    x: 10,
-                                    y: -15,
+                                    x: -5,
+                                    y: -85,
                                 },
                             },
                         },
@@ -846,9 +848,10 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                             texture: {
                                 assetKey: "crop-bell-pepper-3",
                                 assetUrl: `${PREFIX}/bell-pepper/3.png`,
+                                version: 1,
                                 extraOffsets: {
-                                    x: 20,
-                                    y: -20,
+                                    x: -5,
+                                    y: -85,
                                 },
                             },
                         },
@@ -865,9 +868,10 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                             texture: {
                                 assetKey: "crop-bell-pepper-4",
                                 assetUrl: `${PREFIX}/bell-pepper/4.png`,
+                                version: 1,
                                 extraOffsets: {
-                                    x: 20,
-                                    y: -20,
+                                    x: -5,
+                                    y: -80,
                                 },
                             },
                         },
@@ -884,9 +888,10 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                             texture: {
                                 assetKey: "crop-bell-pepper-5",
                                 assetUrl: `${PREFIX}/bell-pepper/5.png`,
+                                version: 1,
                                 extraOffsets: {
-                                    x: 20,
-                                    y: -20,
+                                    x: -5,
+                                    y: -80,
                                 },
                             },
                         },
@@ -1052,6 +1057,651 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                     assetUrl: `${PREFIX}/strawberry/5.png`,
                 },
             },
+        },
+    },
+    [CropId.Cauliflower]: {
+        name: "Cauliflower",
+        description: "White, dense vegetable with a mild flavor.",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cauliflower-1",
+                                assetUrl: `${PREFIX}/cauliflower/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cauliflower-2",
+                                assetUrl: `${PREFIX}/cauliflower/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cauliflower-3",
+                                assetUrl: `${PREFIX}/cauliflower/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cauliflower-4",
+                                assetUrl: `${PREFIX}/cauliflower/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-cauliflower-5",
+                                assetUrl: `${PREFIX}/cauliflower/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "crop-cauliflower-1",
+                    assetUrl: `${PREFIX}/cauliflower/1.png`,
+                },
+                1: {
+                    assetKey: "crop-cauliflower-2",
+                    assetUrl: `${PREFIX}/cauliflower/2.png`,
+                },
+                2: {
+                    assetKey: "crop-cauliflower-3",
+                    assetUrl: `${PREFIX}/cauliflower/3.png`,
+                },
+                3: {
+                    assetKey: "crop-cauliflower-4",
+                    assetUrl: `${PREFIX}/cauliflower/4.png`,
+                },
+                4: {
+                    assetKey: "crop-cauliflower-5",
+                    assetUrl: `${PREFIX}/cauliflower/5.png`,
+                },
+            },  
+        },
+    },
+    [CropId.Tomato]: {
+        name: "Tomato",
+        description: "Red, juicy fruit with a tangy flavor.",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-tomato-1",
+                                assetUrl: `${PREFIX}/tomato/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-tomato-2",
+                                assetUrl: `${PREFIX}/tomato/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-tomato-3",
+                                assetUrl: `${PREFIX}/tomato/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-tomato-4",
+                                assetUrl: `${PREFIX}/tomato/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-tomato-5",
+                                assetUrl: `${PREFIX}/tomato/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "crop-tomato-1",
+                    assetUrl: `${PREFIX}/tomato/1.png`,
+                },
+                1: {
+                    assetKey: "crop-tomato-2",
+                    assetUrl: `${PREFIX}/tomato/2.png`,
+                },
+                2: {
+                    assetKey: "crop-tomato-3",
+                    assetUrl: `${PREFIX}/tomato/3.png`,
+                },
+                3: {
+                    assetKey: "crop-tomato-4",
+                    assetUrl: `${PREFIX}/tomato/4.png`,
+                },
+                4: {
+                    assetKey: "crop-tomato-5",
+                    assetUrl: `${PREFIX}/tomato/5.png`,
+                },
+            },  
+        },
+    },
+    [CropId.Pea]: {
+        name: "Pea",
+        description: "Green, round fruit with a sweet flavor.",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pea-1",
+                                assetUrl: `${PREFIX}/pea/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pea-2",
+                                assetUrl: `${PREFIX}/pea/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pea-3",
+                                assetUrl: `${PREFIX}/pea/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pea-4",
+                                assetUrl: `${PREFIX}/pea/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pea-5",
+                                assetUrl: `${PREFIX}/pea/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "crop-pea-1",
+                    assetUrl: `${PREFIX}/pea/1.png`,
+                },
+                1: {
+                    assetKey: "crop-pea-2",
+                    assetUrl: `${PREFIX}/pea/2.png`,
+                },
+                2: {
+                    assetKey: "crop-pea-3",
+                    assetUrl: `${PREFIX}/pea/3.png`,
+                },
+                3: {
+                    assetKey: "crop-pea-4",
+                    assetUrl: `${PREFIX}/pea/4.png`,
+                },
+                4: {
+                    assetKey: "crop-pea-5",
+                    assetUrl: `${PREFIX}/pea/5.png`,
+                },
+            },  
+        },
+    },
+    [CropId.Eggplant]: {
+        name: "Eggplant",
+        description: "Purple, round fruit with a sweet flavor.",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-eggplant-1",
+                                assetUrl: `${PREFIX}/eggplant/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-eggplant-2",
+                                assetUrl: `${PREFIX}/eggplant/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-eggplant-3",
+                                assetUrl: `${PREFIX}/eggplant/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-eggplant-4",
+                                assetUrl: `${PREFIX}/eggplant/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-eggplant-5",
+                                assetUrl: `${PREFIX}/eggplant/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "crop-eggplant-1",
+                    assetUrl: `${PREFIX}/eggplant/1.png`,
+                },
+                1: {
+                    assetKey: "crop-eggplant-2",
+                    assetUrl: `${PREFIX}/eggplant/2.png`,
+                },
+                2: {
+                    assetKey: "crop-eggplant-3",
+                    assetUrl: `${PREFIX}/eggplant/3.png`,
+                },
+                3: {
+                    assetKey: "crop-eggplant-4",
+                    assetUrl: `${PREFIX}/eggplant/4.png`,
+                },
+                4: {
+                    assetKey: "crop-eggplant-5",
+                    assetUrl: `${PREFIX}/eggplant/5.png`,
+                },
+            },  
+        },
+    },
+    [CropId.Pumpkin]: {
+        name: "Pumpkin",
+        description: "Orange, round fruit with a sweet flavor.",
+        phaser: {
+            map: {
+                stages: {
+                    0: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pumpkin-1",
+                                assetUrl: `${PREFIX}/pumpkin/1.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -85,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    1: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pumpkin-2",
+                                assetUrl: `${PREFIX}/pumpkin/2.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    2: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pumpkin-3",
+                                assetUrl: `${PREFIX}/pumpkin/3.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    3: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pumpkin-4",
+                                assetUrl: `${PREFIX}/pumpkin/4.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                    4: {
+                        mapData: {
+                            type: AssetMapType.Texture,
+                            texture: {
+                                assetKey: "crop-pumpkin-5",
+                                assetUrl: `${PREFIX}/pumpkin/5.png`,
+                                extraOffsets: {
+                                    x: 0,
+                                    y: -30,
+                                },
+                            },
+                        },
+                        bubbleStateConfig: {
+                            extraOffsets: {
+                                x: -25,
+                                y: -25,
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        base: {
+            stages: {
+                0: {
+                    assetKey: "crop-eggplant-1",
+                    assetUrl: `${PREFIX}/eggplant/1.png`,
+                },
+                1: {
+                    assetKey: "crop-eggplant-2",
+                    assetUrl: `${PREFIX}/eggplant/2.png`,
+                },
+                2: {
+                    assetKey: "crop-eggplant-3",
+                    assetUrl: `${PREFIX}/eggplant/3.png`,
+                },
+                3: {
+                    assetKey: "crop-eggplant-4",
+                    assetUrl: `${PREFIX}/eggplant/4.png`,
+                },
+                4: {
+                    assetKey: "crop-eggplant-5",
+                    assetUrl: `${PREFIX}/eggplant/5.png`,
+                },
+            },  
         },
     },
 }
