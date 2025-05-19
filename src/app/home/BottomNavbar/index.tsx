@@ -1,26 +1,24 @@
 "use client"
 
 import { SHEET_BOTTOM_NAV_DISCLOSURE } from "@/app/constants"
-import { ExtendedButton } from "@/components"
 import { pathConstants } from "@/constants"
 import {
     useRouterWithSearchParams
 } from "@/hooks"
 import { useIsMobile } from "@/hooks/useIsMobile"
-import { cn } from "@/lib/utils"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { Coins, Cube, DiscordLogo, DotsThree,  GameController,  House, XLogo } from "@phosphor-icons/react"
-import { motion, AnimatePresence } from "framer-motion"
+import { Coins, Cube, DotsThree,  GameController,  Plant,  SquaresFour, XLogo } from "@phosphor-icons/react"
 import { useDisclosure } from "react-use-disclosure"
 import { usePathname } from "next/navigation"
-import React, { FC, useState } from "react"
-import { setBottomNavSheet, useAppDispatch } from "@/redux"
+import React, { FC, ReactNode } from "react"
+import { Selection } from "./Selection"
+import { Button } from "@/components"
 
 interface NavItem {
     name: string
-    icon: React.ElementType
+    icon: ReactNode
     path?: string
-    items?: NavItem[]
+    items?: Array<NavItem>
 }
 
 export const BottomNavbar: FC = () => {
@@ -30,52 +28,43 @@ export const BottomNavbar: FC = () => {
     const { open: openBottomNavSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_BOTTOM_NAV_DISCLOSURE
     )
-    const dispatch = useAppDispatch()
-
-    const navItems: NavItem[] = [
+    const navItems: Array<NavItem> = [
         {
             name: "Home",
-            icon: House,
+            icon: <SquaresFour className="w-6 h-6 relative" />,
             path: pathConstants.home,
         },
         {
             name: "Assets",
-            icon: Coins,
+            icon: <Coins className="w-6 h-6 relative" />,
             path: `${pathConstants.home}${pathConstants.assets}`,
         },
         {
             name: "DApps",
-            icon: Cube,
+            icon: <Cube className="w-6 h-6 relative" />,
             path: `${pathConstants.home}${pathConstants.dapps}`,
         },
         {
             name: "More",
-            icon: DotsThree,
+            icon: <DotsThree className="w-6 h-6 relative" />,
             items: [
                 {
                     name: "Twitter",
-                    icon: XLogo,
+                    icon: <XLogo className="w-6 h-6 relative" />,
                     path: "https://x.com/CifarmOnSol",
                 },
                 {
                     name: "Quick play",
-                    icon: GameController,
+                    icon: <GameController className="w-6 h-6 relative" />,
                     path: "/play",
                 },
-            ]
+            ],
         },
     ]
 
-    const handleNavClick = (item: NavItem) => {
+    const onItemClick = (item: NavItem) => {
         if (item.items) {
             openBottomNavSheet()
-            dispatch(setBottomNavSheet({
-                items: item.items.map((item) => ({
-                    name: item.name,
-                    icon: item.icon,
-                    path: item.path || "/",
-                })),
-            }))
         } else if (item.path) {
             router.push(item.path)
         }
@@ -84,49 +73,41 @@ export const BottomNavbar: FC = () => {
     return (
         <>
             {isMobile && (
-                <div className="m-auto fixed top-auto bottom-0 border-t z-50 w-full bg-background h-[60px] md:h-16 safe-area-pb">
-                    <nav className="m-auto w-full h-full flex items-center justify-between px-2 sm:px-4">
-                        <ul className="h-full grid grid-cols-4 gap-1 w-full">
-                            {navItems.map((item) => {
-                                const isActive = pathname === item.path
-
-                                return (
-                                    <li key={item.name} className="relative">
-                                        <button
-                                            onClick={() => handleNavClick(item)}
-                                            className={cn(
-                                                "w-full h-full flex flex-col items-center justify-center transition-all duration-200",
-                                                isActive ? "text-secondary" : "text-muted-foreground hover:text-foreground",
-                                            )}
-                                        >
-                                            <ExtendedButton 
-                                                className="relative group" 
-                                                variant="flat" 
-                                                color="ghost"
-                                            >
-                                                {isActive && (
-                                                    <motion.div
-                                                        layoutId="activeIndicator"
-                                                        className="absolute -inset-1 bg-secondary/10 rounded-full"
-                                                        initial={false}
-                                                        transition={{ type: "spring", duration: 0.5 }}
-                                                    />
-                                                )}
-                                                <motion.div
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                >
-                                                    <item.icon className="w-8 h-8 relative" />
-                                                </motion.div>
-                                            </ExtendedButton>
-                                            <span className="text-[14px] font-medium -mt-1">{item.name}</span>
-                                        </button>
-                                    </li>
-                                )
-                            })}
-                        </ul>
-                    </nav>
-                </div>
+                <nav className="fixed left-0 bottom-0 border-t z-50 w-full bg-content-4">
+                    <div className="flex gap-2 w-full justify-between items-center py-2 px-6">
+                        <Selection
+                            name={navItems[0].name}
+                            icon={navItems[0].icon}
+                            selected={pathname === navItems[0].path}
+                            onClick={() => onItemClick(navItems[0])}
+                        />
+                        <Selection
+                            name={navItems[1].name}
+                            icon={navItems[1].icon}
+                            selected={pathname === navItems[1].path}
+                            onClick={() => onItemClick(navItems[1])}
+                        />
+                        <div className="w-10 relative">
+                            <Button
+                                onClick={() => router.push(pathConstants.play)}
+                                color="primary" className="scale-150 rounded-full absolute bottom-2 shadow-lg left-1/2 -translate-x-1/2" size="icon">
+                                <Plant />
+                            </Button>
+                        </div>
+                        <Selection
+                            name={navItems[2].name}
+                            icon={navItems[2].icon}
+                            selected={pathname === navItems[2].path}
+                            onClick={() => onItemClick(navItems[2])}
+                        />
+                        <Selection
+                            name={navItems[3].name}
+                            icon={navItems[3].icon}
+                            selected={pathname === navItems[3].path}
+                            onClick={() => onItemClick(navItems[3])}
+                        />
+                    </div>
+                </nav>
             )}
         </>
     ) 

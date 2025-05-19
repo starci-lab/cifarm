@@ -8,7 +8,18 @@ import { cn } from "@/lib/utils"
  
 const DropdownMenu = DropdownMenuPrimitive.Root
  
-const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
+const DropdownMenuTrigger = React.forwardRef<React.ElementRef<typeof DropdownMenuPrimitive.Trigger>, React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Trigger>>(({ className, ...props }, ref) => (
+    <DropdownMenuPrimitive.Trigger
+        ref={ref}
+        className={cn(
+            "rounded-full w-10 h-10 relative ring-0 focus:ring-0",
+            className
+        )}
+        {...props}
+    />
+))
+
+DropdownMenuTrigger.displayName = DropdownMenuPrimitive.Trigger.displayName
  
 const DropdownMenuGroup = DropdownMenuPrimitive.Group
  

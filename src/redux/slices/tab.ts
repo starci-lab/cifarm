@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 export enum HomeTab {
     Overview = "overview",
     Items = "items",
+    Tokenomics = "tokenomics",
 }
 
 export enum AssetTab {
