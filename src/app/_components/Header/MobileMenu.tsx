@@ -6,7 +6,7 @@ import { Logo } from "./Logo"
 import Link from "next/link"
 import { AnimatePresence } from "framer-motion"
 import { WrappedAnimation } from "@/components"
-import { socialLinksConstants } from "@/constants"
+import { socialLinksConstants, pathConstants } from "@/constants"
 import { X } from "@phosphor-icons/react"
 
 interface MobileMenuProps {
@@ -45,7 +45,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     >
                         <PulsatingActionButton
                             onClick={() => {
-                                router.push("/home")
+                                router.push(pathConstants.signIn)
                             }}
                         >
                             Play Now

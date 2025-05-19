@@ -3,7 +3,7 @@ import { FruitCurrentState, PlacedItemSchema } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { ExtendedBadge, Spacer, ExtendedButton, DialogFooter, DialogBody } from "@/components"
+import { ExtendedBadge, Spacer, ExtendedButton, DialogFooter, DialogBody, NFTBadge } from "@/components"
 import {    
     assetProductMap,
     assetStateMap,
@@ -124,61 +124,55 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
     }
 
     return (
-        <DialogBody>
-            <div className="flex items-center gap-4">
-                <ExtendedBadge>
-                    {`Stage ${(placedItem.fruitInfo?.currentStage ?? 0) + 1}`}
-                </ExtendedBadge>
-                <div className="flex items-center gap-4">
-                    {placedItem.nftMetadata && (
+        <>
+            <DialogBody>
+                <div className="flex items-center gap-2">
+                    <ExtendedBadge>
+                        {`Stage ${(placedItem.fruitInfo?.currentStage ?? 0) + 1}`}
+                    </ExtendedBadge>
+                    <div className="flex items-center gap-4">
+                        {placedItem.nftMetadata && (
+                            <>
+                                <NFTBadge name={placedItem.nftMetadata.nftName} />
+                                <Spacer y={4} />
+                            </>
+                        )}
+                    </div>
+                </div>
+                <Spacer y={4} />
+                <div className="bg-content-2 rounded-lg overflow-hidden">
+                    <div className="p-3">
+                        <div className={
+                            cn(
+                                "text-4xl text-primary",
+                                {
+                                    "text-destructive": placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
+                                }
+                            )
+                        }>
+                            {formatTime(timeElapsed)}
+                        </div>
+                    </div>
+                    {placedItem.fruitInfo &&
+          placedItem.fruitInfo.currentState !== FruitCurrentState.Normal && (
                         <>
-                            <div className="flex items-center gap-2">
-                                <ExtendedBadge>NFT</ExtendedBadge>
-                                <div className="text-sm text-muted-foreground">
-                                    {placedItem.nftMetadata.nftName}
-                                </div>
-                            </div>
-                            <Spacer y={4} />
+                            {renderState()}
                         </>
                     )}
                 </div>
-            </div>
-            <Spacer y={4} />
-            <div className="bg-content-2 rounded-lg overflow-hidden">
-                <div className="p-3">
-                    <div className={
-                        cn(
-                            "text-4xl text-primary",
-                            {
-                                "text-destructive": placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
-                            }
-                        )
-                    }>
-                        {formatTime(timeElapsed)}
-                    </div>
-                </div>
-                {placedItem.fruitInfo &&
-          placedItem.fruitInfo.currentState !== FruitCurrentState.Normal && (
-                    <>
-                        {renderState()}
-                    </>
-                )}
-            </div>
-            <Spacer y={4} />
-            <Stats
-                growthAcceleration={placedItem.fruitInfo?.growthAcceleration}
-                qualityYield={placedItem.fruitInfo?.qualityYield}
-                diseaseResistance={placedItem.fruitInfo?.diseaseResistance}
-                harvestYieldBonus={placedItem.fruitInfo?.harvestYieldBonus}
-            />
+                <Spacer y={4} />
+                <Stats
+                    growthAcceleration={placedItem.fruitInfo?.growthAcceleration}
+                    qualityYield={placedItem.fruitInfo?.qualityYield}
+                    diseaseResistance={placedItem.fruitInfo?.diseaseResistance}
+                    harvestYieldBonus={placedItem.fruitInfo?.harvestYieldBonus}
+                />
+            </DialogBody>
             {placedItem.nftMetadata && (
-                <>
-                    <Spacer y={4} />
-                    <DialogFooter>
-                        <ExtendedButton className="w-full">Manage</ExtendedButton>
-                    </DialogFooter>
-                </>
+                <DialogFooter>
+                    <ExtendedButton className="w-full">Manage</ExtendedButton>
+                </DialogFooter>
             )}
-        </DialogBody>
+        </>
     )
 }
