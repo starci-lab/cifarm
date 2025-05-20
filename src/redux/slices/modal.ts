@@ -33,6 +33,7 @@ export enum TransactionType {
   TransferToken = "TransferToken",
   TransferNFT = "TransferNFT",
   SolanaRawTx = "SolanaRawTx",
+  SolanaRawTxs = "SolanaRawTxs",
 }
 
 export interface TokenModal {
@@ -43,11 +44,14 @@ export interface NFTModal {
   nftData?: NFTData;
 }
 
-export interface NFTClaimedModal {
-  nftType?: NFTType; 
-  rarity?: NFTRarityEnum;  
-  nftName?: string;
-  nftImageUrl?: string;
+export interface NFTItem {
+  nftType: NFTType;
+  rarity: NFTRarityEnum;
+  nftName: string;
+}
+
+export interface NFTsClaimedModal {
+  nftItems: Array<NFTItem>;
 }
 
 export interface HoneycombProtocolRawTxData {
@@ -68,6 +72,10 @@ export interface TransferTokenData {
   tokenKey: TokenKey;
   amount: number;
   recipientAddress: string;
+}
+
+export interface SolanaRawTxsData {
+  serializedTxs: Array<string>;
 }
 
 export interface SolanaRawTxData {
@@ -95,11 +103,16 @@ export type SignTransactionModal = (
       data: SolanaRawTxData;
       type: TransactionType.SolanaRawTx;
     }
+  | {
+      data: SolanaRawTxsData;
+      type: TransactionType.SolanaRawTxs;
+      // after action instead of broadcast to the network, it will be sent to the network
+      // override the default behavior
+    }
 ) & {
   // extra action to be taken after the transaction is signed
   extraAction?: () => Promise<void> | void;
-  // after action instead of broadcast to the network, it will be sent to the network
-  postActionHook?: (signedTx: string) => Promise<string> | string;
+  postActionHook?: (signedTxs: Array<string> | string) => Promise<string> | string;
   // save the address to the database
   saveAddress?: string;
 };
@@ -114,7 +127,7 @@ export interface ModalSlice {
   downloadPackageModal: DownloadPackageModal;
   sellModal: SellModal;
   upgradeModal: UpgradeModal;
-  nftClaimedModal: NFTClaimedModal;
+  nftsClaimedModal: NFTsClaimedModal;
 }
 
 export interface DownloadPackageModal {
@@ -140,7 +153,9 @@ const initialState: ModalSlice = {
     downloadPackageModal: {},
     sellModal: {},
     upgradeModal: {},
-    nftClaimedModal: {},
+    nftsClaimedModal: {
+        nftItems: [],
+    },
 }
 
 export const modalSlice = createSlice({
@@ -174,8 +189,8 @@ export const modalSlice = createSlice({
         setUpgradeModal: (state, action: PayloadAction<UpgradeModal>) => {
             state.upgradeModal = action.payload
         },
-        setNFTClaimedModal: (state, action: PayloadAction<NFTClaimedModal>) => {
-            state.nftClaimedModal = action.payload
+        setNFTsClaimedModal: (state, action: PayloadAction<NFTsClaimedModal>) => {
+            state.nftsClaimedModal = action.payload
         },
     },
 })
@@ -190,5 +205,5 @@ export const {
     setDownloadPackageModal,
     setSellModal,
     setUpgradeModal,
-    setNFTClaimedModal,
+    setNFTsClaimedModal,
 } = modalSlice.actions

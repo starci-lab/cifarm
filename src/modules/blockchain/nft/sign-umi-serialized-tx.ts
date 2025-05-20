@@ -9,18 +9,18 @@ import { keypairIdentity } from "@metaplex-foundation/umi"
 
 export interface SignUmiSerializedTxParams {
   privateKey: string;
-  serializedTx: string;
+  serializedTxs: string | Array<string>;
   network?: Network;
 }
 
 export interface SignUmiSerializedTxResponse {
-  serializedTx: string;
+  serializedTxs: string | Array<string>;
 }
 
 export const signUmiSerializedTx = async ({
     network = defaultNetwork,
     privateKey,
-    serializedTx,
+    serializedTxs,
 }: SignUmiSerializedTxParams): Promise<SignUmiSerializedTxResponse> => {
     const umi = createUmi(
         solanaHttpRpcUrl({ chainKey: ChainKey.Solana, network })
@@ -29,14 +29,29 @@ export const signUmiSerializedTx = async ({
         base58.decode(privateKey)
     )
     umi.use(keypairIdentity(signer))
-    console.log(serializedTx)
-    const tx = umi.transactions.deserialize(base58.decode(serializedTx))
-    const signedTx = await umi.identity.signTransaction(
-        tx
-    )
-    return {
-        serializedTx: base58.encode(
-            umi.transactions.serialize(signedTx)
-        ),
+    if (Array.isArray(serializedTxs)) {
+        const txs = serializedTxs.map((serializedTx) => {
+            const tx = umi.transactions.deserialize(base58.decode(serializedTx))
+            return tx
+        })
+        const signedTxs = await umi.identity.signAllTransactions(txs)
+        return {
+            serializedTxs: signedTxs.map((signedTx) => {
+                return base58.encode(
+                    umi.transactions.serialize(signedTx)
+                )
+            }),
+        }
+    } else {
+        const tx = umi.transactions.deserialize(base58.decode(serializedTxs))
+        const signedTx = await umi.identity.signTransaction(
+            tx
+        )
+        return {
+            serializedTxs: base58.encode(
+                umi.transactions.serialize(signedTx)
+            ),
+        }
     }
 }
+

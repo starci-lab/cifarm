@@ -23,7 +23,7 @@ export const ToggleThemeButton: FC<ToggleThemeButtonProps> = ({ classNames, setT
             onClick={() => {
                 setTheme(theme === "dark" ? "light" : "dark")
             }}
-            className={cn("rounded-full w-10 h-10 relative", classNames?.base)}
+            className={cn("rounded-lg w-10 h-10 relative", classNames?.base)}
         >
             {theme === "dark" ? (
                 <Moon />

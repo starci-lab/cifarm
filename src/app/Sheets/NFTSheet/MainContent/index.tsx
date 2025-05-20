@@ -249,10 +249,10 @@ export const MainContent: FC = () => {
                                             data: {
                                                 serializedTx: data.serializedTx,
                                             },
-                                            postActionHook: async (serializedTx: string) => {
+                                            postActionHook: async (serializedTx) => {
                                                 const { data } = await sendUnwrapSolanaMetaplexNFTSwrMutation.trigger({
                                                     request: {
-                                                        serializedTx,
+                                                        serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
                                                     },
                                                 })
                                                 if (!data) {
@@ -301,10 +301,10 @@ export const MainContent: FC = () => {
                                             data: {
                                                 serializedTx: data.serializedTx,
                                             },
-                                            postActionHook: async (serializedTx: string) => {
+                                            postActionHook: async (serializedTx) => {
                                                 const { data } = await sendWrapSolanaMetaplexNFTSwrMutation.trigger({
                                                     request: {
-                                                        serializedTx,
+                                                        serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
                                                     },
                                                 })
                                                 if (!data) {

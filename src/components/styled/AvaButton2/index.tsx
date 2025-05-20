@@ -26,7 +26,7 @@ export const AvaButton2: FC<AvaButton2Props> = ({
             <Image
                 src={imageUrl}
                 alt="avatar"
-                className="rounded-full object-cover w-full h-full"
+                className="rounded-lg object-cover w-full h-full"
             />
             <div className="absolute bottom-0 right-0 w-4 h-4 bg-content-2 rounded-full grid place-items-center">
                 <ArrowDown className="w-3 h-3 text-secondary" />

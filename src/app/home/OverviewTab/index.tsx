@@ -1,4 +1,4 @@
-import { BlurEffect, Card, CardContent, CardHeader, CardTitle, ExtendedBadge, Image, Separator, Spacer } from "@/components"
+import { BlurEffect, Card, CardContent, CardHeader, CardTitle, ExtendedBadge, Image, Spacer } from "@/components"
 import { ExtendedButton } from "@/components"
 import React, { FC } from "react"
 import { MainVisual } from "../MainVisual"
@@ -7,11 +7,15 @@ import { useRouterWithSearchParams } from "@/hooks"
 import { ShareNetwork } from "@phosphor-icons/react"
 import { useIsMobile } from "@/hooks/useIsMobile"
 import { cn } from "@/lib/utils"
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { useDisclosure } from "react-use-disclosure"
+import { REFERRAL_DISCLOSURE } from "@/app/constants"
 const tags = [{ name: "Farming" }, { name: "Social" }, { name: "Strategy" }]
 
 export const OverviewTab: FC = () => {
     const router = useRouterWithSearchParams()
     const isMobile = useIsMobile()
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(REFERRAL_DISCLOSURE)
     return (
         <div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -33,16 +37,16 @@ export const OverviewTab: FC = () => {
                     <BlurEffect size="sm" position="top" className="-z-20 hover:opacity-80 transition-opacity duration-200" />
                     <ExtendedButton className="flex items-center justify-center gap-2 w-full md:w-auto z-10" color="secondary"
                         variant="flat"
+                        onClick={open}
                     >
                         <ShareNetwork className="w-4 h-4" />
                         Share
                     </ExtendedButton>
 
                     <Card variant="default">
-                        <CardHeader>
+                        <CardHeader className="px-4 py-3">
                             <CardTitle className="text-xl font-bold text-foreground">Details</CardTitle>
                         </CardHeader>
-                        <Separator />
                         <CardContent className="px-4 py-3">
                             <div className="flex flex-wrap gap-2">
                                 {tags.map((tag, index) => (
@@ -66,10 +70,9 @@ export const OverviewTab: FC = () => {
             </div>
             <Spacer y={!isMobile ? 6 : 4} />
             <Card variant="default">
-                <CardHeader>
+                <CardHeader className="px-4 py-3">
                     <CardTitle className="text-xl font-bold text-foreground">Description</CardTitle>
                 </CardHeader>
-                <Separator />
                 <CardContent className="px-4 py-3">
                     <div className="text-muted-foreground text-justify">
                         CiFarm is a social farming game where players can farm, steal, and earn rewards. It features a unique business model designed to create long-term value and high user engagement across game seasons.

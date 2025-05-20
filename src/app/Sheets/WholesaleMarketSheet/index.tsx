@@ -85,21 +85,21 @@ export const WholesaleMarketSheet: FC = () => {
                             />
                         </div>
                         <Spacer y={6} />
+                        <Title
+                            title="Payment"
+                            tooltipString="Payment for the wholesale market"
+                        />
+                        <Spacer y={4} />
                         <div>
-                            <Title
-                                title="Payment"
-                                tooltipString="Payment for the wholesale market"
-                            />
-                            <Spacer y={4} />
                             <div className="flex items-center gap-2">
                                 <PaymentIcon
                                     paymentKind={
                                         staticSwr.data?.data.wholesaleMarket.paymentKind ||
                     PaymentKind.Token
                                     }
-                                    className="w-8 h-8"
+                                    className="w-10 h-10"
                                 />
-                                <div className="text-2xl">
+                                <div className="text-4xl">
                                     {vaultCurrentSwr.data?.data.vaultCurrent.paidAmount}
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ export const WholesaleMarketSheet: FC = () => {
                             postActionHook: async (signedSerializedTx) => {
                                 const { data: sendShipSolanaTransactionData } = await sendShipSolanaTransactionSwrMutation.trigger({
                                     request: {
-                                        serializedTx: signedSerializedTx
+                                        serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx
                                     }
                                 })
                                 if (!sendShipSolanaTransactionData) throw new Error("Failed to send ship solana transaction")

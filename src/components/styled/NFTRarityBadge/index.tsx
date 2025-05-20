@@ -28,7 +28,7 @@ export const NFTRarityBadge: FC<NFTRarityBadgeProps> = ({ rarity }) => {
         },
     }
     const data = rarityMap[rarity || NFTRarityEnum.Common]
-    return <ExtendedBadge className={cn(data.className, "text-background")}>
+    return <ExtendedBadge className={cn(data.className, "text-background w-fit")}>
         <div className="text-sm">{data.text}</div>
     </ExtendedBadge>
 }

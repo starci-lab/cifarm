@@ -103,7 +103,7 @@ export const TransferContent: FC = () => {
                                     tooltip: "w-4 h-4",
                                 }}
                             />
-                            <div className="text-gray-400">{`Balance: ${balanceSwr.data}`}</div>
+                            <div className="text-muted-foreground">{`Balance: ${balanceSwr.data}`}</div>
                         </div>
                         <Spacer y={1.5} />
                         <ExtendedNumberInput
