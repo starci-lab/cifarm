@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { Baloo_2 } from "next/font/google"
-import { LoadingScene, SidebarProvider } from "@/components"
+import { SubScene, LoadingScene, SidebarProvider, SubSceneType } from "@/components"
 import { envConfig } from "@/env"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 
@@ -29,6 +29,8 @@ import { Network } from "@/modules/blockchain"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { IconContext } from "@phosphor-icons/react"
 import { ThemeProvider } from "@/components/styled/ThemeProvider"
+import { pathConstants } from "@/constants"
+import { usePathname } from "next/navigation"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -60,6 +62,16 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     })
     const queryClient = new QueryClient()
     const loaded = useAppSelector(state => state.sessionReducer.loaded)
+
+    // neutral pages are the ones that don't require authentication
+    const neutralPages = [pathConstants.default]
+    // unauthenticated pages are the ones that will redirect if not authenticated
+    const unauthenticatedPages = [
+        pathConstants.signIn
+    ]
+
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    const path = usePathname()
 
     return (
         <Suspense>
@@ -97,7 +109,21 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                                                         !loaded ? (
                                                                             <LoadingScene />
                                                                         ) : (
-                                                                            children
+                                                                            (() => {
+                                                                                if (neutralPages.includes(path)) {
+                                                                                    return <>{children}</>
+                                                                                }
+
+                                                                                if (unauthenticatedPages.includes(path)) {
+                                                                                    return authenticated ? (
+                                                                                        <SubScene type={SubSceneType.Authenticated} />
+                                                                                    ) : (
+                                                                                        <>{children}</>
+                                                                                    )
+                                                                                }
+
+                                                                                return authenticated ? <>{children}</> : <SubScene type={SubSceneType.Unauthenticated} />
+                                                                            })()
                                                                         )
                                                                     }
                                                                     <UseEffects />
