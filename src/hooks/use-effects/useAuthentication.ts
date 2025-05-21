@@ -12,6 +12,13 @@ import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { usePathname } from "next/navigation"
 //import { pathConstants } from "@/constants"
 
+// neutral pages are the ones that don't require authentication
+export const neutralPages = [pathConstants.default]
+// unauthenticated pages are the ones that will redirect if not authenticated
+export const unauthenticatedPages = [
+    pathConstants.signIn
+]
+
 export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<
     ReturnType<typeof useGraphQLMutationRefreshSwrMutation>
@@ -65,7 +72,10 @@ export const useAuthentication = () => {
         if (!authenticated) {
             return
         }
-        if (pathname === pathConstants.signIn) {
+        if (neutralPages.includes(pathname)) {
+            return
+        }
+        if (unauthenticatedPages.includes(pathname)) {
             router.push(pathConstants.home)
         }
     }, [authenticated, pathname])

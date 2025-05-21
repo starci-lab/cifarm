@@ -1,26 +1,26 @@
 import { BlurEffect, Container, Image, Spacer } from "@/components"
 import React, { FC } from "react"
 
-export enum SubSceneType {
+export enum FallbackSceneType {
     Authenticated,
     Unauthenticated,
     NotFound404,
 }
-export interface SubSceneProps {
-    type?: SubSceneType
+export interface FallbackSceneProps {
+    type?: FallbackSceneType
 }
-export const SubScene: FC<SubSceneProps> = ({
-    type = SubSceneType.Authenticated,
+export const FallbackScene: FC<FallbackSceneProps> = ({
+    type = FallbackSceneType.Authenticated,
 }) => {
     const imageMap = {
-        [SubSceneType.Authenticated]: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/stacy/authenticated.png",
-        [SubSceneType.Unauthenticated]: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/stacy/unauthenticated.png",
-        [SubSceneType.NotFound404]: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/stacy/not-found-404.png",
+        [FallbackSceneType.Authenticated]: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/stacy/authenticated.png",
+        [FallbackSceneType.Unauthenticated]: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/stacy/unauthenticated.png",
+        [FallbackSceneType.NotFound404]: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/stacy/not-found-404.png",
     }
     const textMap = {
-        [SubSceneType.Authenticated]: "Authenticated. Redirecting...",
-        [SubSceneType.Unauthenticated]: "Unauthenticated. Redirecting...",
-        [SubSceneType.NotFound404]: "Page not found.",
+        [FallbackSceneType.Authenticated]: "Authenticated. Redirecting...",
+        [FallbackSceneType.Unauthenticated]: "Unauthenticated. Redirecting...",
+        [FallbackSceneType.NotFound404]: "Page not found.",
     }
     return (
         <Container centerContent>

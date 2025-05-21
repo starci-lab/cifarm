@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { Baloo_2 } from "next/font/google"
-import { SubScene, LoadingScene, SidebarProvider, SubSceneType } from "@/components"
+import { FallbackScene, LoadingScene, SidebarProvider, FallbackSceneType } from "@/components"
 import { envConfig } from "@/env"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 
@@ -28,9 +28,9 @@ import { createNetworkConfig, SuiClientProvider, WalletProvider as WalletSuiProv
 import { Network } from "@/modules/blockchain"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { IconContext } from "@phosphor-icons/react"
-import { ThemeProvider } from "@/components/styled/ThemeProvider"
-import { pathConstants } from "@/constants"
+import { ThemeProvider } from "@/components"
 import { usePathname } from "next/navigation"
+import { neutralPages, unauthenticatedPages } from "@/hooks/use-effects"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -62,13 +62,6 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     })
     const queryClient = new QueryClient()
     const loaded = useAppSelector(state => state.sessionReducer.loaded)
-
-    // neutral pages are the ones that don't require authentication
-    const neutralPages = [pathConstants.default]
-    // unauthenticated pages are the ones that will redirect if not authenticated
-    const unauthenticatedPages = [
-        pathConstants.signIn
-    ]
 
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const path = usePathname()
@@ -116,13 +109,13 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
 
                                                                                 if (unauthenticatedPages.includes(path)) {
                                                                                     return authenticated ? (
-                                                                                        <SubScene type={SubSceneType.Authenticated} />
+                                                                                        <FallbackScene type={FallbackSceneType.Authenticated} />
                                                                                     ) : (
                                                                                         <>{children}</>
                                                                                     )
                                                                                 }
 
-                                                                                return authenticated ? <>{children}</> : <SubScene type={SubSceneType.Unauthenticated} />
+                                                                                return authenticated ? <>{children}</> : <FallbackScene type={FallbackSceneType.Unauthenticated} />
                                                                             })()
                                                                         )
                                                                     }

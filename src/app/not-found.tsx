@@ -1,10 +1,10 @@
 "use client"
-import { SubScene, SubSceneType } from "@/components"
+import { FallbackScene, FallbackSceneType } from "@/components"
 import React from "react"
 
 const NotFound = () => {
     return (
-        <SubScene type={SubSceneType.NotFound404} />
+        <FallbackScene type={FallbackSceneType.NotFound404} />
     )
 }
 export default NotFound
