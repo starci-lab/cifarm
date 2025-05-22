@@ -16,6 +16,8 @@ import {
     HoneycombProtocolRawTxsData,
     SolanaRawTxData,
     SolanaRawTxsData,
+    SuiRawTxData,
+    SuiRawTxsData,
     TransactionType,
     TransferNFTData,
     TransferTokenData,
@@ -162,6 +164,12 @@ export const SignTransactionModal: FC = () => {
         [TransactionType.SolanaRawTxs]: {
             name: "Solana Raw Txs",
         },
+        [TransactionType.SuiRawTx]: {
+            name: "Sui Raw Tx",
+        },
+        [TransactionType.SuiRawTxs]: {
+            name: "Sui Raw Txs",
+        },
     }
 
     const { trigger, isMutating } = useSWRMutation(
@@ -251,6 +259,16 @@ export const SignTransactionModal: FC = () => {
                     } else {
                         throw new Error("No post action hook")
                     }
+                    break
+                }
+                case TransactionType.SuiRawTx: {
+                    const { serializedTx } = data as SuiRawTxData
+                    console.log("serializedTx", serializedTx)
+                    break
+                }
+                case TransactionType.SuiRawTxs: {
+                    const { serializedTxs } = data as SuiRawTxsData
+                    console.log("serializedTxs", serializedTxs)
                     break
                 }
                 default: {
@@ -445,6 +463,62 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
+        case TransactionType.SuiRawTx: {
+            const { serializedTx } = data as SuiRawTxData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(SuiRawTxContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case SuiRawTxContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-3 py-2 bg-content-2">
+                                    <div className="text-sm font-semibold">Serialized Txs</div>
+                                    <div className="flex items-center gap-2">
+                                        <div>
+                                            {serializedTx}
+                                        </div>
+                                        <Snippet code={serializedTx} />
+                                    </div>           
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
+        case TransactionType.SuiRawTxs: {
+            const { serializedTxs } = data as SuiRawTxsData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(SuiRawTxsContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case SuiRawTxsContent.SerializedTxs: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-3 py-2 bg-content-2">
+                                    <div className="text-sm font-semibold">Serialized Txs</div>
+                                    <div className="flex items-center gap-2">
+                                        <div>
+                                            {serializedTxs.slice(0, 5).map((serializedTx) => {
+                                                return (
+                                                    <div key={serializedTx}>• {truncateString(serializedTx, 10, 4)}</div>
+                                                )
+                                            })}
+                                        </div>
+                                        <DownloadButton code={serializedTxs.join("\n")} filename={`${chainKey}-${network}-${type}-${Date.now()}.json`} />
+                                    </div>           
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
         case TransactionType.TransferNFT: {
             const { nft, recipientAddress, collectionKey } =
           data as TransferNFTData
@@ -582,3 +656,10 @@ export enum SolanaRawTxsContent {
   SerializedTxs = "serializedTxs",
 }
 
+export enum SuiRawTxContent {
+  SerializedTx = "serializedTx",
+}
+
+export enum SuiRawTxsContent {
+  SerializedTxs = "serializedTxs",
+}

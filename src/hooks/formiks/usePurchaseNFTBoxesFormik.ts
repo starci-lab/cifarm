@@ -1,16 +1,18 @@
 import { FormikProps, useFormik } from "formik"
 import * as Yup from "yup"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_BOXES_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_BOXES_TRANSACTION_SWR_MUTATION, NFTS_CLAIMED_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_MUTATION_CREATE_PURCHASE_SOLANA_NFT_BOXES_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_CREATE_PURCHASE_SUI_NFT_BOXES_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_BOXES_TRANSACTION_SWR_MUTATION, NFTS_CLAIMED_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
 import {
     setNFTsClaimedModal,
     setSignTransactionModal,
     TransactionType,
     useAppDispatch,
+    useAppSelector,
 } from "@/redux"
 import { useGlobalAccountAddress } from "../useGlobalAccountAddress"
-import { useGraphQLMutationCreatePurchaseSolanaNFTBoxesTransactionSwrMutation, useGraphQLMutationSendPurchaseSolanaNFTBoxesTransactionSwrMutation } from "../swr/graphql/mutations"
+import { useGraphQLMutationCreatePurchaseSolanaNFTBoxesTransactionSwrMutation, useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation, useGraphQLMutationSendPurchaseSolanaNFTBoxesTransactionSwrMutation } from "../swr/graphql/mutations"
+import { ChainKey } from "@/modules/blockchain"
 
 export interface PurchaseNFTBoxesFormikValues {
     quantity: number
@@ -55,9 +57,15 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
     ReturnType<typeof useGraphQLMutationSendPurchaseSolanaNFTBoxesTransactionSwrMutation>
     >(GRAPHQL_MUTATION_SEND_PURCHASE_SOLANA_NFT_BOXES_TRANSACTION_SWR_MUTATION)
 
+    const { swrMutation: createPurchaseSuiNFTBoxesTransactionSwrMutation } = useSingletonHook<
+    ReturnType<typeof useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation>
+    >(GRAPHQL_MUTATION_CREATE_PURCHASE_SUI_NFT_BOXES_TRANSACTION_SWR_MUTATION)
+
     const { open: openNFTsClaimedModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         NFTS_CLAIMED_DISCLOSURE
     )
+
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const formik = useFormik({
         initialValues,
         validationSchema,
@@ -66,7 +74,9 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
                 throw new Error("Account address is required")
             }
 
-            const { data: createTxData } =
+            switch (chainKey) {
+            case ChainKey.Solana: {
+                const { data: createTxData } =
                 await createPurchaseSolanaNFTBoxesTransactionSwrMutation.trigger({
                     request: {
                         accountAddress,
@@ -74,49 +84,104 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
                     },
                 })
 
-            if (!createTxData) {
-                throw new Error("Failed to create NFT Starter Box transaction")
-            }
+                if (!createTxData) {
+                    throw new Error("Failed to create NFT Starter Box transaction")
+                }
 
-            dispatch(
-                setSignTransactionModal({
-                    type: TransactionType.SolanaRawTxs,
-                    data: {
-                        serializedTxs: createTxData.serializedTxs,
-                    },
-                    extraAction: async () => {
-                        open()
-                    },
-                    postActionHook: async (signedTxs: Array<string> | string) => {
-                        const { data: sendTxData } =
+                dispatch(
+                    setSignTransactionModal({
+                        type: TransactionType.SolanaRawTxs,
+                        data: {
+                            serializedTxs: createTxData.serializedTxs,
+                        },
+                        extraAction: async () => {
+                            open()
+                        },
+                        postActionHook: async (signedTxs: Array<string> | string) => {
+                            const { data: sendTxData } =
                             await sendPurchaseSolanaNFTBoxesTransactionSwrMutation.trigger({
                                 request: {
                                     serializedTxs: Array.isArray(signedTxs) ? signedTxs : [signedTxs],
                                 },
                             })
 
-                        if (!sendTxData) {
-                            throw new Error(
-                                "Failed to send NFT Starter Box transaction"
-                            )
-                        }
+                            if (!sendTxData) {
+                                throw new Error(
+                                    "Failed to send NFT Starter Box transaction"
+                                )
+                            }
 
-                        dispatch(
-                            setNFTsClaimedModal({
-                                nftItems: sendTxData.nftBoxes.map((nftBox) => ({
-                                    nftType: nftBox.nftType,
-                                    rarity: nftBox.rarity,
-                                    nftName: nftBox.nftName,
-                                })),
-                            })
-                        )
-                        openNFTsClaimedModal()
-                        return sendTxData.txHash
+                            dispatch(
+                                setNFTsClaimedModal({
+                                    nftItems: sendTxData.nftBoxes.map((nftBox) => ({
+                                        nftType: nftBox.nftType,
+                                        rarity: nftBox.rarity,
+                                        nftName: nftBox.nftName,
+                                    })),
+                                })
+                            )
+                            openNFTsClaimedModal()
+                            return sendTxData.txHash
+                        },
+                    })
+                )
+                break
+            }
+            case ChainKey.Sui: {
+                const { data: createTxData } =
+                await createPurchaseSuiNFTBoxesTransactionSwrMutation.trigger({
+                    request: {
+                        accountAddress,
+                        quantity,
                     },
                 })
-            )
 
-            open()
+                if (!createTxData) {
+                    throw new Error("Failed to create NFT Starter Box transaction")
+                }
+
+                dispatch(
+                    setSignTransactionModal({
+                        type: TransactionType.SuiRawTxs,
+                        data: {
+                            serializedTxs: createTxData.serializedTxs,
+                        },
+                        extraAction: async () => {
+                            open()
+                        },
+                        postActionHook: async (signedTxs: Array<string> | string) => {
+                            console.log("signedTxs", signedTxs)
+                            // const { data: sendTxData } =
+                            // await sendPurchaseSuiNFTBoxesTransactionSwrMutation.trigger({
+                            //     request: {
+                            //         serializedTxs: Array.isArray(signedTxs) ? signedTxs : [signedTxs],
+                            //     },
+                            // })
+
+                            // if (!sendTxData) {
+                            //     throw new Error(
+                            //         "Failed to send NFT Starter Box transaction"
+                            //     )
+                            // }
+
+                            // dispatch(
+                            //     setNFTsClaimedModal({
+                            //         nftItems: sendTxData.nftBoxes.map((nftBox) => ({
+                            //             nftType: nftBox.nftType,
+                            //             rarity: nftBox.rarity,
+                            //             nftName: nftBox.nftName,
+                            //         })),
+                            //     })
+                            // )
+                            // openNFTsClaimedModal()
+                            // return sendTxData.txHash
+                            return ""
+                        },
+                    })
+                )
+                break
+            }
+            }
         },
     })
 

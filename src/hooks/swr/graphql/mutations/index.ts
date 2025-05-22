@@ -18,4 +18,4 @@ export * from "./useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation"
 export * from "./useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation"
 export * from "./useGraphQLMutationRefreshSwrMutation"
 export * from "./useGraphQLMutationLogoutSwrMutation"
-
+export * from "./useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation"

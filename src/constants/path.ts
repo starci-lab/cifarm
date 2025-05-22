@@ -24,3 +24,11 @@ export const pathConstants = {
     dappStarterShop: "/dapp/starter-shop",
     dappWholesaleMarket: "/dapp/wholesale-market",
 }
+
+
+// neutral pages are the ones that don't require authentication
+export const neutralPages = [pathConstants.default]
+// unauthenticated pages are the ones that will redirect if not authenticated
+export const unauthenticatedPages = [
+    pathConstants.signIn
+]

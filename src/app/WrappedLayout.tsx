@@ -30,7 +30,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { IconContext } from "@phosphor-icons/react"
 import { ThemeProvider } from "@/components"
 import { usePathname } from "next/navigation"
-import { neutralPages, unauthenticatedPages } from "@/hooks/use-effects"
+import { neutralPages, unauthenticatedPages } from "@/constants"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,

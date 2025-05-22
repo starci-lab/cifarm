@@ -36,6 +36,7 @@ import {
     useGraphQLMutationCreatePurchaseSolanaNFTBoxesTransactionSwrMutation,
     useGraphQLMutationSendPurchaseSolanaNFTBoxesTransactionSwrMutation,
     usePurchaseNFTBoxesFormik,
+    useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -114,6 +115,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_REFRESH_SWR_MUTATION: useGraphQLMutationRefreshSwrMutation(),
+            GRAPHQL_MUTATION_CREATE_PURCHASE_SUI_NFT_BOXES_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation(),
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
             HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION: useHoneycombSendTransactionsSwrMutation(),

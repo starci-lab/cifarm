@@ -7,17 +7,11 @@ import { saveTokens } from "@/modules/apollo"
 import { setAuthenticated, setLoaded, useAppDispatch, 
     useAppSelector
 } from "@/redux"
-import { pathConstants } from "@/constants"
+import { neutralPages, pathConstants, unauthenticatedPages } from "@/constants"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { usePathname } from "next/navigation"
 //import { pathConstants } from "@/constants"
 
-// neutral pages are the ones that don't require authentication
-export const neutralPages = [pathConstants.default]
-// unauthenticated pages are the ones that will redirect if not authenticated
-export const unauthenticatedPages = [
-    pathConstants.signIn
-]
 
 export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<

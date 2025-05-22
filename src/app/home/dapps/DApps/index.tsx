@@ -9,7 +9,7 @@ import { PaymentKind } from "@/modules/entities"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { SHEET_WHOLSALE_MARKET_DISCLOSURE, PURCHASE_NFT_BOXES_DISCLOSURE, QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
 
-export const SolanaDApps: FC = () => {
+export const DApps: FC = () => {
     const { open: openWholesaleMarketSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_WHOLSALE_MARKET_DISCLOSURE
     )

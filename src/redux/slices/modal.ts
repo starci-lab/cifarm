@@ -34,6 +34,8 @@ export enum TransactionType {
   TransferNFT = "TransferNFT",
   SolanaRawTx = "SolanaRawTx",
   SolanaRawTxs = "SolanaRawTxs",
+  SuiRawTxs = "SuiRawTxs",
+  SuiRawTx = "SuiRawTx",
 }
 
 export interface TokenModal {
@@ -82,6 +84,14 @@ export interface SolanaRawTxData {
   serializedTx: string;
 }
 
+export interface SuiRawTxsData {
+  serializedTxs: Array<string>;
+}
+
+export interface SuiRawTxData {
+  serializedTx: string;
+}
+
 export type SignTransactionModal = (
   | {
       data: HoneycombProtocolRawTxData;
@@ -109,6 +119,14 @@ export type SignTransactionModal = (
       // after action instead of broadcast to the network, it will be sent to the network
       // override the default behavior
     }
+  | {
+      data: SuiRawTxData;
+      type: TransactionType.SuiRawTx;
+    }
+  | {
+      data: SuiRawTxsData;
+      type: TransactionType.SuiRawTxs;
+  }
 ) & {
   // extra action to be taken after the transaction is signed
   extraAction?: () => Promise<void> | void;
