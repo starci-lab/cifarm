@@ -16,6 +16,7 @@ const config: Config = {
             scale: {
                 "40": "0.4",
                 "60": "0.6",
+                "20": "0.2",
             },
     		backgroundImage: {
     			"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

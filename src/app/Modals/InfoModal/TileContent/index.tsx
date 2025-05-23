@@ -7,7 +7,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { Spacer, Separator, ScaledImage, DialogBody } from "@/components"
+import { Spacer, Separator, DialogBody } from "@/components"
 import {
     assetProductMap,
     assetCropMap,
@@ -22,20 +22,20 @@ import { StateContainer } from "../StateContainer"
 import { cn } from "@/lib/utils"
 
 interface TileContentProps {
-  placedItem: PlacedItemSchema;
+    placedItem: PlacedItemSchema;
 }
 
 interface PlantData {
-  key: string;
-  timeElapsed: number;
-  name: string;
+    key: string;
+    timeElapsed: number;
+    name: string;
 }
 
 interface PlantInfo {
-  name: string;
-  description: string;
-  assetUrl: string;
-  stageAssetUrl: string;
+    name: string;
+    description: string;
+    assetUrl: string;
+    stageAssetUrl: string;
 }
 
 export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
@@ -68,8 +68,8 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
             return {
                 key: assetProductMap[product.displayId].base.assetKey,
                 timeElapsed:
-            crop.growthStageDuration -
-            placedItem.plantInfo?.currentStageTimeElapsed,
+                        crop.growthStageDuration -
+                        placedItem.plantInfo?.currentStageTimeElapsed,
                 name: assetCropMap[crop.displayId].name,
             }
         }
@@ -89,8 +89,8 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
             return {
                 key: assetProductMap[product.displayId].base.assetKey,
                 timeElapsed:
-            flower.growthStageDuration -
-            placedItem.plantInfo?.currentStageTimeElapsed,
+                        flower.growthStageDuration -
+                        placedItem.plantInfo?.currentStageTimeElapsed,
                 name: assetFlowerMap[flower.displayId].name,
             }
         }
@@ -109,7 +109,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
     useEffect(() => {
         if (
             placedItem.plantInfo?.currentState === PlantCurrentState.NeedWater ||
-      placedItem.plantInfo?.currentState === PlantCurrentState.FullyMatured
+            placedItem.plantInfo?.currentState === PlantCurrentState.FullyMatured
         ) {
             return
         }
@@ -124,7 +124,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         switch (placedItem.plantInfo?.currentState) {
         case PlantCurrentState.NeedWater: {
             key =
-          assetStateMap.plant[PlantCurrentState.NeedWater]?.phaser.base.assetKey
+                    assetStateMap.plant[PlantCurrentState.NeedWater]?.phaser.base.assetKey
             break
         }
         case PlantCurrentState.FullyMatured: {
@@ -133,12 +133,12 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
         }
         case PlantCurrentState.IsInfested: {
             key =
-          assetStateMap.plant[PlantCurrentState.IsInfested]?.phaser.base.assetKey
+                    assetStateMap.plant[PlantCurrentState.IsInfested]?.phaser.base.assetKey
             break
         }
         case PlantCurrentState.IsWeedy: {
             key =
-            assetStateMap.plant[PlantCurrentState.IsWeedy]?.phaser.base.assetKey
+                    assetStateMap.plant[PlantCurrentState.IsWeedy]?.phaser.base.assetKey
             break
         }
         }
@@ -163,8 +163,8 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                         assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
-              The plant needs watering to continue growing. Use a watering can
-              on it to resume its growth.
+                            The plant needs watering to continue growing. Use a watering can
+                            on it to resume its growth.
                     </div>
                 </div>
             )
@@ -175,8 +175,8 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                         assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
-              The plant is weedy, which may reduce the yield when harvested. Use
-              a herbicide on it to get rid of the weeds.
+                            The plant is weedy, which may reduce the yield when harvested. Use
+                            a herbicide on it to get rid of the weeds.
                     </div>
                 </div>
             )
@@ -187,8 +187,8 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                         assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
-              The plant is infested, which may reduce the yield when harvested.
-              Use a pesticide on it to get rid of the pests.
+                            The plant is infested, which may reduce the yield when harvested.
+                            Use a pesticide on it to get rid of the pests.
                     </div>
                 </div>
             )
@@ -200,7 +200,7 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
                     />
                     <div className="flex flex-col">
                         <div className="text-sm text-muted-foreground">
-                Your plant is ready to harvest. Use the crate to harvest it.
+                                Your plant is ready to harvest. Use the crate to harvest it.
                         </div>
                         <div className="flex items-center">
                             <div className="text-lg font-bold">
@@ -274,42 +274,39 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
     const plantInfo = getPlantInfo()
     return (
         <DialogBody>
-            { placedItem.plantInfo &&
-             <>
-                 <div className="bg-content-2 rounded-lg overflow-hidden">
-                     <div className="px-3 py-2 text-lg text-secondary">
-                         {plantInfo?.name}
-                     </div>
-                     <Separator />
-                     <div className="flex gap-4 p-3 items-center">
-                         <ScaledImage
-                             src={plantInfo?.stageAssetUrl ?? ""}
-                         />
-                         <div>
-                             <div>
-                                 {`Stage ${(placedItem.plantInfo?.currentStage ?? 0) + 1}`}
-                             </div>
-                             <div className={
-                                 cn(
-                                     "text-4xl text-primary",
-                                     {
-                                         "text-destructive": placedItem.plantInfo.currentState === PlantCurrentState.NeedWater
-                                     }
-                                 )
-                             }>
-                                 {formatTime(timeElapsed)}
-                             </div>
-                         </div>
-                     </div>
-                     {placedItem.plantInfo &&
-          placedItem.plantInfo.currentState !== PlantCurrentState.Normal && (
-                         <>
-                             {renderState()}
-                         </>
-                     )}
-                 </div>
-                 <Spacer y={4} />
-             </>
+            {placedItem.plantInfo &&
+                <>
+                    <div className="bg-content-2 rounded-lg overflow-hidden">
+                        <div className="px-3 py-2 text-lg text-secondary flex gap-2 items-center">
+                            {plantInfo?.name}
+                        </div>
+                        <Separator />
+                        <div className="flex gap-4 px-3 py-2 items-center">
+                            <div>
+                                <div>
+                                    {`Stage ${(placedItem.plantInfo?.currentStage ?? 0) + 1}`}
+                                </div>
+                                <div className={
+                                    cn(
+                                        "text-4xl text-primary",
+                                        {
+                                            "text-destructive": placedItem.plantInfo.currentState === PlantCurrentState.NeedWater
+                                        }
+                                    )
+                                }>
+                                    {formatTime(timeElapsed)}
+                                </div>
+                            </div>
+                        </div>
+                        {placedItem.plantInfo &&
+                            placedItem.plantInfo.currentState !== PlantCurrentState.Normal && (
+                            <>
+                                {renderState()}
+                            </>
+                        )}
+                    </div>
+                    <Spacer y={4} />
+                </>
             }
             <Stats
                 growthAcceleration={placedItem.plantInfo?.growthAcceleration ?? 0}

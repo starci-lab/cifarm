@@ -3,7 +3,8 @@ import React, { FC } from "react"
 
 export enum ImageScale {
     Size1 = 40,
-    Size2 = 60
+    Size2 = 60,
+    Size3 = 20
 }
 
 export interface ImageProps
@@ -24,6 +25,7 @@ export const ScaledImage: FC<ScaledImageProps> = (props) => {
     const scaleMap = {
         [ImageScale.Size1]: "scale-40",
         [ImageScale.Size2]: "scale-60",
+        [ImageScale.Size3]: "scale-20"
     }
     return (
         <img
