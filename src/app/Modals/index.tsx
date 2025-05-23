@@ -32,6 +32,8 @@ import { NeighborsFilterModal } from "./NeighborsFilterModal"
 import { SelectInventoriesModal } from "./SelectInventoriesModal"
 import { ReferralModal } from "./ReferralModal"
 import { PurchaseNFTBoxesModal } from "./PurchaseNFTBoxesModal"
+import { DisconnectedModal } from "./DisconnectedModal"
+
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -69,6 +71,7 @@ const Modals : FC = () => {
             <ShipModal />
             <NeighborsFilterModal />
             <BuyGoldsModal />
+            <DisconnectedModal />
         </div>
     )
 }

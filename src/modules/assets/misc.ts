@@ -1,4 +1,5 @@
 import { AssetTextureData } from "./types"
+import { getAssetUrl } from "./utils"
 
 // Misc Asset Data Interface
 export interface MiscAssetData {
@@ -30,7 +31,7 @@ export const assetMiscMap: Record<AssetMiscId, MiscAssetData> = {
     [AssetMiscId.Grass]: {
         phaser: {
             base: {
-                assetUrl: `${PREFIX}/grass.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/grass.png`),
                 assetKey: "misc-grass",
             },
         },

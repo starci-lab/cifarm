@@ -20,7 +20,7 @@ export const UserDropdown: FC = () => {
                     as="div"
                 />  
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="p-2 w-52 bg-content-4">
+            <DropdownMenuContent align="end" className="p-2 w-52 bg-content-2">
                 <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary text-muted-foreground" 
                     onClick={() => {
                         router.push("/home/profile")

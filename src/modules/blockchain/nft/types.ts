@@ -11,7 +11,8 @@ export enum AttributeName {
     QualityYield = "qualityYield",
     DiseaseResistance = "diseaseResistance",
     HarvestYieldBonus = "harvestYieldBonus",
-    CurrentStage = "currentStage"
+    CurrentStage = "currentStage",
+    WrapperUserId = "wrapperUserId"
 }
 
 export enum StatsAttributeName {

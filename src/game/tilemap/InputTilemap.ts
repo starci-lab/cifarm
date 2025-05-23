@@ -1953,7 +1953,7 @@ export class InputTilemap extends ItemTilemap {
             throw new Error("Placed item not found")
         }
         if (
-            user.level >= neighbor.level - this.interactionPermissions.thiefLevelGapThreshold
+            user.level < neighbor.level - this.interactionPermissions.thiefLevelGapThreshold
         ) {
             const position = this.getPositionFromPlacedItem(
                 data.object.currentPlacedItem

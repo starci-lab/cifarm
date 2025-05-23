@@ -27,7 +27,7 @@ export const pathConstants = {
 
 
 // neutral pages are the ones that don't require authentication
-export const neutralPages = [pathConstants.default]
+export const neutralPages = [pathConstants.default, "/auth/callback"]
 // unauthenticated pages are the ones that will redirect if not authenticated
 export const unauthenticatedPages = [
     pathConstants.signIn

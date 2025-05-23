@@ -37,6 +37,7 @@ import {
     useGraphQLMutationSendPurchaseSolanaNFTBoxesTransactionSwrMutation,
     usePurchaseNFTBoxesFormik,
     useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation,
+    useGraphQLQueryUserSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -61,6 +62,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             QUESTS_DISCLOSURE: useDisclosure(),
             PROFILE_DISCLOSURE: useDisclosure(),
             MINT_DISCLOSURE: useDisclosure(),
+            DISCONNECTED_DISCLOSURE: useDisclosure(),
             MINT_AMOUNT_DISCLOSURE: useDisclosure(),
             SELECT_TOKEN_DISCLOSURE: useDisclosure(),
             NFT_DISCLOSURE: useDisclosure(),
@@ -128,6 +130,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION: useGraphQLQueryPlacedItemsSwrMutation(),        
             GRAPHQL_QUERY_STORED_PLACED_ITEMS_SWR: useGraphQLQueryStoredPlacedItemsSwr(),
             GRAPHQL_QUERY_VAULT_CURRENT_SWR: useGraphQLQueryVaultCurrentSwr(),
+            GRAPHQL_QUERY_USER_SWR_MUTATION: useGraphQLQueryUserSwrMutation(),
             // Using new constants with GraphQL mutations
             //io
 

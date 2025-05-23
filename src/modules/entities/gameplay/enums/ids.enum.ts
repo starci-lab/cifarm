@@ -144,6 +144,8 @@ export enum ProductId {
     SunflowerQuality = "sunflowerQuality",
     Pumpkin = "pumpkin",
     PumpkinQuality = "pumpkinQuality",
+    Cauliflower = "cauliflower",
+    CauliflowerQuality = "cauliflowerQuality",
 }
 
 export enum SystemId {

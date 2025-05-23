@@ -64,6 +64,9 @@ export const useAuthentication = () => {
     //auto navigate to home if authenticated
     useEffect(() => {
         if (!authenticated) {
+            if (pathname !== pathConstants.signIn) {
+                router.push(pathConstants.signIn)
+            }
             return
         }
         if (neutralPages.includes(pathname)) {

@@ -1,5 +1,6 @@
 import { BuildingId } from "@/modules/entities"
 import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
+import { getAssetUrl } from "./utils"
 
 export interface StarsConfig {
     extraOffsets?: { x: number; y: number };
@@ -29,7 +30,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
                     type: AssetMapType.Texture,
                     texture: {
                         assetKey: "buildings-home",
-                        assetUrl: `${PREFIX}/home/home.png`,
+                        assetUrl: getAssetUrl(`${PREFIX}/home/home.png`),
                         extraOffsets: { x: -80, y: -130 },
                         version: 1,
                     },
@@ -83,7 +84,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
                     type: AssetMapType.Texture,
                     texture: {
                         assetKey: "buildings-barn",
-                        assetUrl: `${PREFIX}/barn/barn.png`,
+                        assetUrl: getAssetUrl(`${PREFIX}/barn/barn.png`),
                         extraOffsets: { x: 0, y: -120 },
                         version: 1,
                     },
@@ -98,7 +99,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         },
         base: {
             assetKey: "buildings-barn",
-            assetUrl: `${PREFIX}/barn/barn.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/barn/barn.png`),
         },
     },
     [BuildingId.BeeHouse]: {
@@ -139,7 +140,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         },
         base: {
             assetKey: "buildings-bee-house",
-            assetUrl: `${PREFIX}/bee-house/spine/bee-house.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/bee-house/spine/bee-house.png`),
         },
     },
     [BuildingId.PetHouse]: {
@@ -166,7 +167,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         },
         base: {
             assetKey: "buildings-pet-house",
-            assetUrl: `${PREFIX}/pet-house/pet-house.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/pet-house/pet-house.png`),
         },
     },
     [BuildingId.FishPond]: {
@@ -201,7 +202,7 @@ export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
         },
         base: {
             assetKey: "buildings-fish-pond",
-            assetUrl: `${PREFIX}/fish-pond/fish-pond.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/fish-pond/fish-pond.png`),
         },
     },
 } 

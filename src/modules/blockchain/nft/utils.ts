@@ -8,3 +8,4 @@ export const NFTTypeToPlacedItemTypeId: Record<NFTType, PlacedItemTypeId> = {
     [NFTType.Rambutan]: PlacedItemTypeId.Rambutan,
     [NFTType.Pomegranate]: PlacedItemTypeId.Pomegranate,
 }   
+

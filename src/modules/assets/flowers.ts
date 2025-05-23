@@ -1,5 +1,6 @@
 import { FlowerId } from "../entities"
 import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
+import { getAssetUrl } from "./utils"
 
 export interface FlowerAssetMapData {
     mapData: AssetMapData,
@@ -18,7 +19,7 @@ export interface AssetFlowerData extends Metadata {
 }
 
 const PREFIX = "/flowers"
-export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
+export const    assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
     [FlowerId.Daisy]: {
         name: "Daisy",
         description: "A small, yellow flower with a white center.",
@@ -30,11 +31,12 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-daisy-1",
-                                assetUrl: `${PREFIX}/daisy/1.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/daisy/1.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
                                 },
+                                version: 1,
                             },
                         },
                         bubbleStateConfig: {
@@ -49,7 +51,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-daisy-2",
-                                assetUrl: `${PREFIX}/daisy/2.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/daisy/2.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -68,7 +70,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-daisy-3",
-                                assetUrl: `${PREFIX}/daisy/3.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/daisy/3.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -87,7 +89,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-daisy-4",
-                                assetUrl: `${PREFIX}/daisy/4.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/daisy/4.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -106,7 +108,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-daisy-5",
-                                assetUrl: `${PREFIX}/daisy/5.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/daisy/5.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -127,23 +129,23 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
             stages: {
                 0: {
                     assetKey: "flower-daisy-1",
-                    assetUrl: `${PREFIX}/daisy/1.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/daisy/1.png`),
                 },
                 1: {
                     assetKey: "flower-daisy-2",
-                    assetUrl: `${PREFIX}/daisy/2.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/daisy/2.png`),
                 },
                 2: {
                     assetKey: "flower-daisy-3",
-                    assetUrl: `${PREFIX}/daisy/3.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/daisy/3.png`),
                 },
                 3: {
                     assetKey: "flower-daisy-4",
-                    assetUrl: `${PREFIX}/daisy/4.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/daisy/4.png`),
                 },
                 4: {
                     assetKey: "flower-daisy-5",
-                    assetUrl: `${PREFIX}/daisy/5.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/daisy/5.png`),
                 },
             },
         },
@@ -159,7 +161,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-sunflower-1",
-                                assetUrl: `${PREFIX}/sunflower/1.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/sunflower/1.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -178,7 +180,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-sunflower-2",
-                                assetUrl: `${PREFIX}/sunflower/2.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/sunflower/2.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -197,7 +199,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-sunflower-3",
-                                assetUrl: `${PREFIX}/sunflower/3.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/sunflower/3.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -216,7 +218,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-sunflower-4",
-                                assetUrl: `${PREFIX}/sunflower/4.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/sunflower/4.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -235,7 +237,7 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
                             type: AssetMapType.Texture,
                             texture: {
                                 assetKey: "flower-sunflower-5",
-                                assetUrl: `${PREFIX}/sunflower/5.png`,
+                                assetUrl: getAssetUrl(`${PREFIX}/sunflower/5.png`),
                                 extraOffsets: {
                                     x: 0,
                                     y: -90,
@@ -256,23 +258,23 @@ export const assetFlowerMap: Record<FlowerId, AssetFlowerData> = {
             stages: {
                 0: {
                     assetKey: "flower-sunflower-1",
-                    assetUrl: `${PREFIX}/sunflower/1.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/sunflower/1.png`),
                 },
                 1: {
                     assetKey: "flower-sunflower-2",
-                    assetUrl: `${PREFIX}/sunflower/2.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/sunflower/2.png`),
                 },
                 2: {
                     assetKey: "flower-sunflower-3",
-                    assetUrl: `${PREFIX}/sunflower/3.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/sunflower/3.png`),
                 },
                 3: {
                     assetKey: "flower-sunflower-4",
-                    assetUrl: `${PREFIX}/sunflower/4.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/sunflower/4.png`),
                 },
                 4: {
                     assetKey: "flower-sunflower-5",
-                    assetUrl: `${PREFIX}/sunflower/5.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/sunflower/5.png`),
                 },
             },
         },

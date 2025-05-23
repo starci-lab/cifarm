@@ -15,4 +15,5 @@ export interface FruitSchema extends StaticAbstractSchema<FruitId> {
     qualityHarvestExperiences: number
     sellable?: boolean
     sellPrice?: number
+    isNFT?: boolean
 }

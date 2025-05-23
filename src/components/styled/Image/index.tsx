@@ -1,11 +1,16 @@
 import { cn } from "@/lib/utils"
 import React, { FC } from "react"
 
+export enum ImageScale {
+    Size1 = 40,
+    Size2 = 60
+}
+
 export interface ImageProps
   extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> {
   className?: string;
   src: string;
-  scale?: number;
+  imageScale?: ImageScale;
 }
 
 export const Image: FC<ImageProps> = ({ src, className }) => {
@@ -15,12 +20,15 @@ export const Image: FC<ImageProps> = ({ src, className }) => {
 export type ScaledImageProps = ImageProps;
 
 export const ScaledImage: FC<ScaledImageProps> = (props) => {
-    const baseCoefficient = 2.5
+    //const baseCoefficient = 2.5
+    const scaleMap = {
+        [ImageScale.Size1]: "scale-40",
+        [ImageScale.Size2]: "scale-60",
+    }
     return (
         <img
             {...props}
-            className={cn("w-fit h-fit min-w-fit min-h-fit", props.className)}
-            srcSet={`${props.src} ${(1 / (props.scale ?? 1)) * baseCoefficient}x`}
+            className={cn("w-fit h-fit min-w-fit min-h-fit", scaleMap[props.imageScale || ImageScale.Size1], props.className)}
         />
     )
 }

@@ -1,5 +1,6 @@
 import { AssetData, AssetTextureData, Metadata } from "./types"
 import { SupplyId } from "../entities"
+import { getAssetUrl } from "./utils"
 
 const PREFIX = "/supplies"
 
@@ -16,12 +17,12 @@ export const assetSuppliesMap: Record<SupplyId, AssetSuppliesData> = {
         description: "Nutritious feed for farm animals.",
         base: {
             assetKey: "supplies-animal-feed",
-            assetUrl: `${PREFIX}/animal-feed.png`
+            assetUrl: getAssetUrl(`${PREFIX}/animal-feed.png`)
         },
         phaser: {
             item: {
                 assetKey: "supplies-animal-feed",
-                assetUrl: `${PREFIX}/animal-feed.png`
+                assetUrl: getAssetUrl(`${PREFIX}/animal-feed.png`)
             },
         },
     },

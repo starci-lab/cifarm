@@ -27,7 +27,8 @@ import {
     NFTBoxInfo,
     Tokens,
     TerrainSchema,
-    PetInfo
+    PetInfo,
+    Referral
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -194,6 +195,7 @@ const query = gql`
       matureGrowthStageDuration
       fertilizerTime
       price
+      isNFT
       unlockLevel
       harvestQuantity
       basicHarvestExperiences
@@ -662,6 +664,11 @@ const query = gql`
         energyReduce
       }
     }
+    referral {
+      creditsPerSuccessfulReferral
+      creditsWhenJoiningWithReferral
+      creditsWhenYourReferralInviteSomeone
+    }
   }
 `
 
@@ -693,6 +700,7 @@ export interface QueryStaticResponse {
   interactionPermissions: InteractionPermissions
   nftBoxInfo: NFTBoxInfo
   tokens: Tokens
+  referral: Referral
 }
 
 export const queryStatic = async () => {

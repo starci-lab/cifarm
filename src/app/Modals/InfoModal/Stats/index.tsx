@@ -1,6 +1,7 @@
 import { StatsAttributeName, statsAttributeNameMap } from "@/modules/blockchain"
 import React, { FC } from "react"
 import { List } from "@/components"
+import { computeDiseaseResistance, computeHarvestYieldBonus, computeGrowthAcceleration, computeQualityYieldChance } from "@/modules/entities"
 
 interface StatsProps {
     growthAcceleration?: number
@@ -19,22 +20,22 @@ export const Stats: FC<StatsProps> = ({ growthAcceleration, qualityYield, diseas
             case StatsAttributeName.GrowthAcceleration:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
                     <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
-                    <div>{growthAcceleration}</div>
+                    <div>{growthAcceleration} ({`${computeGrowthAcceleration(growthAcceleration || 0)}%`})</div>
                 </div>
             case StatsAttributeName.QualityYield:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
                     <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
-                    <div>{qualityYield}</div>
+                    <div>{qualityYield} ({`${computeQualityYieldChance(qualityYield || 0)}%`})</div>
                 </div>
             case StatsAttributeName.DiseaseResistance:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
                     <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
-                    <div>{diseaseResistance}</div>
+                    <div>{diseaseResistance} ({`${computeDiseaseResistance(diseaseResistance || 0)}%`})</div>
                 </div>
             case StatsAttributeName.HarvestYieldBonus:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
                     <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
-                    <div>{harvestYieldBonus}</div>
+                    <div>{harvestYieldBonus} ({`${computeHarvestYieldBonus(harvestYieldBonus || 0)}%`})</div>
                 </div>
             }
         }} />

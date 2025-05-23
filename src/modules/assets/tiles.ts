@@ -1,6 +1,6 @@
 import { TileId } from "@/modules/entities"
 import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
-
+import { getAssetUrl } from "./utils"
 const PREFIX = "/tiles"
 
 export interface TileAssetMapData {
@@ -24,13 +24,13 @@ export const assetTileMap: Record<TileId, AssetTileData> = {
                     type: AssetMapType.Texture,
                     texture: {
                         assetKey: "tiles-basic-tile",
-                        assetUrl: `${PREFIX}/basic-tile/basic-tile.png`,
+                        assetUrl: getAssetUrl(`${PREFIX}/basic-tile/basic-tile.png`),
                     },
                 },
             },
         },
         base: {
-            assetUrl: `${PREFIX}/basic-tile/basic-tile.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/basic-tile/basic-tile.png`),
             assetKey: "tiles-basic-tile",
         },
     },

@@ -202,6 +202,12 @@ export interface PetInfo {
   dog: DogInfo;
 }
 
+export interface Referral {
+  creditsPerSuccessfulReferral: number;
+  creditsWhenJoiningWithReferral: number;
+  creditsWhenYourReferralInviteSomeone: number;
+}
+
 export type TokenWrapped = Partial<Record<Network, TokenData>>;
 export type Token = Partial<Record<ChainKey, TokenWrapped>>;
 export type Tokens = Partial<Record<TokenKey, Token>>;

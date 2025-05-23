@@ -12,7 +12,7 @@ const DropdownMenuTrigger = React.forwardRef<React.ElementRef<typeof DropdownMen
     <DropdownMenuPrimitive.Trigger
         ref={ref}
         className={cn(
-            "rounded-full w-10 h-10 relative ring-0 focus:ring-0",
+            "w-10 h-10 relative ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-none",
             className
         )}
         {...props}
@@ -95,7 +95,7 @@ const DropdownMenuItem = React.forwardRef<
     <DropdownMenuPrimitive.Item
         ref={ref}
         className={cn(
-            "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0",
+            "hover:bg-secondary/25 hover:text-secondary relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-secondary/25 focus:text-secondary data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&>svg]:size-4 [&>svg]:shrink-0",
             inset && "pl-8",
             className
         )}
@@ -159,7 +159,7 @@ const DropdownMenuLabel = React.forwardRef<
     <DropdownMenuPrimitive.Label
         ref={ref}
         className={cn(
-            "px-2 py-1.5 text-sm font-semibold",
+            "px-2 py-1 text-sm font-semibold",
             inset && "pl-8",
             className
         )}

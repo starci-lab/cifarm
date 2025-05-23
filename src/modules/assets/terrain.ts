@@ -1,5 +1,6 @@
 import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
 import { TerrainId } from "../entities"
+import { getAssetUrl } from "./utils"
 
 const PREFIX = "/terrains"
 
@@ -16,14 +17,14 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
         description: "A small stone found on the farm.",
         base: {
             assetKey: "terrain-small-stone",
-            assetUrl: `${PREFIX}/small-stone/small-stone.png`
+            assetUrl: getAssetUrl(`${PREFIX}/small-stone/small-stone.png`)
         },
         phaser: {
             map: {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-small-stone",
-                    assetUrl: `${PREFIX}/small-stone/small-stone.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/small-stone/small-stone.png`),
                     version: 1,
                     extraOffsets: {
                         x: 0,
@@ -38,14 +39,14 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
         description: "A small patch of grass growing on the farm.",
         base: {
             assetKey: "terrain-small-grass-patch",
-            assetUrl: `${PREFIX}/small-grass-patch/small-grass-patch.png`
+            assetUrl: getAssetUrl(`${PREFIX}/small-grass-patch/small-grass-patch.png`)
         },
         phaser: {
             map: {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-small-grass-patch",
-                    assetUrl: `${PREFIX}/small-grass-patch/small-grass-patch.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/small-grass-patch/small-grass-patch.png`),
                     version: 1,
                     extraOffsets: {
                         x: 0,
@@ -60,14 +61,14 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
         description: "A beautiful maple tree with colorful leaves.",
         base: {
             assetKey: "terrain-maple-tree",
-            assetUrl: `${PREFIX}/maple-tree/maple-tree.png`
+            assetUrl: getAssetUrl(`${PREFIX}/maple-tree/maple-tree.png`)
         },
         phaser: {
             map: {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-maple-tree",
-                    assetUrl: `${PREFIX}/maple-tree/maple-tree.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/maple-tree/maple-tree.png`),
                     version: 4,
                     extraOffsets: {
                         x: 0,
@@ -82,14 +83,14 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
         description: "A sturdy oak tree providing shade on the farm.",
         base: {
             assetKey: "terrain-oak-tree",
-            assetUrl: `${PREFIX}/oak-tree/oak-tree.png`
+            assetUrl: getAssetUrl(`${PREFIX}/oak-tree/oak-tree.png`)
         },
         phaser: {
             map: {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-oak-tree",
-                    assetUrl: `${PREFIX}/oak-tree/oak-tree.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/oak-tree/oak-tree.png`),
                     version: 4,
                     extraOffsets: {
                         x: 0,
@@ -104,14 +105,14 @@ export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
         description: "A tall pine tree with evergreen needles.",
         base: {
             assetKey: "terrain-pine-tree",
-            assetUrl: `${PREFIX}/pine-tree/pine-tree.png`
+            assetUrl: getAssetUrl(`${PREFIX}/pine-tree/pine-tree.png`)
         },
         phaser: {
             map: {
                 type: AssetMapType.Texture,
                 texture: {
                     assetKey: "terrain-pine-tree",
-                    assetUrl: `${PREFIX}/pine-tree/pine-tree.png`,
+                    assetUrl: getAssetUrl(`${PREFIX}/pine-tree/pine-tree.png`),
                     version: 2,
                     extraOffsets: {
                         x: 0,

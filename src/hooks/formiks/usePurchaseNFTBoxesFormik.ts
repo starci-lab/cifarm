@@ -125,6 +125,7 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
                         },
                     })
                 )
+                open()
                 break
             }
             case ChainKey.Sui: {

@@ -1,6 +1,6 @@
 "use client"
-import { REFERRAL_DISCLOSURE, GRAPHQL_QUERY_USER_SWR } from "@/app/constants"
-import { useGraphQLQueryUserSwr } from "@/hooks"
+import { REFERRAL_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
+import { useGraphQLQueryStaticSwr, useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect, useState } from "react"
 import {
@@ -16,6 +16,7 @@ import { Card, CardBody, CardHeader, CardTitle, ExtendedButton, ModalHeader, Spa
 import { Link } from "@phosphor-icons/react"
 import { copyTextToClipboard } from "@/components/styled/Snippet"
 import { pathConstants } from "@/constants"
+import { useAppSelector } from "@/redux"
 export const ReferralModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<
     ReturnType<typeof useDisclosure>
@@ -28,6 +29,9 @@ export const ReferralModal: FC = () => {
         const baseUrl = window.location.origin
         setWebUrl(`${baseUrl}${pathConstants.signIn}?referralUserId=${swr.data?.data.user.id}`)
     }, [])
+
+    const user = useAppSelector(state => state.sessionReducer.user)
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
@@ -42,7 +46,7 @@ export const ReferralModal: FC = () => {
                             title: "text-sm text-muted-foreground",
                             tooltip: "text-muted-foreground w-5 h-5",
                         }} />
-                        <div className="text-xl font-bold">0</div>
+                        <div className="text-xl font-bold">{user?.credits}</div>
                     </div>
                     <Spacer y={4} />
                     <div>
@@ -57,7 +61,7 @@ export const ReferralModal: FC = () => {
                             <CardHeader className="px-3 py-2">
                                 <CardTitle>
                                     <div className="text-lg font-bold">
-                                        <div className="text-secondary"><span>5</span> <span className="text-sm">credits</span></div>
+                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.creditsPerSuccessfulReferral}</span> <span className="text-sm">credits</span></div>
                                     </div>
                                 </CardTitle>
                             </CardHeader>
@@ -71,7 +75,7 @@ export const ReferralModal: FC = () => {
                             <CardHeader className="px-3 py-2">
                                 <CardTitle>
                                     <div className="text-lg font-bold">
-                                        <div className="text-secondary"><span>5</span> <span className="text-sm">credits</span></div>
+                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.creditsWhenJoiningWithReferral}</span> <span className="text-sm">credits</span></div>
                                     </div>
                                 </CardTitle>
                             </CardHeader>
@@ -85,7 +89,7 @@ export const ReferralModal: FC = () => {
                             <CardHeader className="px-3 py-2">
                                 <CardTitle>
                                     <div className="text-lg font-bold">
-                                        <div className="text-secondary"><span>5</span> <span className="text-sm">credits</span></div>
+                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.creditsWhenYourReferralInviteSomeone}</span> <span className="text-sm">credits</span></div>
                                     </div>
                                 </CardTitle>
                             </CardHeader>

@@ -94,7 +94,7 @@ const ItemCardCore: FC<ItemCardProps> = ({
                 {!frameOnly &&
           (() => {
               return (
-                  <div className="absolute w-14 h-14">
+                  <div className="relative w-14 h-14">
                       {isQuality && (
                           <ScaledImage
                               src={assetIconMap[AssetIconId.QualityStar].base.assetUrl}
