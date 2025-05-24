@@ -598,7 +598,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 5,
                                     y: -40,
                                 },
-                                version: 2,
+                                version: 3,
                             },
                         },
                         bubbleStateConfig: {
@@ -618,7 +618,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 5,
                                     y: -40,
                                 },
-                                version: 2,
+                                version: 3,
                             },
                         },
                         bubbleStateConfig: {
@@ -638,7 +638,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 5,
                                     y: -40,
                                 },
-                                version: 2,
+                                version: 3,
                             },
                         },
                         bubbleStateConfig: {
@@ -955,6 +955,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -85,
                                 },
+                                version: 2,
                             },
                         },
                         bubbleStateConfig: {
@@ -974,6 +975,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
+                                version: 2,
                             },
                         },
                         bubbleStateConfig: {
@@ -993,6 +995,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
+                                version: 2,
                             },
                         },
                         bubbleStateConfig: {
@@ -1012,6 +1015,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
+                                version: 2,
                             },
                         },
                         bubbleStateConfig: {
@@ -1031,6 +1035,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
+                                version: 2,
                             },
                         },
                         bubbleStateConfig: {
@@ -1248,7 +1253,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetKey: "crop-tomato-3",
                                 assetUrl: getAssetUrl(`${PREFIX}/tomato/3.png`),
                                 extraOffsets: {
-                                    x: 0,
+                                    x: -5,
                                     y: -95,
                                 },
                             },
@@ -1267,7 +1272,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetKey: "crop-tomato-4",
                                 assetUrl: getAssetUrl(`${PREFIX}/tomato/4.png`),
                                 extraOffsets: {
-                                    x: 0,
+                                    x: -5,
                                     y: -95,
                                 },
                             },
@@ -1487,7 +1492,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetKey: "crop-eggplant-2",
                                 assetUrl: getAssetUrl(`${PREFIX}/eggplant/2.png`),
                                 extraOffsets: {
-                                    x: 0,
+                                    x: -15,
                                     y: -95,
                                 },
                             },
@@ -1506,7 +1511,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetKey: "crop-eggplant-3",
                                 assetUrl: getAssetUrl(`${PREFIX}/eggplant/3.png`),
                                 extraOffsets: {
-                                    x: 0,
+                                    x: -15,
                                     y: -95,
                                 },
                             },
@@ -1525,7 +1530,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetKey: "crop-eggplant-4",
                                 assetUrl: getAssetUrl(`${PREFIX}/eggplant/4.png`),
                                 extraOffsets: {
-                                    x: 0,
+                                    x: -15,
                                     y: -95,
                                 },
                             },
@@ -1616,9 +1621,10 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetKey: "crop-pumpkin-2",
                                 assetUrl: getAssetUrl(`${PREFIX}/pumpkin/2.png`),
                                 extraOffsets: {
-                                    x: 0,
-                                    y: -85,
+                                    x: -10,
+                                    y: -95,
                                 },
+                                version: 2,
                             },
                         },
                         bubbleStateConfig: {
