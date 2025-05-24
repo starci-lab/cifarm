@@ -15,20 +15,20 @@ interface NFTRarityBadgeData {
 export const NFTRarityBadge: FC<NFTRarityBadgeProps> = ({ rarity }) => {
     const rarityMap: Record<NFTRarityEnum, NFTRarityBadgeData> = {
         [NFTRarityEnum.Common]: {
-            className: "bg-gradient-to-r from-gray-300 to-gray-100",
+            className: "bg-gradient-to-r from-gray-300 to-gray-100 text-foreground",
             text: "Common",
         },
         [NFTRarityEnum.Rare]: {
-            className: "bg-gradient-to-r from-blue-500 to-blue-300",
+            className: "bg-gradient-to-r from-blue-500 to-blue-300 text-background",
             text: "Rare",
         },
         [NFTRarityEnum.Epic]: {
-            className: "bg-gradient-to-r from-purple-600 to-purple-400",
+            className: "bg-gradient-to-r from-purple-600 to-purple-400 text-background",
             text: "Epic",
         },
     }
     const data = rarityMap[rarity || NFTRarityEnum.Common]
-    return <ExtendedBadge className={cn(data.className, "text-background w-fit")}>
+    return <ExtendedBadge className={cn(data.className, "w-fit")}>
         <div className="text-sm">{data.text}</div>
     </ExtendedBadge>
 }
