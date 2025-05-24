@@ -975,7 +975,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
-                                version: 2,
+                                version: 3,
                             },
                         },
                         bubbleStateConfig: {
@@ -995,7 +995,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
-                                version: 2,
+                                version: 3,
                             },
                         },
                         bubbleStateConfig: {
@@ -1015,7 +1015,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
-                                version: 2,
+                                version: 3,
                             },
                         },
                         bubbleStateConfig: {
@@ -1035,7 +1035,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                     x: 0,
                                     y: -30,
                                 },
-                                version: 2,
+                                version: 3,
                             },
                         },
                         bubbleStateConfig: {

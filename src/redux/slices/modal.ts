@@ -9,6 +9,13 @@ export interface WarningModal {
   callback?: () => void;
 }
 
+export interface NotificationModal {
+  message: string;
+  callback?: () => void;
+  title?: string;
+  buttonText?: string;
+}
+
 export interface ReferralLinkModal {
   code: string;
 }
@@ -138,6 +145,7 @@ export type SignTransactionModal = (
 
 export interface ModalSlice {
   warningModal: WarningModal;
+  notificationModal: NotificationModal;
   signTransactionModal: SignTransactionModal;
   selectTokenModal: SelectTokenModal;
   nftModal: NFTModal;
@@ -156,6 +164,12 @@ const initialState: ModalSlice = {
     warningModal: {
         message: "",
         nextModalToken: "",
+    },
+    notificationModal: {
+        message: "",
+        title: "",
+        buttonText: "",
+        callback: () => {},
     },
     signTransactionModal: {
         data: {
@@ -182,6 +196,9 @@ export const modalSlice = createSlice({
     reducers: {
         setWarningModal: (state, action: PayloadAction<WarningModal>) => {
             state.warningModal = action.payload
+        },
+        setNotificationModal: (state, action: PayloadAction<NotificationModal>) => {
+            state.notificationModal = action.payload
         },
         setSignTransactionModal: (
             state,
@@ -216,6 +233,7 @@ export const modalSlice = createSlice({
 export const modalReducer = modalSlice.reducer
 export const {
     setWarningModal,
+    setNotificationModal,
     setSignTransactionModal,
     setSelectTokenModal,
     setNFTModal,

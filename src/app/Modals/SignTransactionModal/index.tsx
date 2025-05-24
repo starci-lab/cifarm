@@ -610,7 +610,6 @@ export const SignTransactionModal: FC = () => {
                         variant="flat"
                         className="flex-1"
                         color="secondary"
-                        size="icon"
                         onClick={() => toggle(false)}
                     >
             Cancel

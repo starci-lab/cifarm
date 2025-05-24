@@ -108,13 +108,15 @@ const SheetFooter = ({
     className,
     ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-    <div
-        className={cn(
-            "flex flex-col-reverse p-4",
-            className
-        )}
-        {...props}
-    />
+    <div>
+        <Separator variant="secondary" />
+        <div
+            className={cn(
+                "flex flex-col-reverse p-4",
+                className
+            )}
+            {...props}/>
+    </div>
 )
 SheetFooter.displayName = "SheetFooter"
 

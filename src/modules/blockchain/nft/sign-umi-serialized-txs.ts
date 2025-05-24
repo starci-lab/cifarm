@@ -7,21 +7,21 @@ import { mplCore } from "@metaplex-foundation/mpl-core"
 import base58 from "bs58"
 import { keypairIdentity } from "@metaplex-foundation/umi"
 
-export interface SignUmiSerializedTxParams {
+export interface SignUmiSerializedTxsParams {
   privateKey: string;
   serializedTxs: string | Array<string>;
   network?: Network;
 }
 
-export interface SignUmiSerializedTxResponse {
+export interface SignUmiSerializedTxsResponse {
   serializedTxs: string | Array<string>;
 }
 
-export const signUmiSerializedTx = async ({
+export const signUmiSerializedTxs = async ({
     network = defaultNetwork,
     privateKey,
     serializedTxs,
-}: SignUmiSerializedTxParams): Promise<SignUmiSerializedTxResponse> => {
+}: SignUmiSerializedTxsParams): Promise<SignUmiSerializedTxsResponse> => {
     const umi = createUmi(
         solanaHttpRpcUrl({ chainKey: ChainKey.Solana, network })
     ).use(mplCore())

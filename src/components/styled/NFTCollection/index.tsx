@@ -8,11 +8,12 @@ interface NFTCollectionProps {
     collectionSwr: SWRResponse<CollectionResponse>
     onClick: () => void
     collection: NFTCollectionData
+    disabled?: boolean
 }
 
-export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSwr, onClick }) => {
+export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSwr, onClick, disabled }) => {
     return (
-        <Card className="relative" onClick={onClick} pressable>
+        <Card className="relative" onClick={onClick} pressable disabled={disabled}>
             <CardBody className="pb-2">
                 <Image src={collection.imageUrl} className="w-24 h-24 object-contain" />
                 <Spacer y={2}/>

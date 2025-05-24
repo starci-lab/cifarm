@@ -208,6 +208,10 @@ export interface Referral {
   creditsWhenYourReferralInviteSomeone: number;
 }
 
+export interface NFTConversion {
+  conversionRate: number;
+}
+
 export type TokenWrapped = Partial<Record<Network, TokenData>>;
 export type Token = Partial<Record<ChainKey, TokenWrapped>>;
 export type Tokens = Partial<Record<TokenKey, Token>>;

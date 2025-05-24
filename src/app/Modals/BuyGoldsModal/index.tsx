@@ -103,7 +103,7 @@ export const BuyGoldsModal: FC = () => {
                                             postActionHook: async (signedSerializedTx) => {
                                                 const { data } = await sendBuyGoldsSolanaTransactionSwrMutation.trigger({
                                                     request: {
-                                                        serializedTx: signedSerializedTx,
+                                                        serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx,
                                                     },
                                                 })
                                                 if (!data) {

@@ -7,6 +7,7 @@ import {
     Spinner,
     PressableCardProps,
     Separator,
+    ImageScale,
 } from "@/components"
 import { PaymentKind } from "@/modules/entities"
 
@@ -45,7 +46,7 @@ export const BuyCard: FC<BuyCardProps> = ({
                         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                         src={imageUrl}
                         alt={title}
-                        scale={2}
+                        imageScale={ImageScale.Size2}
                     />
                 </div>
                 <Spacer y={2} />

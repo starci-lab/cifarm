@@ -8,7 +8,6 @@ import { NeighborsModal } from "./NeighborsModal"
 import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
 import { SelectTokenModal } from "./SelectTokenModal"
-import { NFTModal } from "./NFTModal"
 import { SelectNFTModal } from "./SelectNFTModal"
 import { DownloadModal } from "./DownloadModal"
 import { InfoModal } from "./InfoModal"
@@ -32,8 +31,9 @@ import { NeighborsFilterModal } from "./NeighborsFilterModal"
 import { SelectInventoriesModal } from "./SelectInventoriesModal"
 import { ReferralModal } from "./ReferralModal"
 import { PurchaseNFTBoxesModal } from "./PurchaseNFTBoxesModal"
-import { DisconnectedModal } from "./DisconnectedModal"
-
+import { NFTConversionModal } from "./ConvertNFTModal"
+import { SelectNFTCollectionModal } from "./SelectNFTCollectionModal"
+import { NotificationModal } from "./NotificationModal"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -41,6 +41,7 @@ const Modals : FC = () => {
             <MnemonicModal />
             <PrivateKeyModal />
             <WarningModal />
+            <NotificationModal />
             <ProfileModal />
             <SignTransactionModal />
             <NFTsClaimedModal />
@@ -49,7 +50,8 @@ const Modals : FC = () => {
             <NeighborsModal />
             <QuestsModal />
             <SelectTokenModal />
-            <NFTModal />
+            <SelectNFTCollectionModal />
+            <NFTConversionModal />
             <ReferralModal />
             <TransferNFTModal />
             <SelectNFTModal />
@@ -71,7 +73,6 @@ const Modals : FC = () => {
             <ShipModal />
             <NeighborsFilterModal />
             <BuyGoldsModal />
-            <DisconnectedModal />
         </div>
     )
 }

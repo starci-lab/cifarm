@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 
 interface NFTRarityBadgeProps {
     rarity: NFTRarityEnum
+    className?: string
 }
 
 interface NFTRarityBadgeData {
@@ -12,7 +13,7 @@ interface NFTRarityBadgeData {
     text: string
 }
 
-export const NFTRarityBadge: FC<NFTRarityBadgeProps> = ({ rarity }) => {
+export const NFTRarityBadge: FC<NFTRarityBadgeProps> = ({ rarity, className }) => {
     const rarityMap: Record<NFTRarityEnum, NFTRarityBadgeData> = {
         [NFTRarityEnum.Common]: {
             className: "bg-gradient-to-r from-gray-300 to-gray-100 text-foreground",
@@ -28,7 +29,7 @@ export const NFTRarityBadge: FC<NFTRarityBadgeProps> = ({ rarity }) => {
         },
     }
     const data = rarityMap[rarity || NFTRarityEnum.Common]
-    return <ExtendedBadge className={cn(data.className, "w-fit")}>
+    return <ExtendedBadge className={cn(data.className, "justify-center", className)}>
         <div className="text-sm">{data.text}</div>
     </ExtendedBadge>
 }

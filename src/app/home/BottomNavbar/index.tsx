@@ -73,7 +73,7 @@ export const BottomNavbar: FC = () => {
     return (
         <>
             {isMobile && (
-                <nav className="fixed left-0 bottom-0 border-t z-50 w-full bg-content-4">
+                <nav className="fixed left-0 bottom-0 border-t border-border z-50 w-full bg-content-4">
                     <div className="flex gap-2 w-full justify-between items-center py-2 px-6">
                         <Selection
                             name={navItems[0].name}

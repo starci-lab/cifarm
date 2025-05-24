@@ -9,4 +9,5 @@ export * from "./create-unwrap-solana-metaplex-nft-transaction"
 export * from "./send-unwrap-solana-metaplex-nft-transaction"
 export * from "./create-buy-golds-solana-transaction"
 export * from "./send-buy-golds-solana-transaction"
-
+export * from "./create-convert-solana-metaplex-nfts-transaction"
+export * from "./send-convert-solana-metaplex-nfts-transaction"

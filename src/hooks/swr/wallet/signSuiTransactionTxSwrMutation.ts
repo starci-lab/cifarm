@@ -2,14 +2,14 @@ import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
 import { useAppSelector } from "@/redux"
 import { v4 } from "uuid"
-import { signUmiSerializedTx, SignUmiSerializedTxResponse } from "@/modules/blockchain"
+import { signUmiSerializedTxs, SignUmiSerializedTxsResponse } from "@/modules/blockchain"
 
 export interface UseSignSuiTransactionTxSwrMutationArgs {
     serializedTx: string
 }
 
 export const useSignSuiTransactionTxSwrMutation = (): UseSWRMutation<
-    SignUmiSerializedTxResponse,
+    SignUmiSerializedTxsResponse,
     UseSignSuiTransactionTxSwrMutationArgs
 > => {
     //get accounts
@@ -31,8 +31,8 @@ export const useSignSuiTransactionTxSwrMutation = (): UseSWRMutation<
             const { serializedTx } = { ...extraArgs.arg }
             if (!account) throw new Error("No account found")
             
-            return await signUmiSerializedTx({
-                serializedTx,
+            return await signUmiSerializedTxs({
+                serializedTxs: Array.isArray(serializedTx) ? serializedTx : [serializedTx],
                 network,
                 privateKey: account?.privateKey,
             })            

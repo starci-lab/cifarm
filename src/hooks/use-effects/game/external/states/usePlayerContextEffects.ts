@@ -8,8 +8,9 @@ import { useAppDispatch } from "@/redux/hooks"
 import { setPlayerContext } from "@/redux/slices/session"
 import { useEffect } from "react"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { DISCONNECTED_DISCLOSURE, WS } from "@/app/constants"
+import { WS, NOTIFICATION_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
+import { setNotificationModal } from "@/redux"
 
 export const usePlayerContextEffects = () => {
     const router = useRouterWithSearchParams()
@@ -28,15 +29,42 @@ export const usePlayerContextEffects = () => {
         }
     }, [router])
 
-    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(DISCONNECTED_DISCLOSURE)
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
-
+    const { open, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(NOTIFICATION_DISCLOSURE)
+    
     useEffect(() => {
-        socket?.on(ReceiverEventName.Disconnected, () => {
+        socket?.on(ReceiverEventName.YourAccountHasBeenLoggedInFromAnotherDevice, () => {
+            dispatch(setNotificationModal({
+                message: "Your account has been logged in from another device. Please connect again to continue.",
+                callback: () => {
+                    socket?.connect()  
+                    close()
+                },
+                title: "You have been disconnected",
+                buttonText: "Connect again",
+            }))
             open()
         })
         return () => {
-            socket?.off(ReceiverEventName.Disconnected)
+            socket?.off(ReceiverEventName.YourAccountHasBeenLoggedInFromAnotherDevice)
         }
-    }, [socket, open])
+    }, [socket, open, dispatch])
+ 
+    useEffect(() => {
+        socket?.on("disconnect", () => {
+            dispatch(setNotificationModal({
+                message: "You are not connected to the server. Please connect again to continue.",
+                callback: () => {
+                    socket?.connect()  
+                    close()
+                },
+                title: "You have been disconnected",
+                buttonText: "Connect again",
+            }))
+            open()
+        })
+        return () => {
+            socket?.off("disconnect")
+        }
+    }, [socket, open, dispatch])
 }

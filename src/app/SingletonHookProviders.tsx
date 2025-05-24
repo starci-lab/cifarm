@@ -38,6 +38,8 @@ import {
     usePurchaseNFTBoxesFormik,
     useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation,
     useGraphQLQueryUserSwrMutation,
+    useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation,
+    useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -60,9 +62,10 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             NEIGHBORS_DISCLOSURE: useDisclosure(),
             NEIGHBORS_FILTER_DISCLOSURE: useDisclosure(),
             QUESTS_DISCLOSURE: useDisclosure(),
+            NOTIFICATION_DISCLOSURE: useDisclosure(),
             PROFILE_DISCLOSURE: useDisclosure(),
             MINT_DISCLOSURE: useDisclosure(),
-            DISCONNECTED_DISCLOSURE: useDisclosure(),
+            CONVERT_NFT_DISCLOSURE: useDisclosure(),
             MINT_AMOUNT_DISCLOSURE: useDisclosure(),
             SELECT_TOKEN_DISCLOSURE: useDisclosure(),
             NFT_DISCLOSURE: useDisclosure(),
@@ -73,6 +76,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             DOWNLOAD_DISCLOSURE: useDisclosure(),
             DOWNLOADING_DISCLOSURE: useDisclosure(),
             SHOP_DISCLOSURE: useDisclosure(),
+            SELECT_NFT_COLLECTION_DISCLOSURE: useDisclosure(),
             INVENTORY_DISCLOSURE: useDisclosure(),
             ROADSIDE_STAND_DISCLOSURE: useDisclosure(),
             TRANSFER_TOKEN_DISCLOSURE: useDisclosure(),
@@ -118,6 +122,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_REFRESH_SWR_MUTATION: useGraphQLMutationRefreshSwrMutation(),
             GRAPHQL_MUTATION_CREATE_PURCHASE_SUI_NFT_BOXES_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation(),
+            GRAPHQL_MUTATION_CREATE_CONVERT_SOLANA_METAPLEX_NFTS_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation(),
+            GRAPHQL_MUTATION_SEND_CONVERT_SOLANA_METAPLEX_NFTS_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation(), 
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
             HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION: useHoneycombSendTransactionsSwrMutation(),

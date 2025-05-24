@@ -16,6 +16,7 @@ const mutation1 = gql`
           nftType
           rarity
           nftName
+          nftAddress
         }
       }
       message
@@ -36,6 +37,7 @@ export interface NFTBox {
   nftType: NFTType
   rarity: NFTRarityEnum
   nftName: string
+  nftAddress: string
 }
 
 export type SendPurchaseSolanaNFTBoxesTransactionResponse = GraphQLResponse<{

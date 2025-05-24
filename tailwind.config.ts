@@ -120,8 +120,8 @@ const config: Config = {
                     contrast: "var(--text-contrast)",
                 },
     			border: {
-                    DEFAULT: "var(--border)",
-                    secondary: "var(--border-secondary)",
+                    DEFAULT: "hsl(var(--border))",
+                    secondary: "hsl(var(--border-secondary))",
                 },
     			input: "hsl(var(--input))",
     			ring: "hsl(var(--ring))",

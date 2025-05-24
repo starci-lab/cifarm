@@ -28,7 +28,8 @@ import {
     Tokens,
     TerrainSchema,
     PetInfo,
-    Referral
+    Referral,
+    NFTConversion
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -669,6 +670,9 @@ const query = gql`
       creditsWhenJoiningWithReferral
       creditsWhenYourReferralInviteSomeone
     }
+    nftConversion {
+      conversionRate
+    }
   }
 `
 
@@ -701,6 +705,7 @@ export interface QueryStaticResponse {
   nftBoxInfo: NFTBoxInfo
   tokens: Tokens
   referral: Referral
+  nftConversion: NFTConversion
 }
 
 export const queryStatic = async () => {
