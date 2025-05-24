@@ -47,7 +47,7 @@ const Page = () => {
                 <Header showBackButton={true} isSkeleton={!nftCollectionSwr?.data} title={`${collection?.name}`}/>
             </div>
             <Spacer y={6} />
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-2 items-center">
                 <FilterBar
                     onSearchStringChange={() => {}}
                     searchString={""}
