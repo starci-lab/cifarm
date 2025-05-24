@@ -29,7 +29,8 @@ import {
     TerrainSchema,
     PetInfo,
     Referral,
-    NFTConversion
+    NFTConversion,
+    EnergyPurchases
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -673,6 +674,24 @@ const query = gql`
     nftConversion {
       conversionRate
     }
+    energyPurchases {
+      solana {
+        testnet {
+          options {
+            price
+            percentage
+            paymentKind
+          }
+        }
+        mainnet {
+          options {
+            price
+            percentage
+            paymentKind
+          }
+        }
+      }
+    }
   }
 `
 
@@ -706,6 +725,7 @@ export interface QueryStaticResponse {
   tokens: Tokens
   referral: Referral
   nftConversion: NFTConversion
+  energyPurchases: EnergyPurchases
 }
 
 export const queryStatic = async () => {

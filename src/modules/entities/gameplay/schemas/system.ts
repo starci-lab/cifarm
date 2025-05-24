@@ -158,6 +158,19 @@ export interface GoldPurchaseOptions {
 export type GoldPurchase = Record<Network, GoldPurchaseOptions>;
 export type GoldPurchases = Record<ChainKey, GoldPurchase>;
 
+export interface EnergyPurchaseOption {
+  price: number;
+  percentage: number;
+  paymentKind: PaymentKind;
+}
+
+export interface EnergyPurchaseOptions {
+  options: Array<EnergyPurchaseOption>;
+}
+
+export type EnergyPurchase = Record<Network, EnergyPurchaseOptions>;
+export type EnergyPurchases = Record<ChainKey, EnergyPurchase>;
+
 export interface InteractionPermissions {
   thiefLevelGapThreshold: number;
 }

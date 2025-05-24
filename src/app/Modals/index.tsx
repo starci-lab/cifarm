@@ -34,6 +34,7 @@ import { PurchaseNFTBoxesModal } from "./PurchaseNFTBoxesModal"
 import { NFTConversionModal } from "./ConvertNFTModal"
 import { SelectNFTCollectionModal } from "./SelectNFTCollectionModal"
 import { NotificationModal } from "./NotificationModal"
+import { BuyEnergyModal } from "./BuyEnergyModal"
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -73,6 +74,7 @@ const Modals : FC = () => {
             <ShipModal />
             <NeighborsFilterModal />
             <BuyGoldsModal />
+            <BuyEnergyModal />
         </div>
     )
 }

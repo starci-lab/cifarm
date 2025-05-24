@@ -1,8 +1,8 @@
 "use client"
 import {
-    BUY_GOLDS_DISCLOSURE,
-    GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION,
-    GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION,
+    BUY_ENERGY_DISCLOSURE,
+    GRAPHQL_MUTATION_CREATE_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION,
+    GRAPHQL_MUTATION_SEND_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION,
     QUERY_STATIC_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
 } from "@/app/constants"
@@ -17,15 +17,14 @@ import {
     DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { toast, useGlobalAccountAddress, useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation, useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr } from "@/hooks"
+import { toast, useGlobalAccountAddress, useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation, useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation, useGraphQLQueryStaticSwr } from "@/hooks"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
-import { formatNumber, NumberPattern } from "@/modules/common"
 import { envConfig } from "@/env"
 
-export const BuyGoldsModal: FC = () => {
+export const BuyEnergyModal: FC = () => {
     const { isOpen, toggle } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_DISCLOSURE)
+    useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_ENERGY_DISCLOSURE)
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
@@ -34,18 +33,18 @@ export const BuyGoldsModal: FC = () => {
     const network = envConfig().network
 
     const iconMap: Record<number, string> = {
-        0: assetIconMap[AssetIconId.Golds1].base.assetUrl,
-        1: assetIconMap[AssetIconId.Golds2].base.assetUrl,
-        2: assetIconMap[AssetIconId.Golds3].base.assetUrl,
+        0: assetIconMap[AssetIconId.Energy].base.assetUrl,
+        1: assetIconMap[AssetIconId.Energy].base.assetUrl,
+        2: assetIconMap[AssetIconId.Energy].base.assetUrl,
     }
 
-    const { swrMutation: createBuyGoldsSolanaTransactionSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation>
-    >(GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION)
+    const { swrMutation: createBuyEnergySolanaTransactionSwrMutation } = useSingletonHook<
+    ReturnType<typeof useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation>
+    >(GRAPHQL_MUTATION_CREATE_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION)
 
-    const { swrMutation: sendBuyGoldsSolanaTransactionSwrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation>
-    >(GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION)
+    const { swrMutation: sendBuyEnergySolanaTransactionSwrMutation } = useSingletonHook<
+    ReturnType<typeof useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation>
+    >(GRAPHQL_MUTATION_SEND_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION)
     
     const { open: openSignTransactionModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(SIGN_TRANSACTION_DISCLOSURE)
     const dispatch = useAppDispatch()
@@ -57,20 +56,20 @@ export const BuyGoldsModal: FC = () => {
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Buy Golds</DialogTitle>
+                    <DialogTitle>Buy Energy</DialogTitle>
                 </DialogHeader>     
                 <DialogBody className="grid md:grid-cols-3 gap-2">
                     {
-                        staticSwr.data?.data.goldPurchases[chainKey][network]?.options.map((goldPurchase, index) => (
+                        staticSwr.data?.data.energyPurchases[chainKey][network]?.options.map((energyPurchase, index) => (
                             <BuyCard
                                 key={index}
-                                title={`${formatNumber(goldPurchase.amount, NumberPattern.Second)}`}
+                                title={`${energyPurchase.percentage}%`}
                                 imageUrl={iconMap[index]}
-                                price={goldPurchase.price}
-                                paymentKind={goldPurchase.paymentKind}
+                                price={energyPurchase.price}
+                                paymentKind={energyPurchase.paymentKind}
                                 isLoading={
                                     selectedIndex === index &&
-                                    createBuyGoldsSolanaTransactionSwrMutation.isMutating
+                                    createBuyEnergySolanaTransactionSwrMutation.isMutating
                                 }
                                 classNames={{
                                     container: "h-full",
@@ -81,7 +80,7 @@ export const BuyGoldsModal: FC = () => {
                                     }
                                     setSelectedIndex(index)
                                     try {
-                                        const { data} = await createBuyGoldsSolanaTransactionSwrMutation.trigger({
+                                        const { data} = await createBuyEnergySolanaTransactionSwrMutation.trigger({
                                             request: {
                                                 selectionIndex: index,
                                                 accountAddress,
@@ -100,7 +99,7 @@ export const BuyGoldsModal: FC = () => {
                                                 serializedTx: data.serializedTx,
                                             },  
                                             postActionHook: async (signedSerializedTx) => {
-                                                const { data } = await sendBuyGoldsSolanaTransactionSwrMutation.trigger({
+                                                const { data } = await sendBuyEnergySolanaTransactionSwrMutation.trigger({
                                                     request: {
                                                         serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx,
                                                     },

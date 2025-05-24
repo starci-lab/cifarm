@@ -40,6 +40,8 @@ import {
     useGraphQLQueryUserSwrMutation,
     useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation,
     useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation,
+    useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation,
+    useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -91,6 +93,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             CONNECT_DISCLOSURE: useDisclosure(),
             WELCOME_DISCLOSURE: useDisclosure(),
             BUY_GOLDS_DISCLOSURE: useDisclosure(),
+            BUY_ENERGY_DISCLOSURE: useDisclosure(),
             SHEET_TOKEN_DISCLOSURE: useDisclosure(),
             SHEET_TRANSFER_TOKEN_DISCLOSURE: useDisclosure(),
             SHEET_NFT_DISCLOSURE: useDisclosure(),
@@ -120,6 +123,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation(),           
             GRAPHQL_MUTATION_CREATE_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation(),
+            GRAPHQL_MUTATION_CREATE_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation(),
+            GRAPHQL_MUTATION_SEND_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation(),
             GRAPHQL_MUTATION_REFRESH_SWR_MUTATION: useGraphQLMutationRefreshSwrMutation(),
             GRAPHQL_MUTATION_CREATE_PURCHASE_SUI_NFT_BOXES_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation(),
             GRAPHQL_MUTATION_CREATE_CONVERT_SOLANA_METAPLEX_NFTS_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation(),
