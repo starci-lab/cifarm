@@ -387,10 +387,10 @@ export const MainContent: FC = () => {
                                     <Image src={userSwrMutation.data?.data.user.avatarUrl || createJazziconBlobUrl(userSwrMutation.data?.data.user.id ?? "")} alt="Profile Picture" className="w-10 h-10 rounded-full" />
                                     <div>{userSwrMutation.data?.data.user.username}</div>
                                 </div>
+                                <Spacer y={6} />
                             </div>
                         )
                     }
-                    <Spacer y={6} />
                     <div>
                         <Title title="Properties" />
                         <Spacer y={2} />
