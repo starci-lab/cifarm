@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { cva, VariantProps } from "class-variance-authority"
 
 // Track background
-const sliderVariants = cva("relative h-2.5 w-full grow overflow-hidden rounded-full", {
+const sliderVariants = cva("relative h-2.5 my-1.5 w-full grow overflow-hidden rounded-full", {
     variants: {
         color: {
             default: "bg-foreground/20",

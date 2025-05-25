@@ -9,12 +9,14 @@ import { valuesWithKey } from "@/modules/common"
 import { ColumnDef } from "@tanstack/react-table"
 import { useDisclosure } from "react-use-disclosure"
 import { setTokenSheet } from "@/redux"
-import { TokenKey } from "@/modules/entities"
+import { TokenKey, TokenType } from "@/modules/entities"
+import { chainKeyMap } from "@/modules/blockchain"
 
 export interface AssetsData {
     imageUrl: string
     name: string
     symbol: string
+    isNative: boolean
 }
 
 export interface TableData {
@@ -30,8 +32,7 @@ export const TokensTab: FC = () => {
     >(QUERY_STATIC_SWR_MUTATION)
 
     const network = envConfig().network
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    
+
     const tokens = valuesWithKey(staticData.data?.data.tokens || {})
 
     const balanceSwrs = useAppSelector(
@@ -41,6 +42,8 @@ export const TokensTab: FC = () => {
     const { open: openTokenSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_TOKEN_DISCLOSURE
     )
+
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
 
     const dispatch = useAppDispatch()
 
@@ -52,7 +55,8 @@ export const TokensTab: FC = () => {
             assets: {
                 imageUrl: tokenData?.imageUrl ?? "",
                 name: tokenData?.name ?? "",
-                symbol: tokenData?.symbol ?? ""
+                symbol: tokenData?.symbol ?? "",
+                isNative: tokenData?.tokenType === TokenType.Native
             },
             balance: balanceSwrs[token.key]?.data ?? 0,
             price: 0,
@@ -67,7 +71,13 @@ export const TokensTab: FC = () => {
                 const asset = row.original.assets
                 return (
                     <div className="flex items-center gap-2">
-                        <Image src={asset.imageUrl} alt={asset.name} className="w-10 h-10" />
+                        <div className="relative">
+                            <Image src={asset.imageUrl} alt={asset.name} className="w-10 h-10" />
+                            {!asset.isNative &&
+                                <Image src={chainKeyMap.find((item) => item.key === chainKey)?.iconUrl ?? ""} alt={chainKeyMap.find((item) => item.key === chainKey)?.name ?? ""}
+                                    className="w-5 h-5 absolute bottom-0 right-0 rounded-full bg-background p-0.5" />
+                            }
+                        </div>
                         <div>
                             <div>{asset.name}</div>
                             <div className="text-sm text-muted-foreground">{asset.symbol}</div>
@@ -104,7 +114,7 @@ export const TokensTab: FC = () => {
         showPagination={false}
         showSelectedRowText={false}
         onClickRow={(row) => {
-            dispatch(setTokenSheet({ tokenKey: row.id}))
+            dispatch(setTokenSheet({ tokenKey: row.id }))
             openTokenSheet()
         }}
     />

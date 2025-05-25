@@ -8,7 +8,8 @@ import {
 } from "@/components"
 import React, { FC, useState } from "react"
 import { useConnectWallet, useWallets, useCurrentWallet, useDisconnectWallet } from "@mysten/dapp-kit"
-import { useAppSelector, useAppDispatch, setChainKey } from "@/redux"
+import { useAppDispatch } from "@/redux"
+import { setChainKey } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
 export const SuiConnect: FC = () => {
     const { mutate: connect } = useConnectWallet()
@@ -16,6 +17,7 @@ export const SuiConnect: FC = () => {
     const { isConnecting, isConnected, currentWallet } = useCurrentWallet()
     const { mutate: disconnect } = useDisconnectWallet()
     const [connectingWallet, setConnectingWallet] = useState<string | null>(null)
+    const dispatch = useAppDispatch()
     const suiWallets = [
         {
             icon: <Image src="https://framerusercontent.com/images/eDZRos3xvCrlWxmLFr72sFtiyQ.png?scale-down-to=512" alt="Suiet" className="w-10 h-10" />,
@@ -30,6 +32,7 @@ export const SuiConnect: FC = () => {
                 connect({
                     wallet: suietWallet,
                 })
+                dispatch(setChainKey(ChainKey.Sui))
             },
         },
         {
@@ -45,6 +48,7 @@ export const SuiConnect: FC = () => {
                 connect({
                     wallet: phantomWallet,
                 })
+                dispatch(setChainKey(ChainKey.Sui))
             },
         },
         {
@@ -60,12 +64,11 @@ export const SuiConnect: FC = () => {
                 connect({
                     wallet: nightyWallet,
                 })
+                dispatch(setChainKey(ChainKey.Sui))
             },
         },
     ]
 
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const dispatch = useAppDispatch()
     return (
         <>
             <DialogBody>
@@ -110,16 +113,6 @@ export const SuiConnect: FC = () => {
                     }}
                 >
           Disconnect
-                </ExtendedButton>
-                <ExtendedButton
-                    className="w-full"
-                    color="default"
-                    disabled={chainKey === ChainKey.Sui || !isConnected}
-                    onClick={() => {
-                        dispatch(setChainKey(ChainKey.Sui))
-                    }}
-                >
-          Select
                 </ExtendedButton>
             </DialogFooter >
         </>

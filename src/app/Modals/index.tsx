@@ -8,7 +8,6 @@ import { NeighborsModal } from "./NeighborsModal"
 import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
 import { SelectTokenModal } from "./SelectTokenModal"
-import { NFTModal } from "./NFTModal"
 import { SelectNFTModal } from "./SelectNFTModal"
 import { DownloadModal } from "./DownloadModal"
 import { InfoModal } from "./InfoModal"
@@ -24,12 +23,20 @@ import { DailyModal } from "./DailyModal"
 import { TransferNFTModal } from "./TransferNFTModal"
 import { ShipModal } from "./ShipModal"
 import { BuyGoldsModal } from "./BuyGoldsModal"
-import { NFTClaimedModal } from "./NFTClaimedModal"
+import { NFTsClaimedModal } from "./NFTsClaimedModal"
 import { WelcomeModal } from "./WelcomeModal"
 import { ConnectModal } from "./ConnectModal"
 import { AuthenticatingModal } from "./AuthenticatingModal"
 import { NeighborsFilterModal } from "./NeighborsFilterModal"
 import { SelectInventoriesModal } from "./SelectInventoriesModal"
+import { ReferralModal } from "./ReferralModal"
+import { PurchaseNFTBoxesModal } from "./PurchaseNFTBoxesModal"
+import { NFTConversionModal } from "./ConvertNFTModal"
+import { SelectNFTCollectionModal } from "./SelectNFTCollectionModal"
+import { NotificationModal } from "./NotificationModal"
+import { BuyEnergyModal } from "./BuyEnergyModal"
+import { SelectChainModal } from "./SelectChainModal"
+
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -37,21 +44,25 @@ const Modals : FC = () => {
             <MnemonicModal />
             <PrivateKeyModal />
             <WarningModal />
+            <NotificationModal />
             <ProfileModal />
             <SignTransactionModal />
-            <NFTClaimedModal />
+            <NFTsClaimedModal />
             <WelcomeModal />
             <InviteUserModal />
             <NeighborsModal />
             <QuestsModal />
             <SelectTokenModal />
-            <NFTModal />
+            <SelectNFTCollectionModal />
+            <NFTConversionModal />
+            <ReferralModal />
             <TransferNFTModal />
             <SelectNFTModal />
             <DownloadModal />
             <DownloadingModal />
             <InfoModal />
             <ConnectModal />
+            <SelectChainModal />
             <SettingsModal />
             <InventoryModal />
             <RoadsideStandModal />
@@ -62,9 +73,11 @@ const Modals : FC = () => {
             <SellModal />
             <UpgradeModal />
             <DailyModal />
+            <PurchaseNFTBoxesModal />
             <ShipModal />
             <NeighborsFilterModal />
             <BuyGoldsModal />
+            <BuyEnergyModal />
         </div>
     )
 }

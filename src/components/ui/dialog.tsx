@@ -55,8 +55,11 @@ DialogContent.displayName = DialogPrimitive.Content.displayName
 const DialogHeader = ({
     className,
     children,
+    hideCloseButton,    
     ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+}: React.HTMLAttributes<HTMLDivElement> & {
+    hideCloseButton?: boolean;
+}) => (
     <div>
         <div
             className={cn(
@@ -66,11 +69,13 @@ const DialogHeader = ({
             {...props}
         >
             {children}
-            <DialogClose
-                className="text-muted-foreground"
-            >
-                <X />
-            </DialogClose>
+            {!hideCloseButton && (
+                <DialogClose
+                    className="text-muted-foreground"
+                >
+                    <X />
+                </DialogClose>
+            )}
         </div>
         <Separator variant="secondary" />
     </div>

@@ -136,7 +136,7 @@ export const Toolbar: FC = () => {
                                 {toolLike.id === selectedToolId && (
                                     <ScaledImage
                                         src={assetUiMap[AssetUIId.SelectedArrow].base.assetUrl}
-                                        className="absolute -top-4 left-1/2 -translate-x-1/2"
+                                        className="absolute -top-12 left-1/2 -translate-x-1/2"
                                     />
                                 )}
                             </div>
@@ -175,7 +175,7 @@ export const Toolbar: FC = () => {
                             {toolLike.id === selectedToolId && (
                                 <ScaledImage
                                     src={assetUiMap[AssetUIId.SelectedArrow].base.assetUrl}
-                                    className="absolute -top-6 left-1/2 -translate-x-1/2"
+                                    className="absolute -top-12 left-1/2 -translate-x-1/2"
                                 />
                             )}
                         </div>

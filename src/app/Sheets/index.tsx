@@ -1,7 +1,7 @@
 import React, { FC } from "react"
 import { TokenSheet } from "./TokenSheet"
 import { NFTSheet } from "./NFTSheet"
-import { WholesaleMarketSheet } from "./WholesaleMarketSheet"
+import { WholesaleMarketBulkSheet } from "./WholesaleMarketBulkSheet"
 import { GameItemSheet } from "./GameItemSheet"
 import { BottomNavSheet } from "./BottomNavSheet"
 
@@ -11,7 +11,7 @@ const Sheets : FC = () => {
         <div id={SHEETS_CONTAINER_ID}>
             <TokenSheet />
             <NFTSheet />
-            <WholesaleMarketSheet />
+            <WholesaleMarketBulkSheet />
             <GameItemSheet />
             <BottomNavSheet />
         </div>

@@ -6,8 +6,8 @@ import { AttributeName, NFTData, NFTRarityEnum } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
-import { setNFTSheet, useAppDispatch } from "@/redux"
-
+import { setNFTSheet, useAppSelector, useAppDispatch, setNFTAddresses } from "@/redux"
+import { cn } from "@/lib/utils"
 interface NFTCardProps {
     nft: NFTData
 }
@@ -16,11 +16,23 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
     const { open: openNFTSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_NFT_DISCLOSURE
     )
-
+    const isConverting = useAppSelector((state) => state.convertReducer.isConverting)
+    const nftAddresses = useAppSelector((state) => state.convertReducer.nftAddresses)
     const dispatch = useAppDispatch()
+    const isSelected = nftAddresses.includes(nft.nftAddress)    
     return (
-        <Card pressable className="flex-1 p-0 overflow-hidden relative" onClick={
+        <Card pressable className={cn("flex-1 p-0 overflow-hidden relative", {
+            "bg-secondary transition-transform transform scale-105 duration-300 ease-in-out shadow-lg": isSelected && isConverting
+        })} onClick={
             () => {
+                if (isConverting) {
+                    if (isSelected) {
+                        dispatch(setNFTAddresses(nftAddresses.filter((address) => address !== nft.nftAddress)))
+                    } else {
+                        dispatch(setNFTAddresses([...nftAddresses, nft.nftAddress]))
+                    }
+                    return
+                }
                 dispatch(setNFTSheet({
                     nftAddress: nft.nftAddress,
                 })) 

@@ -32,28 +32,28 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
             [Network.Testnet]: {
                 [DefaultCollection.DragonFruit]: {
                     name: "Dragon Fruit",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/dragon_fruit_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/dragon_fruit.png",
                     address: "8NC9J5AJZg3jmXnzopeiwwv9NJToLwnJjiPsJKFRdgKz",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                     version: 2,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/jackfruit_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/jackfruit.png",
                     address: "2Ap4nT8Pby5LUEB7TvbwsLUnr1q7NBBCoLQZR4Ei3dNh",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
                     version: 2,
                 },
                 [DefaultCollection.Pomegranate]: {
                     name: "Pomegranate",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/pomegranate_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/pomegranate.png",
                     address: "CRUwWJr8eAPaHoj7kA5WrpKMSiotV9vdMxdXUJLZfe9b",
                     placedItemTypeId: PlacedItemTypeId.Pomegranate,
                     version: 2,
                 },
                 [DefaultCollection.Rambutan]: {
                     name: "Rambutan",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/rambutan_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/rambutan.png",
                     address: "4rM1G8YE7JxJPWuENSv1X5gkn6PYEJ8Wuc6bS8DZBz8K",
                     placedItemTypeId: PlacedItemTypeId.Rambutan,
                     version: 2,
@@ -62,25 +62,25 @@ export const blockchainMap: Record<ChainKey, BlockchainInfo> = {
             [Network.Mainnet]: {
                 [DefaultCollection.DragonFruit]: {
                     name: "DragonFruit",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/dragon_fruit_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/dragon_fruit.png",
                     address: "HJWgeQ1DBRkVhbPnJMh5kNKAngjBsoUmwZFRmPHa8Xy3",
                     placedItemTypeId: PlacedItemTypeId.DragonFruit,
                 },
                 [DefaultCollection.Jackfruit]: {
                     name: "Jackfruit",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/jackfruit_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/jackfruit.png",
                     address: "7ek9uoCatAvTo4dbgUpeUjsDgDhCXwFPuizDwkTnYpvD",
                     placedItemTypeId: PlacedItemTypeId.Jackfruit,
                 },
                 [DefaultCollection.Pomegranate]: {
                     name: "Pomegranate",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/pomegranate_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/pomegranate.png",
                     address: "B8pPptqT3vKeVmMDqkz1EoBr5fGFymJVeVCUPLgYe1kV",
                     placedItemTypeId: PlacedItemTypeId.Pomegranate,
                 },
                 [DefaultCollection.Rambutan]: {
                     name: "Rambutan",
-                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/rambutan_collection.png",
+                    imageUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/collection-metadata/rambutan.png",
                     address: "d1CTVb2B4fPkbQi6FVgZAWVvWbaHPNruwncoAjcejpL",
                     placedItemTypeId: PlacedItemTypeId.Rambutan,
                 }

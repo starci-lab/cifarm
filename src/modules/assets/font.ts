@@ -1,5 +1,6 @@
 import { FontData } from "./types"
-
+import { getAssetUrl } from "./utils"
+const PREFIX = "/fonts"
 export interface AssetFontData {
     phaser: {
         base: FontData
@@ -14,7 +15,7 @@ export const assetFontMap: Record<FontId, AssetFontData> = {
         phaser: {
             base: {
                 assetKey: "font-rowdies",
-                assetUrl: "/fonts/rowdies.ttf",
+                assetUrl: getAssetUrl(`${PREFIX}/rowdies.ttf`),
             },
         },
     },

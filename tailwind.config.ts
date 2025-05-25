@@ -13,6 +13,11 @@ const config: Config = {
     ],
     theme: {
     	extend: {
+            scale: {
+                "40": "0.4",
+                "60": "0.6",
+                "20": "0.2",
+            },
     		backgroundImage: {
     			"gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
     			"gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
@@ -115,8 +120,8 @@ const config: Config = {
                     contrast: "var(--text-contrast)",
                 },
     			border: {
-                    DEFAULT: "var(--border)",
-                    secondary: "var(--border-secondary)",
+                    DEFAULT: "hsl(var(--border))",
+                    secondary: "hsl(var(--border-secondary))",
                 },
     			input: "hsl(var(--input))",
     			ring: "hsl(var(--ring))",

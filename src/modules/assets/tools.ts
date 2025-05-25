@@ -1,5 +1,6 @@
 import { AssetData, Metadata } from "./types"
 import { ToolId } from "../entities"
+import { getAssetUrl } from "./utils"
 
 const PREFIX = "/tools"
 
@@ -12,7 +13,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Medicine for treating sick animals.",
         base: {
             assetKey: "tools-animal-medicine",
-            assetUrl: `${PREFIX}/animal-medicine.png`
+            assetUrl: getAssetUrl(`${PREFIX}/animal-medicine.png`)
         },
     },
     [ToolId.BugNet]: {
@@ -20,7 +21,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Tool for catching insects.",
         base: {
             assetKey: "tools-bug-net",
-            assetUrl: `${PREFIX}/bug-net.png`
+            assetUrl: getAssetUrl(`${PREFIX}/bug-net.png`)
         },
     },
     [ToolId.Hammer]: {
@@ -28,7 +29,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Tool for building and repairs.",
         base: {
             assetKey: "tools-hammer",
-            assetUrl: `${PREFIX}/hammer.png`
+            assetUrl: getAssetUrl(`${PREFIX}/hammer.png`)
         },
     },
     [ToolId.Hand]: {
@@ -36,7 +37,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Basic tool for interaction.",
         base: {
             assetKey: "tools-hand",
-            assetUrl: `${PREFIX}/hand.png`
+            assetUrl: getAssetUrl(`${PREFIX}/hand.png`)
         },
     },
     [ToolId.Crate]: {
@@ -44,7 +45,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Container for storing items.",
         base: {
             assetKey: "tools-crate",
-            assetUrl: `${PREFIX}/crate.png`
+            assetUrl: getAssetUrl(`${PREFIX}/crate.png`)
         },
     },
     [ToolId.WateringCan]: {
@@ -52,7 +53,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Tool for watering plants.",
         base: {
             assetKey: "tools-watering-can",
-            assetUrl: `${PREFIX}/watering-can.png`
+            assetUrl: getAssetUrl(`${PREFIX}/watering-can.png`)
         },
     },
     [ToolId.Herbicide]: {
@@ -60,7 +61,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Chemical for weed control.",
         base: {
             assetKey: "tools-herbicide",
-            assetUrl: `${PREFIX}/herbicide.png`
+            assetUrl: getAssetUrl(`${PREFIX}/herbicide.png`)
         },
     },
     [ToolId.Pesticide]: {
@@ -68,7 +69,7 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
         description: "Chemical for pest control.",
         base: {
             assetKey: "tools-pesticide",
-            assetUrl: `${PREFIX}/pesticide.png`
+            assetUrl: getAssetUrl(`${PREFIX}/pesticide.png`)
         },
     }     
 }

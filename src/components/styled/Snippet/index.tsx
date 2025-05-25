@@ -1,30 +1,35 @@
-import { useToast } from "@/hooks"
+import { toast } from "@/hooks"
 import React, { FC } from "react"
 import { Button } from "@/components"
 import { Copy } from "@phosphor-icons/react"
 
 export interface SnippetProps {
   code: string;
+  overrideIcon?: React.ReactNode;
+}
+
+// method to copy text to clipboard, to allow mannual copy of the code
+export const copyTextToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast({
+        title: "Copied to clipboard",
+    })
 }
 
 export const Snippet: FC<SnippetProps> = ({
     code,
+    overrideIcon,
 }) => {
-    const { toast } = useToast()
-
     return (
         <Button
             variant="flat"
             size="icon"
             color="secondary"
-            onClick={async () => {
-                await navigator.clipboard.writeText(code)
-                toast({
-                    title: "Copied to clipboard",
-                })
+            onClick={() => {
+                copyTextToClipboard(code)
             }}
         >
-            <Copy />
+            {overrideIcon || <Copy />}
         </Button>
     )
 }

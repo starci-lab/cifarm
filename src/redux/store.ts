@@ -11,7 +11,8 @@ import {
     downloadReducer,
     searchReducer,
     sidebarReducer,
-    sheetReducer
+    sheetReducer,
+    convertReducer,
 } from "./slices"
 
 export const store = configureStore({
@@ -26,7 +27,8 @@ export const store = configureStore({
         sidebarReducer,
         downloadReducer,
         searchReducer,
-        sheetReducer
+        sheetReducer,
+        convertReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

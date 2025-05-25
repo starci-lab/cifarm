@@ -129,9 +129,7 @@ export interface NFTCollectionData {
   collectionAddress: string;
   imageUrl: string;
 }
-export type NFTCollection = Partial<
-  Record<ChainKey, Partial<Record<Network, NFTCollectionData>>>
->;
+export type NFTCollection = Partial<Record<Network, NFTCollectionData>>;
 export type NFTCollections = Partial<Record<NFTType, NFTCollection>>;
 
 export interface WholesaleMarketProduct {
@@ -139,10 +137,16 @@ export interface WholesaleMarketProduct {
   quantity: number;
 }
 
-export interface WholesaleMarket {
+export interface WholesaleMarketBulk {
+  bulkId: string;
+  bulkName: string;
   paymentKind: PaymentKind;
   price: number;
   products: Array<WholesaleMarketProduct>;
+}
+
+export interface WholesaleMarket {
+  bulks: Array<WholesaleMarketBulk>;
 }
 
 export interface GoldPurchaseOption {
@@ -151,12 +155,20 @@ export interface GoldPurchaseOption {
   paymentKind: PaymentKind;
 }
 
-export interface GoldPurchaseOptions {
+export interface GoldPurchase {
   options: Array<GoldPurchaseOption>;
 }
+export type GoldPurchases = Record<Network, GoldPurchase>;
 
-export type GoldPurchase = Record<Network, GoldPurchaseOptions>;
-export type GoldPurchases = Record<ChainKey, GoldPurchase>;
+export interface EnergyPurchaseOption {
+  price: number;
+  percentage: number;
+  paymentKind: PaymentKind;
+}
+export interface EnergyPurchase {
+  options: Array<EnergyPurchaseOption>;
+}
+export type EnergyPurchases = Record<Network, EnergyPurchase>;
 
 export interface InteractionPermissions {
   thiefLevelGapThreshold: number;
@@ -202,6 +214,14 @@ export interface PetInfo {
   dog: DogInfo;
 }
 
-export type TokenWrapped = Partial<Record<Network, TokenData>>;
-export type Token = Partial<Record<ChainKey, TokenWrapped>>;
+export interface Referral {
+  creditsPerSuccessfulReferral: number;
+  creditsWhenJoiningWithReferral: number;
+  creditsWhenYourReferralInviteSomeone: number;
+}
+
+export interface NFTConversion {
+  conversionRate: number;
+}
+export type Token = Record<ChainKey, Partial<Record<Network, TokenData>>>;
 export type Tokens = Partial<Record<TokenKey, Token>>;

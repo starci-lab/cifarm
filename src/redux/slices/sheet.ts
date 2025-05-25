@@ -14,7 +14,7 @@ export interface GameItemSheet {
 }
 
 export interface BottomNavSheet {
-    items?: BottomNavSheetData[];
+    items?: Array<BottomNavSheetData>;
 }
 
 export interface BottomNavSheetData {
@@ -33,6 +33,10 @@ export enum TokenSheetPage {
     Transfer = "Transfer",
 }
 
+export interface WholesaleMarketBulkSheet {
+    bulkId?: string;
+}
+
 export interface SheetSlice {
   tokenSheet: TokenSheet;
   nftSheet: NFTSheet;
@@ -40,6 +44,7 @@ export interface SheetSlice {
   bottomNavSheet: BottomNavSheet;
   tokenSheetPage: TokenSheetPage;
   nftSheetPage: NFTSheetPage;
+  wholesaleMarketBulkSheet: WholesaleMarketBulkSheet;
 }
 
 const initialState: SheetSlice = {
@@ -49,6 +54,7 @@ const initialState: SheetSlice = {
     bottomNavSheet: {},
     tokenSheetPage: TokenSheetPage.Main,
     nftSheetPage: NFTSheetPage.Main,
+    wholesaleMarketBulkSheet: {},
 }
 
 export const sheetSlice = createSlice({
@@ -73,6 +79,9 @@ export const sheetSlice = createSlice({
         setBottomNavSheet: (state, action: PayloadAction<BottomNavSheet>) => {
             state.bottomNavSheet = action.payload
         },
+        setWholesaleMarketBulkSheet: (state, action: PayloadAction<WholesaleMarketBulkSheet>) => {
+            state.wholesaleMarketBulkSheet = action.payload
+        },
     },
 })
 
@@ -84,6 +93,7 @@ export const {
     setNFTSheetPage,
     setGameItemSheet,
     setBottomNavSheet,
+    setWholesaleMarketBulkSheet,
 } = sheetSlice.actions
 
 

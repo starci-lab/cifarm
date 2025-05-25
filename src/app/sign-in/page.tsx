@@ -8,10 +8,13 @@ import React, { FC } from "react"
 import { Image } from "@/components"
 import { envConfig } from "@/env"
 import { formatUrl } from "url-lib"
+import { useSearchParams } from "next/navigation"
 
 const Page: FC = () => {
     const router = useRouterWithSearchParams()
     const network = envConfig().network
+    const searchParams = useSearchParams()
+    const referralUserId = searchParams.get("referralUserId")
     return (
         <Container centerContent hasPadding>
             <div className="grid place-items-center">
@@ -27,9 +30,11 @@ const Page: FC = () => {
                 <ExtendedButton
                     variant="flat"
                     onClick={async () => {
-                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/google/redirect?network=${network}`, {
-                            network
-                        }))
+                        const url = formatUrl(`${envConfig().socialAuthUrl}/auth/google/redirect`, {
+                            network,
+                            referralUserId
+                        })
+                        router.push(url)
                     }}
                     color="secondary"
                     className="w-full justify-start"
@@ -43,9 +48,11 @@ const Page: FC = () => {
                     className="w-full justify-start"
                     color="secondary"
                     onClick={async () => {
-                        router.push(formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect?network=${network}`, {
-                            network
-                        }))
+                        const url = formatUrl(`${envConfig().socialAuthUrl}/auth/facebook/redirect`, {
+                            network,
+                            referralUserId
+                        })
+                        router.push(url)
                     }}
                 > 
                     <Image src="/facebook.svg" className="w-4 h-4" />
@@ -55,11 +62,11 @@ const Page: FC = () => {
                 <ExtendedButton
                     variant="flat"
                     onClick={async () => {
-                        router.push(
-                            formatUrl(`${envConfig().socialAuthUrl}/auth/x/redirect?network=${network}`, {
-                                network
-                            })
-                        )
+                        const url = formatUrl(`${envConfig().socialAuthUrl}/auth/x/redirect`, {
+                            network,
+                            referralUserId
+                        })
+                        router.push(url)
                     }}
                     className="w-full justify-start"
                     color="secondary"

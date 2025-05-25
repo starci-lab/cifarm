@@ -1,4 +1,5 @@
 import { AssetData } from "./types"
+import { getAssetUrl } from "./utils"
 
 export enum AssetUIId {
     Frame = "frame",
@@ -16,25 +17,25 @@ export const assetUiMap: Record<AssetUIId, AssetUIData> = {
     [AssetUIId.Frame]: {
         base: {
             assetKey: "ui-frame",
-            assetUrl: `${PREFIX}/frame.png`
+            assetUrl: getAssetUrl(`${PREFIX}/frame.png`)
         },
     },
     [AssetUIId.Locked]: {
         base: {
             assetKey: "ui-locked",
-            assetUrl: `${PREFIX}/locked.png`
+            assetUrl: getAssetUrl(`${PREFIX}/locked.png`)
         },
     },
     [AssetUIId.SelectedArrow]: {
         base: {
             assetKey: "ui-selected-arrow",
-            assetUrl: `${PREFIX}/selected-arrow.png`
+            assetUrl: getAssetUrl(`${PREFIX}/selected-arrow.png`)
         },
     },
     [AssetUIId.Checked]: {
         base: {
             assetKey: "ui-checked",
-            assetUrl: `${PREFIX}/checked.png`
+            assetUrl: getAssetUrl(`${PREFIX}/checked.png`)
         },
     },
 }

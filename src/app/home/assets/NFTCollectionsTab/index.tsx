@@ -18,9 +18,6 @@ export const NFTCollectionsTab: FC = () => {
     const nftCollectionSwrs = useAppSelector(
         (state) => state.sessionReducer.nftCollectionSwrs
     )
-    const chainKey = useAppSelector(
-        (state) => state.sessionReducer.chainKey
-    )
     const network = envConfig().network
 
     const router = useRouterWithSearchParams()
@@ -30,7 +27,7 @@ export const NFTCollectionsTab: FC = () => {
                 {nftCollections.map((nftCollection) => {
                     const collectionSwr = nftCollectionSwrs[nftCollection.key]
                     if (!nftCollection || !collectionSwr) return null
-                    const collectionData = nftCollection[chainKey]?.[network]
+                    const collectionData = nftCollection?.[network]
                     if (!collectionData) return null
 
                     return (

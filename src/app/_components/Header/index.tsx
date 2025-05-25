@@ -7,6 +7,7 @@ import { Logo } from "./Logo"
 import { MobileMenu } from "./MobileMenu"
 import { PulsatingActionButton } from "../Hero/PulsatingActionButton"
 import { List } from "@phosphor-icons/react"
+import { pathConstants } from "@/constants"
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -28,7 +29,7 @@ export const Header = () => {
                 {!isMobile && <div className="flex items-center gap-4">
                     <PulsatingActionButton
                         onClick={() => {
-                            router.push("/home")
+                            router.push(pathConstants.signIn)
                         }}
                     >
                         Play Now

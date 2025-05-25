@@ -20,6 +20,7 @@ export enum ReceiverEventName {
   DailyRewardClaimed = "daily_reward_claimed",
   StopBuying = "stop_buying",
   ForceSyncPlacedItemsResponsed = "force_sync_placed_items_responsed",
+  YourAccountHasBeenLoggedInFromAnotherDevice = "your_account_has_been_logged_in_from_another_device",
 }
 
 // sync placed items

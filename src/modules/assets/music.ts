@@ -1,4 +1,5 @@
 import { MusicData } from "./types"
+import { getAssetUrl } from "./utils"
 
 export interface AssetMusicData {
     phaser: {
@@ -14,7 +15,7 @@ export const assetMusicMap: Record<MusicId, AssetMusicData> = {
         phaser: {
             base: {
                 assetKey: "music-main",
-                assetUrl: "/music/main.mp3",
+                assetUrl: getAssetUrl("/music/main.mp3"),
             },
         },
     },

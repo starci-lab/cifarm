@@ -205,6 +205,30 @@ export enum ExternalEventName {
     RequestSortInventories = "request_sort_inventories",
 }
 
+// events that listen inside Phaser class, use to unregister event listener
+export const externalEventPhaserOns = [
+    ExternalEventName.StaticDataLoaded,
+    ExternalEventName.AssetsLoaded,
+    ExternalEventName.PlacedItemsLoaded,
+    ExternalEventName.UserLoaded,
+    ExternalEventName.InventoriesLoaded,
+    ExternalEventName.PlacedItemsSynced,
+    ExternalEventName.InventoriesSynced,
+    ExternalEventName.UserSynced,
+    ExternalEventName.PlaceNFTItem,
+    ExternalEventName.ActionEmitted,
+    ExternalEventName.SelectTool,
+    ExternalEventName.Return,
+    ExternalEventName.Visit,
+    ExternalEventName.StopBuying,
+    ExternalEventName.ReturnNormal,
+    ExternalEventName.MoveItem,
+    ExternalEventName.SellItem,
+    ExternalEventName.ForceSyncPlacedItemsResponsed,
+    ExternalEventName.RequestSelectTool,
+    ExternalEventName.RequestForceSyncPlacedItems,
+]
+
 export enum ModalName {
     Shop = "shop",
     Inventory = "inventory",

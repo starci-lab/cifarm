@@ -1,9 +1,8 @@
-import { Network, ChainKey } from "@/modules/blockchain"
+import { Network } from "@/modules/blockchain"
 import { AbstractSchema } from "./abstract"
 
 export interface UserSchema extends AbstractSchema {
     username: string;
-    chainKey: ChainKey;
     network: Network;
     accountAddress: string;
     golds: number;
@@ -30,4 +29,5 @@ export interface UserSchema extends AbstractSchema {
     selectedPlacedItemDogId?: string
     selectedPlacedItemCatId?: string
     oauthProvider?: string
+    credits: number
 }

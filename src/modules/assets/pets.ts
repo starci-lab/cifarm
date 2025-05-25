@@ -1,5 +1,6 @@
 import { PetId } from "@/modules/entities"
 import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
+import { getAssetUrl } from "./utils"
 
 export interface PetAssetMapData {
     mapData: AssetMapData,
@@ -27,13 +28,13 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                     spine: {
                         atlas: {
                             assetKey: "pets-dog-atlas",
-                            assetUrl: `${PREFIX}/dog/spine/dog.atlas`,
-                            textureUrl: `${PREFIX}/dog/spine/dog.png`,
+                            assetUrl: getAssetUrl(`${PREFIX}/dog/spine/dog.atlas`),
+                            textureUrl: getAssetUrl(`${PREFIX}/dog/spine/dog.png`),
                             version: 2,
                         },
                         json: {
                             assetKey: "pets-dog-json",
-                            assetUrl: `${PREFIX}/dog/spine/dog.json`,
+                            assetUrl: getAssetUrl(`${PREFIX}/dog/spine/dog.json`),
                             version: 2,
                         },
                         extraOffsets: { x: 0, y: -80 },
@@ -46,7 +47,7 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
         },
         base: {
             assetKey: "pets-dog",
-            assetUrl: `${PREFIX}/dog/spine/dog.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/dog/spine/dog.png`),
         },
     },
     [PetId.Cat]: {
@@ -59,13 +60,13 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
                     spine: {
                         atlas: {
                             assetKey: "pets-cat-atlas",
-                            assetUrl: `${PREFIX}/cat/spine/cat.atlas`,
-                            textureUrl: `${PREFIX}/cat/spine/cat.png`,
+                            assetUrl: getAssetUrl(`${PREFIX}/cat/spine/cat.atlas`),
+                            textureUrl: getAssetUrl(`${PREFIX}/cat/spine/cat.png`),
                             version: 1,
                         },
                         json: {
                             assetKey: "pets-cat-json",
-                            assetUrl: `${PREFIX}/cat/spine/cat.json`,
+                            assetUrl: getAssetUrl(`${PREFIX}/cat/spine/cat.json`),
                             version: 1,
                         },
                         extraOffsets: { x: 0, y: -80 },
@@ -78,7 +79,7 @@ export const assetPetMap: Record<PetId, AssetPetData> = {
         },
         base: {
             assetKey: "pets-cat",
-            assetUrl: `${PREFIX}/cat/spine/cat.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/cat/spine/cat.png`),
         },
     },
 } 

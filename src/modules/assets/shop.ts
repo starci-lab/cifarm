@@ -12,6 +12,7 @@ import {
 } from "../entities"
 import { assetSuppliesMap } from "./supplies"
 import { assetToolsMap } from "./tools"
+import { getAssetUrl } from "./utils"
 
 export interface ShopData extends Metadata {
   base: AssetData;
@@ -46,7 +47,7 @@ export const assetShopMap: AssetShopData = {
         "A hardy root vegetable with a crisp texture and slightly peppery flavor.",
             base: {
                 assetKey: "shop-turnip-seed",
-                assetUrl: `${PREFIX_CROPS}/turnip.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/turnip.png`),
             },
         },
         [CropId.Carrot]: {
@@ -54,7 +55,7 @@ export const assetShopMap: AssetShopData = {
             description: "Sweet and crunchy root vegetable rich in beta-carotene.",
             base: {
                 assetKey: "shop-carrot-seed",
-                assetUrl: `${PREFIX_CROPS}/carrot.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/carrot.png`),
             },
         },
         [CropId.Potato]: {
@@ -62,7 +63,7 @@ export const assetShopMap: AssetShopData = {
             description: "Versatile tuber crop with starchy texture.",
             base: {
                 assetKey: "shop-potato-seed",
-                assetUrl: `${PREFIX_CROPS}/potato.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/potato.png`),
             },
         },
         [CropId.Pineapple]: {
@@ -70,7 +71,7 @@ export const assetShopMap: AssetShopData = {
             description: "Tropical fruit with sweet, tangy flavor and spiky crown.",
             base: {
                 assetKey: "shop-pineapple-seed",
-                assetUrl: `${PREFIX_CROPS}/pineapple.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/pineapple.png`),
             },
         },
         [CropId.Watermelon]: {
@@ -78,7 +79,7 @@ export const assetShopMap: AssetShopData = {
             description: "Large, juicy fruit with sweet red flesh.",
             base: {
                 assetKey: "shop-watermelon-seed",
-                assetUrl: `${PREFIX_CROPS}/watermelon.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/watermelon.png`),
             },
         },
         [CropId.Cucumber]: {
@@ -86,7 +87,7 @@ export const assetShopMap: AssetShopData = {
             description: "Refreshing vegetable with crisp texture.",
             base: {
                 assetKey: "shop-cucumber-seed",
-                assetUrl: `${PREFIX_CROPS}/cucumber.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/cucumber.png`),
             },
         },
         [CropId.BellPepper]: {
@@ -94,7 +95,7 @@ export const assetShopMap: AssetShopData = {
             description: "Colorful vegetable with sweet, mild flavor.",
             base: {
                 assetKey: "shop-bell-pepper-seed",
-                assetUrl: `${PREFIX_CROPS}/bell-pepper.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/bell-pepper.png`),
             },
         },
         [CropId.Strawberry]: {
@@ -102,7 +103,47 @@ export const assetShopMap: AssetShopData = {
             description: "Sweet, red berry with juicy texture and small seeds.",
             base: {
                 assetKey: "shop-strawberry-seed",
-                assetUrl: `${PREFIX_CROPS}/strawberry.png`,
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/strawberry.png`),
+            },
+        },
+        [CropId.Cauliflower]: {
+            name: "Cauliflower seed",
+            description: "White, dense vegetable with mild flavor.",
+            base: {
+                assetKey: "shop-cauliflower-seed",
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/cauliflower.png`),
+            },
+        },
+        [CropId.Eggplant]: {
+            name: "Eggplant seed",
+            description: "Long, slender vegetable with mild flavor.",
+            base: {
+                assetKey: "shop-eggplant-seed",
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/eggplant.png`),
+            },
+        },
+        [CropId.Tomato]: {
+            name: "Tomato seed",
+            description: "Tall, grain-bearing plant with large ears.",
+            base: {
+                assetKey: "shop-tomato-seed",
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/tomato.png`),
+            },
+        },
+        [CropId.Pea]: {
+            name: "Pea seed",
+            description: "Large, round fruit with a sweet, orange flesh.",
+            base: {
+                assetKey: "shop-pea-seed",
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/pea.png`),
+            },
+        },
+        [CropId.Pumpkin]: {
+            name: "Pumpkin seed",
+            description: "Large, round fruit with a sweet, orange flesh.",
+            base: {
+                assetKey: "shop-pumpkin-seed",
+                assetUrl: getAssetUrl(`${PREFIX_CROPS}/pumpkin.png`),
             },
         },
     },
@@ -112,7 +153,15 @@ export const assetShopMap: AssetShopData = {
             description: "Classic white flower with yellow center.",
             base: {
                 assetKey: "shop-daisy-seed",
-                assetUrl: `${PREFIX_FLOWERS}/daisy.png`,
+                assetUrl: getAssetUrl(`${PREFIX_FLOWERS}/daisy.png`),
+            },
+        },
+        [FlowerId.Sunflower]: {
+            name: "Sunflower seed",
+            description: "Flower with large, yellow petals and a central disk.",
+            base: {
+                assetKey: "shop-sunflower-seed",
+                assetUrl: getAssetUrl(`${PREFIX_FLOWERS}/sunflower.png`),
             },
         },
     },
@@ -122,7 +171,7 @@ export const assetShopMap: AssetShopData = {
             description: "Productive egg-laying bird.",
             base: {
                 assetKey: "shop-chicken",
-                assetUrl: `${PREFIX_ANIMALS}/chicken.png`,
+                assetUrl: getAssetUrl(`${PREFIX_ANIMALS}/chicken.png`),
             },
         },
         [AnimalId.Cow]: {
@@ -130,7 +179,7 @@ export const assetShopMap: AssetShopData = {
             description: "Dairy-producing livestock.",
             base: {
                 assetKey: "shop-cow",
-                assetUrl: `${PREFIX_ANIMALS}/cow.png`,
+                assetUrl: getAssetUrl(`${PREFIX_ANIMALS}/cow.png`),
             },
         },
     },
@@ -140,7 +189,7 @@ export const assetShopMap: AssetShopData = {
             description: "Essential structure for housing and managing livestock.",
             base: {
                 assetKey: "shop-barn",
-                assetUrl: `${PREFIX_BUILDINGS}/barn.png`,
+                assetUrl: getAssetUrl(`${PREFIX_BUILDINGS}/barn.png`),
             },
         },
         [BuildingId.Coop]: {
@@ -149,7 +198,7 @@ export const assetShopMap: AssetShopData = {
         "Secure housing for poultry with nesting boxes and roosting space.",
             base: {
                 assetKey: "shop-coop",
-                assetUrl: `${PREFIX_BUILDINGS}/coop.png`,
+                assetUrl: getAssetUrl(`${PREFIX_BUILDINGS}/coop.png`),
             },
         },
         [BuildingId.BeeHouse]: {
@@ -158,7 +207,7 @@ export const assetShopMap: AssetShopData = {
         "Specialized structure for honey production and pollination.",
             base: {
                 assetKey: "shop-bee-house",
-                assetUrl: `${PREFIX_BUILDINGS}/bee-house.png`,
+                assetUrl: getAssetUrl(`${PREFIX_BUILDINGS}/bee-house.png`),
             },
         },
         [BuildingId.PetHouse]: {
@@ -166,7 +215,7 @@ export const assetShopMap: AssetShopData = {
             description: "Comfortable shelter for farm pets with proper ventilation.",
             base: {
                 assetKey: "shop-pet-house",
-                assetUrl: `${PREFIX_BUILDINGS}/pet-house.png`,
+                assetUrl: getAssetUrl(`${PREFIX_BUILDINGS}/pet-house.png`),
             },
         },
         [BuildingId.FishPond]: {
@@ -174,7 +223,7 @@ export const assetShopMap: AssetShopData = {
             description: "Specialized structure for fish breeding and harvesting.",
             base: {
                 assetKey: "shop-fish-pond",
-                assetUrl: `${PREFIX_BUILDINGS}/fish-pond.png`,
+                assetUrl: getAssetUrl(`${PREFIX_BUILDINGS}/fish-pond.png`),
             },
         },
     },
@@ -184,7 +233,7 @@ export const assetShopMap: AssetShopData = {
             description: "Deciduous fruit tree producing seasonal harvests.",
             base: {
                 assetKey: "shop-apple",
-                assetUrl: `${PREFIX_FRUITS}/apple.png`,
+                assetUrl: getAssetUrl(`${PREFIX_FRUITS}/apple.png`),
             },
         },
         [FruitId.Banana]: {
@@ -192,7 +241,7 @@ export const assetShopMap: AssetShopData = {
             description: "Tropical fruit tree requiring warm climate conditions.",
             base: {
                 assetKey: "shop-banana",
-                assetUrl: `${PREFIX_FRUITS}/banana.png`,
+                assetUrl: getAssetUrl(`${PREFIX_FRUITS}/banana.png`),
             },
         },
     },
@@ -202,7 +251,7 @@ export const assetShopMap: AssetShopData = {
             description: "Standard farm plot for crop cultivation.",
             base: {
                 assetKey: "shop-basic-tile",
-                assetUrl: `${PREFIX_TILES}/basic-tile.png`,
+                assetUrl: getAssetUrl(`${PREFIX_TILES}/basic-tile.png`),
             },
         },
     },
@@ -223,7 +272,7 @@ export const assetShopMap: AssetShopData = {
             description: "Loyal farm companion providing security and companionship.",
             base: {
                 assetKey: "shop-dog",
-                assetUrl: `${PREFIX_PETS}/dog.png`,
+                assetUrl: getAssetUrl(`${PREFIX_PETS}/dog.png`),
             },
         },
         [PetId.Cat]: {
@@ -231,7 +280,7 @@ export const assetShopMap: AssetShopData = {
             description: "Natural pest controller and farm companion.",
             base: {
                 assetKey: "shop-cat",
-                assetUrl: `${PREFIX_PETS}/cat.png`,
+                assetUrl: getAssetUrl(`${PREFIX_PETS}/cat.png`),
             },
         },
     },

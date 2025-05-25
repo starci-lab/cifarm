@@ -5,6 +5,7 @@ import {
 } from "@/modules/entities"
 
 import { AssetTextureData } from "./types"
+import { getAssetUrl } from "./utils"
 
 // State Asset Data Interface
 export interface StateAssetData {
@@ -13,13 +14,15 @@ export interface StateAssetData {
     }
 }
 
+const PREFIX = "/states"
+
 // Plant State Assets
 const plantStateAssets: Partial<Record<PlantCurrentState, StateAssetData>> = {
     [PlantCurrentState.NeedWater]: {
         phaser: {
             base: {
                 assetKey: "need-water",
-                assetUrl: "states/need-water.png",
+                assetUrl: getAssetUrl(`${PREFIX}/need-water.png`),
             },
         },
     },
@@ -27,7 +30,7 @@ const plantStateAssets: Partial<Record<PlantCurrentState, StateAssetData>> = {
         phaser: {
             base: { 
                 assetKey: "is-weedy",
-                assetUrl: "states/is-weedy.png",
+                assetUrl: getAssetUrl(`${PREFIX}/is-weedy.png`),
             },
         },
     },
@@ -35,7 +38,7 @@ const plantStateAssets: Partial<Record<PlantCurrentState, StateAssetData>> = {
         phaser: {
             base: { 
                 assetKey: "is-infested",
-                assetUrl: "states/is-infested.png",
+                assetUrl: getAssetUrl(`${PREFIX}/is-infested.png`),
             },
         },
     },
@@ -47,7 +50,7 @@ const animalStateAssets: Partial<Record<AnimalCurrentState, StateAssetData>> = {
         phaser: {
             base: {
                 assetKey: "hungry",
-                assetUrl: "states/hungry.png",
+                assetUrl: getAssetUrl(`${PREFIX}/hungry.png`),
             },
         },
     },
@@ -55,7 +58,7 @@ const animalStateAssets: Partial<Record<AnimalCurrentState, StateAssetData>> = {
         phaser: {
             base: { 
                 assetKey: "animal-sick",
-                assetUrl: "states/sick.png",
+                assetUrl: getAssetUrl(`${PREFIX}/sick.png`),
             },
         },
     },
@@ -67,7 +70,7 @@ const fruitStateAssets: Partial<Record<FruitCurrentState, StateAssetData>> = {
         phaser: {
             base: { 
                 assetKey: "need-fruit-fertilizer",
-                assetUrl: "states/need-fruit-fertilizer.png",
+                assetUrl: getAssetUrl(`${PREFIX}/need-fruit-fertilizer.png`),
             },
         },
     },
@@ -75,7 +78,7 @@ const fruitStateAssets: Partial<Record<FruitCurrentState, StateAssetData>> = {
         phaser: {
             base: { 
                 assetKey: "is-buggy",
-                assetUrl: "states/is-buggy.png",
+                assetUrl: getAssetUrl(`${PREFIX}/is-buggy.png`),
             },
         },
     },

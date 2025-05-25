@@ -7,7 +7,7 @@ import { Toolbar } from "./Toolbar"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { PROFILE_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
-import { getMaxEnergy } from "@/modules/common"
+import { getMaxEnergy, truncateString } from "@/modules/common"
 
 export const ReactUI: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)
@@ -32,7 +32,7 @@ export const ReactUI: FC = () => {
                                         jazzString={user?.accountAddress}  
                                     />
                                     <div className="px-2 py-1.5 bg-content-4/50 rounded-r-md">
-                                        <div className="uppercase text-sm">{user?.username}</div>
+                                        <div className="uppercase text-sm">{truncateString(user?.username ?? "", 12, 0)}</div>
                                         <div className="text-xs text-muted-foreground">Lv.{user?.level}</div>
                                     </div>
                                 </div>

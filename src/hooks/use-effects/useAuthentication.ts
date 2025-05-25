@@ -7,10 +7,11 @@ import { saveTokens } from "@/modules/apollo"
 import { setAuthenticated, setLoaded, useAppDispatch, 
     useAppSelector
 } from "@/redux"
-import { pathConstants } from "@/constants"
+import { neutralPages, pathConstants, unauthenticatedPages } from "@/constants"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { usePathname } from "next/navigation"
 //import { pathConstants } from "@/constants"
+
 
 export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<
@@ -63,9 +64,15 @@ export const useAuthentication = () => {
     //auto navigate to home if authenticated
     useEffect(() => {
         if (!authenticated) {
+            if (pathname !== pathConstants.signIn) {
+                router.push(pathConstants.signIn)
+            }
             return
         }
-        if (pathname === pathConstants.signIn) {
+        if (neutralPages.includes(pathname)) {
+            return
+        }
+        if (unauthenticatedPages.includes(pathname)) {
             router.push(pathConstants.home)
         }
     }, [authenticated, pathname])

@@ -36,3 +36,6 @@ export interface UmiTxResponse {
     serializedTx: string
 }
 
+export interface UmiTxsResponse {
+    serializedTxs: Array<string>
+}

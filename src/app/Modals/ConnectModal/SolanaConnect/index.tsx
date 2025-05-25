@@ -9,7 +9,7 @@ import {
 import React, { FC, useEffect } from "react"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { WalletName } from "@solana/wallet-adapter-base"
-import { useAppSelector, useAppDispatch, setChainKey } from "@/redux"
+import { setChainKey, useAppDispatch } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
 export const SolanaConnect: FC = () => {
     const { connect, select, connecting, connected, wallet, disconnect } =
@@ -20,7 +20,7 @@ export const SolanaConnect: FC = () => {
         }
         connect()
     }, [wallet?.adapter.name])
-
+    const dispatch = useAppDispatch()
     const solanaWallets = [
         {
             icon: <Image src="/phantom.svg" alt="Phantom" className="w-10 h-10" />,
@@ -28,6 +28,7 @@ export const SolanaConnect: FC = () => {
             name: "Phantom",
             onClick: async () => {
                 select("Phantom" as WalletName)
+                dispatch(setChainKey(ChainKey.Solana))  
             },
         },
         {
@@ -36,12 +37,10 @@ export const SolanaConnect: FC = () => {
             wallet: "Solflare",
             onClick: async () => {
                 select("Solflare" as WalletName)
+                dispatch(setChainKey(ChainKey.Solana))
             },
         },
     ]
-
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const dispatch = useAppDispatch()
     return (
         <>
             <DialogBody>
@@ -57,16 +56,16 @@ export const SolanaConnect: FC = () => {
                             disabled={connected}
                             icon={item.icon}
                             text={item.name}
+                            onClick={item.onClick}
                             classNames={{
                                 description: "text-secondary",
                             }}
-                            onClick={item.onClick}
-                            isLoading={connecting && wallet?.adapter.name === item.wallet}
                             description={
                                 connected && wallet?.adapter.name === item.wallet
                                     ? "Connected"
                                     : undefined
                             }
+                            isLoading={connecting && wallet?.adapter.name === item.wallet}
                         />
                     )}
                     showSeparator={false}
@@ -82,16 +81,6 @@ export const SolanaConnect: FC = () => {
                     }}
                 >
           Disconnect
-                </ExtendedButton>
-                <ExtendedButton
-                    className="w-full"
-                    color="default"
-                    disabled={chainKey === ChainKey.Solana || !connected}
-                    onClick={() => {
-                        dispatch(setChainKey(ChainKey.Solana))
-                    }}
-                >
-          Select
                 </ExtendedButton>
             </DialogFooter>
         </>

@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { Baloo_2 } from "next/font/google"
-import { LoadingScene, SidebarProvider } from "@/components"
+import { FallbackScene, LoadingScene, SidebarProvider, FallbackSceneType } from "@/components"
 import { envConfig } from "@/env"
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
 
@@ -28,7 +28,9 @@ import { createNetworkConfig, SuiClientProvider, WalletProvider as WalletSuiProv
 import { Network } from "@/modules/blockchain"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { IconContext } from "@phosphor-icons/react"
-import { ThemeProvider } from "@/components/styled/ThemeProvider"
+import { ThemeProvider } from "@/components"
+import { usePathname } from "next/navigation"
+import { neutralPages, unauthenticatedPages } from "@/constants"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -60,6 +62,9 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     })
     const queryClient = new QueryClient()
     const loaded = useAppSelector(state => state.sessionReducer.loaded)
+
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    const path = usePathname()
 
     return (
         <Suspense>
@@ -97,7 +102,21 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                                                         !loaded ? (
                                                                             <LoadingScene />
                                                                         ) : (
-                                                                            children
+                                                                            (() => {
+                                                                                if (neutralPages.includes(path)) {
+                                                                                    return <>{children}</>
+                                                                                }
+
+                                                                                if (unauthenticatedPages.includes(path)) {
+                                                                                    return authenticated ? (
+                                                                                        <FallbackScene type={FallbackSceneType.Authenticated} />
+                                                                                    ) : (
+                                                                                        <>{children}</>
+                                                                                    )
+                                                                                }
+
+                                                                                return authenticated ? <>{children}</> : <FallbackScene type={FallbackSceneType.Unauthenticated} />
+                                                                            })()
                                                                         )
                                                                     }
                                                                     <UseEffects />

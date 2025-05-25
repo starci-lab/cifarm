@@ -1,19 +1,31 @@
 import React, { FC } from "react"
-import { Card, Separator } from "@/components"
+import { Card, CardBody, CardFooter, NFTBadge, ScaledImage, ImageScale } from "@/components"
 
 interface ItemCardProps {
     name: string
     description: string
     assetUrl: string
+    isNFT?: boolean
 }
 
-export const ItemCard: FC<ItemCardProps> = ({ name, description, assetUrl }) => {
+export const ItemCard: FC<ItemCardProps> = ({ name, description, assetUrl, isNFT = false }) => {
     return (
-        <Card className="border rounded-lg p-4 flex flex-col items-center w-40">
-            <img src={assetUrl} alt={name} className="h-16 mb-2" />
-            <Separator />
-            <div className="font-bold text-center text-foreground">{name}</div>
-            <div className="text-xs text-text-foreground text-center line-clamp-3">{description}</div>
+        <Card className="rounded-lg w-40" pressable>
+            <CardBody className="relative p-3 w-full">
+                {isNFT && <NFTBadge className="absolute top-3 right-3" />}
+                <div className="w-14 h-14 grid place-items-center w-full">
+                    <ScaledImage src={assetUrl} alt={name} imageScale={ImageScale.Size2}/>
+                </div>
+            </CardBody>
+            <CardFooter className="p-3">
+                <div className="grid place-items-center">
+                    <div className="flex items-center gap-2">
+                        <div className="text-center text-foreground text-lg">{name}</div>
+                    </div>
+                    
+                    <div className="text-sm text-text-foreground text-center line-clamp-3">{description}</div>
+                </div>
+            </CardFooter>
         </Card>
     )
 }

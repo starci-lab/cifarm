@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { saveTokens } from "@/modules/apollo/tokens"
 import { useAppDispatch, setAuthenticated } from "@/redux"
 import { useRouterWithSearchParams } from "@/hooks"
-import { LoadingScreen } from "@/components"
+import { FallbackScene, FallbackSceneType } from "@/components"
 import { pathConstants } from "@/constants"
 const Page: FC = () => {
     const searchParams = useSearchParams()
@@ -32,7 +32,7 @@ const Page: FC = () => {
         handleEffect()
     }, [accessToken, refreshToken])
     return <div className="h-screen w-screen">
-        <LoadingScreen />
+        <FallbackScene type={FallbackSceneType.Authenticating} />
     </div>
 }
 

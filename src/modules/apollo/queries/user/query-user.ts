@@ -7,7 +7,6 @@ const query1 = gql`
   query User { 
     user {
       id
-      chainKey
       username
       dailyRewardLastClaimTime
       dailyRewardStreak
@@ -29,6 +28,7 @@ const query1 = gql`
       oauthProvider
       email
       avatarUrl
+      credits
     }
   }
 `
@@ -45,10 +45,14 @@ export enum QueryUser {
 const queryMap: Record<QueryUser, DocumentNode> = {
     [QueryUser.Query1]: query1,
 }
-export type QueryUserParams = QueryParams<QueryUser>;
-export const queryUser = async ({ query = QueryUser.Query1 }: QueryUserParams) => {
+
+export type QueryUserParams = QueryParams<QueryUser, string>;
+export const queryUser = async ({ query = QueryUser.Query1, request }: QueryUserParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<QueryUserResponse>({
         query: queryDocument,
+        variables: {
+            id: request,
+        },
     })
 }

@@ -3,7 +3,6 @@ import {
     GRAPHQL_QUERY_STATIC_SWR,
     HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION,
     HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION,
-    SEND_UMI_SERIALIZED_TX_SWR_MUTATION,
     SIGN_SOLANA_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
     TRANSFER_NFT_SWR_MUTATION,
@@ -16,6 +15,9 @@ import {
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
     SolanaRawTxData,
+    SolanaRawTxsData,
+    SuiRawTxData,
+    SuiRawTxsData,
     TransactionType,
     TransferNFTData,
     TransferTokenData,
@@ -29,11 +31,10 @@ import {
     useHoneycombSendTransactionSwrMutation,
     useSignSolanaTransactionTxSwrMutation,
     useRouterWithSearchParams,
-    useSendUmiSerializedTxSwrMutation,
     useTransferNFTSwrMutation,
     useTransferTokenSwrMutation,
 } from "@/hooks"
-import { ExtendedButton, ModalHeader } from "@/components"
+import { ExtendedButton, ModalHeader, DownloadButton } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -70,10 +71,6 @@ export const SignTransactionModal: FC = () => {
     const { swrMutation: transferTokenSwrMutation } = useSingletonHook2<
     ReturnType<typeof useTransferTokenSwrMutation>
   >(TRANSFER_TOKEN_SWR_MUTATION)
-    
-    const { swrMutation: sendUmiSerializedTxSwrMutation } = useSingletonHook<
-    ReturnType<typeof useSendUmiSerializedTxSwrMutation>
-  >(SEND_UMI_SERIALIZED_TX_SWR_MUTATION)        
 
     const { swrMutation: transferNFTSwrMutation } = useSingletonHook2<
     ReturnType<typeof useTransferNFTSwrMutation>
@@ -164,6 +161,15 @@ export const SignTransactionModal: FC = () => {
         [TransactionType.SolanaRawTx]: {
             name: "Solana Raw Tx",
         },
+        [TransactionType.SolanaRawTxs]: {
+            name: "Solana Raw Txs",
+        },
+        [TransactionType.SuiRawTx]: {
+            name: "Sui Raw Tx",
+        },
+        [TransactionType.SuiRawTxs]: {
+            name: "Sui Raw Txs",
+        },
     }
 
     const { trigger, isMutating } = useSWRMutation(
@@ -232,20 +238,37 @@ export const SignTransactionModal: FC = () => {
                 }
                 case TransactionType.SolanaRawTx: {
                     const { serializedTx } = data as SolanaRawTxData
-                    console.log("serializedTx", serializedTx)
-                    const { serializedTx: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
-                        serializedTx,
+                    const { serializedTxs: signedSerializedTx } = await signSolanaTransactionSwrMutation.trigger({
+                        serializedTxs: serializedTx,
                     })
-                    console.log("signedSerializedTx", signedSerializedTx)
                     // decode the serializedTx
                     if (postActionHook) {
                         txHash = await postActionHook(signedSerializedTx)
                     } else {
-                        const { txHash: txHashResponse } = await sendUmiSerializedTxSwrMutation.trigger({
-                            serializedTx: signedSerializedTx,
-                        })
-                        txHash = txHashResponse
+                        throw new Error("No post action hook")
                     }
+                    break
+                }
+                case TransactionType.SolanaRawTxs: {
+                    const { serializedTxs } = data as SolanaRawTxsData
+                    const { serializedTxs: signedSerializedTxs } = await signSolanaTransactionSwrMutation.trigger({
+                        serializedTxs,
+                    })
+                    if (postActionHook) {
+                        txHash = await postActionHook(signedSerializedTxs)
+                    } else {
+                        throw new Error("No post action hook")
+                    }
+                    break
+                }
+                case TransactionType.SuiRawTx: {
+                    const { serializedTx } = data as SuiRawTxData
+                    console.log("serializedTx", serializedTx)
+                    break
+                }
+                case TransactionType.SuiRawTxs: {
+                    const { serializedTxs } = data as SuiRawTxsData
+                    console.log("serializedTxs", serializedTxs)
                     break
                 }
                 default: {
@@ -410,6 +433,92 @@ export const SignTransactionModal: FC = () => {
                 />
             )
         }
+        case TransactionType.SolanaRawTxs: {
+            const { serializedTxs } = data as SolanaRawTxsData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(SolanaRawTxsContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case SolanaRawTxsContent.SerializedTxs: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-3 py-2 bg-content-2">
+                                    <div className="text-sm font-semibold">Serialized Txs</div>
+                                    <div className="flex items-center gap-2">
+                                        <div>
+                                            {serializedTxs.slice(0, 5).map((serializedTx) => {
+                                                return (
+                                                    <div key={serializedTx}>• {truncateString(serializedTx, 10, 4)}</div>
+                                                )
+                                            })}
+                                        </div>
+                                        <DownloadButton code={serializedTxs.join("\n")} filename={`${chainKey}-${network}-${type}-${Date.now()}.json`} />
+                                    </div>           
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
+        case TransactionType.SuiRawTx: {
+            const { serializedTx } = data as SuiRawTxData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(SuiRawTxContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case SuiRawTxContent.SerializedTx: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-3 py-2 bg-content-2">
+                                    <div className="text-sm font-semibold">Serialized Txs</div>
+                                    <div className="flex items-center gap-2">
+                                        <div>
+                                            {serializedTx}
+                                        </div>
+                                        <Snippet code={serializedTx} />
+                                    </div>           
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
+        case TransactionType.SuiRawTxs: {
+            const { serializedTxs } = data as SuiRawTxsData
+            return (
+                <List
+                    enableScroll={false}
+                    items={Object.values(SuiRawTxsContent)}
+                    contentCallback={(item) => {
+                        switch (item) {
+                        case SuiRawTxsContent.SerializedTxs: {
+                            return (
+                                <div className="flex items-center justify-between gap-12 px-3 py-2 bg-content-2">
+                                    <div className="text-sm font-semibold">Serialized Txs</div>
+                                    <div className="flex items-center gap-2">
+                                        <div>
+                                            {serializedTxs.slice(0, 5).map((serializedTx) => {
+                                                return (
+                                                    <div key={serializedTx}>• {truncateString(serializedTx, 10, 4)}</div>
+                                                )
+                                            })}
+                                        </div>
+                                        <DownloadButton code={serializedTxs.join("\n")} filename={`${chainKey}-${network}-${type}-${Date.now()}.json`} />
+                                    </div>           
+                                </div>
+                            )
+                        }
+                        }
+                    }}
+                />
+            )
+        }
         case TransactionType.TransferNFT: {
             const { nft, recipientAddress, collectionKey } =
           data as TransferNFTData
@@ -418,7 +527,7 @@ export const SignTransactionModal: FC = () => {
                     enableScroll={false}
                     items={Object.values(TransferNFTContent)}
                     contentCallback={(item) => {
-                        const collection = collections[collectionKey]?.[chainKey]?.[network]
+                        const collection = collections[collectionKey]?.[network]
                         if (!collection) throw new Error("Collection not found")
                         switch (item) {
                         case TransferNFTContent.Collection: {
@@ -501,7 +610,6 @@ export const SignTransactionModal: FC = () => {
                         variant="flat"
                         className="flex-1"
                         color="secondary"
-                        size="icon"
                         onClick={() => toggle(false)}
                     >
             Cancel
@@ -541,4 +649,16 @@ export enum HoneycombProtocolRawTxsContent {
 
 export enum SolanaRawTxContent {
   SerializedTx = "serializedTx",
+}
+
+export enum SolanaRawTxsContent {
+  SerializedTxs = "serializedTxs",
+}
+
+export enum SuiRawTxContent {
+  SerializedTx = "serializedTx",
+}
+
+export enum SuiRawTxsContent {
+  SerializedTxs = "serializedTxs",
 }

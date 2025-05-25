@@ -94,20 +94,20 @@ const ItemCardCore: FC<ItemCardProps> = ({
                 {!frameOnly &&
           (() => {
               return (
-                  <div className="absolute w-14 h-14">
-                      {isQuality && (
-                          <ScaledImage
-                              src={assetIconMap[AssetIconId.QualityStar].base.assetUrl}
-                              className="absolute top-0 left-0 z-20"
-                              style={{
-                                  filter: tint ? tintMap[tintColor ?? TintColor.Default] : "grayscale(0%)",
-                              }}
-                          />
-                      )}
+                  <div className="relative w-14 h-14">
                       {stackable && (
                           <div className="absolute bottom-0 right-0 bg-background/75 text-xs grid place-items-center rounded-md p-0.5">
                               {quantity}
                           </div>
+                      )}
+                      {isQuality && (
+                          <ScaledImage
+                              src={assetIconMap[AssetIconId.QualityStar].base.assetUrl}
+                              className="absolute -top-4 -left-4 z-20"
+                              style={{
+                                  filter: tint ? tintMap[tintColor ?? TintColor.Default] : "grayscale(0%)",
+                              }}
+                          />
                       )}
                       <ScaledImage
                           src={imageUrl ?? ""}

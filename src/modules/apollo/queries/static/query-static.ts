@@ -27,7 +27,10 @@ import {
     NFTBoxInfo,
     Tokens,
     TerrainSchema,
-    PetInfo
+    PetInfo,
+    Referral,
+    NFTConversion,
+    EnergyPurchases
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -194,6 +197,7 @@ const query = gql`
       matureGrowthStageDuration
       fertilizerTime
       price
+      isNFT
       unlockLevel
       harvestQuantity
       basicHarvestExperiences
@@ -376,12 +380,11 @@ const query = gql`
     }
     nftCollections {
       dragonFruit {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           }
           mainnet {
             placedItemTypeId
@@ -389,15 +392,13 @@ const query = gql`
             collectionAddress
             imageUrl
           }
-        }
       }
       jackfruit {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           }
           mainnet {
             placedItemTypeId
@@ -405,31 +406,27 @@ const query = gql`
             collectionAddress
             imageUrl
           }
-        }
       }
       rambutan {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           } 
           mainnet {
             placedItemTypeId
             name
             collectionAddress
             imageUrl
-          }
         }
       }
       pomegranate {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           }
           mainnet {
             placedItemTypeId
@@ -437,19 +434,21 @@ const query = gql`
             collectionAddress
             imageUrl
           }
-        }
       }
     } 
     wholesaleMarket {
-      paymentKind
-      price
-      products {
-        productId
-        quantity
+      bulks {
+        bulkId
+        bulkName
+        paymentKind
+        price
+        products {
+          productId
+          quantity
+        }
       }
     }
     goldPurchases {
-      solana {
         testnet {
           options {
             price
@@ -464,23 +463,6 @@ const query = gql`
             paymentKind
           }
         }
-      }
-      sui {
-        testnet {
-          options {
-            price
-            amount
-            paymentKind
-          }
-        }
-        mainnet {
-          options {
-            price
-            amount
-            paymentKind
-          }
-        }
-      }
     }
     interactionPermissions {
       thiefLevelGapThreshold
@@ -662,6 +644,30 @@ const query = gql`
         energyReduce
       }
     }
+    referral {
+      creditsPerSuccessfulReferral
+      creditsWhenJoiningWithReferral
+      creditsWhenYourReferralInviteSomeone
+    }
+    nftConversion {
+      conversionRate
+    }
+    energyPurchases {
+        testnet {
+          options {
+            price
+            percentage
+            paymentKind
+          }
+        }
+        mainnet {
+          options {
+            price
+            percentage
+            paymentKind
+          }
+      }
+    }
   }
 `
 
@@ -693,6 +699,9 @@ export interface QueryStaticResponse {
   interactionPermissions: InteractionPermissions
   nftBoxInfo: NFTBoxInfo
   tokens: Tokens
+  referral: Referral
+  nftConversion: NFTConversion
+  energyPurchases: EnergyPurchases
 }
 
 export const queryStatic = async () => {

@@ -7,13 +7,16 @@ import React from "react"
 import { ItemsTab } from "./ItemsTab"
 import { useScroll } from "@/hooks/useScroll"
 import { ArrowLeft, GameController } from "@phosphor-icons/react"
-import { useRouterWithSearchParams } from "@/hooks"
+import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
+import { TokenomicsTab } from "./TokenomicsTab"
+import { cn } from "@/lib/utils"
 
 const Page: FC = () => {
     const homeTab = useAppSelector((state) => state.tabReducer.homeTab)
     const show = useScroll(150)
     const dispatch = useAppDispatch()
     const router = useRouterWithSearchParams()
+    const isMobile = useIsMobile()
 
     const renderContent = () => {
         switch (homeTab) {
@@ -21,13 +24,14 @@ const Page: FC = () => {
             return <OverviewTab />
         case HomeTab.Items:
             return <ItemsTab />
+        case HomeTab.Tokenomics:
+            return <TokenomicsTab />
         }
     }
     return (
         <div className="relative">
             <BlurEffect size="lg" position="top" />
             <Header title="Home" />
-            
             {/* fixed motion scroll down */}
             <div className={`z-[60] hidden md:block fixed top-0 left-64 right-0 transition-all duration-500 transform ${show ? "translate-y-0" : "-translate-y-full"} ${show ? "bg-background/60 backdrop-blur-xl" : ""}`}>
                 <div className="container mx-auto px-10 py-4 flex justify-between flex-col items-start">
@@ -65,7 +69,7 @@ const Page: FC = () => {
             </div>
 
             <Spacer y={6}/>
-            <AppTabs
+            <AppTabs    
                 tabs={[
                     {
                         label: "Overview",
@@ -75,7 +79,16 @@ const Page: FC = () => {
                         label: "Items",
                         value: HomeTab.Items,
                     },
+                    {
+                        label: "Tokenomics",
+                        value: HomeTab.Tokenomics,
+                    },
                 ]}
+                classNames={{
+                    list: cn({
+                        "w-full": isMobile,
+                    }),
+                }}
                 color="secondary"
                 selectedTab={homeTab}
                 onSelectTab={(tab) => {

@@ -19,7 +19,7 @@ import {
 import { useDisclosure } from "react-use-disclosure"
 import { toast, useGlobalAccountAddress, useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation, useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr } from "@/hooks"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
-import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
+import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
 import { formatNumber, NumberPattern } from "@/modules/common"
 import { envConfig } from "@/env"
 
@@ -30,7 +30,6 @@ export const BuyGoldsModal: FC = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
 
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
 
     const iconMap: Record<number, string> = {
@@ -61,13 +60,12 @@ export const BuyGoldsModal: FC = () => {
                 </DialogHeader>     
                 <DialogBody className="grid md:grid-cols-3 gap-2">
                     {
-                        staticSwr.data?.data.goldPurchases[chainKey][network]?.options.map((goldPurchase, index) => (
+                        staticSwr.data?.data.goldPurchases[network]?.options.map((goldPurchase, index) => (
                             <BuyCard
                                 key={index}
                                 title={`${formatNumber(goldPurchase.amount, NumberPattern.Second)}`}
                                 imageUrl={iconMap[index]}
                                 price={goldPurchase.price}
-                                disabled={!!selectedIndex}
                                 paymentKind={goldPurchase.paymentKind}
                                 isLoading={
                                     selectedIndex === index &&
@@ -103,7 +101,7 @@ export const BuyGoldsModal: FC = () => {
                                             postActionHook: async (signedSerializedTx) => {
                                                 const { data } = await sendBuyGoldsSolanaTransactionSwrMutation.trigger({
                                                     request: {
-                                                        serializedTx: signedSerializedTx,
+                                                        serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx,
                                                     },
                                                 })
                                                 if (!data) {

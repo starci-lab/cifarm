@@ -7,6 +7,8 @@ import { useGameEffects } from "./game"
 import { useAuthentication } from "./useAuthentication"
 //import { useInit } from "./useInit"
 
+export * from "./useAuthentication"
+
 const UseEffects: FC  = () => {
     // useAccounts()
     // useTokens()

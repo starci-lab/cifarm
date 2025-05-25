@@ -1,5 +1,6 @@
 import { ProductId } from "../entities"
 import { AssetData, AssetTextureData, Metadata } from "./types"
+import { getAssetUrl } from "./utils"
 
 const PREFIX = "/products"
 export interface AssetProductsData extends Metadata {
@@ -15,12 +16,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Sweet golden liquid produced by bees.",
         base: {
             assetKey: "products-honey",
-            assetUrl: `${PREFIX}/honey.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/honey.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-honey",
-                assetUrl: `${PREFIX}/honey.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/honey.png`),
+                version: 2,
             },
         },  
     },
@@ -29,13 +31,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium honey with enhanced flavor.",
         base: {
             assetKey: "products-honey",
-            assetUrl: `${PREFIX}/honey.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/honey.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-honey",
-                assetUrl: `${PREFIX}/honey.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/honey.png`),
                 useExisting: true,
+                version: 2,
             },
         },  
     },
@@ -44,12 +47,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh egg from healthy chickens.",
         base: {
             assetKey: "products-egg",
-            assetUrl: `${PREFIX}/egg.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/egg.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-egg",
-                assetUrl: `${PREFIX}/egg.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/egg.png`),
+                version: 2,
             },
         },
     },
@@ -58,13 +62,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium egg with enhanced nutrition.",
         base: {
             assetKey: "products-egg",
-            assetUrl: `${PREFIX}/egg.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/egg.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-egg",
-                assetUrl: `${PREFIX}/egg.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/egg.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -73,12 +78,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh milk from healthy cows.",
         base: {
             assetKey: "products-milk",
-            assetUrl: `${PREFIX}/milk.png`, 
+            assetUrl: getAssetUrl(`${PREFIX}/milk.png`), 
         },
         phaser: {
             base: {
                 assetKey: "products-milk",
-                assetUrl: `${PREFIX}/milk.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/milk.png`),
+                version: 2,
             },
         },
     },
@@ -87,13 +93,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium milk with enhanced nutrition.",
         base: {
             assetKey: "products-milk",
-            assetUrl: `${PREFIX}/milk.png`,     
+            assetUrl: getAssetUrl(`${PREFIX}/milk.png`),     
         },
         phaser: {
             base: {
                 assetKey: "products-milk",
-                assetUrl: `${PREFIX}/milk.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/milk.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -102,12 +109,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh turnip with crisp texture.",
         base: {
             assetKey: "products-turnip",
-            assetUrl: `${PREFIX}/turnip.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/turnip.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-turnip",
-                assetUrl: `${PREFIX}/turnip.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/turnip.png`),
+                version: 2,
             },
         },
     },
@@ -116,13 +124,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium turnip with enhanced flavor.",
         base: {
             assetKey: "products-turnip",
-            assetUrl: `${PREFIX}/turnip.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/turnip.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-turnip",
-                assetUrl: `${PREFIX}/turnip.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/turnip.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -131,12 +140,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh carrot with sweet taste.",
         base: {
             assetKey: "products-carrot",
-            assetUrl: `${PREFIX}/carrot.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/carrot.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-carrot",
-                assetUrl: `${PREFIX}/carrot.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/carrot.png`),
+                version: 2,
             },
         },  
     },
@@ -145,12 +155,12 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium carrot with enhanced nutrition.",
         base: {
             assetKey: "products-carrot",
-            assetUrl: `${PREFIX}/carrot.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/carrot.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-carrot",
-                assetUrl: `${PREFIX}/carrot.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/carrot.png`),
                 useExisting: true,
             },
         },  
@@ -160,12 +170,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh potato with starchy texture.",
         base: {
             assetKey: "products-potato",
-            assetUrl: `${PREFIX}/potato.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/potato.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-potato",
-                assetUrl: `${PREFIX}/potato.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/potato.png`),
+                version: 2,
             },
         },
     },
@@ -174,13 +185,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium potato with enhanced flavor.",
         base: {
             assetKey: "products-potato",
-            assetUrl: `${PREFIX}/potato.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/potato.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-potato",
-                assetUrl: `${PREFIX}/potato.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/potato.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -189,12 +201,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh pineapple with sweet taste.",
         base: {
             assetKey: "products-pineapple",
-            assetUrl: `${PREFIX}/pineapple.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/pineapple.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-pineapple",
-                assetUrl: `${PREFIX}/pineapple.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/pineapple.png`),
+                version: 2,
             },
         },
     },
@@ -203,13 +216,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium pineapple with enhanced flavor.",
         base: {
             assetKey: "products-pineapple",
-            assetUrl: `${PREFIX}/pineapple.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/pineapple.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-pineapple",
-                assetUrl: `${PREFIX}/pineapple.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/pineapple.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -218,12 +232,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh watermelon with juicy flesh.",
         base: {
             assetKey: "products-watermelon",
-            assetUrl: `${PREFIX}/watermelon.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/watermelon.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-watermelon",
-                assetUrl: `${PREFIX}/watermelon.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/watermelon.png`),
+                version: 2,
             },
         },
     },
@@ -232,13 +247,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium watermelon with enhanced sweetness.",
         base: {
             assetKey: "products-watermelon",
-            assetUrl: `${PREFIX}/watermelon.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/watermelon.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-watermelon",
-                assetUrl: `${PREFIX}/watermelon.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/watermelon.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -247,12 +263,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh cucumber with crisp texture.",
         base: {
             assetKey: "products-cucumber",
-            assetUrl: `${PREFIX}/cucumber.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/cucumber.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-cucumber",
-                assetUrl: `${PREFIX}/cucumber.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/cucumber.png`),
+                version: 2,
             },
         },
     },
@@ -261,13 +278,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium cucumber with enhanced freshness.",
         base: {
             assetKey: "products-cucumber",
-            assetUrl: `${PREFIX}/cucumber.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/cucumber.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-cucumber",
-                assetUrl: `${PREFIX}/cucumber.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/cucumber.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -276,12 +294,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh bell pepper with mild flavor.",
         base: {
             assetKey: "products-bell-pepper",
-            assetUrl: `${PREFIX}/bell-pepper.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/bell-pepper.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-bell-pepper",
-                assetUrl: `${PREFIX}/bell-pepper.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/bell-pepper.png`),
+                version: 2,
             },
         },
     },
@@ -290,13 +309,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium bell pepper with enhanced color.",
         base: {
             assetKey: "products-bell-pepper",
-            assetUrl: `${PREFIX}/bell-pepper.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/bell-pepper.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-bell-pepper",
-                assetUrl: `${PREFIX}/bell-pepper.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/bell-pepper.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -305,12 +325,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh banana with sweet taste.",
         base: {
             assetKey: "products-banana",
-            assetUrl: `${PREFIX}/banana.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/banana.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-banana",
-                assetUrl: `${PREFIX}/banana.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/banana.png`),
+                version: 2,
             },
         },  
     },
@@ -319,13 +340,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium banana with enhanced sweetness.",
         base: {
             assetKey: "products-banana",
-            assetUrl: `${PREFIX}/banana.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/banana.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-banana",
-                assetUrl: `${PREFIX}/banana.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/banana.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -334,12 +356,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh apple with crisp texture.",
         base: {
             assetKey: "products-apple",
-            assetUrl: `${PREFIX}/apple.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/apple.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-apple",
-                assetUrl: `${PREFIX}/apple.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/apple.png`),
+                version: 2,
             },
         },
     },
@@ -348,13 +371,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium apple with enhanced flavor.",
         base: {
             assetKey: "products-apple",
-            assetUrl: `${PREFIX}/apple.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/apple.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-apple",
-                assetUrl: `${PREFIX}/apple.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/apple.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -363,12 +387,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh daisy with white petals.",
         base: {
             assetKey: "products-daisy",
-            assetUrl: `${PREFIX}/daisy.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/daisy.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-daisy",
-                assetUrl: `${PREFIX}/daisy.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/daisy.png`),
+                version: 2,
             },
         },
     },
@@ -377,13 +402,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium daisy with enhanced beauty.",
         base: {
             assetKey: "products-daisy",
-            assetUrl: `${PREFIX}/daisy.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/daisy.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-daisy",
-                assetUrl: `${PREFIX}/daisy.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/daisy.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -392,12 +418,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh strawberry with sweet taste.",
         base: {
             assetKey: "products-strawberry",
-            assetUrl: `${PREFIX}/strawberry.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/strawberry.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-strawberry",
-                assetUrl: `${PREFIX}/strawberry.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/strawberry.png`),
+                version: 2,
             },
         },
     },
@@ -406,13 +433,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium strawberry with enhanced sweetness.",
         base: {
             assetKey: "products-strawberry",
-            assetUrl: `${PREFIX}/strawberry.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/strawberry.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-strawberry",
-                assetUrl: `${PREFIX}/strawberry.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/strawberry.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -421,12 +449,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh dragon fruit with unique texture.",
         base: {
             assetKey: "products-dragon-fruit",
-            assetUrl: `${PREFIX}/dragon-fruit.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/dragon-fruit.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-dragon-fruit",
-                assetUrl: `${PREFIX}/dragon-fruit.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/dragon-fruit.png`),
+                version: 2,
             },
         },
     },
@@ -435,13 +464,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium dragon fruit with enhanced flavor.",
         base: {
             assetKey: "products-dragon-fruit",
-            assetUrl: `${PREFIX}/dragon-fruit.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/dragon-fruit.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-dragon-fruit",
-                assetUrl: `${PREFIX}/dragon-fruit.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/dragon-fruit.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -450,12 +480,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh jackfruit with sweet taste.",
         base: {
             assetKey: "products-jackfruit",
-            assetUrl: `${PREFIX}/jackfruit.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/jackfruit.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-jackfruit",
-                assetUrl: `${PREFIX}/jackfruit.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/jackfruit.png`),
+                version: 2,
             },
         },
     },
@@ -464,13 +495,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium jackfruit with enhanced sweetness.",
         base: {
             assetKey: "products-jackfruit",
-            assetUrl: `${PREFIX}/jackfruit.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/jackfruit.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-jackfruit",
-                assetUrl: `${PREFIX}/jackfruit.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/jackfruit.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -479,12 +511,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh rambutan with sweet taste.",
         base: {
             assetKey: "products-rambutan",
-            assetUrl: `${PREFIX}/rambutan.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/rambutan.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-rambutan",
-                assetUrl: `${PREFIX}/rambutan.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/rambutan.png`),
+                version: 2,
             },
         },
     },
@@ -493,13 +526,14 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium rambutan with enhanced sweetness.",
         base: {
             assetKey: "products-rambutan",
-            assetUrl: `${PREFIX}/rambutan.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/rambutan.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-rambutan",
-                assetUrl: `${PREFIX}/rambutan.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/rambutan.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
@@ -508,12 +542,13 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Fresh pomegranate with sweet taste.",
         base: {
             assetKey: "products-pomegranate",
-            assetUrl: `${PREFIX}/pomegranate.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/pomegranate.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-pomegranate",
-                assetUrl: `${PREFIX}/pomegranate.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/pomegranate.png`),
+                version: 2,
             },
         },
     },
@@ -522,14 +557,202 @@ export const assetProductMap: Record<ProductId, AssetProductsData> = {
         description: "Premium pomegranate with enhanced sweetness.",
         base: {
             assetKey: "products-pomegranate",
-            assetUrl: `${PREFIX}/pomegranate.png`,
+            assetUrl: getAssetUrl(`${PREFIX}/pomegranate.png`),
         },
         phaser: {
             base: {
                 assetKey: "products-pomegranate",
-                assetUrl: `${PREFIX}/pomegranate.png`,
+                assetUrl: getAssetUrl(`${PREFIX}/pomegranate.png`),
                 useExisting: true,
+                version: 2,
             },
         },
     },
-}   
+    [ProductId.Eggplant]: {
+        name: "Eggplant",
+        description: "Fresh eggplant with mild flavor.",
+        base: {
+            assetKey: "products-eggplant",
+            assetUrl: getAssetUrl(`${PREFIX}/eggplant.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-eggplant",
+                assetUrl: getAssetUrl(`${PREFIX}/eggplant.png`),
+                version: 2,
+            },
+        },
+    },
+    [ProductId.EggplantQuality]: {
+        name: "Quality Eggplant",
+        description: "Premium eggplant with enhanced flavor.",  
+        base: {
+            assetKey: "products-eggplant",
+            assetUrl: getAssetUrl(`${PREFIX}/eggplant.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-eggplant",
+                assetUrl: getAssetUrl(`${PREFIX}/eggplant.png`),
+                useExisting: true,
+                version: 2,
+            },
+        },
+    },
+    [ProductId.Tomato]: {
+        name: "Tomato",
+        description: "Fresh tomato with sweet taste.",
+        base: {
+            assetKey: "products-tomato",
+            assetUrl: getAssetUrl(`${PREFIX}/tomato.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-tomato",
+                assetUrl: getAssetUrl(`${PREFIX}/tomato.png`),
+                version: 2,
+            },
+        },
+    },
+    [ProductId.TomatoQuality]: {
+        name: "Quality Tomato",
+        description: "Premium tomato with enhanced sweetness.",
+        base: { 
+            assetKey: "products-tomato",
+            assetUrl: getAssetUrl(`${PREFIX}/tomato.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-tomato",
+                assetUrl: getAssetUrl(`${PREFIX}/tomato.png`),
+                useExisting: true,
+                version: 2,
+            },
+        },
+    },  
+    [ProductId.Pumpkin]: {
+        name: "Pumpkin",
+        description: "Fresh pumpkin with sweet taste.",
+        base: {
+            assetKey: "products-pumpkin",
+            assetUrl: getAssetUrl(`${PREFIX}/pumpkin.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pumpkin",
+                assetUrl: getAssetUrl(`${PREFIX}/pumpkin.png`),
+                version: 2,
+            },
+        },
+    },  
+    [ProductId.PumpkinQuality]: {
+        name: "Quality Pumpkin",
+        description: "Premium pumpkin with enhanced sweetness.",
+        base: {
+            assetKey: "products-pumpkin",
+            assetUrl: getAssetUrl(`${PREFIX}/pumpkin.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pumpkin",
+                assetUrl: getAssetUrl(`${PREFIX}/pumpkin.png`),  
+                useExisting: true,  
+                version: 2,
+            },
+        },
+    },
+    [ProductId.Sunflower]: {
+        name: "Sunflower",
+        description: "Fresh sunflower with sweet taste.",
+        base: {
+            assetKey: "products-sunflower",
+            assetUrl: getAssetUrl(`${PREFIX}/sunflower.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-sunflower",
+                assetUrl: getAssetUrl(`${PREFIX}/sunflower.png`),
+                version: 2,
+            },
+        },
+    },
+    
+    [ProductId.SunflowerQuality]: {
+        name: "Quality Sunflower",
+        description: "Premium sunflower with enhanced sweetness.",
+        base: {
+            assetKey: "products-sunflower",
+            assetUrl: getAssetUrl(`${PREFIX}/sunflower.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-sunflower",
+                assetUrl: getAssetUrl(`${PREFIX}/sunflower.png`),
+                useExisting: true,
+                version: 2,
+            },
+        },
+    },
+    [ProductId.Pea]: {
+        name: "Pea",
+        description: "Fresh pea with sweet taste.",
+        base: {
+            assetKey: "products-pea",
+            assetUrl: getAssetUrl(`${PREFIX}/pea.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pea",
+                assetUrl: getAssetUrl(`${PREFIX}/pea.png`),
+                version: 2,
+            },
+        },
+    },  
+    [ProductId.PeaQuality]: {
+        name: "Pea",
+        description: "Fresh pea with sweet taste.",
+        base: {
+            assetKey: "products-pea",
+            assetUrl: getAssetUrl(`${PREFIX}/pea.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-pea",
+                assetUrl: getAssetUrl(`${PREFIX}/pea.png`),
+                useExisting: true,
+                version: 2,
+            },
+        },
+    },
+    [ProductId.Cauliflower]: {
+        name: "Cauliflower",
+        description: "Fresh cauliflower with sweet taste.",
+        base: {
+            assetKey: "products-cauliflower",
+            assetUrl: getAssetUrl(`${PREFIX}/cauliflower.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-cauliflower",
+                assetUrl: getAssetUrl(`${PREFIX}/cauliflower.png`),
+                version: 2,
+            },
+        },
+    },
+    [ProductId.CauliflowerQuality]: {
+        name: "Quality Cauliflower",
+        description: "Premium cauliflower with enhanced sweetness.",
+        base: {
+            assetKey: "products-cauliflower",
+            assetUrl: getAssetUrl(`${PREFIX}/cauliflower.png`),
+        },
+        phaser: {
+            base: {
+                assetKey: "products-cauliflower",
+                assetUrl: getAssetUrl(`${PREFIX}/cauliflower.png`),
+                useExisting: true,
+                version: 2,
+            },
+        },
+    },
+}

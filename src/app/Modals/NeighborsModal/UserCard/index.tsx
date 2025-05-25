@@ -16,7 +16,6 @@ import {
     EmitterEventName,
     toast,
 } from "@/hooks"
-import { blockchainMap } from "@/modules/blockchain"
 import { UserSchema } from "@/modules/entities"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -115,14 +114,6 @@ export const UserCard: FC<UserCardProps> = ({
                                 className="w-5 h-5"
                             />
                             <div className="text-sm">{user.level}</div>
-                        </Badge>
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                            <Image
-                                src={blockchainMap[user.chainKey].imageUrl}
-                                alt={blockchainMap[user.chainKey].name}
-                                className="w-5 h-5"
-                            />
-                            <div className="text-sm">{blockchainMap[user.chainKey].name}</div>
                         </Badge>
                         <Badge variant="secondary" className="flex items-center gap-1">
                             <Image

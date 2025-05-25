@@ -1,30 +1,20 @@
 "use client"
 
-import { BlurEffect, ExtendedButton, Header, Spacer } from "@/components"
+import { BlurEffect, Header, Spacer, Image } from "@/components"
+import { createJazziconBlobUrl } from "@/modules/jazz"
+import { useAppSelector } from "@/redux"
 import React from "react"
 
 const ProfilePage = () => {
-    // const user = useAppSelector((state) => state.sessionReducer.user)
+    const user = useAppSelector((state) => state.sessionReducer.user)
 
-    const handleClick =() => {
-
-        console.log("handle click")
-
-
-        // ExternalEventEmitter.emit(ExternalEventName.RequestUpdateProfile, {
-        //     username: "Testin 2",
-        //     avatarUrl: "https://example.com/avatar.png",
-        // })
-    }
     return (
         <div className="relativen">
             <BlurEffect size="lg" position="top" />
             <Header title="Profile" />
-            <Spacer y={4} />
+            <Spacer y={6} />
             <div>
-                {/* <ExtendedButton onClick={handleClick}>
-                    Hello
-                </ExtendedButton> */}
+                <Image src={user?.avatarUrl || createJazziconBlobUrl(user?.id || "")} alt="Profile Picture" className="w-40 h-40 rounded-lg" />
             </div>
         </div>
     )

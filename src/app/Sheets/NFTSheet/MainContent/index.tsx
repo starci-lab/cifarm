@@ -11,8 +11,9 @@ import {
     List,
     ScrollArea,
     SheetBody,
+    Image,
 } from "@/components"
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import {
     toast,
     useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation,
@@ -20,6 +21,7 @@ import {
     useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLQueryStaticSwr,
+    useGraphQLQueryUserSwrMutation,
     useTransferNFTFormik,
 } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
@@ -32,6 +34,7 @@ import {
     GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_DISCLOSURE,
     TRANSFER_NFT_FORMIK,
+    GRAPHQL_QUERY_USER_SWR_MUTATION,
 } from "@/app/constants"
 import {
     NFTSheetPage,
@@ -54,6 +57,7 @@ import { useParams } from "next/navigation"
 import { NFTType, PlacedItemType } from "@/modules/entities"
 import { envConfig } from "@/env"
 import { Export, Package, PaperPlaneRight, Sparkle, Eye } from "@phosphor-icons/react"
+import { createJazziconBlobUrl } from "@/modules/jazz"
 
 export const MainContent: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(
@@ -78,35 +82,51 @@ export const MainContent: FC = () => {
     )
 
     const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(QUERY_STATIC_SWR_MUTATION)
+        ReturnType<typeof useGraphQLQueryStaticSwr>
+    >(QUERY_STATIC_SWR_MUTATION)
 
     const collections = staticSwr.data?.data.nftCollections || {}
 
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
 
     const { swrMutation: createWrapSolanaMetaplexNFTSwrMutation } = useSingletonHook<
-  ReturnType<typeof useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation>
->(GRAPHQL_MUTATION_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation>
+    >(GRAPHQL_MUTATION_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
 
     const { swrMutation: sendWrapSolanaMetaplexNFTSwrMutation } = useSingletonHook<
-  ReturnType<typeof useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation>
->(GRAPHQL_MUTATION_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation>
+    >(GRAPHQL_MUTATION_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
 
     const { swrMutation: createUnwrapSolanaMetaplexNFTSwrMutation } = useSingletonHook<
-  ReturnType<typeof useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation>
->(GRAPHQL_MUTATION_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation>
+    >(GRAPHQL_MUTATION_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
 
     const { swrMutation: sendUnwrapSolanaMetaplexNFTSwrMutation } = useSingletonHook<
-  ReturnType<typeof useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation>
->(GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
+        ReturnType<typeof useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation>
+    >(GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION)
+
+    const { swrMutation: userSwrMutation } = useSingletonHook<
+        ReturnType<typeof useGraphQLQueryUserSwrMutation>
+    >(GRAPHQL_QUERY_USER_SWR_MUTATION)
+
+    useEffect(() => {
+        const handleEffect = async () => {
+            const attribute = nft?.attributes.find(attribute => attribute.key === AttributeName.WrapperUserId)
+            if (attribute) {
+                await userSwrMutation.trigger({
+                    request: attribute.value,
+                })
+            }
+        }
+        handleEffect()
+    }, [nft])
 
     const renderProperties = () => {
         const collection = collections[collectionKey]
         const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
             (placedItemType) =>
                 placedItemType.id ===
-        collection?.[chainKey]?.[network]?.placedItemTypeId
+                collection?.[chainKey]?.[network]?.placedItemTypeId
         )
         if (!placedItemType) {
             return null
@@ -149,7 +169,7 @@ export const MainContent: FC = () => {
         const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
             (placedItemType) =>
                 placedItemType.id ===
-        collection?.[chainKey]?.[network]?.placedItemTypeId
+                collection?.[chainKey]?.[network]?.placedItemTypeId
         )
         if (!placedItemType) {
             return null
@@ -190,8 +210,8 @@ export const MainContent: FC = () => {
     const network = envConfig().network
 
     const { open: openSignTransactionModal } = useSingletonHook<
-    ReturnType<typeof useDisclosure>
-  >(SIGN_TRANSACTION_DISCLOSURE)
+        ReturnType<typeof useDisclosure>
+    >(SIGN_TRANSACTION_DISCLOSURE)
 
     return (
         <div className="h-full flex flex-col">
@@ -206,9 +226,9 @@ export const MainContent: FC = () => {
                         <div className="flex gap-2 items-center">
                             <NFTRarityBadge
                                 rarity={
-                  nft.attributes.find(
-                      (rarity) => rarity.key === AttributeName.Rarity
-                  )?.value as NFTRarityEnum
+                                    nft.attributes.find(
+                                        (rarity) => rarity.key === AttributeName.Rarity
+                                    )?.value as NFTRarityEnum
                                 }
                             />
                             {nft?.wrapped && <WrappedBadge />}
@@ -249,10 +269,10 @@ export const MainContent: FC = () => {
                                             data: {
                                                 serializedTx: data.serializedTx,
                                             },
-                                            postActionHook: async (serializedTx: string) => {
+                                            postActionHook: async (serializedTx) => {
                                                 const { data } = await sendUnwrapSolanaMetaplexNFTSwrMutation.trigger({
                                                     request: {
-                                                        serializedTx,
+                                                        serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
                                                     },
                                                 })
                                                 if (!data) {
@@ -280,13 +300,13 @@ export const MainContent: FC = () => {
                                         throw new Error("NFT address is required")
                                     }
                                     const { data } =
-                  await createWrapSolanaMetaplexNFTSwrMutation.trigger({
-                      request: {
-                          nftAddress: nft.nftAddress,
-                          collectionAddress:
-                        collections[collectionKey]?.[chainKey]?.[network]?.collectionAddress,
-                      },
-                  })
+                                        await createWrapSolanaMetaplexNFTSwrMutation.trigger({
+                                            request: {
+                                                nftAddress: nft.nftAddress,
+                                                collectionAddress:
+                                                    collections[collectionKey]?.[chainKey]?.[network]?.collectionAddress,
+                                            },
+                                        })
                                     if (!data) {
                                         toast({
                                             title: "Error",
@@ -301,10 +321,10 @@ export const MainContent: FC = () => {
                                             data: {
                                                 serializedTx: data.serializedTx,
                                             },
-                                            postActionHook: async (serializedTx: string) => {
+                                            postActionHook: async (serializedTx) => {
                                                 const { data } = await sendWrapSolanaMetaplexNFTSwrMutation.trigger({
                                                     request: {
-                                                        serializedTx,
+                                                        serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
                                                     },
                                                 })
                                                 if (!data) {
@@ -356,8 +376,21 @@ export const MainContent: FC = () => {
                             }}
                             name="View"
                         />
-                    </div>  
+                    </div>
                     <Spacer y={6} />
+                    {
+                        nft?.wrapped && (
+                            <div>
+                                <Title title="Wrapper" tooltipString="The user that wrapped the NFT" />
+                                <Spacer y={2} />
+                                <div className="rounded-lg bg-content-2 p-3 flex items-center gap-2">
+                                    <Image src={userSwrMutation.data?.data.user.avatarUrl || createJazziconBlobUrl(userSwrMutation.data?.data.user.id ?? "")} alt="Profile Picture" className="w-10 h-10 rounded-full" />
+                                    <div>{userSwrMutation.data?.data.user.username}</div>
+                                </div>
+                                <Spacer y={6} />
+                            </div>
+                        )
+                    }
                     <div>
                         <Title title="Properties" />
                         <Spacer y={2} />
