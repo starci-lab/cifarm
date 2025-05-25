@@ -12,7 +12,7 @@ export const ItemCard: FC<ItemCardProps> = ({ name, description, assetUrl, isNFT
     return (
         <Card className="rounded-lg w-40" pressable>
             <CardBody className="relative p-3 w-full">
-                {isNFT && <NFTBadge className="absolute top-3 right-3" />}
+                {isNFT && <NFTBadge className="absolute top-3 right-3 z-10" />}
                 <div className="w-14 h-14 grid place-items-center w-full">
                     <ScaledImage src={assetUrl} alt={name} imageScale={ImageScale.Size2}/>
                 </div>
