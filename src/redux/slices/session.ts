@@ -38,7 +38,6 @@ export interface SessionState {
   mnemonic: string;
   accounts: Accounts;
   activeAccountId?: number;
-  chainKey: ChainKey;
   retries: number;
   authenticated: boolean;
   loaded: boolean;
@@ -48,6 +47,7 @@ export interface SessionState {
   collectionKey: string;
   // selected nft address
   nftAddress: string;
+  chainKey: ChainKey;
   // selected token key
   tokenKey: string;
   // placed item id
@@ -66,7 +66,6 @@ export interface SessionState {
   selectedShipInventoryId?: string;
   addresses: Array<string>;
   activeNeighborCard?: NeighborsTab;
-  selectedChainKey?: ChainKey;
   selectedSidebar?: Sidebar;
   selectedMainVisualKey: string;
 }
@@ -110,9 +109,6 @@ export const sessionSlice = createSlice({
         setAccounts: (state, action: PayloadAction<Accounts>) => {
             state.accounts = action.payload
         },
-        setChainKey: (state, action: PayloadAction<ChainKey>) => {
-            state.chainKey = action.payload
-        },
         setTokenKey: (state, action: PayloadAction<string>) => {
             state.tokenKey = action.payload
         },
@@ -131,6 +127,9 @@ export const sessionSlice = createSlice({
         },
         removeBalanceSwr: (state, action: PayloadAction<string>) => {
             delete state.balanceSwrs[action.payload]
+        },
+        setChainKey: (state, action: PayloadAction<ChainKey>) => {
+            state.chainKey = action.payload
         },
         setNftCollectionsSwr: (
             state,
@@ -196,9 +195,6 @@ export const sessionSlice = createSlice({
         setActiveAccountId: (state, action: PayloadAction<number>) => {
             state.activeAccountId = action.payload
         },
-        setSelectedChainKey: (state, action: PayloadAction<ChainKey | undefined>) => {
-            state.selectedChainKey = action.payload
-        },
         setSelectedMainVisualKey: (state, action: PayloadAction<string>) => {
             state.selectedMainVisualKey = action.payload
         },
@@ -210,7 +206,6 @@ export const {
     setNetwork,
     setMnemonic,
     setAccounts,
-    setChainKey,
     setRetries,
     setTokenKey,
     setLoaded,
@@ -237,7 +232,6 @@ export const {
     setAddresses,
     setActiveNeighborCard,
     setActiveAccountId,
-    setSelectedChainKey,
     setSelectedMainVisualKey,
 } = sessionSlice.actions
 

@@ -380,12 +380,11 @@ const query = gql`
     }
     nftCollections {
       dragonFruit {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           }
           mainnet {
             placedItemTypeId
@@ -393,15 +392,13 @@ const query = gql`
             collectionAddress
             imageUrl
           }
-        }
       }
       jackfruit {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           }
           mainnet {
             placedItemTypeId
@@ -409,31 +406,27 @@ const query = gql`
             collectionAddress
             imageUrl
           }
-        }
       }
       rambutan {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           } 
           mainnet {
             placedItemTypeId
             name
             collectionAddress
             imageUrl
-          }
         }
       }
       pomegranate {
-        solana {
-          testnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        testnet {
+          placedItemTypeId
+          name
+          collectionAddress
+          imageUrl
           }
           mainnet {
             placedItemTypeId
@@ -441,19 +434,19 @@ const query = gql`
             collectionAddress
             imageUrl
           }
-        }
       }
     } 
     wholesaleMarket {
-      paymentKind
-      price
-      products {
-        productId
-        quantity
+      bulks {
+        paymentKind
+        price
+        products {
+          productId
+          quantity
+        }
       }
     }
     goldPurchases {
-      solana {
         testnet {
           options {
             price
@@ -468,23 +461,6 @@ const query = gql`
             paymentKind
           }
         }
-      }
-      sui {
-        testnet {
-          options {
-            price
-            amount
-            paymentKind
-          }
-        }
-        mainnet {
-          options {
-            price
-            amount
-            paymentKind
-          }
-        }
-      }
     }
     interactionPermissions {
       thiefLevelGapThreshold
@@ -675,7 +651,6 @@ const query = gql`
       conversionRate
     }
     energyPurchases {
-      solana {
         testnet {
           options {
             price
@@ -689,7 +664,6 @@ const query = gql`
             percentage
             paymentKind
           }
-        }
       }
     }
   }

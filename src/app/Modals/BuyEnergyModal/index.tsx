@@ -19,7 +19,7 @@ import {
 import { useDisclosure } from "react-use-disclosure"
 import { toast, useGlobalAccountAddress, useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation, useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation, useGraphQLQueryStaticSwr } from "@/hooks"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
-import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
+import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
 import { envConfig } from "@/env"
 
 export const BuyEnergyModal: FC = () => {
@@ -29,7 +29,6 @@ export const BuyEnergyModal: FC = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
 
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
 
     const iconMap: Record<number, string> = {
@@ -60,7 +59,7 @@ export const BuyEnergyModal: FC = () => {
                 </DialogHeader>     
                 <DialogBody className="grid md:grid-cols-3 gap-2">
                     {
-                        staticSwr.data?.data.energyPurchases[chainKey][network]?.options.map((energyPurchase, index) => (
+                        staticSwr.data?.data.energyPurchases[network]?.options.map((energyPurchase, index) => (
                             <BuyCard
                                 key={index}
                                 title={`${energyPurchase.percentage}%`}

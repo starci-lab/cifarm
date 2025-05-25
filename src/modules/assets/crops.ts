@@ -972,8 +972,8 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetKey: "crop-strawberry-2",
                                 assetUrl: getAssetUrl(`${PREFIX}/strawberry/2.png`),
                                 extraOffsets: {
-                                    x: 0,
-                                    y: -30,
+                                    x: -3,
+                                    y: -95,
                                 },
                                 version: 3,
                             },
@@ -993,7 +993,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetUrl: getAssetUrl(`${PREFIX}/strawberry/3.png`),
                                 extraOffsets: {
                                     x: 0,
-                                    y: -30,
+                                    y: -50,
                                 },
                                 version: 3,
                             },
@@ -1013,7 +1013,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetUrl: getAssetUrl(`${PREFIX}/strawberry/4.png`),
                                 extraOffsets: {
                                     x: 0,
-                                    y: -30,
+                                    y: -50,
                                 },
                                 version: 3,
                             },
@@ -1033,7 +1033,7 @@ export const assetCropMap: Record<CropId, AssetCropData> = {
                                 assetUrl: getAssetUrl(`${PREFIX}/strawberry/5.png`),
                                 extraOffsets: {
                                     x: 0,
-                                    y: -30,
+                                    y: -50,
                                 },
                                 version: 3,
                             },

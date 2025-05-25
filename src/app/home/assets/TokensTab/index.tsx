@@ -30,7 +30,6 @@ export const TokensTab: FC = () => {
     >(QUERY_STATIC_SWR_MUTATION)
 
     const network = envConfig().network
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     
     const tokens = valuesWithKey(staticData.data?.data.tokens || {})
 
@@ -41,6 +40,8 @@ export const TokensTab: FC = () => {
     const { open: openTokenSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_TOKEN_DISCLOSURE
     )
+
+    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
 
     const dispatch = useAppDispatch()
 

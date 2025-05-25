@@ -527,7 +527,7 @@ export const SignTransactionModal: FC = () => {
                     enableScroll={false}
                     items={Object.values(TransferNFTContent)}
                     contentCallback={(item) => {
-                        const collection = collections[collectionKey]?.[chainKey]?.[network]
+                        const collection = collections[collectionKey]?.[network]
                         if (!collection) throw new Error("Collection not found")
                         switch (item) {
                         case TransferNFTContent.Collection: {

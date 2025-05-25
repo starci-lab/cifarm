@@ -2,7 +2,6 @@ import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams, UmiTxsResponse } from "../../types"
 import { GraphQLResponse } from "../types"
-import { ChainKey } from "@/modules/blockchain"
 
 const mutation1 = gql`
   mutation CreatePurchaseSolanaNFTBoxesTransaction (
@@ -31,7 +30,6 @@ const mutationMap: Record<MutationCreatePurchaseSolanaNFTBoxesTransaction, Docum
 export interface CreatePurchaseSolanaNFTBoxesTransactionRequest {
   accountAddress: string;
   quantity: number;
-  chainKey?: ChainKey;
 }
 
 export type MutationCreatePurchaseSolanaNFTBoxesTransactionParams = MutationParams<

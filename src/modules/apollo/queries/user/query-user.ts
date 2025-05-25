@@ -7,7 +7,6 @@ const query1 = gql`
   query User { 
     user {
       id
-      chainKey
       username
       dailyRewardLastClaimTime
       dailyRewardStreak
