@@ -10,14 +10,9 @@ export const NotificationModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(NOTIFICATION_DISCLOSURE)
     const { message, title, callback, buttonText } = useAppSelector((state) => state.modalReducer.notificationModal)
     return (
-        // prevent the dialog from closing when the button is clicked
-        <Dialog open={isOpen} onOpenChange={(open) => {
-            if (!open) {
-                toggle()
-            }
-        }}>
+        <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader hideCloseButton>
+                <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                 </DialogHeader>
                 <DialogBody>

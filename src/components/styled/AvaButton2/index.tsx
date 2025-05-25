@@ -1,6 +1,6 @@
 import React, { ElementType, FC } from "react"
 import { Image } from "../Image"
-import { ArrowDown } from "@phosphor-icons/react"
+import { CaretDown } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
 type AvaButton2Props = {
@@ -29,7 +29,7 @@ export const AvaButton2: FC<AvaButton2Props> = ({
                 className="rounded-lg object-cover w-full h-full"
             />
             <div className="absolute -bottom-0 -right-0 w-4 h-4 bg-content-2 rounded-tl-lg grid place-items-center">
-                <ArrowDown className="w-3 h-3 text-secondary" />
+                <CaretDown className="w-3 h-3 text-secondary" />
             </div>
         </Component>
     )

@@ -19,7 +19,6 @@ import { useDisclosure } from "react-use-disclosure"
 const Page = () => {
     const params = useParams()
     const collectionKey = params.collectionKey as NFTType
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
 
     const router = useRouterWithSearchParams()
@@ -37,7 +36,7 @@ const Page = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
     >(GRAPHQL_QUERY_STATIC_SWR)
 
-    const collection = staticSwr?.data?.data.nftCollections[collectionKey]?.[chainKey]?.[network]
+    const collection = staticSwr?.data?.data.nftCollections[collectionKey]?.[network]
     const nftCollectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
     const nftCollectionSwr = nftCollectionSwrs[collectionKey]
     const nftAddresses = useAppSelector((state) => state.convertReducer.nftAddresses)

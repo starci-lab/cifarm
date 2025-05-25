@@ -48,6 +48,7 @@ export interface SessionState {
   // selected nft address
   nftAddress: string;
   chainKey: ChainKey;
+  selectedChainKey?: ChainKey;
   // selected token key
   tokenKey: string;
   // placed item id
@@ -174,6 +175,9 @@ export const sessionSlice = createSlice({
         setPlayerContext: (state, action: PayloadAction<PlayerContext>) => {
             state.playerContext = action.payload
         },
+        setSelectedChainKey: (state, action: PayloadAction<ChainKey | undefined>) => {
+            state.selectedChainKey = action.payload
+        },
         setPlacedItems: (state, action: PayloadAction<Array<PlacedItemSchema>>) => {
             state.placedItems = action.payload
         },
@@ -197,7 +201,7 @@ export const sessionSlice = createSlice({
         },
         setSelectedMainVisualKey: (state, action: PayloadAction<string>) => {
             state.selectedMainVisualKey = action.payload
-        },
+        }
     },
 })
 
@@ -233,6 +237,8 @@ export const {
     setActiveNeighborCard,
     setActiveAccountId,
     setSelectedMainVisualKey,
+    setChainKey,
+    setSelectedChainKey,
 } = sessionSlice.actions
 
 export interface SwitchTokenParams {

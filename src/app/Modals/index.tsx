@@ -35,6 +35,8 @@ import { NFTConversionModal } from "./ConvertNFTModal"
 import { SelectNFTCollectionModal } from "./SelectNFTCollectionModal"
 import { NotificationModal } from "./NotificationModal"
 import { BuyEnergyModal } from "./BuyEnergyModal"
+import { SelectChainModal } from "./SelectChainModal"
+
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
     return (
@@ -60,6 +62,7 @@ const Modals : FC = () => {
             <DownloadingModal />
             <InfoModal />
             <ConnectModal />
+            <SelectChainModal />
             <SettingsModal />
             <InventoryModal />
             <RoadsideStandModal />

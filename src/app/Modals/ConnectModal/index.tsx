@@ -14,7 +14,7 @@ import {
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { SolanaConnect } from "./SolanaConnect"
-import { setSelectedChainKey, useAppSelector, useAppDispatch } from "@/redux"
+import { useAppSelector, useAppDispatch, setSelectedChainKey } from "@/redux"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { truncateString } from "@/modules/common"
@@ -34,7 +34,6 @@ export const ConnectModal: FC = () => {
 
     const { currentWallet } = useCurrentWallet()
 
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const renderContent = () => {
         if (selectedChainKey === ChainKey.Solana) {
             return <SolanaConnect />
@@ -53,9 +52,8 @@ export const ConnectModal: FC = () => {
                             text={item.name}
                             onClick={() => {
                                 dispatch(setSelectedChainKey(item.key))
-                            }}
+                            }}  
                             description={(() => {
-                                const isActive = item.key === chainKey
                                 const getConnectText = () => {
                                     const NOT_CONNECTED = "Not connected"
                                     if (item.key === ChainKey.Solana) {
@@ -78,9 +76,6 @@ export const ConnectModal: FC = () => {
                                         <div className="text-muted-foreground text-sm">
                                             {getConnectText()}
                                         </div>
-                                        {isActive && (
-                                            <div className="text-secondary text-sm">Selected</div>
-                                        )}
                                     </div>
                                 )
                             })()}
@@ -101,7 +96,7 @@ export const ConnectModal: FC = () => {
                 <DialogTitle
                     showLeftChevron
                     onLeftChevronClick={() => {
-                        dispatch(setSelectedChainKey())
+                        dispatch(setSelectedChainKey(undefined))
                     }}
                 >
                     {chainKeyMap.find((item) => item.key === selectedChainKey)?.name}

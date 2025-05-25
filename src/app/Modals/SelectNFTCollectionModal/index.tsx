@@ -22,10 +22,9 @@ export const SelectNFTCollectionModal = () => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     const nftCollections = staticSwr.data?.data.nftCollections || {}
     const nftCollectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
     const selectedNFTType = useAppSelector((state) => state.convertReducer.selectedNFTType)
-    const nftCollectionData = nftCollections?.[selectedNFTType]?.[chainKey]?.[network]
+    const nftCollectionData = nftCollections?.[selectedNFTType]?.[network]
     const originalNFTType = useAppSelector((state) => state.convertReducer.nftType)
     const dispatch = useAppDispatch()
     if (!nftCollectionData) return null
@@ -41,7 +40,7 @@ export const SelectNFTCollectionModal = () => {
                     <ScrollArea className="h-[400px]">
                         <div className="grid md:grid-cols-2 gap-4">
                             {Object.values(NFTType).map((nftType) => {
-                                const collection = nftCollections?.[nftType]?.[chainKey]?.[network]
+                                const collection = nftCollections?.[nftType]?.[network]
                                 if (!collection) return null
                                 return (
                                     <NFTCollection
