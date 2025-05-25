@@ -9,7 +9,7 @@ export enum TintColor {
 }
 
 interface ItemCardProps {
-  quantity?: number;
+  quantity?: string;
   stackable?: boolean;
   imageUrl?: string;
   frameOnly?: boolean;
@@ -21,6 +21,7 @@ interface ItemCardProps {
   classNames?: {
     card?: string
     cardContent?: string
+    quantity?: string
   }
   name?: string;
   description?: string;
@@ -117,7 +118,10 @@ const ItemCardCore: FC<ItemCardProps> = ({
                           }}
                       />
                       {stackable && (
-                          <div className="absolute bottom-0 right-0 bg-background/75 text-xs grid place-items-center rounded-md p-0.5">
+                          <div className={cn(
+                              "absolute bottom-0 right-0 bg-background/75 text-xs grid place-items-center rounded-md p-0.5",
+                              classNames.quantity
+                          )}>
                               {quantity}
                           </div>
                       )}

@@ -48,7 +48,7 @@ export const getSolanaCollection = async ({
         if (!collections) throw new Error("Cannot find collection without collections")
         const collection = collections[collectionKey]
         if (!collection) throw new Error("Cannot find collection without collections")
-        collectionAddress = collection[chainKey]?.[network]?.collectionAddress
+        collectionAddress = collection?.[network]?.collectionAddress
     }
     if (!collectionAddress) throw new Error("Cannot find collection without collection address")
     const umi = createUmi(solanaHttpRpcUrl({chainKey, network}))

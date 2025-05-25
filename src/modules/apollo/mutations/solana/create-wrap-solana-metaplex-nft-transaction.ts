@@ -33,7 +33,7 @@ const mutationMap: Record<
 
 export interface CreateWrapSolanaMetaplexNFTTransactionRequest {
   nftAddress: string;
-  collectionAddress?: string;
+  collectionAddress: string;
 }
 
 export type MutationCreateWrapSolanaMetaplexNFTTransactionParams =

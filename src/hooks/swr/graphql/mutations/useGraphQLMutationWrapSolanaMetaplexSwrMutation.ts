@@ -3,7 +3,7 @@ import { UseSWRMutation } from "../../types"
 import { v4 } from "uuid"
 import {
     MutationWrapSolanaMetaplexNFTParams,
-    mutationWrapSolanaMetaplexNft,
+    mutationWrapSolanaMetaplexNFT,
     WrapSolanaMetaplexNFTResponse,
 } from "@/modules/apollo"
 
@@ -22,7 +22,7 @@ export const useGraphQLMutationWrapSolanaMetaplexSwrMutation =
               extraArgs: { arg: UseGraphQLWrapSolanaMetaplexMutationArgs }
           ) => {
               const params = { ...extraArgs.arg }
-              const result = await mutationWrapSolanaMetaplexNft(params)
+              const result = await mutationWrapSolanaMetaplexNFT(params)
               if (!result.data) {
                   throw new Error(
                       "No data returned from wrap solana metaplex mutation"

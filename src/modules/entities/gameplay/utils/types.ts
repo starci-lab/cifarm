@@ -19,6 +19,7 @@ import {
     SupplySchema,
     TileSchema,
     ToolSchema,
+    WholesaleMarket,
 } from "../schemas"
 
 export type StaticData = Partial<{
@@ -42,4 +43,5 @@ export type StaticData = Partial<{
   cropInfo: CropInfo;
   animalInfo: AnimalInfo;
   nftCollections: NFTCollections;
+  wholesaleMarket: WholesaleMarket;
 }>

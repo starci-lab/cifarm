@@ -13,14 +13,16 @@ import {
     Title,
 } from "@/components"
 import React, { FC } from "react"
-import { useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useGraphQLQueryVaultCurrentSwr, useIsMobile, useGlobalAccountAddress } from "@/hooks"
+import { useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useGraphQLQueryVaultCurrentSwr, useIsMobile, useGlobalAccountAddress, useGraphQLQueryInventoriesSwr, useGraphQLQueryUserSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
-import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
 import { assetProductMap } from "@/modules/assets"
 import { PaymentKind } from "@/modules/entities"
-
+import { partitionInventories } from "@/modules/entities"
+import { cn } from "@/lib/utils"
+import { ArrowCounterClockwise } from "@phosphor-icons/react"
 export const WholesaleMarketBulkSheet: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE
@@ -28,12 +30,10 @@ export const WholesaleMarketBulkSheet: FC = () => {
 
     const isMobile = useIsMobile()
 
-    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(QUERY_STATIC_SWR_MUTATION) 
-    const { swr: vaultCurrentSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryVaultCurrentSwr>>(GRAPHQL_QUERY_VAULT_CURRENT_SWR)
-    
+    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(QUERY_STATIC_SWR_MUTATION)
     const { swrMutation: createShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationCreateShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
     const { swrMutation: sendShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationSendShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
-    
+
     const dispatch = useAppDispatch()
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
@@ -44,7 +44,21 @@ export const WholesaleMarketBulkSheet: FC = () => {
     const bulk = staticSwr.data?.data.wholesaleMarket.bulks.find(
         (bulk) => bulk.bulkId === wholesaleMarketBulkSheet.bulkId
     )
+    const inventories = useAppSelector((state) => state.sessionReducer.inventories)
     if (!bulk) return null
+    if (!wholesaleMarketBulkSheet.bulkId) return null
+    if (!staticSwr.data?.data) return null
+
+    const { inventoryMap } = partitionInventories({
+        staticData: staticSwr.data?.data,
+        inventories,
+        bulkId: wholesaleMarketBulkSheet.bulkId
+    })
+
+    const { swr: userSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
+    const { swr: inventoriesSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryInventoriesSwr>>(GRAPHQL_QUERY_INVENTORIES_SWR)
+    const { swr: vaultCurrentSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryVaultCurrentSwr>>(GRAPHQL_QUERY_VAULT_CURRENT_SWR)
+
     return (
         <Sheet open={isOpen} onOpenChange={toggle}>
             <SheetContent side={isMobile ? "bottom" : "right"} className="flex flex-col justify-between">
@@ -80,7 +94,14 @@ export const WholesaleMarketBulkSheet: FC = () => {
                                             description={
                                                 assetProductMap[product?.displayId].description
                                             }
-                                            quantity={quantity}
+                                            classNames={
+                                                {
+                                                    quantity: cn({
+                                                        "text-destructive": !inventoryMap[productId.toString()]?.enough
+                                                    })
+                                                }
+                                            }
+                                            quantity={`${inventoryMap[productId.toString()]?.totalQuantity ?? 0} / ${quantity}`}
                                             isQuality={product.isQuality}
                                             stackable={true}
                                         />
@@ -99,7 +120,7 @@ export const WholesaleMarketBulkSheet: FC = () => {
                                 <PaymentIcon
                                     paymentKind={
                                         bulk.paymentKind ||
-                    PaymentKind.Token
+                                        PaymentKind.Token
                                     }
                                     className="w-10 h-10"
                                 />
@@ -110,13 +131,23 @@ export const WholesaleMarketBulkSheet: FC = () => {
                             <Spacer y={2} />
                             <div className="flex items-center gap-2 text-muted-foreground">
                                 <div className="text-sm">
-                                Token locked: {vaultCurrentSwr.data?.data.vaultCurrent.tokenLocked}  
+                                    Token locked: {vaultCurrentSwr.data?.data.vaultCurrent.tokenLocked}
                                 </div>
                                 <div className="text-sm">
-                            Paid count: {vaultCurrentSwr.data?.data.vaultCurrent.paidCount}
+                                    Paid count: {vaultCurrentSwr.data?.data.vaultCurrent.paidCount}
                                 </div>
                             </div>
                         </div>
+                        <Spacer y={6} />
+                        <ExtendedButton color="secondary" size="icon" variant="flat" onClick={async () => {
+                            await Promise.all([
+                                inventoriesSwr.mutate(),
+                                userSwr.mutate(),
+                                vaultCurrentSwr.mutate()
+                            ])
+                        }}>
+                            <ArrowCounterClockwise />
+                        </ExtendedButton>
                     </SheetBody>
                 </div>
                 <SheetFooter>
@@ -124,7 +155,8 @@ export const WholesaleMarketBulkSheet: FC = () => {
                         if (!accountAddress) throw new Error("Account address is required")
                         const { data } = await createShipSolanaTransactionSwrMutation.trigger({
                             request: {
-                                accountAddress
+                                accountAddress,
+                                bulkId: bulk.bulkId
                             }
                         })
                         if (!data) throw new Error("Failed to create ship solana transaction")
@@ -136,16 +168,24 @@ export const WholesaleMarketBulkSheet: FC = () => {
                             postActionHook: async (signedSerializedTx) => {
                                 const { data: sendShipSolanaTransactionData } = await sendShipSolanaTransactionSwrMutation.trigger({
                                     request: {
-                                        serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx
+                                        serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx,
                                     }
                                 })
                                 if (!sendShipSolanaTransactionData) throw new Error("Failed to send ship solana transaction")
+                                await Promise.all([
+                                    inventoriesSwr.mutate(),
+                                    userSwr.mutate(),
+                                    vaultCurrentSwr.mutate()
+                                ])
                                 return sendShipSolanaTransactionData.txHash
                             }
                         }))
                         open()
-                    }}>
-          Ship
+                    }}
+                    isLoading={createShipSolanaTransactionSwrMutation.isMutating}
+                    disabled={!Object.values(inventoryMap).every((inventory) => inventory.enough)}
+                    >
+                        Ship
                     </ExtendedButton>
                 </SheetFooter>
             </SheetContent>

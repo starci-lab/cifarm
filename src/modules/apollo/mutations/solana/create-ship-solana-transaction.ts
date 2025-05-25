@@ -27,6 +27,7 @@ const mutationMap: Record<MutationCreateShipSolanaTransaction, DocumentNode> = {
 
 export interface CreateShipSolanaTransactionRequest {
   accountAddress: string
+  bulkId: string;
 }
 
 export type MutationCreateShipSolanaTransactionParams = MutationParams<

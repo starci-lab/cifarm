@@ -38,8 +38,8 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
         }>
             <CardBody>
                 <div className="flex items-center -gap-4">
-                    {images.slice(0, 5).map((image, index) => {
-                        if (index === 4 && images.length > 5) {
+                    {images.slice(0, 3).map((image, index) => {
+                        if (index === 2 && images.length > 3) {
                             // Hiển thị dấu "..." nếu có nhiều hơn 5 ảnh
                             return (
                                 <div
@@ -51,7 +51,7 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
                                     )}
                                     key="more"
                                 >
-                    +{images.length - 4}
+                    +{images.length - 2}
                                 </div>
                             )
                         }

@@ -4,7 +4,7 @@ import {
     QueryParams,
     QueryVariables,
 } from "../../types"
-import { ChainKey, Network } from "@/modules/blockchain"
+import { Network } from "@/modules/blockchain"
 
 const query1 = gql`
   query VaultCurrent($request: VaultCurrentRequest!) {
@@ -34,13 +34,12 @@ const queryMap: Record<QueryVaultCurrent, DocumentNode> = {
 
 export interface QueryVaultCurrentArgs {
   network: Network
-  chainKey: ChainKey
 }
 
 export type QueryVaultCurrentParams = QueryParams<QueryVaultCurrent, QueryVaultCurrentArgs>;
 export const queryVaultCurrent = async ({
     query = QueryVaultCurrent.Query1,
-    request = { network: Network.Testnet, chainKey: ChainKey.Solana },
+    request = { network: Network.Testnet },
 }: QueryVaultCurrentParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<

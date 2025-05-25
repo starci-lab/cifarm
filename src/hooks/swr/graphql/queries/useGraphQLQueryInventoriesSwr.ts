@@ -15,16 +15,12 @@ export const useGraphQLQueryInventoriesSwr = (): UseSWR<
 > => {
     const [ params, setParams ] = useState<QueryInventoriesParams>({})
     const dispatch = useAppDispatch()
-    const [synced, setSynced] = useState(false)
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const swr = useSWR(
         authenticated ? ["QUERY_INVENTORIES", params] : null,
         async () => {
             const response = await queryInventories(params)
-            if (!synced) {
-                dispatch(setInventories(response.data.inventories))
-                setSynced(true)
-            }
+            dispatch(setInventories(response.data.inventories))
             return response
         }
     )

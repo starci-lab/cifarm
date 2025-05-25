@@ -50,14 +50,16 @@ export const BuyCard: FC<BuyCardProps> = ({
                 </div>
             </CardBody>
             <CardFooter>
-                <div className="flex gap-2 items-center">
-                    {isLoading && <Spinner />}
-                    <div className="text-lg text-text">{title}</div>
-                </div>
-                <div className="flex gap-2">
-                    <div className="flex gap-1 items-center">
-                        <PaymentIcon paymentKind={paymentKind} />
-                        <div className="text-secondary">{price}</div>
+                <div>
+                    <div className="flex gap-2 items-center">
+                        {isLoading && <Spinner />}
+                        <div className="text-lg text-text">{title}</div>
+                    </div>
+                    <div className="flex gap-2">
+                        <div className="flex gap-1 items-center">
+                            <PaymentIcon paymentKind={paymentKind} />
+                            <div className="text-secondary">{price}</div>
+                        </div>
                     </div>
                 </div>
             </CardFooter>

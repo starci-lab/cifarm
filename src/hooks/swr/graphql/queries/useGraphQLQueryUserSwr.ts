@@ -15,16 +15,12 @@ export const useGraphQLQueryUserSwr = (): UseSWR<
 > => {
     const [ params, setParams ] = useState<QueryUserParams>({})
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
-    const [synced, setSynced] = useState(false)
     const dispatch = useAppDispatch()
     const swr = useSWR(
         authenticated ? ["QUERY_USER", params] : null,
         async () => {
             const response = await queryUser(params)
-            if (!synced) {
-                dispatch(setUser(response.data.user))
-                setSynced(true)
-            }
+            dispatch(setUser(response.data.user))
             return response
         }
     )

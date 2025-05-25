@@ -36,7 +36,7 @@ const mutationMap: Record<MutationWrapSolanaMetaplexNFT, DocumentNode> = {
 
 export type MutationWrapSolanaMetaplexNFTParams = MutationParams<MutationWrapSolanaMetaplexNFT, WrapSolanaMetaplexNFTRequest>
 
-export const mutationWrapSolanaMetaplexNft = async ({
+export const mutationWrapSolanaMetaplexNFT = async ({
     mutation = MutationWrapSolanaMetaplexNFT.Mutation1,
     request
 }: MutationWrapSolanaMetaplexNFTParams) => {

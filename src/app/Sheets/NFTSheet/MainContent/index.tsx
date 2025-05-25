@@ -126,7 +126,7 @@ export const MainContent: FC = () => {
         const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
             (placedItemType) =>
                 placedItemType.id ===
-                collection?.[chainKey]?.[network]?.placedItemTypeId
+                collection?.[network]?.placedItemTypeId
         )
         if (!placedItemType) {
             return null
@@ -169,7 +169,7 @@ export const MainContent: FC = () => {
         const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
             (placedItemType) =>
                 placedItemType.id ===
-                collection?.[chainKey]?.[network]?.placedItemTypeId
+                collection?.[network]?.placedItemTypeId
         )
         if (!placedItemType) {
             return null
@@ -252,7 +252,7 @@ export const MainContent: FC = () => {
                                     const { data } = await createUnwrapSolanaMetaplexNFTSwrMutation.trigger({
                                         request: {
                                             nftAddress: nft.nftAddress,
-                                            collectionAddress: collections[collectionKey]?.[chainKey]?.[network]?.collectionAddress,
+                                            collectionAddress: collections[collectionKey]?.[network]?.collectionAddress,
                                         },
                                     })
                                     if (!data) {
@@ -304,7 +304,7 @@ export const MainContent: FC = () => {
                                             request: {
                                                 nftAddress: nft.nftAddress,
                                                 collectionAddress:
-                                                    collections[collectionKey]?.[chainKey]?.[network]?.collectionAddress,
+                                                    collections[collectionKey]?.[network]?.collectionAddress ?? "",
                                             },
                                         })
                                     if (!data) {
