@@ -17,7 +17,6 @@ const query1 = gql`
         level
         avatarUrl
         username
-        chainKey
         golds
         isOnline
         followed

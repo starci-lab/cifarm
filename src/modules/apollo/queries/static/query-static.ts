@@ -438,6 +438,8 @@ const query = gql`
     } 
     wholesaleMarket {
       bulks {
+        bulkId
+        bulkName
         paymentKind
         price
         products {

@@ -22,7 +22,7 @@ export const pathConstants = {
     dapp: "/dapp",
     dapps: "/dapps",
     dappStarterShop: "/dapp/starter-shop",
-    dappWholesaleMarket: "/dapp/wholesale-market",
+    dappsWholesaleMarket: "/home/dapps/wholesale-market",
 }
 
 

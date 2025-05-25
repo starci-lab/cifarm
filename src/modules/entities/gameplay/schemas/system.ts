@@ -138,6 +138,8 @@ export interface WholesaleMarketProduct {
 }
 
 export interface WholesaleMarketBulk {
+  bulkId: string;
+  bulkName: string;
   paymentKind: PaymentKind;
   price: number;
   products: Array<WholesaleMarketProduct>;

@@ -6,13 +6,10 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { assetIconMap, AssetIconId } from "@/modules/assets"
 import { useDisclosure } from "react-use-disclosure"
 import { PaymentKind } from "@/modules/entities"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { SHEET_WHOLSALE_MARKET_DISCLOSURE, PURCHASE_NFT_BOXES_DISCLOSURE, QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
+import { useGraphQLQueryStaticSwr, useRouterWithSearchParams } from "@/hooks"
+import { PURCHASE_NFT_BOXES_DISCLOSURE, QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
 
 export const DApps: FC = () => {
-    const { open: openWholesaleMarketSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        SHEET_WHOLSALE_MARKET_DISCLOSURE
-    )
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
@@ -20,6 +17,7 @@ export const DApps: FC = () => {
     const { open: openPurchaseNFTBoxesModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         PURCHASE_NFT_BOXES_DISCLOSURE
     )
+    const router = useRouterWithSearchParams()
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <DAppCard
@@ -49,7 +47,9 @@ export const DApps: FC = () => {
                 title="Wholesale Market"
                 description="Trade goods in bulk and earn tokens for each successful delivery."
                 imageUrl={assetIconMap[AssetIconId.WholesaleMarket].base.assetUrl}
-                onClick={openWholesaleMarketSheet}
+                onClick={() => {
+                    router.push("/home/dapps/wholesale-market")
+                }}
             />
             <DAppCard
                 title="NFT Marketplace"

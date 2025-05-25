@@ -16,14 +16,14 @@ import React, { FC } from "react"
 import { useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useGraphQLQueryVaultCurrentSwr, useIsMobile, useGlobalAccountAddress } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
-import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
-import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
+import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
 import { assetProductMap } from "@/modules/assets"
 import { PaymentKind } from "@/modules/entities"
 
-export const WholesaleMarketSheet: FC = () => {
+export const WholesaleMarketBulkSheet: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        SHEET_WHOLSALE_MARKET_DISCLOSURE
+        SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE
     )
 
     const isMobile = useIsMobile()
@@ -40,13 +40,17 @@ export const WholesaleMarketSheet: FC = () => {
     )
 
     const { accountAddress } = useGlobalAccountAddress()
-    
+    const wholesaleMarketBulkSheet = useAppSelector((state) => state.sheetReducer.wholesaleMarketBulkSheet)
+    const bulk = staticSwr.data?.data.wholesaleMarket.bulks.find(
+        (bulk) => bulk.bulkId === wholesaleMarketBulkSheet.bulkId
+    )
+    if (!bulk) return null
     return (
         <Sheet open={isOpen} onOpenChange={toggle}>
             <SheetContent side={isMobile ? "bottom" : "right"} className="flex flex-col justify-between">
                 <div>
                     <SheetHeader>
-                        <SheetTitle>Wholesale Market</SheetTitle>
+                        <SheetTitle>{bulk.bulkName}</SheetTitle>
                     </SheetHeader>
                     <SheetBody>
                         <Title
@@ -60,7 +64,7 @@ export const WholesaleMarketSheet: FC = () => {
                                     container: "grid-none flex flex-wrap gap-2 justify-start",
                                 }}
                                 enableScroll={false}
-                                items={staticSwr.data?.data.wholesaleMarket.products || []}
+                                items={bulk.products || []}
                                 contentCallback={({ quantity, productId }) => {
                                     const product = staticSwr.data?.data.products.find(
                                         (product) => product.id === productId
@@ -94,7 +98,7 @@ export const WholesaleMarketSheet: FC = () => {
                             <div className="flex items-center gap-2">
                                 <PaymentIcon
                                     paymentKind={
-                                        staticSwr.data?.data.wholesaleMarket.paymentKind ||
+                                        bulk.paymentKind ||
                     PaymentKind.Token
                                     }
                                     className="w-10 h-10"
