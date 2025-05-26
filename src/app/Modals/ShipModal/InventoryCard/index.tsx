@@ -47,7 +47,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({
             })()}
             showTooltip={true}
             tint={inventory?.id === selectedInventoryId}
-            quantity={inventory?.quantity}
+            quantity={inventory?.quantity?.toString()}
             stackable={inventoryType?.stackable}
             imageUrl={(() => {
                 if (!inventoryType) return

@@ -23,7 +23,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
     const selectedRetrieveInventoryIds = useAppSelector(state => state.sessionReducer.selectedRetrieveInventoryIds)
     return (
         <ItemCard
-            quantity={inventory?.quantity}
+            quantity={inventory?.quantity?.toString()}
             stackable={inventoryType?.stackable}
             imageUrl={(() => {
                 if (!inventoryType) return

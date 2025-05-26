@@ -12,7 +12,6 @@ import {
 import { useDisclosure } from "react-use-disclosure"
 import { AssetData, assetFruitMap } from "@/modules/assets"
 import { valuesWithKey } from "@/modules/common"
-import { useAppSelector } from "@/redux"
 import { envConfig } from "@/env"
 
 export interface NFTCardProps {
@@ -57,10 +56,9 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
         }
     }, [data])
 
-    const chainKey = useAppSelector(state => state.sessionReducer.chainKey)
     const network = envConfig().network
     const collection = valuesWithKey(data?.data.nftCollections ?? {}).find(
-        (collection) => placedItem.placedItemType === collection[chainKey]?.[network]?.placedItemTypeId
+        (collection) => placedItem.placedItemType === collection[network]?.placedItemTypeId
     )
     return (
         <Card
@@ -76,8 +74,8 @@ export const NFTCard: FC<NFTCardProps> = ({ placedItem }) => {
                     <div className="text-lg">{placedItem.nftMetadata?.nftName}</div>
                     <div>
                         <div className="flex items-center gap-1">
-                            <ExtendedBadge color="secondary" icon={<Image src={collection?.[chainKey]?.[network]?.imageUrl ?? ""} className="w-6 h-6" />}>
-                                {collection?.[chainKey]?.[network]?.name ?? ""}
+                            <ExtendedBadge color="secondary" icon={<Image src={collection?.[network]?.imageUrl ?? ""} className="w-6 h-6" />}>
+                                {collection?.[network]?.name ?? ""}
                             </ExtendedBadge>
                         </div>
                     </div>

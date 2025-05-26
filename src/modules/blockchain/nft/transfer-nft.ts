@@ -29,7 +29,6 @@ export interface TransferNFTParams {
 export const transferSolanaNFT = async ({
     nftAddress,
     network,
-    chainKey,
     recipientAddress,
     collectionKey,
     collections,
@@ -43,7 +42,7 @@ export const transferSolanaNFT = async ({
     const { signature } = await transferV1(umi, {
         asset: publicKey(nftAddress),
         newOwner: publicKey(recipientAddress),
-        collection: publicKey(collection[chainKey]?.[network]?.collectionAddress ?? ""),
+        collection: publicKey(collection[network]?.collectionAddress ?? ""),
     }).sendAndConfirm(umi)
     return {
         txHash: base58.encode(signature)

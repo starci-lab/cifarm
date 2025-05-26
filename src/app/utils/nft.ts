@@ -1,4 +1,4 @@
-import { Network, NFTTypeToPlacedItemTypeId, ChainKey } from "@/modules/blockchain"
+import { Network, NFTTypeToPlacedItemTypeId } from "@/modules/blockchain"
 import {
     PlacedItemType,
     StaticData,
@@ -10,14 +10,12 @@ export interface GetNFTImageParams {
     nftType: NFTType;
     staticData: StaticData;
     network: Network;
-    chainKey: ChainKey;
 }
 
 export const getNFTImage = ({
     nftType,
     staticData,
     network,
-    chainKey,
 }: GetNFTImageParams) => {
     const placedItemTypeId = NFTTypeToPlacedItemTypeId[nftType] 
     const placedItemType = staticData.placedItemTypes?.find(
@@ -31,7 +29,7 @@ export const getNFTImage = ({
         if (!fruit) {
             throw new Error("Fruit not found")
         }
-        return staticData?.nftCollections?.[nftType]?.[chainKey]?.[network]?.imageUrl ?? ""
+        return staticData?.nftCollections?.[nftType]?.[network]?.imageUrl ?? ""
     }
     default: {
         throw new Error("Invalid NFT type")

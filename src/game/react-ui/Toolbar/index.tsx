@@ -129,7 +129,7 @@ export const Toolbar: FC = () => {
                                     }}
                                     key={toolLike.id}
                                     frameOnly={false}
-                                    quantity={toolLike.quantity}
+                                    quantity={toolLike.quantity?.toString()}
                                     imageUrl={assetToolsMap[toolLike.id as ToolId]?.base.assetUrl}
                                     isSelected={toolLike.id === selectedToolId}
                                 />
@@ -158,7 +158,7 @@ export const Toolbar: FC = () => {
                                     dispatch(setSelectedToolId(toolLike.id))
                                 }}
                                 stackable={inventoryType.stackable}
-                                quantity={toolLike.quantity}
+                                quantity={toolLike.quantity?.toString()}
                                 imageUrl={
                                     assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
                                 }

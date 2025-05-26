@@ -13,9 +13,9 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import { useDisclosure } from "react-use-disclosure"
-import { getNFTImage } from "@/app/utils"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { envConfig } from "@/env"
+import { getNFTImage } from "@/app/utils"
 
 export const NFTsClaimedModal: FC = () => {
     const { isOpen, toggle, close } = useSingletonHook<
@@ -23,7 +23,6 @@ export const NFTsClaimedModal: FC = () => {
   >(NFTS_CLAIMED_DISCLOSURE)
     const nftItems = useAppSelector((state) => state.modalReducer.nftsClaimedModal.nftItems)
     const network = envConfig().network
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
@@ -53,7 +52,6 @@ export const NFTsClaimedModal: FC = () => {
                                                         nftType: nftItem.nftType,
                                                         staticData: staticSwr.data?.data,
                                                         network,
-                                                        chainKey,
                                                     })
                                                 })()
                                             } className="w-20 aspect-square object-contain" />

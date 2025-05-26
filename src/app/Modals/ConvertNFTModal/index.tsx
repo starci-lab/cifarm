@@ -29,7 +29,6 @@ export const NFTConversionModal: FC = () => {
     const nftAddresses = useAppSelector((state) => state.convertReducer.nftAddresses)
     const conversionRate = staticSwr.data?.data.nftConversion.conversionRate || 1
     const nftsGet = nftAddresses.length / conversionRate
-    const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const selectedNFTType = useAppSelector((state) => state.convertReducer.selectedNFTType)
     const network = envConfig().network
     const { isOpen: isNFTCollectionModalOpen, open: openNFTCollectionModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
@@ -65,8 +64,8 @@ export const NFTConversionModal: FC = () => {
                         <Card className="w-full relative">
                             <CardBody className="flex items-center justify-between">
                                 <div className="flex items-center gap-1">
-                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[nftType]?.[chainKey]?.[network]?.imageUrl || ""} />
-                                    {staticSwr.data?.data.nftCollections?.[nftType]?.[chainKey]?.[network]?.name}
+                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[nftType]?.[network]?.imageUrl || ""} />
+                                    {staticSwr.data?.data.nftCollections?.[nftType]?.[network]?.name}
                                     <CaretDown className="w-4 h-4" />
                                 </div>
                                 <div className="text-4xl">
@@ -80,8 +79,8 @@ export const NFTConversionModal: FC = () => {
                         <Card className="w-full relative">
                             <CardBody className="flex items-center justify-between">
                                 <div className="flex items-center gap-1" onClick={openNFTCollectionModal}>
-                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[selectedNFTType]?.[chainKey]?.[network]?.imageUrl || ""} />
-                                    {staticSwr.data?.data.nftCollections?.[selectedNFTType]?.[chainKey]?.[network]?.name}
+                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[selectedNFTType]?.[network]?.imageUrl || ""} />
+                                    {staticSwr.data?.data.nftCollections?.[selectedNFTType]?.[network]?.name}
                                     {isNFTCollectionModalOpen ? <CaretUp className="w-4 h-4" /> : <CaretDown className="w-4 h-4" />}
                                 </div>
                                 <div className="text-4xl">
@@ -101,7 +100,6 @@ export const NFTConversionModal: FC = () => {
                             const { data } = await createConvertSolanaMetaplexNFTsSwrMutation.trigger({
                                 request: {
                                     convertNFTAddresses: nftAddresses,
-                                    chainKey: chainKey,
                                     accountAddress: accountAddress,
                                     nftType: selectedNFTType,
                                     burnNFTType: nftType,

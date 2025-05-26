@@ -24,7 +24,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
     const isSelected = selectedDeliveryInventoryIds.includes(inventory?.id ?? "")
     return (
         <ItemCard
-            quantity={inventory?.quantity}
+            quantity={inventory?.quantity?.toString()}
             stackable={inventoryType?.stackable}
             imageUrl={(() => {
                 if (!inventoryType) return
