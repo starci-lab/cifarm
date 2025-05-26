@@ -69,7 +69,7 @@ export const useAuthentication = () => {
             return
         }
         if (!authenticated) {
-            if (pathname !== pathConstants.signIn) {
+            if (!unauthenticatedPages.includes(pathname)) {
                 router.push(pathConstants.signIn)
             }
             return
