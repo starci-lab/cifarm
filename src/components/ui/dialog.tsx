@@ -63,7 +63,7 @@ const DialogHeader = ({
     <div>
         <div
             className={cn(
-                "flex items-center justify-between text-foreground p-4",
+                "flex items-center justify-between text-foreground px-4 py-3",
                 className
             )}
             {...props}

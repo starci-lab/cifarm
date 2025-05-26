@@ -36,6 +36,7 @@ import { SelectNFTCollectionModal } from "./SelectNFTCollectionModal"
 import { NotificationModal } from "./NotificationModal"
 import { BuyEnergyModal } from "./BuyEnergyModal"
 import { SelectChainModal } from "./SelectChainModal"
+import { WalletConnectionRequiredModal } from "./WalletConnectionRequiredModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 const Modals : FC = () => {
@@ -78,6 +79,7 @@ const Modals : FC = () => {
             <NeighborsFilterModal />
             <BuyGoldsModal />
             <BuyEnergyModal />
+            <WalletConnectionRequiredModal />
         </div>
     )
 }

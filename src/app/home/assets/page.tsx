@@ -10,8 +10,7 @@ import {
     SidebarTab,
     triggerRefreshTokens,
     triggerRefreshNFTCollections,
-    setNotificationModal,
-    setSelectedChainKey,
+    setWalletConnectionRequiredModal,
 } from "@/redux"
 import { TokensTab } from "./TokensTab"
 import { NFTCollectionsTab } from "./NFTCollectionsTab"
@@ -25,7 +24,7 @@ import { useWallet } from "@solana/wallet-adapter-react"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { NOTIFICATION_DISCLOSURE, CONNECT_DISCLOSURE } from "@/app/constants"
+import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
 
 const Page = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
@@ -62,8 +61,8 @@ const Page = () => {
 
     const { currentWallet } = useCurrentWallet()
     const { open: openConnectModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_DISCLOSURE)
-    const { open: openNotificationModal, close: closeNotificationModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NOTIFICATION_DISCLOSURE)
-    
+    const { open: openWalletConnectionRequiredModal, close: closeWalletConnectionRequiredModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
+
     const lastTabRef = useRef<AssetTab>(selectedAssetTab)
     useEffect(() => {
         if (lastTabRef.current === selectedAssetTab) {
@@ -75,61 +74,34 @@ const Page = () => {
             switch (chainKey) {
             case ChainKey.Sui: {
                 if (!currentWallet) {
-                // warning that no wallet is connected
-                    dispatch(setNotificationModal({
-                        title: "No Sui Wallet Connected",
-                        message: "Please connect a Sui wallet to continue",
-                        buttonText: "Connect",
-                        callback: () => {
-                            closeNotificationModal()
-                            dispatch(setSelectedChainKey(ChainKey.Sui))
-                            openConnectModal()
-                        },
+                    // warning that no wallet is connected
+                    dispatch(setWalletConnectionRequiredModal({
+                        chainKey: ChainKey.Sui,
                     }))
-                    openNotificationModal()
-                } else {
-                    closeNotificationModal()
+                    openWalletConnectionRequiredModal()
                 }
                 break
             }
             case ChainKey.Solana: {
                 if (!publicKey) {
-                // warning that no wallet is connected
-                    dispatch(setNotificationModal({
-                        title: "No Solana Wallet Connected",
-                        message: "Please connect a Solana wallet to continue",
-                        buttonText: "Connect",
-                        callback: () => {
-                            closeNotificationModal()
-                            dispatch(setSelectedChainKey(ChainKey.Solana))
-                            openConnectModal()
-                        },
+                    // warning that no wallet is connected
+                    dispatch(setWalletConnectionRequiredModal({
+                        chainKey: ChainKey.Solana,
                     }))
-                    openNotificationModal()
-                } else {
-                    closeNotificationModal()
+                    openWalletConnectionRequiredModal()
                 }
             }
                 break
-            }   
+            }
             break
         }
         case AssetTab.NFTs: {
             // check if solana is connected
             if (!publicKey) {
-                dispatch(setNotificationModal({
-                    title: "No Solana Wallet Connected",
-                    message: "Please connect a Solana wallet to continue",
-                    buttonText: "Connect",
-                    callback: () => {
-                        closeNotificationModal()
-                        dispatch(setSelectedChainKey(ChainKey.Solana))
-                        openConnectModal()
-                    },
+                dispatch(setWalletConnectionRequiredModal({
+                    chainKey: ChainKey.Solana,
                 }))
-                openNotificationModal() 
-            } else {
-                closeNotificationModal()
+                openWalletConnectionRequiredModal()
             }
             break
         }
@@ -137,7 +109,7 @@ const Page = () => {
             break
         }
         }
-    }, [chainKey, currentWallet, publicKey, openConnectModal, openNotificationModal, closeNotificationModal, selectedAssetTab])
+    }, [chainKey, currentWallet, publicKey, openConnectModal, openWalletConnectionRequiredModal, closeWalletConnectionRequiredModal, selectedAssetTab])
 
     // when selectedSidebarTab change
     useEffect(() => {
@@ -164,23 +136,23 @@ const Page = () => {
     const renderRightContent = () => {
         switch (assetTab) {
         case AssetTab.Tokens:
-            return <div className="flex gap-2 justify-between items-center">
+            return <div className="flex gap-2 justify-between items-center w-full md:w-auto">
                 <ChainSelectButton />
                 <FilterBar
                     onSearchStringChange={() => { }}
                     searchString={""}
-                    className="max-w-[200px]"
+                    className="w-full md:max-w-[200px]"
                 />
                 <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => dispatch(triggerRefreshTokens())}>
                     <ArrowsClockwise />
                 </ExtendedButton>
             </div>
         case AssetTab.NFTs:
-            return <div className="flex gap-2 justify-between items-center">
+            return <div className="flex gap-2 justify-between items-center w-full md:w-auto">
                 <FilterBar
                     onSearchStringChange={() => { }}
                     searchString={""}
-                    className="max-w-[200px]"
+                    className="w-full md:max-w-[200px]"
                 />
                 <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => dispatch(triggerRefreshNFTCollections())}>
                     <ArrowsClockwise />
@@ -190,6 +162,7 @@ const Page = () => {
             return <></>
         }
     }
+
     return (
         <div className="relative">
             <BlurEffect size="lg" position="top" />
@@ -197,8 +170,14 @@ const Page = () => {
                 <Header title="Assets" />
             </div>
             <Spacer y={6} />
-            <div className="flex gap-2 justify-between items-center">
+            <div className="flex gap-4 md:gap-2 flex-col md:flex-row md:justify-between items-center">
                 <AppTabs
+                    classNames={
+                        {
+                            base: "w-full md:w-auto",
+                            list: "w-full md:w-auto",
+                        }
+                    }
                     tabs={[
                         {
                             label: "Tokens",

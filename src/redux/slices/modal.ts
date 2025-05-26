@@ -1,4 +1,4 @@
-import { NFTData, NFTRarityEnum } from "@/modules/blockchain"
+import { ChainKey, NFTData, NFTRarityEnum } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse, TxResponses } from "@/modules/honeycomb"
 import { NFTType, TokenKey } from "@/modules/entities"
@@ -43,6 +43,10 @@ export enum TransactionType {
   SolanaRawTxs = "SolanaRawTxs",
   SuiRawTxs = "SuiRawTxs",
   SuiRawTx = "SuiRawTx",
+}
+
+export interface WalletConnectionRequiredModal {
+  chainKey: ChainKey;
 }
 
 export interface TokenModal {
@@ -154,6 +158,7 @@ export interface ModalSlice {
   sellModal: SellModal;
   upgradeModal: UpgradeModal;
   nftsClaimedModal: NFTsClaimedModal;
+  walletConnectionRequiredModal: WalletConnectionRequiredModal;
 }
 
 export interface DownloadPackageModal {
@@ -187,6 +192,9 @@ const initialState: ModalSlice = {
     upgradeModal: {},
     nftsClaimedModal: {
         nftItems: [],
+    },
+    walletConnectionRequiredModal: {
+        chainKey: ChainKey.Solana,
     },
 }
 
@@ -227,6 +235,9 @@ export const modalSlice = createSlice({
         setNFTsClaimedModal: (state, action: PayloadAction<NFTsClaimedModal>) => {
             state.nftsClaimedModal = action.payload
         },
+        setWalletConnectionRequiredModal: (state, action: PayloadAction<WalletConnectionRequiredModal>) => {
+            state.walletConnectionRequiredModal = action.payload
+        },
     },
 })
 
@@ -242,4 +253,5 @@ export const {
     setSellModal,
     setUpgradeModal,
     setNFTsClaimedModal,
+    setWalletConnectionRequiredModal,
 } = modalSlice.actions

@@ -71,6 +71,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             CONVERT_NFT_DISCLOSURE: useDisclosure(),
             MINT_AMOUNT_DISCLOSURE: useDisclosure(),
             SELECT_TOKEN_DISCLOSURE: useDisclosure(),
+            WALLET_CONNECTION_REQUIRED_DISCLOSURE: useDisclosure(),
             NFT_DISCLOSURE: useDisclosure(),
             TOKEN_DISCLOSURE: useDisclosure(),
             SELECT_NFT_DISCLOSURE: useDisclosure(),

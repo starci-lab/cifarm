@@ -10,7 +10,7 @@ import {
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { BUY_GOLDS_DISCLOSURE, BUY_ENERGY_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR } from "@/app/constants"
+import { BUY_GOLDS_DISCLOSURE, BUY_ENERGY_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
 import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr } from "@/hooks"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/modules/entities"
@@ -18,7 +18,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector } from "@/redux"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { getMaxEnergy } from "@/modules/common"
-
+import { useWallet } from "@solana/wallet-adapter-react"
 export const InGameTab: FC = () => {
     const inventories = useAppSelector(
         state => state.sessionReducer.inventories
@@ -36,6 +36,9 @@ export const InGameTab: FC = () => {
         useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_DISCLOSURE)
     const { open: openBuyEnergyModal } =
         useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_ENERGY_DISCLOSURE)
+    const { open: openWalletConnectionRequiredModal } =
+        useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
+    const { publicKey } = useWallet()
     return (
         <div>
             <div>
@@ -61,7 +64,15 @@ export const InGameTab: FC = () => {
                             {user?.golds}
                         </div>
                     </div>
-                    <ExtendedButton onClick={openBuyGoldsModal}>Buy</ExtendedButton>
+                    <ExtendedButton onClick={
+                        () => {
+                            if (!publicKey) {
+                                openWalletConnectionRequiredModal()
+                                return
+                            }
+                            openBuyGoldsModal()
+                        }
+                    }>Buy</ExtendedButton>
                 </div>
             </div>
             <Spacer y={6} />

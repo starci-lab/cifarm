@@ -11,9 +11,9 @@ import { ChainKey, chainKeyMap } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { CONNECT_DISCLOSURE, NOTIFICATION_DISCLOSURE } from "@/app/constants"
+import { WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
-import { useAppDispatch, setNotificationModal, setSelectedChainKey } from "@/redux"
+import { useAppDispatch, setWalletConnectionRequiredModal } from "@/redux"
 interface DAppCardProps {
   title: string;
   description: string;
@@ -35,50 +35,30 @@ export const DAppCard: FC<DAppCardProps> = ({
 }) => {
     const { publicKey } = useWallet()
     const { currentWallet } = useCurrentWallet()
-    const { open: openConnectModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_DISCLOSURE)
-    const { open: openNotificationModal, close: closeNotificationModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NOTIFICATION_DISCLOSURE)
+    const { open: openWalletConnectionRequiredModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
     const dispatch = useAppDispatch()
     return (
         <Card
             onClick={() => {
                 if (chainKey === ChainKey.Solana && !publicKey) {
-                    dispatch(setNotificationModal({
-                        title: "No Solana Wallet Connected",
-                        message: "Please connect a Solana wallet to continue",
-                        buttonText: "Connect",
-                        callback: () => {
-                            dispatch(setSelectedChainKey(ChainKey.Solana))
-                            closeNotificationModal()
-                            openConnectModal()
-                        },
+                    dispatch(setWalletConnectionRequiredModal({
+                        chainKey: ChainKey.Solana,
                     }))
-                    openNotificationModal()
+                    openWalletConnectionRequiredModal()
                     return
                 }
                 if (chainKey === ChainKey.Sui && !currentWallet) {
-                    dispatch(setNotificationModal({
-                        title: "No Sui Wallet Connected",
-                        message: "Please connect a Sui wallet to continue",
-                        buttonText: "Connect",
-                        callback: () => {
-                            dispatch(setSelectedChainKey(ChainKey.Sui))
-                            closeNotificationModal()
-                            openConnectModal()
-                        },
+                    dispatch(setWalletConnectionRequiredModal({
+                        chainKey: ChainKey.Sui,
                     }))
-                    openNotificationModal()
+                    openWalletConnectionRequiredModal()
                     return
                 }
                 if (chainKey === ChainKey.Somnia) {
-                    dispatch(setNotificationModal({
-                        title: "No Sui Wallet Connected",
-                        message: "Please connect a Sui wallet to continue",
-                        buttonText: "Connect",
-                        callback: () => {
-                            openConnectModal()
-                        },
+                    dispatch(setWalletConnectionRequiredModal({
+                        chainKey: ChainKey.Somnia,
                     }))
-                    openNotificationModal()
+                    openWalletConnectionRequiredModal()
                     return
                 }
                 onClick()
