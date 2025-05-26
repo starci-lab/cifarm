@@ -17,11 +17,10 @@ export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<
     ReturnType<typeof useGraphQLMutationRefreshSwrMutation>
   >(GRAPHQL_MUTATION_REFRESH_SWR_MUTATION)
-    
     //const router = useRouterWithSearchParams()
     //const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const dispatch = useAppDispatch()
-    
+    const loaded = useAppSelector(state => state.sessionReducer.loaded)
     useEffect(() => {
         const handleEffect = async () => {
             try {
@@ -63,17 +62,20 @@ export const useAuthentication = () => {
 
     //auto navigate to home if authenticated
     useEffect(() => {
+        if (!loaded) {
+            return
+        }
+        if (neutralPages.includes(pathname)) {
+            return
+        }
         if (!authenticated) {
             if (pathname !== pathConstants.signIn) {
                 router.push(pathConstants.signIn)
             }
             return
         }
-        if (neutralPages.includes(pathname)) {
-            return
-        }
         if (unauthenticatedPages.includes(pathname)) {
             router.push(pathConstants.home)
         }
-    }, [authenticated, pathname])
+    }, [authenticated, pathname, loaded])
 }   
