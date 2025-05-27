@@ -1,5 +1,5 @@
 import { setAuthenticated, useAppDispatch, useAppSelector } from "@/redux"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, Link, DropdownMenuContent, Separator, AvaButton2 } from "@/components"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent, Separator, AvaButton2, DropdownContent } from "@/components"
 import React, { FC } from "react"
 import { Gear, SignOut, User } from "@phosphor-icons/react"
 import { useGraphQLMutationLogoutSwrMutation, useRouterWithSearchParams } from "@/hooks"
@@ -47,39 +47,34 @@ export const UserDropdown: FC = () => {
                         router.push("/home/profile")
                     }}
                 >
-                    <Link classNames={{
-                        base: "flex items-center gap-3",
-                    }}
+                    <DropdownContent
+                        icon={<User />}
                     >
-                        <User />
-                        <div>Profile</div>
-                    </Link>
+                        Profile
+                    </DropdownContent>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary text-muted-foreground"
                     onClick={() => {
                         router.push("/home/settings")
                     }}
                 >
-                    <Link
-                        classNames={{
-                            base: "flex items-center gap-3",
-                        }}
+                    <DropdownContent
+                        icon={<Gear />}
                     >
-                        <Gear />
-                        <div>Settings</div>
-                    </Link>
+                        Settings
+                    </DropdownContent>
                 </DropdownMenuItem>
                 <Separator className="my-1" />
                 <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary text-muted-foreground">
-                    <Link
+                    <DropdownContent    
                         onClick={async () => {
                             await trigger()
                         }}
+                        icon={<SignOut />}
                         isLoading={isMutating}
                     >
-                        <SignOut />
-                        <div>Logout</div>
-                    </Link>
+                        Logout
+                    </DropdownContent>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
