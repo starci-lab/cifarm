@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     title: "CiFarm",
     description: "CiFarm",
     icons: {
-        icon: "logo.png",
+        icon: "/favicon.ico",
     },
     viewport: {
         width: "device-width",
