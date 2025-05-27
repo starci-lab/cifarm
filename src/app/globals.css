@@ -172,6 +172,7 @@ body {
     --content-3: 30 12% 25%; /* dark teal - use in hover */
     --content-4: 31 37% 20%; /* dark teal - use in hover */
     --content-5: 22 38% 15%; /* dark cream - use in card and button */
+    --content-6: 0 5% 58%; /* dark cream - use in card and button */
 
     /* for navbar */
     --navbar: 0 0% 96.1%;

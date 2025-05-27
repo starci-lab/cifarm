@@ -123,7 +123,7 @@ export const Toolbar: FC = () => {
                         return (
                             <div className="relative" key={toolLike.id}>
                                 <ItemCard
-                                    hideCardContentBg={false}
+                                    hideCardContentBg={true}
                                     onClick={() => {
                                         dispatch(setSelectedToolId(toolLike.id))
                                     }}

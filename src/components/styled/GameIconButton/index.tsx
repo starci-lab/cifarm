@@ -3,7 +3,7 @@
 import React, { FC, useRef, useState, useEffect } from "react"
 import { ScaledImage } from "../Image"
 import { cn } from "@/lib/utils"
-
+import { useTheme } from "next-themes"
 interface GameIconButtonProps {
   imageSrc: string;
   text: string;
@@ -27,6 +27,7 @@ export const GameIconButton: FC<GameIconButtonProps> = ({
             setDivHeight(divRef.current.offsetHeight)
         }
     }, [text])
+    const { theme } = useTheme()
     return (
         <div
             className={cn("flex flex-col items-center w-fit h-fit relative", hidden && "hidden")}
@@ -39,7 +40,7 @@ export const GameIconButton: FC<GameIconButtonProps> = ({
                 ref={divRef}
                 className="text-sm -mt-[20px] text-foreground absolute left-1/2 transform -translate-x-1/2 text-center"
                 style={{
-                    WebkitTextStroke: "4px white",
+                    WebkitTextStroke: theme === "dark" ? "4px black" : "4px white",
                     paintOrder: "stroke fill",
                     lineHeight: 1,
                     bottom: `calc(8px - ${divHeight / 2}px)`, // Adjust as needed for desired positioning
