@@ -39,10 +39,10 @@ const Page: FC = () => {
                     color="secondary"
                     className="w-full justify-start"
                 >
-                    <Image src="/google.svg" className="w-4 h-4" />
+                    <Image src="/google.svg" className="w-6 h-6" />
           Continue with Google
                 </ExtendedButton>
-                <Spacer y={2} />
+                {/* <Spacer y={2} />
                 <ExtendedButton
                     variant="flat"
                     className="w-full justify-start"
@@ -57,7 +57,7 @@ const Page: FC = () => {
                 > 
                     <Image src="/facebook.svg" className="w-4 h-4" />
           Continue with Facebook
-                </ExtendedButton>
+                </ExtendedButton> */}
                 <Spacer y={2} />
                 <ExtendedButton
                     variant="flat"
@@ -71,7 +71,7 @@ const Page: FC = () => {
                     className="w-full justify-start"
                     color="secondary"
                 >
-                    <Image src="/x.svg" className="w-4 h-4" />
+                    <Image src="/x.svg" className="w-6 h-6" />
           Continue with X
                 </ExtendedButton>
             </div>
