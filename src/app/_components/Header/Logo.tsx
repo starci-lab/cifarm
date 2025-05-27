@@ -13,7 +13,7 @@ export const Logo = ({
 
     return (
         <Link classNames={{ base: "flex items-center gap-2" }}
-            onPress={() => {
+            onClick={() => {
                 router.push("/")
             }}
         >
