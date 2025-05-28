@@ -31,6 +31,9 @@ import { IconContext } from "@phosphor-icons/react"
 import { ThemeProvider } from "@/components"
 import { usePathname } from "next/navigation"
 import { neutralPages, unauthenticatedPages } from "@/constants"
+import {
+    PhantomWalletAdapter
+} from "@solana/wallet-adapter-phantom"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -79,7 +82,9 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                         <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
                             <WalletSuiProvider>
                                 <ConnectionProvider endpoint={endpoint}>
-                                    <WalletProvider wallets={[]}>
+                                    <WalletProvider wallets={[
+                                        new PhantomWalletAdapter(),
+                                    ]}>
                                         <WalletModalProvider>
                                             <TooltipProvider>
                                                 <SWRConfig

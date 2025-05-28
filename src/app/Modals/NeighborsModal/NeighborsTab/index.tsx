@@ -4,7 +4,6 @@ import {
     GRAPHQL_QUERY_FOLLOWEES_SWR,
     GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
-    QUERY_USER_SWR_MUTATION,
     QUERY_STATIC_SWR_MUTATION,
     WS,
     NEIGHBORS_DISCLOSURE,
@@ -20,7 +19,6 @@ import {
     toast,
     useWs,
     EmitterEventName,
-    useGraphQLQueryUserSwr,
 } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect } from "react"
@@ -78,16 +76,16 @@ export const NeighborsTab: FC = () => {
         (state) => state.searchReducer.neighborsSearch.useAdvancedSearch
     )
 
-    const { swr: userSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryUserSwr>
-  >(QUERY_USER_SWR_MUTATION)
+    const user = useAppSelector(
+        (state) => state.sessionReducer.user
+    )
 
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
 
     useEffect(() => {
-        if (!userSwr.data?.data.user.level) return
+        if (!user?.level) return
         if (!staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold)
             return
         if (!setParams) throw new Error("setParams is not defined")
@@ -95,7 +93,7 @@ export const NeighborsTab: FC = () => {
             levelRange: appliedLevelRange,
             startLevel:
         staticSwr.data.data.interactionPermissions.thiefLevelGapThreshold,
-            yourLevel: userSwr.data.data.user.level,
+            yourLevel: user.level,
         })
         setParams({
             ...params,
@@ -110,7 +108,7 @@ export const NeighborsTab: FC = () => {
     }, [
         appliedLevelRange,
         appliedStatus,
-        userSwr.data?.data.user.level,
+        user?.level,
         staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold,
         setParams,
         useAdvancedSearch,

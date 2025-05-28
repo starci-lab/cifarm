@@ -44,7 +44,7 @@ export const ReactUI: FC = () => {
                         </div>
                     ) : (
                         <div className="flex items-center justify-between w-full">
-                            <div className="top-4 md:top-6 left-4 md:left-6 fixed">
+                            <div className="top-4 md:top-6 left-4 md:left-6 scale-75">
                                 <div className="flex items-center">
                                     <GameAvatar
                                         imgSrc={visitedUser?.avatarUrl}

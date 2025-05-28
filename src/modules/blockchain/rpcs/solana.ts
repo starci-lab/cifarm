@@ -31,7 +31,8 @@ export const solanaHttpRpcUrl = ({
     case Network.Mainnet: {
         switch (chainKey) {
         case ChainKey.Solana:
-            rpcUrl = clusterApiUrl("mainnet-beta")
+            rpcUrl = "https://mainnet.helius-rpc.com/?api-key=195f7f46-73d5-46df-989e-9d743bf3caad"
+            //clusterApiUrl("mainnet-beta")
             break
         default:
             throw new Error(`Unsupported chain key: ${chainKey}`)
