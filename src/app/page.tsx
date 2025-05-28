@@ -3,7 +3,6 @@
 import React from "react"
 import { Header, Footer, StickySidebar, Roadmap, Hero, Intro } from "./_components"
 import { Image, Marquee, ScrollProgress, WrappedSection } from "@/components"
-import { Teams } from "./_components/Teams"
 import { chainKeyMap } from "@/modules/blockchain"
 import { BlurEffect } from "@/components"
 
@@ -35,11 +34,6 @@ const Page = () => {
                             ))
                         }
                     </Marquee>
-                </WrappedSection>
-                <WrappedSection 
-                    title="Our teams"
-                >
-                    <Teams />
                 </WrappedSection>
                 <WrappedSection 
                     title="Roadmap"
