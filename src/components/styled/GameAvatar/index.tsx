@@ -17,7 +17,7 @@ interface GameAvatarProps {
 }
 
 export const GameAvatar: FC<GameAvatarProps> = ({ imgSrc, jazzString, classNames = {} }) => {
-    const [avatarUrl, setAvatarUrl] = useState("")
+    const [ avatarUrl, setAvatarUrl ] = useState("")
     useEffect(() => {
         // if both imgSrc and jazzString are not provided, return
         if (!imgSrc && !jazzString) {

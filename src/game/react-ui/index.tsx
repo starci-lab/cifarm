@@ -19,6 +19,7 @@ export const ReactUI: FC = () => {
         PROFILE_DISCLOSURE
     )
     const visitedUser = useAppSelector((state) => state.gameReducer.visitedUser)
+    console.log(visitedUser)
     return (
         <>
             {showGameUI ? (
@@ -29,7 +30,7 @@ export const ReactUI: FC = () => {
                                 <div className="flex items-center" onClick={open}>
                                     <GameAvatar
                                         imgSrc={user?.avatarUrl}
-                                        jazzString={user?.accountAddress}  
+                                        jazzString={user?.id}  
                                     />
                                     <div className="px-2 py-1.5 bg-content-4/50 rounded-r-md">
                                         <div className="uppercase text-sm">{truncateString(user?.username ?? "", 12, 0)}</div>
@@ -43,12 +44,12 @@ export const ReactUI: FC = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="flex items-center justify-between w-full">
-                            <div className="top-4 md:top-6 left-4 md:left-6 scale-75">
+                        <div>
+                            <div className="top-4 md:top-6 left-4 md:left-6 fixed scale-75 origin-top-left sm:scale-100">
                                 <div className="flex items-center">
                                     <GameAvatar
                                         imgSrc={visitedUser?.avatarUrl}
-                                        jazzString={visitedUser?.accountAddress}  
+                                        jazzString={visitedUser?.id}  
                                     />
                                     <div className="px-2 py-1.5 bg-background/50 rounded-r-md">
                                         <div className="uppercase text-sm">{visitedUser?.username}</div>
