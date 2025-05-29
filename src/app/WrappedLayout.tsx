@@ -31,7 +31,6 @@ import { IconContext } from "@phosphor-icons/react"
 import { ThemeProvider } from "@/components"
 import { usePathname } from "next/navigation"
 import { neutralPages, unauthenticatedPages } from "@/constants"
-import { useDevTools } from "@/hooks"
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
 })
@@ -145,18 +144,10 @@ const font = Baloo_2({ subsets: ["latin"], weight: ["400", "700"] })
 
 export const WrappedLayout = ({ children }: PropsWithChildren) => {
     const bodyRef = useRef<HTMLBodyElement>(null)
-    const { isOpen } = useDevTools()
-
     return (
         <body className={`${font.className} min-h-screen w-screen overflow-x-hidden`} ref={bodyRef} onContextMenu={(e) => e.preventDefault()}>
             <ReduxProvider store={store}>
-                {
-                    isOpen ? (
-                        <LoadingScene title="DevTools is open! Please close it to continue." />
-                    ) : (
-                        <LayoutContent> {children} </LayoutContent>
-                    )
-                }
+                <LayoutContent> {children} </LayoutContent>
             </ReduxProvider>
         </body>
     )
