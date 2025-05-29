@@ -5,6 +5,7 @@ export interface EnvConfig {
     wsUrl: string
     socialAuthUrl: string
     isLocal: boolean
+    documentUrl: string
     network: Network
     honeycombProjectAddress: Record<Network, string>
     honeycombTokenAddress: Record<Network, string>
@@ -32,6 +33,7 @@ export const envConfig = (): EnvConfig => ({
     wsUrl: process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:3003",
     socialAuthUrl: process.env.NEXT_PUBLIC_SOCIAL_AUTH_URL || "http://localhost:3044",
     isLocal: Boolean(process.env.NEXT_PUBLIC_IS_LOCAL) || false,
+    documentUrl: process.env.NEXT_PUBLIC_DOCUMENT_URL || "https://docs.cifarm.xyz/",
     honeycombProjectAddress: {
         [Network.Testnet]: process.env.NEXT_PUBLIC_TESTNET_HONEYCOMB_PROJECT_ADDRESS || "",
         [Network.Mainnet]: process.env.NEXT_PUBLIC_MAINNET_HONEYCOMB_PROJECT_ADDRESS || "",

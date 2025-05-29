@@ -70,6 +70,9 @@ export const AppSidebar: FC = () => {
                             isExternal={true}
                             selected={false}
                             icon={<Book />}
+                            onClick={() => {
+                                window.open("https://docs.cifarm.xyz/", "_blank")
+                            }}
                         />
                         <Spacer y={2} />
                         <Selection
@@ -77,6 +80,9 @@ export const AppSidebar: FC = () => {
                             isExternal={true}
                             selected={false}
                             icon={<XLogo />}
+                            onClick={() => {
+                                window.open("https://x.com/CifarmOnSol", "_blank")
+                            }}
                         />
                         <Spacer y={4} />
                     </SidebarHeader>

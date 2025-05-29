@@ -40,7 +40,9 @@ export const Footer = () => {
                                 </div>
 
                                 {/* Copyright */}
-                                <div className="text-sm text-muted-foreground">2025 © Cifarm. All Rights Reserved.</div>
+                                <div className="text-sm text-muted-foreground">
+                                    {new Date().getFullYear()} © Cifarm. All Rights Reserved.
+                                </div>
                             </div>
                         </div>
                     </div>

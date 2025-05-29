@@ -3,8 +3,8 @@ export const footerConstants = {
         title: "Token",
         items: [
             {
-                label: "CAULI Token",
-                href: "#about-farm"
+                label: "CiFarm Token",
+                href: "https://docs.cifarm.xyz/docs/economy/tokenomics"
             }
         ]
     },
@@ -17,7 +17,7 @@ export const footerConstants = {
             },
             {
                 label: "How to play",
-                href: "/",
+                href: "https://docs.cifarm.xyz/",
                 isExternal: true
             }
         ]
@@ -27,17 +27,7 @@ export const footerConstants = {
         items: [
             {
                 label: "Docs",
-                href: "/",
-                isExternal: true
-            },
-            {
-                label: "Terms of Use",
-                href: "/wp-content/uploads/2024/05/en_cfm_tos_site.pdf",
-                isExternal: true
-            },
-            {
-                label: "Privacy Policy",
-                href: "/wp-content/uploads/2024/05/en_cfm_privacy_site.pdf",
+                href: "https://docs.cifarm.xyz/",
                 isExternal: true
             }
         ]

@@ -33,8 +33,8 @@ const Page: FC = () => {
             <BlurEffect size="lg" position="top" />
             <Header title="Home" />
             {/* fixed motion scroll down */}
-            <div className={`z-[60] hidden md:block fixed top-0 left-64 right-0 transition-all duration-500 transform ${show ? "translate-y-0" : "-translate-y-full"} ${show ? "bg-background/60 backdrop-blur-xl" : ""}`}>
-                <div className="container mx-auto px-10 py-4 flex justify-between flex-col items-start">
+            <div className={`z-[60] hidden md:block fixed top-0 left-[268px] right-0 transition-all duration-500 transform mx-auto ${show ? "translate-y-0" : "-translate-y-full"} ${show ? "bg-background/60 backdrop-blur-xl" : ""}`}>
+                <div className="container mx-auto px-6 py-4 flex justify-between flex-col items-start max-w-[1200px]">
                     <ExtendedButton variant="flat" color="secondary" onPress={() => router.push("/")}>
                         <ArrowLeft />
                         <div>Back to landing page</div>

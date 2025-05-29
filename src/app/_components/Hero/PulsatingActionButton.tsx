@@ -1,5 +1,5 @@
 import { ExtendedButton } from "@/components"
-import { GameController } from "@phosphor-icons/react"
+import { Plant } from "@phosphor-icons/react"
 import React, { useState } from "react"
 
 interface PulsatingActionButtonProps {
@@ -19,7 +19,7 @@ export const PulsatingActionButton = ({ onClick, children }: PulsatingActionButt
         >
             <div className="flex items-center gap-2">
                 {children}
-                <GameController />
+                <Plant weight="fill" />
             </div>
         </ExtendedButton>
     )

@@ -2,14 +2,12 @@ import React, { FC } from "react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components"
 import { ItemCard } from "./ItemCard"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { GRAPHQL_QUERY_STATIC_SWR, SHEET_GAME_ITEM_DISCLOSURE } from "@/app/constants"
-import { useDisclosure } from "react-use-disclosure"
-import { setGameItemSheet } from "@/redux"
-import { useAppDispatch } from "@/redux"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { assetProductMap, assetSuppliesMap, assetTerrainMap, assetToolsMap } from "@/modules/assets"
+import { assetBuildingMap, assetProductMap, assetSuppliesMap, assetTerrainMap, assetToolsMap } from "@/modules/assets"
 import { assetShopMap } from "@/modules/assets"
-import { ProductType } from "@/modules/entities"
+import { BuildingId, ProductType } from "@/modules/entities"
+import { envConfig } from "@/env"
 
 export interface ItemData {
     name: string
@@ -25,18 +23,14 @@ export interface Category {
 }
 
 export const ItemsTab: FC = () => {
-    const dispatch = useAppDispatch()
-
-    const handleItemClick = (id: string) => {
-        dispatch(setGameItemSheet({
-            gameItemKey: id,
-        }))
-        openGameItemSheet()
+    // open document url + envConfig().documentUrl + type + "displayname"
+    const handleItemClick = (url: string) => {
+        window.open(envConfig().documentUrl + "wiki/" + url, "_blank")
     }
 
-    const { open: openGameItemSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        SHEET_GAME_ITEM_DISCLOSURE
-    )
+    const convertToSlug = (text: string) => {
+        return text.toLowerCase().replace(/ /g, "-")
+    }
 
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     const categoryMap: Array<Category> = [
@@ -93,6 +87,15 @@ export const ItemsTab: FC = () => {
             label: "Buildings", items:
                 (staticSwr.data?.data.buildings || []).map(building => {
                     const _building = staticSwr.data?.data.buildings.find(_building => _building.id === building.id)
+                    //remove the home building
+                    if (_building?.displayId === BuildingId.Home) return {
+                        name: assetBuildingMap[BuildingId.Home]?.name || "",
+                        description: assetBuildingMap[BuildingId.Home]?.description || "",
+                        assetKey: assetBuildingMap[BuildingId.Home]?.base.assetKey || "",
+                        assetUrl: assetBuildingMap[BuildingId.Home]?.base.assetUrl || "",
+                        isNFT: false
+                    }
+
                     if (!_building) throw new Error("Building not found")
                     return ({
                         name: assetShopMap.buildings?.[building.displayId]?.name || "",
@@ -202,7 +205,7 @@ export const ItemsTab: FC = () => {
                                 {category.items.map((item, idx) => (
                                     <div
                                         key={item.assetKey || idx}
-                                        onClick={() => handleItemClick(item.assetKey)}
+                                        onClick={() => handleItemClick(category.label.toLowerCase() + "/" + convertToSlug(item.name))}
                                         className="cursor-pointer"
                                     >
                                         <ItemCard
