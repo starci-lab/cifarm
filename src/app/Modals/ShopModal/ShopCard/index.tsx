@@ -96,16 +96,20 @@ export const ShopCard: FC<ShopCardProps> = ({
                                     "p-2 rounded-md absolute top-0 right-0 w-full h-full bg-black/50"
                                 )}
                             >
-                                <div className="flex gap-1 items-center relative h-8">
-                                    <ScaledImage
-                                        src={assetUiMap[AssetUIId.Locked].base.assetUrl}
-                                    />
+                                <div className="flex gap-1 items-center relative h-6">
+                                    <div className="w-6 h-6 relative">
+                                        <ScaledImage
+                                            className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
+                                            src={assetUiMap[AssetUIId.Locked].base.assetUrl}
+                                        />
+                                    </div>
                                     <div className="text-sm">{`Lv.${unlockedLevel}`}</div>
                                 </div>
+  
                             </div>
                         )}
                         {showLimit && (
-                            <div className="text-sm absolute top-2 right-2 h-8 grid place-items-center">
+                            <div className="text-sm absolute top-2 right-2 h-6 grid place-items-center">
                                 {`${ownership}/${limit}`}
                             </div>
                         )}

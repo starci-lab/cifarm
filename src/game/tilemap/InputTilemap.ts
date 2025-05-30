@@ -252,6 +252,38 @@ export class InputTilemap extends ItemTilemap {
                 if (!tile) {
                     return
                 }
+                const selectedTool = this.scene.cache.obj.get(
+                    CacheKey.SelectedTool
+                ) as ToolLike
+                if (selectedTool.default) {
+                    //if normal mode is not on
+                    if (this.inputMode !== InputMode.Normal) {
+                        return
+                    }
+                    const _data = this.findPlacedItemRoot(tile.x, tile.y)
+                    if (!_data) {
+                        console.log("No placed item found for position")
+                        return
+                    }
+                    if (!_data.object.currentPlacedItem) {
+                        throw new Error("Placed item not found")
+                    }
+                    ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
+                        id: _data.object.currentPlacedItem.id,
+                    })
+                    ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
+                        ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                            modalName: ModalName.Info,
+                        })
+                    })
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestForceSyncPlacedItems,
+                        {
+                            ids: [_data.object.currentPlacedItem.id],
+                        }
+                    )
+                    return
+                }
                 //if buying mode is on
                 if (
                     this.inputMode === InputMode.Buy ||
@@ -342,14 +374,6 @@ export class InputTilemap extends ItemTilemap {
                 if (data.object.isPressedForAction) {
                     return
                 }
-
-                // do nothing if selected tool is default
-                const selectedTool = this.scene.cache.obj.get(
-                    CacheKey.SelectedTool
-                ) as ToolLike
-                if (selectedTool.default) {
-                    return
-                }
                 switch (data.object.placedItemType.type) {
                 case PlacedItemType.Tile:
                     this.handlePressOnTile({ data })
@@ -366,39 +390,6 @@ export class InputTilemap extends ItemTilemap {
                     this.handlePressOnFruit({ data })
                     break
                 }
-            })
-            .on("2tap", (pointer: Phaser.Input.Pointer) => {
-                const tile = this.getTileAtWorldXY(pointer.worldX, pointer.worldY)
-                // do nothing if tile is not found
-                if (!tile) {
-                    return
-                }
-                //if normal mode is not on
-                if (this.inputMode !== InputMode.Normal) {
-                    return
-                }
-                const data = this.findPlacedItemRoot(tile.x, tile.y)
-                if (!data) {
-                    console.log("No placed item found for position")
-                    return
-                }
-                if (!data.object.currentPlacedItem) {
-                    throw new Error("Placed item not found")
-                }
-                ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
-                    id: data.object.currentPlacedItem.id,
-                })
-                ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
-                    ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                        modalName: ModalName.Info,
-                    })
-                })
-                ExternalEventEmitter.emit(
-                    ExternalEventName.RequestForceSyncPlacedItems,
-                    {
-                        ids: [data.object.currentPlacedItem.id],
-                    }
-                )
             })
     }
     // method to handle press on tile
