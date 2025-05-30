@@ -19,6 +19,9 @@ import {
     assetMiscMap,
     assetIconMap,
     assetTerrainMap,
+    assetToolsMap,
+    assetSuppliesMap,
+    assetShopMap,
 } from "@/modules/assets"
 import { Scene } from "phaser"
 import { loadFont, loadMusic, loadSpine, loadTexture } from "./load"
@@ -298,3 +301,37 @@ export const loadTerrainAssets = async (scene: Scene) => {
     }
     await Promise.all(promises)
 }   
+
+export const loadToolAssets = async (scene: Scene) => {
+    const promises: Array<Promise<void>> = []
+    for (const toolData of Object.values(assetToolsMap)) {
+        promises.push(loadTexture(scene, toolData.phaser.base))
+    }   
+    await Promise.all(promises)
+}
+
+export const loadSupplyAssets = async (scene: Scene) => {
+    const promises: Array<Promise<void>> = []
+    for (const supplyData of Object.values(assetSuppliesMap)) {
+        promises.push(loadTexture(scene, supplyData.phaser.base))
+    }
+    await Promise.all(promises)
+}
+
+export const loadShopAssets = async (scene: Scene) => {
+    const promises: Array<Promise<void>> = []
+    // load crops
+    for (const cropData of Object.values(assetShopMap.crops)) {
+        if (cropData.phaser?.base) {
+            promises.push(loadTexture(scene, cropData.phaser.base))
+        }
+    }
+    
+    // load flowers
+    for (const flowerData of Object.values(assetShopMap.flowers)) {
+        if (flowerData.phaser?.base) {
+            promises.push(loadTexture(scene, flowerData.phaser.base))
+        }
+    }
+    await Promise.all(promises)
+}

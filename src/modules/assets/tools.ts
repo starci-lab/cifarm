@@ -1,4 +1,4 @@
-import { AssetData, Metadata } from "./types"
+import { AssetData, AssetTextureData, Metadata } from "./types"
 import { ToolId } from "../entities"
 import { getAssetUrl } from "./utils"
 
@@ -6,6 +6,9 @@ const PREFIX = "/tools"
 
 export interface AssetToolsData extends Metadata {
     base: AssetData
+    phaser: {
+        base: AssetTextureData
+    }
 }
 export const assetToolsMap: Record<ToolId, AssetToolsData> = {
     [ToolId.AnimalMedicine]: {
@@ -15,6 +18,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-animal-medicine",
             assetUrl: getAssetUrl(`${PREFIX}/animal-medicine.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-animal-medicine",
+                assetUrl: getAssetUrl(`${PREFIX}/animal-medicine.png`)
+            }
+        }
     },
     [ToolId.BugNet]: {
         name: "Bug Net",
@@ -23,6 +32,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-bug-net",
             assetUrl: getAssetUrl(`${PREFIX}/bug-net.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-bug-net",
+                assetUrl: getAssetUrl(`${PREFIX}/bug-net.png`)
+            }
+        }
     },
     [ToolId.Hammer]: {
         name: "Hammer",
@@ -31,6 +46,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-hammer",
             assetUrl: getAssetUrl(`${PREFIX}/hammer.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-hammer",
+                assetUrl: getAssetUrl(`${PREFIX}/hammer.png`)
+            }
+        }
     },
     [ToolId.Hand]: {
         name: "Hand",
@@ -39,6 +60,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-hand",
             assetUrl: getAssetUrl(`${PREFIX}/hand.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-hand",
+                assetUrl: getAssetUrl(`${PREFIX}/hand.png`)
+            }
+        }
     },
     [ToolId.Crate]: {
         name: "Crate",
@@ -47,6 +74,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-crate",
             assetUrl: getAssetUrl(`${PREFIX}/crate.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-crate",
+                assetUrl: getAssetUrl(`${PREFIX}/crate.png`)
+            }
+        }
     },
     [ToolId.WateringCan]: {
         name: "Watering Can",
@@ -55,6 +88,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-watering-can",
             assetUrl: getAssetUrl(`${PREFIX}/watering-can.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-watering-can",
+                assetUrl: getAssetUrl(`${PREFIX}/watering-can.png`)
+            }
+        }
     },
     [ToolId.Herbicide]: {
         name: "Herbicide",
@@ -63,6 +102,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-herbicide",
             assetUrl: getAssetUrl(`${PREFIX}/herbicide.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-herbicide",
+                assetUrl: getAssetUrl(`${PREFIX}/herbicide.png`)
+            }
+        }
     },
     [ToolId.Pesticide]: {
         name: "Pesticide",
@@ -71,6 +116,12 @@ export const assetToolsMap: Record<ToolId, AssetToolsData> = {
             assetKey: "tools-pesticide",
             assetUrl: getAssetUrl(`${PREFIX}/pesticide.png`)
         },
+        phaser: {
+            base: {
+                assetKey: "tools-pesticide",
+                assetUrl: getAssetUrl(`${PREFIX}/pesticide.png`)
+            }
+        }
     }     
 }
 

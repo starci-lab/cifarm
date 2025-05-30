@@ -1,30 +1,32 @@
 import { WS } from "@/app/constants"
-import { BuyCropSeedsMessage, EmitterEventName, ReceiverEventName, useWs, CropSeedsBoughtMessage, toast } from "@/hooks"
+import { BuyCropSeedsMessage, EmitterEventName, ReceiverEventName, useWs, toast } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { assetShopMap } from "@/modules/assets"
 import pluralize from "pluralize"
+import { setShopCrop } from "@/redux"
+import { useAppDispatch } from "@/redux"
 
 export const useBuyCropSeedsEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         if (!socket) return
-        socket?.on(ReceiverEventName.CropSeedsBought, ({
-            quantity,
-            cropId,
-        }: CropSeedsBoughtMessage) => {
+        socket?.on(ReceiverEventName.BuyCropSeedsResponsed, (message: BuyCropSeedsMessage) => {
+            const { quantity, cropId } = message
             const cropName = assetShopMap.crops[cropId]?.name?.toLowerCase() ?? ""
             toast({
                 title: `Bought ${quantity} ${
                     quantity > 1 ? pluralize(cropName) : cropName
                 }`,
             })
+            dispatch(setShopCrop({ cropId, isLoading: false }))
         })
 
         return () => {
-            socket?.off(ReceiverEventName.CropSeedsBought)
+            socket?.off(ReceiverEventName.BuyCropSeedsResponsed)
         }
     }, [socket])
     

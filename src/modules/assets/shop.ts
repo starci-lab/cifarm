@@ -1,4 +1,4 @@
-import { AssetData, Metadata } from "./types"
+import { AssetData, AssetTextureData, Metadata } from "./types"
 import {
     CropId,
     FlowerId,
@@ -16,6 +16,9 @@ import { getAssetUrl } from "./utils"
 
 export interface ShopData extends Metadata {
   base: AssetData;
+  phaser?: {
+    base: AssetTextureData;
+  };
 }
 
 export interface AssetShopData {
@@ -49,6 +52,12 @@ export const assetShopMap: AssetShopData = {
                 assetKey: "shop-turnip-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/turnip.png`),
             },
+            phaser: {
+                base: {
+                    assetKey: "shop-turnip-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/turnip.png`),
+                },
+            },
         },
         [CropId.Carrot]: {
             name: "Carrot seed",
@@ -56,6 +65,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-carrot-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/carrot.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-carrot-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/carrot.png`),
+                },
             },
         },
         [CropId.Potato]: {
@@ -65,6 +80,12 @@ export const assetShopMap: AssetShopData = {
                 assetKey: "shop-potato-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/potato.png`),
             },
+            phaser: {
+                base: {
+                    assetKey: "shop-potato-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/potato.png`),
+                },
+            },
         },
         [CropId.Pineapple]: {
             name: "Pineapple seed",
@@ -72,6 +93,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-pineapple-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/pineapple.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-pineapple-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/pineapple.png`),
+                },
             },
         },
         [CropId.Watermelon]: {
@@ -81,6 +108,12 @@ export const assetShopMap: AssetShopData = {
                 assetKey: "shop-watermelon-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/watermelon.png`),
             },
+            phaser: {
+                base: {
+                    assetKey: "shop-watermelon-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/watermelon.png`),
+                },
+            },
         },
         [CropId.Cucumber]: {
             name: "Cucumber seed",
@@ -88,6 +121,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-cucumber-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/cucumber.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-cucumber-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/cucumber.png`),
+                },
             },
         },
         [CropId.BellPepper]: {
@@ -97,6 +136,12 @@ export const assetShopMap: AssetShopData = {
                 assetKey: "shop-bell-pepper-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/bell-pepper.png`),
             },
+            phaser: {
+                base: {
+                    assetKey: "shop-bell-pepper-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/bell-pepper.png`),
+                },
+            },
         },
         [CropId.Strawberry]: {
             name: "Strawberry seed",
@@ -104,6 +149,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-strawberry-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/strawberry.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-strawberry-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/strawberry.png`),
+                },
             },
         },
         [CropId.Cauliflower]: {
@@ -113,6 +164,12 @@ export const assetShopMap: AssetShopData = {
                 assetKey: "shop-cauliflower-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/cauliflower.png`),
             },
+            phaser: {
+                base: {
+                    assetKey: "shop-cauliflower-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/cauliflower.png`),
+                },
+            },
         },
         [CropId.Eggplant]: {
             name: "Eggplant seed",
@@ -120,6 +177,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-eggplant-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/eggplant.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-eggplant-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/eggplant.png`),
+                },
             },
         },
         [CropId.Tomato]: {
@@ -137,6 +200,12 @@ export const assetShopMap: AssetShopData = {
                 assetKey: "shop-pea-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/pea.png`),
             },
+            phaser: {
+                base: {
+                    assetKey: "shop-pea-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/pea.png`),
+                },
+            },
         },
         [CropId.Pumpkin]: {
             name: "Pumpkin seed",
@@ -144,6 +213,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-pumpkin-seed",
                 assetUrl: getAssetUrl(`${PREFIX_CROPS}/pumpkin.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-pumpkin-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_CROPS}/pumpkin.png`),
+                },
             },
         },
     },
@@ -155,6 +230,12 @@ export const assetShopMap: AssetShopData = {
                 assetKey: "shop-daisy-seed",
                 assetUrl: getAssetUrl(`${PREFIX_FLOWERS}/daisy.png`),
             },
+            phaser: {
+                base: {
+                    assetKey: "shop-daisy-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_FLOWERS}/daisy.png`),
+                },
+            },
         },
         [FlowerId.Sunflower]: {
             name: "Sunflower seed",
@@ -162,6 +243,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-sunflower-seed",
                 assetUrl: getAssetUrl(`${PREFIX_FLOWERS}/sunflower.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-sunflower-seed",
+                    assetUrl: getAssetUrl(`${PREFIX_FLOWERS}/sunflower.png`),
+                },
             },
         },
     },
@@ -172,6 +259,12 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-chicken",
                 assetUrl: getAssetUrl(`${PREFIX_ANIMALS}/chicken.png`),
+            },
+            phaser: {
+                base: {
+                    assetKey: "shop-chicken",
+                    assetUrl: getAssetUrl(`${PREFIX_ANIMALS}/chicken.png`),
+                },
             },
         },
         [AnimalId.Cow]: {

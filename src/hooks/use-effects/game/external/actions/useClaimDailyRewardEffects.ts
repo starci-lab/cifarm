@@ -20,14 +20,14 @@ export const useClaimDailyRewardEffects = () => {
             if (!socket) {
                 return
             }
-            socket.on(ReceiverEventName.DailyRewardClaimed, () => {
+            socket.on(ReceiverEventName.ClaimDailyRewardResponsed, () => {
                 ExternalEventEmitter.emit(ExternalEventName.ClaimDailyRewardResponsed)
             })
             socket.emit(EmitterEventName.ClaimDailyReward)
         })
 
         return () => {
-            socket?.off(ReceiverEventName.DailyRewardClaimed)
+            socket?.off(ReceiverEventName.ClaimDailyRewardResponsed)
             ExternalEventEmitter.removeListener(ExternalEventName.RequestClaimDailyReward)
         }
     }, [socket])

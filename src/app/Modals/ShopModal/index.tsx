@@ -1,4 +1,4 @@
-import { setShopTab, useAppDispatch, useAppSelector } from "@/redux"
+import { setShopTab, useAppDispatch, useAppSelector, setShopCrop, setShopFlower, setShopSupply, setShopTool } from "@/redux"
 import React from "react"
 import { FilterBar, Spacer, ScrollableTabs, GridTable } from "@/components"
 import { GRAPHQL_QUERY_STATIC_SWR, SHOP_DISCLOSURE } from "@/app/constants"
@@ -47,6 +47,8 @@ export const ShopModal = () => {
     const shopTab = useAppSelector((state) => state.tabReducer.shopTab)
     const dispatch = useAppDispatch()
 
+    const shopState = useAppSelector((state) => state.wsLoadStateReducer.shop)
+
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(GRAPHQL_QUERY_STATIC_SWR)
@@ -72,7 +74,9 @@ export const ShopModal = () => {
                     contentCallback={(crop) => {
                         return (
                             <ShopCard
+                                isLoading={shopState.crops[crop.displayId]}
                                 onTap={() => {
+                                    dispatch(setShopCrop({ cropId: crop.displayId, isLoading: true }))
                                     const eventMessage: BuyCropSeedsMessage = {
                                         cropId: crop.displayId,
                                         quantity: 1,
@@ -83,6 +87,7 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 onPress={(pressTime) => {
+                                    dispatch(setShopCrop({ cropId: crop.displayId, isLoading: true }))
                                     const eventMessage: BuyCropSeedsMessage = {
                                         cropId: crop.displayId,
                                         quantity: Math.floor(pressTime / 100),
@@ -114,7 +119,9 @@ export const ShopModal = () => {
                     contentCallback={(flower) => {
                         return (
                             <ShopCard
+                                isLoading={shopState.flowers[flower.displayId]}
                                 onTap={() => {
+                                    dispatch(setShopFlower({ flowerId: flower.displayId, isLoading: true }))
                                     const eventMessage: BuyFlowerSeedsMessage = {
                                         flowerId: flower.displayId,
                                         quantity: 1,
@@ -125,6 +132,7 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 onPress={(pressTime) => {
+                                    dispatch(setShopFlower({ flowerId: flower.displayId, isLoading: true }))
                                     const eventMessage: BuyFlowerSeedsMessage = {
                                         flowerId: flower.displayId,
                                         quantity: Math.floor(pressTime / 100),
@@ -370,7 +378,9 @@ export const ShopModal = () => {
                     contentCallback={(supply) => {
                         return (
                             <ShopCard
+                                isLoading={shopState.supplies[supply.displayId]}
                                 onTap={() => {
+                                    dispatch(setShopSupply({ supplyId: supply.displayId, isLoading: true }))
                                     const eventMessage: BuySuppliesMessage = {
                                         supplyId: supply.displayId,
                                         quantity: 1,
@@ -381,6 +391,7 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 onPress={(pressTime) => {
+                                    dispatch(setShopSupply({ supplyId: supply.displayId, isLoading: true }))
                                     const eventMessage: BuySuppliesMessage = {
                                         supplyId: supply.displayId,
                                         quantity: Math.floor(pressTime / 100),
@@ -414,6 +425,7 @@ export const ShopModal = () => {
                     contentCallback={(tool) => {
                         return (
                             <ShopCard
+                                isLoading={shopState.tools[tool.displayId]}
                                 disabled={(() => {
                                     const inventoryType =
                       staticSwr.data?.data.inventoryTypes.find(
@@ -425,6 +437,7 @@ export const ShopModal = () => {
                                     )
                                 })()}
                                 onTap={() => {
+                                    dispatch(setShopTool({ toolId: tool.displayId, isLoading: true }))
                                     const eventMessage: BuyToolMessage = {
                                         toolId: tool.displayId,
                                     }

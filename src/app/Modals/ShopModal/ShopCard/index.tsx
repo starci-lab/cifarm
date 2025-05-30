@@ -30,6 +30,7 @@ export interface ShopCardProps {
   showLimit?: boolean;
   unlockedLevel: number;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 
 export const ShopCard: FC<ShopCardProps> = ({
@@ -42,6 +43,7 @@ export const ShopCard: FC<ShopCardProps> = ({
     onTap,
     onPress,
     disabled = false,
+    isLoading = false,
 }) => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
@@ -60,7 +62,7 @@ export const ShopCard: FC<ShopCardProps> = ({
       typeof limit === "number" &&
       ownership >= limit)
     const locked = !levelEnough
-
+        
     if (!staticSwr.data) {
         throw new Error("Static data not found")
     }
@@ -74,6 +76,7 @@ export const ShopCard: FC<ShopCardProps> = ({
                         </div>
                         <div className="flex justify-center items-center">
                             <ExtendedButton
+                                isLoading={isLoading}
                                 color="primary"
                                 className="w-full"
                                 disabled={_disabled}

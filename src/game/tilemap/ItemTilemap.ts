@@ -168,6 +168,18 @@ export abstract class ItemTilemap extends GroundTilemap {
                 if (!data.placedItem) {
                     throw new Error("Placed item not found")
                 }
+                // get the placed item id
+                const placedItemId = data.placedItem.id
+                if (!placedItemId) {
+                    throw new Error("Placed item id not found")
+                }
+                const placedItem = this.placedItemObjectMap[placedItemId]
+                if (!placedItem) {
+                    throw new Error("Placed item not found")
+                }
+                // destroy the animated item
+                placedItem.animatedItem?.object.destroy()
+                // thus, switch case based on action
                 const position = this.getPositionFromPlacedItem(data.placedItem)
                 switch (data.action) {
                 case ActionName.UseWateringCan:
@@ -1668,6 +1680,10 @@ export interface GetCenterPositionParams {
     sizeY?: number;
 }
 
+export interface AnimatedItem {
+    object: Phaser.GameObjects.Sprite;
+}
+
 export interface UpdatePlacedItemLocalParams {
   placedItem: PartialDeep<PlacedItemSchema>;
   type: PlacedItemType;
@@ -1675,6 +1691,7 @@ export interface UpdatePlacedItemLocalParams {
 
 export interface PlacedItemObjectData {
   object: PlacedItemObject;
+  animatedItem?: AnimatedItem;
 }
 
 export interface CanPlaceItemAtTileParams {

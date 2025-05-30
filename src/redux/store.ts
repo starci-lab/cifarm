@@ -8,6 +8,7 @@ import {
     modalReducer,
     gameReducer,
     collapsibleReducer,
+    wsLoadStateReducer,
     downloadReducer,
     searchReducer,
     sidebarReducer,
@@ -29,6 +30,7 @@ export const store = configureStore({
         searchReducer,
         sheetReducer,
         convertReducer,
+        wsLoadStateReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

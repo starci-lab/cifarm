@@ -7,7 +7,7 @@ const PREFIX = "/supplies"
 export interface AssetSuppliesData extends Metadata {
     base: AssetData
     phaser: {
-        item: AssetTextureData
+        base: AssetTextureData
     }
 }
 
@@ -20,7 +20,7 @@ export const assetSuppliesMap: Record<SupplyId, AssetSuppliesData> = {
             assetUrl: getAssetUrl(`${PREFIX}/animal-feed.png`)
         },
         phaser: {
-            item: {
+            base: {
                 assetKey: "supplies-animal-feed",
                 assetUrl: getAssetUrl(`${PREFIX}/animal-feed.png`)
             },
@@ -34,7 +34,7 @@ export const assetSuppliesMap: Record<SupplyId, AssetSuppliesData> = {
             assetUrl: `${PREFIX}/basic-fertilizer.png`
         },
         phaser: {
-            item: {
+            base: {
                 assetKey: "supplies-basic-fertilizer",
                 assetUrl: `${PREFIX}/basic-fertilizer.png`
             },
@@ -48,7 +48,7 @@ export const assetSuppliesMap: Record<SupplyId, AssetSuppliesData> = {
             assetUrl: `${PREFIX}/fruit-fertilizer.png`
         },
         phaser: {
-            item: {
+            base: {
                 assetKey: "supplies-fruit-fertilizer",
                 assetUrl: `${PREFIX}/fruit-fertilizer.png`
             },

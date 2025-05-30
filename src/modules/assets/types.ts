@@ -73,6 +73,10 @@ export interface BubbleStateConfig {
     extraOffsets?: { x: number; y: number };
 }
 
+export interface AnimatedItemConfig {
+    extraOffsets?: { x: number; y: number };
+}
+
 export interface SelectedConfig {
     extraOffsets?: { x: number; y: number };
 }

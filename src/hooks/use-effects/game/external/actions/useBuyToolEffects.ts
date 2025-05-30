@@ -2,25 +2,29 @@ import { WS } from "@/app/constants"
 import { BuyToolMessage, toast, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
-import { EmitterEventName, ReceiverEventName, ToolBoughtMessage } from "@/hooks"
+import { EmitterEventName, ReceiverEventName } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { assetShopMap } from "@/modules/assets"
+import { setShopTool } from "@/redux"
+import { useAppDispatch } from "@/redux"
 
 export const useBuyToolEffects = () => {
     const { socket } =
     useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
-        socket?.on(ReceiverEventName.ToolBought, ({
+        socket?.on(ReceiverEventName.BuyToolResponsed, ({
             toolId,
-        }: ToolBoughtMessage) => {
+        }: BuyToolMessage) => {
             const toolName = assetShopMap.tools[toolId]?.name?.toLowerCase() ?? ""
             toast({
                 title: `Bought ${toolName}`,
             })
+            dispatch(setShopTool({ toolId, isLoading: false }))
         })
         return () => {
-            socket?.off(ReceiverEventName.ToolBought)
+            socket?.off(ReceiverEventName.BuyToolResponsed)
         }
     }, [socket])
 

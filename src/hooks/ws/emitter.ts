@@ -69,16 +69,7 @@ export interface BuySuppliesMessage {
   quantity: number;
 }
 
-export interface SuppliesBoughtMessage {
-  supplyId: SupplyId;
-  quantity: number;
-}
-
 export interface BuyToolMessage {
-  toolId: ToolId;
-}
-
-export interface ToolBoughtMessage {
   toolId: ToolId;
 }
 
@@ -87,18 +78,8 @@ export interface BuyCropSeedsMessage {
   quantity: number;
 }
 
-export interface CropSeedsBoughtMessage {
-  cropId: CropId
-  quantity: number;
-}
-
 export interface BuyFlowerSeedsMessage {
   flowerId: FlowerId;
-  quantity: number;
-}
-
-export interface FlowerSeedsBoughtMessage {
-  flowerId: FlowerId
   quantity: number;
 }
 

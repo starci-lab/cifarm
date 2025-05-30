@@ -18,6 +18,7 @@ import {
     Position,
     BeeHouseCurrentState,
     getSellInfoFromPlacedItemType,
+    InventoryTypeSchema,
 } from "@/modules/entities"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
@@ -78,7 +79,7 @@ import { ExternalEventEmitter } from "@/modules/event-emitter"
 import { gameplayDepth } from "../depth"
 import { LayerName } from "./types"
 import { PlayerContext } from "@/redux"
-import { AssetMapData } from "@/modules/assets"
+import { assetInventoryTypesMap, AssetMapData } from "@/modules/assets"
 export const POPUP_SCALE = 0.7
 export const DRAG = "drag"
 
@@ -462,6 +463,7 @@ export class InputTilemap extends ItemTilemap {
             }
 
             // emit the event to plant seed
+            this.createAnimatedItem(data, inventoryType)
             const eventMessage: PlantSeedMessage = {
                 inventorySeedId: selectedTool.id,
                 placedItemTileId: placedItemId,
@@ -508,6 +510,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HelpUseWateringCanMessage = {
                         placedItemTileId: placedItemId,
                     }
@@ -525,6 +528,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: UseWateringCanMessage = {
                         placedItemTileId: placedItemId,
                     }
@@ -555,6 +559,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to help use pesticide
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HelpUsePesticideMessage = {
                         placedItemTileId: placedItemId,
                     }
@@ -572,6 +577,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: UsePesticideMessage = {
                         placedItemTileId: placedItemId,
                     }
@@ -602,6 +608,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HelpUseHerbicideMessage = {
                         placedItemTileId: placedItemId,
                     }
@@ -620,6 +627,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: UseHerbicideMessage = {
                         placedItemTileId: placedItemId,
                     }
@@ -632,7 +640,7 @@ export class InputTilemap extends ItemTilemap {
                 break
             }
             case ToolId.Crate: {
-            // return if seed growth info is not need water
+                // return if seed growth info is not need water
                 if (
                     currentPlacedItem.plantInfo?.currentState !==
               PlantCurrentState.FullyMatured
@@ -646,8 +654,8 @@ export class InputTilemap extends ItemTilemap {
                 if (watchingUser) {
                     if (
                         !this.checkLevelGap({
-                            user: watchingUser,
-                            neighbor: this.user,
+                            user: this.user,
+                            neighbor: watchingUser,
                             data,
                         })
                     ) {
@@ -676,6 +684,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
 
+                    this.createAnimatedItem(data, inventoryType)
                     // emit the event to plant seed
                     const eventMessage: ThiefPlantMessage = {
                         placedItemTileId: placedItemId,
@@ -696,6 +705,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HarvestPlantMessage = {
                         placedItemTileId: placedItemId,
                     }
@@ -748,6 +758,7 @@ export class InputTilemap extends ItemTilemap {
                 }
 
                 // emit the event to plant seed
+                this.createAnimatedItem(data, inventoryType)
                 const eventMessage: UseFertilizerMessage = {
                     placedItemTileId: placedItemId,
                     inventorySupplyId: selectedTool.id,
@@ -827,6 +838,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: UseAnimalFeedMessage = {
                         inventorySupplyId: selectedTool.id,
                         placedItemAnimalId: placedItemId,
@@ -865,6 +877,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HelpUseAnimalMedicineMessage = {
                         placedItemAnimalId: placedItemId,
                     }
@@ -884,6 +897,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: UseAnimalMedicineMessage = {
                         placedItemAnimalId: placedItemId,
                     }
@@ -937,6 +951,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: ThiefAnimalMessage = {
                         placedItemAnimalId: placedItemId,
                     }
@@ -956,6 +971,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HarvestAnimalMessage = {
                         placedItemAnimalId: placedItemId,
                     }
@@ -1556,6 +1572,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HarvestBeeHouseMessage = {
                         placedItemBuildingId: placedItemId,
                     }
@@ -1698,6 +1715,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HelpUseBugNetMessage = {
                         placedItemFruitId: placedItemId,
                     }
@@ -1717,6 +1735,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: UseBugNetMessage = {
                         placedItemFruitId: placedItemId,
                     }
@@ -1768,7 +1787,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to water the plant
-                    // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: ThiefFruitMessage = {
                         placedItemFruitId: placedItemId,
                     }
@@ -1788,6 +1807,7 @@ export class InputTilemap extends ItemTilemap {
                         return
                     }
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: HarvestFruitMessage = {
                         placedItemFruitId: placedItemId,
                     }
@@ -1829,6 +1849,7 @@ export class InputTilemap extends ItemTilemap {
                     }
 
                     // emit the event to plant seed
+                    this.createAnimatedItem(data, inventoryType)
                     const eventMessage: UseFruitFertilizerMessage = {
                         placedItemFruitId: placedItemId,
                         inventorySupplyId: selectedTool.id,
@@ -2255,6 +2276,41 @@ export class InputTilemap extends ItemTilemap {
         }
         return inventoryType
     }
+
+    // method to create an animated item
+    private createAnimatedItem(data: PlacedItemObjectData, inventoryType: InventoryTypeSchema) {
+        // check if the placed item object data has an animated item
+        if (data.animatedItem) {
+            return
+        }
+        if (!data.object.currentPlacedItem) {
+            throw new Error("Placed item not found")
+        }
+        const position = this.getPositionFromPlacedItem(
+            data.object.currentPlacedItem
+        )
+        const assetKey = assetInventoryTypesMap[inventoryType.displayId]?.phaser?.base.assetKey
+        if (!assetKey) {
+            throw new Error("Asset key not found")
+        }
+        const animatedItem = this.scene.add.sprite(position.x, position.y, assetKey).setDepth(
+            gameplayDepth.animatedItem
+        )
+        // zoom in, out
+        this.scene.tweens.add({
+            targets: animatedItem,
+            scale: 1.1,
+            duration: 200,
+            ease: "power2",
+            yoyo: true,
+            loop: -1,
+        })
+        // update the placed item object data
+        data.animatedItem = {
+            object: animatedItem,
+        }
+        return animatedItem
+    }
 }
 
 export interface PlacedItemTintParams {
@@ -2335,4 +2391,3 @@ export interface CheckLevelGapParams {
   neighbor: UserSchema;
   data: PlacedItemObjectData;
 }
-

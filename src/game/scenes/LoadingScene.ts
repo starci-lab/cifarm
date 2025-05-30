@@ -21,6 +21,9 @@ import {
     loadMiscAssets,
     loadIconAssets,
     loadTerrainAssets,
+    loadToolAssets,
+    loadSupplyAssets,
+    loadShopAssets,
 } from "../load"
 import { AssetBootstrapId, assetBootstrapMap } from "@/modules/assets"
 import { LoadingProgressBar } from "../ui"
@@ -210,6 +213,9 @@ export class LoadingScene extends Scene {
             loadMiscAssets(this),
             loadIconAssets(this),   
             loadTerrainAssets(this),
+            loadToolAssets(this),
+            loadSupplyAssets(this),
+            loadShopAssets(this),
         ])
 
         this.load.setPath()

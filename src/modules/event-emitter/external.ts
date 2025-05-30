@@ -203,6 +203,22 @@ export enum ExternalEventName {
     RequestDeleteInventory = "request_delete_inventory",
     // request to sort inventories, from React to Phaser
     RequestSortInventories = "request_sort_inventories",
+    // request to harvest plant, from React to Phaser
+    PlantHarvested = "plant_harvested",
+    // request to use watering can, from React to Phaser
+    WateringCanUsed = "watering_can_used",
+    // request to use herbicide, from React to Phaser
+    HerbicideUsed = "herbicide_used",
+    // request to use pesticide, from React to Phaser
+    PesticideUsed = "pesticide_used",
+    // request to help use watering can, from React to Phaser
+    UseWateringCanHelped = "use_watering_can_helped",
+    // request to help use herbicide, from React to Phaser
+    UseHerbicideHelped = "use_herbicide_helped",
+    // request to help use pesticide, from React to Phaser
+    UsePesticideHelped = "use_pesticide_helped",
+    // request to plant harvested, from React to Phaser
+    PlantTheived = "plant_theived",
 }
 
 // events that listen inside Phaser class, use to unregister event listener

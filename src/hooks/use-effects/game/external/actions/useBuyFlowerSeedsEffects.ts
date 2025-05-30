@@ -6,12 +6,16 @@ import { EmitterEventName, ReceiverEventName } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { assetShopMap } from "@/modules/assets"
 import pluralize from "pluralize"
+import { setShopFlower } from "@/redux"
+import { useAppDispatch } from "@/redux"
+
 export const useBuyFlowerSeedsEffects = () => {
     //get the singleton instance of the buy seeds mutation
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
-        socket?.on(ReceiverEventName.FlowerSeedsBought, ({
+        socket?.on(ReceiverEventName.BuyFlowerSeedsResponsed, ({
             flowerId,
             quantity,
         }: BuyFlowerSeedsMessage) => {
@@ -20,11 +24,11 @@ export const useBuyFlowerSeedsEffects = () => {
                 title: `Bought ${quantity} ${
                     quantity > 1 ? pluralize(flowerName) : flowerName
                 }`,
-
             })
+            dispatch(setShopFlower({ flowerId, isLoading: false }))
         })
         return () => {
-            socket?.off(ReceiverEventName.FlowerSeedsBought)
+            socket?.off(ReceiverEventName.BuyFlowerSeedsResponsed)
         }
     }, [socket])
     useEffect(() => {
