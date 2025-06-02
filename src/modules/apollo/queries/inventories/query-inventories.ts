@@ -32,7 +32,7 @@ export type QueryInventoriesParams = QueryParams<QueryInventories>;
 export const queryInventories = async (
     {
         query = QueryInventories.Query1,
-    }: QueryInventoriesParams
+    }: QueryInventoriesParams = {}
 ) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<

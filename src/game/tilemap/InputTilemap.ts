@@ -255,34 +255,34 @@ export class InputTilemap extends ItemTilemap {
                 const selectedTool = this.scene.cache.obj.get(
                     CacheKey.SelectedTool
                 ) as ToolLike
+                
                 if (selectedTool.default) {
                     //if normal mode is not on
-                    if (this.inputMode !== InputMode.Normal) {
-                        return
-                    }
-                    const _data = this.findPlacedItemRoot(tile.x, tile.y)
-                    if (!_data) {
-                        console.log("No placed item found for position")
-                        return
-                    }
-                    if (!_data.object.currentPlacedItem) {
-                        throw new Error("Placed item not found")
-                    }
-                    ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
-                        id: _data.object.currentPlacedItem.id,
-                    })
-                    ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
-                        ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                            modalName: ModalName.Info,
-                        })
-                    })
-                    ExternalEventEmitter.emit(
-                        ExternalEventName.RequestForceSyncPlacedItems,
-                        {
-                            ids: [_data.object.currentPlacedItem.id],
+                    if (this.inputMode === InputMode.Normal) {
+                        const _data = this.findPlacedItemRoot(tile.x, tile.y)
+                        if (!_data) {
+                            console.log("No placed item found for position")
+                            return
                         }
-                    )
-                    return
+                        if (!_data.object.currentPlacedItem) {
+                            throw new Error("Placed item not found")
+                        }
+                        ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
+                            id: _data.object.currentPlacedItem.id,
+                        })
+                        ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
+                            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                                modalName: ModalName.Info,
+                            })
+                        })
+                        ExternalEventEmitter.emit(
+                            ExternalEventName.RequestForceSyncPlacedItems,
+                            {
+                                ids: [_data.object.currentPlacedItem.id],
+                            }
+                        )
+                        return
+                    }
                 }
                 //if buying mode is on
                 if (

@@ -1,10 +1,8 @@
 "use client"
 import {
     NEIGHBORS_FILTER_DISCLOSURE,
-    QUERY_USER_SWR_MUTATION,
     QUERY_FOLLOWEES_SWR_MUTATION,
     QUERY_NEIGHBORS_SWR_MUTATION,
-    QUERY_STATIC_SWR_MUTATION,
 } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -32,13 +30,19 @@ import {
     NeighborsSearchStatus,
     setUseAdvancedNeighborsSearch,
     setUseAdvancedFolloweesSearch,
+    setNeighborsSearchAppliedSearchString,
+    setNeighborsSearchAppliedUseAdvancedSearch,
+    setNeighborsSearchAppliedLevelRange,
+    setNeighborsSearchAppliedStatus,
+    setFolloweesSearchAppliedLevelRange,
+    setFolloweesSearchAppliedSearchString,
+    setFolloweesSearchAppliedStatus,
+    setFolloweesSearchAppliedUseAdvancedSearch,
 } from "@/redux"
 import { ArrowCounterClockwise } from "@phosphor-icons/react"
 import {
-    useGraphQLQueryUserSwr,
     useGraphQLQueryFolloweesSwr,
     useGraphQLQueryNeighborsSwr,
-    useGraphQLQueryStaticSwr,
 } from "@/hooks"
 export const NeighborsFilterModal: FC = () => {
     const { toggle, isOpen, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
@@ -54,56 +58,44 @@ export const NeighborsFilterModal: FC = () => {
     )
 
     const { swr: neighborsSwr, setParams: setNeighborsParams } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryNeighborsSwr>
-  >(QUERY_NEIGHBORS_SWR_MUTATION)
+        ReturnType<typeof useGraphQLQueryNeighborsSwr>
+    >(QUERY_NEIGHBORS_SWR_MUTATION)
 
     const { swr: followeesSwr, setParams: setFolloweesParams } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryFolloweesSwr>
-  >(QUERY_FOLLOWEES_SWR_MUTATION)
-
-    const { swr: userSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryUserSwr>
-  >(QUERY_USER_SWR_MUTATION)
-
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(QUERY_STATIC_SWR_MUTATION)
+        ReturnType<typeof useGraphQLQueryFolloweesSwr>
+    >(QUERY_FOLLOWEES_SWR_MUTATION)
 
     // update the params whenever the neighborsSearch changes
     useEffect(() => {
-        const levelRange = getLevelRange({
-            levelRange: neighborsSearch.levelRange,
-            startLevel:
-        staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold ?? 0,
-            yourLevel: userSwr.data?.data.user.level ?? 0,
-        })
-        setNeighborsParams?.({
-            request: {
-                levelStart: levelRange.levelStart,
-                levelEnd: levelRange.levelEnd,
-                searchString: neighborsSearch.searchString,
-                status: neighborsSearch.status,
-            },
-        })
-    }, [neighborsSearch])
+        if (neighborsSearch.useAdvancedSearch !== neighborsSearch.appliedUseAdvancedSearch) {
+            dispatch(setNeighborsSearchAppliedUseAdvancedSearch(neighborsSearch.useAdvancedSearch))
+        }
+        if (neighborsSearch.searchString !== neighborsSearch.appliedSearchString) {
+            dispatch(setNeighborsSearchAppliedSearchString(neighborsSearch.searchString))
+        }
+        if (neighborsSearch.levelRange !== neighborsSearch.appliedLevelRange) {
+            dispatch(setNeighborsSearchAppliedLevelRange(neighborsSearch.levelRange))
+        }
+        if (neighborsSearch.status !== neighborsSearch.appliedStatus) {
+            dispatch(setNeighborsSearchAppliedStatus(neighborsSearch.status))
+        }
+    }, [neighborsSearch.levelRange, neighborsSearch.status, neighborsSearch.searchString, neighborsSearch.useAdvancedSearch])
 
     // update the params whenever the followeesSearch changes
     useEffect(() => {
-        const levelRange = getLevelRange({
-            levelRange: followeesSearch.levelRange,
-            startLevel:
-        staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold ?? 0,
-            yourLevel: userSwr.data?.data.user.level ?? 0,
-        })
-        setFolloweesParams?.({
-            request: {
-                levelStart: levelRange.levelStart,
-                levelEnd: levelRange.levelEnd,
-                searchString: followeesSearch.searchString,
-                status: followeesSearch.status,
-            },
-        })
-    }, [followeesSearch])
+        if (followeesSearch.useAdvancedSearch !== followeesSearch.appliedUseAdvancedSearch) {
+            dispatch(setFolloweesSearchAppliedUseAdvancedSearch(followeesSearch.useAdvancedSearch))
+        }
+        if (followeesSearch.searchString !== followeesSearch.appliedSearchString) {
+            dispatch(setFolloweesSearchAppliedSearchString(followeesSearch.searchString))
+        }
+        if (followeesSearch.levelRange !== followeesSearch.appliedLevelRange) {
+            dispatch(setFolloweesSearchAppliedLevelRange(followeesSearch.levelRange))
+        }
+        if (followeesSearch.status !== followeesSearch.appliedStatus) {
+            dispatch(setFolloweesSearchAppliedStatus(followeesSearch.status))
+        }
+    }, [followeesSearch.levelRange, followeesSearch.status, followeesSearch.searchString, followeesSearch.useAdvancedSearch])
 
     const dispatch = useAppDispatch()
 
@@ -169,27 +161,52 @@ export const NeighborsFilterModal: FC = () => {
                     </div>
                     <Spacer y={4} />
                     <AdvancedSearchContent />
-                    <DialogFooter>
-                        <ExtendedButton
-                            isLoading={neighborsSwr.isValidating || followeesSwr.isValidating}
-                            onClick={async () => {
-                                switch (neighborsTab) {
-                                case NeighborsTab.Neighbors:
-                                    await neighborsSwr.mutate()
-                                    break
-                                case NeighborsTab.Followees:
-                                    await followeesSwr.mutate()
-                                    break
-                                }
-                                close()
-                            }}
-                            color="primary"
-                            className="w-full"
-                        >
-              Search
-                        </ExtendedButton>
-                    </DialogFooter>
                 </DialogBody>
+                <DialogFooter>
+                    <ExtendedButton
+                        isLoading={neighborsSwr.isValidating || followeesSwr.isValidating}
+                        onClick={async () => {
+                            const { levelStart, levelEnd } = getLevelRange({
+                                levelRange: neighborsSearch.appliedLevelRange,
+                                startLevel: neighborsSearch.appliedLevelRange,
+                                yourLevel: neighborsSearch.appliedLevelRange,
+                            })
+                            switch (neighborsTab) {
+                            case NeighborsTab.Neighbors:
+                                setNeighborsParams?.(prev => ({
+                                    ...prev,
+                                    request: {
+                                        ...prev?.request,
+                                        searchString: neighborsSearch.appliedSearchString,
+                                        status: neighborsSearch.appliedStatus,
+                                        useAdvancedSearch: neighborsSearch.appliedUseAdvancedSearch,
+                                        levelEnd,
+                                        levelStart,
+                                    }
+                                }))
+                                break
+                            case NeighborsTab.Followees:
+                                setFolloweesParams?.(prev => ({
+                                    ...prev,
+                                    request: {
+                                        ...prev?.request,
+                                        searchString: followeesSearch.appliedSearchString,
+                                        status: followeesSearch.appliedStatus,
+                                        useAdvancedSearch: followeesSearch.appliedUseAdvancedSearch,
+                                        levelEnd,
+                                        levelStart
+                                    }
+                                }))
+                                break
+                            }
+                            close()
+                        }}
+                        color="primary"
+                        className="w-full"
+                    >
+                            Search
+                    </ExtendedButton>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )

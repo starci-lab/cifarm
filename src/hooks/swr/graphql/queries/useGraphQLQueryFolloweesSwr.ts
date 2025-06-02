@@ -9,6 +9,7 @@ import { useState } from "react"
 import { useAppSelector } from "@/redux"
 import useSWR from "swr"
 import { defaultRequest } from "../constants"
+
 export const useGraphQLQueryFolloweesSwr = (): UseSWR<
   ApolloQueryResult<QueryFolloweesResponse>,
   QueryFolloweesParams
@@ -20,7 +21,7 @@ export const useGraphQLQueryFolloweesSwr = (): UseSWR<
         (state) => state.sessionReducer.authenticated
     )
     const swr = useSWR(
-        authenticated ? ["QUERY_FOLLOWEES"] : null,
+        authenticated ? ["QUERY_FOLLOWEES", params] : null,
         async () => {
             return await queryFollowees(params)
         }

@@ -5,7 +5,6 @@ import {
     QueryInventoriesParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
-import { useState } from "react"
 import { useAppSelector, useAppDispatch, setInventories } from "@/redux"
 import useSWR from "swr"
 
@@ -13,13 +12,12 @@ export const useGraphQLQueryInventoriesSwr = (): UseSWR<
   ApolloQueryResult<QueryInventoriesResponse>,
   QueryInventoriesParams
 > => {
-    const [ params, setParams ] = useState<QueryInventoriesParams>({})
     const dispatch = useAppDispatch()
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const swr = useSWR(
-        authenticated ? ["QUERY_INVENTORIES", params] : null,
+        authenticated ? ["QUERY_INVENTORIES"] : null,
         async () => {
-            const response = await queryInventories(params)
+            const response = await queryInventories()
             dispatch(setInventories(response.data.inventories))
             return response
         }
@@ -27,7 +25,5 @@ export const useGraphQLQueryInventoriesSwr = (): UseSWR<
     //return the state and the data
     return {
         swr,
-        setParams,
-        params
     }
 } 

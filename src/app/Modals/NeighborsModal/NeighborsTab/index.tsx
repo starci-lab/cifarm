@@ -4,7 +4,6 @@ import {
     GRAPHQL_QUERY_FOLLOWEES_SWR,
     GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
-    QUERY_STATIC_SWR_MUTATION,
     WS,
     NEIGHBORS_DISCLOSURE,
 } from "@/app/constants"
@@ -15,7 +14,6 @@ import {
     useGraphQLQueryNeighborsSwr,
     useGraphQLMutationFollowSwrMutation,
     useGraphQLMutationUnfollowSwrMutation,
-    useGraphQLQueryStaticSwr,
     toast,
     useWs,
     EmitterEventName,
@@ -24,7 +22,6 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC, useEffect } from "react"
 import { FilterBar, List, Spacer } from "@/components"
 import { ExtendedButton, Pagination, UserCard } from "@/components"
-import { getLevelRange } from "../../NeighborsFilterModal/AdvancedSearchContent"
 import { useAppSelector, useAppDispatch, setNeighborsSearchString, setActiveNeighborCard } from "@/redux"
 import { NEIGHBORS_FILTER_DISCLOSURE } from "@/app/constants"
 import { useDisclosure } from "react-use-disclosure"
@@ -66,68 +63,23 @@ export const NeighborsTab: FC = () => {
     const totalPage = Math.max(Math.ceil(count / limit), 1)
     const currentPage = Math.ceil(offset / limit) + 1
 
-    const appliedLevelRange = useAppSelector(
-        (state) => state.searchReducer.neighborsSearch.appliedLevelRange
-    )
-    const appliedStatus = useAppSelector(
-        (state) => state.searchReducer.neighborsSearch.appliedStatus
-    )
-    const useAdvancedSearch = useAppSelector(
-        (state) => state.searchReducer.neighborsSearch.useAdvancedSearch
-    )
-
-    const user = useAppSelector(
-        (state) => state.sessionReducer.user
-    )
-
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(QUERY_STATIC_SWR_MUTATION)
-
-    useEffect(() => {
-        if (!user?.level) return
-        if (!staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold)
-            return
-        if (!setParams) throw new Error("setParams is not defined")
-        const { levelStart, levelEnd } = getLevelRange({
-            levelRange: appliedLevelRange,
-            startLevel:
-        staticSwr.data.data.interactionPermissions.thiefLevelGapThreshold,
-            yourLevel: user.level,
-        })
-        setParams({
-            ...params,
-            request: {
-                ...params?.request,
-                levelStart,
-                levelEnd,
-                status: appliedStatus,
-                useAdvancedSearch,
-            },
-        })
-    }, [
-        appliedLevelRange,
-        appliedStatus,
-        user?.level,
-        staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold,
-        setParams,
-        useAdvancedSearch,
-    ])
-
-    const setPage = (page: number) => {
-        if (!setParams) throw new Error("setParams is not defined")
-        setParams({
-            ...params,
-            request: {
-                ...params?.request,
-                offset: (page - 1) * limit,
-            },
-        })
-    }
-
     const neighborsSearch = useAppSelector(
         (state) => state.searchReducer.neighborsSearch
     )
+
+    const setPage = (page: number) => {
+        setParams?.((prev) => ({
+            ...prev,
+            request: {
+                ...prev?.request,
+                offset: (page - 1) * limit,
+            },
+        }))
+    }   
+
+    useEffect(() => {
+        neighborsMutate()
+    }, [params?.request?.offset])
 
     const { open: openFilterModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_FILTER_DISCLOSURE)
     const dispatch = useAppDispatch()

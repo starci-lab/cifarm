@@ -66,9 +66,6 @@ export const FolloweesTab: FC = () => {
     const appliedLevelRange = useAppSelector(
         (state) => state.searchReducer.neighborsSearch.appliedLevelRange
     )
-    const appliedStatus = useAppSelector(
-        (state) => state.searchReducer.neighborsSearch.appliedStatus
-    )
 
     const user = useAppSelector(
         (state) => state.sessionReducer.user
@@ -78,38 +75,31 @@ export const FolloweesTab: FC = () => {
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
 
-    const useAdvancedSearch = useAppSelector(
-        (state) => state.searchReducer.followeesSearch.useAdvancedSearch
-    )
-
     useEffect(() => {
-        if (!user?.level) return
-        if (!staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold)
-            return
-        if (!setParams) throw new Error("setParams is not defined")
+        const thiefLevelGapThreshold =
+            staticSwr.data?.data?.interactionPermissions?.thiefLevelGapThreshold
+
+        if (!user?.level || !thiefLevelGapThreshold) return
+
         const { levelStart, levelEnd } = getLevelRange({
             levelRange: appliedLevelRange,
-            startLevel:
-        staticSwr.data.data.interactionPermissions.thiefLevelGapThreshold,
+            startLevel: thiefLevelGapThreshold,
             yourLevel: user.level,
         })
-        setParams({
-            ...params,
+
+        setParams?.((prev) => ({
+            ...prev,
             request: {
-                ...params?.request,
+                ...prev?.request,
                 levelStart,
                 levelEnd,
-                status: appliedStatus,
-                useAdvancedSearch,
             },
-        })
+        }))
     }, [
         appliedLevelRange,
-        appliedStatus,
-        user?.level,
-        staticSwr.data?.data.interactionPermissions.thiefLevelGapThreshold,
         setParams,
-        useAdvancedSearch,
+        staticSwr.data?.data?.interactionPermissions?.thiefLevelGapThreshold,
+        user?.level,
     ])
 
     const setPage = (page: number) => {

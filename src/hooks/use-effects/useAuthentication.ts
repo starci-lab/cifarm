@@ -12,7 +12,6 @@ import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { usePathname } from "next/navigation"
 //import { pathConstants } from "@/constants"
 
-
 export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<
     ReturnType<typeof useGraphQLMutationRefreshSwrMutation>
@@ -38,7 +37,11 @@ export const useAuthentication = () => {
                 })
 
                 if (!data) {
-                    throw new Error("Failed to refresh token")
+                    // mean that the token cannot be used
+                    // we delete the tokens
+                    await sessionDb.keyValueStore.delete(SessionDbKey.RefreshToken)
+                    await sessionDb.keyValueStore.delete(SessionDbKey.AccessToken)
+                    return
                 }
 
                 await saveTokens({

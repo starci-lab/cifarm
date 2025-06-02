@@ -25,3 +25,27 @@ export const sanitizeNumericInput = (input: string): string | null => {
     const sanitizedValue = input.replace(/,/g, ".")
     return sanitizedValue
 }
+
+export interface RetryIfErrorOptions {
+    retries?: number
+    interval?: number
+}
+
+export const retryIfError = async <T>(
+    fn: () => Promise<T>,
+    options: RetryIfErrorOptions = {}
+): Promise<T> => {
+    const { retries = 10, interval = 5000 } = options
+    let error: Error | null = null
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await fn()
+        } catch (ex) {
+            const _ex = ex as Error
+            console.error(`Error occurred: ${_ex.message}, retrying... (${i + 1}/${retries})`)
+            error = _ex
+            await sleep(interval)
+        }
+    }
+    throw error
+}

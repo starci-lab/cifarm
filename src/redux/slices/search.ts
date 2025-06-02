@@ -18,6 +18,8 @@ export interface NeighborsSearch {
   appliedLevelRange: number
   appliedStatus: NeighborsSearchStatus
   searchString: string
+  appliedUseAdvancedSearch: boolean
+  appliedSearchString: string
 }
 
 export interface FolloweesSearch {
@@ -27,6 +29,8 @@ export interface FolloweesSearch {
   appliedLevelRange: number
   appliedStatus: NeighborsSearchStatus
   searchString: string
+  appliedUseAdvancedSearch: boolean
+  appliedSearchString: string
 }
 
 export interface SearchSlice {
@@ -44,6 +48,8 @@ const initialState: SearchSlice = {
         appliedLevelRange: 0,
         appliedStatus: NeighborsSearchStatus.All,
         searchString: "",
+        appliedUseAdvancedSearch: false,
+        appliedSearchString: "",
     },
     followeesSearch: {
         useAdvancedSearch: false,
@@ -52,6 +58,8 @@ const initialState: SearchSlice = {
         appliedLevelRange: 0,
         appliedStatus: NeighborsSearchStatus.All,
         searchString: "",
+        appliedUseAdvancedSearch: false,
+        appliedSearchString: "",
     },
 }
 
@@ -62,7 +70,6 @@ export const searchSlice = createSlice({
         setSelectedSearch: (state, action: PayloadAction<SelectedSearch>) => {
             state.selectedSearch = action.payload
         },
-
         // Neighbors Search - individual field setters
         setUseAdvancedNeighborsSearch: (state, action: PayloadAction<boolean>) => {
             state.neighborsSearch.useAdvancedSearch = action.payload
@@ -82,7 +89,12 @@ export const searchSlice = createSlice({
         setNeighborsSearchAppliedStatus: (state, action: PayloadAction<NeighborsSearchStatus>) => {
             state.neighborsSearch.appliedStatus = action.payload
         },
-
+        setNeighborsSearchAppliedUseAdvancedSearch: (state, action: PayloadAction<boolean>) => {
+            state.neighborsSearch.appliedUseAdvancedSearch = action.payload
+        },
+        setNeighborsSearchAppliedSearchString: (state, action: PayloadAction<string>) => {
+            state.neighborsSearch.appliedSearchString = action.payload
+        },
         // Followees Search - individual field setters
         setUseAdvancedFolloweesSearch: (state, action: PayloadAction<boolean>) => {
             state.followeesSearch.useAdvancedSearch = action.payload
@@ -101,6 +113,12 @@ export const searchSlice = createSlice({
         },
         setFolloweesSearchAppliedStatus: (state, action: PayloadAction<NeighborsSearchStatus>) => {
             state.followeesSearch.appliedStatus = action.payload
+        },
+        setFolloweesSearchAppliedUseAdvancedSearch: (state, action: PayloadAction<boolean>) => {
+            state.followeesSearch.appliedUseAdvancedSearch = action.payload
+        },
+        setFolloweesSearchAppliedSearchString: (state, action: PayloadAction<string>) => {
+            state.followeesSearch.appliedSearchString = action.payload
         },
     },
 })
@@ -121,4 +139,8 @@ export const {
     setFolloweesSearchString,
     setFolloweesSearchAppliedLevelRange,
     setFolloweesSearchAppliedStatus,
+    setFolloweesSearchAppliedUseAdvancedSearch,
+    setFolloweesSearchAppliedSearchString,
+    setNeighborsSearchAppliedUseAdvancedSearch,
+    setNeighborsSearchAppliedSearchString,
 } = searchSlice.actions
