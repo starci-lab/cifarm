@@ -69,6 +69,8 @@ export interface SessionState {
   activeNeighborCard?: NeighborsTab;
   selectedSidebar?: Sidebar;
   selectedMainVisualKey: string;
+  slotsDeliveryInventoryLeft: number;
+  slotsStorageInventoryLeft: number;
 }
 
 const initialState: SessionState = {
@@ -88,6 +90,8 @@ const initialState: SessionState = {
     nftAddress: "",
     tokenKey: "",
     selectedDeliveryInventoryIds: [],
+    slotsDeliveryInventoryLeft: 0,
+    slotsStorageInventoryLeft: 0,
     selectedRetrieveInventoryIds: [],
     inventories: [],
     placedItems: [],
@@ -201,7 +205,13 @@ export const sessionSlice = createSlice({
         },
         setSelectedMainVisualKey: (state, action: PayloadAction<string>) => {
             state.selectedMainVisualKey = action.payload
-        }
+        },
+        setSlotsDeliveryInventoryLeft: (state, action: PayloadAction<number>) => {
+            state.slotsDeliveryInventoryLeft = action.payload
+        },
+        setSlotsStorageInventoryLeft: (state, action: PayloadAction<number>) => {
+            state.slotsStorageInventoryLeft = action.payload
+        },
     },
 })
 
@@ -222,6 +232,8 @@ export const {
     setNftAddress,
     setSelectedPlacedItemId,
     setInventories,
+    setSlotsDeliveryInventoryLeft,
+    setSlotsStorageInventoryLeft,
     setSelectedInventoryId,
     setSelectedDeliveryInventoryIds,
     setSelectedRetrieveInventoryIds,

@@ -4,7 +4,7 @@ import { formatTime } from "@/modules/common"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { DialogFooter, Spacer, ExtendedButton, ExtendedBadge, DialogBody } from "@/components"
+import { DialogFooter, Spacer, ExtendedButton, ExtendedBadge, DialogBody, Separator } from "@/components"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
 import { cn } from "@/lib/utils"
@@ -59,6 +59,23 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
         }, 1000)
         return () => clearInterval(interval)
     }, [timeElapsed])
+
+    const [hungryTimeElapsed, setHungryTimeElapsed] = useState(0)
+    useEffect(() => {
+        setHungryTimeElapsed(placedItem.animalInfo?.currentHungryTime ?? 0)
+    }, [])
+
+    useEffect(() => {
+        if (
+            hungryTimeElapsed === 0
+        ) {
+            return
+        }
+        const interval = setInterval(() => {
+            setHungryTimeElapsed(hungryTimeElapsed - 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [hungryTimeElapsed])
 
     const product = staticSwr.data?.data.products.find(
         (product) => product.animal === animal.id
@@ -140,7 +157,6 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
             throw new Error("Animal is not ready to harvest")
         }
     }
-
     return (
         <>
             <DialogBody>
@@ -168,16 +184,39 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                 </div>
                 <Spacer y={4}/>
                 <div className="bg-content-2 rounded-lg overflow-hidden">
-                    <div className="flex gap-4 p-3 items-center">
-                        <div className={
-                            cn(
-                                "text-4xl text-primary",
-                                {
-                                    "text-destructive": placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry || placedItem.animalInfo?.currentState === AnimalCurrentState.Sick
-                                }
-                            )
-                        }>
-                            {formatTime(timeElapsed)}
+                    <div className="gap-4">
+                        <div className="p-3 items-center">
+                            <div className="text-muted-foreground">
+                                { placedItem.animalInfo?.isAdult ? "Harvest time" : "Growth time" }
+                            </div>
+                            <div className={
+                                cn(
+                                    "text-4xl text-primary",
+                                    {
+                                        "text-destructive": placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry || placedItem.animalInfo?.currentState === AnimalCurrentState.Sick
+                                    }
+                                )
+                            }>
+                                {formatTime(timeElapsed)}
+                            </div>
+                        </div>
+                        <Separator />
+                        <div className="px-3 py-2 flex items-center justify-between">
+                            <div className="text-muted-foreground">
+                                Hungry time
+                            </div>
+                            <div>
+                                { formatTime((
+                                    staticSwr.data?.data.animals.find(animal => {
+                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(placedItemType => placedItemType.animal === animal.id)
+                                        if (!placedItemType) {
+                                            throw new Error("Placed item type not found")
+                                        }
+                                        return placedItemType.id === placedItem.placedItemType
+                                    })?.hungerTime ?? 0) 
+                                -
+                                hungryTimeElapsed) }
+                            </div>
                         </div>
                     </div>
                     {placedItem.animalInfo &&

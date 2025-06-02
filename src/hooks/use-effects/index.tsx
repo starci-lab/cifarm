@@ -6,6 +6,7 @@ import { useUpdateProfileEffects } from "./useUpdateProfileEffects"
 import { useGameEffects } from "./game"
 import { useAuthentication } from "./useAuthentication"
 //import { useInit } from "./useInit"
+import { useSlotsLeft } from "./useSlotsLeft"
 
 export * from "./useAuthentication"
 
@@ -19,6 +20,7 @@ const UseEffects: FC  = () => {
     useGameEffects()
     // useAddresses()
     useAuthentication()
+    useSlotsLeft()
     //useInit()
     useUpdateProfileEffects()
 

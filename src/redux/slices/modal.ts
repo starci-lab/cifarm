@@ -146,7 +146,6 @@ export type SignTransactionModal = (
   saveAddress?: string;
 };
 
-
 export interface ModalSlice {
   warningModal: WarningModal;
   notificationModal: NotificationModal;

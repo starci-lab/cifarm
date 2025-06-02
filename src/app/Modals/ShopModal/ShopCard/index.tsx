@@ -1,6 +1,5 @@
 import {
     QUERY_STATIC_SWR_MUTATION,
-    QUERY_USER_SWR_MUTATION,
 } from "@/app/constants"
 import {
     Card,
@@ -15,10 +14,11 @@ import {
     assetIconMap,
     AssetIconId,
 } from "@/modules/assets"
-import { useGraphQLQueryStaticSwr, useGraphQLQueryUserSwr } from "@/hooks"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import { cn } from "@/lib/utils"
+import { useAppSelector } from "@/redux"
 
 export interface ShopCardProps {
   onTap: () => void;
@@ -48,12 +48,12 @@ export const ShopCard: FC<ShopCardProps> = ({
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(QUERY_STATIC_SWR_MUTATION)
-    const { swr: userSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryUserSwr>
-  >(QUERY_USER_SWR_MUTATION)
+    const user = useAppSelector(
+        (state) => state.sessionReducer.user
+    )
 
-    const goldEnough = (userSwr.data?.data.user.golds ?? 0) >= price
-    const levelEnough = (userSwr.data?.data.user.level ?? 0) >= unlockedLevel
+    const goldEnough = (user?.golds ?? 0) >= price
+    const levelEnough = (user?.level ?? 0) >= unlockedLevel
     const _disabled =
     disabled ||
     !goldEnough ||

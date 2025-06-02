@@ -243,6 +243,8 @@ export const externalEventPhaserOns = [
     ExternalEventName.ForceSyncPlacedItemsResponsed,
     ExternalEventName.RequestSelectTool,
     ExternalEventName.RequestForceSyncPlacedItems,
+    ExternalEventName.BuyItem,
+    ExternalEventName.RequestForceSyncPlacedItems
 ]
 
 export enum ModalName {

@@ -20,6 +20,8 @@ import { InventoryType, InventoryKind } from "@/modules/entities"
 import { InventoryCard } from "./InventoryCard"
 import { DeliverInventoriesMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import pluralize from "pluralize"
+import { cn } from "@/lib/utils"
 
 export const SelectInventoriesModal: FC = () => {
     const { isOpen, toggle, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
@@ -45,7 +47,9 @@ export const SelectInventoriesModal: FC = () => {
         (state) => state.sessionReducer.selectedDeliveryInventoryIds
     )
     const dispatch = useAppDispatch()
-
+    const slotsDeliveryInventoryLeft = useAppSelector(
+        (state) => state.sessionReducer.slotsDeliveryInventoryLeft
+    )
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
@@ -67,11 +71,18 @@ export const SelectInventoriesModal: FC = () => {
                         )}
                         keyCallback={(item) => item.id}
                     />
+                    <div className={cn("text-sm text-muted-foreground", {
+                        "text-destructive": slotsDeliveryInventoryLeft === 0,
+                        "text-muted-foreground": slotsDeliveryInventoryLeft > 0,
+                        "hidden": !selectedDeliveryInventoryIds.length,
+                    })}>
+                        {slotsDeliveryInventoryLeft} {pluralize("slot", slotsDeliveryInventoryLeft > 0 ? slotsDeliveryInventoryLeft: 1)} left
+                    </div>
                 </DialogBody>
                 <DialogFooter>
                     <ExtendedButton
                         className="w-full"
-                        disabled={!selectedDeliveryInventoryIds.length}
+                        disabled={!selectedDeliveryInventoryIds.length || slotsDeliveryInventoryLeft === 0}
                         onClick={() => {
                             if (!selectedDeliveryInventoryIds.length) throw new Error("No inventory selected")
                             const deliverInventoriesMessage: DeliverInventoriesMessage = {

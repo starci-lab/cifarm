@@ -35,14 +35,16 @@ import { RetrieveInventoriesMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { GridTable } from "@/components"
 import { formatTime, getNextMinuteCronExecution } from "@/modules/common"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
+import { cn } from "@/lib/utils"
+import pluralize from "pluralize"
 
 export const RoadsideStandModal: FC = () => {
     const { toggle, isOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         ROADSIDE_STAND_DISCLOSURE
     )
     const { open: openSelectInventory } = useSingletonHook<
-    ReturnType<typeof useDisclosure>
-  >(SELECT_INVENTORY_DISCLOSURE)
+        ReturnType<typeof useDisclosure>
+    >(SELECT_INVENTORY_DISCLOSURE)
 
     const [nextDeliveryTime, setNextDeliveryTime] = useState(
         getNextMinuteCronExecution()
@@ -55,8 +57,8 @@ export const RoadsideStandModal: FC = () => {
     }, [])
 
     const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(GRAPHQL_QUERY_STATIC_SWR)
+        ReturnType<typeof useGraphQLQueryStaticSwr>
+    >(GRAPHQL_QUERY_STATIC_SWR)
 
     const inventories = useAppSelector(
         (state) => state.sessionReducer.inventories
@@ -65,11 +67,11 @@ export const RoadsideStandModal: FC = () => {
         { length: staticSwr.data?.data.defaultInfo.deliveryCapacity ?? 0 },
         (_, index) => {
             const inventory =
-        inventories.find(
-            (inventory) =>
-                inventory.kind === InventoryKind.Delivery &&
-            inventory.index === index
-        ) ?? null
+                inventories.find(
+                    (inventory) =>
+                        inventory.kind === InventoryKind.Delivery &&
+                        inventory.index === index
+                ) ?? null
             return {
                 index,
                 inventory: inventory,
@@ -96,6 +98,10 @@ export const RoadsideStandModal: FC = () => {
         }, 0)
         return totalGold
     }
+
+    const slotsStorageInventoryLeft = useAppSelector(
+        (state) => state.sessionReducer.slotsStorageInventoryLeft
+    )
 
     return (
         <Dialog
@@ -128,6 +134,20 @@ export const RoadsideStandModal: FC = () => {
                         )}
                         keyCallback={(item) => `${item.index}-${item.inventory?.id}`}
                     />
+                    {
+                        selectedRetrieveInventoryIds.length > 0 && (
+                            <>
+                                <Spacer y={1.5} />
+                                <div className={cn("text-sm text-muted-foreground", {
+                                    "text-destructive": slotsStorageInventoryLeft === 0,
+                                    "text-muted-foreground": slotsStorageInventoryLeft > 0,
+                                    "hidden": !selectedRetrieveInventoryIds.length,
+                                })}>
+                                    {slotsStorageInventoryLeft} {pluralize("slot", slotsStorageInventoryLeft > 0 ? slotsStorageInventoryLeft : 1)} left
+                                </div>
+                            </>
+                        )
+                    }
                     <Spacer y={4} />
                     <div className="flex gap-2 items-center justify-between">
                         <Title title="Delivery payout" />
@@ -151,6 +171,7 @@ export const RoadsideStandModal: FC = () => {
                     {selectedRetrieveInventoryIds.length > 0 ? (
                         <div className="flex gap-2 w-full">
                             <ExtendedButton
+                                disabled={slotsStorageInventoryLeft === 0}
                                 className="flex-1"
                                 variant="flat"
                                 color="secondary"
@@ -158,7 +179,7 @@ export const RoadsideStandModal: FC = () => {
                                     dispatch(setSelectedRetrieveInventoryIds([]))
                                 }}
                             >
-              Cancel
+                                Cancel
                             </ExtendedButton>
                             <ExtendedButton
                                 className="flex-1"
@@ -175,7 +196,7 @@ export const RoadsideStandModal: FC = () => {
                                     dispatch(setSelectedRetrieveInventoryIds([]))
                                 }}
                             >
-              Retrieve
+                                Retrieve
                             </ExtendedButton>
                         </div>
                     ) : (
@@ -185,7 +206,7 @@ export const RoadsideStandModal: FC = () => {
                                 openSelectInventory()
                             }}
                         >
-              Select Inventories
+                            Select Inventories
                         </ExtendedButton>
                     )}
                 </DialogFooter>
