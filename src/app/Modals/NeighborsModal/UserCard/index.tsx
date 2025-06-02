@@ -49,7 +49,7 @@ const renderOnlineStatus = (user: UserSchema) => {
     if (user.isOnline) {
         return (
             <div className="flex gap-1 items-center">
-                <div className="w-2 h-2 bg-muted-foreground rounded-full" />
+                <div className="w-2 h-2 bg-success rounded-full" />
                 <div className="text-sm">Online</div>
             </div>
         )

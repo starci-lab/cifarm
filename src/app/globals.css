@@ -39,6 +39,7 @@ body {
     /* for color-scheme: light */
     --background: 33 56% 94%;
     --foreground: 37 23% 16%;
+    --success: 146 79% 44%;
 
     --content-1: 0 0% 10%;
     --content-2: 33 60% 97%; /* cream - use in card and button */
@@ -166,6 +167,7 @@ body {
     /* for color-scheme: dark */
     --background: 37 23% 10%;
     --foreground: 33 56% 94%;
+    --success: 146 79% 44%;
 
     --content-1: 0 0% 90%;
     --content-2: 33 40% 15%; /* dark cream - use in card and button */

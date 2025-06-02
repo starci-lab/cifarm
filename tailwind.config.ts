@@ -35,6 +35,9 @@ const config: Config = {
                     "6": "hsl(var(--content-6))",
                     "7": "hsl(var(--content-7))",
                 },
+                success: {
+                    DEFAULT: "hsl(var(--success))",
+                },
     			background: "hsl(var(--background))", 
     			foreground: "hsl(var(--foreground))",
                 navbar: {
