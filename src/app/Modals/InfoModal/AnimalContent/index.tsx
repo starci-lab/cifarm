@@ -61,8 +61,31 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
     }, [timeElapsed])
 
     const [hungryTimeElapsed, setHungryTimeElapsed] = useState(0)
+
+
     useEffect(() => {
-        setHungryTimeElapsed(placedItem.animalInfo?.currentHungryTime ?? 0)
+        if (!staticSwr.data?.data || !placedItem?.placedItemType || !placedItem?.animalInfo) return
+    
+        const placedItemType = staticSwr.data.data.placedItemTypes.find(
+            (type) => type.id === placedItem.placedItemType
+        )
+    
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+    
+        const animal = staticSwr.data.data.animals.find(
+            (animal) => animal.id === placedItemType.animal
+        )
+    
+        if (!animal) {
+            throw new Error("Animal not found for placed item type")
+        }
+    
+        const hungerTime = animal.hungerTime ?? 0
+        const currentHungryTime = placedItem.animalInfo.currentHungryTime ?? 0
+    
+        setHungryTimeElapsed(hungerTime - currentHungryTime)
     }, [])
 
     useEffect(() => {
@@ -206,16 +229,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                                 Hungry time
                             </div>
                             <div>
-                                { formatTime((
-                                    staticSwr.data?.data.animals.find(animal => {
-                                        const placedItemType = staticSwr.data?.data.placedItemTypes.find(placedItemType => placedItemType.animal === animal.id)
-                                        if (!placedItemType) {
-                                            throw new Error("Placed item type not found")
-                                        }
-                                        return placedItemType.id === placedItem.placedItemType
-                                    })?.hungerTime ?? 0) 
-                                -
-                                hungryTimeElapsed) }
+                                { formatTime(hungryTimeElapsed) }
                             </div>
                         </div>
                     </div>
