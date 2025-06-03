@@ -59,6 +59,7 @@ export const ShopModal = () => {
     const inventories = useAppSelector(
         (state) => state.sessionReducer.inventories
     )
+    const user = useAppSelector((state) => state.sessionReducer.user)
 
     const renderGridTable = () => {
         if (!staticSwr.data?.data) return null
@@ -88,9 +89,10 @@ export const ShopModal = () => {
                                 }}
                                 onPress={(pressTime) => {
                                     dispatch(setShopCrop({ cropId: crop.displayId, isLoading: true }))
+                                    const maxQuantity = Math.floor((user?.golds ?? 0) / crop.price)
                                     const eventMessage: BuyCropSeedsMessage = {
                                         cropId: crop.displayId,
-                                        quantity: Math.floor(pressTime / 100),
+                                        quantity: Math.min(Math.floor(pressTime / 100), maxQuantity),
                                     }
                                     ExternalEventEmitter.emit(
                                         ExternalEventName.RequestBuyCropSeeds,
@@ -132,10 +134,11 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 onPress={(pressTime) => {
+                                    const maxQuantity = Math.floor((user?.golds ?? 0) / flower.price)
                                     dispatch(setShopFlower({ flowerId: flower.displayId, isLoading: true }))
                                     const eventMessage: BuyFlowerSeedsMessage = {
                                         flowerId: flower.displayId,
-                                        quantity: Math.floor(pressTime / 100),
+                                        quantity: Math.min(Math.floor(pressTime / 100), maxQuantity),
                                     }
                                     ExternalEventEmitter.emit(
                                         ExternalEventName.RequestBuyFlowerSeeds,
@@ -391,10 +394,11 @@ export const ShopModal = () => {
                                     )
                                 }}
                                 onPress={(pressTime) => {
+                                    const maxQuantity = Math.floor((user?.golds ?? 0) / supply.price)
                                     dispatch(setShopSupply({ supplyId: supply.displayId, isLoading: true }))
                                     const eventMessage: BuySuppliesMessage = {
                                         supplyId: supply.displayId,
-                                        quantity: Math.floor(pressTime / 100),
+                                        quantity: Math.min(Math.floor(pressTime / 100), maxQuantity),
                                     }
                                     ExternalEventEmitter.emit(
                                         ExternalEventName.RequestBuySupplies,

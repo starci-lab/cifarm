@@ -59,6 +59,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             PRIVATE_KEY_DISCLOSURE: useDisclosure(),
             MNEMONIC_DISCLOSURE: useDisclosure(),
             WARNING_DISCLOSURE: useDisclosure(),
+            TUTORIAL_DISCLOSURE: useDisclosure(),
             SIGN_TRANSACTION_DISCLOSURE: useDisclosure(),
             INVITE_USER_DISCLOSURE: useDisclosure(),
             NEIGHBORS_DISCLOSURE: useDisclosure(),

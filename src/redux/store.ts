@@ -14,6 +14,7 @@ import {
     sidebarReducer,
     sheetReducer,
     convertReducer,
+    tutorialReducer,
 } from "./slices"
 
 export const store = configureStore({
@@ -30,6 +31,7 @@ export const store = configureStore({
         searchReducer,
         sheetReducer,
         convertReducer,
+        tutorialReducer,
         wsLoadStateReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

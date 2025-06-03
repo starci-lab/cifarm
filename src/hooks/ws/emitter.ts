@@ -62,6 +62,7 @@ export enum EmitterEventName {
   SelectCat = "select_cat",
   DeleteInventory = "delete_inventory",
   SortInventories = "sort_inventories",
+  UpdateTutorial = "update_tutorial",
 }
 
 export interface BuySuppliesMessage {

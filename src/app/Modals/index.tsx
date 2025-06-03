@@ -20,7 +20,7 @@ import { SettingsModal } from "./SettingsModal"
 import { SellModal } from "./SellModal"
 import { UpgradeModal } from "./UpgradeModal"
 import { DailyModal } from "./DailyModal"
-import { TransferNFTModal } from "./TransferNFTModal"
+import { TutorialModal } from "./TutorialModal" 
 import { ShipModal } from "./ShipModal"
 import { BuyGoldsModal } from "./BuyGoldsModal"
 import { NFTsClaimedModal } from "./NFTsClaimedModal"
@@ -57,7 +57,7 @@ const Modals : FC = () => {
             <SelectNFTCollectionModal />
             <NFTConversionModal />
             <ReferralModal />
-            <TransferNFTModal />
+            <TutorialModal />
             <SelectNFTModal />
             <DownloadModal />
             <DownloadingModal />

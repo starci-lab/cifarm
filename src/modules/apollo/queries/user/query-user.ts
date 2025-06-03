@@ -29,6 +29,14 @@ const query1 = gql`
       email
       avatarUrl
       credits
+      tutorial {
+        start
+        openShopModal
+        openInventoryModal
+        plant
+        openNeighborsModal
+        atNeighbor
+      }
     }
   }
 `

@@ -1,5 +1,6 @@
 import { Network } from "@/modules/blockchain"
 import { AbstractSchema } from "./abstract"
+import { TutorialSchema } from "./tutorial"
 
 export interface UserSchema extends AbstractSchema {
     username: string;
@@ -30,4 +31,5 @@ export interface UserSchema extends AbstractSchema {
     selectedPlacedItemCatId?: string
     oauthProvider?: string
     credits: number
+    tutorial?: TutorialSchema
 }
