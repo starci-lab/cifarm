@@ -133,9 +133,6 @@ export const WholesaleMarketBulkSheet: FC = () => {
                                 <div className="text-sm">
                                     Token locked: {vaultCurrentSwr.data?.data.vaultCurrent.tokenLocked}
                                 </div>
-                                <div className="text-sm">
-                                    Paid count: {vaultCurrentSwr.data?.data.vaultCurrent.paidCount}
-                                </div>
                             </div>
                         </div>
                         <Spacer y={6} />

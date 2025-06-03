@@ -10,7 +10,6 @@ const query1 = gql`
   query VaultCurrent($request: VaultCurrentRequest!) {
     vaultCurrent(request: $request) {  
       paidAmount
-      paidCount
       tokenLocked
     }
   }
@@ -19,7 +18,6 @@ const query1 = gql`
 export interface QueryVaultCurrentResponse {
   vaultCurrent: {
     paidAmount: number
-    paidCount: number
     tokenLocked: number
   }
 }
