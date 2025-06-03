@@ -47,7 +47,12 @@ const Page: FC = () => {
                         </div>
 
                         <div className="flex gap-4 items-center">
-                            <ExtendedButton color="primary" onPress={() => router.push("/play")}>
+                            <ExtendedButton color="primary" 
+                                onPress={() => router.push("/play")}
+                                onClick={() => {
+                                    router.push("/play")
+                                }}
+                            >
                                 <GameController />
                                 <span>Play</span>
                             </ExtendedButton>

@@ -2,48 +2,46 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, Image }
 import { Pie, PieChart as RechartsPieChart } from "recharts"
 import React, { FC } from "react"
 
+export const distributionData = [
+    { section: "Airdrop", percentage: 30, fill: "hsl(var(--chart-1))", description: "Fully unlocked at TGE" },
+    { section: "Liquidity Pool", percentage: 25, fill: "hsl(var(--chart-2))", description: "Fully unlocked at TGE" },
+    { section: "CEO Listing", percentage: 5, fill: "hsl(var(--chart-3))", description: "Locked for 1 month after TGE" },
+    { section: "Vault Treasury", percentage: 30, fill: "hsl(var(--chart-4))", description: "50% unlocked at TGE, then 5-month cliff for remaining" },
+    { section: "Team", percentage: 5, fill: "hsl(var(--chart-5))", description: "Locked for 5 months, then unlocks over 1 month cliff" },
+    { section: "Marketing", percentage: 5, fill: "hsl(var(--chart-6))", description: "Locked for 1 month after TGE" },
+    { section: "Early Investors", percentage: 10, fill: "hsl(var(--chart-7))", description: "Locked for 3 months, then unlocks with a 1-month cliff" },
+]
+
 export const PieChart: FC = () => {
-    const chartData = [
-        { section: "marketing", percentage: 5 },
-        { section: "team", percentage: 10, fill: "var(--color-team)" },
-        { section: "community", percentage: 20, fill: "var(--color-community)" },
-        { section: "staking", percentage: 20, fill: "var(--color-staking)" },
-        { section: "treasury", percentage: 20, fill: "var(--color-treasury)" },
-        { section: "preSale", percentage: 10, fill: "var(--color-preSale)" },
-        { section: "publicSale", percentage: 5, fill: "var(--color-publicSale)" },
-        { section: "other", percentage: 10, fill: "var(--color-other)" },
-    ]
+    
 
     const chartConfig = {
-        marketing: {
-            label: "Marketing",
-        },
-        team: {
-            label: "Chrome",
+        airdrop: {
+            label: "Airdrop",
             color: "hsl(var(--chart-1))",
         },
-        community: {
-            label: "Community",
+        liquidityPool: {
+            label: "Liquidity Pool",
             color: "hsl(var(--chart-2))",
         },
-        staking: {
-            label: "Staking",
+        ceoListing: {
+            label: "CEO Listing",
             color: "hsl(var(--chart-3))",
         },
-        treasury: {
-            label: "Treasury",
+        vaultTreasury: {
+            label: "Vault Treasury",
             color: "hsl(var(--chart-4))",
         },
-        preSale: {
-            label: "Pre Sale",
+        team: {
+            label: "Team",
             color: "hsl(var(--chart-5))",
         },
-        publicSale: {
-            label: "Public Sale",
+        marketing: {
+            label: "Marketing",
             color: "hsl(var(--chart-6))",
         },
-        other: {
-            label: "Other",
+        earlyInvestors: {
+            label: "Early Investors",
             color: "hsl(var(--chart-7))",
         },
     } satisfies ChartConfig
@@ -65,7 +63,7 @@ export const PieChart: FC = () => {
                         content={<ChartTooltipContent hideLabel />}
                     />
                     <Pie
-                        data={chartData}
+                        data={distributionData}
                         dataKey="percentage"
                         nameKey="section"
                         innerRadius={80}

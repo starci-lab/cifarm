@@ -29,9 +29,9 @@ export const useMainVisual = () => {
         },
         {
             type: MainVisualType.Image,
-            url: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/0069009f-df5d-42b9-9a80-b925b8181127%20(1).jpg",
+            url: "/screen/ship-vault-demo.jpg",
             selectedKey: "visual-3",
-            thumbnailUrl: "https://cifarm.sgp1.cdn.digitaloceanspaces.com/0069009f-df5d-42b9-9a80-b925b8181127%20(1).jpg",
+            thumbnailUrl: "/screen/ship-vault-demo.jpg",
         },
     ]
 

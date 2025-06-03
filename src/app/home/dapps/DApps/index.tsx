@@ -62,7 +62,7 @@ export const DApps: FC = () => {
                     </div>
                 }
             />
-            <DAppCard
+            {/* <DAppCard
                 title="$CIFARM Staking"
                 description="Stake $CIFARM to earn rewards."
                 imageUrl={""}
@@ -72,7 +72,7 @@ export const DApps: FC = () => {
                         Coming soon
                     </div>
                 }
-            />
+            /> */}
         </div>
     )
 }

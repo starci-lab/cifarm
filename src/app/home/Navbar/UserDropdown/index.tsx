@@ -1,17 +1,21 @@
 import { setAuthenticated, useAppDispatch, useAppSelector } from "@/redux"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent, Separator, AvaButton2, DropdownContent } from "@/components"
 import React, { FC } from "react"
-import { Gear, SignOut, User } from "@phosphor-icons/react"
+import { Gear, ShareNetwork, SignOut, User } from "@phosphor-icons/react"
 import { useGraphQLMutationLogoutSwrMutation, useRouterWithSearchParams } from "@/hooks"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import useSWRMutation from "swr/mutation"
+import { useDisclosure } from "react-use-disclosure"
+import { useSingletonHook } from "@/modules/singleton-hook"
+import { REFERRAL_DISCLOSURE } from "@/app/constants"
 
 export const UserDropdown: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)
     const router = useRouterWithSearchParams()
 
     const { swrMutation: logoutSwrMutation } = useGraphQLMutationLogoutSwrMutation()
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(REFERRAL_DISCLOSURE)
     const dispatch = useAppDispatch()   
     const { trigger, isMutating } = useSWRMutation("LOGOUT_DATA", async () => {
         const refreshToken = await sessionDb.keyValueStore.get(
@@ -51,6 +55,17 @@ export const UserDropdown: FC = () => {
                         icon={<User />}
                     >
                         Profile
+                    </DropdownContent>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary text-muted-foreground"
+                    onClick={
+                        open
+                    }
+                >
+                    <DropdownContent
+                        icon={<ShareNetwork />}
+                    >
+                        Referral
                     </DropdownContent>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="py-2 cursor-pointer hover:bg-background hover:text-secondary text-muted-foreground"
