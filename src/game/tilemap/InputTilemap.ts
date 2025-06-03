@@ -919,8 +919,8 @@ export class InputTilemap extends ItemTilemap {
                     }
                     if (
                         !this.checkLevelGap({
-                            user: watchingUser,
-                            neighbor: this.user,
+                            user: this.user,
+                            neighbor: watchingUser,
                             data,
                         })
                     ) {
@@ -1513,8 +1513,8 @@ export class InputTilemap extends ItemTilemap {
                 if (watchingUser) {
                     if (
                         !this.checkLevelGap({
-                            user: watchingUser,
-                            neighbor: this.user,
+                            user: this.user,
+                            neighbor: watchingUser,
                             data,
                         })
                     ) {
@@ -1755,8 +1755,8 @@ export class InputTilemap extends ItemTilemap {
                     }
                     if (
                         !this.checkLevelGap({
-                            user: watchingUser,
-                            neighbor: this.user,
+                            user: this.user,
+                            neighbor: watchingUser,
                             data,
                         })
                     ) {
