@@ -18,29 +18,29 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
         1: {
             // Completed
             label: "Completed",
-            color: "bg-emerald-50 hover:bg-emerald-100 border-emerald-200",
-            iconBg: "bg-emerald-100 text-emerald-700",
-            textColor: "text-emerald-700",
+            color: "bg-emerald-50 hover:bg-emerald-100 border-emerald-200 dark:bg-emerald-800 dark:hover:bg-emerald-800 dark:border-emerald-700",
+            iconBg: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300",
+            textColor: "text-emerald-700 dark:text-emerald-300",
             icon: <CheckCircle className="h-4 w-4" />,
-            bulletColor: "bg-emerald-500",
+            bulletColor: "bg-emerald-500 dark:bg-emerald-400",
         },
         2: {
             // In Progress
             label: "In Progress",
-            color: "bg-amber-50 hover:bg-amber-100 border-amber-200",
-            iconBg: "bg-amber-100 text-amber-700",
-            textColor: "text-amber-700",
+            color: "bg-amber-50 hover:bg-amber-100 border-amber-200 dark:bg-amber-800 dark:hover:bg-amber-800 dark:border-amber-700",
+            iconBg: "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300",
+            textColor: "text-amber-700 dark:text-amber-300",
             icon: <Clock className="h-4 w-4" />,
-            bulletColor: "bg-amber-500",
+            bulletColor: "bg-amber-500 dark:bg-amber-400",
         },
         3: {
             // Upcoming
             label: "Upcoming",
-            color: "bg-slate-50 hover:bg-slate-100 border-slate-200",
-            iconBg: "bg-slate-100 text-slate-600",
-            textColor: "text-slate-600",
+            color: "bg-slate-50 hover:bg-slate-100 border-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600",
+            iconBg: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+            textColor: "text-slate-600 dark:text-slate-300",
             icon: <CalendarDots className="h-4 w-4" />,
-            bulletColor: "bg-slate-400",
+            bulletColor: "bg-slate-400 dark:bg-slate-500",
         },
     }[item.type]
 
@@ -71,8 +71,8 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
                         />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold text-slate-800">{item.phase}</h3>
-                        <p className="text-sm text-slate-600 mt-1">{item.description}</p>
+                        <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200">{item.phase}</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{item.description}</p>
                     </div>
                 </div>
             </CardHeader>
@@ -82,7 +82,7 @@ export const RoadmapCard: React.FC<RoadmapCardProps> = ({ item }) => {
                     {item.features.map((feature, featureIndex) => (
                         <div key={featureIndex} className="flex items-start gap-3">
                             <div className={cn("w-2 h-2 rounded-full mt-1.5 flex-shrink-0", statusConfig.bulletColor)} />
-                            <span className="text-sm text-slate-700">{feature}</span>
+                            <span className="text-sm text-slate-700 dark:text-slate-300">{feature}</span>
                         </div>
                     ))}
                 </div>

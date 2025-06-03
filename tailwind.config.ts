@@ -228,6 +228,14 @@ const config: Config = {
                         transform: "translate(-50%, -50%) scale(1.1)",
                         opacity: "0.6"
                     }
+                },
+                "shimmer": {
+                    "0%": {
+                        maskPosition: "0%"
+                    },
+                    "100%": {
+                        maskPosition: "100%"
+                    }
                 }
     		},
     		animation: {
@@ -239,7 +247,8 @@ const config: Config = {
                 "line-shadow": "line-shadow 10s linear infinite",
                 "marquee": "marquee var(--duration) linear infinite",
                 "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
-                "blur-zoom": "blur-zoom 4s ease-in-out infinite"
+                "blur-zoom": "blur-zoom 4s ease-in-out infinite",
+                "shimmer": "shimmer 4s linear infinite"
     		}
     	}
     },

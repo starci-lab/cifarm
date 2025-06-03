@@ -33,7 +33,9 @@ export const Hero = () => {
                 <div className="flex flex-col items-center xl:flex-row gap-10 mt-10">
                     <div>
                         <WrappedAnimation type="fade" delay={0.1}>
-                            <AnnouncementBanner text={"New Season Starting Soon"} />
+                            <AnnouncementBanner text={"ACT 1: Golden Sprout Festival"}
+                                link="https://docs.cifarm.xyz/docs/act/act-1"
+                            />
                         </WrappedAnimation>
                         <Spacer y={4}/>
                         <WrappedAnimation type="fade-slide" direction="down" delay={0.3}>

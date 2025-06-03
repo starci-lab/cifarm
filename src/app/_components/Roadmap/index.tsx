@@ -28,10 +28,9 @@ export const Roadmap = () => {
                 </CarouselContent>
                 <div className="flex justify-center gap-4 mt-8">
                     <CarouselPrevious
-                        color="secondary"
-                        className="static translate-y-0"
+                        className="static translate-y-0 text-secondary border hover:bg-secondary hover:text-content-2 border-secondary rounded-full p-2"
                     />
-                    <CarouselNext color="secondary" className="static translate-y-0" />
+                    <CarouselNext className="static translate-y-0 text-secondary border hover:bg-secondary hover:text-content-2 border-secondary rounded-full p-2" />
                 </div>
             </Carousel>
         </div>

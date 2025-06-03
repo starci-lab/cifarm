@@ -40,7 +40,7 @@ export const OverviewTab: FC = () => {
                         onClick={open}
                     >
                         <ShareNetwork className="w-4 h-4" />
-                        Share
+                        Referral
                     </ExtendedButton>
 
                     <Card variant="default">
