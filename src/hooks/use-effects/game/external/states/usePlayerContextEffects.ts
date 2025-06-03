@@ -14,7 +14,7 @@ import { setNotificationModal } from "@/redux"
 import { saveTokens } from "@/modules/apollo"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import useSWRMutation from "swr/mutation"
-import { retryIfError } from "@/modules/common"
+import { sleep } from "@/modules/common"
 
 export const usePlayerContextEffects = () => {
     const router = useRouterWithSearchParams()
@@ -78,16 +78,12 @@ export const usePlayerContextEffects = () => {
             dispatch(setNotificationModal({
                 message: "Your account has been logged in from another device. Please connect again to continue.",
                 callback: async () => {
-                    retryIfError(async () => {
-                        // fetch the api to get refresh token
-                        await authenticationSwrMutation.trigger()
-                        updateSocket()
-                        socket?.connect()
-                        close()
-                    }, {
-                        retries: 5,
-                        interval: 3000,
-                    })
+                    // fetch the api to get refresh token
+                    await authenticationSwrMutation.trigger()
+                    updateSocket()
+                    await sleep(1000)
+                    socket?.connect()
+                    close()
                 },
                 title: "You have been disconnected",
                 buttonText: "Connect again",
@@ -104,16 +100,12 @@ export const usePlayerContextEffects = () => {
             dispatch(setNotificationModal({
                 message: "You are not connected to the server. Please connect again to continue.",
                 callback: async () => {
-                    retryIfError(async () => {
-                        // fetch the api to get refresh token
-                        await authenticationSwrMutation.trigger()
-                        updateSocket()
-                        socket?.connect()
-                        close()
-                    }, {
-                        retries: 5,
-                        interval: 3000,
-                    })
+                    // fetch the api to get refresh token
+                    await authenticationSwrMutation.trigger()
+                    updateSocket()
+                    await sleep(1000)
+                    socket?.connect()
+                    close()
                 },
                 title: "You have been disconnected",
                 buttonText: "Connect again",

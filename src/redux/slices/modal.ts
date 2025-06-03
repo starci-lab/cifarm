@@ -11,7 +11,7 @@ export interface WarningModal {
 
 export interface NotificationModal {
   message: string;
-  callback?: () => void;
+  callback?: () => void | Promise<void>;
   title?: string;
   buttonText?: string;
 }
