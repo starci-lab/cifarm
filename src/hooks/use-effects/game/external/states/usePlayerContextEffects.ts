@@ -82,6 +82,7 @@ export const usePlayerContextEffects = () => {
                         // fetch the api to get refresh token
                         await authenticationSwrMutation.trigger()
                         updateSocket()
+                        socket?.connect()
                         close()
                     }, {
                         retries: 5,
@@ -102,10 +103,17 @@ export const usePlayerContextEffects = () => {
         socket?.on("disconnect", () => {
             dispatch(setNotificationModal({
                 message: "You are not connected to the server. Please connect again to continue.",
-                callback: () => {
-                    // fetch the api to get refresh token
-                    socket?.connect()  
-                    close()
+                callback: async () => {
+                    retryIfError(async () => {
+                        // fetch the api to get refresh token
+                        await authenticationSwrMutation.trigger()
+                        updateSocket()
+                        socket?.connect()
+                        close()
+                    }, {
+                        retries: 5,
+                        interval: 3000,
+                    })
                 },
                 title: "You have been disconnected",
                 buttonText: "Connect again",

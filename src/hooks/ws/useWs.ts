@@ -8,6 +8,7 @@ import { envConfig } from "@/env"
 const manager = new Manager(envConfig().wsUrl, {
     autoConnect: false,
     reconnection: false,
+    // we do not want to use polling
     transports: ["websocket"],
 })
 
