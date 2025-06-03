@@ -8,6 +8,7 @@ import { envConfig } from "@/env"
 const manager = new Manager(envConfig().wsUrl, {
     autoConnect: false,
     reconnection: false,
+    transports: ["websocket"],
 })
 
 export const useWs = (): UseWs => {
