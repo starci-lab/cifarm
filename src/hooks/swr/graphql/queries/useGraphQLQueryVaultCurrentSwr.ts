@@ -1,3 +1,4 @@
+import { envConfig } from "@/env"
 import { UseSWR } from "../../types"
 import {
     queryVaultCurrent,
@@ -12,7 +13,12 @@ export const useGraphQLQueryVaultCurrentSwr = (): UseSWR<
   ApolloQueryResult<QueryVaultCurrentResponse>,
   QueryVaultCurrentParams
 > => {
-    const [ params, setParams ] = useState<QueryVaultCurrentParams>({})
+    const network = envConfig().network
+    const [ params, setParams ] = useState<QueryVaultCurrentParams>({
+        request: {
+            network
+        }
+    })
     const swr = useSWR(
         "QUERY_VAULT_CURRENT",
         async () => {
