@@ -1,9 +1,9 @@
 "use client"
 
-import { Card, CardBody, CardFooter, ScaledImage } from "@/components"
-import { PaymentIcon } from "@/components"
+import { Card, CardBody, CardHeader, ScaledImage, Spacer } from "@/components"
+import { TokenIcon } from "@/components"
 import React, { FC, useEffect, useState } from "react"
-import { ProductId, WholesaleMarketBulk } from "@/modules/entities"
+import { ProductId, BulkSchema } from "@/modules/entities"
 import { assetProductMap } from "@/modules/assets"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
@@ -12,11 +12,13 @@ import { cn } from "@/lib/utils"
 import { useAppDispatch } from "@/redux/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { setWholesaleMarketBulkSheet } from "@/redux"
+import { envConfig } from "@/env"
+import { ChainKey } from "@/modules/blockchain"
 
 interface BulkCardProps {
-    bulk: WholesaleMarketBulk
+    bulk: BulkSchema
 }
-
+    
 export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(QUERY_STATIC_SWR_MUTATION)
     const [images, setImages] = useState<Array<string>>([])
@@ -29,14 +31,16 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
     }, [staticSwr.data])
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE)
     const dispatch = useAppDispatch()
+    const network = envConfig().network
+    if (!staticSwr.data?.data.tokens) return null
     return (
         <Card pressable onClick={
             () => {
-                dispatch(setWholesaleMarketBulkSheet({ bulkId: bulk.bulkId }))
+                dispatch(setWholesaleMarketBulkSheet({ bulkId: bulk.id }))
                 open()
             }
         }>
-            <CardBody>
+            <CardHeader>
                 <div className="flex items-center -gap-4">
                     {images.slice(0, 3).map((image, index) => {
                         if (index === 2 && images.length > 3) {
@@ -74,17 +78,21 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
                             </div>
                         )
                     })}
-                </div>
-            </CardBody>
-            <CardFooter className="flex justify-between w-full">
+                </div>            
+                <Spacer y={2}/>
                 <div className="text-lg">{bulk.bulkName}</div>
-                <div className="flex items-center gap-1">
-                    <PaymentIcon paymentKind={bulk.paymentKind} />
-                    <div className="text-secondary">
-                        {bulk.price}
+                <div className="flex items-center gap-1 text-secondary">
+                    <TokenIcon tokenKey={bulk.tokenKey} chainKey={ChainKey.Solana} network={network} tokens={staticSwr.data?.data.tokens} />
+                    <div>
+                        {bulk.maxPaidAmount}
                     </div>
                 </div>
-            </CardFooter>
+            </CardHeader>
+            <CardBody className="w-full flex-col">
+                <div className="text-sm text-muted-foreground">
+                    {bulk.description}
+                </div>
+            </CardBody>
         </Card>
     )
 }

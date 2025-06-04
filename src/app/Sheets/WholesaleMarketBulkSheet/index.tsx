@@ -2,7 +2,7 @@ import {
     ExtendedButton,
     GridTable,
     ItemCard,
-    PaymentIcon,
+    TokenIcon,
     Sheet,
     SheetContent,
     SheetHeader,
@@ -19,10 +19,14 @@ import { useDisclosure } from "react-use-disclosure"
 import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
 import { assetProductMap } from "@/modules/assets"
-import { PaymentKind } from "@/modules/entities"
+import { TokenKey } from "@/modules/entities"
 import { partitionInventories } from "@/modules/entities"
 import { cn } from "@/lib/utils"
 import { ArrowCounterClockwise } from "@phosphor-icons/react"
+import { ChainKey } from "@/modules/blockchain"
+import { envConfig } from "@/env"
+import { computePaidAmount, VaultData } from "@/modules/entities"
+
 export const WholesaleMarketBulkSheet: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE
@@ -41,8 +45,8 @@ export const WholesaleMarketBulkSheet: FC = () => {
 
     const { accountAddress } = useGlobalAccountAddress()
     const wholesaleMarketBulkSheet = useAppSelector((state) => state.sheetReducer.wholesaleMarketBulkSheet)
-    const bulk = staticSwr.data?.data.wholesaleMarket.bulks.find(
-        (bulk) => bulk.bulkId === wholesaleMarketBulkSheet.bulkId
+    const bulk = staticSwr.data?.data.activeSeason.bulks.find(
+        (bulk) => bulk.id === wholesaleMarketBulkSheet.bulkId
     )
     const inventories = useAppSelector((state) => state.sessionReducer.inventories)
     if (!bulk) return null
@@ -58,7 +62,11 @@ export const WholesaleMarketBulkSheet: FC = () => {
     const { swr: userSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(GRAPHQL_QUERY_USER_SWR)
     const { swr: inventoriesSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryInventoriesSwr>>(GRAPHQL_QUERY_INVENTORIES_SWR)
     const { swr: vaultCurrentSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryVaultCurrentSwr>>(GRAPHQL_QUERY_VAULT_CURRENT_SWR)
-
+    const network = envConfig().network
+    
+    if (!vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey)) {
+        return null
+    }
     return (
         <Sheet open={isOpen} onOpenChange={toggle}>
             <SheetContent side={isMobile ? "bottom" : "right"} className="flex flex-col justify-between">
@@ -117,21 +125,21 @@ export const WholesaleMarketBulkSheet: FC = () => {
                         <Spacer y={4} />
                         <div>
                             <div className="flex items-center gap-2">
-                                <PaymentIcon
-                                    paymentKind={
-                                        bulk.paymentKind ||
-                                        PaymentKind.Token
+                                <TokenIcon
+                                    chainKey={ChainKey.Solana}
+                                    network={network}
+                                    tokens={staticSwr.data?.data.tokens}
+                                    tokenKey={
+                                        bulk.tokenKey ||
+                                        TokenKey.Native
                                     }
                                     className="w-10 h-10"
                                 />
                                 <div className="text-4xl">
-                                    {vaultCurrentSwr.data?.data.vaultCurrent.paidAmount}
-                                </div>
-                            </div>
-                            <Spacer y={2} />
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <div className="text-sm">
-                                    Token locked: {vaultCurrentSwr.data?.data.vaultCurrent.tokenLocked}
+                                    {computePaidAmount({
+                                        vaultData: vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey) as VaultData,
+                                        bulk
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -153,7 +161,7 @@ export const WholesaleMarketBulkSheet: FC = () => {
                         const { data } = await createShipSolanaTransactionSwrMutation.trigger({
                             request: {
                                 accountAddress,
-                                bulkId: bulk.bulkId
+                                bulkId: bulk.id
                             }
                         })
                         if (!data) throw new Error("Failed to create ship solana transaction")

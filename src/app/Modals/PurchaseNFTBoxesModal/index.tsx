@@ -27,7 +27,7 @@ export const PurchaseNFTBoxesModal: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof usePurchaseNFTBoxesFormik>>(PURCHASE_NFT_BOXES_FORMIK)
     
     const balanceSwrs = useAppSelector(state => state.sessionReducer.balanceSwrs)
-    const balanceSwr = balanceSwrs[staticSwr.data?.data.nftBoxInfo.paymentKind || TokenKey.USDC]
+    const balanceSwr = balanceSwrs[staticSwr.data?.data.nftBoxInfo.tokenKey || TokenKey.USDC]
 
     useEffect(() => {
         if (balanceSwr) {

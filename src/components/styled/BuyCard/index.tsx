@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import {
-    PaymentIcon,
+    TokenIcon,
     ScaledImage,
     Spinner,
     ImageScale,
@@ -8,13 +8,17 @@ import {
     CardBody,
     CardFooter,
 } from "@/components"
-import { PaymentKind } from "@/modules/entities"
+import { TokenKey, Tokens } from "@/modules/entities"
+import { ChainKey, Network } from "@/modules/blockchain"
 
 export interface BuyCardProps {
   title: string;
   imageUrl: string;
   price: number;
-  paymentKind: PaymentKind;
+  tokenKey: TokenKey;
+  chainKey: ChainKey;
+  network: Network;
+  tokens: Tokens;
   classNames?: {
     container?: string;
   };
@@ -25,7 +29,10 @@ export const BuyCard: FC<BuyCardProps> = ({
     title,
     imageUrl,
     price,
-    paymentKind,
+    tokenKey,
+    chainKey,
+    network,
+    tokens,
     classNames,
     onClick,
     isLoading,
@@ -49,17 +56,20 @@ export const BuyCard: FC<BuyCardProps> = ({
                     />
                 </div>
             </CardBody>
-            <CardFooter>
-                <div>
+            <CardFooter className="w-full">
+                <div className="flex w-full justify-between items-center">
                     <div className="flex gap-2 items-center">
                         {isLoading && <Spinner />}
                         <div className="text-lg text-text">{title}</div>
                     </div>
-                    <div className="flex gap-2">
-                        <div className="flex gap-1 items-center">
-                            <PaymentIcon paymentKind={paymentKind} />
-                            <div className="text-secondary">{price}</div>
-                        </div>
+                    <div className="flex gap-1 items-center">
+                        <TokenIcon
+                            tokenKey={tokenKey}
+                            chainKey={chainKey}
+                            network={network}
+                            tokens={tokens}
+                        />
+                        <div>{price}</div>
                     </div>
                 </div>
             </CardFooter>

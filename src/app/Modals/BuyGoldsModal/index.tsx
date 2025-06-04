@@ -22,7 +22,7 @@ import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
 import { formatNumber, NumberPattern } from "@/modules/common"
 import { envConfig } from "@/env"
-
+import { ChainKey } from "@/modules/blockchain"
 export const BuyGoldsModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_DISCLOSURE)
@@ -54,73 +54,79 @@ export const BuyGoldsModal: FC = () => {
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>()
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle>Buy Golds</DialogTitle>
                 </DialogHeader>     
                 <DialogBody className="grid md:grid-cols-3 gap-2">
                     {
-                        staticSwr.data?.data.goldPurchases[network]?.options.map((goldPurchase, index) => (
-                            <BuyCard
-                                key={index}
-                                title={`${formatNumber(goldPurchase.amount, NumberPattern.Second)}`}
-                                imageUrl={iconMap[index]}
-                                price={goldPurchase.price}
-                                paymentKind={goldPurchase.paymentKind}
-                                isLoading={
-                                    selectedIndex === index &&
+                        staticSwr.data?.data.goldPurchases[network]?.options.map((goldPurchase, index) => {
+                            if (!staticSwr.data?.data.tokens) return null
+                            return (
+                                <BuyCard
+                                    key={index}
+                                    title={`${formatNumber(goldPurchase.amount, NumberPattern.Second)}`}
+                                    imageUrl={iconMap[index]}
+                                    price={goldPurchase.price}
+                                    tokenKey={goldPurchase.tokenKey}
+                                    chainKey={ChainKey.Solana}
+                                    network={network}
+                                    tokens={staticSwr.data?.data.tokens}
+                                    isLoading={
+                                        selectedIndex === index &&
                                     createBuyGoldsSolanaTransactionSwrMutation.isMutating
-                                }
-                                classNames={{
-                                    container: "h-full",
-                                }}
-                                onClick={async () => {
-                                    if (!accountAddress) {
-                                        throw new Error("No account address")
                                     }
-                                    setSelectedIndex(index)
-                                    try {
-                                        const { data} = await createBuyGoldsSolanaTransactionSwrMutation.trigger({
-                                            request: {
-                                                selectionIndex: index,
-                                                accountAddress,
-                                            }
-                                        })
-                                        if (!data) {
-                                            toast({
-                                                title: "Failed to create transaction",
-                                                variant: "destructive",
-                                            })
-                                            return
+                                    classNames={{
+                                        container: "h-full",
+                                    }}
+                                    onClick={async () => {
+                                        if (!accountAddress) {
+                                            throw new Error("No account address")
                                         }
-                                        dispatch(setSignTransactionModal({
-                                            type: TransactionType.SolanaRawTx,
-                                            data: {
-                                                serializedTx: data.serializedTx,
-                                            },  
-                                            postActionHook: async (signedSerializedTx) => {
-                                                const { data } = await sendBuyGoldsSolanaTransactionSwrMutation.trigger({
-                                                    request: {
-                                                        serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx,
-                                                    },
-                                                })
-                                                if (!data) {
-                                                    toast({
-                                                        title: "Failed to send transaction",
-                                                        variant: "destructive",
-                                                    })
-                                                    return ""
+                                        setSelectedIndex(index)
+                                        try {
+                                            const { data} = await createBuyGoldsSolanaTransactionSwrMutation.trigger({
+                                                request: {
+                                                    selectionIndex: index,
+                                                    accountAddress,
                                                 }
-                                                return data.txHash
-                                            },
-                                        }))
-                                        openSignTransactionModal()
-                                    } finally {
-                                        setSelectedIndex(undefined)
-                                    }
-                                }}
-                            />
-                        ))
+                                            })
+                                            if (!data) {
+                                                toast({
+                                                    title: "Failed to create transaction",
+                                                    variant: "destructive",
+                                                })
+                                                return
+                                            }
+                                            dispatch(setSignTransactionModal({
+                                                type: TransactionType.SolanaRawTx,
+                                                data: {
+                                                    serializedTx: data.serializedTx,
+                                                },  
+                                                postActionHook: async (signedSerializedTx) => {
+                                                    const { data } = await sendBuyGoldsSolanaTransactionSwrMutation.trigger({
+                                                        request: {
+                                                            serializedTx: Array.isArray(signedSerializedTx) ? signedSerializedTx[0] : signedSerializedTx,
+                                                        },
+                                                    })
+                                                    if (!data) {
+                                                        toast({
+                                                            title: "Failed to send transaction",
+                                                            variant: "destructive",
+                                                        })
+                                                        return ""
+                                                    }
+                                                    return data.txHash
+                                                },
+                                            }))
+                                            openSignTransactionModal()
+                                        } finally {
+                                            setSelectedIndex(undefined)
+                                        }
+                                    }}
+                                />
+                            )
+                        })
                     }
                 </DialogBody>
             </DialogContent>

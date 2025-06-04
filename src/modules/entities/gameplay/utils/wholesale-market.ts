@@ -1,12 +1,12 @@
-import { InventoryType, InventoryKind, InventorySchema } from "@/modules/entities"
+import { InventoryType, InventoryKind, InventorySchema, BulkSchema, VaultData } from "@/modules/entities"
 import { StaticData } from "./types"
+import { formatNumber } from "@/modules/common"
 
 export interface PartitionInventoriesParams {
     staticData: StaticData;
     inventories: Array<InventorySchema>;
     bulkId: string;
 }
-
 
 export const partitionInventories = ({
     staticData,
@@ -25,8 +25,8 @@ export const partitionInventories = ({
 
     const inventoryMap: Record<string, InventoryMapData> = {}
 
-    const bulks = staticData.wholesaleMarket?.bulks ?? []
-    const currentBulk = bulks.find((bulk) => bulk.bulkId === bulkId)
+    const bulks = staticData.activeSeason?.bulks || []
+    const currentBulk = bulks.find((bulk) => bulk.id === bulkId)
     if (!currentBulk) {
         throw new Error(`Bulk with ID ${bulkId} not found`)
     }
@@ -68,4 +68,21 @@ export interface InventoryMapData {
     totalQuantity: number
     enough: boolean
     requiredQuantity: number
+}
+
+export interface ComputePaidAmountParams {
+    vaultData: VaultData
+    bulk: BulkSchema
+}
+
+export const computePaidAmount = ({
+    vaultData,
+    bulk,
+}: ComputePaidAmountParams) => {
+    const { tokenLocked } = vaultData
+    const { maxPaidAmount, maxPaidPercentage } = bulk
+    return formatNumber(Math.min(
+        tokenLocked * maxPaidPercentage,
+        maxPaidAmount
+    ))
 }

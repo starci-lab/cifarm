@@ -18,16 +18,16 @@ export const chainKeyMap: Array<ChainInfo> = [
         name: "Solana",
         iconUrl: "/solana.svg",
     },
-    { 
-        key: ChainKey.Sui,
-        name: "Sui",
-        iconUrl: "/sui.svg",
-    },
-    {
-        key: ChainKey.Somnia,
-        name: "Somnia",
-        iconUrl: "https://docs.somnia.network/~gitbook/image?url=https%3A%2F%2F1813806305-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Forganizations%252FXixzx30CXHthiaKhEu1D%252Fsites%252Fsite_m7x2t%252Ficon%252FjdslfIGTxvTkjBH77O7V%252Flogo.png%3Falt%3Dmedia%26token%3Dfbc7ca1b-24b9-4847-ad0c-574ac536eff3&width=32&dpr=4&quality=100&sign=4c1bc3e1&sv=2",
-    }
+    // { 
+    //     key: ChainKey.Sui,
+    //     name: "Sui",
+    //     iconUrl: "/sui.svg",
+    // },
+    // {
+    //     key: ChainKey.Somnia,
+    //     name: "Somnia",
+    //     iconUrl: "https://docs.somnia.network/~gitbook/image?url=https%3A%2F%2F1813806305-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Forganizations%252FXixzx30CXHthiaKhEu1D%252Fsites%252Fsite_m7x2t%252Ficon%252FjdslfIGTxvTkjBH77O7V%252Flogo.png%3Falt%3Dmedia%26token%3Dfbc7ca1b-24b9-4847-ad0c-574ac536eff3&width=32&dpr=4&quality=100&sign=4c1bc3e1&sv=2",
+    // }
 ]
 
 export enum Network {

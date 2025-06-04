@@ -5,20 +5,27 @@ import {
     QueryVariables,
 } from "../../types"
 import { Network } from "@/modules/blockchain"
+import { TokenKey } from "@/modules/entities"
 
 const query1 = gql`
   query VaultCurrent($request: VaultCurrentRequest!) {
     vaultCurrent(request: $request) {  
-      paidAmount
-      tokenLocked
+      data {
+        tokenKey
+        tokenLocked
+      }
+      vaultAddress
     }
   }
 `
 
 export interface QueryVaultCurrentResponse {
   vaultCurrent: {
-    paidAmount: number
-    tokenLocked: number
+    data: Array<{
+      tokenKey: TokenKey
+      tokenLocked: number
+    }>
+    vaultAddress: string
   }
 }
 

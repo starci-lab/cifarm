@@ -21,7 +21,6 @@ import {
     FruitInfo,
     FlowerSchema,
     NFTCollections,
-    WholesaleMarket,
     GoldPurchases,
     InteractionPermissions,
     NFTBoxInfo,
@@ -30,7 +29,8 @@ import {
     PetInfo,
     Referral,
     NFTConversion,
-    EnergyPurchases
+    EnergyPurchases,
+    SeasonSchema
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -436,31 +436,19 @@ const query = gql`
           }
       }
     } 
-    wholesaleMarket {
-      bulks {
-        bulkId
-        bulkName
-        paymentKind
-        price
-        products {
-          productId
-          quantity
-        }
-      }
-    }
     goldPurchases {
         testnet {
           options {
             price
             amount
-            paymentKind
+            tokenKey
           }
         }
         mainnet {
           options {
             price
             amount
-            paymentKind
+            tokenKey
           }
         }
     }
@@ -469,7 +457,7 @@ const query = gql`
     }
     nftBoxInfo {
       boxPrice
-      paymentKind
+      tokenKey
       feePercentage
       chances {
         nftType
@@ -657,15 +645,34 @@ const query = gql`
           options {
             price
             percentage
-            paymentKind
+            tokenKey
           }
         }
         mainnet {
           options {
             price
             percentage
-            paymentKind
+            tokenKey
           }
+      }
+    }
+    activeSeason {
+      displayId
+      startDate
+      endDate
+      name
+      description
+      bulks {
+        id
+        description
+        bulkName
+        tokenKey
+        maxPaidAmount
+        maxPaidPercentage
+        products {
+          productId
+          quantity
+        }
       }
     }
   }
@@ -694,7 +701,6 @@ export interface QueryStaticResponse {
   terrains: Array<TerrainSchema>
   animalInfo: AnimalInfo
   nftCollections: NFTCollections
-  wholesaleMarket: WholesaleMarket
   goldPurchases: GoldPurchases
   interactionPermissions: InteractionPermissions
   nftBoxInfo: NFTBoxInfo
@@ -702,6 +708,7 @@ export interface QueryStaticResponse {
   referral: Referral
   nftConversion: NFTConversion
   energyPurchases: EnergyPurchases
+  activeSeason: SeasonSchema
 }
 
 export const queryStatic = async () => {

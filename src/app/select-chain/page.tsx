@@ -9,7 +9,7 @@ import {
     Spacer,
 } from "@/components"
 import { cn } from "@/lib/utils"
-import { blockchainMap, ChainKey, Network } from "@/modules/blockchain"
+import { chainKeyMap, Network } from "@/modules/blockchain"
 import { setChainKey, useAppDispatch, useAppSelector } from "@/redux"
 import React, { FC } from "react"
 import { NetworkDropdown } from "./NetworkDropdown"
@@ -36,15 +36,15 @@ const Page: FC = () => {
                     <Spacer y={4} />
                     <List
                         enableScroll={false}
-                        items={Object.values(ChainKey)}
+                        items={chainKeyMap}
                         contentCallback={(item) => {
-                            const isSelected = chainKey === item
+                            const isSelected = chainKey === item.key
                             return (
                                 <PressableCard
                                     showBorder={false}
-                                    key={item}
+                                    key={item.key}
                                     onClick={() => {
-                                        dispatch(setChainKey(item))
+                                        dispatch(setChainKey(item.key))
                                     }}
                                     className={cn(
                                         "w-full p-3 rounded-none",
@@ -54,10 +54,10 @@ const Page: FC = () => {
                                     <div className="w-full flex justify-between items-center">
                                         <div className="flex gap-2 items-center">
                                             <Image
-                                                src={blockchainMap[item].imageUrl}
+                                                src={item.iconUrl}
                                                 className="w-6 h-6"
                                             />
-                                            <div>{blockchainMap[item].name}</div>
+                                            <div>{item.name}</div>
                                         </div>
                                         {isSelected && <Check />}
                                     </div>

@@ -4,7 +4,6 @@ import {
     CropId,
     DailyRewardId,
     NFTType,
-    PaymentKind,
     TokenKey,
     TokenType,
 } from "../enums"
@@ -132,27 +131,10 @@ export interface NFTCollectionData {
 export type NFTCollection = Partial<Record<Network, NFTCollectionData>>;
 export type NFTCollections = Partial<Record<NFTType, NFTCollection>>;
 
-export interface WholesaleMarketProduct {
-  productId: string;
-  quantity: number;
-}
-
-export interface WholesaleMarketBulk {
-  bulkId: string;
-  bulkName: string;
-  paymentKind: PaymentKind;
-  price: number;
-  products: Array<WholesaleMarketProduct>;
-}
-
-export interface WholesaleMarket {
-  bulks: Array<WholesaleMarketBulk>;
-}
-
 export interface GoldPurchaseOption {
   price: number;
   amount: number;
-  paymentKind: PaymentKind;
+  tokenKey: TokenKey;
 }
 
 export interface GoldPurchase {
@@ -163,7 +145,7 @@ export type GoldPurchases = Record<Network, GoldPurchase>;
 export interface EnergyPurchaseOption {
   price: number;
   percentage: number;
-  paymentKind: PaymentKind;
+  tokenKey: TokenKey;
 }
 export interface EnergyPurchase {
   options: Array<EnergyPurchaseOption>;
@@ -185,7 +167,7 @@ export interface NFTBoxChance {
 export interface NFTBoxInfo {
   chances: Array<NFTBoxChance>;
   boxPrice: number;
-  paymentKind: PaymentKind;
+  tokenKey: TokenKey;
   feePercentage: number;
 }
 

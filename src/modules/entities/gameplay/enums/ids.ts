@@ -278,3 +278,7 @@ export enum TerrainId {
     PineTree = "pineTree",
     MapleTree = "mapleTree",
 }
+
+export enum SeasonId {
+    Season1 = "season1",
+}

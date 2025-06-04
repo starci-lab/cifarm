@@ -73,12 +73,6 @@ export enum NFTType {
     Pomegranate = "pomegranate",
 }
 
-export enum PaymentKind {
-    Token = "token",
-    USDC = "usdc",  
-    USDT = "usdt",
-}
-
 export enum TokenType {
     Native = "native",
     Standard = "standard",

@@ -18,7 +18,6 @@ import { InGameTab } from "./InGameTab"
 import { useRouterWithSearchParams } from "@/hooks"
 import { useSearchParams } from "next/navigation"
 import { ArrowsClockwise } from "@phosphor-icons/react"
-import { ChainSelectButton } from "./ChainSelectButton"
 import { ChainKey } from "@/modules/blockchain"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useCurrentWallet } from "@mysten/dapp-kit"
@@ -137,7 +136,7 @@ const Page = () => {
         switch (assetTab) {
         case AssetTab.Tokens:
             return <div className="flex gap-2 justify-between items-center w-full md:w-auto">
-                <ChainSelectButton />
+                {/* <ChainSelectButton /> */}
                 <FilterBar
                     onSearchStringChange={() => { }}
                     searchString={""}

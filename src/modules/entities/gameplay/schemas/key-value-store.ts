@@ -1,3 +1,4 @@
+import { TokenKey } from "../enums"
 import { AbstractSchema } from "./abstract"
 
 export interface KeyValueStoreSchema extends AbstractSchema {
@@ -16,6 +17,11 @@ export interface EnergyGrowthLastSchedule {
     date: Date
 }
 
+export interface VaultData {
+    tokenLocked: number
+    tokenKey: TokenKey
+}
+
 export interface VaultInfo {
-    paidCount: number
+    data: Array<VaultData>
 }
