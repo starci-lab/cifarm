@@ -11,6 +11,8 @@ import {
     SheetBody,
     Spacer,
     Title,
+    Image,
+    Separator,
 } from "@/components"
 import React, { FC } from "react"
 import { useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useGraphQLQueryVaultCurrentSwr, useIsMobile, useGlobalAccountAddress, useGraphQLQueryInventoriesSwr, useGraphQLQueryUserSwr } from "@/hooks"
@@ -18,7 +20,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
-import { assetProductMap } from "@/modules/assets"
+import { assetProductMap, assetIconMap, AssetIconId } from "@/modules/assets"
 import { TokenKey } from "@/modules/entities"
 import { partitionInventories } from "@/modules/entities"
 import { cn } from "@/lib/utils"
@@ -80,7 +82,7 @@ export const WholesaleMarketBulkSheet: FC = () => {
                             tooltipString="Requirements for the wholesale market"
                         />
                         <Spacer y={4} />
-                        <div>
+                        <div className="bg-content-2 rounded-lg p-3">
                             <GridTable
                                 classNames={{
                                     container: "grid-none flex flex-wrap gap-2 justify-start",
@@ -118,41 +120,51 @@ export const WholesaleMarketBulkSheet: FC = () => {
                             />
                         </div>
                         <Spacer y={6} />
-                        <Title
-                            title="Payment"
-                            tooltipString="Payment for the wholesale market"
-                        />
+                        <div className="flex items-center justify-between">
+                            <Title
+                                title="Payment"
+                                tooltipString="Payment for the wholesale market"
+                            />
+                            <ExtendedButton color="secondary" size="icon" variant="flat" onClick={async () => {
+                                await Promise.all([
+                                    inventoriesSwr.mutate(),
+                                    userSwr.mutate(),
+                                    vaultCurrentSwr.mutate()
+                                ])
+                            }}>
+                                <ArrowCounterClockwise />
+                            </ExtendedButton>
+                        </div>
                         <Spacer y={4} />
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <TokenIcon
-                                    chainKey={ChainKey.Solana}
-                                    network={network}
-                                    tokens={staticSwr.data?.data.tokens}
-                                    tokenKey={
-                                        bulk.tokenKey ||
+                        <div className="bg-content-2 rounded-lg">
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-1.5 p-3">
+                                    <TokenIcon
+                                        chainKey={ChainKey.Solana}
+                                        network={network}
+                                        tokens={staticSwr.data?.data.tokens}
+                                        tokenKey={
+                                            bulk.tokenKey ||
                                         TokenKey.Native
-                                    }
-                                    className="w-10 h-10"
-                                />
-                                <div className="text-4xl">
-                                    {computePaidAmount({
-                                        vaultData: vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey) as VaultData,
-                                        bulk
-                                    })}
+                                        }
+                                        className="w-8 h-8"
+                                    />
+                                    <div className="text-2xl">
+                                        {computePaidAmount({
+                                            vaultData: vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey) as VaultData,
+                                            bulk
+                                        })}
+                                    </div>
+                                </div>
+                                <Separator />
+                                <div className="flex items-center gap-1.5 p-3">
+                                    <Image src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl} className="w-8 h-8" />
+                                    <div className="text-2xl">
+                                        {bulk.maxPaidAmount}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <Spacer y={6} />
-                        <ExtendedButton color="secondary" size="icon" variant="flat" onClick={async () => {
-                            await Promise.all([
-                                inventoriesSwr.mutate(),
-                                userSwr.mutate(),
-                                vaultCurrentSwr.mutate()
-                            ])
-                        }}>
-                            <ArrowCounterClockwise />
-                        </ExtendedButton>
                     </SheetBody>
                 </div>
                 <SheetFooter>

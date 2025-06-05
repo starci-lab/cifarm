@@ -3,7 +3,7 @@ import {
     Sheet,
     SheetContent,
 } from "@/components"
-import React, { FC, useMemo } from "react"
+import React, { FC } from "react"
 import {
     useIsMobile,
     useRouterWithSearchParams,

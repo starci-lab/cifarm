@@ -41,7 +41,7 @@ export const InviteUserModal: FC = () => {
                     <Spacer y={4} />
                     <div>
                         <div className="text-sm mb-1.5">Web URL</div>
-                        <Spacer y={1.5} />
+                        <Spacer y={2} />
                         <Alert>
                             <AlertDescription> 
                                 <div className="flex items-center gap-2 justify-between w-full">
@@ -56,7 +56,7 @@ export const InviteUserModal: FC = () => {
                     <Spacer y={4} />
                     <div className="w-full">
                         <div className="text-sm mb-1.5">Telegram URL</div>
-                        <Spacer y={1.5} />
+                        <Spacer y={2} />
                         <Alert>
                             <AlertDescription> 
                                 <div className="flex items-center gap-2 justify-between w-full">

@@ -1,3 +1,4 @@
+import { QueryStaticResponse } from "@/modules/apollo"
 import {
     assetAnimalMap,
     assetBuildingMap,
@@ -7,12 +8,11 @@ import {
 } from "@/modules/assets"
 import {
     PlacedItemType,
-    StaticData,
 } from "@/modules/entities"
 
 export const getPlacedItemTypeName = (
     placedItemTypeId: string,
-    staticData: StaticData
+    staticData: QueryStaticResponse
 ) => {
     const placedItemType = staticData.placedItemTypes?.find(
         (placedItemType) => placedItemType.id === placedItemTypeId

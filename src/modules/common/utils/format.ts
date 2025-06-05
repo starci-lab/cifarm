@@ -59,3 +59,7 @@ export const valuesWithKey = <K extends string, T extends object>(
 export const toMB = (bytes: number) => {
     return (bytes / 1024 / 1024).toFixed(2)
 }
+
+export const getPercentageString = (value: number) => {
+    return `${value * 100}%`
+}

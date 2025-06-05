@@ -61,7 +61,7 @@ export const Hero = () => {
                         <WrappedAnimation type="fade-slide" direction="up" delay={0.4}>
                             <div className="flex flex-col sm:flex-row gap-4 items-start">
                                 <PulsatingActionButton onClick={() => router.push("/home")}>
-                                    Play now
+                                    Play
                                 </PulsatingActionButton>
                             </div>
                         </WrappedAnimation>

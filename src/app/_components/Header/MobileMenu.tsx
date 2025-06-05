@@ -48,7 +48,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                                 router.push(pathConstants.signIn)
                             }}
                         >
-                            Play Now
+                            Play
                         </PulsatingActionButton>
                         <div className="mt-8 max-w-md text-foreground text-center">
                             <p>

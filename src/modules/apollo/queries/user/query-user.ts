@@ -28,7 +28,7 @@ const query1 = gql`
       oauthProvider
       email
       avatarUrl
-      credits
+      tCIFARM
       tutorial {
         start
         openShopModal

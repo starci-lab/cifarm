@@ -23,3 +23,6 @@ export * from "./useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwr
 export * from "./useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation"
 export * from "./useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation"
 export * from "./useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation"
+export * from "./useGraphQLMutationCreateExpandLandLimitSolanaTransactionSwrMutation"
+export * from "./useGraphQLMutationSendExpandLandLimitSolanaTransactionSwrMutation"
+

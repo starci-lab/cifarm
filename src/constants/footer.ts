@@ -12,7 +12,7 @@ export const footerConstants = {
         title: "About the Game",
         items: [
             {
-                label: "Play Now",
+                label: "Play",
                 href: "/sign-in"
             },
             {

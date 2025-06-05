@@ -21,7 +21,7 @@ import {
     getFruitLimit,
     getTileLimit,
     getPetLimit,
-} from "./limit"
+} from "@/modules/entities"
 import {
     BuyItemMessage,
     ExternalEventEmitter,
@@ -48,7 +48,7 @@ export const ShopModal = () => {
     const dispatch = useAppDispatch()
 
     const shopState = useAppSelector((state) => state.wsLoadStateReducer.shop)
-
+    
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(GRAPHQL_QUERY_STATIC_SWR)
@@ -172,6 +172,7 @@ export const ShopModal = () => {
                             data: staticSwr.data?.data,
                             animal,
                             placedItems,
+                            landLimitIndex: user?.landLimitIndex ?? 0,
                         })
                         return (
                             <ShopCard
@@ -215,6 +216,7 @@ export const ShopModal = () => {
                 data: staticSwr.data?.data,
                 building: buildings[0],
                 placedItems,
+                landLimitIndex: user?.landLimitIndex ?? 0,
             })
             return (
                 <>
@@ -233,6 +235,7 @@ export const ShopModal = () => {
                                 data: staticSwr.data?.data,
                                 building,
                                 placedItems,
+                                landLimitIndex: user?.landLimitIndex ?? 0,
                             })
                             return (
                                 <ShopCard
@@ -277,6 +280,7 @@ export const ShopModal = () => {
             const { totalLimit, totalPlacedItemCount } = getFruitLimit({
                 data: staticSwr.data?.data,
                 placedItems,
+                landLimitIndex: user?.landLimitIndex ?? 0,
             })
             return (
                 <>
@@ -325,6 +329,7 @@ export const ShopModal = () => {
             const { totalLimit, totalPlacedItemCount } = getTileLimit({
                 data: staticSwr.data?.data,
                 placedItems,
+                landLimitIndex: user?.landLimitIndex ?? 0,
             })
             return (
                 <>
@@ -477,6 +482,7 @@ export const ShopModal = () => {
                             data: staticSwr.data?.data,
                             pet,
                             placedItems,
+                            landLimitIndex: user?.landLimitIndex ?? 0,
                         })
                         return (
                             <ShopCard

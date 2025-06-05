@@ -55,7 +55,7 @@ export const PurchaseNFTBoxesModal: FC = () => {
                             <Title title="Quantity" tooltipString="This is the quantity of NFT boxes you are purchasing." />
                             <div>{formik.values.quantity}</div>
                         </div>
-                        <Spacer y={1.5} />
+                        <Spacer y={2} />
                         <Slider value={[formik.values.quantity]} min={1} onValueChange={(value) => formik.setFieldValue("quantity", value[0])} />
                     </div>
                     <Spacer y={4}/>
@@ -65,7 +65,7 @@ export const PurchaseNFTBoxesModal: FC = () => {
                             Balance: {balanceSwr?.data}
                         </div>
                     </div>
-                    <Spacer y={1.5} />
+                    <Spacer y={2} />
                     <div className="text-4xl font-bold flex items-center gap-2">
                         <Image src={assetIconMap[AssetIconId.USDC].base.assetUrl} alt="USDC" className="w-10 h-10" />
                         {(staticSwr.data?.data.nftBoxInfo.boxPrice ?? 0) * formik.values.quantity}

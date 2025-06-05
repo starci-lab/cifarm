@@ -3,7 +3,6 @@ import {
     AnimalSchema,
     BuildingKind,
     BuildingSchema,
-    DefaultInfo,
     PetSchema,
     PlacedItemSchema,
     PlacedItemType,
@@ -23,13 +22,20 @@ export type LimitResult = Partial<{
 export interface GetFruitLimitParams {
     placedItems: Array<PlacedItemSchema>
     data: QueryStaticResponse
+    landLimitIndex: number
 }
 export const getFruitLimit = ({
     placedItems,
     data,
+    landLimitIndex,
 }: GetFruitLimitParams): LimitResult => {
-    const defaultInfo = data.defaultInfo as DefaultInfo
-    const fruitLimit = defaultInfo.fruitLimit
+    const landLimitInfo = data.landLimitInfo.landLimits.find(
+        (landLimit) => landLimit.index === landLimitIndex
+    )
+    if (!landLimitInfo) {
+        throw new Error(`No land limit info found for index: ${landLimitIndex}`)
+    }
+    const fruitLimit = landLimitInfo.fruitLimit
     const placedItemTypes = data.placedItemTypes as Array<PlacedItemTypeSchema>
     const placedItemTypeFruits = placedItemTypes.filter(
         (placedItemType) => placedItemType.type === PlacedItemType.Fruit
@@ -48,13 +54,20 @@ export const getFruitLimit = ({
 export interface GetTileLimitParams {
     placedItems: Array<PlacedItemSchema>
     data: QueryStaticResponse
+    landLimitIndex: number
 }
 export const getTileLimit = ({
     placedItems,
     data,
+    landLimitIndex,
 }: GetTileLimitParams): LimitResult => {
-    const defaultInfo = data.defaultInfo as DefaultInfo
-    const tileLimit = defaultInfo.tileLimit
+    const landLimitInfo = data.landLimitInfo.landLimits.find(
+        (landLimit) => landLimit.index === landLimitIndex
+    )
+    if (!landLimitInfo) {
+        throw new Error(`No land limit info found for index: ${landLimitIndex}`)
+    }
+    const tileLimit = landLimitInfo.tileLimit
     const placedItemTypes = data.placedItemTypes as Array<PlacedItemTypeSchema>
     const placedItemTypeTiles = placedItemTypes.filter(
         (placedItemType) => placedItemType.type === PlacedItemType.Tile
@@ -74,14 +87,21 @@ export interface GetBuildingLimitParams {
     placedItems: Array<PlacedItemSchema>
     data: QueryStaticResponse
     building?: BuildingSchema
+    landLimitIndex: number
 }
 export const getBuildingLimit = ({
     placedItems,
     data,
     building,
+    landLimitIndex,
 }: GetBuildingLimitParams): LimitResult => {
-    const defaultInfo = data.defaultInfo as DefaultInfo
-    const buildingLimit = defaultInfo.buildingLimit
+    const landLimitInfo = data.landLimitInfo.landLimits.find(
+        (landLimit) => landLimit.index === landLimitIndex
+    )
+    if (!landLimitInfo) {
+        throw new Error(`No land limit info found for index: ${landLimitIndex}`)
+    }
+    const buildingLimit = landLimitInfo.buildingLimit
     const placedItemTypes = data.placedItemTypes as Array<PlacedItemTypeSchema>
 
     let selectedLimit: number | undefined
@@ -97,7 +117,9 @@ export const getBuildingLimit = ({
             (placedItem) => placedItem.placedItemType === placedItemType.id
         )
         placedItemCount = placedItemBuildings.length
-        selectedLimit = building.maxOwnership
+        selectedLimit = building.unique ? 1 : data.landLimitInfo.landLimits.find(
+            (landLimit) => landLimit.index === landLimitIndex
+        )?.sameBuildingLimit
     }
     // get the total placed item count
     // get the total placed item count
@@ -123,14 +145,21 @@ export interface GetAnimalLimitParams {
     placedItems: Array<PlacedItemSchema>
     data: QueryStaticResponse
     animal: AnimalSchema 
+    landLimitIndex: number
 }
 export const getAnimalLimit = ({
     placedItems,
     data,
     animal,
+    landLimitIndex,
 }: GetAnimalLimitParams): LimitResult => {
+    const landLimitInfo = data.landLimitInfo.landLimits.find(
+        (landLimit) => landLimit.index === landLimitIndex
+    )
+    if (!landLimitInfo) {
+        throw new Error(`No land limit info found for index: ${landLimitIndex}`)
+    }
     const buildings = data.buildings as Array<BuildingSchema>
-
     const placedItemTypes = data.placedItemTypes as Array<PlacedItemTypeSchema>
 
     const correspondingBuilding = buildings.find(
@@ -183,12 +212,20 @@ export interface GetPetLimitParams {
     placedItems: Array<PlacedItemSchema>
     data: QueryStaticResponse
     pet: PetSchema
+    landLimitIndex: number
 }
 export const getPetLimit = ({
     placedItems,
     data,
     pet,
+    landLimitIndex,
 }: GetPetLimitParams): LimitResult => {
+    const landLimitInfo = data.landLimitInfo.landLimits.find(
+        (landLimit) => landLimit.index === landLimitIndex
+    )
+    if (!landLimitInfo) {
+        throw new Error(`No land limit info found for index: ${landLimitIndex}`)
+    }
     const placedItemTypes = data.placedItemTypes as Array<PlacedItemTypeSchema>
     const pets = data.pets as Array<PetSchema>
     const buildings = data.buildings as Array<BuildingSchema>

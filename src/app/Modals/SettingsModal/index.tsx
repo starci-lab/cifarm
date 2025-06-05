@@ -74,7 +74,7 @@ export const SettingsModal: FC = () => {
                             title: "text-base",
                             tooltip: "w-4 h-4"
                         }}/>
-                        <Spacer y={1.5}/>
+                        <Spacer y={2}/>
                         <Slider value={[sound * 100]} onValueChange={(value) => setSound(value[0] / 100)} />
                     </div>
                     <Spacer y={4}/>
@@ -83,7 +83,7 @@ export const SettingsModal: FC = () => {
                             title: "text-base",
                             tooltip: "w-4 h-4"
                         }}/>
-                        <Spacer y={1.5}/>
+                        <Spacer y={2}/>
                         <Slider value={[ambient * 100]} onValueChange={(value) => setAmbient(value[0] / 100)} />
                     </div>
                 </DialogBody>

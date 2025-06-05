@@ -1,9 +1,9 @@
 import { InventoryType, InventoryKind, InventorySchema, BulkSchema, VaultData } from "@/modules/entities"
-import { StaticData } from "./types"
+import { QueryStaticResponse } from "@/modules/apollo"
 import { formatNumber } from "@/modules/common"
 
 export interface PartitionInventoriesParams {
-    staticData: StaticData;
+    staticData: QueryStaticResponse;
     inventories: Array<InventorySchema>;
     bulkId: string;
 }

@@ -6,7 +6,7 @@ import { OverviewTab } from "./OverviewTab"
 import React from "react"
 import { ItemsTab } from "./ItemsTab"
 import { useScroll } from "@/hooks/useScroll"
-import { GameController } from "@phosphor-icons/react"
+import { Plant } from "@phosphor-icons/react"
 import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
 import { TokenomicsTab } from "./TokenomicsTab"
 import { cn } from "@/lib/utils"
@@ -53,8 +53,8 @@ const Page: FC = () => {
                                     router.push("/play")
                                 }}
                             >
-                                <GameController />
-                                <span>Play</span>
+                                <Plant />
+                                Play
                             </ExtendedButton>
                         </div>
                     </div>

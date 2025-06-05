@@ -5,7 +5,7 @@ export enum AssetIconId {
     Gold = "gold",
     Energy = "energy",
     Experience = "experience",
-    Token = "token",
+    TCIFARM = "tcifarm",
     USDC = "usdc",
     USDT = "usdt",
     Inventory = "inventory",
@@ -82,14 +82,14 @@ export const assetIconMap: Record<AssetIconId, AssetIconData> = {
             },
         },
     },
-    [AssetIconId.Token]: {
+    [AssetIconId.TCIFARM]: {
         base: {
-            assetKey: "icons-token",
+            assetKey: "icons-tcifarm",
             assetUrl: getAssetUrl(`${PREFIX}/token.png`)
         },
         phaser: {
             base: {
-                assetKey: "icons-token",
+                assetKey: "icons-tcifarm",
                 assetUrl: getAssetUrl(`${PREFIX}/token.png`)
             },
         },

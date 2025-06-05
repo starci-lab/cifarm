@@ -59,7 +59,7 @@ export const TransferContent: FC = () => {
                                 tooltip: "w-[14px] h-[14px]",
                             }}
                         />
-                        <Spacer y={1.5} />
+                        <Spacer y={2} />
                         <ExtendedInput
                             className="w-full"
                             id="recipientAddress"

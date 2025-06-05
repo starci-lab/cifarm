@@ -13,3 +13,6 @@ export * from "./create-convert-solana-metaplex-nfts-transaction"
 export * from "./send-convert-solana-metaplex-nfts-transaction"
 export * from "./create-buy-energy-solana-transaction"
 export * from "./send-buy-energy-solana-transaction"
+export * from "./create-expand-land-limit-solana-transaction"
+export * from "./send-expand-land-limit-solana-transaction"
+

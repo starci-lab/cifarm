@@ -10,8 +10,8 @@ import {
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { BUY_GOLDS_DISCLOSURE, BUY_ENERGY_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
-import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr } from "@/hooks"
+import { BUY_GOLDS_DISCLOSURE, BUY_ENERGY_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR, EXPAND_LAND_LIMIT_DISCLOSURE } from "@/app/constants"
+import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr, useGraphQLQueryStaticSwr } from "@/hooks"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/modules/entities"
 import { useDisclosure } from "react-use-disclosure"
@@ -19,6 +19,9 @@ import { useAppSelector } from "@/redux"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { getMaxEnergy } from "@/modules/common"
 import { useWallet } from "@solana/wallet-adapter-react"
+import { LandLimit } from "@/components"
+import { getBuildingLimit, getFruitLimit, getTileLimit } from "@/modules/entities"
+
 export const InGameTab: FC = () => {
     const inventories = useAppSelector(
         state => state.sessionReducer.inventories
@@ -39,6 +42,17 @@ export const InGameTab: FC = () => {
     const { open: openWalletConnectionRequiredModal } =
         useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
     const { publicKey } = useWallet()
+    const { swr: staticSwr } = useSingletonHook<
+        ReturnType<typeof useGraphQLQueryStaticSwr>
+    >(GRAPHQL_QUERY_STATIC_SWR)
+    const { open: openExpandLandLimitModal } =
+        useSingletonHook<ReturnType<typeof useDisclosure>>(EXPAND_LAND_LIMIT_DISCLOSURE)
+    const placedItems = useAppSelector(
+        (state) => state.sessionReducer.placedItems
+    )
+    if (!staticSwr.data?.data) {
+        return null
+    }
     return (
         <div>
             <div>
@@ -100,6 +114,102 @@ export const InGameTab: FC = () => {
                         </div>
                     </div>
                     <ExtendedButton onClick={openBuyEnergyModal}>Buy</ExtendedButton>
+                </div>
+            </div>
+            <Spacer y={6} />
+            <div>
+                <div className="flex gap-4 items-center justify-between">
+                    <Title
+                        title="tCIFARM"
+                        classNames={{
+                            title: "text-2xl text-muted-foreground",
+                        }}
+                        tooltipString="tCIFARM is the token earned by referring friends. In the game, it can be converted to real CIFARM at a fixed rate once the token is listed."
+                    />
+                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
+                        <ArrowsClockwise />
+                    </ExtendedButton>
+                </div>
+                <Spacer y={4} />
+                <div className="flex justify-between h-16 items-center">
+                    <div className="flex gap-2 items-center">
+                        <Image
+                            className="w-10 h-10"
+                            src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl}
+                        />
+                        <div className="text-2xl font-bold">
+                            {user?.tCIFARM}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <Spacer y={6} />
+            <div>
+                <div className="flex gap-4 items-center justify-between">
+                    <Title
+                        title="Land Limit"
+                        classNames={{
+                            title: "text-2xl text-muted-foreground",
+                        }}
+                        tooltipString="The number of items you can build on your land."
+                    />
+                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
+                        <ArrowsClockwise />
+                    </ExtendedButton>
+                </div>
+                <Spacer y={4} />
+                <div>
+                    <LandLimit
+                        isGrid={true}
+                        tileLimit={
+                            <div>
+                                <span className="text-muted-foreground text-lg">{getTileLimit({
+                                    placedItems,
+                                    data: staticSwr.data.data,
+                                    landLimitIndex: user?.landLimitIndex ?? 0,
+                                }).totalPlacedItemCount}
+                                    /</span>
+                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].tileLimit ?? 0}</span>
+                            </div>
+                        }
+                        buildingLimit={
+                            <div>
+                                <span className="text-muted-foreground text-lg">{getBuildingLimit({
+                                    placedItems,
+                                    data: staticSwr.data.data,
+                                    landLimitIndex: user?.landLimitIndex ?? 0,
+                                }).totalPlacedItemCount}
+                                    /</span>
+                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].buildingLimit ?? 0}</span>
+                            </div>
+                        }
+                        fruitLimit={
+                            <div>
+                                <span className="text-muted-foreground text-lg">{getFruitLimit({
+                                    placedItems,
+                                    data: staticSwr.data.data,
+                                    landLimitIndex: user?.landLimitIndex ?? 0,
+                                }).totalPlacedItemCount}
+                                    /</span>
+                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].fruitLimit ?? 0}</span>
+                            </div>
+                        }
+                        sameBuildingLimit={
+                            <div>
+                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].sameBuildingLimit ?? 0}</span>
+                            </div>
+                        }
+                    />
+                    <Spacer y={4} />
+                    <ExtendedButton onClick={() => {
+                        if (!publicKey) {
+                            openWalletConnectionRequiredModal()
+                            return
+                        }
+                        openExpandLandLimitModal()
+                    }}>
+                        Expand
+                    </ExtendedButton>
                 </div>
             </div>
             <Spacer y={6} />

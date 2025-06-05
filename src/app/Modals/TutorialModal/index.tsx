@@ -5,7 +5,8 @@ import {
     DialogFooter,
     ExtendedButton,
     DialogBody,
-    Image
+    DialogHeader,
+    DialogTitle
 } from "@/components"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -38,14 +39,10 @@ export const TutorialModal: FC = () => {
             open={isOpen}
         >
             <DialogContent className="sm:max-w-[325px]">
-                <DialogBody className="relative">
-                    <div className="absolute aspect-square h-40 overflow-hidden -top-[160px] left-8">
-                        <Image
-                            className="w-60 aspect-square object-cover min-h-60"
-                            src={scripts[tutorialIndex].image}
-                            alt="Tutorial"
-                        />
-                    </div>
+                <DialogHeader>
+                    <DialogTitle>Tutorial</DialogTitle>
+                </DialogHeader>
+                <DialogBody>
                     <Typewriter
                         key={tutorialIndex} 
                         options={

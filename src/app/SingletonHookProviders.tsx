@@ -42,6 +42,8 @@ import {
     useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation,
     useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation,
     useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation,
+    useGraphQLMutationCreateExpandLandLimitSolanaTransactionSwrMutation,
+    useGraphQLMutationSendExpandLandLimitSolanaTransactionSwrMutation,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -77,6 +79,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             TOKEN_DISCLOSURE: useDisclosure(),
             SELECT_NFT_DISCLOSURE: useDisclosure(),
             INFO_DISCLOSURE: useDisclosure(),
+            EXPAND_LAND_LIMIT_DISCLOSURE: useDisclosure(),
             NFT_STORAGE_DISCLOSURE: useDisclosure(),
             DOWNLOAD_DISCLOSURE: useDisclosure(),
             DOWNLOADING_DISCLOSURE: useDisclosure(),
@@ -132,6 +135,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_MUTATION_CREATE_PURCHASE_SUI_NFT_BOXES_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation(),
             GRAPHQL_MUTATION_CREATE_CONVERT_SOLANA_METAPLEX_NFTS_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation(),
             GRAPHQL_MUTATION_SEND_CONVERT_SOLANA_METAPLEX_NFTS_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation(), 
+            GRAPHQL_MUTATION_CREATE_EXPAND_LAND_LIMIT_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationCreateExpandLandLimitSolanaTransactionSwrMutation(),
+            GRAPHQL_MUTATION_SEND_EXPAND_LAND_LIMIT_SOLANA_TRANSACTION_SWR_MUTATION: useGraphQLMutationSendExpandLandLimitSolanaTransactionSwrMutation(),
             // honeycomb
             HONEYCOMB_SEND_TRANSACTION_SWR_MUTATION: useHoneycombSendTransactionSwrMutation(),  
             HONEYCOMB_SEND_TRANSACTIONS_SWR_MUTATION: useHoneycombSendTransactionsSwrMutation(),

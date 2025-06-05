@@ -8,7 +8,7 @@ interface PulsatingActionButtonProps {
 }
 
 export const PulsatingActionButton = ({ onClick, children }: PulsatingActionButtonProps) => {
-    const [isHovering, setIsHovering] = useState(false)
+    const [, setIsHovering] = useState(false)
 
     return (
         <ExtendedButton
@@ -19,7 +19,7 @@ export const PulsatingActionButton = ({ onClick, children }: PulsatingActionButt
         >
             <div className="flex items-center gap-2">
                 {children}
-                <Plant weight="fill" />
+                <Plant />
             </div>
         </ExtendedButton>
     )

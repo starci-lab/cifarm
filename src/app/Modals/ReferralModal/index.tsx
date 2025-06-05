@@ -42,15 +42,15 @@ export const ReferralModal: FC = () => {
                 </DialogHeader>
                 <DialogBody>
                     <div className="p-2 bg-content-2 rounded-lg px-3 py-2">
-                        <Title title="Credits Earned" tooltipString="Credits are used to purchase items in the shop." classNames={{
+                        <Title title="tCIFARM Balance" tooltipString="tCIFARM." classNames={{
                             title: "text-sm text-muted-foreground",
                             tooltip: "text-muted-foreground w-5 h-5",
                         }} />
-                        <div className="text-xl font-bold">{user?.credits}</div>
+                        <div className="text-xl font-bold">{user?.tCIFARM}</div>
                     </div>
                     <Spacer y={4} />
                     <div>
-                        <div>Sign up with your referral link to get bonus credits instantly!</div>
+                        <div>Sign up with your referral link to get bonus tCIFARM instantly!</div>
                         <div className="text-sm text-muted-foreground">
                             Earn rewards when others join through your link — and they get rewards too!
                         </div>
@@ -61,7 +61,7 @@ export const ReferralModal: FC = () => {
                             <CardHeader className="px-3 py-2">
                                 <CardTitle>
                                     <div className="text-lg font-bold">
-                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.creditsPerSuccessfulReferral}</span> <span className="text-sm">credits</span></div>
+                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.amountPerSuccessfulReferral}</span> <span className="text-sm">tCIFARM</span></div>
                                     </div>
                                 </CardTitle>
                             </CardHeader>
@@ -75,7 +75,7 @@ export const ReferralModal: FC = () => {
                             <CardHeader className="px-3 py-2">
                                 <CardTitle>
                                     <div className="text-lg font-bold">
-                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.creditsWhenJoiningWithReferral}</span> <span className="text-sm">credits</span></div>
+                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.amountWhenJoiningWithReferral}</span> <span className="text-sm">tCIFARM</span></div>
                                     </div>
                                 </CardTitle>
                             </CardHeader>
@@ -89,7 +89,7 @@ export const ReferralModal: FC = () => {
                             <CardHeader className="px-3 py-2">
                                 <CardTitle>
                                     <div className="text-lg font-bold">
-                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.creditsWhenYourReferralInviteSomeone}</span> <span className="text-sm">credits</span></div>
+                                        <div className="text-secondary"><span>{staticSwr.data?.data.referral.amountWhenYourReferralInviteSomeone}</span> <span className="text-sm">tCIFARM</span></div>
                                     </div>
                                 </CardTitle>
                             </CardHeader>

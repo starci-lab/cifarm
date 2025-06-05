@@ -30,7 +30,8 @@ import {
     Referral,
     NFTConversion,
     EnergyPurchases,
-    SeasonSchema
+    SeasonSchema,
+    LandLimitInfo
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -145,9 +146,19 @@ const query = gql`
       referralRewardQuantity
       referredRewardQuantity
       followXRewardQuantity
-      tileLimit
-      fruitLimit
-      buildingLimit
+    }
+    landLimitInfo {
+      landLimits 
+      {
+        index
+        price
+        default
+        tokenKey
+        tileLimit
+        fruitLimit
+        buildingLimit
+        sameBuildingLimit
+      }
     }
     energyRegen {
       time
@@ -228,7 +239,7 @@ const query = gql`
       displayId
       availableInShop
       unlockLevel
-      maxOwnership
+      unique
       animalContainedType
       maxUpgrade
       upgradeable
@@ -633,9 +644,9 @@ const query = gql`
       }
     }
     referral {
-      creditsPerSuccessfulReferral
-      creditsWhenJoiningWithReferral
-      creditsWhenYourReferralInviteSomeone
+      amountPerSuccessfulReferral
+      amountWhenJoiningWithReferral
+      amountWhenYourReferralInviteSomeone
     }
     nftConversion {
       conversionRate
@@ -666,6 +677,7 @@ const query = gql`
         id
         description
         bulkName
+        tCIFARM
         tokenKey
         maxPaidAmount
         maxPaidPercentage
@@ -709,6 +721,7 @@ export interface QueryStaticResponse {
   nftConversion: NFTConversion
   energyPurchases: EnergyPurchases
   activeSeason: SeasonSchema
+  landLimitInfo: LandLimitInfo
 }
 
 export const queryStatic = async () => {

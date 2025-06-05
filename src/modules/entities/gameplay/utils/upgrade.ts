@@ -1,10 +1,10 @@
 import { PlacedItemType } from "../enums"
 import { PlacedItemSchema } from "../schemas"
-import { StaticData } from "./types"
+import { QueryStaticResponse } from "@/modules/apollo"
 
 export interface GetUpgradePriceParams {
   placedItem: PlacedItemSchema;
-  staticData: StaticData;
+  staticData: QueryStaticResponse;
 }
 
 export interface GetUpgradePriceResponse {

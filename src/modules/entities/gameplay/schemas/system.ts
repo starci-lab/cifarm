@@ -99,9 +99,6 @@ export interface DefaultInfo {
   referralRewardQuantity: number;
   referredRewardQuantity: number;
   followXRewardQuantity: number;
-  tileLimit: number;
-  fruitLimit: number;
-  buildingLimit: number;
 }
 
 export interface EnergyRegen {
@@ -197,9 +194,9 @@ export interface PetInfo {
 }
 
 export interface Referral {
-  creditsPerSuccessfulReferral: number;
-  creditsWhenJoiningWithReferral: number;
-  creditsWhenYourReferralInviteSomeone: number;
+  amountPerSuccessfulReferral: number;
+  amountWhenJoiningWithReferral: number;
+  amountWhenYourReferralInviteSomeone: number;
 }
 
 export interface NFTConversion {
@@ -207,3 +204,18 @@ export interface NFTConversion {
 }
 export type Token = Record<ChainKey, Partial<Record<Network, TokenData>>>;
 export type Tokens = Partial<Record<TokenKey, Token>>;
+
+export interface LandLimitInfo {
+  landLimits: Array<LandLimit>
+}
+
+export interface LandLimit {
+  index: number
+  price: number
+  default: number
+  tokenKey: TokenKey
+  tileLimit: number
+  fruitLimit: number
+  buildingLimit: number
+  sameBuildingLimit: number
+}

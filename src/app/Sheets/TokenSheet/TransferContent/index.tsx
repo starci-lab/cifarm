@@ -105,7 +105,7 @@ export const TransferContent: FC = () => {
                             />
                             <div className="text-muted-foreground">{`Balance: ${balanceSwr.data}`}</div>
                         </div>
-                        <Spacer y={1.5} />
+                        <Spacer y={2} />
                         <ExtendedNumberInput
                             className="w-full"
                             id="stringAmount"
@@ -133,7 +133,7 @@ export const TransferContent: FC = () => {
                                 tooltip: "w-4 h-4",
                             }}
                         />
-                        <Spacer y={1.5} />
+                        <Spacer y={2} />
                         <ExtendedInput
                             className="w-full"
                             id="recipientAddress"

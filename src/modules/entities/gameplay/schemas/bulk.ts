@@ -13,4 +13,5 @@ export interface BulkSchema extends AbstractSchema {
     maxPaidAmount: number;
     maxPaidPercentage: number;
     tokenKey: TokenKey;
+    tCIFARM: number;
   }

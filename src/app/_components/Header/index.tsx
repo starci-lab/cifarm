@@ -32,7 +32,7 @@ export const Header = () => {
                             router.push(pathConstants.signIn)
                         }}
                     >
-                        Play Now
+                        Play
                     </PulsatingActionButton>
                 </div>}
 

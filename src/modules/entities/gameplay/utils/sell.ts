@@ -1,10 +1,10 @@
+import { QueryStaticResponse } from "@/modules/apollo"
 import { PlacedItemType } from "../enums"
 import { PlacedItemSchema, PlacedItemTypeSchema } from "../schemas"
-import { StaticData } from "./types"
 
 export interface GetSellInfoParams {
   placedItem: PlacedItemSchema;
-  staticData: StaticData;
+  staticData: QueryStaticResponse;
 }
 
 export interface GetSellInfoResponse {
@@ -28,7 +28,7 @@ export const getSellInfo = ({
 
 export interface GetSellInfoFromPlacedItemTypeParams {
     placedItemType: PlacedItemTypeSchema;
-    staticData: StaticData;
+    staticData: QueryStaticResponse;
 }
 export const getSellInfoFromPlacedItemType = ({
     placedItemType,

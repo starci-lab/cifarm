@@ -1,19 +1,22 @@
 "use client"
 
-import { Card, CardBody, CardHeader, ScaledImage, Spacer } from "@/components"
+import { Card, CardBody, CardHeader, ScaledImage, Spacer, Image, Badge, Tooltip, TooltipTrigger, TooltipContent } from "@/components"
 import { TokenIcon } from "@/components"
 import React, { FC, useEffect, useState } from "react"
-import { ProductId, BulkSchema } from "@/modules/entities"
-import { assetProductMap } from "@/modules/assets"
+import { ProductId, BulkSchema, computePaidAmount } from "@/modules/entities"
+import { assetProductMap, assetIconMap, AssetIconId } from "@/modules/assets"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE } from "@/app/constants"
 import { cn } from "@/lib/utils"
 import { useAppDispatch } from "@/redux/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { setWholesaleMarketBulkSheet } from "@/redux"
 import { envConfig } from "@/env"
 import { ChainKey } from "@/modules/blockchain"
+import { Plus } from "@phosphor-icons/react"
+import { useGraphQLQueryVaultCurrentSwr } from "@/hooks"
+import { getPercentageString } from "@/modules/common"
 
 interface BulkCardProps {
     bulk: BulkSchema
@@ -32,6 +35,7 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE)
     const dispatch = useAppDispatch()
     const network = envConfig().network
+    const { swr: vaultSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryVaultCurrentSwr>>(GRAPHQL_QUERY_VAULT_CURRENT_SWR)
     if (!staticSwr.data?.data.tokens) return null
     return (
         <Card pressable onClick={
@@ -80,11 +84,40 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
                     })}
                 </div>            
                 <Spacer y={2}/>
-                <div className="text-lg">{bulk.bulkName}</div>
-                <div className="flex items-center gap-1 text-secondary">
-                    <TokenIcon tokenKey={bulk.tokenKey} chainKey={ChainKey.Solana} network={network} tokens={staticSwr.data?.data.tokens} />
-                    <div>
-                        {bulk.maxPaidAmount}
+                <div className="flex items-center gap-2">
+                    <div className="text-lg">{bulk.bulkName}</div>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Badge>
+                                {getPercentageString(bulk.maxPaidPercentage)}
+                            </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            We will pay you {getPercentageString(bulk.maxPaidPercentage)} of the vault’s value, up to a maximum of {bulk.maxPaidAmount}.
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
+                <Spacer y={2}/>
+                <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                        <TokenIcon tokenKey={bulk.tokenKey} chainKey={ChainKey.Solana} network={network} tokens={staticSwr.data?.data.tokens} />
+                        <div>
+                            {(() => {
+                                const vaultData = vaultSwr.data?.data.vaultCurrent.data.find((vault) => vault.tokenKey === bulk.tokenKey)
+                                if (!vaultData) return null   
+                                return computePaidAmount({
+                                    bulk,
+                                    vaultData
+                                })
+                            })()}
+                        </div>
+                    </div>
+                    <Plus className="w-4 h-4"/>
+                    <div className="flex items-center gap-1">
+                        <Image src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl} alt="CIFARM" className="w-6 h-6" />
+                        <div>
+                            {bulk.tCIFARM}
+                        </div>
                     </div>
                 </div>
             </CardHeader>

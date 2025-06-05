@@ -11,7 +11,6 @@ export interface BuildingSchema extends StaticAbstractSchema<BuildingId> {
     animalContainedType?: AnimalType
     maxUpgrade: number
     unlockLevel: number
-    maxOwnership: number
     price?: number
     sellable?: boolean
     sellPrice?: number
@@ -24,5 +23,6 @@ export interface BuildingSchema extends StaticAbstractSchema<BuildingId> {
     beeHouseBasicHarvestExperiences?: number
     beeHouseQualityHarvestExperiences?: number
     baseHoneyYieldCoefficient?: number
+    unique?: boolean
     kind: BuildingKind
 }

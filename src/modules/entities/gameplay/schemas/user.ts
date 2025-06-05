@@ -30,6 +30,7 @@ export interface UserSchema extends AbstractSchema {
     selectedPlacedItemDogId?: string
     selectedPlacedItemCatId?: string
     oauthProvider?: string
-    credits: number
+    tCIFARM: number
     tutorial?: TutorialSchema
+    landLimitIndex: number
 }

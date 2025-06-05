@@ -4,7 +4,7 @@ import React, { FC } from "react"
 import { MainVisual } from "../MainVisual"
 import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
-import { ShareNetwork } from "@phosphor-icons/react"
+import { Plant, ShareNetwork } from "@phosphor-icons/react"
 import { useIsMobile } from "@/hooks/useIsMobile"
 import { cn } from "@/lib/utils"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -32,6 +32,7 @@ export const OverviewTab: FC = () => {
                             router.push(pathConstants.play)
                         }}
                     >
+                        <Plant />
                         Play
                     </ExtendedButton>
                     <BlurEffect size="sm" position="top" className="-z-20 hover:opacity-80 transition-opacity duration-200" />

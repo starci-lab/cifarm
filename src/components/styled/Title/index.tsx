@@ -23,7 +23,7 @@ export const Title: FC<TitleProps> = ({
         tooltip: tooltipClassName,
     } = classNames
     return (
-        <div className="flex items-center gap-1 text-secondary">
+        <div className="flex items-center gap-1 text-muted-foreground">
             <div className="flex items-center gap-1">
                 {icon}
                 <div

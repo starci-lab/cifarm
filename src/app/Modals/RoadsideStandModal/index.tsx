@@ -137,7 +137,7 @@ export const RoadsideStandModal: FC = () => {
                     {
                         selectedRetrieveInventoryIds.length > 0 && (
                             <>
-                                <Spacer y={1.5} />
+                                <Spacer y={2} />
                                 <div className={cn("text-sm text-muted-foreground", {
                                     "text-destructive": slotsStorageInventoryLeft === 0,
                                     "text-muted-foreground": slotsStorageInventoryLeft > 0,

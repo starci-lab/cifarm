@@ -1,14 +1,14 @@
+import { QueryStaticResponse } from "@/modules/apollo"
 import { Network, NFTTypeToPlacedItemTypeId } from "@/modules/blockchain"
 import {
     PlacedItemType,
-    StaticData,
     NFTType,
 } from "@/modules/entities"
 // import { StateNFTCollections } from "@/redux"
 
 export interface GetNFTImageParams {
     nftType: NFTType;
-    staticData: StaticData;
+    staticData: QueryStaticResponse;
     network: Network;
 }
 
