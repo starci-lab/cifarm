@@ -1,6 +1,6 @@
 import { GameAvatar, GameIconButton, ResourceCard, Tooltip, TooltipContent, TooltipTrigger } from "@/components"
 import { leftButtons, rightButtons } from "./buttons"
-import React, { FC } from "react"
+import React, { FC, useEffect, useRef, useState } from "react"
 import { useAppSelector } from "@/redux"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { Toolbar } from "./Toolbar"
@@ -23,6 +23,81 @@ export const ReactUI: FC = () => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         GRAPHQL_QUERY_STATIC_SWR
     )
+    useEffect(() => {
+        const base = staticSwr.data?.data.energyRegen.time ?? 0
+        const used = user?.energyRegenTime ?? 0
+        const remaining = base - used
+        console.log(`Energy initialized: ${remaining}`)
+        setEnergy(remaining)
+    }, [user?.energyRegenTime, staticSwr.data?.data.energyRegen.time])
+
+    const [energy, setEnergy] = useState(0)
+
+    const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        // Ignore if no energy or energy is 0
+        if (!user?.energy || user.energy <= 0) return
+
+        // Clean up old interval if it exists
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+        }
+
+        // Create new interval
+        intervalRef.current = setInterval(() => {
+            setEnergy(prev => {
+                if (prev > 1) {
+                    console.log(`Energy decreased: ${prev - 1}`)
+                    return prev - 1
+                } else {
+                    console.log("Energy reached 0, stopping interval.")
+                    clearInterval(intervalRef.current!)
+                    intervalRef.current = null
+                    return 0
+                }
+            })
+        }, 1000)
+
+        // Cleanup when component unmounts or when user.energy changes
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current)
+                intervalRef.current = null
+            }
+        }
+    }, [user?.energy])
+
+    useEffect(() => {
+        if (!energy || energy <= 0) return
+
+        // Clear interval if it exists
+        if (intervalRef.current) clearInterval(intervalRef.current)
+
+        intervalRef.current = setInterval(() => {
+            setEnergy(prev => {
+                if (prev > 1) {
+                    console.log(`Energy decreased: ${prev - 1}`) // Tracking here
+                    return prev - 1
+                } else {
+                    console.log("Energy reached 0, stopping interval.")
+                    clearInterval(intervalRef.current!)
+                    intervalRef.current = null
+                    return 0
+                }
+            })
+        }, 1000)
+
+        // Cleanup when component unmounts
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current)
+                intervalRef.current = null
+            }
+        }
+    }, [user?.energy]) // You still need energy here if it's reset from somewhere else
+
     return (
         <>
             {showGameUI ? (
@@ -47,7 +122,7 @@ export const ReactUI: FC = () => {
                                         <ResourceCard text={`${user?.energy}/${getMaxEnergy(user?.level ?? 0)}`} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <div className="text-sm">{`Next energy in ${((staticSwr.data?.data.energyRegen.time ?? 0) - (user?.energyRegenTime ?? 0)).toFixed(0)} seconds`}</div>
+                                        <div className="text-sm">{`Next energy in ${energy} seconds`}</div>
                                     </TooltipContent>
                                 </Tooltip>
                                 <ResourceCard text={`${user?.golds}`} iconImgSrc={assetIconMap[AssetIconId.Gold].base.assetUrl}/>

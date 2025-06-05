@@ -1,7 +1,7 @@
 import { QueryStaticResponse } from "@/modules/apollo"
 import { PlacedItemType } from "../enums"
 import { PlacedItemSchema, PlacedItemTypeSchema } from "../schemas"
-
+import { PartialDeep } from "type-fest"
 export interface GetSellInfoParams {
   placedItem: PlacedItemSchema;
   staticData: QueryStaticResponse;
@@ -28,7 +28,7 @@ export const getSellInfo = ({
 
 export interface GetSellInfoFromPlacedItemTypeParams {
     placedItemType: PlacedItemTypeSchema;
-    staticData: QueryStaticResponse;
+    staticData: PartialDeep<QueryStaticResponse>;
 }
 export const getSellInfoFromPlacedItemType = ({
     placedItemType,

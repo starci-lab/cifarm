@@ -26,8 +26,10 @@ const query1 = gql`
   }
 `
 
-export interface QueryFolloweesResponse {
-  followees: IPaginatedResponse<UserSchema>;
+export type QueryFolloweesResponse = IPaginatedResponse<UserSchema>
+
+export interface QueryFolloweesResponseWrapper {
+  followees: QueryFolloweesResponse
 }
 
 export enum QueryFollowees {
@@ -53,7 +55,7 @@ export const queryFollowees = async ({
 }: QueryFolloweesParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    QueryFolloweesResponse,
+    QueryFolloweesResponseWrapper,
     QueryVariables<QueryFolloweesArgs>
   >({
       query: queryDocument,

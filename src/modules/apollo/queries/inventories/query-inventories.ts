@@ -24,8 +24,10 @@ const queryMap: Record<QueryInventories, DocumentNode> = {
     [QueryInventories.Query1]: query1,
 }
 
-export interface QueryInventoriesResponse {
-  inventories: Array<InventorySchema>
+export type QueryInventoriesResponse = Array<InventorySchema>
+
+export interface QueryInventoriesResponseWrapper {
+  inventories: QueryInventoriesResponse
 }
 
 export type QueryInventoriesParams = QueryParams<QueryInventories>;
@@ -36,7 +38,7 @@ export const queryInventories = async (
 ) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    QueryInventoriesResponse,
+    QueryInventoriesResponseWrapper,
     QueryVariables<never>
   >({
       query: queryDocument,

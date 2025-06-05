@@ -1,7 +1,7 @@
 import { UseSWR } from "../../types"
 import {
     queryStoredPlacedItems,
-    QueryStoredPlacedItemsResponse,
+    QueryStoredPlacedItemsResponseWrapper,
     QueryStoredPlacedItemsParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
@@ -10,7 +10,7 @@ import { useAppSelector } from "@/redux"
 import useSWR from "swr"
 import { defaultRequest } from "../constants"
 export const useGraphQLQueryStoredPlacedItemsSwr = (): UseSWR<
-  ApolloQueryResult<QueryStoredPlacedItemsResponse>,
+  ApolloQueryResult<QueryStoredPlacedItemsResponseWrapper>,
   QueryStoredPlacedItemsParams
 > => {
     const [params, setParams] = useState<QueryStoredPlacedItemsParams>({

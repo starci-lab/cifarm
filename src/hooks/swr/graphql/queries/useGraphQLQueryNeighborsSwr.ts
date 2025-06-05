@@ -1,7 +1,7 @@
 import { UseSWR } from "../../types"
 import {
     queryNeighbors,
-    QueryNeighborsResponse,
+    QueryNeighborsResponseWrapper,
     QueryNeighborsParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
@@ -11,7 +11,7 @@ import useSWR from "swr"
 import { defaultRequest } from "../constants"
 
 export const useGraphQLQueryNeighborsSwr = (): UseSWR<
-  ApolloQueryResult<QueryNeighborsResponse>,
+  ApolloQueryResult<QueryNeighborsResponseWrapper>,
   QueryNeighborsParams
 > => {
     const [params, setParams] = useState<QueryNeighborsParams>({

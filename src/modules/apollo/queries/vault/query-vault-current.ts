@@ -20,13 +20,15 @@ const query1 = gql`
 `
 
 export interface QueryVaultCurrentResponse {
-  vaultCurrent: {
     data: Array<{
       tokenKey: TokenKey
       tokenLocked: number
     }>
     vaultAddress: string
-  }
+}
+
+export interface QueryVaultCurrentResponseWrapper {
+    vaultCurrent: QueryVaultCurrentResponse
 }
 
 export enum QueryVaultCurrent {
@@ -48,7 +50,7 @@ export const queryVaultCurrent = async ({
 }: QueryVaultCurrentParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    QueryVaultCurrentResponse,
+    QueryVaultCurrentResponseWrapper,
     QueryVariables<QueryVaultCurrentArgs>
   >({
       query: queryDocument,

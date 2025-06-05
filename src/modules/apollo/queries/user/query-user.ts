@@ -41,10 +41,11 @@ const query1 = gql`
   }
 `
 
-export interface QueryUserResponse {
-    user: UserSchema
-}
+export type QueryUserResponse = UserSchema
 
+export interface QueryUserResponseWrapper {
+  user: QueryUserResponse
+}
 
 export enum QueryUser {
   Query1 = "query1",
@@ -57,7 +58,7 @@ const queryMap: Record<QueryUser, DocumentNode> = {
 export type QueryUserParams = QueryParams<QueryUser, string>;
 export const queryUser = async ({ query = QueryUser.Query1, request }: QueryUserParams) => {
     const queryDocument = queryMap[query]
-    return await noCacheAuthClient.query<QueryUserResponse>({
+    return await noCacheAuthClient.query<QueryUserResponseWrapper>({
         query: queryDocument,
         variables: {
             id: request,

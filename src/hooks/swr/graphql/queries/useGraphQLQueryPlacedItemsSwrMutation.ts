@@ -1,16 +1,16 @@
 import { UseSWRMutation } from "../../types"
 import {
     queryPlacedItems,
-    QueryPlacedItemsResponse,
+    QueryPlacedItemsResponseWrapper,
     QueryPlacedItemsParams,
 } from "@/modules/apollo"
 import { setPlacedItems, useAppDispatch } from "@/redux"
-import { ApolloQueryResult } from "@apollo/client"
 import useSWRMutation from "swr/mutation"
 import { useState } from "react"
+import { ApolloQueryResult } from "@apollo/client"
 
 export const useGraphQLQueryPlacedItemsSwrMutation = (): UseSWRMutation<
-  ApolloQueryResult<QueryPlacedItemsResponse>,
+  ApolloQueryResult<QueryPlacedItemsResponseWrapper>,
   QueryPlacedItemsParams
 > => {
     const dispatch = useAppDispatch()

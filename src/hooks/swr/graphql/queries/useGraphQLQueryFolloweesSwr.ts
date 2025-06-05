@@ -1,7 +1,7 @@
 import { UseSWR } from "../../types"
 import {
     queryFollowees,
-    QueryFolloweesResponse,
+    QueryFolloweesResponseWrapper,
     QueryFolloweesParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
@@ -11,7 +11,7 @@ import useSWR from "swr"
 import { defaultRequest } from "../constants"
 
 export const useGraphQLQueryFolloweesSwr = (): UseSWR<
-  ApolloQueryResult<QueryFolloweesResponse>,
+  ApolloQueryResult<QueryFolloweesResponseWrapper>,
   QueryFolloweesParams
 > => {
     const [params, setParams] = useState<QueryFolloweesParams>({

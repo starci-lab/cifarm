@@ -27,8 +27,10 @@ const query1 = gql`
   }
 `
 
-export interface QueryNeighborsResponse {
-  neighbors: IPaginatedResponse<UserSchema>;
+export type QueryNeighborsResponse = IPaginatedResponse<UserSchema>
+
+export interface QueryNeighborsResponseWrapper {
+  neighbors: QueryNeighborsResponse
 }
 
 export enum QueryNeighbors {
@@ -53,7 +55,7 @@ export const queryNeighbors = async ({
 }: QueryNeighborsParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    QueryNeighborsResponse,
+    QueryNeighborsResponseWrapper,
     QueryVariables<QueryNeighborsArgs>
   >({
       query: queryDocument,

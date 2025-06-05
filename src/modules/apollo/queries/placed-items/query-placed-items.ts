@@ -115,8 +115,10 @@ export interface QueryPlacedItemsRequest {
   userId?: string;
 }
 
-export interface QueryPlacedItemsResponse {
-  placedItems: Array<PlacedItemSchema>;
+export type QueryPlacedItemsResponse = Array<PlacedItemSchema>
+
+export interface QueryPlacedItemsResponseWrapper {
+  placedItems: QueryPlacedItemsResponse
 }
 
 export const queryPlacedItems = async ({
@@ -125,7 +127,7 @@ export const queryPlacedItems = async ({
 }: QueryPlacedItemsParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    QueryPlacedItemsResponse,
+    QueryPlacedItemsResponseWrapper,
     QueryVariables<QueryPlacedItemsRequest>
   >({
       query: queryDocument,

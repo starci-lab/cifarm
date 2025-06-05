@@ -1,14 +1,14 @@
 import { UseSWRMutation } from "../../types"
 import {
     queryUser,
-    QueryUserResponse,
+    QueryUserResponseWrapper,
     QueryUserParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
 import useSWRMutation from "swr/mutation"
 
 export const useGraphQLQueryUserSwrMutation = (): UseSWRMutation<
-  ApolloQueryResult<QueryUserResponse>,
+  ApolloQueryResult<QueryUserResponseWrapper>,
   QueryUserParams
 > => {
     const swrMutation = useSWRMutation(

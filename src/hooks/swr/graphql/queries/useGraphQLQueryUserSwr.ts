@@ -1,7 +1,7 @@
 import { UseSWR } from "../../types"
 import {
     queryUser,
-    QueryUserResponse,
+    QueryUserResponseWrapper,
     QueryUserParams,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
@@ -10,7 +10,7 @@ import { setUser, useAppDispatch, useAppSelector } from "@/redux"
 import useSWR from "swr"
 
 export const useGraphQLQueryUserSwr = (): UseSWR<
-  ApolloQueryResult<QueryUserResponse>,
+  ApolloQueryResult<QueryUserResponseWrapper>,
   QueryUserParams
 > => {
     const [ params, setParams ] = useState<QueryUserParams>({})

@@ -40,8 +40,10 @@ export interface QueryStoredPlacedItemsRequest extends QueryManyRequest {
   userId?: string;
 }
 
-export interface QueryStoredPlacedItemsResponse {
-  storedPlacedItems: IPaginatedResponse<PlacedItemSchema>;
+export type QueryStoredPlacedItemsResponse = IPaginatedResponse<PlacedItemSchema>
+
+export interface QueryStoredPlacedItemsResponseWrapper {
+  storedPlacedItems: QueryStoredPlacedItemsResponse
 }
 
 export const queryStoredPlacedItems = async ({
@@ -50,7 +52,7 @@ export const queryStoredPlacedItems = async ({
 }: QueryStoredPlacedItemsParams) => {
     const queryDocument = queryMap[query]
     return await noCacheAuthClient.query<
-    QueryStoredPlacedItemsResponse,
+    QueryStoredPlacedItemsResponseWrapper,
     QueryVariables<QueryStoredPlacedItemsRequest>
   >({
       query: queryDocument,

@@ -10,8 +10,8 @@ import {
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { BUY_GOLDS_DISCLOSURE, BUY_ENERGY_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR, EXPAND_LAND_LIMIT_DISCLOSURE } from "@/app/constants"
-import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr, useGraphQLQueryStaticSwr } from "@/hooks"
+import { BUY_GOLDS_DISCLOSURE, BUY_ENERGY_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR, EXPAND_LAND_LIMIT_DISCLOSURE, GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR } from "@/app/constants"
+import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr, useGraphQLQueryStaticSwr, useGraphQLQueryOccupiedPlacedItemCounts } from "@/hooks"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/modules/entities"
 import { useDisclosure } from "react-use-disclosure"
@@ -20,7 +20,6 @@ import { ArrowsClockwise } from "@phosphor-icons/react"
 import { getMaxEnergy } from "@/modules/common"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { LandLimit } from "@/components"
-import { getBuildingLimit, getFruitLimit, getTileLimit } from "@/modules/entities"
 
 export const InGameTab: FC = () => {
     const inventories = useAppSelector(
@@ -47,9 +46,10 @@ export const InGameTab: FC = () => {
     >(GRAPHQL_QUERY_STATIC_SWR)
     const { open: openExpandLandLimitModal } =
         useSingletonHook<ReturnType<typeof useDisclosure>>(EXPAND_LAND_LIMIT_DISCLOSURE)
-    const placedItems = useAppSelector(
-        (state) => state.sessionReducer.placedItems
+    const { swr: occupiedPlacedItemCountsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryOccupiedPlacedItemCounts>>(
+        GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR
     )
+    console.log(occupiedPlacedItemCountsSwr.data)
     if (!staticSwr.data?.data) {
         return null
     }
@@ -153,7 +153,13 @@ export const InGameTab: FC = () => {
                         }}
                         tooltipString="The number of items you can build on your land."
                     />
-                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
+                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={
+                        async () => {
+                            await Promise.all([
+                                userSwr.mutate(),
+                                occupiedPlacedItemCountsSwr.mutate()
+                            ])
+                        }}>
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
@@ -163,33 +169,27 @@ export const InGameTab: FC = () => {
                         isGrid={true}
                         tileLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">{getTileLimit({
-                                    placedItems,
-                                    data: staticSwr.data.data,
-                                    landLimitIndex: user?.landLimitIndex ?? 0,
-                                }).totalPlacedItemCount}
+                                <span className="text-muted-foreground text-lg">{
+                                    occupiedPlacedItemCountsSwr.data?.tileCount
+                                }
                                     /</span>
                                 <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].tileLimit ?? 0}</span>
                             </div>
                         }
                         buildingLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">{getBuildingLimit({
-                                    placedItems,
-                                    data: staticSwr.data.data,
-                                    landLimitIndex: user?.landLimitIndex ?? 0,
-                                }).totalPlacedItemCount}
+                                <span className="text-muted-foreground text-lg">{
+                                    occupiedPlacedItemCountsSwr.data?.buildingCount
+                                }
                                     /</span>
                                 <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].buildingLimit ?? 0}</span>
                             </div>
                         }
                         fruitLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">{getFruitLimit({
-                                    placedItems,
-                                    data: staticSwr.data.data,
-                                    landLimitIndex: user?.landLimitIndex ?? 0,
-                                }).totalPlacedItemCount}
+                                <span className="text-muted-foreground text-lg">{
+                                    occupiedPlacedItemCountsSwr.data?.fruitCount
+                                }
                                     /</span>
                                 <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].fruitLimit ?? 0}</span>
                             </div>

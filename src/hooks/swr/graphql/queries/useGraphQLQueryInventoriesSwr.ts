@@ -1,15 +1,15 @@
 import { UseSWR } from "../../types"
 import {
     queryInventories,
-    QueryInventoriesResponse,
     QueryInventoriesParams,
+    QueryInventoriesResponseWrapper,
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
 import { useAppSelector, useAppDispatch, setInventories } from "@/redux"
 import useSWR from "swr"
 
 export const useGraphQLQueryInventoriesSwr = (): UseSWR<
-  ApolloQueryResult<QueryInventoriesResponse>,
+  ApolloQueryResult<QueryInventoriesResponseWrapper>,
   QueryInventoriesParams
 > => {
     const dispatch = useAppDispatch()
