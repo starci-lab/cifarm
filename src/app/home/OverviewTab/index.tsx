@@ -40,7 +40,7 @@ export const OverviewTab: FC = () => {
                         variant="flat"
                         onClick={open}
                     >
-                        <ShareNetwork className="w-4 h-4" />
+                        <ShareNetwork />
                         Referral
                     </ExtendedButton>
 

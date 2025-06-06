@@ -18,6 +18,7 @@ export const useWs = (): UseWs => {
 
     const createSocket = async () => {
         const accessToken = await sessionDb.keyValueStore.get(SessionDbKey.AccessToken)
+        console.log("accessToken", accessToken)
         if (!accessToken) {
             throw new Error("No access token found")
         }
@@ -51,6 +52,9 @@ export const useWs = (): UseWs => {
     return {
         socket: socket.current,
         updateSocket: async () => {
+            // remove all listeners
+            socket.current?.removeAllListeners()
+            socket.current?.disconnect()
             socket.current = await createSocket()
         }
     }

@@ -36,17 +36,14 @@ export const usePlayerContextEffects = () => {
                 if (!refreshToken) {
                     return
                 }
-
                 const { data } = await refreshSwrMutation.trigger({
                     request: {
                         refreshToken: refreshToken.value,
                     },
                 })
-
                 if (!data) {
                     throw new Error("Failed to refresh token")
                 }
-
                 await saveTokens({
                     accessToken: data.accessToken,
                     refreshToken: data.refreshToken,
@@ -93,7 +90,7 @@ export const usePlayerContextEffects = () => {
         return () => {
             socket?.off(ReceiverEventName.YourAccountHasBeenLoggedInFromAnotherDevice)
         }
-    }, [socket, open, dispatch])
+    }, [socket, open, dispatch, updateSocket, authenticationSwrMutation])
  
     useEffect(() => {
         socket?.on("disconnect", () => {
@@ -115,5 +112,5 @@ export const usePlayerContextEffects = () => {
         return () => {
             socket?.off("disconnect")
         }
-    }, [socket, open, dispatch])
+    }, [socket, open, dispatch, updateSocket, authenticationSwrMutation])
 }

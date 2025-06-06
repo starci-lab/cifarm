@@ -22,6 +22,7 @@ interface DAppCardProps {
   content?: React.ReactNode;
   isLoading?: boolean;
   chainKey?: ChainKey;
+  requireConnectWallet?: boolean;
 }
 
 export const DAppCard: FC<DAppCardProps> = ({
@@ -32,6 +33,7 @@ export const DAppCard: FC<DAppCardProps> = ({
     content,
     isLoading,
     chainKey = ChainKey.Solana,
+    requireConnectWallet = true,
 }) => {
     const { publicKey } = useWallet()
     const { currentWallet } = useCurrentWallet()
@@ -40,7 +42,7 @@ export const DAppCard: FC<DAppCardProps> = ({
     return (
         <Card
             onClick={() => {
-                if (chainKey === ChainKey.Solana && !publicKey) {
+                if (requireConnectWallet && chainKey === ChainKey.Solana && !publicKey) {
                     dispatch(setWalletConnectionRequiredModal({
                         chainKey: ChainKey.Solana,
                     }))

@@ -50,6 +50,7 @@ export const DApps: FC = () => {
                 }
             />
             <DAppCard
+                requireConnectWallet={false}
                 title="Wholesale Market"
                 description="Trade goods in bulk and earn tokens for each successful delivery."
                 imageUrl={assetIconMap[AssetIconId.WholesaleMarket].base.assetUrl}
@@ -58,6 +59,7 @@ export const DApps: FC = () => {
                 }}
             />
             <DAppCard
+                requireConnectWallet={false}
                 title="NFT Marketplace"
                 description="Trade NFTs with other players."
                 imageUrl={assetIconMap[AssetIconId.NFTMarketplace].base.assetUrl}
