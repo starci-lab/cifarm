@@ -73,7 +73,7 @@ export const InventoryModal = () => {
 
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
-            <DialogContent>
+            <DialogContent className="max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>Inventory</DialogTitle>
                 </DialogHeader>
