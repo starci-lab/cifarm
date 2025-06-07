@@ -43,12 +43,12 @@ const DialogContent = React.forwardRef<
                 className={cn(
                     {
                         "rounded-b-none rounded-t-lg": isMobile,
-                        "fixed z-50 bg-background shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out": isMobile,
-                        "inset-x-0 bottom-0 border-t border-border data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom": isMobile,
+                        "fixed z-50 bg-background transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out": isMobile,
+                        "inset-x-0 bottom-0 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom": isMobile,
                     },
                     // SM and up: center screen
                     { 
-                        "fixed bottom-0 left-0 w-full rounded-t-lg p-0 z-50 border shadow-lg": !isMobile,
+                        "fixed bottom-0 left-0 w-full rounded-t-lg p-0 z-50": !isMobile,
                         "data-[state=open]:animate-zoom-in-center data-[state=closed]:animate-zoom-out-center": !isMobile,
                         "top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bottom-auto w-full max-w-[calc(100%-2rem)] rounded-lg origin-center": !isMobile,
                     },
