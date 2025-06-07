@@ -13,6 +13,22 @@ const config: Config = {
     ],
     theme: {
     	extend: {
+            extend: {
+                keyframes: {
+                    "zoom-in-center": {
+                        "0%": { opacity: "0", transform: "scale(0.9)" },
+                        "100%": { opacity: "1", transform: "scale(1)" },
+                    },
+                    "zoom-out-center": {
+                        "0%": { opacity: "1", transform: "scale(1)" },
+                        "100%": { opacity: "0", transform: "scale(0.9)" },
+                    },
+                },
+                animation: {
+                    "zoom-in-center": "zoom-in-center 0.3s ease-out",
+                    "zoom-out-center": "zoom-out-center 0.2s ease-in",
+                },
+            },
             scale: {
                 "40": "0.4",
                 "60": "0.6",

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { IconWrapper } from "../styled/IconWrapper"
 import { CaretLeft, X } from "@phosphor-icons/react"
 import { Separator } from "../ui"
+import { useIsMobile } from "@/hooks"
 const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
@@ -32,30 +33,38 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-    <DialogPortal>
-        <DialogOverlay />
-        <DialogPrimitive.Content
-            ref={ref}
-            className={cn(
-                // Mobile (default): stick to bottom
-                "fixed bottom-0 left-0 w-full rounded-t-lg p-0 z-50 border shadow-lg",
-
-                // SM and up: center screen
-                "sm:top-1/2 sm:left-1/2 sm:translate-x-[-50%] sm:translate-y-[-50%] sm:bottom-auto sm:w-full sm:max-w-[calc(100%-2rem)] sm:rounded-lg sm:origin-center",
-
-                // Style
-                "bg-content-4 grid",
-                className
-            )}
-            onOpenAutoFocus={(event) => event.preventDefault()}
-            {...props}
-        >
-            {children}
+>(({ className, children, ...props }, ref) => {
+    const isMobile = useIsMobile()
+    return (
+        <DialogPortal>
+            <DialogOverlay />
+            <DialogPrimitive.Content
+                ref={ref}
+                className={cn(
+                    {
+                        "rounded-b-none rounded-t-lg": isMobile,
+                        "fixed z-50 bg-background shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out": isMobile,
+                        "inset-x-0 bottom-0 border-t border-border data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom": isMobile,
+                    },
+                    // SM and up: center screen
+                    { 
+                        "fixed bottom-0 left-0 w-full rounded-t-lg p-0 z-50 border shadow-lg": !isMobile,
+                        "data-[state=open]:animate-zoom-in-center data-[state=closed]:animate-zoom-out-center": !isMobile,
+                        "top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bottom-auto w-full max-w-[calc(100%-2rem)] rounded-lg origin-center": !isMobile,
+                    },
+                    // Style
+                    "bg-content-4 grid",
+                    className
+                )}
+                onOpenAutoFocus={(event) => event.preventDefault()}
+                {...props}
+            >
+                {children}
             
-        </DialogPrimitive.Content>
-    </DialogPortal>
-))
+            </DialogPrimitive.Content>
+        </DialogPortal>
+    )
+})
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
 const DialogHeader = ({
