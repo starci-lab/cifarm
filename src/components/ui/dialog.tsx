@@ -38,8 +38,14 @@ const DialogContent = React.forwardRef<
         <DialogPrimitive.Content
             ref={ref}
             className={cn(
-                "fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] origin-center rounded-lg border p-0 shadow-lg sm:max-w-lg",
-                "bg-content-4",
+                // Mobile (default): stick to bottom
+                "fixed bottom-0 left-0 w-full rounded-t-lg p-0 z-50 border shadow-lg",
+
+                // SM and up: center screen
+                "sm:top-1/2 sm:left-1/2 sm:translate-x-[-50%] sm:translate-y-[-50%] sm:bottom-auto sm:w-full sm:max-w-[calc(100%-2rem)] sm:rounded-lg sm:origin-center",
+
+                // Style
+                "bg-content-4 grid",
                 className
             )}
             onOpenAutoFocus={(event) => event.preventDefault()}
