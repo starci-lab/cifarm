@@ -53,7 +53,7 @@ const DialogContent = React.forwardRef<
                         "top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bottom-auto w-full max-w-[calc(100%-2rem)] rounded-lg origin-center": !isMobile,
                     },
                     // Style
-                    "bg-content-4 grid",
+                    "bg-background grid",
                     className
                 )}
                 onOpenAutoFocus={(event) => event.preventDefault()}
@@ -88,7 +88,7 @@ const DialogHeader = ({
                 <DialogClose
                     className="text-muted-foreground"
                 >
-                    <X />
+                    <X className="h-5 w-5" />
                 </DialogClose>
             )}
         </div>
