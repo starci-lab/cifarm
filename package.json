@@ -55,6 +55,7 @@
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.8",
     "@reduxjs/toolkit": "^2.5.0",
+    "@solana-mobile/wallet-adapter-mobile": "^2.2.0",
     "@solana/spl-token": "^0.4.13",
     "@solana/wallet-adapter-base": "^0.9.26",
     "@solana/wallet-adapter-react": "^0.15.38",

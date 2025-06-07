@@ -16,7 +16,6 @@ export const metadata: Metadata = {
         userScalable: false
     }
 }
-
 const Layout: FC = ({
     children,
 }: PropsWithChildren) => {

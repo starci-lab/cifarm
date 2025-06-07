@@ -31,6 +31,14 @@ import { IconContext } from "@phosphor-icons/react"
 import { ThemeProvider } from "@/components"
 import { usePathname } from "next/navigation"
 import { neutralPages, unauthenticatedPages } from "@/constants"
+import { 
+    createDefaultAuthorizationCache, 
+    createDefaultChainSelector, 
+    createDefaultWalletNotFoundHandler,
+    registerMwa,
+} from "@solana-mobile/wallet-standard-mobile"
+import { SolanaMobileWalletAdapter, createDefaultAddressSelector, createDefaultAuthorizationResultCache } from "@solana-mobile/wallet-adapter-mobile"
+
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
 })
@@ -42,6 +50,25 @@ const UseEffects = dynamic(() => import("@/hooks/use-effects"), {
 const Sheets = dynamic(() => import("./Sheets"), {
     ssr: false,
 })
+
+const getUriForAppIdentity = () => {
+    const location = globalThis.location
+    if (!location) return
+    return `${location.protocol}//${location.host}`
+}
+
+registerMwa({
+    appIdentity: {
+        uri: getUriForAppIdentity(),
+        name: "Example MWA Web DApp",
+    },
+    authorizationCache: createDefaultAuthorizationCache(),
+    chains: ["solana:devnet", "solana:mainnet"],
+    chainSelector: createDefaultChainSelector(),
+    // remoteHostAuthority: REFLECTOR_HOST_AUTHORITY,
+    onWalletNotFound: createDefaultWalletNotFoundHandler(),
+})
+
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
     const network = envConfig().network
@@ -78,7 +105,24 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                         <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
                             <WalletSuiProvider>
                                 <ConnectionProvider endpoint={endpoint}>
-                                    <WalletProvider wallets={[]} autoConnect>
+                                    <WalletProvider wallets={[
+                                        new SolanaMobileWalletAdapter({
+                                            addressSelector: createDefaultAddressSelector(),
+                                            appIdentity: {
+                                                name: "My app",
+                                                uri: "https://myapp.io",
+                                                icon: "relative/path/to/icon.png",
+                                            },
+                                            authorizationResultCache: createDefaultAuthorizationResultCache(),
+                                            chain: WalletAdapterNetwork.Devnet,
+                                            onWalletNotFound: async () => {
+                                                console.log("Wallet not found")
+                                            },
+                                        }),
+                                    ]} autoConnect onError={(wallet, adapterError) => {
+                                        console.log(wallet)
+                                        console.log(adapterError)
+                                    }}>
                                         <WalletModalProvider>
                                             <TooltipProvider>
                                                 <SWRConfig

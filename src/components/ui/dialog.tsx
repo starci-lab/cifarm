@@ -145,7 +145,7 @@ const DialogTitle = React.forwardRef<
                             base: "text-muted-foreground",
                         }}
                     >
-                        <CaretLeft onClick={onLeftChevronClick} />
+                        <CaretLeft className="h-5 w-5" onClick={onLeftChevronClick} />
                     </IconWrapper>
                 )}
                 {children}
