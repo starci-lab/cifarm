@@ -11,7 +11,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { cn } from "@/lib/utils"
 import { useDisclosure } from "react-use-disclosure"
 import { Copy } from "@phosphor-icons/react"

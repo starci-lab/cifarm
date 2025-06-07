@@ -38,7 +38,9 @@ import { BuyEnergyModal } from "./BuyEnergyModal"
 import { SelectChainModal } from "./SelectChainModal"
 import { WalletConnectionRequiredModal } from "./WalletConnectionRequiredModal"
 import { ExpandLandLimitModal } from "./ExpandLandLimitModal"
+
 export const MODAL_CONTAINER_ID = "modals"
+
 const Modals : FC = () => {
     return (
         <div id={MODAL_CONTAINER_ID}>

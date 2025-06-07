@@ -10,7 +10,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { Card, CardBody, CardHeader, CardTitle, ExtendedButton, ModalHeader, Spacer, Title } from "@/components"
 import { Link } from "@phosphor-icons/react"

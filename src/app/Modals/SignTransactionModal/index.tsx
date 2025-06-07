@@ -42,7 +42,7 @@ import {
     DialogTitle,
     DialogFooter,
     DialogBody,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"

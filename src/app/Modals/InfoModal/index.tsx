@@ -8,7 +8,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components"
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
 import { ModalHeader } from "@/components"

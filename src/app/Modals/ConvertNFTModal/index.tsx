@@ -10,7 +10,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation, useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation, useGlobalAccountAddress, useGraphQLQueryStaticSwr, toast } from "@/hooks"
 import { useAppSelector, setSelectedNFTType, useAppDispatch, setSignTransactionModal, TransactionType } from "@/redux"

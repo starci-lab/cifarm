@@ -8,7 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogBody,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { NFTType } from "@/modules/entities"
 import { setSelectedNFTType, useAppDispatch, useAppSelector } from "@/redux"

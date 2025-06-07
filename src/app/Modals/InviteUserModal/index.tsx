@@ -8,7 +8,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { ModalHeader, Snippet, Spacer } from "@/components"
 import { Alert, AlertDescription } from "@/components/ui/alert"

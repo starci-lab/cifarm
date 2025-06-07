@@ -9,7 +9,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { NFTCollection } from "./NFTCollection"
 import { useGraphQLQueryStaticSwr } from "@/hooks"

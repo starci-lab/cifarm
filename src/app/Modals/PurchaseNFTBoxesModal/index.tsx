@@ -10,7 +10,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { ExtendedButton, Image, ModalHeader, Slider, Spacer, Title } from "@/components"
 import { AssetIconId } from "@/modules/assets"

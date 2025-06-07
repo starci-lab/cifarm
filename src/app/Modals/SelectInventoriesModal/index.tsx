@@ -14,7 +14,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogBody,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { InventoryType, InventoryKind } from "@/modules/entities"
 import { InventoryCard } from "./InventoryCard"

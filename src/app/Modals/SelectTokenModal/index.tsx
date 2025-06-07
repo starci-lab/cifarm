@@ -10,7 +10,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { QUERY_STATIC_SWR_MUTATION } from "@/app/constants"

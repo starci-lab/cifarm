@@ -10,7 +10,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-} from "@/components/ui/dialog"
+} from "@/components"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useDisclosure } from "react-use-disclosure"
 
