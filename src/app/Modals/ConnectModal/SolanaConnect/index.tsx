@@ -13,7 +13,7 @@ import { setChainKey, useAppDispatch } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
 
 export const SolanaConnect: FC = () => {
-    const { connect, select, connecting, connected, wallet, disconnect, wallets } = useWallet()
+    const { connect, select, connected, wallet, disconnect, wallets, connecting } = useWallet()
     useEffect(() => {
         if (!wallet?.adapter.name) {
             return
@@ -24,6 +24,16 @@ export const SolanaConnect: FC = () => {
     const installedWallets = wallets.filter((wallet) => wallet.readyState === WalletReadyState.Installed)
     const loadableWallets = wallets.filter((wallet) => wallet.readyState === WalletReadyState.Loadable)
     const supportedWallets = [...installedWallets, ...loadableWallets]
+
+    useEffect(() => {
+        const handleEffect = async () => {
+            if (wallet) {
+                await connect()
+                dispatch(setChainKey(ChainKey.Solana))
+            }
+        }
+        handleEffect()
+    }, [wallet])
     return (
         <>
             <DialogBody>
@@ -40,9 +50,6 @@ export const SolanaConnect: FC = () => {
                             icon={<Image src={item.adapter.icon} alt={item.adapter.name} className="w-10 h-10" />}
                             text={item.adapter.name}
                             onClick={async () => {
-                                // try disconnect first
-                                // await item.adapter.disconnect()
-                                await item.adapter.connect()
                                 select(item.adapter.name as WalletName)
                                 dispatch(setChainKey(ChainKey.Solana))
                             }}
@@ -54,7 +61,10 @@ export const SolanaConnect: FC = () => {
                                     ? "Connected"
                                     : undefined
                             }
-                            isLoading={connecting && wallet?.adapter.name === item.adapter.name}
+                            isLoading={
+                                connecting &&
+                                wallet?.adapter.name === item.adapter.name
+                            }
                         />
                     )}
                     showSeparator={false}
