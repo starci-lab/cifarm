@@ -1,7 +1,7 @@
 "use client"
 
 import { SHEET_NFT_DISCLOSURE } from "@/app/constants"
-import { Image, WrappedBadge, Spacer, NFTRarityBadge, Separator, Card, CardBody } from "@/components"
+import { Image, WrappedBadge, Spacer, NFTRarityBadge, Card, CardBody, CardFooter } from "@/components"
 import { AttributeName, NFTData, NFTRarityEnum } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
@@ -39,8 +39,8 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
                 openNFTSheet()
             }
         }>
-            <CardBody className="pb-2">
-                <div className="flex flex-col gap-2 absolute top-3 right-3">
+            <CardBody>
+                <div className="flex flex-col gap-2 absolute top-4 right-4">
                     <NFTRarityBadge
                         rarity={
                             nft.attributes.find(
@@ -54,20 +54,18 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
                         )
                     }
                 </div>
-                <Spacer y={2}/>
                 <Image   
                     src={nft.image}
                     className="w-24 h-24 object-contain"
                 />
-                <Spacer y={2}/>
-                <div className="text-lg">{nft.name}</div>
+                <Spacer y={4}/>
+                <div className="text-xl text-secondary leading-none">{nft.name}</div>
             </CardBody>
-            <Separator/>
-            <CardBody className="pt-2">
+            <CardFooter>
                 <div className="text-muted-foreground">
                     {nft.description ?? "No description"}
                 </div>
-            </CardBody>
+            </CardFooter>
         </Card>   
     )
 }

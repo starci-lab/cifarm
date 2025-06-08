@@ -184,7 +184,7 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
     )
 }
 
-const font = Baloo_2({ subsets: ["latin"], weight: ["400", "700"] })
+const font = Baloo_2({ subsets: ["latin"], weight: ["600"] })
 
 export const WrappedLayout = ({ children }: PropsWithChildren) => {
     const bodyRef = useRef<HTMLBodyElement>(null)

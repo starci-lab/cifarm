@@ -1,6 +1,6 @@
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLMutationRefreshSwrMutation } from "../swr"
-import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION } from "@/app/constants"
+import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION, WELCOME_DISCLOSURE } from "@/app/constants"
 import { useEffect } from "react"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { saveTokens } from "@/modules/apollo"
@@ -11,6 +11,8 @@ import { neutralPages, pathConstants, unauthenticatedPages } from "@/constants"
 import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
 import { usePathname } from "next/navigation"
 //import { pathConstants } from "@/constants"
+import { useDisclosure } from "react-use-disclosure"
+
 
 export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<
@@ -81,4 +83,12 @@ export const useAuthentication = () => {
             router.push(pathConstants.home)
         }
     }, [authenticated, pathname, loaded])
+
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(WELCOME_DISCLOSURE)
+    useEffect(() => {
+        if (!authenticated) {
+            return
+        }
+        open()
+    }, [authenticated])
 }   
