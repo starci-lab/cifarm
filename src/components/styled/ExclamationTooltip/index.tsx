@@ -24,7 +24,7 @@ export const ExclamationTooltip: FC<ExclamationTooltipProps> = ({
         <Tooltip>
             <TooltipTrigger>
                 <WarningCircle
-                    className={cn("w-4 h-4 text-muted-foreground", className, iconClassName)}
+                    className={cn("w-4 h-4 text-secondary", className, iconClassName)}
                 />
             </TooltipTrigger>
             <TooltipContent>{message}</TooltipContent>

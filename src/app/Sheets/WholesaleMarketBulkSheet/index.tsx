@@ -138,22 +138,24 @@ export const WholesaleMarketBulkSheet: FC = () => {
                         <Spacer y={4} />
                         <div className="bg-content-2 rounded-lg">
                             <div className="flex flex-col">
-                                <div className="flex items-center gap-1.5 p-3">
-                                    <TokenIcon
-                                        chainKey={ChainKey.Solana}
-                                        network={network}
-                                        tokens={staticSwr.data?.data.tokens}
-                                        tokenKey={
-                                            bulk.tokenKey ||
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1.5 p-3">
+                                        <TokenIcon
+                                            chainKey={ChainKey.Solana}
+                                            network={network}
+                                            tokens={staticSwr.data?.data.tokens}
+                                            tokenKey={
+                                                bulk.tokenKey ||
                                         TokenKey.Native
-                                        }
-                                        className="w-8 h-8"
-                                    />
-                                    <div className="text-2xl">
-                                        {computePaidAmount({
-                                            vaultData: vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey) as VaultData,
-                                            bulk
-                                        })}
+                                            }
+                                            className="w-8 h-8"
+                                        />
+                                        <div className="text-2xl">
+                                            {computePaidAmount({
+                                                vaultData: vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey) as VaultData,
+                                                bulk,
+                                            })}
+                                        </div>
                                     </div>
                                 </div>
                                 <Separator />
