@@ -2,9 +2,9 @@ import {
     Image,
     Spacer,
     Spinner,
-    Separator,
     Card,
     CardBody,
+    CardFooter,
 } from "@/components"
 import React, { FC } from "react"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
@@ -69,7 +69,7 @@ export const DAppCard: FC<DAppCardProps> = ({
             className="h-full"
             pressable
         >
-            <CardBody className="pb-2 relative w-full">
+            <CardBody className="relative w-full">
                 <div className="absolute top-4 right-4">
                     {chainKey && <Image src={chainKeyMap.find((chain) => chain.key === chainKey)?.iconUrl || ""} className="w-7 h-7" />}
                 </div>  
@@ -82,12 +82,13 @@ export const DAppCard: FC<DAppCardProps> = ({
                     </div>
                 </div>
             </CardBody>
-            <Separator />
-            <CardBody className="pt-2">
-                <div className="text-muted-foreground">{description}</div>
-                <Spacer y={2} />
-                {content}
-            </CardBody>
+            <CardFooter>
+                <div>
+                    <div className="text-muted-foreground">{description}</div>
+                    <Spacer y={2} />
+                    {content}
+                </div>
+            </CardFooter>
         </Card>
     )
 }
