@@ -12,7 +12,7 @@ import {
     DialogTitle,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { Card, CardBody, CardHeader, CardTitle, ExtendedButton, ModalHeader, Spacer, Title } from "@/components"
+import { Card, CardBody, CardHeader, CardTitle, ExtendedButton, Spacer, Title } from "@/components"
 import { Link } from "@phosphor-icons/react"
 import { copyTextToClipboard } from "@/components/styled/Snippet"
 import { pathConstants } from "@/constants"
@@ -37,7 +37,7 @@ export const ReferralModal: FC = () => {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        <ModalHeader title="Referral" />
+                        Referral
                     </DialogTitle>
                 </DialogHeader>
                 <DialogBody>

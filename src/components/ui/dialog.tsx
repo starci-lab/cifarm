@@ -78,7 +78,7 @@ const DialogHeader = ({
     <div>
         <div
             className={cn(
-                "flex items-center justify-between text-foreground px-4 py-3",
+                "flex items-center justify-between text-foreground p-4",
                 className
             )}
             {...props}
@@ -133,7 +133,7 @@ const DialogTitle = React.forwardRef<
             <DialogPrimitive.Title
                 ref={ref}
                 className={cn(
-                    "text-xl font-bold leading-none tracking-tight",
+                    "text-xl text-secondary leading-none tracking-tight",
                     showLeftChevron && "flex flex-row items-center gap-2",
                     className
                 )}
