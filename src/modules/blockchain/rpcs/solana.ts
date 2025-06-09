@@ -1,5 +1,5 @@
 import { ChainKey, Network } from "../common"
-import { Commitment, Connection } from "@solana/web3.js"
+import { clusterApiUrl, Commitment, Connection } from "@solana/web3.js"
 import { signerIdentity } from "@metaplex-foundation/umi"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { mplToolbox } from "@metaplex-foundation/mpl-toolbox"
@@ -32,6 +32,7 @@ export const solanaHttpRpcUrl = ({
         switch (chainKey) {
         case ChainKey.Solana:
             rpcUrl = "https://mainnet.helius-rpc.com/?api-key=195f7f46-73d5-46df-989e-9d743bf3caad"
+            //rpcUrl = "https://solana-mainnet.g.alchemy.com/v2/kl2gvTqryb4y709GQZgi_"
             //clusterApiUrl("mainnet-beta")
             break
         default:
@@ -42,8 +43,8 @@ export const solanaHttpRpcUrl = ({
     case Network.Testnet: {
         switch (chainKey) {
         case ChainKey.Solana:
-            rpcUrl = "https://devnet.helius-rpc.com/?api-key=195f7f46-73d5-46df-989e-9d743bf3caad"
-            //rpcUrl = clusterApiUrl("devnet")
+            //rpcUrl = "https://devnet.helius-rpc.com/?api-key=195f7f46-73d5-46df-989e-9d743bf3caad"
+            rpcUrl = clusterApiUrl("devnet")
             break
         default:
             throw new Error(`Unsupported chain key: ${chainKey}`)
