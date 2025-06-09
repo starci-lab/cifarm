@@ -12,22 +12,23 @@ import {
     Spacer,
     Title,
     Image,
-    Separator,
+    List,
+    Badge,
 } from "@/components"
 import React, { FC } from "react"
-import { useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useGraphQLQueryVaultCurrentSwr, useIsMobile, useGlobalAccountAddress, useGraphQLQueryInventoriesSwr, useGraphQLQueryUserSwr } from "@/hooks"
+import { useGraphQLMutationCreateShipSolanaTransactionSwrMutation, useGraphQLMutationSendShipSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useGraphQLQueryVaultCurrentSwr, useIsMobile, useGlobalAccountAddress, useGraphQLQueryInventoriesSwr, useGraphQLQueryUserSwr, useGraphQLQueryBulkPaidsSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
-import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION, GRAPHQL_QUERY_BULK_PAIDS_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_VAULT_CURRENT_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE, SIGN_TRANSACTION_DISCLOSURE } from "@/app/constants"
 import { setSignTransactionModal, TransactionType, useAppDispatch, useAppSelector } from "@/redux"
 import { assetProductMap, assetIconMap, AssetIconId } from "@/modules/assets"
-import { TokenKey } from "@/modules/entities"
 import { partitionInventories } from "@/modules/entities"
 import { cn } from "@/lib/utils"
 import { ArrowCounterClockwise } from "@phosphor-icons/react"
 import { ChainKey } from "@/modules/blockchain"
 import { envConfig } from "@/env"
 import { computePaidAmount, VaultData } from "@/modules/entities"
+import { getPercentageString } from "@/modules/common"
 
 export const WholesaleMarketBulkSheet: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
@@ -40,6 +41,7 @@ export const WholesaleMarketBulkSheet: FC = () => {
     const { swrMutation: createShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationCreateShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
     const { swrMutation: sendShipSolanaTransactionSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationSendShipSolanaTransactionSwrMutation>>(GRAPHQL_MUTATION_SEND_SHIP_SOLANA_TRANSACTION_SWR_MUTATION)
 
+    const { swr: bulkPaidsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBulkPaidsSwr>>(GRAPHQL_QUERY_BULK_PAIDS_SWR)    
     const dispatch = useAppDispatch()
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
@@ -68,6 +70,13 @@ export const WholesaleMarketBulkSheet: FC = () => {
     
     if (!vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey)) {
         return null
+    }
+    const bulkPaid = bulkPaidsSwr.data?.data.bulkPaids.find(
+        (bulkPaid) => bulkPaid.bulkId === bulk.id
+    ) || {
+        count: 0,
+        decrementPercentage: 0,
+        bulkId: bulk.id
     }
     return (
         <Sheet open={isOpen} onOpenChange={toggle}>
@@ -120,53 +129,106 @@ export const WholesaleMarketBulkSheet: FC = () => {
                             />
                         </div>
                         <Spacer y={6} />
-                        <div className="flex items-center justify-between">
-                            <Title
-                                title="Payment"
-                                tooltipString="Payment for the wholesale market"
-                            />
-                            <ExtendedButton color="secondary" size="icon" variant="flat" onClick={async () => {
-                                await Promise.all([
-                                    inventoriesSwr.mutate(),
-                                    userSwr.mutate(),
-                                    vaultCurrentSwr.mutate()
-                                ])
-                            }}>
-                                <ArrowCounterClockwise />
-                            </ExtendedButton>
-                        </div>
-                        <Spacer y={4} />
-                        <div className="bg-content-2 rounded-lg">
-                            <div className="flex flex-col">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex items-center gap-1.5 p-3">
-                                        <TokenIcon
+                        <div>
+                            <div className="flex items-center justify-between">
+                                <Title
+                                    title="Payment"
+                                    tooltipString="Payment for the wholesale market"
+                                />
+                                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={async () => {
+                                    await Promise.all([
+                                        inventoriesSwr.mutate(),
+                                        userSwr.mutate(),
+                                        vaultCurrentSwr.mutate(),
+                                        bulkPaidsSwr.mutate()
+                                    ])
+                                }}>
+                                    <ArrowCounterClockwise />
+                                </ExtendedButton>
+                            </div>
+                            <Spacer y={4} />
+                            <List
+                                enableScroll={false}
+                                items={[
+                                    {
+                                        icon: <TokenIcon 
                                             chainKey={ChainKey.Solana}
                                             network={network}
                                             tokens={staticSwr.data?.data.tokens}
-                                            tokenKey={
-                                                bulk.tokenKey ||
-                                        TokenKey.Native
+                                            tokenKey={bulk.tokenKey}
+                                            className="w-6 h-6"
+                                        />,
+                                        name: staticSwr.data?.data?.tokens?.[bulk.tokenKey]?.[ChainKey.Solana]?.[network]?.name,
+                                        amount: computePaidAmount({
+                                            vaultData: vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey) as VaultData,
+                                            bulk,
+                                            bulkPaid
+                                        }),
+                                        decrementPercentage: bulkPaid.decrementPercentage
+                                    },
+                                    {
+                                        icon: <Image src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl} className="w-6 h-6" />,
+                                        name: "tCIFARM",
+                                        amount: bulk.tCIFARM
+                                    }
+                                ]}
+                                contentCallback={({ icon, name, amount, decrementPercentage }) => {
+                                    return <div className="flex justify-between items-center w-full px-3 py-2 rounded-lg bg-content-2 bg-content-2">
+                                        <div className="flex items-center gap-2">
+                                            {icon}
+                                            <div>
+                                                {name}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div>
+                                                {amount}
+                                            </div>
+                                            {
+                                                decrementPercentage !== undefined && (
+                                                    <Badge variant="destructive">
+                                                        {`-${getPercentageString(decrementPercentage)}`}
+                                                    </Badge>
+                                                )
                                             }
-                                            className="w-8 h-8"
-                                        />
-                                        <div className="text-2xl">
-                                            {computePaidAmount({
-                                                vaultData: vaultCurrentSwr.data?.data.vaultCurrent.data.find((vaultCurrent) => vaultCurrent.tokenKey === bulk.tokenKey) as VaultData,
-                                                bulk,
-                                            })}
                                         </div>
                                     </div>
-                                </div>
-                                <Separator />
-                                <div className="flex items-center gap-1.5 p-3">
-                                    <Image src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl} className="w-8 h-8" />
-                                    <div className="text-2xl">
-                                        {bulk.maxPaidAmount}
+                                }}
+                            />
+                        </div>     
+                        <Spacer y={6} />
+                        <div>
+                            <Title
+                                title="Paid History"
+                                tooltipString="Paid history for this bulk"
+                            />
+                            <Spacer y={4} />
+                            <List
+                                enableScroll={false}
+                                items={[
+                                    {
+                                        title: "Count",
+                                        description: "Count how many times this bulk has been paid",
+                                        value: bulkPaid.count
+                                    },
+                                ]}
+                                contentCallback={({ title, description, value }) => {
+                                    return <div className="flex justify-between items-center w-full px-3 py-2 rounded-lg bg-content-2 bg-content-2">
+                                        <Title  
+                                            classNames={{
+                                                title: "text-muted-foreground",
+                                                tooltip: "text-muted-foreground"
+                                            }}
+                                            title={title}
+                                            tooltipString={description}
+                                        />
+                                        <div>
+                                            {value}
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                }}
+                            />
+                        </div>  
                     </SheetBody>
                 </div>
                 <SheetFooter>

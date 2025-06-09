@@ -45,6 +45,7 @@ import {
     useGraphQLMutationCreateExpandLandLimitSolanaTransactionSwrMutation,
     useGraphQLMutationSendExpandLandLimitSolanaTransactionSwrMutation,
     useGraphQLQueryOccupiedPlacedItemCounts,
+    useGraphQLQueryBulkPaidsSwr,
 } from "@/hooks"
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
@@ -152,6 +153,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             GRAPHQL_QUERY_VAULT_CURRENT_SWR: useGraphQLQueryVaultCurrentSwr(),
             GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR: useGraphQLQueryOccupiedPlacedItemCounts(),
             GRAPHQL_QUERY_USER_SWR_MUTATION: useGraphQLQueryUserSwrMutation(),
+            GRAPHQL_QUERY_BULK_PAIDS_SWR: useGraphQLQueryBulkPaidsSwr(),
             // Using new constants with GraphQL mutations
             //io
 

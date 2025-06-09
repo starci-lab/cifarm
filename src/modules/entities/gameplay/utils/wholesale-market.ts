@@ -1,6 +1,7 @@
 import { InventoryType, InventoryKind, InventorySchema, BulkSchema, VaultData } from "@/modules/entities"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { formatNumber } from "@/modules/common"
+import { BulkPaid } from "@/modules/apollo"
 
 export interface PartitionInventoriesParams {
     staticData: QueryStaticResponse;
@@ -73,16 +74,18 @@ export interface InventoryMapData {
 export interface ComputePaidAmountParams {
     vaultData: VaultData
     bulk: BulkSchema
+    bulkPaid: BulkPaid
 }
 
 export const computePaidAmount = ({
     vaultData,
     bulk,
+    bulkPaid,
 }: ComputePaidAmountParams) => {
     const { tokenLocked } = vaultData
     const { maxPaidAmount, maxPaidPercentage } = bulk
     return formatNumber(Math.min(
         tokenLocked * maxPaidPercentage,
         maxPaidAmount
-    ))
+    ) * (1 - bulkPaid.decrementPercentage))
 }

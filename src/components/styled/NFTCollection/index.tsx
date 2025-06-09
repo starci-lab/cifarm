@@ -19,7 +19,7 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSw
                 <Spacer y={4}/>
                 <div className="text-secondary text-xl leading-none">{collection.name}</div>
                 <Spacer y={2}/>
-                <div className="leading-none">{collectionSwr.data?.nfts.length} NFTs</div>
+                <div className="leading-none">{collectionSwr.data?.nfts.length}+ NFTs</div>
             </CardBody>
             <CardFooter>
                 <div className="text-muted-foreground line-clamp-3">

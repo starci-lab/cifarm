@@ -61,5 +61,5 @@ export const toMB = (bytes: number) => {
 }
 
 export const getPercentageString = (value: number) => {
-    return `${value * 100}%`
+    return `${formatNumber(value * 100, NumberPattern.Second)}%`
 }

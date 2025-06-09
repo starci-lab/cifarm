@@ -3,10 +3,13 @@ import { solanaHttpRpcUrl } from "../rpcs"
 import { Platform, chainKeyToPlatform } from "../common"
 import { defaultNetwork } from "../default"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
-import { Attribute, fetchAssetsByCollection, mplCore } from "@metaplex-foundation/mpl-core"
-import { publicKey } from "@metaplex-foundation/umi"
+import { Attribute, mplCore } from "@metaplex-foundation/mpl-core"
 import { NFTCollections, NFTType } from "@/modules/entities"
+import { dasApi } from "@metaplex-foundation/digital-asset-standard-api"
+import { das } from "@metaplex-foundation/mpl-core-das"
+
 import axios from "axios"
+import { publicKey } from "@metaplex-foundation/umi"
 export interface GetCollectionParams {
   chainKey: ChainKey;
   //use collection address
@@ -16,6 +19,8 @@ export interface GetCollectionParams {
   accountAddress: string;
   //collection list for the chainKey, if collectionKey is set but collections not set, it will throw an error
   collections?: NFTCollections;
+  skip?: number;
+  limit?: number;
 }
 
 export interface NFTTrait {
@@ -42,6 +47,8 @@ export const getSolanaCollection = async ({
     accountAddress,
     collections,
     chainKey,
+    skip = 0,
+    limit = 10,
 }: GetCollectionParams): Promise<CollectionResponse> => {
     network = network || defaultNetwork
     if (collectionKey) {
@@ -52,8 +59,14 @@ export const getSolanaCollection = async ({
     }
     if (!collectionAddress) throw new Error("Cannot find collection without collection address")
     const umi = createUmi(solanaHttpRpcUrl({chainKey, network}))
-        .use(mplCore())
-    let assets = await fetchAssetsByCollection(umi, publicKey(collectionAddress))
+        .use(mplCore()).use(dasApi())
+    let assets = await das.searchAssets(umi, {
+        grouping: ["collection", collectionAddress],
+        owner: publicKey(accountAddress),   
+        limit,
+        page: Math.floor(skip / limit) + 1,
+    })
+    console.log(assets)
     assets = assets.filter((asset) => asset.owner.toString() === accountAddress)
     const nfts: Array<NFTData> = []
     const promises: Array<Promise<void>> = []
