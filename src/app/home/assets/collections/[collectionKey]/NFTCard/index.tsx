@@ -2,14 +2,16 @@
 
 import { SHEET_NFT_DISCLOSURE } from "@/app/constants"
 import { Image, WrappedBadge, Spacer, NFTRarityBadge, Card, CardBody, CardFooter } from "@/components"
-import { AttributeName, NFTData, NFTRarityEnum } from "@/modules/blockchain"
+import { AttributeName, NFTRarityEnum } from "@/modules/blockchain"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
 import { setNFTSheet, useAppSelector, useAppDispatch, setNFTAddresses } from "@/redux"
 import { cn } from "@/lib/utils"
+import { BlockchainNFTData } from "@/modules/apollo"
+
 interface NFTCardProps {
-    nft: NFTData
+    nft: BlockchainNFTData
 }
 
 export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
@@ -43,7 +45,7 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
                 <div className="flex flex-col gap-2 absolute top-4 right-4">
                     <NFTRarityBadge
                         rarity={
-                            nft.attributes.find(
+                            nft.traits.find(
                                 (rarity) => rarity.key === AttributeName.Rarity
                             )?.value as NFTRarityEnum
                         }   
@@ -55,7 +57,7 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
                     }
                 </div>
                 <Image   
-                    src={nft.image}
+                    src={nft.imageUrl}
                     className="w-24 h-24 object-contain"
                 />
                 <Spacer y={4}/>
@@ -63,7 +65,7 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
             </CardBody>
             <CardFooter>
                 <div className="text-muted-foreground">
-                    {nft.description ?? "No description"}
+                    {nft.description || "No description"}
                 </div>
             </CardFooter>
         </Card>   

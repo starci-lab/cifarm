@@ -66,7 +66,6 @@ export const getSolanaCollection = async ({
         limit,
         page: Math.floor(skip / limit) + 1,
     })
-    console.log(assets)
     assets = assets.filter((asset) => asset.owner.toString() === accountAddress)
     const nfts: Array<NFTData> = []
     const promises: Array<Promise<void>> = []

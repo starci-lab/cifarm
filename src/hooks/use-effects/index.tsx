@@ -1,6 +1,4 @@
 import React, { FC } from "react"
-import { UseBalances } from "./balances"
-import { UseNFTCollections } from "./nft-collections"
 import { useSyncEffects } from "./useSyncEffects"
 import { useUpdateProfileEffects } from "./useUpdateProfileEffects"
 import { useGameEffects } from "./game"
@@ -24,10 +22,7 @@ const UseEffects: FC  = () => {
     //useInit()
     useUpdateProfileEffects()
 
-    return (<>
-        <UseBalances />
-        <UseNFTCollections />
-    </>)
+    return (<></>)
 }
 
 export default UseEffects

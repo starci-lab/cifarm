@@ -6,8 +6,8 @@ import { useParams } from "next/navigation"
 import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { CONVERT_NFT_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
+import { useGraphQLQueryStaticSwr, useGraphQLQueryBlockchainCollectionsSwr } from "@/hooks"
+import { CONVERT_NFT_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR, GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR } from "@/app/constants"
 import { NFTType } from "@/modules/entities"
 import { envConfig } from "@/env"
 import { NFTCard } from "./NFTCard"
@@ -37,8 +37,7 @@ const Page = () => {
     >(GRAPHQL_QUERY_STATIC_SWR)
 
     const collection = staticSwr?.data?.data.nftCollections[collectionKey]?.[network]
-    const nftCollectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
-    const nftCollectionSwr = nftCollectionSwrs[collectionKey]
+    const { swr: nftCollectionSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR)
     const nftAddresses = useAppSelector((state) => state.convertReducer.nftAddresses)
     const isSmallScreen = useMediaQuery("(max-width: 640px)")
     const conversionRate = staticSwr.data?.data.nftConversion.conversionRate || 1
@@ -124,7 +123,7 @@ const Page = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                        {nftCollectionSwr.data?.nfts.map((nft) => {
+                        {nftCollectionSwr.data?.data.blockchainCollections.collections.find((collection) => collection.nftType === collectionKey)?.nfts.map((nft) => {
                             if (!staticSwr.data) {
                                 throw new Error("No data")
                             }

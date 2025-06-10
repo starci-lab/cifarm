@@ -1,17 +1,16 @@
 import { Card, CardBody, CardFooter, Image, Spacer } from "@/components"
-import { CollectionResponse } from "@/modules/blockchain"
+import { BlockchainNFTData } from "@/modules/apollo"
 import { NFTCollectionData } from "@/modules/entities"
 import React, { FC } from "react"
-import { SWRResponse } from "swr"
 
 interface NFTCollectionProps {
-    collectionSwr: SWRResponse<CollectionResponse>
-    onClick: () => void
     collection: NFTCollectionData
+    nfts: Array<BlockchainNFTData>
+    onClick: () => void
     disabled?: boolean
 }
 
-export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSwr, onClick, disabled }) => {
+export const NFTCollection: FC<NFTCollectionProps> = ({ collection, nfts, onClick, disabled }) => {
     return (
         <Card className="relative" onClick={onClick} pressable disabled={disabled}>
             <CardBody>
@@ -19,7 +18,7 @@ export const NFTCollection: FC<NFTCollectionProps> = ({ collection, collectionSw
                 <Spacer y={4}/>
                 <div className="text-secondary text-xl leading-none">{collection.name}</div>
                 <Spacer y={2}/>
-                <div className="leading-none">{collectionSwr.data?.nfts.length}+ NFTs</div>
+                <div className="leading-none">{nfts.length}+ NFTs</div>
             </CardBody>
             <CardFooter>
                 <div className="text-muted-foreground line-clamp-3">

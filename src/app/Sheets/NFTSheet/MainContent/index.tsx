@@ -23,6 +23,7 @@ import {
     useGraphQLQueryStaticSwr,
     useGraphQLQueryUserSwrMutation,
     useTransferNFTFormik,
+    useGraphQLQueryBlockchainCollectionsSwr,
 } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -35,6 +36,7 @@ import {
     SIGN_TRANSACTION_DISCLOSURE,
     TRANSFER_NFT_FORMIK,
     GRAPHQL_QUERY_USER_SWR_MUTATION,
+    GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR,
 } from "@/app/constants"
 import {
     NFTSheetPage,
@@ -73,11 +75,11 @@ export const MainContent: FC = () => {
         (state) => state.sheetReducer.nftSheet.nftAddress
     )
 
-    const nftCollectionSwrs = useAppSelector(
-        (state) => state.sessionReducer.nftCollectionSwrs
+    const { swr: nftCollectionSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(
+        GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR
     )
-    const nftCollectionSwr = nftCollectionSwrs[collectionKey]
-    const nft = nftCollectionSwr?.data?.nfts.find(
+    const nfts = nftCollectionSwr?.data?.data.blockchainCollections.collections.find((collection) => collection.nftType === collectionKey)?.nfts || []
+    const nft = nfts.find(
         (nft) => nft.nftAddress === nftAddress
     )
 
@@ -111,7 +113,7 @@ export const MainContent: FC = () => {
 
     useEffect(() => {
         const handleEffect = async () => {
-            const attribute = nft?.attributes.find(attribute => attribute.key === AttributeName.WrapperUserId)
+            const attribute = nft?.traits.find(attribute => attribute.key === AttributeName.WrapperUserId)
             if (attribute) {
                 await userSwrMutation.trigger({
                     request: attribute.value,
@@ -138,7 +140,7 @@ export const MainContent: FC = () => {
                     enableScroll={false}
                     items={Object.values(FruitPropertiesName)}
                     contentCallback={(name) => {
-                        const attribute = nft?.attributes.find(
+                        const attribute = nft?.traits.find(
                             (attribute) => attribute.key === name
                         )
                         return (
@@ -181,8 +183,8 @@ export const MainContent: FC = () => {
                     enableScroll={false}
                     items={Object.values(StatsAttributeName)}
                     contentCallback={(name) => {
-                        const attribute = nft?.attributes.find(
-                            (attribute) => attribute.key === name
+                        const attribute = nft?.traits.find(
+                            (trait) => trait.key === name
                         )
                         return (
                             <div className="px-3 py-2 bg-content-2">
@@ -220,13 +222,13 @@ export const MainContent: FC = () => {
             </SheetHeader>
             <SheetBody className="flex-1 flex flex-col">
                 <ScrollArea className="w-full flex-1 overflow-y-auto" hideScrollBar={true}>
-                    <PreviewImage imageUrl={nft?.image} />
+                    <PreviewImage imageUrl={nft?.imageUrl} />
                     <Spacer y={4} />
                     {nft ? (
                         <div className="flex gap-2 items-center">
                             <NFTRarityBadge
                                 rarity={
-                                    nft.attributes.find(
+                                    nft.traits.find(
                                         (rarity) => rarity.key === AttributeName.Rarity
                                     )?.value as NFTRarityEnum
                                 }

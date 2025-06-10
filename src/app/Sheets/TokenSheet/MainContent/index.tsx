@@ -11,11 +11,13 @@ import React, { FC } from "react"
 import {
     useGraphQLQueryStaticSwr,
     useTransferTokenFormik,
+    useGraphQLQueryBlockchainBalancesSwr,
 } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import {
     TRANSFER_TOKEN_FORMIK,
     GRAPHQL_QUERY_STATIC_SWR,
+    GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR,
 } from "@/app/constants"
 import {
     setTokenSheetPage,
@@ -33,7 +35,6 @@ import { HandArrowDown, HandCoins, PaperPlaneRight, QrCode, ArrowUpRight, Shoppi
 
 export const MainContent: FC = () => {  
     const tokenKey = useAppSelector((state) => state.sheetReducer.tokenSheet.tokenKey)
-    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
 
@@ -47,11 +48,14 @@ export const MainContent: FC = () => {
 
     const dispatch = useAppDispatch()
     
+    const { swr: balanceSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(
+        GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR
+    )
+  
     if (!tokenKey) {
         return null
     }
-
-    const balanceSwr = balanceSwrs[tokenKey]
+    const balance = balanceSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)?.balance
     const token = staticSwr.data?.data.tokens[tokenKey]?.[chainKey]?.[network]  
 
     return (
@@ -68,7 +72,7 @@ export const MainContent: FC = () => {
                         <div className="flex gap-1 text-xl font-bold">
                             <div>
                                 {
-                                    balanceSwr.data
+                                    balance
                                 }
                             </div>
                             <div>

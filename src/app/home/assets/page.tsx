@@ -8,14 +8,12 @@ import {
     AssetTab,
     setAssetTab,
     SidebarTab,
-    triggerRefreshTokens,
-    triggerRefreshNFTCollections,
     setWalletConnectionRequiredModal,
 } from "@/redux"
 import { TokensTab } from "./TokensTab"
 import { NFTCollectionsTab } from "./NFTCollectionsTab"
 import { InGameTab } from "./InGameTab"
-import { useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLQueryBlockchainCollectionsSwr, useGraphQLQueryBlockchainBalancesSwr, useRouterWithSearchParams } from "@/hooks"
 import { useSearchParams } from "next/navigation"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { ChainKey } from "@/modules/blockchain"
@@ -23,7 +21,7 @@ import { useWallet } from "@solana/wallet-adapter-react"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
+import { CONNECT_DISCLOSURE, GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR, GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
 
 const Page = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
@@ -36,6 +34,9 @@ const Page = () => {
     const router = useRouterWithSearchParams()
     const searchParams = useSearchParams()
 
+    const { swr: blockchainCollections } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR)
+    const { swr: blockchainBalances } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR)
+        
     //when mount
     useEffect(() => {
         const tab = searchParams.get("tab")
@@ -142,7 +143,9 @@ const Page = () => {
                     searchString={""}
                     className="w-full md:max-w-[200px]"
                 />
-                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => dispatch(triggerRefreshTokens())}>
+                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
+                    blockchainBalances.mutate()
+                }}>
                     <ArrowsClockwise />
                 </ExtendedButton>
             </div>
@@ -153,7 +156,9 @@ const Page = () => {
                     searchString={""}
                     className="w-full md:max-w-[200px]"
                 />
-                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => dispatch(triggerRefreshNFTCollections())}>
+                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
+                    blockchainCollections.mutate()
+                }}>
                     <ArrowsClockwise />
                 </ExtendedButton>
             </div>
