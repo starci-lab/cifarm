@@ -1,18 +1,18 @@
-import { NFTType } from "@/modules/entities"
+import { NFTCollectionKey } from "@/modules/entities"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
     
 export interface ConvertState {
     isConverting: boolean
     nftAddresses: Array<string>
-    nftType: NFTType
-    selectedNFTType: NFTType
+    nftCollectionKey: NFTCollectionKey
+    selectedNFTCollectionKey: NFTCollectionKey
 }
 
 const initialState: ConvertState = {
     isConverting: false,
     nftAddresses: [],
-    nftType: NFTType.DragonFruit,
-    selectedNFTType: NFTType.DragonFruit
+    nftCollectionKey: NFTCollectionKey.DragonFruit,
+    selectedNFTCollectionKey: NFTCollectionKey.DragonFruit
 }
 
 export const convertSlice = createSlice({
@@ -25,14 +25,14 @@ export const convertSlice = createSlice({
         setNFTAddresses: (state, action: PayloadAction<Array<string>>) => {
             state.nftAddresses = action.payload
         },
-        setNFTType: (state, action: PayloadAction<NFTType>) => {
-            state.nftType = action.payload
+        setNFTCollectionKey: (state, action: PayloadAction<NFTCollectionKey>) => {
+            state.nftCollectionKey = action.payload
         },
-        setSelectedNFTType: (state, action: PayloadAction<NFTType>) => {
-            state.selectedNFTType = action.payload
+        setSelectedNFTCollectionKey: (state, action: PayloadAction<NFTCollectionKey>) => {
+            state.selectedNFTCollectionKey = action.payload
         },
     },
 })
 
-export const { setIsConverting, setNFTAddresses, setNFTType, setSelectedNFTType } = convertSlice.actions
+export const { setIsConverting, setNFTAddresses, setNFTCollectionKey, setSelectedNFTCollectionKey } = convertSlice.actions
 export const convertReducer = convertSlice.reducer

@@ -66,7 +66,7 @@ export enum PetType {
     Cat = "cat"
 }
 
-export enum NFTType {
+export enum NFTCollectionKey {
     DragonFruit = "dragonFruit",
     Jackfruit = "jackfruit",
     Rambutan = "rambutan",

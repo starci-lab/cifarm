@@ -1,7 +1,7 @@
-import { GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR, QUERY_STATIC_SWR_MUTATION, SHEET_TOKEN_DISCLOSURE } from "@/app/constants"
+import { QUERY_STATIC_SWR_MUTATION, SHEET_TOKEN_DISCLOSURE } from "@/app/constants"
 import { ExtendedTable, Image } from "@/components"
 import { envConfig } from "@/env"
-import { useGraphQLQueryBlockchainBalancesSwr, useGraphQLQueryStaticSwr } from "@/hooks"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector, useAppDispatch } from "@/redux"
 import React, { FC } from "react"
@@ -35,8 +35,6 @@ export const TokensTab: FC = () => {
 
     const tokens = valuesWithKey(staticData.data?.data.tokens || {})
 
-    const { swr: blockchainBalances } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR)
-
     const { open: openTokenSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SHEET_TOKEN_DISCLOSURE
     )
@@ -56,7 +54,7 @@ export const TokensTab: FC = () => {
                 symbol: tokenData?.symbol ?? "",
                 isNative: tokenData?.tokenType === TokenType.Native
             },
-            balance: blockchainBalances.data?.data.blockchainBalances.tokens.find((item) => item.tokenKey === token.key)?.balance ?? 0,
+            balance: 0,
             price: 0,
         }
     }).filter((token) => token !== null)

@@ -1,4 +1,4 @@
-import { NFTType } from "@/modules/entities"
+import { NFTCollectionKey } from "@/modules/entities"
 import { DocumentNode, gql } from "@apollo/client"
 import { noCacheAuthClient } from "../../auth-client"
 import { QueryParams } from "../../types"
@@ -9,15 +9,16 @@ const query1 = gql`
   query BlockchainCollections($request: GetBlockchainCollectionsRequest!) {
     blockchainCollections(request: $request) {
       cached
+      refreshInterval
       collections {
-        nftType
+        nftCollectionKey
         nfts {
             description
             imageUrl
-            traits {
+            attributes {
                 key
                 value
-                }
+              }
             description
             name
             wrapped
@@ -39,7 +40,7 @@ const queryMap: Record<QueryBlockchainCollections, DocumentNode> = {
 export interface QueryBlockchainCollectionsRequest {
   accountAddress: string
   chainKey: ChainKey
-  nftTypes: Array<NFTType>
+  nftCollectionKeys: Array<NFTCollectionKey>
   refresh: boolean
 }
 
@@ -52,25 +53,28 @@ export interface QueryBlockchainCollectionsResponseWrapper {
   blockchainCollections: QueryBlockchainCollectionsResponse
 }
 
-export interface BlockchainNFTTrait {
+export interface BlockchainNFTAttribute {
     key: string
     value: string
 }
+
 export interface BlockchainNFTData {
     description: string
     imageUrl: string
-    traits: Array<BlockchainNFTTrait>
+    attributes: Array<BlockchainNFTAttribute>
     nftAddress: string
     name: string
     wrapped: boolean
 }
+export interface BlockchainCollectionData {
+  nftCollectionKey: NFTCollectionKey
+  nfts: Array<BlockchainNFTData>
+}
 
 export interface QueryBlockchainCollectionsResponse {
   cached: boolean
-  collections: Array<{
-    nftType: NFTType
-    nfts: Array<BlockchainNFTData>
-  }>
+  collections: Array<BlockchainCollectionData>
+  refreshInterval: number
 }
 
 export const queryBlockchainCollections = async ({

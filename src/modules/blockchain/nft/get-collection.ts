@@ -4,7 +4,7 @@ import { Platform, chainKeyToPlatform } from "../common"
 import { defaultNetwork } from "../default"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { Attribute, mplCore } from "@metaplex-foundation/mpl-core"
-import { NFTCollections, NFTType } from "@/modules/entities"
+import { NFTCollections, NFTCollectionKey } from "@/modules/entities"
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api"
 import { das } from "@metaplex-foundation/mpl-core-das"
 
@@ -14,7 +14,7 @@ export interface GetCollectionParams {
   chainKey: ChainKey;
   //use collection address
   collectionAddress?: string;
-  collectionKey?: NFTType;
+  collectionKey?: NFTCollectionKey;
   network?: Network;
   accountAddress: string;
   //collection list for the chainKey, if collectionKey is set but collections not set, it will throw an error

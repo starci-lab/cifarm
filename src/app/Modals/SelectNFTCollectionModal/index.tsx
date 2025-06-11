@@ -1,6 +1,6 @@
 import React from "react"
 import { ModalHeader, NFTCollection, ScrollArea } from "@/components"
-import { GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR, GRAPHQL_QUERY_STATIC_SWR, SELECT_NFT_COLLECTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_QUERY_STATIC_SWR, SELECT_NFT_COLLECTION_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     Dialog,
@@ -10,9 +10,9 @@ import {
     DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { NFTType } from "@/modules/entities"
-import { setSelectedNFTType, useAppDispatch, useAppSelector } from "@/redux"
-import { useGraphQLQueryStaticSwr, useGraphQLQueryBlockchainCollectionsSwr } from "@/hooks"
+import { NFTCollectionKey } from "@/modules/entities"
+import { setSelectedNFTCollectionKey, useAppDispatch, useAppSelector } from "@/redux"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { envConfig } from "@/env"
 
 export const SelectNFTCollectionModal = () => {
@@ -21,13 +21,16 @@ export const SelectNFTCollectionModal = () => {
   >(SELECT_NFT_COLLECTION_DISCLOSURE)
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     const nftCollections = staticSwr.data?.data.nftCollections || {}
-    const { swr: blockchainCollectionsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR)
     const network = envConfig().network
-    const selectedNFTType = useAppSelector((state) => state.convertReducer.selectedNFTType)
-    const nftCollectionData = nftCollections?.[selectedNFTType]?.[network]
-    const originalNFTType = useAppSelector((state) => state.convertReducer.nftType)
+    const selectedNFTCollectionKey = useAppSelector((state) => state.convertReducer.selectedNFTCollectionKey)
+    const nftCollectionData = nftCollections?.[selectedNFTCollectionKey]?.[network]
+    const originalNFTCollectionKey = useAppSelector((state) => state.convertReducer.nftCollectionKey)
     const dispatch = useAppDispatch()
-    if (!nftCollectionData) return null
+
+    const collectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
+    const collectionSwr = collectionSwrs[selectedNFTCollectionKey]
+
+    if (!nftCollectionData || !collectionSwr || !collectionSwr.data) return null
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
@@ -39,17 +42,17 @@ export const SelectNFTCollectionModal = () => {
                 <DialogBody>
                     <ScrollArea className="h-[400px]">
                         <div className="grid md:grid-cols-2 gap-4">
-                            {Object.values(NFTType).map((nftType) => {
-                                const collection = nftCollections?.[nftType]?.[network]
+                            {Object.values(NFTCollectionKey).map((nftCollectionKey) => {
+                                const collection = nftCollections?.[nftCollectionKey]?.[network]
                                 if (!collection) return null
                                 return (
                                     <NFTCollection
-                                        disabled={nftType === originalNFTType}
-                                        key={nftType}
+                                        disabled={nftCollectionKey === originalNFTCollectionKey}
+                                        key={nftCollectionKey}
                                         collection={collection}
-                                        nfts={blockchainCollectionsSwr.data?.data.blockchainCollections.collections.find((collection) => collection.nftType === nftType)?.nfts || []}
+                                        nfts={collectionSwr.data?.collection.nfts || []}
                                         onClick={() => {
-                                            dispatch(setSelectedNFTType(nftType))
+                                            dispatch(setSelectedNFTCollectionKey(nftCollectionKey))
                                             close()
                                         }}
                                     />  

@@ -17,7 +17,6 @@ import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import {
     TRANSFER_TOKEN_FORMIK,
     GRAPHQL_QUERY_STATIC_SWR,
-    GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR,
 } from "@/app/constants"
 import {
     setTokenSheetPage,
@@ -47,15 +46,11 @@ export const MainContent: FC = () => {
     )
 
     const dispatch = useAppDispatch()
-    
-    const { swr: balanceSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(
-        GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR
-    )
   
     if (!tokenKey) {
         return null
     }
-    const balance = balanceSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)?.balance
+    const balance = 0
     const token = staticSwr.data?.data.tokens[tokenKey]?.[chainKey]?.[network]  
 
     return (

@@ -13,7 +13,7 @@ import {
 import { TokensTab } from "./TokensTab"
 import { NFTCollectionsTab } from "./NFTCollectionsTab"
 import { InGameTab } from "./InGameTab"
-import { useGraphQLQueryBlockchainCollectionsSwr, useGraphQLQueryBlockchainBalancesSwr, useRouterWithSearchParams } from "@/hooks"
+import { useRouterWithSearchParams } from "@/hooks"
 import { useSearchParams } from "next/navigation"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { ChainKey } from "@/modules/blockchain"
@@ -21,7 +21,8 @@ import { useWallet } from "@solana/wallet-adapter-react"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { CONNECT_DISCLOSURE, GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR, GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
+import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/constants"
+import { RPCLimitationWarning } from "./RPCLimitationWarning"
 
 const Page = () => {
     const assetTab = useAppSelector((state) => state.tabReducer.assetTab)
@@ -34,9 +35,6 @@ const Page = () => {
     const router = useRouterWithSearchParams()
     const searchParams = useSearchParams()
 
-    const { swr: blockchainCollections } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR)
-    const { swr: blockchainBalances } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR)
-        
     //when mount
     useEffect(() => {
         const tab = searchParams.get("tab")
@@ -144,7 +142,7 @@ const Page = () => {
                     className="w-full md:max-w-[200px]"
                 />
                 <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
-                    blockchainBalances.mutate()
+                    // blockchainBalances.mutate()
                 }}>
                     <ArrowsClockwise />
                 </ExtendedButton>
@@ -157,7 +155,7 @@ const Page = () => {
                     className="w-full md:max-w-[200px]"
                 />
                 <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
-                    blockchainCollections.mutate()
+                    // blockchainCollections.mutate()
                 }}>
                     <ArrowsClockwise />
                 </ExtendedButton>
@@ -173,6 +171,8 @@ const Page = () => {
             <div className="flex justify-between items-center gap-4">
                 <Header title="Assets" />
             </div>
+            <Spacer y={6} />
+            <RPCLimitationWarning />
             <Spacer y={6} />
             <div className="flex gap-4 md:gap-2 flex-col md:flex-row md:justify-between items-center">
                 <AppTabs
@@ -202,7 +202,7 @@ const Page = () => {
                 />
                 {renderRightContent()}
             </div>
-            <Spacer y={6} />
+            <Spacer y={4} />
             {renderContent()}
         </div>
     )

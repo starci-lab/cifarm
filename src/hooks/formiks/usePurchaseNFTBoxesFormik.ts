@@ -114,7 +114,7 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
                             dispatch(
                                 setNFTsClaimedModal({
                                     nftItems: sendTxData.nftBoxes.map((nftBox) => ({
-                                        nftType: nftBox.nftType,
+                                        nftCollectionKey: nftBox.nftCollectionKey,
                                         rarity: nftBox.rarity,
                                         nftName: nftBox.nftName,
                                     })),
@@ -168,7 +168,7 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
                             // dispatch(
                             //     setNFTsClaimedModal({
                             //         nftItems: sendTxData.nftBoxes.map((nftBox) => ({
-                            //             nftType: nftBox.nftType,
+                            //             nftCollectionKey: nftBox.nftCollectionKey,
                             //             rarity: nftBox.rarity,
                             //             nftName: nftBox.nftName,
                             //         })),

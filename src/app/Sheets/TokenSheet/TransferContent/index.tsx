@@ -1,4 +1,4 @@
-import { GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR, GRAPHQL_QUERY_STATIC_SWR, TRANSFER_TOKEN_FORMIK } from "@/app/constants"
+import { GRAPHQL_QUERY_STATIC_SWR, TRANSFER_TOKEN_FORMIK } from "@/app/constants"
 import {
     ExtendedButton,
     ExtendedInput,
@@ -14,7 +14,7 @@ import {
     SheetFooter,
 } from "@/components"
 import { envConfig } from "@/env"
-import { useGraphQLQueryBlockchainBalancesSwr, useGraphQLQueryStaticSwr, useTransferTokenFormik } from "@/hooks"
+import { useGraphQLQueryStaticSwr, useTransferTokenFormik } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { useAppSelector, setTokenSheetPage, TokenSheetPage, useAppDispatch } from "@/redux"
 import React, { FC, useEffect } from "react"
@@ -23,9 +23,6 @@ export const TransferContent: FC = () => {
     const tokenKey = useAppSelector(
         (state) => state.sheetReducer.tokenSheet.tokenKey
     )
-    const { swr: blockchainBalancesSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(
-        GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR
-    )   
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
 
@@ -41,9 +38,9 @@ export const TransferContent: FC = () => {
         if (!tokenKey) {
             return
         }
-        const balanceSwr = blockchainBalancesSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)
-        formik.setFieldValue("balance", balanceSwr?.balance)
-    }, [blockchainBalancesSwr])
+        // const balanceSwr = blockchainBalancesSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)
+        // formik.setFieldValue("balance", balanceSwr?.balance)
+    }, [staticSwr])
 
     const dispatch = useAppDispatch()
 
@@ -51,7 +48,7 @@ export const TransferContent: FC = () => {
         return null
     }
 
-    const balanceSwr = blockchainBalancesSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)
+    // const balanceSwr = blockchainBalancesSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)
     const token = staticSwr.data?.data.tokens[tokenKey]?.[chainKey]?.[network]
 
     if (!token) {
@@ -103,7 +100,7 @@ export const TransferContent: FC = () => {
                                     tooltip: "w-4 h-4",
                                 }}
                             />
-                            <div className="text-muted-foreground">{`Balance: ${balanceSwr?.balance}`}</div>
+                            <div className="text-muted-foreground">{`Balance: ${0}`}</div>
                         </div>
                         <Spacer y={2} />
                         <ExtendedNumberInput

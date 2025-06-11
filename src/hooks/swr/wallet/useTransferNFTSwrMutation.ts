@@ -5,13 +5,13 @@ import { useAppSelector } from "@/redux"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
-import { NFTType } from "@/modules/entities"
+import { NFTCollectionKey } from "@/modules/entities"
 import { useWallet } from "@solana/wallet-adapter-react"
 
 export interface UseTransferNFTSwrMutationArgs {
     nftAddress: string
     recipientAddress: string
-    collectionKey: NFTType
+    collectionKey: NFTCollectionKey
 }
 
 export const useTransferNFTSwrMutation = (): UseSWRMutation<

@@ -1,6 +1,6 @@
 "use client"
-import { GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR, GRAPHQL_QUERY_STATIC_SWR, PURCHASE_NFT_BOXES_DISCLOSURE, PURCHASE_NFT_BOXES_FORMIK } from "@/app/constants"
-import { useGraphQLQueryBlockchainBalancesSwr, useGraphQLQueryStaticSwr } from "@/hooks"
+import { GRAPHQL_QUERY_STATIC_SWR, PURCHASE_NFT_BOXES_DISCLOSURE, PURCHASE_NFT_BOXES_FORMIK } from "@/app/constants"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import React, { FC, useEffect } from "react"
 import {
@@ -24,17 +24,19 @@ export const PurchaseNFTBoxesModal: FC = () => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     const formik = useSingletonHook2<ReturnType<typeof usePurchaseNFTBoxesFormik>>(PURCHASE_NFT_BOXES_FORMIK)
     
-    const { swr: balanceSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR)
+    // const { swr: balanceSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR)
     
-    const balance = balanceSwr?.data?.data.blockchainBalances.tokens.find(
-        (token) => token.tokenKey === staticSwr.data?.data.nftBoxInfo.tokenKey
-    )?.balance ?? 0
+    // const balance = balanceSwr?.data?.data.blockchainBalances.tokens.find(
+    //     (token) => token.tokenKey === staticSwr.data?.data.nftBoxInfo.tokenKey
+    // )?.balance ?? 0
     
-    useEffect(() => {
-        if (balanceSwr?.data) {
-            formik.setFieldValue("balance", balance)
-        }
-    }, [balanceSwr])
+    // useEffect(() => {
+    //     if (balanceSwr?.data) {
+    //         formik.setFieldValue("balance", balance)
+    //     }
+    // }, [balanceSwr])
+
+    const balance = 0
 
     useEffect(() => {
         if (staticSwr.data) {

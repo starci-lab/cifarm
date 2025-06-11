@@ -1,23 +1,23 @@
 import { QueryStaticResponse } from "@/modules/apollo"
-import { Network, NFTTypeToPlacedItemTypeId } from "@/modules/blockchain"
+import { Network, NFTCollectionKeyToPlacedItemTypeId } from "@/modules/blockchain"
 import {
     PlacedItemType,
-    NFTType,
+    NFTCollectionKey,
 } from "@/modules/entities"
 // import { StateNFTCollections } from "@/redux"
 
 export interface GetNFTImageParams {
-    nftType: NFTType;
+    nftCollectionKey: NFTCollectionKey;
     staticData: QueryStaticResponse;
     network: Network;
 }
 
 export const getNFTImage = ({
-    nftType,
+    nftCollectionKey,
     staticData,
     network,
 }: GetNFTImageParams) => {
-    const placedItemTypeId = NFTTypeToPlacedItemTypeId[nftType] 
+    const placedItemTypeId = NFTCollectionKeyToPlacedItemTypeId[nftCollectionKey] 
     const placedItemType = staticData.placedItemTypes?.find(
         (placedItemType) => placedItemType.displayId === placedItemTypeId   
     )
@@ -29,7 +29,7 @@ export const getNFTImage = ({
         if (!fruit) {
             throw new Error("Fruit not found")
         }
-        return staticData?.nftCollections?.[nftType]?.[network]?.imageUrl ?? ""
+        return staticData?.nftCollections?.[nftCollectionKey]?.[network]?.imageUrl ?? ""
     }
     default: {
         throw new Error("Invalid NFT type")

@@ -45,8 +45,8 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
                 <div className="flex flex-col gap-2 absolute top-4 right-4">
                     <NFTRarityBadge
                         rarity={
-                            nft.traits.find(
-                                (rarity) => rarity.key === AttributeName.Rarity
+                            nft.attributes.find(
+                                (attribute) => attribute.key === AttributeName.Rarity
                             )?.value as NFTRarityEnum
                         }   
                     />

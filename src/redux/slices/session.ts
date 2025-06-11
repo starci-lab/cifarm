@@ -1,7 +1,6 @@
 import {
     ChainKey,
     CollectionInfo,
-    CollectionResponse,
     defaultChainKey,
     defaultNetwork,
     Network,
@@ -12,6 +11,7 @@ import { PlacedItemSchema, InventorySchema, UserSchema } from "@/modules/entitie
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 import { NeighborsTab } from "./tab"
+import { BlockchainCollectionData } from "@/modules/apollo"
 
 export enum PlayerContext {
     Home = "home",
@@ -33,6 +33,12 @@ export enum Sidebar {
   DApps = "dapps",
 }
 
+export interface WrapperBlockchainCollectionData {
+    collection: BlockchainCollectionData
+    cached: boolean
+    refreshInterval: number
+}
+
 export interface SessionState {
   network: Network;
   mnemonic: string;
@@ -42,7 +48,7 @@ export interface SessionState {
   authenticated: boolean;
   loaded: boolean;
   balanceSwrs: Record<string, SWRResponse<number>>;
-  nftCollectionSwrs: Record<string, SWRResponse<CollectionResponse>>;
+  nftCollectionSwrs: Record<string, SWRResponse<WrapperBlockchainCollectionData>>;
   // selected collection key
   collectionKey: string;
   // selected nft address
@@ -136,9 +142,9 @@ export const sessionSlice = createSlice({
         setChainKey: (state, action: PayloadAction<ChainKey>) => {
             state.chainKey = action.payload
         },
-        setNftCollectionsSwr: (
+        setNFTCollectionsSwr: (
             state,
-            action: PayloadAction<SetNftCollectionsSwrParams>
+            action: PayloadAction<SetNFTCollectionsSwrParams>
         ) => {
             const { collectionKey, swr } = action.payload
             state.nftCollectionSwrs[collectionKey] = swr
@@ -226,7 +232,7 @@ export const {
     setAuthenticated,
     setBalanceSwr,
     removeBalanceSwr,
-    setNftCollectionsSwr,
+    setNFTCollectionsSwr,
     removeNftCollectionsSwr,
     setCollectionKey,
     setNftAddress,
@@ -263,9 +269,9 @@ export interface SetBalanceSwrParams {
   swr: SWRResponse<number>;
 }
 
-export interface SetNftCollectionsSwrParams {
+export interface SetNFTCollectionsSwrParams {
   collectionKey: string;
-  swr: SWRResponse<CollectionResponse>;
+  swr: SWRResponse<WrapperBlockchainCollectionData>;
 }
 
 export interface SwitchNFTCollectionParams {

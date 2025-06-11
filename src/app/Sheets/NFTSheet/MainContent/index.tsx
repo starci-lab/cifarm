@@ -23,7 +23,6 @@ import {
     useGraphQLQueryStaticSwr,
     useGraphQLQueryUserSwrMutation,
     useTransferNFTFormik,
-    useGraphQLQueryBlockchainCollectionsSwr,
 } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
@@ -36,7 +35,6 @@ import {
     SIGN_TRANSACTION_DISCLOSURE,
     TRANSFER_NFT_FORMIK,
     GRAPHQL_QUERY_USER_SWR_MUTATION,
-    GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR,
 } from "@/app/constants"
 import {
     NFTSheetPage,
@@ -56,10 +54,11 @@ import {
     statsAttributeNameMap,
 } from "@/modules/blockchain"
 import { useParams } from "next/navigation"
-import { NFTType, PlacedItemType } from "@/modules/entities"
+import { NFTCollectionKey, PlacedItemType } from "@/modules/entities"
 import { envConfig } from "@/env"
 import { Export, Package, PaperPlaneRight, Sparkle, Eye } from "@phosphor-icons/react"
 import { createJazziconBlobUrl } from "@/modules/jazz"
+import { BlockchainNFTData } from "@/modules/apollo"
 
 export const MainContent: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(
@@ -67,7 +66,7 @@ export const MainContent: FC = () => {
     )
 
     const params = useParams()
-    const collectionKey = params.collectionKey as NFTType
+    const collectionKey = params.collectionKey as NFTCollectionKey
 
     const dispatch = useAppDispatch()
 
@@ -75,10 +74,10 @@ export const MainContent: FC = () => {
         (state) => state.sheetReducer.nftSheet.nftAddress
     )
 
-    const { swr: nftCollectionSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(
-        GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR
-    )
-    const nfts = nftCollectionSwr?.data?.data.blockchainCollections.collections.find((collection) => collection.nftType === collectionKey)?.nfts || []
+    const collectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
+    const collectionSwr = collectionSwrs[collectionKey]
+
+    const nfts: Array<BlockchainNFTData> = collectionSwr?.data?.collection.nfts || []
     const nft = nfts.find(
         (nft) => nft.nftAddress === nftAddress
     )
@@ -113,7 +112,7 @@ export const MainContent: FC = () => {
 
     useEffect(() => {
         const handleEffect = async () => {
-            const attribute = nft?.traits.find(attribute => attribute.key === AttributeName.WrapperUserId)
+            const attribute = nft?.attributes.find(attribute => attribute.key === AttributeName.WrapperUserId)
             if (attribute) {
                 await userSwrMutation.trigger({
                     request: attribute.value,
@@ -140,9 +139,7 @@ export const MainContent: FC = () => {
                     enableScroll={false}
                     items={Object.values(FruitPropertiesName)}
                     contentCallback={(name) => {
-                        const attribute = nft?.traits.find(
-                            (attribute) => attribute.key === name
-                        )
+                        const attribute = nft?.attributes.find((attribute) => attribute.key === name)
                         return (
                             <div className="px-3 py-2 bg-content-2 rounded-lg">
                                 <div className="flex gap-2 items-center justify-between w-full">
@@ -155,7 +152,7 @@ export const MainContent: FC = () => {
                                         }}
                                     />
                                     <div className="text-sm">
-                                        {Number(attribute?.value ?? 0)}
+                                        {Number(attribute?.value ?? "")}
                                     </div>
                                 </div>
                             </div>
@@ -183,9 +180,7 @@ export const MainContent: FC = () => {
                     enableScroll={false}
                     items={Object.values(StatsAttributeName)}
                     contentCallback={(name) => {
-                        const attribute = nft?.traits.find(
-                            (trait) => trait.key === name
-                        )
+                        const attribute = nft?.attributes.find((attribute) => attribute.key === name)
                         return (
                             <div className="px-3 py-2 bg-content-2">
                                 <div className="flex gap-2 items-center justify-between w-full">
@@ -198,7 +193,7 @@ export const MainContent: FC = () => {
                                         }}
                                     />
                                     <div className="text-sm">
-                                        {Number(attribute?.value ?? 0)}
+                                        {Number(attribute?.value ?? "")}
                                     </div>
                                 </div>
                             </div>
@@ -228,8 +223,8 @@ export const MainContent: FC = () => {
                         <div className="flex gap-2 items-center">
                             <NFTRarityBadge
                                 rarity={
-                                    nft.traits.find(
-                                        (rarity) => rarity.key === AttributeName.Rarity
+                                    nft.attributes.find(
+                                        (attribute) => attribute.key === AttributeName.Rarity
                                     )?.value as NFTRarityEnum
                                 }
                             />

@@ -84,7 +84,6 @@ export abstract class ItemTilemap extends GroundTilemap {
     private itemLayer: Phaser.Tilemaps.ObjectLayer
     // previous placed items
     protected previousPlacedItemsData: PlacedItemsData | undefined
-
     // place item objects map
     protected placedItemObjectMap: Record<string, PlacedItemObjectData> = {}
     protected activities: Activities

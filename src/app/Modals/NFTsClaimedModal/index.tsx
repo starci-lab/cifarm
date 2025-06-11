@@ -43,13 +43,13 @@ export const NFTsClaimedModal: FC = () => {
                         <ScrollArea type="always" className="w-1 flex-1">
                             <div className="flex gap-2 items-center">
                                 {nftItems.map((nftItem) => (
-                                    <Card key={nftItem.nftType}>
+                                    <Card key={nftItem.nftCollectionKey}>
                                         <CardBody className="p-3 w-40">
                                             <Image src={
                                                 (()=>{
                                                     if (!staticSwr.data) return ""
                                                     return getNFTImage({
-                                                        nftType: nftItem.nftType,
+                                                        nftCollectionKey: nftItem.nftCollectionKey,
                                                         staticData: staticSwr.data?.data,
                                                         network,
                                                     })

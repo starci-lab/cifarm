@@ -13,10 +13,10 @@ import {
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation, useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation, useGlobalAccountAddress, useGraphQLQueryStaticSwr, toast } from "@/hooks"
-import { useAppSelector, setSelectedNFTType, useAppDispatch, setSignTransactionModal, TransactionType } from "@/redux"
+import { useAppSelector, setSelectedNFTCollectionKey, useAppDispatch, setSignTransactionModal, TransactionType } from "@/redux"
 import { ArrowDown, CaretDown, CaretUp } from "@phosphor-icons/react"
 import { envConfig } from "@/env"
-import { NFTType } from "@/modules/entities"
+import { NFTCollectionKey } from "@/modules/entities"
 export const NFTConversionModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<
         ReturnType<typeof useDisclosure>
@@ -25,22 +25,22 @@ export const NFTConversionModal: FC = () => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
         QUERY_STATIC_SWR_MUTATION
     )
-    const nftType = useAppSelector((state) => state.convertReducer.nftType)
+    const nftCollectionKey = useAppSelector((state) => state.convertReducer.nftCollectionKey)
     const nftAddresses = useAppSelector((state) => state.convertReducer.nftAddresses)
     const conversionRate = staticSwr.data?.data.nftConversion.conversionRate || 1
     const nftsGet = nftAddresses.length / conversionRate
-    const selectedNFTType = useAppSelector((state) => state.convertReducer.selectedNFTType)
+    const selectedNFTCollectionKey = useAppSelector((state) => state.convertReducer.selectedNFTCollectionKey)
     const network = envConfig().network
     const { isOpen: isNFTCollectionModalOpen, open: openNFTCollectionModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SELECT_NFT_COLLECTION_DISCLOSURE
     )
     const dispatch = useAppDispatch()
     useEffect(() => {
-        if (nftType === selectedNFTType) {
-            const nextNFTType = Object.values(NFTType).find((nftType) => nftType !== selectedNFTType) as NFTType
-            dispatch(setSelectedNFTType(nextNFTType))
+        if (nftCollectionKey === selectedNFTCollectionKey) {
+            const nextNFTCollectionKey = Object.values(NFTCollectionKey).find((nftCollectionKey) => nftCollectionKey !== selectedNFTCollectionKey) as NFTCollectionKey
+            dispatch(setSelectedNFTCollectionKey(nextNFTCollectionKey))
         }
-    }, [selectedNFTType, nftType])
+    }, [selectedNFTCollectionKey, nftCollectionKey])
     const { swrMutation: createConvertSolanaMetaplexNFTsSwrMutation } = useSingletonHook<ReturnType<typeof useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation>>(
         GRAPHQL_MUTATION_CREATE_CONVERT_SOLANA_METAPLEX_NFTS_TRANSACTION_SWR_MUTATION
     )
@@ -64,8 +64,8 @@ export const NFTConversionModal: FC = () => {
                         <Card className="w-full relative">
                             <CardBody className="flex items-center justify-between">
                                 <div className="flex items-center gap-1">
-                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[nftType]?.[network]?.imageUrl || ""} />
-                                    {staticSwr.data?.data.nftCollections?.[nftType]?.[network]?.name}
+                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[nftCollectionKey]?.[network]?.imageUrl || ""} />
+                                    {staticSwr.data?.data.nftCollections?.[nftCollectionKey]?.[network]?.name}
                                     <CaretDown className="w-4 h-4" />
                                 </div>
                                 <div className="text-4xl">
@@ -79,8 +79,8 @@ export const NFTConversionModal: FC = () => {
                         <Card className="w-full relative">
                             <CardBody className="flex items-center justify-between">
                                 <div className="flex items-center gap-1" onClick={openNFTCollectionModal}>
-                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[selectedNFTType]?.[network]?.imageUrl || ""} />
-                                    {staticSwr.data?.data.nftCollections?.[selectedNFTType]?.[network]?.name}
+                                    <Image className="w-6 h-6" src={staticSwr.data?.data.nftCollections?.[selectedNFTCollectionKey]?.[network]?.imageUrl || ""} />
+                                    {staticSwr.data?.data.nftCollections?.[selectedNFTCollectionKey]?.[network]?.name}
                                     {isNFTCollectionModalOpen ? <CaretUp className="w-4 h-4" /> : <CaretDown className="w-4 h-4" />}
                                 </div>
                                 <div className="text-4xl">
@@ -101,8 +101,8 @@ export const NFTConversionModal: FC = () => {
                                 request: {
                                     convertNFTAddresses: nftAddresses,
                                     accountAddress: accountAddress,
-                                    nftType: selectedNFTType,
-                                    burnNFTType: nftType,
+                                    nftCollectionKey: selectedNFTCollectionKey,
+                                    burnNFTCollectionKey: nftCollectionKey,
                                 }
                             })
                             if (!data) {

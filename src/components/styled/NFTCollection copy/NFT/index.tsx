@@ -7,7 +7,7 @@ interface NFTProps {
     nft: {
         name: string
         image: string
-        traits: string[]
+        attributes: Array<string>
     }
 }
 

@@ -394,12 +394,14 @@ const query = gql`
         testnet {
           placedItemTypeId
           name
+          description
           collectionAddress
           imageUrl
           }
           mainnet {
             placedItemTypeId
             name
+            description
             collectionAddress
             imageUrl
           }
@@ -408,12 +410,14 @@ const query = gql`
         testnet {
           placedItemTypeId
           name
+          description
           collectionAddress
           imageUrl
           }
           mainnet {
             placedItemTypeId
             name
+            description
             collectionAddress
             imageUrl
           }
@@ -422,26 +426,30 @@ const query = gql`
         testnet {
           placedItemTypeId
           name
+          description
           collectionAddress
           imageUrl
-          } 
-          mainnet {
-            placedItemTypeId
-            name
-            collectionAddress
-            imageUrl
+        } 
+        mainnet {
+          placedItemTypeId
+          name
+          description
+          collectionAddress
+          imageUrl
         }
       }
       pomegranate {
         testnet {
           placedItemTypeId
           name
+          description
           collectionAddress
           imageUrl
           }
           mainnet {
             placedItemTypeId
             name
+            description
             collectionAddress
             imageUrl
           }
@@ -471,7 +479,7 @@ const query = gql`
       tokenKey
       feePercentage
       chances {
-        nftType
+        nftCollectionKey
         startChance
         endChance
         rareRarityChance

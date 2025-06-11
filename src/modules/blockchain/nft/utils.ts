@@ -1,11 +1,11 @@
 import { PlacedItemTypeId } from "@/modules/entities"
 
-import { NFTType } from "@/modules/entities"
+import { NFTCollectionKey } from "@/modules/entities"
 
-export const NFTTypeToPlacedItemTypeId: Record<NFTType, PlacedItemTypeId> = {
-    [NFTType.DragonFruit]: PlacedItemTypeId.DragonFruit,
-    [NFTType.Jackfruit]: PlacedItemTypeId.Jackfruit,
-    [NFTType.Rambutan]: PlacedItemTypeId.Rambutan,
-    [NFTType.Pomegranate]: PlacedItemTypeId.Pomegranate,
+export const NFTCollectionKeyToPlacedItemTypeId: Record<NFTCollectionKey, PlacedItemTypeId> = {
+    [NFTCollectionKey.DragonFruit]: PlacedItemTypeId.DragonFruit,
+    [NFTCollectionKey.Jackfruit]: PlacedItemTypeId.Jackfruit,
+    [NFTCollectionKey.Rambutan]: PlacedItemTypeId.Rambutan,
+    [NFTCollectionKey.Pomegranate]: PlacedItemTypeId.Pomegranate,
 }   
 

@@ -9,14 +9,14 @@ import base58 from "bs58"
 import { WalletContextState } from "@solana/wallet-adapter-react"
 import { WalletAdapter } from "@solana/wallet-adapter-base"
 import { WalletWithRequiredFeatures } from "../token/transfer"
-import { NFTCollections, NFTType } from "@/modules/entities"
+import { NFTCollections, NFTCollectionKey } from "@/modules/entities"
 
 export interface TransferNFTParams {
     chainKey: ChainKey;
     nftAddress: string;
     network?: Network;
     recipientAddress: string;
-    collectionKey: NFTType;
+    collectionKey: NFTCollectionKey;
     collections: NFTCollections;
 
       // adapters

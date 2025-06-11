@@ -2,7 +2,7 @@ import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams, UmiTxsResponse } from "../../types"
 import { GraphQLResponse } from "../types"
-import { NFTType } from "@/modules/entities"
+import { NFTCollectionKey } from "@/modules/entities"
 
 const mutation1 = gql`
   mutation CreateConvertSolanaMetaplexNFTsTransaction (
@@ -31,8 +31,8 @@ const mutationMap: Record<MutationCreateConvertSolanaMetaplexNFTsTransaction, Do
 export interface CreateConvertSolanaMetaplexNFTsTransactionRequest {
   convertNFTAddresses: Array<string>
   accountAddress: string;
-  nftType: NFTType;
-  burnNFTType: NFTType;
+  nftCollectionKey: NFTCollectionKey;
+  burnNFTCollectionKey: NFTCollectionKey;
 }
 
 export type MutationCreateConvertSolanaMetaplexNFTsTransactionParams = MutationParams<

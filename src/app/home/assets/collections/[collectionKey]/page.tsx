@@ -1,24 +1,24 @@
 "use client"
 import { ExtendedButton, FilterBar, Header, Spacer } from "@/components"
 import React, { useEffect } from "react"
-import { useAppSelector, useAppDispatch, setIsConverting, setNFTAddresses, setNFTType } from "@/redux"
+import { useAppSelector, useAppDispatch, setIsConverting, setNFTAddresses, setNFTCollectionKey } from "@/redux"
 import { useParams } from "next/navigation"
 import { pathConstants } from "@/constants"
-import { useRouterWithSearchParams } from "@/hooks"
+import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
-import { useGraphQLQueryStaticSwr, useGraphQLQueryBlockchainCollectionsSwr } from "@/hooks"
-import { CONVERT_NFT_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR, GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR } from "@/app/constants"
-import { NFTType } from "@/modules/entities"
+import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { CONVERT_NFT_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
+import { NFTCollectionKey } from "@/modules/entities"
 import { envConfig } from "@/env"
 import { NFTCard } from "./NFTCard"
 import { NFTCardSkeleton } from "./NFTCardSkeleton"
-import { useMediaQuery } from "usehooks-ts"
 import { ArrowsClockwise, Swap } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { useDisclosure } from "react-use-disclosure"
+
 const Page = () => {
     const params = useParams()
-    const collectionKey = params.collectionKey as NFTType
+    const collectionKey = params.collectionKey as NFTCollectionKey
     const network = envConfig().network
 
     const router = useRouterWithSearchParams()
@@ -37,15 +37,17 @@ const Page = () => {
     >(GRAPHQL_QUERY_STATIC_SWR)
 
     const collection = staticSwr?.data?.data.nftCollections[collectionKey]?.[network]
-    const { swr: nftCollectionSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR)
     const nftAddresses = useAppSelector((state) => state.convertReducer.nftAddresses)
-    const isSmallScreen = useMediaQuery("(max-width: 640px)")
+    const isMobile = useIsMobile()
     const conversionRate = staticSwr.data?.data.nftConversion.conversionRate || 1
     const isConvertDisabled = nftAddresses.length === 0 || nftAddresses.length % conversionRate !== 0
     const { open: openConvertNFTModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         CONVERT_NFT_DISCLOSURE
     )
+    const collectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
+    const collectionSwr = collectionSwrs[collectionKey]
 
+    // reset the nft addresses and is converting when unmount
     useEffect(() => {
         return () => {
             dispatch(setNFTAddresses([]))
@@ -56,7 +58,7 @@ const Page = () => {
     return (
         <div>
             <div className="flex justify-between items-center gap-4">
-                <Header showBackButton={true} isSkeleton={!nftCollectionSwr?.data} title={`${collection?.name}`}/>
+                <Header showBackButton={true} isSkeleton={!staticSwr?.data} title={`${collection?.name}`}/>
             </div>
             <Spacer y={6} />
             <div className="flex justify-between items-center gap-4">
@@ -85,7 +87,7 @@ const Page = () => {
                         !isConverting && (
                             <ExtendedButton color="secondary" variant="flat" onClick={() => {
                                 dispatch(setNFTAddresses([]))
-                                dispatch(setNFTType(collectionKey))
+                                dispatch(setNFTCollectionKey(collectionKey))
                                 dispatch(setIsConverting(true))
                             }}>
                                 <Swap />
@@ -99,17 +101,27 @@ const Page = () => {
                         searchString={""}
                         className="max-w-[200px]"
                     />
-                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => nftCollectionSwr.mutate()}>
+                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {}}>
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
             </div>
             <Spacer y={4} />
+            <div className="text-muted-foreground flex items-center gap-2">
+                {
+                    collectionSwr?.data?.refreshInterval && (
+                        <div>
+                            Wait {collectionSwr?.data?.refreshInterval} seconds to refresh
+                        </div>
+                    )
+                }
+            </div>
+            <Spacer y={4} />
             {   
-                (!collection || !nftCollectionSwr || !nftCollectionSwr.data) ? (
+                (!collectionSwr?.data) ? (
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                         {
-                            isSmallScreen ? (
+                            isMobile ? (
                                 <NFTCardSkeleton />
                             ) : (
                                 <>
@@ -123,10 +135,8 @@ const Page = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                        {nftCollectionSwr.data?.data.blockchainCollections.collections.find((collection) => collection.nftType === collectionKey)?.nfts.map((nft) => {
-                            if (!staticSwr.data) {
-                                throw new Error("No data")
-                            }
+                        {collectionSwr.data?.collection.nfts.map((nft) => {
+                            if (!collectionSwr.data) throw new Error("No data")
                             return (
                                 <NFTCard key={nft.nftAddress} nft={nft} />
                             )

@@ -2,7 +2,7 @@ import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams, MutationVariables } from "../../types"
 import { GraphQLResponse } from "../types"
-import { NFTType } from "@/modules/entities"
+import { NFTCollectionKey } from "@/modules/entities"
 import { NFTRarityEnum } from "@/modules/blockchain"
 
 const mutation1 = gql`
@@ -13,7 +13,7 @@ const mutation1 = gql`
       data {
         txHash
         nftBoxes {
-          nftType
+          nftCollectionKey
           rarity
           nftName
           nftAddress
@@ -34,7 +34,7 @@ export interface SendPurchaseSolanaNFTBoxesTransactionRequest {
 }
 
 export interface NFTBox {
-  nftType: NFTType
+  nftCollectionKey: NFTCollectionKey
   rarity: NFTRarityEnum
   nftName: string
   nftAddress: string

@@ -3,7 +3,7 @@ import { Position } from "../base"
 import {
     CropId,
     DailyRewardId,
-    NFTType,
+    NFTCollectionKey,
     TokenKey,
     TokenType,
 } from "../enums"
@@ -122,11 +122,12 @@ export interface DailyRewardInfo {
 export interface NFTCollectionData {
   placedItemTypeId: string;
   name: string;
+  description: string;
   collectionAddress: string;
   imageUrl: string;
 }
 export type NFTCollection = Partial<Record<Network, NFTCollectionData>>;
-export type NFTCollections = Partial<Record<NFTType, NFTCollection>>;
+export type NFTCollections = Partial<Record<NFTCollectionKey, NFTCollection>>;
 
 export interface GoldPurchaseOption {
   price: number;
@@ -154,7 +155,7 @@ export interface InteractionPermissions {
 }
 
 export interface NFTBoxChance {
-  nftType: NFTType;
+  nftCollectionKey: NFTCollectionKey;
   startChance: number;
   endChance: number;
   rareRarityChance: number;

@@ -9,6 +9,7 @@ const query1 = gql`
   query BlockchainBalances($request: GetBlockchainBalancesRequest!) {
     blockchainBalances(request: $request) {
       cached
+      refreshInterval
       tokens {
         balance
         tokenKey

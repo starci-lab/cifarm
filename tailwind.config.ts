@@ -57,6 +57,9 @@ const config: Config = {
                 success: {
                     DEFAULT: "hsl(var(--success))",
                 },
+                warning: {
+                    DEFAULT: "hsl(var(--warning))",
+                },
     			background: "hsl(var(--background))", 
     			foreground: "hsl(var(--foreground))",
                 navbar: {

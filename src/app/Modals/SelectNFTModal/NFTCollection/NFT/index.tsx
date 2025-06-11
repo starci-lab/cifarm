@@ -17,7 +17,7 @@ interface NFTProps {
         nft: {
             name: string
             image: string
-            traits: string[]
+            attributes: Array<string>
         }
     }
 }
@@ -55,7 +55,6 @@ export const NFT: FC<NFTProps> = ({ nft }) => {
                         <div className="flex gap-2 flex-col">
                             <div className="text-sm">{nft.name}</div>
                             <div className="flex gap-2">
-                                {/* <TraitDropdown traits={nft.traits} /> */}
                                 <ExtendedButton variant="outline" className="w-full">
                   View
                                 </ExtendedButton>
