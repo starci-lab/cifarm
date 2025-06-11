@@ -1,4 +1,4 @@
-import { PlacedItemSchema, PlacedItemType } from "@/modules/entities"
+import { PlacedItemSchema } from "@/modules/entities"
 import { PartialDeep } from "type-fest"
 
 export enum ActionName {
@@ -41,89 +41,4 @@ export interface EmitActionPayload {
   success?: boolean;
   data?: unknown;
   reasonCode?: string;
-}
-
-export enum ThiefPlantReasonCode {
-  DogAssisted = "dog_assisted",
-}
-
-export interface ThiefPlantData {
-  quantity: number;
-  productId: string;
-}
-
-export interface BuyTileData {
-  tileId: string;
-}
-
-export interface BuyFruitData {
-  fruitId: string;
-}
-
-export interface BuyAnimalData {
-  animalId: string;
-}
-
-export interface BuyPetData {
-  petId: string;
-}
-
-export interface HarvestPlantData {
-  quantity: number;
-  productId: string;
-}
-
-export interface ThiefAnimalProductData {
-  quantity: number;
-  productId: string;
-}
-
-export interface HarvestAnimalData {
-  quantity: number;
-  productId: string;
-}
-
-export interface HarvestBeeHouse {
-  quantity: number;
-  productId: string;
-}
-
-export interface ThiefBeeHouse {
-  quantity: number;
-  productId: string;
-}
-
-export interface HarvestFruitData {
-  quantity: number;
-  productId: string;
-}
-
-export interface ThiefFruitData {
-  quantity: number;
-  productId: string;
-}
-
-export interface SellData {
-  id: string;
-  type: PlacedItemType;
-}
-
-export interface BuyBuildingData {
-  buildingId: string;
-}
-
-export interface ThiefFruitData {
-  quantity: number;
-  productId: string;
-}
-
-export interface ThiefPlantData {
-  quantity: number;
-  productId: string;
-  catAssistedSuccess?: boolean;
-}
-
-export interface ThiefAnimalData {
-  quantity: number;
-  productId: string;
 }

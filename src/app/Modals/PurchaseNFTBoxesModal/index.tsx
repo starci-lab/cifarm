@@ -1,6 +1,6 @@
 "use client"
-import { GRAPHQL_QUERY_STATIC_SWR, PURCHASE_NFT_BOXES_DISCLOSURE, PURCHASE_NFT_BOXES_FORMIK } from "@/app/constants"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR, GRAPHQL_QUERY_STATIC_SWR, PURCHASE_NFT_BOXES_DISCLOSURE, PURCHASE_NFT_BOXES_FORMIK } from "@/app/constants"
+import { useGraphQLQueryBlockchainBalancesSwr, useGraphQLQueryStaticSwr } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import React, { FC, useEffect } from "react"
 import {
@@ -16,8 +16,6 @@ import { ExtendedButton, Image, ModalHeader, Slider, Spacer, Title } from "@/com
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { usePurchaseNFTBoxesFormik } from "@/hooks"
-import { useAppSelector } from "@/redux"
-import { TokenKey } from "@/modules/entities"
 
 export const PurchaseNFTBoxesModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<
@@ -26,12 +24,15 @@ export const PurchaseNFTBoxesModal: FC = () => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     const formik = useSingletonHook2<ReturnType<typeof usePurchaseNFTBoxesFormik>>(PURCHASE_NFT_BOXES_FORMIK)
     
-    const balanceSwrs = useAppSelector(state => state.sessionReducer.balanceSwrs)
-    const balanceSwr = balanceSwrs[staticSwr.data?.data.nftBoxInfo.tokenKey || TokenKey.USDC]
-
+    const { swr: balanceSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR)
+    
+    const balance = balanceSwr?.data?.data.blockchainBalances.tokens.find(
+        (token) => token.tokenKey === staticSwr.data?.data.nftBoxInfo.tokenKey
+    )?.balance ?? 0
+    
     useEffect(() => {
-        if (balanceSwr) {
-            formik.setFieldValue("balance", balanceSwr.data)
+        if (balanceSwr?.data) {
+            formik.setFieldValue("balance", balance)
         }
     }, [balanceSwr])
 
@@ -62,7 +63,7 @@ export const PurchaseNFTBoxesModal: FC = () => {
                     <div className="flex items-center justify-between">
                         <Title title="Estimated price" tooltipString="This is the estimated price of the NFT boxes you are purchasing." />
                         <div className="text-muted-foreground">
-                            Balance: {balanceSwr?.data}
+                            Balance: {balance}
                         </div>
                     </div>
                     <Spacer y={2} />

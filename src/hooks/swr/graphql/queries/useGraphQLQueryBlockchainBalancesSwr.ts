@@ -11,6 +11,7 @@ import { useGlobalAccountAddress } from "@/hooks/useGlobalAccountAddress"
 import { ChainKey } from "@/modules/blockchain"
 import { TokenKey } from "@/modules/entities"
 import _ from "lodash"
+import { useAppSelector } from "@/redux"
 
 export const useGraphQLQueryBlockchainBalancesSwr = (): UseSWR<
     ApolloQueryResult<QueryBlockchainBalancesResponseWrapper>,
@@ -18,8 +19,9 @@ export const useGraphQLQueryBlockchainBalancesSwr = (): UseSWR<
 > => {
     const { accountAddress } = useGlobalAccountAddress()
     const [params, setParams] = useState<QueryBlockchainBalancesParams>({})
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const swr = useSWR(
-        accountAddress ? ["QUERY_BLOCKCHAIN_BALANCES", params] : null,
+        (authenticated && accountAddress) ? ["QUERY_BLOCKCHAIN_BALANCES", params, accountAddress] : null,
         async () => {
             if (!accountAddress) throw new Error("Account address is required")
             const _params = _.isEmpty(params) ? {

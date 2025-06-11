@@ -6,13 +6,15 @@ import {
 } from "@/modules/apollo"
 import useSWR from "swr"
 import { ApolloQueryResult } from "@apollo/client"
+import { useAppSelector } from "@/redux"
 
 export const useGraphQLQueryVaultCurrentSwr = (): UseSWR<
     ApolloQueryResult<QueryVaultCurrentResponseWrapper>,
   QueryVaultCurrentParams
 > => {
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const swr = useSWR(
-        "QUERY_VAULT_CURRENT",
+        authenticated ? "QUERY_VAULT_CURRENT" : null,
         async () => {
             const response = await queryVaultCurrent({})
             return response

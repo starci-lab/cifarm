@@ -11,17 +11,17 @@ import { ChainKey } from "@/modules/blockchain"
 import { useGlobalAccountAddress } from "@/hooks/useGlobalAccountAddress"
 import { NFTType } from "@/modules/entities"
 import _ from "lodash"
+import { useAppSelector } from "@/redux"
 
 export const useGraphQLQueryBlockchainCollectionsSwr = (): UseSWR<
     ApolloQueryResult<QueryBlockchainCollectionsResponseWrapper>,
   QueryBlockchainCollectionsParams
 > => {
     const { accountAddress } = useGlobalAccountAddress()
-
     const [params, setParams] = useState<QueryBlockchainCollectionsParams>({})
-
+    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const swr = useSWR(
-        accountAddress ? ["QUERY_BLOCKCHAIN_COLLECTIONS", params] : null,
+        (authenticated && accountAddress) ? ["QUERY_BLOCKCHAIN_COLLECTIONS", params, accountAddress] : null,
         async () => {
             if (!accountAddress) throw new Error("Account address is required")
             const _params = _.isEmpty(params) ? {

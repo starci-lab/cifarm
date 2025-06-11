@@ -7,14 +7,26 @@ import {
     BuyTileData,
     EmitActionPayload,
     HarvestAnimalData,
-    HarvestBeeHouse,
+    HarvestBeeHouseData,
     HarvestFruitData,
     HarvestPlantData,
+    HelpUseAnimalMedicineReasonCode,
+    HelpUseBugNetReasonCode,
+    HelpUseHerbicideReasonCode,
+    HelpUsePesticideReasonCode,
     ThiefAnimalData,
-    ThiefBeeHouse,
+    ThiefAnimalReasonCode,
+    ThiefBeeHouseData,
+    ThiefBeeHouseReasonCode,
     ThiefFruitData,
+    ThiefFruitReasonCode,
     ThiefPlantData,
     ThiefPlantReasonCode,
+    UseAnimalMedicineReasonCode,
+    UseBugNetReasonCode,
+    UseHerbicideReasonCode,
+    UsePesticideReasonCode,
+    UseWateringCanReasonCode,
 } from "@/hooks"
 import {
     Activities,
@@ -182,7 +194,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 // thus, switch case based on action
                 const position = this.getPositionFromPlacedItem(data.placedItem)
                 switch (data.action) {
-                case ActionName.UseWateringCan:
+                case ActionName.UseWateringCan: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -201,19 +213,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                iconAssetKey:   
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
-                                x: position.x,
-                                y: position.y,
-                                quantity: -this.activities.useWateringCan.energyConsume,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case UseWateringCanReasonCode.NotNeedWateringCan: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not need watering can",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-
-                case ActionName.PlantSeed:
+                }
+                case ActionName.PlantSeed: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -231,20 +249,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: this.activities.plantSeed.experiencesGain ?? 0,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
-                                x: position.x,
-                                y: position.y,
-                                quantity: -this.activities.plantSeed.energyConsume,
-                            },
-                        ])
                     }
                     break
-
-                case ActionName.UsePesticide:
+                }
+                case ActionName.UsePesticide: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -263,18 +271,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
-                                x: position.x,
-                                y: position.y,
-                                quantity: -this.activities.usePesticide.energyConsume,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case UsePesticideReasonCode.NotNeedPesticide: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,  
+                                    text: "Not need pesticide",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.HelpUsePesticide:
+                }
+                case ActionName.HelpUsePesticide: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -294,18 +309,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
-                                x: position.x,
-                                y: position.y,
-                                quantity: -this.activities.helpUsePesticide.energyConsume,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case HelpUsePesticideReasonCode.NotNeedPesticide: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,  
+                                    text: "Not need pesticide",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.UseHerbicide:
+                }
+                case ActionName.UseHerbicide: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -324,18 +346,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
-                                x: position.x,
-                                y: position.y,
-                                quantity: -this.activities.useHerbicide.energyConsume,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case UseHerbicideReasonCode.NotNeedHerbicide: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,  
+                                    text: "Not need herbicide",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.HelpUseHerbicide:
+                }
+                case ActionName.HelpUseHerbicide: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -355,17 +384,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to use herbicide",
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case HelpUseHerbicideReasonCode.NotNeedHerbicide: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,  
+                                    text: "Not need herbicide",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.UseFertilizer:
+                }
+                case ActionName.UseFertilizer: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -383,18 +420,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: this.activities.useFertilizer.experiencesGain ?? 0,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to use fertilizer",
-                            },
-                        ])
                     }
                     break
-                case ActionName.HarvestPlant:
+                }
+                case ActionName.HarvestPlant: {
                     if (data.success) {
                         const { quantity, productId } = data.data as HarvestPlantData
                         const product = this.products.find(
@@ -459,18 +488,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     : undefined,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to harvest plant",
-                            },
-                        ])
                     }
                     break
-                case ActionName.BuyTile:
+                }
+                case ActionName.BuyTile: {
                     if (data.success) {
                         const { tileId } = data.data as BuyTileData
                         const tile = this._tiles.find((tile) => tile.id === tileId)
@@ -489,17 +510,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -tile.price,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to buy tile",
-                            },
-                        ])
                     }
                     break
+                }
                 case ActionName.BuyAnimal: {
                     if (data.success) {
                         const { animalId } = data.data as BuyAnimalData
@@ -519,15 +532,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity: -animal.price,
-                            },
-                        ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to buy animal",
                             },
                         ])
                     }
@@ -554,19 +558,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -pet.price,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to buy pet",
-                            },
-                        ])
                     }
                     break
                 }
-                case ActionName.BuyFruit:
+                case ActionName.BuyFruit: {
                     if (data.success) {
                         const { fruitId } = data.data as BuyFruitData
                         const fruit = this.fruits.find((fruit) => fruit.id === fruitId)
@@ -585,18 +580,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -fruit.price,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to buy fruit",
-                            },
-                        ])
                     }
                     break
-                case ActionName.BuyBuilding:
+                }
+                case ActionName.BuyBuilding: {
                     if (data.success) {
                         const { buildingId } = data.data as BuyBuildingData
                         const building = this.buildings.find(
@@ -617,18 +604,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -building.price,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to buy building",
-                            },
-                        ])
                     }
                     break
-                case ActionName.ThiefPlant:
+                }
+                case ActionName.ThiefPlant: {
                     if (data.success) {
                         const { quantity, productId, catAssistedSuccess } = data.data as ThiefPlantData
                         const product = this.products.find(
@@ -668,7 +647,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 iconAssetKey: assetIconMap[AssetIconId.Cat].phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
-                                text: "Assisted",
+                                text: "Cat assisted",
                             }] : []),
                         ])
                     } else {
@@ -680,14 +659,50 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     showIcon: false,
                                     x: position.x,
                                     y: position.y,
-                                    text: "Assisted",
+                                    text: "Dog assisted",
+                                },
+                            ])
+                            break
+                        case ThiefPlantReasonCode.NotFullyMatured: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not fully matured",
                                 },
                             ])
                             break
                         }
+                        case ThiefPlantReasonCode.NotPlanted: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,    
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not planted",
+                                },
+                            ])
+                            break   
+                        }
+                        case ThiefPlantReasonCode.QuantityReactMinimum: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,  
+                                    y: position.y,
+                                    text: "Quantity react minimum",
+                                },
+                            ])
+                            break
+                        }   
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.UseAnimalMedicine:
+                }
+                case ActionName.UseAnimalMedicine: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -706,17 +721,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to use animal medicine",
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case UseAnimalMedicineReasonCode.NotNeedAnimalMedicine: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not need animal medicine",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.UseAnimalFeed:
+                }
+                case ActionName.UseAnimalFeed: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -734,18 +757,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: this.activities.useAnimalFeed.experiencesGain,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to use animal feed",
-                            },
-                        ])
                     }
                     break
-                case ActionName.HarvestAnimal:
+                }
+                case ActionName.HarvestAnimal: {
                     if (data.success) {
                         const { quantity, productId } = data.data as HarvestAnimalData
                         const product = this.products.find(
@@ -798,18 +813,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     : undefined,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.HarvestAnimal,
-                            },
-                        ])
                     }
                     break
-                case ActionName.HelpUseAnimalMedicine:
+                }
+                case ActionName.HelpUseAnimalMedicine: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -830,17 +837,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.HelpUseAnimalMedicine,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case HelpUseAnimalMedicineReasonCode.NotNeedAnimalMedicine: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not need animal medicine",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.ThiefAnimal:
+                }
+                case ActionName.ThiefAnimal: {
                     if (data.success) {
                         const { quantity, productId } = data.data as ThiefAnimalData
                         const product = this.products.find(
@@ -879,17 +894,48 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.ThiefAnimal,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case ThiefAnimalReasonCode.NotReadyToHarvest: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not ready to harvest",
+                                },
+                            ])  
+                            break
+                        }
+                        case ThiefAnimalReasonCode.QuantityReactMinimum: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,    
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Quantity react minimum",
+                                },
+                            ])
+                            break   
+                        }
+                        case ThiefAnimalReasonCode.DogAssisted: {
+                            this.createFlyItems([
+                                {
+                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
+                                    showIcon: false,    
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Dog assisted",
+                                },
+                            ])
+                            break   
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.Sell:
+                }
+                case ActionName.Sell: {
                     if (data.success) {
                         const placedItemType = this.placedItemTypes.find(
                             (placedItemType) => placedItemType.id === data.placedItem.placedItemType
@@ -921,19 +967,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: sellPrice,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.Sell,
-                            },
-                        ])
                     }
                     break
-
-                case ActionName.HarvestFruit:
+                }
+                case ActionName.HarvestFruit: {
                     if (data.success) {
                         const { quantity, productId } = data.data as HarvestFruitData
                         const product = this.products.find(
@@ -986,18 +1023,10 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     : undefined,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.HarvestFruit,
-                            },
-                        ])
                     }
                     break
-                case ActionName.ThiefFruit:
+                }
+                case ActionName.ThiefFruit: {
                     if (data.success) {
                         const { quantity, productId } = data.data as ThiefFruitData
                         const product = this.products.find(
@@ -1035,17 +1064,48 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.ThiefFruit,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case ThiefFruitReasonCode.NotFullyMatured: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not fully matured",
+                                },
+                            ])
+                            break
+                        }
+                        case ThiefFruitReasonCode.QuantityReactMinimum: {   
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Quantity react minimum",
+                                },
+                            ])
+                            break
+                        }
+                        case ThiefFruitReasonCode.DogAssisted: {
+                            this.createFlyItems([   
+                                {
+                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
+                                    showIcon: false,    
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Dog assisted",   
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")  
+                        }
                     }
                     break
-                case ActionName.UseBugNet:
+                }
+                case ActionName.UseBugNet: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -1064,16 +1124,24 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to " + ActionName.UseBugNet,
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case UseBugNetReasonCode.NotNeedBugNet: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not need bug net",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
+                }
                 case ActionName.HelpUseWateringCan: {
                     if (data.success) {
                         this.createFlyItems([
@@ -1104,7 +1172,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     }
                     break
                 }
-                case ActionName.HelpUseBugNet:
+                case ActionName.HelpUseBugNet: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -1123,17 +1191,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to help use bug net",
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case HelpUseBugNetReasonCode.NotNeedBugNet: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not need bug net",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
-                case ActionName.UseFruitFertilizer:
+                }
+                case ActionName.UseFruitFertilizer: {
                     if (data.success) {
                         this.createFlyItems([
                             {
@@ -1151,17 +1227,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: this.activities.useFruitFertilizer.experiencesGain,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to use fruit fertilizer",
-                            },
-                        ])
                     }
                     break
+                }
                 case ActionName.UpgradeBuilding: {
                     if (data.success) {
                         const currentUpgrade = data.placedItem.buildingInfo?.currentUpgrade
@@ -1195,21 +1263,12 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -price,
                             },
                         ])
-                    } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to upgrade building",
-                            },
-                        ])
                     }
                     break
                 }
                 case ActionName.HarvestBeeHouse: {
                     if (data.success) {
-                        const { quantity, productId } = data.data as HarvestBeeHouse
+                        const { quantity, productId } = data.data as HarvestBeeHouseData
                         const product = this.products.find(
                             (product) => product.id === productId
                         )
@@ -1270,20 +1329,48 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to harvest bee house",
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case ThiefBeeHouseReasonCode.NotReadyToHarvest: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not ready to harvest",
+                                },
+                            ])
+                            break
+                        }
+                        case ThiefBeeHouseReasonCode.QuantityReactMinimum:
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Quantity react minimum",
+                                },
+                            ])
+                            break
+                        case ThiefBeeHouseReasonCode.DogAssisted:
+                            this.createFlyItems([
+                                {
+                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Dog assisted",
+                                },
+                            ])
+                            break
+                        default:
+                            throw new Error("Unknown reason code")
+                        }       
                     }
                     break
                 }
                 case ActionName.ThiefBeeHouse: {
                     if (data.success) {
-                        const { quantity, productId } = data.data as ThiefBeeHouse
+                        const { quantity, productId } = data.data as ThiefBeeHouseData
                         const product = this.products.find(
                             (product) => product.id === productId
                         )
@@ -1320,14 +1407,44 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        this.createFlyItems([
-                            {
-                                showIcon: false,
-                                x: position.x,
-                                y: position.y,
-                                text: "Failed to thief bee house",
-                            },
-                        ])
+                        switch (data.reasonCode) {
+                        case ThiefBeeHouseReasonCode.NotReadyToHarvest: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Not ready to harvest",
+                                },
+                            ])
+                            break
+                        }
+                        case ThiefBeeHouseReasonCode.QuantityReactMinimum: {
+                            this.createFlyItems([
+                                {
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Quantity react minimum",
+                                },
+                            ])
+                            break
+                        }
+                        case ThiefBeeHouseReasonCode.DogAssisted: {
+                            this.createFlyItems([
+                                {
+                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
+                                    showIcon: false,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: "Dog assisted",
+                                },
+                            ])
+                            break
+                        }
+                        default:
+                            throw new Error("Unknown reason code")
+                        }
                     }
                     break
                 }
