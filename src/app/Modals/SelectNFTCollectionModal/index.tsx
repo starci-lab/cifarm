@@ -1,6 +1,6 @@
 import React from "react"
 import { ModalHeader, NFTCollection, ScrollArea } from "@/components"
-import { GRAPHQL_QUERY_STATIC_SWR, SELECT_NFT_COLLECTION_DISCLOSURE } from "@/app/constants"
+import { GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR, GRAPHQL_QUERY_STATIC_SWR, SELECT_NFT_COLLECTION_DISCLOSURE } from "@/app/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     Dialog,
@@ -12,7 +12,7 @@ import {
 import { useDisclosure } from "react-use-disclosure"
 import { NFTType } from "@/modules/entities"
 import { setSelectedNFTType, useAppDispatch, useAppSelector } from "@/redux"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
+import { useGraphQLQueryStaticSwr, useGraphQLQueryBlockchainCollectionsSwr } from "@/hooks"
 import { envConfig } from "@/env"
 
 export const SelectNFTCollectionModal = () => {
@@ -21,7 +21,7 @@ export const SelectNFTCollectionModal = () => {
   >(SELECT_NFT_COLLECTION_DISCLOSURE)
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     const nftCollections = staticSwr.data?.data.nftCollections || {}
-    const nftCollectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
+    const { swr: blockchainCollectionsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainCollectionsSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_COLLECTIONS_SWR)
     const network = envConfig().network
     const selectedNFTType = useAppSelector((state) => state.convertReducer.selectedNFTType)
     const nftCollectionData = nftCollections?.[selectedNFTType]?.[network]
@@ -47,7 +47,7 @@ export const SelectNFTCollectionModal = () => {
                                         disabled={nftType === originalNFTType}
                                         key={nftType}
                                         collection={collection}
-                                        collectionSwr={nftCollectionSwrs[nftType]}
+                                        nfts={blockchainCollectionsSwr.data?.data.blockchainCollections.collections.find((collection) => collection.nftType === nftType)?.nfts || []}
                                         onClick={() => {
                                             dispatch(setSelectedNFTType(nftType))
                                             close()
