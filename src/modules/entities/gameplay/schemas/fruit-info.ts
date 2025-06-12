@@ -5,6 +5,7 @@ export interface FruitInfoSchema extends AbstractSchema {
   currentStage: number;
   currentStageTimeElapsed: number;
   harvestQuantityRemaining: number;
+  currentFertilizerTime: number;
   harvestCount: number;
   isQuality: boolean;
   currentState: FruitCurrentState;

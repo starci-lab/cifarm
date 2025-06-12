@@ -62,7 +62,6 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
 
     const [hungryTimeElapsed, setHungryTimeElapsed] = useState(0)
 
-
     useEffect(() => {
         if (!staticSwr.data?.data || !placedItem?.placedItemType || !placedItem?.animalInfo) return
     
@@ -92,6 +91,9 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
         if (
             hungryTimeElapsed === 0
         ) {
+            return
+        }
+        if (placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry) {
             return
         }
         const interval = setInterval(() => {
@@ -209,7 +211,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                 <div className="bg-content-2 rounded-lg overflow-hidden">
                     <div className="gap-4">
                         <div className="p-3 items-center">
-                            <div className="text-muted-foreground">
+                            <div className="text-muted-foreground leading-none">
                                 { placedItem.animalInfo?.isAdult ? "Harvest time" : "Growth time" }
                             </div>
                             <div className={
@@ -229,7 +231,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                                 Hungry time
                             </div>
                             <div>
-                                { formatTime(hungryTimeElapsed) }
+                                {formatTime(hungryTimeElapsed) }
                             </div>
                         </div>
                     </div>

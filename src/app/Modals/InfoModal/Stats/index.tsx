@@ -19,22 +19,22 @@ export const Stats: FC<StatsProps> = ({ growthAcceleration, qualityYield, diseas
             switch (name) {
             case StatsAttributeName.GrowthAcceleration:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
-                    <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
+                    <div className="text-muted-foreground">{statsAttributeNameMap[name].name}</div>
                     <div>{growthAcceleration} ({`${computeGrowthAcceleration(growthAcceleration || 0)}%`})</div>
                 </div>
             case StatsAttributeName.QualityYield:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
-                    <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
+                    <div className="text-muted-foreground">{statsAttributeNameMap[name].name}</div>
                     <div>{qualityYield} ({`${computeQualityYieldChance(qualityYield || 0)}%`})</div>
                 </div>
             case StatsAttributeName.DiseaseResistance:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
-                    <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
+                    <div className="text-muted-foreground">{statsAttributeNameMap[name].name}</div>
                     <div>{diseaseResistance} ({`${computeDiseaseResistance(diseaseResistance || 0)}%`})</div>
                 </div>
             case StatsAttributeName.HarvestYieldBonus:
                 return <div className="flex justify-between px-3 py-2 bg-content-2">
-                    <div className="text-secondary">{statsAttributeNameMap[name].name}</div>
+                    <div className="text-muted-foreground">{statsAttributeNameMap[name].name}</div>
                     <div>{harvestYieldBonus} ({`${computeHarvestYieldBonus(harvestYieldBonus || 0)}%`})</div>
                 </div>
             }

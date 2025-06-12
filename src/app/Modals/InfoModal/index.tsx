@@ -11,7 +11,6 @@ import {
 } from "@/components"
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
-import { ModalHeader } from "@/components"
 import { useAppSelector } from "@/redux"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
@@ -98,9 +97,7 @@ export const InfoModal: FC = () => {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        <ModalHeader
-                            title={getPlacedItemTypeName(placedItemType.id, swr.data?.data) ?? ""}
-                        />
+                        {getPlacedItemTypeName(placedItemType.id, swr.data?.data) ?? ""}
                     </DialogTitle>
                 </DialogHeader>
                 {renderContent()}

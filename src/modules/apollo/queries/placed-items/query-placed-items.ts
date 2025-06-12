@@ -75,6 +75,7 @@ const query1 = gql`
         currentStage
         currentStageTimeElapsed
         currentState
+        currentFertilizerTime
         harvestQuantityRemaining
         harvestQuantityDesired
         harvestQuantityMin

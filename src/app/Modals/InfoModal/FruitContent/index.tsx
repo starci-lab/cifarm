@@ -3,7 +3,7 @@ import { FruitCurrentState, PlacedItemSchema } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { ExtendedBadge, Spacer, ExtendedButton, DialogFooter, DialogBody, NFTBadge } from "@/components"
+import { ExtendedBadge, Spacer, ExtendedButton, DialogFooter, DialogBody, NFTBadge, Separator } from "@/components"
 import {    
     assetProductMap,
     assetStateMap,
@@ -123,6 +123,47 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
         }
     }
 
+    const [needFertilizerTimeElapsed, setNeedFertilizerTimeElapsed] = useState(0)
+
+    useEffect(() => {
+        if (!staticSwr.data?.data || !placedItem?.placedItemType || !placedItem?.fruitInfo) return
+    
+        const placedItemType = staticSwr.data.data.placedItemTypes.find(
+            (type) => type.id === placedItem.placedItemType
+        )
+    
+        if (!placedItemType) {
+            throw new Error("Placed item type not found")
+        }
+    
+        const fruit = staticSwr.data.data.fruits.find(
+            (fruit) => fruit.id === placedItemType.fruit
+        )
+    
+        if (!fruit) {
+            throw new Error("Fruit not found for placed item type")
+        }
+    
+        const needFertilizerTime = fruit.fertilizerTime ?? 0
+        const currentFertilizerTime = placedItem.fruitInfo.currentFertilizerTime ?? 0
+        setNeedFertilizerTimeElapsed(needFertilizerTime - currentFertilizerTime)
+    }, [])
+
+    useEffect(() => {
+        if (
+            needFertilizerTimeElapsed === 0
+        ) {
+            return
+        }
+        if (placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer) {
+            return
+        }
+        const interval = setInterval(() => {
+            setNeedFertilizerTimeElapsed(needFertilizerTimeElapsed - 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [needFertilizerTimeElapsed])
+    
     return (
         <>
             <DialogBody>
@@ -142,6 +183,10 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                 <Spacer y={4} />
                 <div className="bg-content-2 rounded-lg overflow-hidden">
                     <div className="p-3">
+                        <div className="text-muted-foreground leading-none">
+                            Next growth stage in
+                        </div>
+                        <Spacer y={1} />
                         <div className={
                             cn(
                                 "text-4xl text-primary",
@@ -151,6 +196,15 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                             )
                         }>
                             {formatTime(timeElapsed)}
+                        </div>
+                    </div>
+                    <Separator />
+                    <div className="px-3 py-2 flex items-center justify-between">
+                        <div className="text-muted-foreground">
+                                Need fertilizer in
+                        </div>
+                        <div>
+                            {formatTime(timeElapsed) }
                         </div>
                     </div>
                     {placedItem.fruitInfo &&
