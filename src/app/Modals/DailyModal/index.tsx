@@ -17,13 +17,15 @@ import {
     DialogTitle,
     ScaledImage,
     DialogBody,
+    CardBody,
+    CardFooter,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { DailyRewardId } from "@/modules/entities"
 import { AssetIconId, assetIconMap, AssetUIId, assetUiMap } from "@/modules/assets"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { getCurrentDayMidnightUtc, getNextDayMidnightUtc, getUtc } from "@/modules/common"
+import { getCurrentDayMidnightUtc, getUtc } from "@/modules/common"
 import { useAppSelector } from "@/redux"
 
 export const DailyModal: FC = () => {
@@ -50,52 +52,54 @@ export const DailyModal: FC = () => {
                 <DialogBody>
                     <div className="flex items-center gap-2">
                         {Array.from({ length: 4 }).map((_, index) => (
-                            <Card key={index} className="w-full px-3 py-2 relative">
-                                <div className="text-sm">Day {index + 1}</div>
-                                <Spacer y={4} />
-                                <div className="flex gap-1 items-center">
-                                    <Image
-                                        src={assetIconMap[AssetIconId.Gold].base.assetUrl}
-                                        className="w-5 h-5"
-                                    />
-                                    <div className="text-sm">
-                                        {
-                                            staticSwr.data?.data.dailyRewardInfo[indexMap[index]]
-                                                .golds
-                                        }
+                            <Card key={index} className="w-full relative">
+                                <CardBody className="p-3">
+                                    {(user?.dailyRewardStreak ?? 0) >= (index + 1) && (
+                                        <div className="absolute top-0 right-0 w-full h-full grid place-items-center rounded-md bg-black/50">
+                                            <ScaledImage src={assetUiMap[AssetUIId.Checked].base.assetUrl} />
+                                        </div>
+                                    )}
+                                    <div className="text-secondary leading-none">Day {index + 1}</div>
+                                </CardBody>
+                                <CardFooter>
+                                    <div className="flex gap-1 items-center">
+                                        <Image
+                                            src={assetIconMap[AssetIconId.Gold].base.assetUrl}
+                                            className="w-6 h-6"
+                                        />
+                                        <div>
+                                            {
+                                                staticSwr.data?.data.dailyRewardInfo[indexMap[index]]
+                                                    .golds
+                                            }
+                                        </div>
                                     </div>
-                                </div>
-                                {(user?.dailyRewardStreak ?? 0) >= (index + 1) && (
-                                    <div className="absolute top-0 right-0 w-full h-full grid place-items-center rounded-md bg-black/50">
-                                        <ScaledImage src={assetUiMap[AssetUIId.Checked].base.assetUrl} />
-                                    </div>
-                                )}
+                                </CardFooter>
                             </Card>
                         ))}
                     </div>
                     <Spacer y={4} />
-                    <Card className="w-full px-3 py-2">
-                        <div className="text-sm">Day 5</div>
-                        <Spacer y={4} />
-                        <div className="flex gap-2">
-                            <div className="flex gap-1 items-center">
-                                <Image
-                                    src={assetIconMap[AssetIconId.Gold].base.assetUrl}
-                                    className="w-5 h-5"
-                                />
-                                <div className="text-sm">
-                                    {
-                                        staticSwr.data?.data.dailyRewardInfo[DailyRewardId.Day5]
-                                            .golds
-                                    }
+                    <Card className="w-full">
+                        <CardBody className="p-3">
+                            <div className="text-secondary leading-none">Day 5</div>
+                        </CardBody>
+                        <CardFooter>
+                            <div className="flex gap-2">
+                                <div className="flex gap-1 items-center">
+                                    <Image
+                                        src={assetIconMap[AssetIconId.Gold].base.assetUrl}
+                                        className="w-6 h-6"
+                                    />
+                                    <div>
+                                        {
+                                            staticSwr.data?.data.dailyRewardInfo[DailyRewardId.Day5]
+                                                .golds
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </CardFooter>
                     </Card>
-                    <Spacer y={4} />
-                    <div className="text-sm text-muted-foreground">
-                    Next claim in {getNextDayMidnightUtc().format("YYYY-MM-DD HH:mm:ss")}
-                    </div>
                 </DialogBody>
                 <DialogFooter>
                     <ExtendedButton className="w-full"

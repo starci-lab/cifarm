@@ -3,9 +3,9 @@ import React, { FC } from "react"
 import { QuestCard } from "../QuestCard"
 import {
     GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION,
-    INVITE_USER_DISCLOSURE,
     GRAPHQL_QUERY_STATIC_SWR,
     GRAPHQL_QUERY_USER_SWR,
+    REFERRAL_DISCLOSURE,
 } from "@/app/constants"
 import {
     useGraphQLMutationUpdateFollowXSwrMutation,
@@ -32,7 +32,7 @@ export const SocialTab: FC = () => {
     ReturnType<typeof useGraphQLMutationUpdateFollowXSwrMutation>
   >(GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION)
     const { open: openInviteUserModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        INVITE_USER_DISCLOSURE
+        REFERRAL_DISCLOSURE
     )
 
     return (

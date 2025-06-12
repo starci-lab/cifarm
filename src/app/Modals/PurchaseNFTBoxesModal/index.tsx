@@ -12,7 +12,7 @@ import {
     DialogTitle,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { ExtendedButton, Image, ModalHeader, Slider, Spacer, Title } from "@/components"
+import { ExtendedButton, Image, Slider, Spacer, Title } from "@/components"
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { usePurchaseNFTBoxesFormik } from "@/hooks"
@@ -45,7 +45,7 @@ export const PurchaseNFTBoxesModal: FC = () => {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>
-                        <ModalHeader title="Purchase NFT Boxes" />
+                        Purchase NFT Boxes
                     </DialogTitle>
                 </DialogHeader>
                 <DialogBody>

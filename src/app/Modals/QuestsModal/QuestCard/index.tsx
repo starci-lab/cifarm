@@ -35,16 +35,16 @@ export const QuestCard: FC<QuestCardProps> = ({
     return (
         <PressableCard 
             showBorder={false}
+            disabled={completed}
             className={cn(
                 "flex items-center justify-between w-full p-3 rounded-none text-left",
-                !completed && " hover:bg-accent/50 transition-colors"
             )}
             onClick={!completed ? onClick : undefined}
         >
             <div className="flex items-center justify-between gap-2 w-full">
                 <div>
                     <div>{title}</div>
-                    <div className="text-xs text-muted-foreground">{description}</div>
+                    <div className="text-sm text-muted-foreground">{description}</div>
                     {   
                         (completed) 
                             ? 
