@@ -214,6 +214,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                             <div className="text-muted-foreground leading-none">
                                 { placedItem.animalInfo?.isAdult ? "Harvest time" : "Growth time" }
                             </div>
+                            <Spacer y={2} />
                             <div className={
                                 cn(
                                     "text-4xl text-primary",
