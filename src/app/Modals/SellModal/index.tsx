@@ -83,9 +83,6 @@ export const SellModal: FC = () => {
                 </DialogHeader>
                 <DialogBody>{renderSellContent()}</DialogBody>
                 <DialogFooter>
-                    <ExtendedButton color="ghost" className="w-full" onClick={close}>
-                        Cancel
-                    </ExtendedButton>
                     <ExtendedButton
                         color="destructive"
                         className="w-full"

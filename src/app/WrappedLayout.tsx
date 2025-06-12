@@ -91,7 +91,6 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
 
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const path = usePathname()
-
     return (
         <Suspense>
             <ThemeProvider

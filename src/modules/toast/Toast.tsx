@@ -1,6 +1,8 @@
 import { Toaster } from "react-hot-toast"
 import React from "react"
+import { useIsMobile } from "@/hooks"
 
 export const Toast = () => {
-    return <Toaster position="bottom-center" toastOptions={{ duration: 3000 }} />
+    const isMobile = useIsMobile()
+    return <Toaster position={isMobile ? "bottom-center" : "top-right"} toastOptions={{ duration: 3000 }} />
 }

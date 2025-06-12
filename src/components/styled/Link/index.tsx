@@ -11,7 +11,7 @@ export interface LinkProps extends PropsWithChildren {
   classNames?: Partial<{
     base: string;
   }>;
-  color?: "default" | "primary" | "secondary"
+  color?: "default" | "primary" | "secondary" | "success" | "warning" | "destructive"
   showIcon?: boolean;
   target?: string;
   isLoading?: boolean;
@@ -36,7 +36,9 @@ export const Link: FC<LinkProps> = ({
                     default: "text-foreground hover:text-foreground/75",
                     primary: "text-primary hover:text-primary/75",
                     secondary: "text-secondary hover:text-secondary/75",
-                   
+                    success: "text-success hover:text-success/75",
+                    warning: "text-warning hover:text-warning/75",
+                    destructive: "text-destructive hover:text-destructive/75",
                 },
             },
             defaultVariants: {

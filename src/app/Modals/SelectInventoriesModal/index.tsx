@@ -6,7 +6,7 @@ import {
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector, setSelectedDeliveryInventoryIds, useAppDispatch } from "@/redux"
 import React, { FC } from "react"
-import { ExtendedButton, GridTable } from "@/components"
+import { ExtendedButton, GridTable, Spacer } from "@/components"
 import {
     Dialog,
     DialogContent,
@@ -47,9 +47,11 @@ export const SelectInventoriesModal: FC = () => {
         (state) => state.sessionReducer.selectedDeliveryInventoryIds
     )
     const dispatch = useAppDispatch()
+
     const slotsDeliveryInventoryLeft = useAppSelector(
         (state) => state.sessionReducer.slotsDeliveryInventoryLeft
     )
+
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[425px]">
@@ -71,18 +73,20 @@ export const SelectInventoriesModal: FC = () => {
                         )}
                         keyCallback={(item) => item.id}
                     />
-                    <div className={cn("text-sm text-muted-foreground", {
-                        "text-destructive": slotsDeliveryInventoryLeft === 0,
-                        "text-muted-foreground": slotsDeliveryInventoryLeft > 0,
-                        "hidden": !selectedDeliveryInventoryIds.length,
-                    })}>
-                        {slotsDeliveryInventoryLeft} {pluralize("slot", slotsDeliveryInventoryLeft > 0 ? slotsDeliveryInventoryLeft: 1)} left
+                    <div>
+                        <Spacer y={2} />
+                        <div className={cn("text-sm text-muted-foreground", {
+                            "text-destructive": slotsDeliveryInventoryLeft === 0,
+                            "text-muted-foreground": slotsDeliveryInventoryLeft > 0,
+                        })}>
+                            {slotsDeliveryInventoryLeft} {pluralize("slot", slotsDeliveryInventoryLeft > 0 ? slotsDeliveryInventoryLeft: 1)} left
+                        </div>
                     </div>
                 </DialogBody>
                 <DialogFooter>
                     <ExtendedButton
                         className="w-full"
-                        disabled={!selectedDeliveryInventoryIds.length || slotsDeliveryInventoryLeft === 0}
+                        disabled={!selectedDeliveryInventoryIds.length}
                         onClick={() => {
                             if (!selectedDeliveryInventoryIds.length) throw new Error("No inventory selected")
                             const deliverInventoriesMessage: DeliverInventoriesMessage = {

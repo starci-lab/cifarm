@@ -15,7 +15,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { useDisclosure } from "react-use-disclosure"
 import { GRAPHQL_QUERY_STATIC_SWR, UPGRADE_DISCLOSURE } from "@/app/constants"
 import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/modules/event-emitter"
-import { useAppSelector } from "@/redux"
+import { setUpgradeModal, useAppDispatch, useAppSelector } from "@/redux"
 import { UpgradeBuildingMessage, useGraphQLQueryStaticSwr } from "@/hooks"
 import { getUpgradePrice } from "@/modules/entities"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
@@ -32,6 +32,8 @@ export const UpgradeModal: FC = () => {
     const { swr: staticSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryStaticSwr>
   >(GRAPHQL_QUERY_STATIC_SWR)
+
+    const dispatch = useAppDispatch()
 
     return (
         <Dialog
@@ -83,15 +85,20 @@ export const UpgradeModal: FC = () => {
                                         {Array.from({
                                             length: placedItem.buildingInfo?.currentUpgrade ?? 0,
                                         }).map((_, index) => (
-                                            <ScaledImage
-                                                key={index}
-                                                src={assetIconMap[AssetIconId.PurpleStar].base.assetUrl}
-                                            />
+                                            <div key={index} className="w-12 h-12 relative">
+                                                <ScaledImage
+                                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"          
+                                                    src={assetIconMap[AssetIconId.PurpleStar].base.assetUrl}
+                                                />
+                                            </div>
                                         ))}
                                         {(placedItem.buildingInfo?.currentUpgrade ?? 0) < 3 && (
-                                            <ScaledImage
-                                                src={assetIconMap[AssetIconId.UpgradeStar].base.assetUrl}
-                                            />
+                                            <div className="w-12 h-12 relative">
+                                                <ScaledImage
+                                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                                                    src={assetIconMap[AssetIconId.UpgradeStar].base.assetUrl}
+                                                />
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -101,16 +108,8 @@ export const UpgradeModal: FC = () => {
                 </DialogBody>
                 <DialogFooter>
                     <ExtendedButton
-                        variant="ghost"
-                        className="w-full"
-                        onClick={() => close()}
-                    >
-            Cancel
-                    </ExtendedButton>
-                    <ExtendedButton
                         className="w-full"
                         onClick={() => {
-                            close()
                             if (!placedItemBuildingId)
                                 throw new Error("Placed item id not found")
                             const eventMessage: UpgradeBuildingMessage = {
@@ -120,6 +119,8 @@ export const UpgradeModal: FC = () => {
                                 ExternalEventName.RequestUpgradeBuilding,
                                 eventMessage
                             )
+                            dispatch(setUpgradeModal({}))
+                            close()
                         }}
                     >
             Confirm

@@ -19,6 +19,9 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
     const inventoryType = staticSwr.data?.data.inventoryTypes.find(
         (inventoryType) => inventoryType.id === inventory?.inventoryType
     )
+    const slotsDeliveryInventoryLeft = useAppSelector(
+        (state) => state.sessionReducer.slotsDeliveryInventoryLeft
+    )
     const dispatch = useAppDispatch()
     const selectedDeliveryInventoryIds = useAppSelector(state => state.sessionReducer.selectedDeliveryInventoryIds)
     const isSelected = selectedDeliveryInventoryIds.includes(inventory?.id ?? "")
@@ -35,6 +38,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({ inventory }) => {
                 if (isSelected) {
                     dispatch(setSelectedDeliveryInventoryIds(selectedDeliveryInventoryIds.filter(id => id !== inventory?.id)))
                 } else {
+                    if (slotsDeliveryInventoryLeft === 0) return
                     dispatch(setSelectedDeliveryInventoryIds([...selectedDeliveryInventoryIds, inventory?.id ?? ""]))
                 }
             }}

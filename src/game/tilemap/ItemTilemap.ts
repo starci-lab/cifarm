@@ -181,15 +181,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                 }
                 // get the placed item id
                 const placedItemId = data.placedItem.id
-                if (!placedItemId) {
-                    throw new Error("Placed item id not found")
-                }
-                const placedItem = this.placedItemObjectMap[placedItemId]
-                if (!placedItem) {
-                    throw new Error("Placed item not found")
-                }
-                // destroy the animated item
-                placedItem.animatedItem?.object.destroy()
+                if (placedItemId) {
+                    const placedItem = this.placedItemObjectMap[placedItemId]
+                    if (!placedItem) {
+                        throw new Error("Placed item not found")
+                    }
+                    // destroy the animated item
+                    placedItem.animatedItem?.object.destroy()
+                }   
                 // thus, switch case based on action
                 const position = this.getPositionFromPlacedItem(data.placedItem)
                 switch (data.action) {
@@ -937,7 +936,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                 case ActionName.Sell: {
                     if (data.success) {
                         const placedItemType = this.placedItemTypes.find(
-                            (placedItemType) => placedItemType.id === data.placedItem.placedItemType
+                            (placedItemType) => data.placedItem.placedItemType === placedItemType.id
                         )
                         if (!placedItemType) {
                             throw new Error("Placed item type not found")

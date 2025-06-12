@@ -10,7 +10,7 @@ import {
 } from "@/app/constants"
 import { truncateString } from "@/modules/common"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
-import { Image, List, Snippet, Spacer } from "@/components"
+import { Image, Link, List, Snippet, Spacer } from "@/components"
 import {
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
@@ -53,7 +53,7 @@ interface ProviderInfo {
   name: string;
 }
 
-const DURATION = 10000 // 10s
+const DURATION = 100000 // 10s
 export const SignTransactionModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
@@ -97,26 +97,20 @@ export const SignTransactionModal: FC = () => {
     const addTxHashToast = (txHash: string) =>
         toast({
             duration: DURATION,
-            title: "Tx hash",
-            description: truncateString(txHash, 10, 4),
-            action: (
-                <ExtendedButton
-                    variant="outline"
-                    onClick={() => {
-                        window.open(
-                            explorerUrl({
-                                chainKey,
-                                network,
-                                value: txHash,
-                                type: "tx",
-                            }),
-                            "_blank"
-                        )
-                    }}
-                >
-          View
-                </ExtendedButton>
-            ),
+            title: "Transaction receipt",
+            description:
+            <Link
+                href={explorerUrl({
+                    chainKey,
+                    network,
+                    value: txHash,
+                    type: "tx",
+                })}
+                target="_blank"
+                color="success"
+            >
+                {truncateString(txHash, 10, 4)}
+            </Link>,
             variant: "default",
         })
 
@@ -218,9 +212,7 @@ export const SignTransactionModal: FC = () => {
                   recipientAddress,
               })
                     txHash = txHashResponse
-
                     await balanceSwrs[tokenKey].mutate()
-
                     break
                 }
                 case TransactionType.TransferNFT: {

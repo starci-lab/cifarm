@@ -22,6 +22,7 @@ import {
 } from "@metaplex-foundation/mpl-toolbox"
 import { transferTokens } from "@metaplex-foundation/mpl-toolbox"
 import { useCurrentWallet } from "@mysten/dapp-kit"
+import base58 from "bs58"
 
 export type WalletWithRequiredFeatures = ReturnType<typeof useCurrentWallet>["currentWallet"]
 
@@ -73,7 +74,7 @@ export const _transferSolana = async ({
         )
 
         const txSignature = await tx.sendAndConfirm(umi)
-        return { txHash: txSignature.signature.toString() }
+        return { txHash: base58.encode(txSignature.signature) }
     }
 
     const token = tokens?.[tokenKey]?.[chainKey]?.[network]
@@ -114,7 +115,7 @@ export const _transferSolana = async ({
         )
 
     const txSignature = await tx.sendAndConfirm(umi)
-    return { txHash: txSignature.signature.toString() }
+    return { txHash: base58.encode(txSignature.signature) }
 }
 
 export const _transferSui = async ({
