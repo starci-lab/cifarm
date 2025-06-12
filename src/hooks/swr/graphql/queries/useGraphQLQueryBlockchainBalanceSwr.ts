@@ -1,44 +1,41 @@
 import { UseSWR } from "../../types"
 import {
     queryBlockchainBalances,
-    QueryBlockchainBalancesParams,
-    QueryBlockchainBalancesResponseWrapper,
 } from "@/modules/apollo"
 import useSWR from "swr"
-import { ApolloQueryResult } from "@apollo/client"
 import { useState } from "react"
 import { useGlobalAccountAddress } from "@/hooks/useGlobalAccountAddress"
 import { ChainKey } from "@/modules/blockchain"
 import { TokenKey } from "@/modules/entities"
-import _ from "lodash"
-import { useAppSelector } from "@/redux"
+import { useAppSelector, WrapperBlockchainBalanceData } from "@/redux"
 
-export const useGraphQLQueryBlockchainBalancesSwr = (): UseSWR<
-    ApolloQueryResult<QueryBlockchainBalancesResponseWrapper>,
-  QueryBlockchainBalancesParams
+export const useGraphQLQueryBlockchainBalanceSwr = (
+    defaultTokenKey: TokenKey = TokenKey.Native,
+): UseSWR<
+    WrapperBlockchainBalanceData,
+    TokenKey
 > => {
     const { accountAddress } = useGlobalAccountAddress()
-    const [params, setParams] = useState<QueryBlockchainBalancesParams>({})
+    const [params, setParams] = useState<TokenKey>(defaultTokenKey)
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
-    const swr = useSWR(
+    const swr = useSWR<WrapperBlockchainBalanceData>(
         (authenticated && accountAddress) ? ["QUERY_BLOCKCHAIN_BALANCES", params, accountAddress] : null,
         async () => {
             if (!accountAddress) throw new Error("Account address is required")
-            const _params = _.isEmpty(params) ? {
+            const _params = {
                 request: {
-                    accountAddress: accountAddress ?? "",
+                    accountAddress,
                     chainKey: ChainKey.Solana,
-                    tokenKeys: [
-                        TokenKey.Native,
-                        TokenKey.USDC,
-                        TokenKey.USDT,
-                        TokenKey.CIFARM
-                    ],
+                    tokenKeys: [params],
                     refresh: true,
                 }
-            } : params
-            const response = await queryBlockchainBalances(_params)
-            return response
+            }
+            const { data } = await queryBlockchainBalances(_params)
+            return {
+                balance: data?.blockchainBalances.tokens[0],
+                cached: data?.blockchainBalances.cached,
+                refreshInterval: data?.blockchainBalances.refreshInterval,
+            }
         }
     )
 

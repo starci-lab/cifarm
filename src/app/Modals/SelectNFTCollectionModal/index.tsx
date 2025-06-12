@@ -50,7 +50,6 @@ export const SelectNFTCollectionModal = () => {
                                         disabled={nftCollectionKey === originalNFTCollectionKey}
                                         key={nftCollectionKey}
                                         collection={collection}
-                                        nfts={collectionSwr.data?.collection.nfts || []}
                                         onClick={() => {
                                             dispatch(setSelectedNFTCollectionKey(nftCollectionKey))
                                             close()

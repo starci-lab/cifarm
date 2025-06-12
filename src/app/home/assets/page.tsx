@@ -60,7 +60,7 @@ const Page = () => {
     const { currentWallet } = useCurrentWallet()
     const { open: openConnectModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_DISCLOSURE)
     const { open: openWalletConnectionRequiredModal, close: closeWalletConnectionRequiredModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
-
+    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
     const lastTabRef = useRef<AssetTab>(selectedAssetTab)
     useEffect(() => {
         if (lastTabRef.current === selectedAssetTab) {
@@ -143,6 +143,9 @@ const Page = () => {
                 />
                 <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
                     // blockchainBalances.mutate()
+                    for (const tokenKey in balanceSwrs) {
+                        balanceSwrs[tokenKey].mutate()
+                    }
                 }}>
                     <ArrowsClockwise />
                 </ExtendedButton>

@@ -1,5 +1,5 @@
 import { QUERY_STATIC_SWR_MUTATION, SHEET_TOKEN_DISCLOSURE } from "@/app/constants"
-import { ExtendedTable, Image } from "@/components"
+import { ExtendedBadge, ExtendedTable, Image, Spacer } from "@/components"
 import { envConfig } from "@/env"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -43,6 +43,8 @@ export const TokensTab: FC = () => {
 
     const dispatch = useAppDispatch()
 
+    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
+
     const tableData: Array<TableData> = tokens.map((token) => {
         const tokenData = token[chainKey]?.[network]
         if (!tokenData) return null
@@ -54,7 +56,7 @@ export const TokensTab: FC = () => {
                 symbol: tokenData?.symbol ?? "",
                 isNative: tokenData?.tokenType === TokenType.Native
             },
-            balance: 0,
+            balance: balanceSwrs[token.key]?.data?.balance.balance ?? 0,
             price: 0,
         }
     }).filter((token) => token !== null)
@@ -104,14 +106,32 @@ export const TokensTab: FC = () => {
             }
         },
     ]
-    return <ExtendedTable
-        data={tableData}
-        columns={columns}
-        showPagination={false}
-        showSelectedRowText={false}
-        onClickRow={(row) => {
-            dispatch(setTokenSheet({ tokenKey: row.id }))
-            openTokenSheet()
-        }}
-    />
+    return  <>
+        {/* Native balance to track only */}
+        {balanceSwrs[TokenKey.Native]?.data?.cached && balanceSwrs[TokenKey.Native]?.data?.refreshInterval > 0 && (
+            <>
+                <div className="text-muted-foreground text-sm flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                        <ExtendedBadge>
+                    Cached
+                        </ExtendedBadge>
+                        <div>
+                        Wait {balanceSwrs[TokenKey.Native]?.data?.refreshInterval} seconds to refresh
+                        </div>
+                    </div>
+                </div>
+                <Spacer y={4} />
+            </>
+        )}
+        <ExtendedTable
+            data={tableData}
+            columns={columns}
+            showPagination={false}
+            showSelectedRowText={false}
+            onClickRow={(row) => {
+                dispatch(setTokenSheet({ tokenKey: row.id }))
+                openTokenSheet()
+            }}
+        />
+    </>
 }

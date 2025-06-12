@@ -11,7 +11,7 @@ import { PlacedItemSchema, InventorySchema, UserSchema } from "@/modules/entitie
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { SWRResponse } from "swr"
 import { NeighborsTab } from "./tab"
-import { BlockchainCollectionData } from "@/modules/apollo"
+import { BlockchainBalanceData, BlockchainCollectionData } from "@/modules/apollo"
 
 export enum PlayerContext {
     Home = "home",
@@ -39,6 +39,12 @@ export interface WrapperBlockchainCollectionData {
     refreshInterval: number
 }
 
+export interface WrapperBlockchainBalanceData {
+    balance: BlockchainBalanceData
+    cached: boolean
+    refreshInterval: number
+}
+
 export interface SessionState {
   network: Network;
   mnemonic: string;
@@ -47,7 +53,7 @@ export interface SessionState {
   retries: number;
   authenticated: boolean;
   loaded: boolean;
-  balanceSwrs: Record<string, SWRResponse<number>>;
+  balanceSwrs: Record<string, SWRResponse<WrapperBlockchainBalanceData>>;
   nftCollectionSwrs: Record<string, SWRResponse<WrapperBlockchainCollectionData>>;
   // selected collection key
   collectionKey: string;
@@ -266,7 +272,7 @@ export interface SwitchTokenParams {
 
 export interface SetBalanceSwrParams {
   tokenKey: string;
-  swr: SWRResponse<number>;
+  swr: SWRResponse<WrapperBlockchainBalanceData>;
 }
 
 export interface SetNFTCollectionsSwrParams {

@@ -1,5 +1,5 @@
 "use client"
-import { ExtendedButton, FilterBar, Header, Spacer } from "@/components"
+import { ExtendedBadge, ExtendedButton, FilterBar, Header, Spacer } from "@/components"
 import React, { useEffect } from "react"
 import { useAppSelector, useAppDispatch, setIsConverting, setNFTAddresses, setNFTCollectionKey } from "@/redux"
 import { useParams } from "next/navigation"
@@ -101,21 +101,28 @@ const Page = () => {
                         searchString={""}
                         className="max-w-[200px]"
                     />
-                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {}}>
+                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
+                        collectionSwr.mutate()
+                    }}>
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
-            </div>
-            <Spacer y={4} />
-            <div className="text-muted-foreground flex items-center gap-2">
-                {
-                    collectionSwr?.data?.refreshInterval && (
-                        <div>
-                            Wait {collectionSwr?.data?.refreshInterval} seconds to refresh
+            </div>  
+            {collectionSwr?.data?.cached && collectionSwr?.data?.refreshInterval > 0 && (
+                <>
+                    <Spacer y={4} />
+                    <div className="text-muted-foreground text-sm flex items-center gap-2">
+                        <div className="flex items-center gap-2">
+                            <ExtendedBadge>
+                            Cached
+                            </ExtendedBadge>
+                            <div>
+                                Wait {collectionSwr?.data?.refreshInterval} seconds to refresh
+                            </div>
                         </div>
-                    )
-                }
-            </div>
+                    </div>
+                </>
+            )}
             <Spacer y={4} />
             {   
                 (!collectionSwr?.data) ? (

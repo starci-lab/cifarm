@@ -42,12 +42,15 @@ export interface QueryBlockchainBalancesResponseWrapper {
   blockchainBalances: QueryBlockchainBalancesResponse
 }
 
+export interface BlockchainBalanceData {
+  balance: number
+  tokenKey: TokenKey
+}
+
 export interface QueryBlockchainBalancesResponse {
   cached: boolean
-  tokens: Array<{
-    balance: number
-    tokenKey: TokenKey
-  }>
+  refreshInterval: number
+  tokens: Array<BlockchainBalanceData>
 }
 
 export const queryBlockchainBalances = async ({

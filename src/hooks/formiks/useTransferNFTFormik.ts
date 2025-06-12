@@ -8,11 +8,11 @@ import {
     TransactionType,
     useAppDispatch,
 } from "@/redux"
-import { NFTData } from "@/modules/blockchain"
 import { NFTCollectionKey } from "@/modules/entities"
+import { BlockchainNFTData } from "@/modules/apollo"
 
 export interface TransferNFTFormikValues {
-  nft?: NFTData;
+  nft?: BlockchainNFTData;
   collectionKey: NFTCollectionKey;
   recipientAddress: string;
 }

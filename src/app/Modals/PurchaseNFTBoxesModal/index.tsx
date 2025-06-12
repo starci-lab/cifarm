@@ -16,6 +16,8 @@ import { ExtendedButton, Image, ModalHeader, Slider, Spacer, Title } from "@/com
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { usePurchaseNFTBoxesFormik } from "@/hooks"
+import { useAppSelector } from "@/redux/hooks"
+import { TokenKey } from "@/modules/entities"
 
 export const PurchaseNFTBoxesModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<
@@ -24,20 +26,14 @@ export const PurchaseNFTBoxesModal: FC = () => {
     const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
     const formik = useSingletonHook2<ReturnType<typeof usePurchaseNFTBoxesFormik>>(PURCHASE_NFT_BOXES_FORMIK)
     
-    // const { swr: balanceSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryBlockchainBalancesSwr>>(GRAPHQL_QUERY_BLOCKCHAIN_BALANCES_SWR)
+    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
     
-    // const balance = balanceSwr?.data?.data.blockchainBalances.tokens.find(
-    //     (token) => token.tokenKey === staticSwr.data?.data.nftBoxInfo.tokenKey
-    // )?.balance ?? 0
+    const balance = balanceSwrs[staticSwr.data?.data.nftBoxInfo.tokenKey ?? TokenKey.Native]?.data?.balance.balance ?? 0
     
-    // useEffect(() => {
-    //     if (balanceSwr?.data) {
-    //         formik.setFieldValue("balance", balance)
-    //     }
-    // }, [balanceSwr])
-
-    const balance = 0
-
+    useEffect(() => {
+        formik.setFieldValue("balance", balance)
+    }, [balance])
+    
     useEffect(() => {
         if (staticSwr.data) {
             formik.setFieldValue("price", staticSwr.data.data.nftBoxInfo.boxPrice)

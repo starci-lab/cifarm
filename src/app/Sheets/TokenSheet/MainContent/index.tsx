@@ -7,11 +7,10 @@ import {
     SheetBody,
     CardBody,
 } from "@/components"
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import {
     useGraphQLQueryStaticSwr,
     useTransferTokenFormik,
-    useGraphQLQueryBlockchainBalancesSwr,
 } from "@/hooks"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
 import {
@@ -31,6 +30,7 @@ import {
 } from "@/modules/blockchain"
 import { envConfig } from "@/env"
 import { HandArrowDown, HandCoins, PaperPlaneRight, QrCode, ArrowUpRight, ShoppingCart, DotsThree } from "@phosphor-icons/react"
+import { TokenKey } from "@/modules/entities"
 
 export const MainContent: FC = () => {  
     const tokenKey = useAppSelector((state) => state.sheetReducer.tokenSheet.tokenKey)
@@ -45,12 +45,23 @@ export const MainContent: FC = () => {
         TRANSFER_TOKEN_FORMIK
     )
 
+    useEffect(() => {
+        if (tokenKey) {
+            formik.setFieldValue("tokenKey", tokenKey)
+        }
+    }, [tokenKey])
+
     const dispatch = useAppDispatch()
-  
+    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
+    const balance = balanceSwrs[tokenKey ?? TokenKey.Native]?.data?.balance.balance ?? 0
+    
+    useEffect(() => {
+        formik.setFieldValue("balance", balance)
+    }, [balance])
+
     if (!tokenKey) {
         return null
     }
-    const balance = 0
     const token = staticSwr.data?.data.tokens[tokenKey]?.[chainKey]?.[network]  
 
     return (

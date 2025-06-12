@@ -210,6 +210,17 @@ export interface LandLimitInfo {
   landLimits: Array<LandLimit>
 }
 
+export interface BlockchainDataConfig {
+  cacheDuration: number;
+  refreshInterval: number;
+}
+
+export interface BlockchainDataConfigs {
+  balances: BlockchainDataConfig;
+  collections: BlockchainDataConfig;
+}
+
+
 export interface LandLimit {
   index: number
   price: number

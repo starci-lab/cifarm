@@ -31,7 +31,8 @@ import {
     NFTConversion,
     EnergyPurchases,
     SeasonSchema,
-    LandLimitInfo
+    LandLimitInfo,
+    BlockchainDataConfigs
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -695,6 +696,16 @@ const query = gql`
         }
       }
     }
+    blockchainDataConfigs {
+      balances {
+        cacheDuration
+        refreshInterval
+      }
+      collections {
+        cacheDuration
+        refreshInterval
+      }
+    }
   }
 `
 
@@ -730,6 +741,7 @@ export interface QueryStaticResponse {
   energyPurchases: EnergyPurchases
   activeSeason: SeasonSchema
   landLimitInfo: LandLimitInfo
+  blockchainDataConfigs: BlockchainDataConfigs
 }
 
 export const queryStatic = async () => {

@@ -100,7 +100,7 @@ export const TransferContent: FC = () => {
                                     tooltip: "w-4 h-4",
                                 }}
                             />
-                            <div className="text-muted-foreground">{`Balance: ${0}`}</div>
+                            <div className="text-muted-foreground">{`Balance: ${formik.values.balance}`}</div>
                         </div>
                         <Spacer y={2} />
                         <ExtendedNumberInput

@@ -552,7 +552,7 @@ export const SignTransactionModal: FC = () => {
                                     <div className="text-sm font-semibold">NFT</div>
                                     <div className="flex gap-2 items-center">
                                         <Image 
-                                            src={nft.image || ""}
+                                            src={nft.imageUrl || ""}
                                             className="rounded-none w-5 h-5 object-contain"
                                         />
                                         <div className="text-sm">{nft.name}</div>

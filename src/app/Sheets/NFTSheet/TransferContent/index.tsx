@@ -43,7 +43,7 @@ export const TransferContent: FC = () => {
                     <Card disabled={true} pressable className="w-full">
                         <CardBody className="flex items-center gap-2">
                             <Image
-                                src={nft?.image || ""}
+                                src={nft?.imageUrl || ""}
                                 className="w-12 h-12 rounded-md object-contain"
                             />
                             <div>{formik.values.nft?.name}</div>

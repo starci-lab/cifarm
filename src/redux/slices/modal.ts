@@ -1,7 +1,8 @@
-import { ChainKey, NFTData, NFTRarityEnum } from "@/modules/blockchain"
+import { ChainKey, NFTRarityEnum } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse, TxResponses } from "@/modules/honeycomb"
 import { NFTCollectionKey, TokenKey } from "@/modules/entities"
+import { BlockchainNFTData } from "@/modules/apollo"
 
 export interface WarningModal {
   message: string;
@@ -54,7 +55,7 @@ export interface TokenModal {
 }
 
 export interface NFTModal {
-  nftData?: NFTData;
+  nftData?: BlockchainNFTData;
 }
 
 export interface NFTItem {
@@ -77,7 +78,7 @@ export interface HoneycombProtocolRawTxsData {
 
 export interface TransferNFTData {
   collectionKey: NFTCollectionKey;
-  nft: NFTData;
+  nft: BlockchainNFTData;
   recipientAddress: string;
 }
 
