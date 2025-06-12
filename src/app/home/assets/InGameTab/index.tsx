@@ -60,7 +60,7 @@ export const InGameTab: FC = () => {
                     <Title
                         title="Golds"
                         classNames={{
-                            title: "text-2xl text-muted-foreground",
+                            title: "text-2xl",
                         }}
                     />
                     <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
@@ -95,7 +95,7 @@ export const InGameTab: FC = () => {
                     <Title
                         title="Energy"
                         classNames={{
-                            title: "text-2xl text-muted-foreground",
+                            title: "text-2xl",
                         }}
                     />
                     <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
@@ -122,7 +122,7 @@ export const InGameTab: FC = () => {
                     <Title
                         title="tCIFARM"
                         classNames={{
-                            title: "text-2xl text-muted-foreground",
+                            title: "text-2xl",
                         }}
                         tooltipString="tCIFARM is the token earned by referring friends. In the game, it can be converted to real CIFARM at a fixed rate once the token is listed."
                     />
@@ -149,7 +149,7 @@ export const InGameTab: FC = () => {
                     <Title
                         title="Land Limit"
                         classNames={{
-                            title: "text-2xl text-muted-foreground",
+                            title: "text-2xl",
                         }}
                         tooltipString="The number of items you can build on your land."
                     />
@@ -217,7 +217,7 @@ export const InGameTab: FC = () => {
                 <Title
                     title="Inventories"
                     classNames={{
-                        title: "text-2xl text-muted-foreground",
+                        title: "text-2xl",
                     }}
                 />
                 <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => inventoriesSwr.mutate()}>

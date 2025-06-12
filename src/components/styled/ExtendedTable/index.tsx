@@ -22,6 +22,7 @@ import {
     TableHeader,
     TableRow,
 } from "../../ui"
+import { cn } from "@/lib/utils"
 
 interface ExtendedTableProps<TData> {
     data: Array<TData>;
@@ -29,6 +30,7 @@ interface ExtendedTableProps<TData> {
     showPagination?: boolean;
     showSelectedRowText?: boolean;
     onClickRow?: (row: TData) => void;
+    hideTableHeader?: boolean;
 }
 
 export const ExtendedTable = <TData,>({
@@ -37,6 +39,7 @@ export const ExtendedTable = <TData,>({
     showPagination = true,
     showSelectedRowText = true,
     onClickRow,
+    hideTableHeader = false,
 }: ExtendedTableProps<TData>) => {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -63,25 +66,31 @@ export const ExtendedTable = <TData,>({
     })
 
     return (
-        <div className="w-full rounded-lg overflow-hidden">
+        <div className={
+            cn(
+                "w-full rounded-lg overflow-hidden", {
+                    "rounded-none": hideTableHeader,
+                })}>
             <div>
                 <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => (
-                                    <TableHead key={header.id} className="p-3">
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
+                    {!hideTableHeader && (
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => (
+                                        <TableHead key={header.id} className="p-3">
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableHeader>
+                    )}
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (

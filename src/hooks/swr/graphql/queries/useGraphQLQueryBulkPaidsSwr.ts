@@ -7,6 +7,7 @@ import {
 import useSWR from "swr"
 import { ApolloQueryResult } from "@apollo/client"
 import { useAppSelector } from "@/redux"
+import { envConfig } from "@/env"
 
 export const useGraphQLQueryBulkPaidsSwr = (): UseSWR<
     ApolloQueryResult<QueryBulkPaidsResponseWrapper>,
@@ -16,11 +17,13 @@ export const useGraphQLQueryBulkPaidsSwr = (): UseSWR<
     const swr = useSWR(
         authenticated ? "QUERY_BULK_PAIDS" : null,
         async () => {
-            const response = await queryBulkPaids({})
-            return response
+            return await queryBulkPaids({
+                request: {
+                    network: envConfig().network,
+                }
+            })
         }
     )
-
     //return the state and the data
     return {
         swr,

@@ -7,6 +7,7 @@ import {
 import useSWR from "swr"
 import { ApolloQueryResult } from "@apollo/client"
 import { useAppSelector } from "@/redux"
+import { envConfig } from "@/env"
 
 export const useGraphQLQueryVaultCurrentSwr = (): UseSWR<
     ApolloQueryResult<QueryVaultCurrentResponseWrapper>,
@@ -16,7 +17,11 @@ export const useGraphQLQueryVaultCurrentSwr = (): UseSWR<
     const swr = useSWR(
         authenticated ? "QUERY_VAULT_CURRENT" : null,
         async () => {
-            const response = await queryVaultCurrent({})
+            const response = await queryVaultCurrent({
+                request: {
+                    network: envConfig().network,
+                }
+            })
             return response
         }
     )
