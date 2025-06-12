@@ -3,7 +3,6 @@ import { MnemonicModal } from "./MnemonicModal"
 import { PrivateKeyModal } from "./PrivateKeyModal"
 import { WarningModal } from "./WarningModal"
 import { SignTransactionModal } from "./SignTransactionModal"
-import { InviteUserModal } from "./InviteUserModal"
 import { NeighborsModal } from "./NeighborsModal"
 import { QuestsModal } from "./QuestsModal"
 import { ProfileModal } from "./ProfileModal"
@@ -50,7 +49,6 @@ const Modals : FC = () => {
             <SignTransactionModal />
             <NFTsClaimedModal />
             <WelcomeModal />
-            <InviteUserModal />
             <NeighborsModal />
             <QuestsModal />
             <SelectNFTCollectionModal />
