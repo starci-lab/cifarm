@@ -48,8 +48,8 @@ export const LandLimit: FC<LandLimitProps> = ({
                             <CardHeader className="px-4 py-3">
                                 <Title
                                     classNames={{
-                                        title: "text-secondary",
-                                        tooltip: "text-secondary",
+                                        title: "text-muted-foreground",
+                                        tooltip: "text-muted-foreground",
                                     }}
                                     title={item.title}
                                     tooltipString={item.description}
