@@ -13,7 +13,7 @@ import {
 } from "@/app/constants"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux"
-import { assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainMap, assetTileMap, assetToolsMap } from "@/modules/assets"
+import { assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainsMap, assetTileMap, assetToolsMap } from "@/modules/assets"
 import Image from "next/image"
 
 export const GameItemSheet: FC = () => {
@@ -31,7 +31,7 @@ export const GameItemSheet: FC = () => {
             assetShopMap.buildings,
             assetShopMap.pets,
             assetSuppliesMap,
-            assetTerrainMap,
+            assetTerrainsMap,
             assetTileMap,
             assetToolsMap
         ]

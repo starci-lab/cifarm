@@ -24,6 +24,7 @@ import {
     loadToolAssets,
     loadSupplyAssets,
     loadShopAssets,
+    loadDecorationAssets,
 } from "../load"
 import { AssetBootstrapId, assetBootstrapMap } from "@/modules/assets"
 import { LoadingProgressBar } from "../ui"
@@ -68,7 +69,8 @@ export class LoadingScene extends Scene {
                 fruitInfo,
                 flowers,
                 terrains,
-                interactionPermissions
+                interactionPermissions,
+                decorations
             }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItemTypes, placedItemTypes)
@@ -84,6 +86,7 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.Products, products)
                 this.cache.obj.add(CacheKey.Supplies, supplies)
                 this.cache.obj.add(CacheKey.Pets, pets)
+                this.cache.obj.add(CacheKey.Decorations, decorations)
                 this.cache.obj.add(CacheKey.Fruits, fruits)
                 this.cache.obj.add(CacheKey.FruitInfo, fruitInfo)
                 this.cache.obj.add(CacheKey.Flowers, flowers)
@@ -216,8 +219,10 @@ export class LoadingScene extends Scene {
             loadToolAssets(this),
             loadSupplyAssets(this),
             loadShopAssets(this),
+            loadDecorationAssets(this),
         ])
 
+        // set the path to the assets
         this.load.setPath()
 
         // fetch the data

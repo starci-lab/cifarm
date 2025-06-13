@@ -28,7 +28,7 @@ export interface ShopCardProps {
   ownership?: number;
   limit?: number;
   showLimit?: boolean;
-  unlockedLevel: number;
+  unlockedLevel?: number;
   disabled?: boolean;
   isLoading?: boolean;
 }
@@ -53,7 +53,7 @@ export const ShopCard: FC<ShopCardProps> = ({
     )
 
     const goldEnough = (user?.golds ?? 0) >= price
-    const levelEnough = (user?.level ?? 0) >= unlockedLevel
+    const levelEnough = unlockedLevel ? ((user?.level ?? 0) >= (unlockedLevel)) : true
     const _disabled =
     disabled ||
     !goldEnough ||

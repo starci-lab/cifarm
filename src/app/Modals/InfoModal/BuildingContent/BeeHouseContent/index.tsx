@@ -53,6 +53,7 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
     const [timeElapsed, setTimeElapsed] = useState(0)
 
     useEffect(() => {
+        if (placedItem.beeHouseInfo?.currentState === BeeHouseCurrentState.Yield) return
         setTimeElapsed(_timeElapsed)
     }, [])
 
@@ -142,18 +143,25 @@ export const BeeHouseContent: FC<BeeHouseContentProps> = ({ placedItem }) => {
                 }
             </div>   
             <div className="rounded-lg bg-content-2 overflow-hidden">
-                <div className="p-3">
-                    <div className={
-                        cn(
-                            "text-4xl text-primary",
-                            {
-                                "text-destructive": placedItem.beeHouseInfo?.currentState === BeeHouseCurrentState.Yield
-                            }
-                        )
-                    }>
-                        {formatTime(timeElapsed)}
-                    </div>
-                </div>
+                {
+                    placedItem.beeHouseInfo.currentState !== BeeHouseCurrentState.Yield && (
+                        <>
+                            <div className="p-3">
+                                <div className="text-muted-foreground leading-none">
+                        Yield time
+                                </div>
+                                <Spacer y={2}/>
+                                <div className={
+                                    cn(
+                                        "text-4xl text-success leading-none"
+                                    )
+                                }>
+                                    {formatTime(timeElapsed)}
+                                </div>
+                            </div>
+                        </>
+                    )
+                }
                 {placedItem.beeHouseInfo &&
           placedItem.beeHouseInfo.currentState !== BeeHouseCurrentState.Normal && (
                     <>

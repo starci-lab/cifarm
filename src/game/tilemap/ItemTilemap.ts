@@ -2,6 +2,7 @@ import {
     ActionName,
     BuyAnimalData,
     BuyBuildingData,
+    BuyDecorationData,
     BuyFruitData,
     BuyPetData,
     BuyTileData,
@@ -34,6 +35,8 @@ import {
     BuildingKind,
     BuildingSchema,
     CropSchema,
+    DecorationSchema,
+    DecorationType,
     FlowerSchema,
     FruitSchema,
     getSellInfoFromPlacedItemType,
@@ -72,7 +75,7 @@ import {
 } from "@/modules/event-emitter"
 import { SceneEventName } from "@/modules/event-emitter"
 import { sleep } from "@/modules/common"
-import { AssetIconId, assetProductMap } from "@/modules/assets"
+import { assetDecorationMap, AssetIconId, assetProductMap, Direction } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { PlayerContext } from "@/redux"
 import { FADE_HOLD_TIME, FADE_TIME } from "../constants"
@@ -103,7 +106,8 @@ export abstract class ItemTilemap extends GroundTilemap {
     protected inventories: Array<InventorySchema>
     protected terrains: Array<TerrainSchema>
     protected interactionPermissions: InteractionPermissions
-        
+    protected decorations: Array<DecorationSchema>
+
     constructor(baseParams: TilemapBaseConstructorParams) {
         super(baseParams)
 
@@ -128,8 +132,9 @@ export abstract class ItemTilemap extends GroundTilemap {
         this.pets = this.scene.cache.obj.get(CacheKey.Pets)
         this.inventories = this.scene.cache.obj.get(CacheKey.Inventories)
         this.terrains = this.scene.cache.obj.get(CacheKey.Terrains)
+        this.decorations = this.scene.cache.obj.get(CacheKey.Decorations)
         this.interactionPermissions = this.scene.cache.obj.get(CacheKey.InteractionPermissions)
-
+        // add the decorations to the cache
         ExternalEventEmitter.on(ExternalEventName.Visit, (user: UserSchema) => {
             // save to cache
             this.scene.cache.obj.add(CacheKey.WatchingUser, user)
@@ -160,6 +165,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             )
             // update the previous placed items
             this.previousPlacedItemsData = currentPlaceItemsData
+
+            this.addEdgesToFences()
         })
 
         const placedItemsData = this.getCurrentPlacedItemsData()
@@ -171,6 +178,8 @@ export abstract class ItemTilemap extends GroundTilemap {
             )
             // update the previous placed items
             this.previousPlacedItemsData = placedItemsData
+
+            this.addEdgesToFences()
         }
 
         ExternalEventEmitter.on(
@@ -188,7 +197,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                     }
                     // destroy the animated item
                     placedItem.animatedItem?.object.destroy()
-                }   
+                }
                 // thus, switch case based on action
                 const position = this.getPositionFromPlacedItem(data.placedItem)
                 switch (data.action) {
@@ -197,14 +206,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useWateringCan.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useWateringCan.experiencesGain ?? 0,
@@ -234,14 +243,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.plantSeed.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.plantSeed.experiencesGain ?? 0,
@@ -255,14 +264,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.usePesticide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.usePesticide.experiencesGain ?? 0,
@@ -275,7 +284,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 {
                                     showIcon: false,
                                     x: position.x,
-                                    y: position.y,  
+                                    y: position.y,
                                     text: "Not need pesticide",
                                 },
                             ])
@@ -292,18 +301,18 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUsePesticide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
-                    this.activities.helpUsePesticide.experiencesGain ?? 0,
+                                        this.activities.helpUsePesticide.experiencesGain ?? 0,
                             },
                         ])
                     } else {
@@ -313,7 +322,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 {
                                     showIcon: false,
                                     x: position.x,
-                                    y: position.y,  
+                                    y: position.y,
                                     text: "Not need pesticide",
                                 },
                             ])
@@ -330,14 +339,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useHerbicide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useHerbicide.experiencesGain ?? 0,
@@ -350,7 +359,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 {
                                     showIcon: false,
                                     x: position.x,
-                                    y: position.y,  
+                                    y: position.y,
                                     text: "Not need herbicide",
                                 },
                             ])
@@ -367,18 +376,18 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUseHerbicide.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
-                    this.activities.helpUseHerbicide.experiencesGain ?? 0,
+                                        this.activities.helpUseHerbicide.experiencesGain ?? 0,
                             },
                         ])
                     } else {
@@ -388,7 +397,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 {
                                     showIcon: false,
                                     x: position.x,
-                                    y: position.y,  
+                                    y: position.y,
                                     text: "Not need herbicide",
                                 },
                             ])
@@ -405,14 +414,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useFertilizer.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useFertilizer.experiencesGain ?? 0,
@@ -431,7 +440,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
                         let experiencesGain = 0
                         switch (product.type) {
                         case ProductType.Crop: {
@@ -463,14 +472,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestPlant.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -481,9 +490,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                         ])
                     }
@@ -559,6 +568,28 @@ export abstract class ItemTilemap extends GroundTilemap {
                     }
                     break
                 }
+                case ActionName.BuyDecoration: {
+                    if (data.success) {
+                        const { decorationId } = data.data as BuyDecorationData
+                        const decoration = this.decorations.find((decoration) => decoration.id === decorationId)
+                        if (!decoration) {
+                            throw new Error("Decoration not found")
+                        }
+                        if (!decoration.price) {
+                            throw new Error("Decoration price not found")
+                        }
+                        // get the tile position
+                        this.createFlyItems([
+                            {
+                                iconAssetKey: assetIconMap[AssetIconId.Gold]?.phaser?.base.assetKey,
+                                x: position.x,
+                                y: position.y,
+                                quantity: -decoration.price,
+                            },
+                        ])
+                    }
+                    break
+                }
                 case ActionName.BuyFruit: {
                     if (data.success) {
                         const { fruitId } = data.data as BuyFruitData
@@ -615,18 +646,18 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefPlant.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefPlant.experiencesGain,
@@ -637,9 +668,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                             ...(catAssistedSuccess ? [{
                                 iconAssetKey: assetIconMap[AssetIconId.Cat].phaser?.base.assetKey,
@@ -675,25 +706,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                         case ThiefPlantReasonCode.NotPlanted: {
                             this.createFlyItems([
                                 {
-                                    showIcon: false,    
+                                    showIcon: false,
                                     x: position.x,
                                     y: position.y,
                                     text: "Not planted",
                                 },
                             ])
-                            break   
+                            break
                         }
                         case ThiefPlantReasonCode.QuantityReactMinimum: {
                             this.createFlyItems([
                                 {
                                     showIcon: false,
-                                    x: position.x,  
+                                    x: position.x,
                                     y: position.y,
                                     text: "Quantity react minimum",
                                 },
                             ])
                             break
-                        }   
+                        }
                         default:
                             throw new Error("Unknown reason code")
                         }
@@ -705,14 +736,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useAnimalMedicine.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useAnimalMedicine.experiencesGain,
@@ -742,14 +773,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useAnimalFeed.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useAnimalFeed.experiencesGain,
@@ -783,19 +814,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                         }
                         }
                         const assetKey =
-                assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestAnimal.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -806,9 +837,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                         ])
                     }
@@ -819,19 +850,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
-                    -this.activities.helpUseAnimalMedicine.energyConsume,
+                                        -this.activities.helpUseAnimalMedicine.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity:
-                    this.activities.helpUseAnimalMedicine.experiencesGain,
+                                        this.activities.helpUseAnimalMedicine.experiencesGain,
                             },
                         ])
                     } else {
@@ -863,19 +894,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefAnimal.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefAnimal.experiencesGain,
@@ -886,9 +917,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                         ])
                     } else {
@@ -901,31 +932,31 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     y: position.y,
                                     text: "Not ready to harvest",
                                 },
-                            ])  
+                            ])
                             break
                         }
                         case ThiefAnimalReasonCode.QuantityReactMinimum: {
                             this.createFlyItems([
                                 {
-                                    showIcon: false,    
+                                    showIcon: false,
                                     x: position.x,
                                     y: position.y,
                                     text: "Quantity react minimum",
                                 },
                             ])
-                            break   
+                            break
                         }
                         case ThiefAnimalReasonCode.DogAssisted: {
                             this.createFlyItems([
                                 {
                                     iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
-                                    showIcon: false,    
+                                    showIcon: false,
                                     x: position.x,
                                     y: position.y,
                                     text: "Dog assisted",
                                 },
                             ])
-                            break   
+                            break
                         }
                         default:
                             throw new Error("Unknown reason code")
@@ -978,7 +1009,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
 
                         const fruit = this.fruits.find(
                             (fruit) => fruit.id === product.fruit
@@ -998,14 +1029,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestFruit.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -1016,9 +1047,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                         ])
                     }
@@ -1034,18 +1065,18 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefFruit.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefFruit.experiencesGain,
@@ -1056,9 +1087,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                         ])
                     } else {
@@ -1074,7 +1105,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             ])
                             break
                         }
-                        case ThiefFruitReasonCode.QuantityReactMinimum: {   
+                        case ThiefFruitReasonCode.QuantityReactMinimum: {
                             this.createFlyItems([
                                 {
                                     showIcon: false,
@@ -1086,19 +1117,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                             break
                         }
                         case ThiefFruitReasonCode.DogAssisted: {
-                            this.createFlyItems([   
+                            this.createFlyItems([
                                 {
                                     iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
-                                    showIcon: false,    
+                                    showIcon: false,
                                     x: position.x,
                                     y: position.y,
-                                    text: "Dog assisted",   
+                                    text: "Dog assisted",
                                 },
                             ])
                             break
                         }
                         default:
-                            throw new Error("Unknown reason code")  
+                            throw new Error("Unknown reason code")
                         }
                     }
                     break
@@ -1108,14 +1139,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useBugNet.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useBugNet.experiencesGain,
@@ -1145,14 +1176,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUseWateringCan.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.helpUseWateringCan.experiencesGain,
@@ -1175,14 +1206,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.helpUseBugNet.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.helpUseBugNet.experiencesGain,
@@ -1212,14 +1243,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.useFruitFertilizer.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useFruitFertilizer.experiencesGain,
@@ -1298,19 +1329,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                         }
                         }
                         const assetKey =
-                        assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.harvestBeeHouse.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: experiencesGain,
@@ -1321,9 +1352,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                         ])
                     } else {
@@ -1362,7 +1393,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                             break
                         default:
                             throw new Error("Unknown reason code")
-                        }       
+                        }
                     }
                     break
                 }
@@ -1376,19 +1407,19 @@ export abstract class ItemTilemap extends GroundTilemap {
                             throw new Error("Product not found")
                         }
                         const assetKey =
-                        assetProductMap[product.displayId].base.assetKey
+                                assetProductMap[product.displayId].base.assetKey
 
                         this.createFlyItems([
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Energy]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: -this.activities.thiefBeeHouse.energyConsume,
                             },
                             {
                                 iconAssetKey:
-                    assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
+                                        assetIconMap[AssetIconId.Experience]?.phaser?.base.assetKey,
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.thiefBeeHouse.experiencesGain,
@@ -1399,9 +1430,9 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 y: position.y,
                                 quantity,
                                 badgeIconAssetKey:
-                                product.isQuality
-                                    ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
-                                    : undefined,
+                                        product.isQuality
+                                            ? assetIconMap[AssetIconId.QualityStar]?.phaser?.base.assetKey
+                                            : undefined,
                             },
                         ])
                     } else {
@@ -1513,6 +1544,147 @@ export abstract class ItemTilemap extends GroundTilemap {
         }
     }
 
+    protected edges: Record<string, Array<Phaser.GameObjects.Sprite>> = {}
+    // a method to add edges to fences
+    private addEdgesToFences() {
+        // delete all edges
+        for (const [, sprites] of Object.entries(this.edges)) {
+            for (const sprite of sprites) {
+                sprite?.destroy()
+            }
+        }
+        this.edges = {}
+        // add edges to fences
+        // we tracking all the fences and the connected fences
+        const fences: Array<PlacedItemObjectData> = []
+        const fenceConnections: Array<FenceConnection> = []
+        // filter all fences
+        for (const placedItem of Object.values(this.placedItemObjectMap)) {
+            const { object } = placedItem
+            const { currentPlacedItem, placedItemType } = object
+            if (!currentPlacedItem) {
+                throw new Error("Current placed item not found")
+            }
+            if (placedItemType?.type !== PlacedItemType.Decoration) {
+                continue
+            }
+            const decoration = this.decorations.find(
+                (decoration) => decoration.id === placedItemType.decoration
+            )
+            if (!decoration) {
+                throw new Error("Decoration not found")
+            }
+            if (decoration.type !== DecorationType.Fence) {
+                continue
+            }
+            fences.push(placedItem)
+            // if there are 2 fences with same place item type ID that connected to each other, add edges to them
+        }
+        for (const fence of fences) {
+            if (!fence.object.currentPlacedItem) {
+                throw new Error("Current placed item not found")
+            }
+            // we get the rest fences
+            const restFences = fences.filter((restFence) =>
+                restFence.object.currentPlacedItem?.id
+                !== fence.object.currentPlacedItem?.id
+            )
+            // we check if the rest fences are connected to the current fence
+            for (const restFence of restFences) {
+                if (!restFence.object.currentPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                // continue if the placed item types are not the same
+                if (
+                    fence.object.currentPlacedItem.placedItemType
+                    !== restFence.object.currentPlacedItem.placedItemType
+                ) {
+                    continue
+                }
+                // continue if the placed item position is not differ from 1
+                // we use manhattan distance to check if the placed item position is differ from 1
+                if (
+                    Math.abs(
+                        fence.object.currentPlacedItem.x - restFence.object.currentPlacedItem.x
+                    ) +
+                    Math.abs(
+                        fence.object.currentPlacedItem.y - restFence.object.currentPlacedItem.y
+                    ) !== 1
+                ) {
+                    continue
+                }
+                let direction: Direction = Direction.Horizontal
+                if (fence.object.currentPlacedItem.x !== restFence.object.currentPlacedItem.x) {
+                    direction = Direction.Vertical
+                }
+                // we check if the fence connection is already exists
+                if (fenceConnections.some((connection) =>
+                    (
+                        connection.fences.some((_fence) => _fence.object.currentPlacedItem?.id === fence.object.currentPlacedItem?.id)
+                        && connection.fences.some((_fence) => _fence.object.currentPlacedItem?.id === restFence.object.currentPlacedItem?.id)
+                    )
+                )) {
+                    continue
+                }
+                // we add the fence connection
+                if (!fence.object.currentPlacedItem.placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                const placedItemType = this.placedItemTypes.find(
+                    (placedItemType) => placedItemType.id === fence.object.currentPlacedItem?.placedItemType
+                )
+                if (!placedItemType) {
+                    throw new Error("Placed item type not found")
+                }
+                const decoration = this.decorations.find(
+                    (decoration) => decoration.id === fence.object.currentPlacedItem?.placedItemType
+                )
+                if (!decoration) {
+                    throw new Error("Decoration not found")
+                }
+                fenceConnections.push({
+                    fences: [fence, restFence],
+                    decoration,
+                    direction,
+                })
+            }
+        }
+
+        // thus, we process connection by adding edges
+        for (const connection of fenceConnections) {
+            const posX = (
+                (connection.fences[0].object.x)
+                + (connection.fences[1].object.x)
+            ) / 2
+            const posY = (
+                (connection.fences[0].object.y)
+                + (connection.fences[1].object.y)
+            ) / 2
+            const edge = assetDecorationMap[connection.decoration.displayId].phaser.edges?.[connection.direction]
+            if (!edge) {
+                throw new Error("Edge not found")
+            }
+            const edgeSprite = this.scene.add.sprite(
+                posX,
+                posY,
+                edge.assetKey,
+            )
+                .setOrigin(0.5, 1)
+                .setDepth(
+                    Math.floor((connection.fences[0].object.depth + connection.fences[1].object.depth) / 2)
+                )
+
+            for (const fence of connection.fences) {
+                if (!fence.object.currentPlacedItem) {
+                    throw new Error("Current placed item not found")
+                }
+                const fences: Array<Phaser.GameObjects.Sprite> = this.edges[fence.object.currentPlacedItem?.id ?? ""] || []
+                fences.push(edgeSprite)
+                this.edges[fence.object.currentPlacedItem?.id ?? ""] = fences
+            }
+        }
+    }
+
     // immidiate delete the object
     public deleteObject(placedItemId: string) {
         const gameObject = this.placedItemObjectMap[placedItemId]?.object
@@ -1545,7 +1717,7 @@ export abstract class ItemTilemap extends GroundTilemap {
 
     // reusable method to place a tile for a given placed item
     protected placeTileForItem(placedItem: PlacedItemSchema) {
-    // get the tile
+        // get the tile
         const tile = this.getTileCenteredAt({
             tileX: placedItem.x,
             tileY: placedItem.y,
@@ -1588,7 +1760,6 @@ export abstract class ItemTilemap extends GroundTilemap {
             height: 0,
             ...this.computePositionForTiledObject(tile),
         })
-
         // create the objects
         const object = this.createFromObjects(ObjectLayerName.Item, {
             id: this.tiledObjectId,
@@ -1649,7 +1820,7 @@ export abstract class ItemTilemap extends GroundTilemap {
         const item = items.find(
             (item) =>
                 item.object.currentPlacedItem?.x === tileX &&
-        item.object.currentPlacedItem?.y === tileY
+                item.object.currentPlacedItem?.y === tileY
         )
         if (!item) {
             return null
@@ -1684,15 +1855,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                 throw new Error("SizeY not found")
             }
             const { x: centeredTileX, y: centeredTileY } =
-        this.getCenteredTileCoordinates(
-            currentPlacedItem.x,
-            currentPlacedItem.y
-        )
+                this.getCenteredTileCoordinates(
+                    currentPlacedItem.x,
+                    currentPlacedItem.y
+                )
             if (
                 x <= centeredTileX &&
-        x > centeredTileX - sizeX &&
-        y <= centeredTileY &&
-        y > centeredTileY - sizeY
+                x > centeredTileX - sizeX &&
+                y <= centeredTileY &&
+                y > centeredTileY - sizeY
             ) {
                 return placedItem
             }
@@ -1721,16 +1892,16 @@ export abstract class ItemTilemap extends GroundTilemap {
         await sleep(FADE_TIME)
         // re-sync the placed items
         const watchingUser = this.scene.cache.obj.get(CacheKey.WatchingUser) as
-      | UserSchema
-      | undefined
+            | UserSchema
+            | undefined
         const userId = watchingUser?.id ?? undefined
         // hide the neighbors modal
         ExternalEventEmitter.emit(ExternalEventName.UpdatePlayerContext, {
             playerContext: userId ? PlayerContext.Neighbor : PlayerContext.Home,
-        })  
+        })
         // turn the event into a promise for better readability
         await new Promise<void>((resolve) => {
-            ExternalEventEmitter.once(ExternalEventName.PlacedItemsLoaded, async() => {
+            ExternalEventEmitter.once(ExternalEventName.PlacedItemsLoaded, async () => {
                 resolve()
             })
             // Emit the event to request the toolbar inventory index
@@ -1800,23 +1971,30 @@ export interface AnimatedItem {
 }
 
 export interface UpdatePlacedItemLocalParams {
-  placedItem: PartialDeep<PlacedItemSchema>;
-  type: PlacedItemType;
+    placedItem: PartialDeep<PlacedItemSchema>;
+    type: PlacedItemType;
 }
 
 export interface PlacedItemObjectData {
-  object: PlacedItemObject;
-  animatedItem?: AnimatedItem;
+    object: PlacedItemObject;
+    animatedItem?: AnimatedItem;
 }
 
 export interface CanPlaceItemAtTileParams {
-  tileX: number;
-  tileY: number;
-  tileSizeWidth: number;
-  tileSizeHeight: number;
+    tileX: number;
+    tileY: number;
+    tileSizeWidth: number;
+    tileSizeHeight: number;
 }
 
 export interface HandlePlacedItemUpdatePositionParams {
-  placedItemId: string;
-  position: Position;
+    placedItemId: string;
+    position: Position;
+}
+
+// fence connection
+export interface FenceConnection {
+    fences: Array<PlacedItemObjectData>
+    decoration: DecorationSchema
+    direction: Direction
 }

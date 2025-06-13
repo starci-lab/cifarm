@@ -8,6 +8,7 @@ import {
     PlacedItemType,
     PlacedItemTypeSchema,
     TileSchema,
+    DecorationSchema,
 } from "@/modules/entities"
 import { CacheKey } from "../types"
 import { QueryStaticResponse } from "@/modules/apollo"
@@ -20,7 +21,8 @@ import {
     assetBuildingMap,
     assetFruitMap,
     assetPetMap,
-    assetTerrainMap,
+    assetTerrainsMap,
+    assetDecorationMap,
 } from "@/modules/assets"
 
 export const setTintForMainVisual = (
@@ -139,6 +141,7 @@ export const getAssetData = ({
     const fruits = scene.cache.obj.get(CacheKey.Fruits) as Array<FruitSchema>
     const pets = scene.cache.obj.get(CacheKey.Pets) as Array<PetSchema>
     const terrains = scene.cache.obj.get(CacheKey.Terrains) as Array<TerrainSchema>
+    const decorations = scene.cache.obj.get(CacheKey.Decorations) as Array<DecorationSchema>
     return getAssetDataRaw({
         placedItemType,
         fruitStage,
@@ -150,6 +153,7 @@ export const getAssetData = ({
             fruits,
             pets,
             terrains,
+            decorations,
         },
     })
 }
@@ -259,7 +263,24 @@ export const getAssetDataRaw = ({
         if (!terrain) {
             throw new Error("Terrain not found")
         }
-        return assetTerrainMap[terrain.displayId].phaser.map
+        return assetTerrainsMap[terrain.displayId].phaser.map
+    }
+    case PlacedItemType.Decoration: {
+        if (!placedItemType.decoration) {
+            throw new Error("Decoration ID not found")
+        }
+        const decorations = queryStaticResponsePartial.decorations
+        if (!decorations) {
+            throw new Error("Decorations not found")
+        }
+        const decoration = decorations.find((decoration) => decoration.id === placedItemType.decoration)
+        if (!decoration) {
+            throw new Error("Decoration not found")
+        }
+        return assetDecorationMap[decoration.displayId].phaser.map
+    }
+    default: {
+        throw new Error("Placed item type not found")
     }
     }
 }

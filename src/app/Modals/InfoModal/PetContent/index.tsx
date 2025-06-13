@@ -3,7 +3,7 @@ import { PetType, PlacedItemSchema } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { ExtendedButton, Spacer, Title, DialogFooter, DialogBody } from "@/components"
+import { ExtendedButton, Spacer, Title, DialogFooter, DialogBody, Separator } from "@/components"
 import {
     ExternalEventEmitter,
     ExternalEventName,
@@ -55,35 +55,43 @@ export const PetContent: FC<PetContentProps> = ({ placedItem }) => {
             <DialogBody>
                 <div className="bg-content-2 rounded-lg overflow-hidden">
                     <div className="p-3">
-                        <Title title="Assistance chance" tooltipString={tooltipString()} />
-                        <div className="text-4xl text-primary">
+                        <Title classNames={{
+                            title: "text-muted-foreground leading-none text-base",
+                            tooltip: "text-muted-foreground"
+                        }} title="Assistance chance" tooltipString={tooltipString()} />
+                        <Spacer y={2} />
+                        <div className="text-4xl text-primary leading-none">
                             {`${(
                                 (staticSwr.data?.data.petInfo[pet.type].chance ?? 0) * 100
                             ).toFixed(2)}%`}
                         </div>
                     </div>
+                    <Separator />
                     {pet.type === PetType.Cat && (
-                        <div className="p-3 bg-content-6">
-                            <div className="flex justify-between items-center">
+                        <div>
+                            <div className="flex justify-between items-center p-3">
                                 <Title
                                     title="Plus Quantity"
                                     classNames={{
-                                        title: "text-sm text-muted-foreground",
+                                        title: "text-muted-foreground leading-none text-base",
+                                        tooltip: "text-muted-foreground w-4 h-4"
                                     }}
                                 />
-                                <div className="text-sm">
+                                <div className="leading-none">
                                     {staticSwr.data?.data.petInfo[pet.type].plusQuantity}
                                 </div>
                             </div>
-                            <Spacer y={0.5} />
-                            <div className="flex justify-between items-center">
+                            <Separator />
+                            <div className="flex justify-between items-center p-3">
                                 <Title
                                     title="Percent Quantity Bonus"
                                     classNames={{
-                                        title: "text-sm text-muted-foreground",
+                                        title: "text-muted-foreground leading-none text-base",
+                                        tooltip: "text-muted-foreground w-4 h-4"
                                     }}
+                                    tooltipString="The percentage of the quantity of the item that the pet will steal."
                                 />
-                                <div className="text-sm">
+                                <div className="leading-none">
                                     {(
                                         (staticSwr.data?.data.petInfo[pet.type]
                                             .percentQuantityBonus ?? 0) * 100
@@ -93,16 +101,18 @@ export const PetContent: FC<PetContentProps> = ({ placedItem }) => {
                             </div>
                         </div>
                     )}
+                    <Separator />
                     {pet.type === PetType.Dog && (
-                        <div className="bg-content-6 p-3">
+                        <div className="p-3">
                             <div className="flex justify-between items-center">
                                 <Title
                                     title="Energy Reduce"
                                     classNames={{
-                                        title: "text-sm text-muted-foreground",
+                                        title: "text-muted-foreground leading-none text-base",
+                                        tooltip: "text-muted-foreground w-4 h-4"
                                     }}
                                 />
-                                <div className="text-sm">
+                                <div className="leading-none">
                                     {staticSwr.data?.data.petInfo[pet.type].energyReduce}
                                 </div>
                             </div>  

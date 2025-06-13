@@ -1,6 +1,5 @@
 import React, { FC } from "react"
 import { ExclamationTooltip } from "../ExclamationTooltip"
-import { cn } from "@/lib/utils"
 
 export interface TitleProps {
   title: string;
@@ -27,9 +26,9 @@ export const Title: FC<TitleProps> = ({
             <div className="flex items-center gap-1">
                 {icon}
                 <div
-                    className={cn(
+                    className={
                         titleClassName
-                    )}
+                    }
                 >
                     {title}
                 </div>

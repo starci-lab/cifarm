@@ -258,6 +258,8 @@ export enum PlacedItemTypeId {
     OakTree = "oakTree",
     PineTree = "pineTree",
     MapleTree = "mapleTree",
+    // decorations
+    WoodenFence = "woodenFence",
 }
 
 // Pet Enum
@@ -281,4 +283,8 @@ export enum TerrainId {
 
 export enum SeasonId {
     Season1 = "season1",
+}
+
+export enum DecorationId {
+    WoodenFence = "woodenFence",
 }

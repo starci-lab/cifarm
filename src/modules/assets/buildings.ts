@@ -20,6 +20,7 @@ export interface AssetBuildingData extends Metadata {
 }
 
 const PREFIX = "/buildings"
+
 export const assetBuildingMap: Record<BuildingId, AssetBuildingData> = {
     [BuildingId.Home]: {
         name: "Home",

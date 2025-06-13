@@ -34,6 +34,7 @@ export enum CacheKey {
     UpgradeModalData = "upgrade-modal-data",
     Terrains = "terrains",
     InteractionPermissions = "interaction-permissions",
+    Decorations = "decorations",
 }
 
 export interface DeliveryData {

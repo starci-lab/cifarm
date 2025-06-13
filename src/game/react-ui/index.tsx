@@ -122,7 +122,13 @@ export const ReactUI: FC = () => {
                                         <ResourceCard text={`${user?.energy}/${getMaxEnergy(user?.level ?? 0)}`} iconImgSrc={assetIconMap[AssetIconId.Energy].base.assetUrl}/>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <div className="text-sm">{`Next energy in ${energy} seconds`}</div>
+                                        {
+                                            user?.energyFull ? (
+                                                <div className="text-sm">Energy is full</div>
+                                            ) : (
+                                                <div className="text-sm">{`Next energy in ${energy} seconds`}</div>
+                                            )
+                                        }
                                     </TooltipContent>
                                 </Tooltip>
                                 <ResourceCard text={`${user?.golds}`} iconImgSrc={assetIconMap[AssetIconId.Gold].base.assetUrl}/>

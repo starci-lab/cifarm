@@ -9,6 +9,7 @@ import {
     SupplyId,
     ToolId,
     PetId,
+    DecorationId,
 } from "../entities"
 import { assetSuppliesMap } from "./supplies"
 import { assetToolsMap } from "./tools"
@@ -31,6 +32,7 @@ export interface AssetShopData {
   supplies: Partial<Record<SupplyId, ShopData>>;
   tools: Partial<Record<ToolId, ShopData>>;
   pets: Partial<Record<PetId, ShopData>>;
+  decorations: Partial<Record<DecorationId, ShopData>>;
 }
 
 const PREFIX = "/shop"
@@ -41,6 +43,7 @@ const PREFIX_BUILDINGS = `${PREFIX}/buildings`
 const PREFIX_FRUITS = `${PREFIX}/fruits`
 const PREFIX_TILES = `${PREFIX}/tiles`
 const PREFIX_PETS = `${PREFIX}/pets`
+const PREFIX_DECORATIONS = `${PREFIX}/decorations`
 
 export const assetShopMap: AssetShopData = {
     crops: {
@@ -374,6 +377,16 @@ export const assetShopMap: AssetShopData = {
             base: {
                 assetKey: "shop-cat",
                 assetUrl: getAssetUrl(`${PREFIX_PETS}/cat.png`),
+            },
+        },
+    },
+    decorations: {
+        [DecorationId.WoodenFence]: {
+            name: "Wooden Fence",
+            description: "A fence made of wood.",
+            base: {
+                assetKey: "shop-wooden-fence",
+                assetUrl: getAssetUrl(`${PREFIX_DECORATIONS}/wooden-fence.png`),
             },
         },
     },

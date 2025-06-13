@@ -4,7 +4,7 @@ import { ItemCard } from "./ItemCard"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { assetBuildingMap, assetProductMap, assetSuppliesMap, assetTerrainMap, assetToolsMap } from "@/modules/assets"
+import { assetBuildingMap, assetProductMap, assetSuppliesMap, assetTerrainsMap, assetToolsMap } from "@/modules/assets"
 import { assetShopMap } from "@/modules/assets"
 import { BuildingId, ProductType } from "@/modules/entities"
 import { envConfig } from "@/env"
@@ -155,10 +155,10 @@ export const ItemsTab: FC = () => {
                 const _terrain = staticSwr.data?.data.terrains.find(_terrain => _terrain.id === terrain.id)
                 if (!_terrain) throw new Error("Terrain not found")
                 return ({
-                    name: assetTerrainMap[_terrain.displayId].name,
-                    description: assetTerrainMap[_terrain.displayId].description,
-                    assetKey: assetTerrainMap[_terrain.displayId].base.assetKey,
-                    assetUrl: assetTerrainMap[_terrain.displayId].base.assetUrl,
+                    name: assetTerrainsMap[_terrain.displayId].name,
+                    description: assetTerrainsMap[_terrain.displayId].description,
+                    assetKey: assetTerrainsMap[_terrain.displayId].base.assetKey,
+                    assetUrl: assetTerrainsMap[_terrain.displayId].base.assetUrl,
                     isNFT: false
                 })
             })

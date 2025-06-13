@@ -44,6 +44,7 @@ import { useSelectDogEffects } from "./useSelectDogEffects"
 import { useSelectCatEffects } from "./useSelectCatEffects"
 import { useDeleteInventoryEffects } from "./useDeleteInventoryEffects"
 import { useSortInventoriesEffects } from "./useSortInventoriesEffects"
+import { useBuyDecorationEffects } from "./useBuyDecorationEffects"
 
 export const useActionsEffects = () => {
     useBuyCropSeedsEffects()
@@ -92,4 +93,5 @@ export const useActionsEffects = () => {
     useSelectCatEffects()
     useDeleteInventoryEffects()
     useSortInventoriesEffects()
+    useBuyDecorationEffects()
 }

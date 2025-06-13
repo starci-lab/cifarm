@@ -3,7 +3,7 @@ import { FruitCurrentState, PlacedItemSchema } from "@/modules/entities"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { ExtendedBadge, Spacer, ExtendedButton, DialogFooter, DialogBody, NFTBadge, Separator } from "@/components"
+import { Spacer, ExtendedButton, DialogFooter, DialogBody, NFTBadge, Separator } from "@/components"
 import {    
     assetProductMap,
     assetStateMap,
@@ -32,29 +32,29 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
 
     if (!placedItem.fruitInfo) throw new Error("Placed item fruit info not found")
 
-    const isMatured = placedItem.fruitInfo.currentStage === (staticSwr.data?.data.fruitInfo.matureGrowthStage ?? 0) - 1
+    const isMatured = placedItem.fruitInfo.currentStage >= (staticSwr.data?.data.fruitInfo.matureGrowthStage ?? 0)
     const growthStageDuration = isMatured
         ? fruit.matureGrowthStageDuration
         : fruit.youngGrowthStageDuration
-
+    // count down the time to next growth stage
+    const _timeElapsed = growthStageDuration - (placedItem.fruitInfo?.currentStageTimeElapsed ?? 0)
+    console.log(_timeElapsed)
     const [timeElapsed, setTimeElapsed] = useState(0)
-
     useEffect(() => {
-        setTimeElapsed(growthStageDuration - (placedItem.fruitInfo?.currentStageTimeElapsed ?? 0))
-    }, [growthStageDuration, placedItem.fruitInfo?.currentStageTimeElapsed])
-
+        if (placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured) return
+        setTimeElapsed(_timeElapsed)
+    }, [])
     useEffect(() => {
+        if (timeElapsed === 0) return
         if (
-            placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer ||
-            placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured
-        ) {
-            return
-        }
+            placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured 
+            || placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
+        ) return
         const interval = setInterval(() => {
             setTimeElapsed((prev) => prev - 1)
         }, 1000)
         return () => clearInterval(interval)
-    }, [placedItem.fruitInfo?.currentState])
+    }, [timeElapsed])
 
     const product = staticSwr.data?.data.products.find(product => product.fruit === fruit.id)
     if (!product) throw new Error("Product not found")
@@ -123,88 +123,81 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
         }
     }
 
+    // count down the time to next fertilizer
+    const _needFertilizerTime = fruit.fertilizerTime - (placedItem.fruitInfo?.currentFertilizerTime ?? 0)
     const [needFertilizerTimeElapsed, setNeedFertilizerTimeElapsed] = useState(0)
-
     useEffect(() => {
-        if (!staticSwr.data?.data || !placedItem?.placedItemType || !placedItem?.fruitInfo) return
-    
-        const placedItemType = staticSwr.data.data.placedItemTypes.find(
-            (type) => type.id === placedItem.placedItemType
-        )
-    
-        if (!placedItemType) {
-            throw new Error("Placed item type not found")
-        }
-    
-        const fruit = staticSwr.data.data.fruits.find(
-            (fruit) => fruit.id === placedItemType.fruit
-        )
-    
-        if (!fruit) {
-            throw new Error("Fruit not found for placed item type")
-        }
-    
-        const needFertilizerTime = fruit.fertilizerTime ?? 0
-        const currentFertilizerTime = placedItem.fruitInfo.currentFertilizerTime ?? 0
-        setNeedFertilizerTimeElapsed(needFertilizerTime - currentFertilizerTime)
+        if (placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured) return
+        setNeedFertilizerTimeElapsed(_needFertilizerTime)
     }, [])
-
     useEffect(() => {
+        if (needFertilizerTimeElapsed === 0) return
         if (
-            needFertilizerTimeElapsed === 0
-        ) {
-            return
-        }
-        if (placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer) {
-            return
-        }
+            placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
+            || placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured
+        ) return
+
         const interval = setInterval(() => {
-            setNeedFertilizerTimeElapsed(needFertilizerTimeElapsed - 1)
+            setNeedFertilizerTimeElapsed(prev => {
+                if (prev <= 1) {
+                    if (interval) {
+                        clearInterval(interval)
+                    }
+                    return 0
+                }
+                return prev - 1
+            })
         }, 1000)
-        return () => clearInterval(interval)
+    
+        return () => {
+            if (interval) {
+                clearInterval(interval)
+            }
+        }
     }, [needFertilizerTimeElapsed])
     
     return (
         <>
             <DialogBody>
-                <div className="flex items-center gap-2">
-                    <ExtendedBadge>
-                        {`Stage ${(placedItem.fruitInfo?.currentStage ?? 0) + 1}`}
-                    </ExtendedBadge>
-                    <div className="flex items-center gap-4">
-                        {placedItem.nftMetadata && (
-                            <>
-                                <NFTBadge name={placedItem.nftMetadata.nftName} />
-                                <Spacer y={4} />
-                            </>
-                        )}
-                    </div>
-                </div>
-                <Spacer y={4} />
+                {placedItem.nftMetadata && (
+                    <>
+                        <div className="flex items-center gap-2">
+                            <NFTBadge name={placedItem.nftMetadata.nftName} />
+                        </div>
+                        <Spacer y={4} />
+                    </>
+                )}
                 <div className="bg-content-2 rounded-lg overflow-hidden">
-                    <div className="p-3">
+                    {
+                        placedItem.fruitInfo.currentState !== FruitCurrentState.FullyMatured && (
+                            <>
+                                <div className="p-3">
+                                    <div className="text-muted-foreground leading-none">
+                            Stage {placedItem.fruitInfo?.currentStage + 1}
+                                    </div>
+                                    <Spacer y={2} />
+                                    <div className={
+                                        cn(
+                                            "text-4xl text-success leading-none",
+                                            {
+                                                "text-destructive": placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
+                                            }
+                                        )
+                                    }>
+                                        {formatTime(timeElapsed)}
+                                    </div>
+                                </div>
+                                <Separator />
+                            </>
+                        )
+                    }    
+                    
+                    <div className="p-3 flex items-center justify-between">
                         <div className="text-muted-foreground leading-none">
-                            Next growth stage in
-                        </div>
-                        <Spacer y={1} />
-                        <div className={
-                            cn(
-                                "text-4xl text-primary",
-                                {
-                                    "text-destructive": placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
-                                }
-                            )
-                        }>
-                            {formatTime(timeElapsed)}
-                        </div>
-                    </div>
-                    <Separator />
-                    <div className="px-3 py-2 flex items-center justify-between">
-                        <div className="text-muted-foreground">
                                 Need fertilizer in
                         </div>
-                        <div>
-                            {formatTime(timeElapsed) }
+                        <div className="leading-none">
+                            {formatTime(needFertilizerTimeElapsed) }
                         </div>
                     </div>
                     {placedItem.fruitInfo &&

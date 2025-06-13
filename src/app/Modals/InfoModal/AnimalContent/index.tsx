@@ -49,8 +49,7 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
 
     useEffect(() => {
         if (
-            placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry ||
-      placedItem.animalInfo?.currentState === AnimalCurrentState.Sick
+            placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry
         ) {
             return
         }
@@ -60,33 +59,22 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
         return () => clearInterval(interval)
     }, [timeElapsed])
 
+    const _hungryTimeElapsed = animal.hungerTime - (placedItem.animalInfo?.currentHungryTime ?? 0)
     const [hungryTimeElapsed, setHungryTimeElapsed] = useState(0)
 
     useEffect(() => {
-        if (!staticSwr.data?.data || !placedItem?.placedItemType || !placedItem?.animalInfo) return
-    
-        const placedItemType = staticSwr.data.data.placedItemTypes.find(
-            (type) => type.id === placedItem.placedItemType
-        )
-    
-        if (!placedItemType) {
-            throw new Error("Placed item type not found")
-        }
-    
-        const animal = staticSwr.data.data.animals.find(
-            (animal) => animal.id === placedItemType.animal
-        )
-    
-        if (!animal) {
-            throw new Error("Animal not found for placed item type")
-        }
-    
-        const hungerTime = animal.hungerTime ?? 0
-        const currentHungryTime = placedItem.animalInfo.currentHungryTime ?? 0
-    
-        setHungryTimeElapsed(hungerTime - currentHungryTime)
+        setHungryTimeElapsed(_hungryTimeElapsed)
     }, [])
 
+    useEffect(() => {
+        if (hungryTimeElapsed === 0) return
+        if (placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry) return
+        const interval = setInterval(() => {
+            setHungryTimeElapsed(hungryTimeElapsed - 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [hungryTimeElapsed])
+    
     useEffect(() => {
         if (
             hungryTimeElapsed === 0
@@ -187,11 +175,6 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
             <DialogBody>
                 <div className="flex items-center gap-4">
                     {
-                        <ExtendedBadge>
-                            {placedItem.animalInfo?.isAdult ? "Adult" : "Baby"}
-                        </ExtendedBadge>
-                    }
-                    {
                         placedItem.nftMetadata && (
                             <>
                                 <div className="flex items-center gap-2">
@@ -207,31 +190,36 @@ export const AnimalContent: FC<AnimalContentProps> = ({ placedItem }) => {
                         )
                     }
                 </div>
-                <Spacer y={4}/>
                 <div className="bg-content-2 rounded-lg overflow-hidden">
                     <div className="gap-4">
-                        <div className="p-3 items-center">
+                        {
+                            placedItem.animalInfo?.currentState !== AnimalCurrentState.Yield && (
+                                <>
+                                    <div className="p-3 items-center">
+                                        <div className="text-muted-foreground leading-none">
+                                            { placedItem.animalInfo?.isAdult ? "Harvest time" : "Growth time" }
+                                        </div>
+                                        <Spacer y={2} />
+                                        <div className={
+                                            cn(
+                                                "text-4xl text-success leading-none",
+                                                {
+                                                    "text-destructive": placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry || placedItem.animalInfo?.currentState === AnimalCurrentState.Sick
+                                                }
+                                            )
+                                        }>
+                                            {formatTime(timeElapsed)}
+                                        </div>
+                                    </div>
+                                    <Separator />
+                                </>
+                            )
+                        }   
+                        <div className="p-3 flex items-center justify-between">
                             <div className="text-muted-foreground leading-none">
-                                { placedItem.animalInfo?.isAdult ? "Harvest time" : "Growth time" }
-                            </div>
-                            <Spacer y={2} />
-                            <div className={
-                                cn(
-                                    "text-4xl text-primary",
-                                    {
-                                        "text-destructive": placedItem.animalInfo?.currentState === AnimalCurrentState.Hungry || placedItem.animalInfo?.currentState === AnimalCurrentState.Sick
-                                    }
-                                )
-                            }>
-                                {formatTime(timeElapsed)}
-                            </div>
-                        </div>
-                        <Separator />
-                        <div className="px-3 py-2 flex items-center justify-between">
-                            <div className="text-muted-foreground">
                                 Hungry time
                             </div>
-                            <div>
+                            <div className="leading-none">
                                 {formatTime(hungryTimeElapsed) }
                             </div>
                         </div>

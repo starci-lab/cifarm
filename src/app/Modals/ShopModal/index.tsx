@@ -517,6 +517,44 @@ export const ShopModal = () => {
                 />
             )
         }
+        case ShopTab.Decorations: {
+            const decorations = staticSwr.data.data.decorations
+            return (
+                <GridTable
+                    items={decorations}
+                    classNames={{
+                        container: "grid grid-cols-3 gap-2",
+                    }}
+                    contentCallback={(decoration) => {
+                        return (
+                            <ShopCard
+                                onTap={() => {
+                                    close()
+                                    const placedItemType =
+                      staticSwr.data?.data.placedItemTypes.find(
+                          (placedItemType) => placedItemType.decoration === decoration.id
+                      )
+                                    if (!placedItemType) {
+                                        throw new Error("Placed item type not found")
+                                    }
+                                    const eventMessage: BuyItemMessage = {
+                                        placedItemTypeId: placedItemType.id,
+                                    }
+                                    ExternalEventEmitter.emit(
+                                        ExternalEventName.BuyItem,
+                                        eventMessage
+                                    )
+                                }}
+                                imageUrl={
+                                    assetShopMap.decorations[decoration.displayId]?.base.assetUrl ?? ""
+                                }
+                                price={decoration.price ?? 0}
+                            />
+                        )
+                    }}
+                />
+            )
+        }
         default:
             return null
         }

@@ -19,6 +19,7 @@ import {
     BeeHouseCurrentState,
     getSellInfoFromPlacedItemType,
     InventoryTypeSchema,
+    DecorationType,
 } from "@/modules/entities"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
@@ -32,6 +33,7 @@ import { PlacementConfirmation } from "./PlacementConfirmation"
 import {
     BuyAnimalMessage,
     BuyBuildingMessage,
+    BuyDecorationMessage,
     BuyFruitMessage,
     BuyPetMessage,
     BuyTileMessage,
@@ -267,6 +269,25 @@ export class InputTilemap extends ItemTilemap {
                         if (!_data.object.currentPlacedItem) {
                             throw new Error("Placed item not found")
                         }
+                        const placedItemType = _data.object.placedItemType
+                        
+                        // write code to check if placed item has info
+                        switch (placedItemType?.type) {
+                        case PlacedItemType.Decoration: {
+                            const decoration = this.decorations.find(
+                                (decoration) => decoration.id === placedItemType.decoration
+                            )
+                            if (!decoration) {
+                                throw new Error("Decoration not found")
+                            }
+                            if (decoration.type === DecorationType.Fence) {
+                                return
+                            }
+                            break
+                        }
+                        default:
+                            break
+                        }
                         ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
                             id: _data.object.currentPlacedItem.id,
                         })
@@ -299,6 +320,13 @@ export class InputTilemap extends ItemTilemap {
 
                 if (this.inputMode === InputMode.Move) {
                     if (!this.isDragging) {
+                        // destroy all edges
+                        const edges = this.edges[data.object.currentPlacedItem?.id ?? ""]
+                        if (edges) {
+                            for (const edge of edges) {
+                                edge.destroy()
+                            }
+                        }
                         this.isDragging = true
                         if (!data.object.currentPlacedItem?.id) {
                             throw new Error("Placed item id not found")
@@ -1286,6 +1314,26 @@ export class InputTilemap extends ItemTilemap {
                     }
                     ExternalEventEmitter.emit(
                         ExternalEventName.RequestBuyPet,
+                        eventMessage
+                    )
+                    break
+                }
+                case PlacedItemType.Decoration: {
+                    const decoration = this.decorations.find(
+                        (decoration) => decoration.id === placedItemType.decoration
+                    )
+                    if (!decoration) {
+                        throw new Error(`Decoration not found for id: ${placedItemType.decoration}`)
+                    }
+                    const eventMessage: BuyDecorationMessage = {
+                        decorationId: decoration.displayId,
+                        position: {
+                            x: tileX,
+                            y: tileY,
+                        },
+                    }
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.RequestBuyDecoration,
                         eventMessage
                     )
                     break

@@ -101,9 +101,11 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
     }
 
     const plantData = getPlantData()
+    const _timeElapsed =  plantData?.timeElapsed ?? 0
     const [timeElapsed, setTimeElapsed] = useState(0)
     useEffect(() => {
-        setTimeElapsed(plantData?.timeElapsed ?? 0)
+        if (placedItem.plantInfo?.currentState === PlantCurrentState.FullyMatured) return
+        setTimeElapsed(_timeElapsed)
     }, [])
 
     useEffect(() => {
@@ -277,27 +279,34 @@ export const TileContent: FC<TileContentProps> = ({ placedItem }) => {
             {placedItem.plantInfo &&
                 <>
                     <div className="bg-content-2 rounded-lg overflow-hidden">
-                        <div className="px-3 py-2 text-lg text-secondary flex gap-2 items-center">
+                        <div className="p-3 text-lg text-secondary flex gap-2 items-center leading-none">
                             {plantInfo?.name}
                         </div>
-                        <Separator />
-                        <div className="flex gap-4 px-3 py-2 items-center">
-                            <div>
-                                <div>
-                                    {`Stage ${(placedItem.plantInfo?.currentStage ?? 0) + 1}`}
-                                </div>
-                                <div className={
-                                    cn(
-                                        "text-4xl text-primary",
-                                        {
-                                            "text-destructive": placedItem.plantInfo.currentState === PlantCurrentState.NeedWater
-                                        }
-                                    )
-                                }>
-                                    {formatTime(timeElapsed)}
-                                </div>
-                            </div>
-                        </div>
+                        {
+                            placedItem.plantInfo.currentState !== PlantCurrentState.FullyMatured && (
+                                <>
+                                    <Separator />
+                                    <div className="flex gap-4 p-3 items-center">                   
+                                        <div>
+                                            <div className="text-muted-foreground leading-none">
+                                                {`Stage ${(placedItem.plantInfo?.currentStage ?? 0) + 1}`}
+                                            </div>
+                                            <Spacer y={2} />
+                                            <div className={
+                                                cn(
+                                                    "text-4xl text-success leading-none",
+                                                    {
+                                                        "text-destructive": placedItem.plantInfo.currentState === PlantCurrentState.NeedWater
+                                                    }
+                                                )
+                                            }>
+                                                {formatTime(timeElapsed)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )
+                        } 
                         {placedItem.plantInfo &&
                             placedItem.plantInfo.currentState !== PlantCurrentState.Normal && (
                             <>

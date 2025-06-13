@@ -18,10 +18,11 @@ import {
     assetBootstrapMap,
     assetMiscMap,
     assetIconMap,
-    assetTerrainMap,
+    assetTerrainsMap,
     assetToolsMap,
     assetSuppliesMap,
     assetShopMap,
+    assetDecorationMap,
 } from "@/modules/assets"
 import { Scene } from "phaser"
 import { loadFont, loadMusic, loadSpine, loadTexture } from "./load"
@@ -277,7 +278,7 @@ export const loadIconAssets = async (scene: Scene) => {
 
 export const loadTerrainAssets = async (scene: Scene) => {
     const promises: Array<Promise<void>> = []
-    for (const terrainData of Object.values(assetTerrainMap)) {
+    for (const terrainData of Object.values(assetTerrainsMap)) {
         switch (terrainData.phaser.map.type) {
         case AssetMapType.Spine: {
             if (!terrainData.phaser.map.spine) {
@@ -331,6 +332,42 @@ export const loadShopAssets = async (scene: Scene) => {
     for (const flowerData of Object.values(assetShopMap.flowers)) {
         if (flowerData.phaser?.base) {
             promises.push(loadTexture(scene, flowerData.phaser.base))
+        }
+    }
+    await Promise.all(promises)
+}
+
+export const loadDecorationAssets = async (scene: Scene) => {
+    const promises: Array<Promise<void>> = []
+    for (const decorationData of Object.values(assetDecorationMap)) {
+        // load edges
+        if (decorationData.phaser.edges) {
+            for (const edgeData of Object.values(decorationData.phaser.edges)) {
+                if (edgeData.assetKey) {
+                    promises.push(loadTexture(scene, edgeData))
+                }
+            }
+        }
+        // load main texture
+        switch (decorationData.phaser.map.type) {
+        case AssetMapType.Spine: {
+            if (!decorationData.phaser.map.spine) {
+                throw new Error("Spine config is undefined")
+            }
+            promises.push(loadSpine(scene, decorationData.phaser.map.spine))
+            break
+        }
+        default: {
+            if (!decorationData.phaser.map.texture) {
+                throw new Error("Texture config is undefined")
+            }
+            try {
+                await loadTexture(scene, decorationData.phaser.map.texture)
+            } catch (error) {
+                console.error("Error loading texture", error)
+            }
+            break
+        }
         }
     }
     await Promise.all(promises)

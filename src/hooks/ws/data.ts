@@ -55,6 +55,10 @@ export interface BuyFruitData {
     fruitId: string
 }
 
+export interface BuyDecorationData {
+    decorationId: string
+}
+
 export interface BuyPetData {
     petId: string
 }

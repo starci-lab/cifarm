@@ -219,6 +219,10 @@ export enum ExternalEventName {
     UsePesticideHelped = "use_pesticide_helped",
     // request to plant harvested, from React to Phaser
     PlantTheived = "plant_theived",
+    // request to buy decoration, from React to Phaser
+    RequestBuyDecoration = "request_buy_decoration",
+    // buy decoration completed, from React to Phaser
+    BuyDecorationResponsed = "buy_decoration_responsed",
 }
 
 // events that listen inside Phaser class, use to unregister event listener

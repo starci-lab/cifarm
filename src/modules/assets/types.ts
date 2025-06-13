@@ -81,3 +81,7 @@ export interface SelectedConfig {
     extraOffsets?: { x: number; y: number };
 }
 
+export enum Direction {
+    Horizontal = "horizontal",
+    Vertical = "vertical",
+}

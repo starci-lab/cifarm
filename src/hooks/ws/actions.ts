@@ -21,6 +21,7 @@ export enum ActionName {
   BuyAnimal = "buy_animal",
   BuyBuilding = "buy_building",
   BuyFruit = "buy_fruit",
+  BuyDecoration = "buy_decoration",
   Move = "move",
   Sell = "sell",
   UseBugNet = "use_bug_net",

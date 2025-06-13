@@ -2,6 +2,7 @@ import {
     AnimalId,
     BuildingId,
     CropId,
+    DecorationId,
     FlowerId,
     FruitId,
     PetId,
@@ -12,6 +13,7 @@ import {
 } from "@/modules/entities"
 
 export enum EmitterEventName {
+  BuyDecoration = "buy_decoration",
   SyncPlacedItems = "sync_placed_items",
   BuyCropSeeds = "buy_crop_seeds",
   BuyFlowerSeeds = "buy_flower_seeds",
@@ -257,4 +259,9 @@ export interface SelectCatMessage {
 
 export interface DeleteInventoryMessage {
   inventoryId: string;
+}
+
+export interface BuyDecorationMessage {
+  decorationId: DecorationId;
+  position: Position;
 }

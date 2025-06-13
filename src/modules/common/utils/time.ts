@@ -6,11 +6,28 @@ dayjs.extend(relativeTime)
 dayjs.extend(duration)
 dayjs.extend(utc)
 
-export const formatTime = (time: number) => {
-    if (time < 0) {
-        return "00:00:00"
+export const formatTime = (time: number): string => {
+    if (time < 0) return "00:00"
+      
+    const secondsInHour = 3600
+    const secondsInDay = 86400
+    const secondsInMonth = 30 * secondsInDay
+      
+    const dur = dayjs.duration(time, "seconds")
+      
+    if (time < secondsInHour) {
+        // less than 1 hour: mm:ss
+        return dur.format("m[m] s[s]")
+    } else if (time < secondsInDay) {
+        return dur.format("H[h] m[m] s[s]")
+    } else if (time < secondsInMonth) {
+        // less than 1 month: D days HH:mm:ss
+        return dur.format("D[d] H[h] m[m] s[s]")
+    } else {
+        // 1 month or more: just show days
+        const days = Math.floor(time / secondsInDay)
+        return `${days}d`
     }
-    return dayjs.duration(time, "seconds").format("HH:mm:ss")
 }
 
 export const isoUtcDateToLocale = (isoDateString: dayjs.ConfigType): dayjs.Dayjs => {

@@ -32,7 +32,8 @@ import {
     EnergyPurchases,
     SeasonSchema,
     LandLimitInfo,
-    BlockchainDataConfigs
+    BlockchainDataConfigs,
+    DecorationSchema
 } from "@/modules/entities"
 
 //long query for querying all the static data
@@ -172,6 +173,7 @@ const query = gql`
       animal
       building
       terrain
+      decoration
       fruit
       pet
       sizeX
@@ -706,6 +708,15 @@ const query = gql`
         refreshInterval
       }
     }
+    decorations {
+      id
+      displayId
+      type
+      availableInShop
+      sellPrice
+      sellable
+      price
+    }
   }
 `
 
@@ -742,6 +753,7 @@ export interface QueryStaticResponse {
   activeSeason: SeasonSchema
   landLimitInfo: LandLimitInfo
   blockchainDataConfigs: BlockchainDataConfigs
+  decorations: Array<DecorationSchema>
 }
 
 export const queryStatic = async () => {

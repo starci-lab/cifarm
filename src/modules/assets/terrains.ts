@@ -11,7 +11,7 @@ export interface AssetTerrainData extends Metadata {
     }
 }
 
-export const assetTerrainMap: Record<TerrainId, AssetTerrainData> = {
+export const assetTerrainsMap: Record<TerrainId, AssetTerrainData> = {
     [TerrainId.SmallStone]: {
         name: "Small Stone",
         description: "A small stone found on the farm.",
