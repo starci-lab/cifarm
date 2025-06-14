@@ -9,7 +9,7 @@ import { ExtendedButton, ItemCard, ScaledImage } from "@/components"
 import React from "react"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
+import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constants"
 import {
     assetInventoryTypesMap,
     assetToolsMap,

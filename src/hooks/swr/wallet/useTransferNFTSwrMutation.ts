@@ -4,7 +4,7 @@ import { TransferResult, transferNFT } from "@/modules/blockchain"
 import { useAppSelector } from "@/redux"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
 import { NFTCollectionKey } from "@/modules/entities"
 import { useWallet } from "@solana/wallet-adapter-react"
 

@@ -2,7 +2,7 @@ import {
     GRAPHQL_QUERY_FOLLOWEES_SWR,
     GRAPHQL_QUERY_NEIGHBORS_SWR,
     WS,
-} from "@/app/constants"
+} from "@/app/(core)/constants"
 import {
     useWs,
     ActionEmittedMessage,

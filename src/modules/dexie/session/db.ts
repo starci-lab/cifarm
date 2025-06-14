@@ -43,6 +43,11 @@ export enum SessionDbKey {
   CurrentAccountId = "currentAccountId",
   AccessToken = "accessToken",
   RefreshToken = "refreshToken",
+  //phantom
+  PhantomDappKeyPair = "phantomDappKeyPair",
+  PhantomSession = "phantomSession",
+  PhantomSharedSecret = "phantomSharedSecret",
+  PhantomAccountAddress = "phantomAccountAddress",
 }
 
 export interface KeyValueStore {

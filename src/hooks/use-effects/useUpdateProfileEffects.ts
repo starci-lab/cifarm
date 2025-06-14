@@ -5,7 +5,7 @@ import {
     UpdateProfileMessage,
     useWs,
 } from "@/hooks"
-import { WS } from "@/app/constants"
+import { WS } from "@/app/(core)/constants"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const useUpdateProfileEffects = () => {

@@ -13,7 +13,7 @@ import {
     UPGRADE_DISCLOSURE,
     SELL_DISCLOSURE,
     DAILY_DISCLOSURE,
-} from "@/app/constants"
+} from "@/app/(core)/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import {
     ModalName,

@@ -1,4 +1,4 @@
-import { WS } from "@/app/constants"
+import { WS } from "@/app/(core)/constants"
 import { useEffect } from "react"
 import { BuyFruitMessage, useWs, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "@/redux"
 import { setSelectedMainVisualKey } from "@/redux"
-import { MainVisual, MainVisualType } from "@/app/home/MainVisual"
+import { MainVisual, MainVisualType } from "@/app/(core)/home/MainVisual"
 
 const SLIDE_DURATION = 10000 // 10 seconds per slide
 

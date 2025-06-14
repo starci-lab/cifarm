@@ -1,4 +1,4 @@
-import { WS } from "@/app/constants"
+import { WS } from "@/app/(core)/constants"
 import {
     EmitterEventName,
     RetrieveInventoriesMessage,

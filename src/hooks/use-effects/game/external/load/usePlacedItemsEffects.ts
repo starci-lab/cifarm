@@ -1,6 +1,6 @@
 import {
     GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
-} from "@/app/constants"
+} from "@/app/(core)/constants"
 import {
     useGraphQLQueryPlacedItemsSwrMutation,
 } from "@/hooks"

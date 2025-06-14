@@ -1,7 +1,7 @@
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
 import { useWs, EmitterEventName, SelectCatMessage } from "@/hooks"
-import { WS } from "@/app/constants"
+import { WS } from "@/app/(core)/constants"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const useSelectCatEffects = () => {

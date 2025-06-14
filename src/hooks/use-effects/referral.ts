@@ -2,7 +2,7 @@ import { useSingletonHook } from "@/modules/singleton-hook"
 import { retrieveLaunchParams, postEvent } from "@telegram-apps/sdk"
 import { useEffect } from "react"
 import { useGraphQLMutationUpdateReferralSwrMutation } from "@/hooks"
-import { GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION } from "@/app/constants"
+import { GRAPHQL_MUTATION_UPDATE_REFERRAL_SWR_MUTATION } from "@/app/(core)/constants"
 
 export const REFERRAL_USER_ID = "referralUserId"
 

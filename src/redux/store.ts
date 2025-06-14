@@ -15,6 +15,7 @@ import {
     sheetReducer,
     convertReducer,
     tutorialReducer,
+    walletReducer,
 } from "./slices"
 
 export const store = configureStore({
@@ -33,6 +34,7 @@ export const store = configureStore({
         convertReducer,
         tutorialReducer,
         wsLoadStateReducer,
+        walletReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false,

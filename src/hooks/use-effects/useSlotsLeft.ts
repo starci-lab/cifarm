@@ -1,4 +1,4 @@
-import { QUERY_STATIC_SWR_MUTATION } from "@/app/constants"
+import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useAppSelector, useAppDispatch, setSlotsDeliveryInventoryLeft, setSlotsStorageInventoryLeft } from "@/redux"
 import { useGraphQLQueryStaticSwr } from "../swr"

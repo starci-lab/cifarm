@@ -1,4 +1,4 @@
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/constants"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"

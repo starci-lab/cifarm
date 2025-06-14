@@ -1,4 +1,4 @@
-import { WS } from "@/app/constants"
+import { WS } from "@/app/(core)/constants"
 import { PlaceNFTMessage, useWs } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"

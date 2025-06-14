@@ -8,7 +8,7 @@ import { TokenKey } from "@/modules/entities"
 import { useAppSelector } from "@/redux"
 import { envConfig } from "@/env"
 import { useGlobalAccountAddress, useGraphQLQueryStaticSwr } from "@/hooks"
-import { QUERY_GRAPHQL_STATIC_SWR_MUTATION } from "@/app/constants"
+import { QUERY_GRAPHQL_STATIC_SWR_MUTATION } from "@/app/(core)/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
 
 export interface UseTransferTokenSwrMutationArgs {

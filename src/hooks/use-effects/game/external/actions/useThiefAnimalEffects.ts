@@ -1,4 +1,4 @@
-import { WS } from "@/app/constants"
+import { WS } from "@/app/(core)/constants"
 import { useWs, ThiefAnimalMessage, EmitterEventName } from "@/hooks"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useEffect } from "react"
