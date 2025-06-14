@@ -13,8 +13,8 @@ import nacl from "tweetnacl"
 export const usePhantomWalletCallbacks = () => {
     const searchParams = useSearchParams()
     const dispatch = useAppDispatch()
-    const wallet = useAppSelector(state => state.walletReducer[ChainKey.Solana])
-        
+    const phantomDappKeyPair = useAppSelector(state => state.walletReducer[ChainKey.Solana].phantomDappKeyPair)
+    const address = useAppSelector(state => state.walletReducer[ChainKey.Solana].address)
     // connect
     useEffect(() => {
         const handleEffect = async () => {
@@ -27,13 +27,13 @@ export const usePhantomWalletCallbacks = () => {
             if (!phantomEncryptionPublicKey || !_nonce || !data || (action !== "connect")) {
                 return
             }
-            if (!wallet.phantomDappKeyPair?.secretKey) {
+            if (!phantomDappKeyPair?.secretKey) {
                 return
             }
             const nonce = bs58.decode(_nonce)
             const sharedSecret = nacl.box.before(
                 bs58.decode(phantomEncryptionPublicKey),
-                wallet.phantomDappKeyPair.secretKey
+                phantomDappKeyPair.secretKey
             )
             // decrypt data
             const decoded = await decryptPhantomData<PhantomConnectData>({
@@ -70,13 +70,17 @@ export const usePhantomWalletCallbacks = () => {
             ])
         }
         handleEffect()
-    }, [searchParams, dispatch])
+    }, [searchParams, phantomDappKeyPair, dispatch])
 
     // disconnect
     useEffect(() => { 
         const handleEffect = async () => {
             const action = searchParams.get("action")
+            // if the action is disconnect, we reset the wallet and delete all data from local storage
             if (action === "disconnect") {
+                if (!address) {
+                    return
+                }
                 dispatch(resetWallet(ChainKey.Solana))
                 // delete all data from local storage
                 await sessionDb.keyValueStore.bulkDelete([
@@ -87,13 +91,16 @@ export const usePhantomWalletCallbacks = () => {
             }
         }
         handleEffect()
-    }, [searchParams, dispatch])   
+    }, [searchParams, address, dispatch])   
 
     // error
     useEffect(() => {
         const handleEffect = async () => {
             const errorCode = searchParams.get("errorCode")
             if (errorCode) {
+                if (!address) {
+                    return
+                }
                 dispatch(resetWallet(ChainKey.Solana))
                 // delete all data from local storage
                 await sessionDb.keyValueStore.bulkDelete([
@@ -104,5 +111,5 @@ export const usePhantomWalletCallbacks = () => {
             }
         }
         handleEffect()
-    }, [searchParams, dispatch])    
+    }, [searchParams, address, dispatch])    
 }
