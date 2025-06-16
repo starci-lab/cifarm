@@ -17,11 +17,12 @@ import {
     DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { toast, useGlobalAccountAddress, useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation, useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation, useGraphQLQueryStaticSwr } from "@/hooks"
+import { toast, useGlobalAccountAddress, useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation, useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useIsMobileDevice } from "@/hooks"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
 import { envConfig } from "@/env"
 import { ChainKey } from "@/modules/blockchain"
+import { sessionDb, SessionDbKey, SolanaTransactionType } from "@/modules/dexie"
 export const BuyEnergyModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_ENERGY_DISCLOSURE)
@@ -51,6 +52,8 @@ export const BuyEnergyModal: FC = () => {
     const { accountAddress } = useGlobalAccountAddress()
 
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>()
+
+    const isMobileDevice = useIsMobileDevice()
 
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
@@ -85,7 +88,13 @@ export const BuyEnergyModal: FC = () => {
                                         }
                                         setSelectedIndex(index)
                                         try {
-                                            const { data} = await createBuyEnergySolanaTransactionSwrMutation.trigger({
+                                            if (isMobileDevice) {
+                                                await sessionDb.keyValueStore.add({
+                                                    key: SessionDbKey.SolanaTransaction,
+                                                    value: SolanaTransactionType.BuyEnergy,
+                                                })
+                                            }
+                                            const { data } = await createBuyEnergySolanaTransactionSwrMutation.trigger({
                                                 request: {
                                                     selectionIndex: index,
                                                     accountAddress,

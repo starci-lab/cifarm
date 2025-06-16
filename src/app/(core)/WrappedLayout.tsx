@@ -1,6 +1,6 @@
 "use client"
 
-import React, { PropsWithChildren, Suspense, useMemo, useRef } from "react"
+import React, { PropsWithChildren, Suspense, useRef } from "react"
 import { Provider as ReduxProvider } from "react-redux"
 import { store, useAppSelector } from "@/redux"
 import { SWRConfig } from "swr"
@@ -14,15 +14,6 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { Baloo_2 } from "next/font/google"
 import { FallbackScene, LoadingScene, SidebarProvider, FallbackSceneType } from "@/components"
-import { envConfig } from "@/env"
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base"
-
-import {
-    ConnectionProvider,
-    WalletProvider,
-} from "@solana/wallet-adapter-react"
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui"
-import { clusterApiUrl } from "@solana/web3.js"
 import { getFullnodeUrl } from "@mysten/sui/client"
 import { createNetworkConfig, SuiClientProvider, WalletProvider as WalletSuiProvider } from "@mysten/dapp-kit"
 import { Network } from "@/modules/blockchain"
@@ -31,13 +22,8 @@ import { IconContext } from "@phosphor-icons/react"
 import { ThemeProvider } from "@/components"
 import { usePathname } from "next/navigation"
 import { neutralPages, unauthenticatedPages } from "@/constants"
-import { 
-    createDefaultAuthorizationCache, 
-    createDefaultChainSelector, 
-    createDefaultWalletNotFoundHandler,
-    registerMwa,
-} from "@solana-mobile/wallet-standard-mobile"
-import { SolanaMobileWalletAdapter, createDefaultAddressSelector, createDefaultAuthorizationResultCache } from "@solana-mobile/wallet-adapter-mobile"
+import { SolanaWalletAdapterProvider } from "@/hooks"
+import { MobileCallbacks } from "./MobileCallbacks"
 
 const Modals = dynamic(() => import("./Modals"), {
     ssr: false,
@@ -51,36 +37,8 @@ const Sheets = dynamic(() => import("./Sheets"), {
     ssr: false,
 })
 
-const getUriForAppIdentity = () => {
-    const location = globalThis.location
-    if (!location) return
-    return `${location.protocol}//${location.host}`
-}
-
-registerMwa({
-    appIdentity: {
-        uri: getUriForAppIdentity(),
-        name: "Example MWA Web DApp",
-    },
-    authorizationCache: createDefaultAuthorizationCache(),
-    chains: ["solana:devnet", "solana:mainnet"],
-    chainSelector: createDefaultChainSelector(),
-    // remoteHostAuthority: REFLECTOR_HOST_AUTHORITY,
-    onWalletNotFound: createDefaultWalletNotFoundHandler(),
-})
-
-
 export const LayoutContent = ({ children }: PropsWithChildren) => {
-    const network = envConfig().network
-    const solanaNetwork = useMemo(
-        () =>
-            network === "testnet"
-                ? WalletAdapterNetwork.Devnet
-                : WalletAdapterNetwork.Mainnet,
-        [network]
-    )
-    // You can also provide a custom RPC endpoint
-    const endpoint = useMemo(() => clusterApiUrl(solanaNetwork), [solanaNetwork])
+
     // Create a custom RPC endpoint
     const { networkConfig } = createNetworkConfig({
         [Network.Testnet]: { url: getFullnodeUrl("testnet") },
@@ -103,77 +61,57 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                     <QueryClientProvider client={queryClient}>
                         <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
                             <WalletSuiProvider>
-                                <ConnectionProvider endpoint={endpoint}>
-                                    <WalletProvider wallets={[
-                                        new SolanaMobileWalletAdapter({
-                                            addressSelector: createDefaultAddressSelector(),
-                                            appIdentity: {
-                                                name: "My app",
-                                                uri: "https://myapp.io",
-                                                icon: "relative/path/to/icon.png",
-                                            },
-                                            authorizationResultCache: createDefaultAuthorizationResultCache(),
-                                            chain: WalletAdapterNetwork.Devnet,
-                                            onWalletNotFound: async () => {
-                                                console.log("Wallet not found")
-                                            },
-                                        }),
-                                    ]} autoConnect onError={(wallet, adapterError) => {
-                                        console.log(wallet)
-                                        console.log(adapterError)
-                                    }}>
-                                        <WalletModalProvider>
-                                            <TooltipProvider>
-                                                <SWRConfig
-                                                    value={{
-                                                        provider: () => new Map(),
-                                                        revalidateOnFocus: false,
-                                                        revalidateIfStale: false,
-                                                    }}
-                                                >
-                                                    <SingletonHookProvider>
-                                                        <SingletonHook2Provider>
-                                                            <NextThemesProvider
-                                                                attribute="class"
-                                                                defaultTheme="light"
-                                                                enableSystem
-                                                                disableTransitionOnChange
-                                                            >
-                                                                <SidebarProvider>
-                                                                    {
-                                                                        !loaded ? (
-                                                                            <LoadingScene />
-                                                                        ) : (
-                                                                            (() => {
-                                                                                if (neutralPages.includes(path)) {
-                                                                                    return <>{children}</>
-                                                                                }
+                                <SolanaWalletAdapterProvider>
+                                    <TooltipProvider>
+                                        <SWRConfig
+                                            value={{
+                                                provider: () => new Map(),
+                                                revalidateOnFocus: false,
+                                                revalidateIfStale: false,
+                                            }}
+                                        >
+                                            <SingletonHookProvider>
+                                                <SingletonHook2Provider>
+                                                    <NextThemesProvider
+                                                        attribute="class"
+                                                        defaultTheme="light"
+                                                        enableSystem
+                                                        disableTransitionOnChange
+                                                    >
+                                                        <SidebarProvider>
+                                                            {
+                                                                !loaded ? (
+                                                                    <LoadingScene />
+                                                                ) : (
+                                                                    (() => {
+                                                                        if (neutralPages.includes(path)) {
+                                                                            return <>{children}</>
+                                                                        }
 
-                                                                                if (unauthenticatedPages.includes(path)) {
-                                                                                    return authenticated ? (
-                                                                                        <FallbackScene type={FallbackSceneType.Authenticated} />
-                                                                                    ) : (
-                                                                                        <>{children}</>
-                                                                                    )
-                                                                                }
+                                                                        if (unauthenticatedPages.includes(path)) {
+                                                                            return authenticated ? (
+                                                                                <FallbackScene type={FallbackSceneType.Authenticated} />
+                                                                            ) : (
+                                                                                <>{children}</>
+                                                                            )
+                                                                        }
 
-                                                                                return authenticated ? <>{children}</> : <FallbackScene type={FallbackSceneType.Unauthenticated} />
-                                                                            })()
-                                                                        )
-                                                                    }
-                                                                    <UseEffects />
-                                                                    <Modals />
-                                                                    <Sheets />
-                                                                    <Toaster />
-                                                                </SidebarProvider>
-                                                            </NextThemesProvider>
-                                                        </SingletonHook2Provider>
-                                                    </SingletonHookProvider>
-                                                </SWRConfig>
-                                            </TooltipProvider>
-                                        </WalletModalProvider>
-                                    </WalletProvider>
-                                </ConnectionProvider>
+                                                                        return authenticated ? <>{children}</> : <FallbackScene type={FallbackSceneType.Unauthenticated} />
+                                                                    })()
+                                                                )
+                                                            }
+                                                            <UseEffects />
+                                                            <Modals />
+                                                            <Sheets />
+                                                            <Toaster />
+                                                            <MobileCallbacks />
+                                                        </SidebarProvider>
+                                                    </NextThemesProvider>
+                                                </SingletonHook2Provider>
+                                            </SingletonHookProvider>
+                                        </SWRConfig>
+                                    </TooltipProvider>
+                                </SolanaWalletAdapterProvider>
                             </WalletSuiProvider>
                         </SuiClientProvider>
                     </QueryClientProvider>

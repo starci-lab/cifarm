@@ -17,7 +17,6 @@ import { useRouterWithSearchParams } from "@/hooks"
 import { useSearchParams } from "next/navigation"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { ChainKey } from "@/modules/blockchain"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/modules/singleton-hook"
@@ -55,7 +54,7 @@ const Page = () => {
 
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     // when selectedAssetTab change
-    const { publicKey } = useWallet()
+    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
 
     const { currentWallet } = useCurrentWallet()
     const { open: openConnectModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_DISCLOSURE)
@@ -81,7 +80,7 @@ const Page = () => {
                 break
             }
             case ChainKey.Solana: {
-                if (!publicKey) {
+                if (!address) {
                     // warning that no wallet is connected
                     dispatch(setWalletConnectionRequiredModal({
                         chainKey: ChainKey.Solana,
@@ -95,7 +94,7 @@ const Page = () => {
         }
         case AssetTab.NFTs: {
             // check if solana is connected
-            if (!publicKey) {
+            if (!address) {
                 dispatch(setWalletConnectionRequiredModal({
                     chainKey: ChainKey.Solana,
                 }))
@@ -107,7 +106,7 @@ const Page = () => {
             break
         }
         }
-    }, [chainKey, currentWallet, publicKey, openConnectModal, openWalletConnectionRequiredModal, closeWalletConnectionRequiredModal, selectedAssetTab])
+    }, [chainKey, currentWallet, address, openConnectModal, openWalletConnectionRequiredModal, closeWalletConnectionRequiredModal, selectedAssetTab])
 
     // when selectedSidebarTab change
     useEffect(() => {

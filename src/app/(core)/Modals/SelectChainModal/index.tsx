@@ -5,7 +5,6 @@ import { useDisclosure } from "react-use-disclosure"
 import { SELECT_CHAIN_DISCLOSURE } from "@/app/(core)/constants"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, ScrollArea, ModalHeader, IconSelection, Image, List } from "@/components"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { useCurrentWallet } from "@mysten/dapp-kit"
     
 export const SelectChainModal: FC = () => {
@@ -13,7 +12,7 @@ export const SelectChainModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(SELECT_CHAIN_DISCLOSURE)
     const dispatch = useAppDispatch()
     // public key for solana
-    const { publicKey } = useWallet()
+    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
     // current wallet for sui
     const { currentWallet } = useCurrentWallet()
 
@@ -39,7 +38,7 @@ export const SelectChainModal: FC = () => {
                                         return false
                                     }
                                     if (_chainKey === ChainKey.Solana) {
-                                        return !publicKey
+                                        return !address
                                     }
                                     if (_chainKey === ChainKey.Sui) {
                                         return !currentWallet

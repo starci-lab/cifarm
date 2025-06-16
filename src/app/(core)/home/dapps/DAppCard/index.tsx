@@ -9,11 +9,10 @@ import {
 import React, { FC } from "react"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/(core)/constants"
 import { useDisclosure } from "react-use-disclosure"
-import { useAppDispatch, setWalletConnectionRequiredModal } from "@/redux"
+import { useAppDispatch, setWalletConnectionRequiredModal, useAppSelector } from "@/redux"
 interface DAppCardProps {
   title: string;
   description: string;
@@ -35,14 +34,14 @@ export const DAppCard: FC<DAppCardProps> = ({
     chainKey = ChainKey.Solana,
     requireConnectWallet = true,
 }) => {
-    const { publicKey } = useWallet()
+    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
     const { currentWallet } = useCurrentWallet()
     const { open: openWalletConnectionRequiredModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
     const dispatch = useAppDispatch()
     return (
         <Card
             onClick={() => {
-                if (requireConnectWallet && chainKey === ChainKey.Solana && !publicKey) {
+                if (requireConnectWallet && chainKey === ChainKey.Solana && !address) {
                     dispatch(setWalletConnectionRequiredModal({
                         chainKey: ChainKey.Solana,
                     }))

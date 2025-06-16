@@ -16,7 +16,6 @@ import { useDisclosure } from "react-use-disclosure"
 import { SolanaConnect } from "./SolanaConnect"
 import { useAppSelector, useAppDispatch, setSelectedChainKey } from "@/redux"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { truncateString } from "@/modules/common"
 import { SuiConnect } from "./SuiConnect"
 import { useCurrentWallet } from "@mysten/dapp-kit"
@@ -30,7 +29,7 @@ export const ConnectModal: FC = () => {
 
     const dispatch = useAppDispatch()
 
-    const { publicKey } = useWallet()
+    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
 
     const { currentWallet } = useCurrentWallet()
 
@@ -57,8 +56,8 @@ export const ConnectModal: FC = () => {
                                 const getConnectText = () => {
                                     const NOT_CONNECTED = "Not connected"
                                     if (item.key === ChainKey.Solana) {
-                                        return publicKey
-                                            ? truncateString(publicKey.toBase58(), 4)
+                                        return address
+                                            ? truncateString(address, 4)
                                             : NOT_CONNECTED
                                     }
                                     if (item.key === ChainKey.Sui) {

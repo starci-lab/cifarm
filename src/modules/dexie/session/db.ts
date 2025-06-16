@@ -43,11 +43,25 @@ export enum SessionDbKey {
   CurrentAccountId = "currentAccountId",
   AccessToken = "accessToken",
   RefreshToken = "refreshToken",
-  //phantom
+  // phantom
   PhantomDappKeyPair = "phantomDappKeyPair",
   PhantomSession = "phantomSession",
   PhantomSharedSecret = "phantomSharedSecret",
   PhantomAccountAddress = "phantomAccountAddress",
+  // actions
+  SolanaTransaction = "solanaTransaction",
+}
+
+// solana transaction types
+export enum SolanaTransactionType {
+  BuyEnergy = "buyEnergy",
+  BuyGolds = "buyGolds",
+  ConvertMetaplexNFTs = "convertMetaplexNFTs",
+  ExpandLandLimit = "expandLandLimit",
+  PurchaseSolanaNFTBoxes = "purchaseSolanaNFTBoxes",
+  WrapMetaplexNFT = "wrapMetaplexNFT",
+  UnwrapMetaplexNFT = "unwrapMetaplexNFT",
+  Ship = "ship",
 }
 
 export interface KeyValueStore {

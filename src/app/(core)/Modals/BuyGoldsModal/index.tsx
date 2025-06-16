@@ -17,12 +17,13 @@ import {
     DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { toast, useGlobalAccountAddress, useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation, useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr } from "@/hooks"
+import { toast, useGlobalAccountAddress, useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation, useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation, useGraphQLQueryStaticSwr, useIsMobileDevice } from "@/hooks"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { setSignTransactionModal, TransactionType, useAppDispatch } from "@/redux"
 import { formatNumber, NumberPattern } from "@/modules/common"
 import { envConfig } from "@/env"
 import { ChainKey } from "@/modules/blockchain"
+import { sessionDb, SessionDbKey, SolanaTransactionType } from "@/modules/dexie"
 export const BuyGoldsModal: FC = () => {
     const { isOpen, toggle } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_DISCLOSURE)
@@ -52,6 +53,7 @@ export const BuyGoldsModal: FC = () => {
     const { accountAddress } = useGlobalAccountAddress()
 
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>()
+    const isMobileDevice = useIsMobileDevice()
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
             <DialogContent className="sm:max-w-[500px]">
@@ -85,7 +87,13 @@ export const BuyGoldsModal: FC = () => {
                                         }
                                         setSelectedIndex(index)
                                         try {
-                                            const { data} = await createBuyGoldsSolanaTransactionSwrMutation.trigger({
+                                            if (isMobileDevice) {
+                                                await sessionDb.keyValueStore.add({
+                                                    key: SessionDbKey.SolanaTransaction,
+                                                    value: SolanaTransactionType.BuyGolds,
+                                                })
+                                            }
+                                            const { data } = await createBuyGoldsSolanaTransactionSwrMutation.trigger({
                                                 request: {
                                                     selectionIndex: index,
                                                     accountAddress,

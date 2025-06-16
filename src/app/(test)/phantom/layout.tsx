@@ -1,15 +1,15 @@
 "use client"
-import { PhantomWalletProvider } from "@/hooks/solana-wallet-adapter/phantom/PhantomWalletProvider"
 import { Provider as ReduxProvider } from "react-redux"
 import { store } from "@/redux"
 import React from "react"
+import { SolanaWalletAdapterProvider } from "@/hooks"
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <ReduxProvider store={store}>
-            <PhantomWalletProvider>
+            <SolanaWalletAdapterProvider>
                 {children}
-            </PhantomWalletProvider>
+            </SolanaWalletAdapterProvider>
         </ReduxProvider>
     )
 }

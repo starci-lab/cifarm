@@ -13,6 +13,8 @@ import {
 import { useGlobalAccountAddress } from "../useGlobalAccountAddress"
 import { useGraphQLMutationCreatePurchaseSolanaNFTBoxesTransactionSwrMutation, useGraphQLMutationCreatePurchaseSuiNFTBoxesTransactionSwrMutation, useGraphQLMutationSendPurchaseSolanaNFTBoxesTransactionSwrMutation } from "../swr/graphql/mutations"
 import { ChainKey } from "@/modules/blockchain"
+import { sessionDb, SessionDbKey, SolanaTransactionType } from "@/modules/dexie"
+import { useIsMobileDevice } from "../useIsMobileDevice"
 
 export interface PurchaseNFTBoxesFormikValues {
     quantity: number
@@ -26,7 +28,7 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
     )
     const dispatch = useAppDispatch()
     const { accountAddress } = useGlobalAccountAddress()
-
+    const isMobileDevice = useIsMobileDevice()
     const initialValues: PurchaseNFTBoxesFormikValues = {
         quantity: 1,
         price: 0,
@@ -76,6 +78,12 @@ export const usePurchaseNFTBoxesFormik = (): FormikProps<PurchaseNFTBoxesFormikV
 
             switch (chainKey) {
             case ChainKey.Solana: {
+                if (isMobileDevice) {
+                    await sessionDb.keyValueStore.add({
+                        key: SessionDbKey.SolanaTransaction,
+                        value: SolanaTransactionType.PurchaseSolanaNFTBoxes,
+                    })
+                }
                 const { data: createTxData } =
                 await createPurchaseSolanaNFTBoxesTransactionSwrMutation.trigger({
                     request: {

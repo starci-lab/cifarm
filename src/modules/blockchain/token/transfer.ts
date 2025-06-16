@@ -3,16 +3,13 @@ import { Transaction as SuiTransaction } from "@mysten/sui/transactions"
 import { defaultNetwork } from "../default"
 import { computeRaw } from "@/modules/common"
 import { TransferResult } from "../types"
-import { Tokens } from "@/modules/entities"
-import { TokenKey } from "@/modules/entities"
+import { Tokens, TokenKey } from "@/modules/entities"
 import {
     publicKey,
     transactionBuilder,
     sol,
     createNoopSigner,
 } from "@metaplex-foundation/umi"
-import { WalletAdapter } from "@solana/wallet-adapter-base"
-import { WalletContextState } from "@solana/wallet-adapter-react"
 import { getUmi } from "../rpcs"
 import {
     createTokenIfMissing,
@@ -23,6 +20,7 @@ import {
 import { transferTokens } from "@metaplex-foundation/mpl-toolbox"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import base58 from "bs58"
+import { SolanaWalletData } from "../types"
 
 export type WalletWithRequiredFeatures = ReturnType<typeof useCurrentWallet>["currentWallet"]
 
@@ -37,7 +35,7 @@ export interface TransferParams {
 
   // adapters
   // solana
-  walletAdapter?: WalletAdapter | WalletContextState;
+  walletData?: SolanaWalletData;
   // sui
   currentWallet?: WalletWithRequiredFeatures;
 }
@@ -48,15 +46,15 @@ export const _transferSolana = async ({
     amount,
     fromAddress,
     tokenKey,
-    walletAdapter,
+    walletData,
     tokens,
     chainKey,
 }: TransferParams): Promise<TransferResult> => {
     if (!tokenKey) throw new Error("Missing tokenKey")
     network = network || Network.Testnet
-    if (!walletAdapter) throw new Error("Missing walletAdapter")
+    if (!walletData) throw new Error("Missing walletData")
 
-    const umi = getUmi(network, walletAdapter)
+    const umi = getUmi(network, walletData)
     if (!fromAddress) throw new Error("Missing fromAddress")
     if (!recipientAddress) throw new Error("Missing recipientAddress")
 

@@ -18,8 +18,8 @@ import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector } from "@/redux"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { getMaxEnergy } from "@/modules/common"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { LandLimit } from "@/components"
+import { ChainKey } from "@/modules/blockchain"
 
 export const InGameTab: FC = () => {
     const inventories = useAppSelector(
@@ -40,7 +40,7 @@ export const InGameTab: FC = () => {
         useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_ENERGY_DISCLOSURE)
     const { open: openWalletConnectionRequiredModal } =
         useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
-    const { publicKey } = useWallet()
+    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
     const { swr: staticSwr } = useSingletonHook<
         ReturnType<typeof useGraphQLQueryStaticSwr>
     >(GRAPHQL_QUERY_STATIC_SWR)
@@ -80,7 +80,7 @@ export const InGameTab: FC = () => {
                     </div>
                     <ExtendedButton onClick={
                         () => {
-                            if (!publicKey) {
+                            if (!address) {
                                 openWalletConnectionRequiredModal()
                                 return
                             }
@@ -202,7 +202,7 @@ export const InGameTab: FC = () => {
                     />
                     <Spacer y={4} />
                     <ExtendedButton onClick={() => {
-                        if (!publicKey) {
+                        if (!address) {
                             openWalletConnectionRequiredModal()
                             return
                         }

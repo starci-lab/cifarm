@@ -3,13 +3,13 @@ import { UseSWRMutation } from "../types"
 import { v4 } from "uuid"
 import { TransferResult, transferToken } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
-import { useWallet } from "@solana/wallet-adapter-react"
 import { TokenKey } from "@/modules/entities"
 import { useAppSelector } from "@/redux"
 import { envConfig } from "@/env"
 import { useGlobalAccountAddress, useGraphQLQueryStaticSwr } from "@/hooks"
 import { QUERY_GRAPHQL_STATIC_SWR_MUTATION } from "@/app/(core)/constants"
 import { useSingletonHook } from "@/modules/singleton-hook"
+import { ChainKey } from "@/modules/blockchain"
 
 export interface UseTransferTokenSwrMutationArgs {
     amount: number
@@ -24,8 +24,6 @@ export const useTransferTokenSwrMutation = (): UseSWRMutation<
     //sui
     const { currentWallet: suiWallet } = useCurrentWallet()
     // solana
-    const solanaWallet = useWallet()
-    
     const chainKey = useAppSelector(state => state.sessionReducer.chainKey)
     const network = envConfig().network
 
@@ -34,6 +32,7 @@ export const useTransferTokenSwrMutation = (): UseSWRMutation<
     )
     const tokens = staticSwr.data?.data.tokens
     const { accountAddress } = useGlobalAccountAddress()
+    const wallet = useAppSelector(state => state.walletReducer[ChainKey.Solana])
     const swrMutation = useSWRMutation(
         v4(),
         async (
@@ -53,7 +52,7 @@ export const useTransferTokenSwrMutation = (): UseSWRMutation<
                 //sui
                 currentWallet: suiWallet,
                 //solana
-                walletAdapter: solanaWallet,
+                walletData: wallet,
             })            
         }
     )

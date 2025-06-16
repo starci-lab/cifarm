@@ -17,6 +17,9 @@ import { useAppSelector, setSelectedNFTCollectionKey, useAppDispatch, setSignTra
 import { ArrowDown, CaretDown, CaretUp } from "@phosphor-icons/react"
 import { envConfig } from "@/env"
 import { NFTCollectionKey } from "@/modules/entities"
+import { sessionDb, SessionDbKey, SolanaTransactionType } from "@/modules/dexie"
+import { useIsMobileDevice } from "@/hooks"
+
 export const NFTConversionModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<
         ReturnType<typeof useDisclosure>
@@ -50,6 +53,7 @@ export const NFTConversionModal: FC = () => {
     const { open: openSignTransactionModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_DISCLOSURE
     )
+    const isMobileDevice = useIsMobileDevice()
     const { accountAddress } = useGlobalAccountAddress()
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>
@@ -97,6 +101,12 @@ export const NFTConversionModal: FC = () => {
                         isLoading={createConvertSolanaMetaplexNFTsSwrMutation.isMutating}
                         onClick={async () => {
                             if (!accountAddress) return
+                            if (isMobileDevice) {
+                                await sessionDb.keyValueStore.add({
+                                    key: SessionDbKey.SolanaTransaction,
+                                    value: SolanaTransactionType.ConvertMetaplexNFTs,
+                                })
+                            }
                             const { data } = await createConvertSolanaMetaplexNFTsSwrMutation.trigger({
                                 request: {
                                     convertNFTAddresses: nftAddresses,

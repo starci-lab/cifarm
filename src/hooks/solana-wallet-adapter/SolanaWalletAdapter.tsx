@@ -1,30 +1,13 @@
 import { PropsWithChildren } from "react"
-import { Network } from "../../modules/blockchain"
 import React, { FC } from "react"
-import { Wallet } from "@solana/wallet-adapter-react"
+import { PhantomWalletProvider } from "./phantom"
 
-const SolanaWalletAdapterContext = React.createContext<Wallet | null>(null)
-
-export const SolanaWalletAdapterProvider: FC<SolanaWalletAdapterProps> = ({ children, network }) => {
-    console.log(network)
+export const SolanaWalletAdapterProvider: FC<PropsWithChildren> = ({ children }) => {
     return (
-        <SolanaWalletAdapterContext.Provider value={null}>
-            {children}
-        </SolanaWalletAdapterContext.Provider>
+        <>
+            <PhantomWalletProvider>
+                {children}
+            </PhantomWalletProvider>
+        </>
     )
-}
-
-export const SolanaWalletAdapter = ({
-    children,
-    network
-}: SolanaWalletAdapterProps) => {
-    console.log(network)
-    return (<SolanaWalletAdapterContext.Provider value={null}>
-        {children}
-    </SolanaWalletAdapterContext.Provider>
-    )
-}
-
-export interface SolanaWalletAdapterProps extends PropsWithChildren {
-    network: Network;
 }

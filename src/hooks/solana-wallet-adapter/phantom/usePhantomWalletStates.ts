@@ -1,7 +1,7 @@
-import { setWallet, useAppDispatch } from "@/redux"
+import { setSolanaWallet, useAppDispatch } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
 import { useEffect, useRef } from "react"
-import { useIsMobileDevice } from "../useIsMobileDevice"
+import { useIsMobileDevice } from "../../useIsMobileDevice"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { deserialize, serialize } from "@/modules/serialization"
 import nacl from "tweetnacl"
@@ -13,8 +13,8 @@ export const usePhantomWalletStates = () => {
     // states
     const isMobileDevice = useIsMobileDevice()
     const dispatch = useAppDispatch()
-    // we try to get the dapp key pair from the local storage
 
+    // we try to get the dapp key pair from the local storage
     const phantomDappKeyPairRef = useRef(false)
     const phantomSessionRef = useRef(false)
     const phantomSharedSecretRef = useRef(false)
@@ -30,7 +30,7 @@ export const usePhantomWalletStates = () => {
             })
             if (found?.value) {
                 dispatch(
-                    setWallet({
+                    setSolanaWallet({
                         chainKey: ChainKey.Solana,
                         walletData: {
                             phantomDappKeyPair: deserialize(found.value) as nacl.BoxKeyPair,
@@ -38,7 +38,7 @@ export const usePhantomWalletStates = () => {
                     }))
             } else {
                 const dappKeyPair = nacl.box.keyPair()
-                dispatch(setWallet({
+                dispatch(setSolanaWallet({
                     chainKey: ChainKey.Solana,
                     walletData: {
                         phantomDappKeyPair: dappKeyPair,
@@ -64,7 +64,7 @@ export const usePhantomWalletStates = () => {
             })
             if (found?.value) {
                 dispatch(
-                    setWallet({
+                    setSolanaWallet({
                         chainKey: ChainKey.Solana,
                         walletData: {
                             phantomSession: found.value,
@@ -86,7 +86,7 @@ export const usePhantomWalletStates = () => {
             })
             if (found?.value) {
                 dispatch(
-                    setWallet({
+                    setSolanaWallet({
                         chainKey: ChainKey.Solana,
                         walletData: {
                             phantomSharedSecret: bs58.decode(found.value),
@@ -108,7 +108,7 @@ export const usePhantomWalletStates = () => {
             })
             if (found?.value) {
                 dispatch(
-                    setWallet({
+                    setSolanaWallet({
                         chainKey: ChainKey.Solana,
                         walletData: {
                             address: found.value,

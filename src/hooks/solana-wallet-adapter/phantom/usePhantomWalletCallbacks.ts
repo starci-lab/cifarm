@@ -1,20 +1,34 @@
 import { SessionDbKey } from "@/modules/dexie"
 import { sessionDb } from "@/modules/dexie"
 import { decryptPhantomData } from "./utils"
-import { PhantomConnectData } from "./PhantomWalletProvider"
 import { ChainKey } from "@/modules/blockchain"
 import { useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { useAppDispatch, useAppSelector } from "@/redux"
-import { resetWallet, setWallet } from "@/redux"
+import { resetSolanaWallet, setSolanaWallet } from "@/redux"
 import bs58 from "bs58"
 import nacl from "tweetnacl"
+
+// PhantomConnectData
+export interface PhantomConnectData {
+    public_key: string
+    session: string
+}
+
+export interface PhantomSignTransactionData {
+    transaction: string
+}
+
+export interface PhantomSignAllTransactionsData {
+    transactions: Array<string>
+}
 
 export const usePhantomWalletCallbacks = () => {
     const searchParams = useSearchParams()
     const dispatch = useAppDispatch()
     const phantomDappKeyPair = useAppSelector(state => state.walletReducer[ChainKey.Solana].phantomDappKeyPair)
     const address = useAppSelector(state => state.walletReducer[ChainKey.Solana].address)
+    const sharedSecret = useAppSelector(state => state.walletReducer[ChainKey.Solana].phantomSharedSecret)
     // connect
     useEffect(() => {
         const handleEffect = async () => {
@@ -41,7 +55,7 @@ export const usePhantomWalletCallbacks = () => {
                 encryptedData: data,
                 nonce,
             })
-            dispatch(setWallet({
+            dispatch(setSolanaWallet({
                 chainKey: ChainKey.Solana,
                 walletData: {
                     address: decoded.public_key,
@@ -74,42 +88,108 @@ export const usePhantomWalletCallbacks = () => {
 
     // disconnect
     useEffect(() => { 
+        const action = searchParams.get("action")
+        // if the action is disconnect, we reset the wallet and delete all data from local storage
+        if (action !== "disconnect") {
+            return
+        }
         const handleEffect = async () => {
-            const action = searchParams.get("action")
-            // if the action is disconnect, we reset the wallet and delete all data from local storage
-            if (action === "disconnect") {
-                if (!address) {
-                    return
-                }
-                dispatch(resetWallet(ChainKey.Solana))
-                // delete all data from local storage
-                await sessionDb.keyValueStore.bulkDelete([
-                    SessionDbKey.PhantomSession,
-                    SessionDbKey.PhantomSharedSecret,
-                    SessionDbKey.PhantomAccountAddress,
-                ])
+            if (!address) {
+                return
             }
+            dispatch(resetSolanaWallet())
+            // delete all data from local storage
+            await sessionDb.keyValueStore.bulkDelete([
+                SessionDbKey.PhantomSession,
+                SessionDbKey.PhantomSharedSecret,
+                SessionDbKey.PhantomAccountAddress,
+            ])
         }
         handleEffect()
     }, [searchParams, address, dispatch])   
 
     // error
     useEffect(() => {
+        const errorCode = searchParams.get("errorCode")
+        if (!errorCode) {
+            return
+        }
         const handleEffect = async () => {
-            const errorCode = searchParams.get("errorCode")
-            if (errorCode) {
-                if (!address) {
-                    return
-                }
-                dispatch(resetWallet(ChainKey.Solana))
-                // delete all data from local storage
-                await sessionDb.keyValueStore.bulkDelete([
-                    SessionDbKey.PhantomSession,
-                    SessionDbKey.PhantomSharedSecret,
-                    SessionDbKey.PhantomAccountAddress,
-                ])
+            if (!address) {
+                return
             }
+            dispatch(resetSolanaWallet())
+            // delete all data from local storage
+            await sessionDb.keyValueStore.bulkDelete([
+                SessionDbKey.PhantomSession,
+                SessionDbKey.PhantomSharedSecret,
+                SessionDbKey.PhantomAccountAddress,
+            ])
         }
         handleEffect()
-    }, [searchParams, address, dispatch])    
+    }, [address, dispatch])    
+
+    // sign transaction
+    useEffect(() => {
+        const action = searchParams.get("action")
+        if (action !== "signTransaction") {
+            return
+        }
+        const nonce = searchParams.get("nonce")
+        const data = searchParams.get("data")
+        if (!nonce || !data) {
+            return
+        }
+        const handleEffect = async () => {
+            if (!sharedSecret) {
+                return
+            }
+            const nonceBytes = bs58.decode(nonce)
+            const { transaction: signedTx } = await decryptPhantomData<PhantomSignTransactionData>({
+                sharedSecret,
+                encryptedData: data,
+                nonce: nonceBytes,
+            })
+            dispatch(setSolanaWallet({
+                chainKey: ChainKey.Solana,
+                walletData: {
+                    signedTransaction: signedTx,
+                },
+            }))
+        }
+        handleEffect()
+    }, [searchParams, sharedSecret, dispatch])
+
+    // sign all transactions
+    useEffect(() => {
+        const action = searchParams.get("action")
+        if (action !== "signAllTransactions") {
+            return
+        }
+        const nonce = searchParams.get("nonce")
+        const data = searchParams.get("data")
+        if (!nonce || !data) {
+            return
+        }
+        const handleEffect = async () => {
+            if (!sharedSecret) {
+                return
+            }
+            const nonceBytes = bs58.decode(nonce)
+            const { 
+                transactions: signedTxs 
+            } = await decryptPhantomData<PhantomSignAllTransactionsData>({
+                sharedSecret,
+                encryptedData: data,
+                nonce: nonceBytes,
+            })
+            dispatch(setSolanaWallet({  
+                chainKey: ChainKey.Solana,
+                walletData: {
+                    signedTransactions: signedTxs,
+                },
+            }))
+        }
+        handleEffect()  
+    }, [searchParams, sharedSecret, dispatch])
 }

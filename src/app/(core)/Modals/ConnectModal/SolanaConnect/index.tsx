@@ -6,34 +6,15 @@ import {
     DialogBody,
     DialogFooter,
 } from "@/components"
-import React, { FC, useEffect } from "react"
-import { useWallet } from "@solana/wallet-adapter-react"
-import { WalletName, WalletReadyState } from "@solana/wallet-adapter-base"
-import { setChainKey, useAppDispatch } from "@/redux"
+import React, { FC } from "react"
+import { resetSolanaWallet, setSolanaWallet, useAppDispatch, useAppSelector } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
+import { solanaWallets } from "@/hooks"
 
 export const SolanaConnect: FC = () => {
-    const { connect, select, connected, wallet, disconnect, wallets, connecting } = useWallet()
-    useEffect(() => {
-        if (!wallet?.adapter.name) {
-            return
-        }
-        connect()
-    }, [wallet?.adapter.name])
     const dispatch = useAppDispatch()
-    const installedWallets = wallets.filter((wallet) => wallet.readyState === WalletReadyState.Installed)
-    const loadableWallets = wallets.filter((wallet) => wallet.readyState === WalletReadyState.Loadable)
-    const supportedWallets = [...installedWallets, ...loadableWallets]
-
-    useEffect(() => {
-        const handleEffect = async () => {
-            if (wallet) {
-                await connect()
-                dispatch(setChainKey(ChainKey.Solana))
-            }
-        }
-        handleEffect()
-    }, [wallet])
+    const supportedWallets = solanaWallets
+    const wallet = useAppSelector(state => state.walletReducer[ChainKey.Solana])
     return (
         <>
             <DialogBody>
@@ -45,25 +26,30 @@ export const SolanaConnect: FC = () => {
                     items={supportedWallets}
                     contentCallback={(item) => (
                         <IconSelection
-                            key={item.adapter.name}
-                            disabled={connected}
-                            icon={<Image src={item.adapter.icon} alt={item.adapter.name} className="w-10 h-10" />}
-                            text={item.adapter.name}
+                            key={item.walletName}
+                            disabled={wallet?.isConnected}
+                            icon={<Image src={item.imageUrl} alt={item.name} className="w-10 h-10" />}
+                            text={item.name}
                             onClick={async () => {
-                                select(item.adapter.name as WalletName)
-                                dispatch(setChainKey(ChainKey.Solana))
+                                await wallet?.connect()
+                                dispatch(setSolanaWallet({
+                                    chainKey: ChainKey.Solana,
+                                    walletData: {
+                                        walletName: item.walletName,
+                                    },
+                                })  )
                             }}
                             classNames={{
                                 description: "text-secondary",
                             }}
                             description={
-                                connected && wallet?.adapter.name === item.adapter.name
+                                wallet?.isConnected && wallet?.walletName === item.walletName
                                     ? "Connected"
                                     : undefined
                             }
                             isLoading={
-                                connecting &&
-                                wallet?.adapter.name === item.adapter.name
+                                wallet?.isLoading &&
+                                wallet?.walletName === item.walletName
                             }
                         />
                     )}
@@ -72,11 +58,12 @@ export const SolanaConnect: FC = () => {
             </DialogBody>
             <DialogFooter>
                 <ExtendedButton
-                    disabled={!connected}
+                    disabled={!wallet?.isConnected}
                     className="w-full"
                     color="destructive"
-                    onClick={() => {
-                        disconnect()
+                    onClick={async () => {
+                        await wallet?.disconnect()
+                        dispatch(resetSolanaWallet())
                     }}
                 >
           Disconnect

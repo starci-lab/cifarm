@@ -5,8 +5,8 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import type { IRoadMap } from "@/constants"
 import { CalendarDots, CheckCircle, Clock } from "@phosphor-icons/react"
+import { IRoadMap } from "../roadmap"
 
 interface RoadmapCardProps {
   item: IRoadMap

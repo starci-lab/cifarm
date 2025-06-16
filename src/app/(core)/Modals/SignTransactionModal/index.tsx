@@ -10,7 +10,7 @@ import {
 } from "@/app/(core)/constants"
 import { truncateString } from "@/modules/common"
 import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
-import { Image, Link, List, Snippet, Spacer } from "@/components"
+import { Image, List, Snippet, Spacer } from "@/components"
 import {
     HoneycombProtocolRawTxData,
     HoneycombProtocolRawTxsData,
@@ -24,7 +24,7 @@ import {
     useAppSelector,
 } from "@/redux"
 import React, { FC } from "react"
-import { blockchainMap, explorerUrl } from "@/modules/blockchain"
+import { blockchainMap } from "@/modules/blockchain"
 import {
     useGraphQLQueryStaticSwr,
     useHoneycombSendTransactionsSwrMutation,
@@ -48,6 +48,7 @@ import { useToast } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import useSWRMutation from "swr/mutation"
 import { pathConstants } from "@/constants"
+import { addTxHashToast } from "../../utils"
 
 interface ProviderInfo {
   name: string;
@@ -93,26 +94,6 @@ export const SignTransactionModal: FC = () => {
     const network = useAppSelector((state) => state.sessionReducer.network)
 
     const { toast } = useToast()
-
-    const addTxHashToast = (txHash: string) =>
-        toast({
-            duration: DURATION,
-            title: "Transaction receipt",
-            description:
-            <Link
-                href={explorerUrl({
-                    chainKey,
-                    network,
-                    value: txHash,
-                    type: "tx",
-                })}
-                target="_blank"
-                color="success"
-            >
-                {truncateString(txHash, 10, 4)}
-            </Link>,
-            variant: "default",
-        })
 
     const addErrorToast = (errorMessage: string = "Failed to sign transaction") =>
         toast({
@@ -270,7 +251,7 @@ export const SignTransactionModal: FC = () => {
                 if (extraAction) {
                     await extraAction()
                 }
-                addTxHashToast(txHash)
+                addTxHashToast({ txHash, chainKey, network })
             } catch (error) {
                 addErrorToast((error as Error).message)
             } finally {
