@@ -1,12 +1,11 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
-import { TransferResult, transferNFT } from "@/modules/blockchain"
+import { ChainKey, TransferResult, transferNFT } from "@/modules/blockchain"
 import { useAppSelector } from "@/redux"
 import { useSingletonHook } from "@/modules/singleton-hook"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
 import { NFTCollectionKey } from "@/modules/entities"
-import { useWallet } from "@solana/wallet-adapter-react"
 
 export interface UseTransferNFTSwrMutationArgs {
     nftAddress: string
@@ -23,7 +22,7 @@ export const useTransferNFTSwrMutation = (): UseSWRMutation<
         GRAPHQL_QUERY_STATIC_SWR
     )
     const collections = swrStatic.data?.data.nftCollections
-    const walletAdapter = useWallet()
+    const wallet = useAppSelector((state) => state.walletReducer[ChainKey.Solana])
     const swrMutation = useSWRMutation(
         "TRANSFER_NFT",
         async (
@@ -38,7 +37,7 @@ export const useTransferNFTSwrMutation = (): UseSWRMutation<
                 chainKey,
                 collectionKey,
                 collections,
-                walletAdapter
+                wallet
             })            
         }
     )

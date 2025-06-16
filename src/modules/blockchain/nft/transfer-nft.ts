@@ -6,10 +6,9 @@ import { transferV1 } from "@metaplex-foundation/mpl-core"
 import { publicKey } from "@metaplex-foundation/umi"
 import { TransferResult } from "../types"
 import base58 from "bs58"
-import { WalletContextState } from "@solana/wallet-adapter-react"
-import { WalletAdapter } from "@solana/wallet-adapter-base"
 import { WalletWithRequiredFeatures } from "../token/transfer"
 import { NFTCollections, NFTCollectionKey } from "@/modules/entities"
+import { SolanaWalletData } from "../types"
 
 export interface TransferNFTParams {
     chainKey: ChainKey;
@@ -18,12 +17,10 @@ export interface TransferNFTParams {
     recipientAddress: string;
     collectionKey: NFTCollectionKey;
     collections: NFTCollections;
-
-      // adapters
-  // solana
-  walletAdapter?: WalletAdapter | WalletContextState;
-  // sui
-  currentWallet?: WalletWithRequiredFeatures;
+    // solana
+    wallet?: SolanaWalletData;
+    // sui
+    currentWallet?: WalletWithRequiredFeatures;
 }
 
 export const transferSolanaNFT = async ({
@@ -32,11 +29,11 @@ export const transferSolanaNFT = async ({
     recipientAddress,
     collectionKey,
     collections,
-    walletAdapter,
+    wallet,
 }: TransferNFTParams): Promise<TransferResult> => {
-    if (!walletAdapter) throw new Error("Wallet adapter is required")
+    if (!wallet) throw new Error("Wallet adapter is required")
     network = network || defaultNetwork
-    const umi = getUmi(network, walletAdapter)
+    const umi = getUmi(network, wallet)
     const collection = collections[collectionKey]
     if (!collection) throw new Error("Collection not found")
     const { signature } = await transferV1(umi, {
