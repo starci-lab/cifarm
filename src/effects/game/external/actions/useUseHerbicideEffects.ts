@@ -1,12 +1,18 @@
-import { WS } from "@/singleton"
-import { EmitterEventName, useWs, UseHerbicideMessage } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    useSingletonHook,
+    useWs,
+    EmitterEventName,
+    WS,
+    UseHerbicideMessage,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useUseHerbicideEffects = () => {
-    const { socket } =
-               useSingletonHook<ReturnType<typeof useWs>>(WS)  
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestUseHerbicide,
@@ -14,9 +20,10 @@ export const useUseHerbicideEffects = () => {
                 if (!socket) {
                     return
                 }
-                socket.emit(EmitterEventName.UseHerbicide, message) 
-            })
-    
+                socket.emit(EmitterEventName.UseHerbicide, message)
+            }
+        )
+
         return () => {
             ExternalEventEmitter.removeListener(
                 ExternalEventName.RequestUseHerbicide

@@ -1,23 +1,34 @@
-import { WS } from "@/singleton"
-import { useWs, EmitterEventName, HarvestAnimalMessage } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    EmitterEventName,
+    HarvestAnimalMessage,
+    useSingletonHook,
+    useWs,
+    WS,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useHarvestAnimalEffects = () => {
-    const { socket } =
-               useSingletonHook<ReturnType<typeof useWs>>(WS)  
-    
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
+
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.RequestHarvestAnimal, async (message: HarvestAnimalMessage) => {
-            if (!socket) {
-                return
+        ExternalEventEmitter.on(
+            ExternalEventName.RequestHarvestAnimal,
+            async (message: HarvestAnimalMessage) => {
+                if (!socket) {
+                    return
+                }
+                socket.emit(EmitterEventName.HarvestAnimal, message)
             }
-            socket.emit(EmitterEventName.HarvestAnimal, message)
-        })
-        
+        )
+
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestHarvestAnimal)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestHarvestAnimal
+            )
         }
     }, [socket])
 }

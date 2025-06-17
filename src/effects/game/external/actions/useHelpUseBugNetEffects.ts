@@ -1,24 +1,28 @@
-import { useSingletonHook } from "@/singleton"
+import { useSingletonHook, useWs, EmitterEventName, WS } from "@/singleton"
 import { useEffect } from "react"
-import { useWs, EmitterEventName } from "@/hooks"
-import { WS } from "@/singleton"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useHelpUseBugNetEffects = () => {
     //authentication useEffect
-    const { socket } = useSingletonHook<
-        ReturnType<typeof useWs>
-    >(WS)
-    
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
+
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.RequestHelpUseBugNet, async () => {
-            if (!socket) {
-                return
+        ExternalEventEmitter.on(
+            ExternalEventName.RequestHelpUseBugNet,
+            async () => {
+                if (!socket) {
+                    return
+                }
+                socket.emit(EmitterEventName.HelpUseBugNet)
             }
-            socket.emit(EmitterEventName.HelpUseBugNet)
-        })
+        )
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestHelpUseBugNet)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestHelpUseBugNet
+            )
         }
     }, [socket])
 }

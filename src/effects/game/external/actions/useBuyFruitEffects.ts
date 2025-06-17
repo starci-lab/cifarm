@@ -1,7 +1,6 @@
 import { WS } from "@/singleton"
 import { useEffect } from "react"
-import { BuyFruitMessage, useWs, EmitterEventName } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import { BuyFruitMessage, useWs, EmitterEventName, useSingletonHook } from "@/singleton"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const useBuyFruitEffects = () => {

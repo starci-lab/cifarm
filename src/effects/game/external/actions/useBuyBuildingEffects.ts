@@ -1,13 +1,18 @@
 import { WS } from "@/singleton"
-import { useSingletonHook } from "@/singleton"
+import {
+    BuyBuildingMessage,
+    EmitterEventName,
+    useWs,
+    useSingletonHook,
+} from "@/singleton"
 import { useEffect } from "react"
-import { BuyBuildingMessage, EmitterEventName, useWs } from "@/singleton"
-import { ExternalEventEmitter, ExternalEventName, } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useBuyBuildingEffects = () => {
-
-    const { socket } =
-        useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(
@@ -17,7 +22,8 @@ export const useBuyBuildingEffects = () => {
                     return
                 }
                 socket.emit(EmitterEventName.BuyBuilding, message)
-            })
+            }
+        )
 
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.RequestBuyBuilding)

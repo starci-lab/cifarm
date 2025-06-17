@@ -1,34 +1,49 @@
-import { WS } from "@/singleton"
-import { EmitterEventName, ReceiverEventName, toast, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    EmitterEventName,
+    ReceiverEventName,
+    useSingletonHook,
+    useWs,
+    WS,
+} from "@/singleton"
+import { addSuccessToast } from "@/modules/toast"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useClaimDailyRewardEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(ExternalEventName.ClaimDailyRewardResponsed, () => {
-            toast({
-                title: "Daily reward claimed",
+            addSuccessToast({
+                successMessage: "Daily reward claimed",
             })
         })
     }, [])
 
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.RequestClaimDailyReward, async () => {
-            if (!socket) {
-                return
+        ExternalEventEmitter.on(
+            ExternalEventName.RequestClaimDailyReward,
+            async () => {
+                if (!socket) {
+                    return
+                }
+                socket.on(ReceiverEventName.ClaimDailyRewardResponsed, () => {
+                    ExternalEventEmitter.emit(
+                        ExternalEventName.ClaimDailyRewardResponsed
+                    )
+                })
+                socket.emit(EmitterEventName.ClaimDailyReward)
             }
-            socket.on(ReceiverEventName.ClaimDailyRewardResponsed, () => {
-                ExternalEventEmitter.emit(ExternalEventName.ClaimDailyRewardResponsed)
-            })
-            socket.emit(EmitterEventName.ClaimDailyReward)
-        })
+        )
 
         return () => {
             socket?.off(ReceiverEventName.ClaimDailyRewardResponsed)
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestClaimDailyReward)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestClaimDailyReward
+            )
         }
     }, [socket])
 }

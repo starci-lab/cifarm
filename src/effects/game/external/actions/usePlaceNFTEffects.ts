@@ -1,13 +1,13 @@
-import { WS } from "@/singleton"
-import { PlaceNFTMessage, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import { useSingletonHook, useWs, EmitterEventName, WS } from "@/singleton"
+import { PlaceNFTMessage } from "@/singleton"
 import { useEffect } from "react"
-import { EmitterEventName } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const usePlaceNFTEffects = () => {
-    const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(

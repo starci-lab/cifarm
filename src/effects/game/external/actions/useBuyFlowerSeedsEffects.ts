@@ -1,9 +1,17 @@
 import { WS } from "@/singleton"
-import { BuyFlowerSeedsMessage, toast, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    BuyFlowerSeedsMessage,
+    useWs,
+    useSingletonHook,
+    EmitterEventName,
+    ReceiverEventName,
+} from "@/singleton"
 import { useEffect } from "react"
-import { EmitterEventName, ReceiverEventName } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
+import { addSuccessToast } from "@/modules/toast"
 import { assetShopMap } from "@/modules/assets"
 import pluralize from "pluralize"
 import { setShopFlower } from "@/redux"
@@ -15,33 +23,39 @@ export const useBuyFlowerSeedsEffects = () => {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        socket?.on(ReceiverEventName.BuyFlowerSeedsResponsed, ({
-            flowerId,
-            quantity,
-        }: BuyFlowerSeedsMessage) => {
-            const flowerName = assetShopMap.flowers[flowerId]?.name?.toLowerCase() ?? ""
-            toast({
-                title: `Bought ${quantity} ${
-                    quantity > 1 ? pluralize(flowerName) : flowerName
-                }`,
-            })
-            dispatch(setShopFlower({ flowerId, isLoading: false }))
-        })
+        socket?.on(
+            ReceiverEventName.BuyFlowerSeedsResponsed,
+            ({ flowerId, quantity }: BuyFlowerSeedsMessage) => {
+                const flowerName =
+          assetShopMap.flowers[flowerId]?.name?.toLowerCase() ?? ""
+                addSuccessToast({
+                    successMessage: `Bought ${quantity} ${
+                        quantity > 1 ? pluralize(flowerName) : flowerName
+                    }`,
+                })
+                dispatch(setShopFlower({ flowerId, isLoading: false }))
+            }
+        )
         return () => {
             socket?.off(ReceiverEventName.BuyFlowerSeedsResponsed)
         }
     }, [socket])
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.RequestBuyFlowerSeeds, async (message: BuyFlowerSeedsMessage) => {
-            if (!socket) {
-                return  
+        ExternalEventEmitter.on(
+            ExternalEventName.RequestBuyFlowerSeeds,
+            async (message: BuyFlowerSeedsMessage) => {
+                if (!socket) {
+                    return
+                }
+                socket.emit(EmitterEventName.BuyFlowerSeeds, message)
+                // return the user to the phaser
             }
-            socket.emit(EmitterEventName.BuyFlowerSeeds, message)
-            // return the user to the phaser
-        })
-    
+        )
+
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestBuyFlowerSeeds)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestBuyFlowerSeeds
+            )
         }
     }, [socket])
 }

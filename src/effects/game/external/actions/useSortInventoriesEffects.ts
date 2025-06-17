@@ -1,9 +1,9 @@
-import { WS } from "@/singleton"
-import { useSingletonHook } from "@/singleton"
+import { useSingletonHook, useWs, EmitterEventName, WS } from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { EmitterEventName } from "@/hooks"
-import { useWs } from "@/hooks"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useSortInventoriesEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
@@ -19,7 +19,9 @@ export const useSortInventoriesEffects = () => {
         )
 
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestSortInventories)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestSortInventories
+            )
         }
     }, [socket])
 }

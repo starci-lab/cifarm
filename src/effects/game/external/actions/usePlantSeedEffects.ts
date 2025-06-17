@@ -1,13 +1,18 @@
-import { WS } from "@/singleton"
-import { PlantSeedMessage, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    useSingletonHook,
+    useWs,
+    EmitterEventName,
+    WS,
+    PlantSeedMessage,
+} from "@/singleton"
 import { useEffect } from "react"
-import { EmitterEventName } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const usePlantSeedEffects = () => {
-    const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(

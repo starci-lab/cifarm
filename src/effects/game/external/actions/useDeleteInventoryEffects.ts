@@ -1,8 +1,15 @@
-import { WS } from "@/singleton"
-import { useWs, EmitterEventName, DeleteInventoryMessage } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    EmitterEventName,
+    DeleteInventoryMessage,
+    useSingletonHook,
+    useWs,
+    WS,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useDeleteInventoryEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
@@ -18,7 +25,9 @@ export const useDeleteInventoryEffects = () => {
         )
 
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestDeleteInventory)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestDeleteInventory
+            )
         }
     }, [socket])
 }

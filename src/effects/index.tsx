@@ -1,14 +1,12 @@
 import React, { FC } from "react"
 import { useSyncEffects } from "./useSyncEffects"
-import { useUpdateProfileEffects } from "./useUpdateProfileEffects"
 import { useGameEffects } from "./game"
 import { useAuthentication } from "./useAuthentication"
 //import { useInit } from "./useInit"
 import { useSlotsLeft } from "./useSlotsLeft"
 import { LoadCollections } from "./LoadCollections"
 import { LoadBalances } from "./LoadBalances"
-
-export * from "./useAuthentication"
+import { useUpdateEffects } from "./update"
 
 const UseEffects: FC  = () => {
     // useAccounts()
@@ -18,11 +16,11 @@ const UseEffects: FC  = () => {
     // useWarpcast()
     useSyncEffects()
     useGameEffects()
+    useUpdateEffects()
     // useAddresses()
     useAuthentication()
     useSlotsLeft()
     //useInit()
-    useUpdateProfileEffects()
 
     return (
         <>

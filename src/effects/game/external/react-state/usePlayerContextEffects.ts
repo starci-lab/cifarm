@@ -3,11 +3,11 @@ import {
     ExternalEventName,
     UpdatePlayerContextMessage,
 } from "@/modules/event-emitter"
-import { ReceiverEventName, useRouterWithSearchParams, useWs } from "@/hooks"
+import { useRouterWithSearchParams } from "@/hooks"
 import { useAppDispatch } from "@/redux/hooks"
 import { setPlayerContext } from "@/redux/slices/session"
 import { useEffect } from "react"
-import { useGraphQLMutationRefreshSwrMutation, useSingletonHook } from "@/singleton"
+import { ReceiverEventName, useGraphQLMutationRefreshSwrMutation, useSingletonHook, useWs } from "@/singleton"
 import { WS, NOTIFICATION_MODAL_DISCLOSURE, GRAPHQL_MUTATION_REFRESH_SWR_MUTATION } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import { setNotificationModalContent } from "@/redux"

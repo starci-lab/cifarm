@@ -1,16 +1,13 @@
-import { WS } from "@/singleton"
-import {
-    useWs,
-    HelpUseWateringCanMessage,
-    EmitterEventName,
-} from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import { useSingletonHook, useWs, EmitterEventName, WS } from "@/singleton"
+import { HelpUseWateringCanMessage } from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useHelpUseWateringCanEffects = () => {
-    const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(

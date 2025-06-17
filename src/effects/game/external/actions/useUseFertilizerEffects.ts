@@ -1,8 +1,15 @@
-import { EmitterEventName, UseFertilizerMessage, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    useSingletonHook,
+    useWs,
+    EmitterEventName,
+    WS,
+    UseFertilizerMessage,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { WS } from "@/singleton"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useUseFertilizerEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
@@ -15,8 +22,9 @@ export const useUseFertilizerEffects = () => {
                     return
                 }
                 socket.emit(EmitterEventName.UseFertilizer, message)
-            })
-    
+            }
+        )
+
         return () => {
             ExternalEventEmitter.removeListener(
                 ExternalEventName.RequestUseFertilizer

@@ -5,17 +5,22 @@ import { Provider as ReduxProvider } from "react-redux"
 import { store, useAppSelector } from "@/redux"
 import { SWRConfig } from "swr"
 import dynamic from "next/dynamic"
-import {
-    SingletonHook2Provider,
-    SingletonHookProvider,
-} from "./SingletonHookProviders"
-import { Toaster } from "@/components/ui/toaster"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { SingletonHook2Provider, SingletonHookProvider } from "@/singleton"
+import { Toaster, TooltipProvider } from "@/components"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { Baloo_2 } from "next/font/google"
-import { FallbackScene, LoadingScene, SidebarProvider, FallbackSceneType } from "@/components"
+import {
+    FallbackScene,
+    LoadingScene,
+    SidebarProvider,
+    FallbackSceneType,
+} from "@/components"
 import { getFullnodeUrl } from "@mysten/sui/client"
-import { createNetworkConfig, SuiClientProvider, WalletProvider as WalletSuiProvider } from "@mysten/dapp-kit"
+import {
+    createNetworkConfig,
+    SuiClientProvider,
+    WalletProvider as WalletSuiProvider,
+} from "@mysten/dapp-kit"
 import { Network } from "@/modules/blockchain"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { IconContext } from "@phosphor-icons/react"
@@ -23,31 +28,32 @@ import { ThemeProvider } from "@/components"
 import { usePathname } from "next/navigation"
 import { neutralPages, unauthenticatedPages } from "@/constants"
 import { SolanaWalletAdapterProvider } from "@/hooks"
-import { MobileCallbacks } from "./MobileCallbacks"
+import { MobileCallbacks } from "@/mobile"
 
-const Modals = dynamic(() => import("./Modals"), {
+const Modals = dynamic(() => import("@/modals"), {
     ssr: false,
 })
 
-const UseEffects = dynamic(() => import("@/hooks/use-effects"), {
+const UseEffects = dynamic(() => import("@/effects"), {
     ssr: false,
 })
 
-const Sheets = dynamic(() => import("./Sheets"), {
+const Sheets = dynamic(() => import("@/sheets"), {
     ssr: false,
 })
 
 export const LayoutContent = ({ children }: PropsWithChildren) => {
-
     // Create a custom RPC endpoint
     const { networkConfig } = createNetworkConfig({
         [Network.Testnet]: { url: getFullnodeUrl("testnet") },
         [Network.Mainnet]: { url: getFullnodeUrl("mainnet") },
     })
     const queryClient = new QueryClient()
-    const loaded = useAppSelector(state => state.sessionReducer.loaded)
+    const loaded = useAppSelector((state) => state.sessionReducer.loaded)
 
-    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    const authenticated = useAppSelector(
+        (state) => state.sessionReducer.authenticated
+    )
     const path = usePathname()
     return (
         <Suspense>
@@ -57,9 +63,18 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                 enableSystem
                 disableTransitionOnChange
             >
-                <IconContext.Provider value={{ size: 24, weight: "bold", className: "min-w-6 min-h-6 stroke-3" }}>
+                <IconContext.Provider
+                    value={{
+                        size: 24,
+                        weight: "bold",
+                        className: "min-w-6 min-h-6 stroke-3",
+                    }}
+                >
                     <QueryClientProvider client={queryClient}>
-                        <SuiClientProvider networks={networkConfig} defaultNetwork={Network.Testnet}>
+                        <SuiClientProvider
+                            networks={networkConfig}
+                            defaultNetwork={Network.Testnet}
+                        >
                             <WalletSuiProvider>
                                 <SolanaWalletAdapterProvider>
                                     <TooltipProvider>
@@ -79,8 +94,8 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                                         disableTransitionOnChange
                                                     >
                                                         <SidebarProvider>
-                                                            {
-                                                                !loaded ? (
+                                                            <MobileCallbacks>
+                                                                {!loaded ? (
                                                                     <LoadingScene />
                                                                 ) : (
                                                                     (() => {
@@ -90,21 +105,28 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
 
                                                                         if (unauthenticatedPages.includes(path)) {
                                                                             return authenticated ? (
-                                                                                <FallbackScene type={FallbackSceneType.Authenticated} />
+                                                                                <FallbackScene
+                                                                                    type={FallbackSceneType.Authenticated}
+                                                                                />
                                                                             ) : (
                                                                                 <>{children}</>
                                                                             )
                                                                         }
 
-                                                                        return authenticated ? <>{children}</> : <FallbackScene type={FallbackSceneType.Unauthenticated} />
+                                                                        return authenticated ? (
+                                                                            <>{children}</>
+                                                                        ) : (
+                                                                            <FallbackScene
+                                                                                type={FallbackSceneType.Unauthenticated}
+                                                                            />
+                                                                        )
                                                                     })()
-                                                                )
-                                                            }
-                                                            <UseEffects />
-                                                            <Modals />
-                                                            <Sheets />
-                                                            <Toaster />
-                                                            <MobileCallbacks />
+                                                                )}
+                                                                <UseEffects />
+                                                                <Modals />
+                                                                <Sheets />
+                                                                <Toaster />
+                                                            </MobileCallbacks>
                                                         </SidebarProvider>
                                                     </NextThemesProvider>
                                                 </SingletonHook2Provider>
@@ -126,7 +148,11 @@ const font = Baloo_2({ subsets: ["latin"], weight: ["600"] })
 export const WrappedLayout = ({ children }: PropsWithChildren) => {
     const bodyRef = useRef<HTMLBodyElement>(null)
     return (
-        <body className={`${font.className} min-h-screen w-screen overflow-x-hidden`} ref={bodyRef} onContextMenu={(e) => e.preventDefault()}>
+        <body
+            className={`${font.className} min-h-screen w-screen overflow-x-hidden`}
+            ref={bodyRef}
+            onContextMenu={(e) => e.preventDefault()}
+        >
             <ReduxProvider store={store}>
                 <LayoutContent> {children} </LayoutContent>
             </ReduxProvider>

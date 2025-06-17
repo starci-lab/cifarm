@@ -1,13 +1,19 @@
-import { WS } from "@/singleton"
-import { useSingletonHook } from "@/singleton"
+import {
+    useSingletonHook,
+    useWs,
+    EmitterEventName,
+    WS,
+    UseAnimalMedicineMessage,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { EmitterEventName, useWs, UseAnimalMedicineMessage } from "@/hooks"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useUseAnimalMedicineEffects = () => {
     //authentication useEffect
-    const { socket } =
-               useSingletonHook<ReturnType<typeof useWs>>(WS)  
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestUseAnimalMedicine,

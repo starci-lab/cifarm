@@ -1,12 +1,18 @@
-import { WS } from "@/singleton"
-import { useWs, EmitterEventName, UseAnimalFeedMessage } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    useSingletonHook,
+    useWs,
+    EmitterEventName,
+    WS,
+    UseAnimalFeedMessage,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useUseAnimalFeedEffects = () => {
-    const { socket } =
-               useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     useEffect(() => {
         ExternalEventEmitter.on(
             ExternalEventName.RequestUseAnimalFeed,
@@ -14,9 +20,10 @@ export const useUseAnimalFeedEffects = () => {
                 if (!socket) {
                     return
                 }
-                socket.emit(EmitterEventName.UseAnimalFeed, message) 
-            })
-    
+                socket.emit(EmitterEventName.UseAnimalFeed, message)
+            }
+        )
+
         return () => {
             ExternalEventEmitter.removeListener(
                 ExternalEventName.RequestUseAnimalFeed

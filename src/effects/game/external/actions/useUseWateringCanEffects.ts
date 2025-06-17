@@ -1,19 +1,28 @@
-import { EmitterEventName, ReceiverEventName, UseWateringCanMessage, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    useSingletonHook,
+    useWs,
+    EmitterEventName,
+    WS,
+    UseWateringCanMessage,
+    ReceiverEventName,
+} from "@/singleton"
 import { useEffect } from "react"
-import { WS } from "@/singleton"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useUseWateringCanEffects = () => {
-    const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         if (!socket) return
-        socket?.on(ReceiverEventName.WateringCanUsed, (message: UseWateringCanMessage) => {
-            ExternalEventEmitter.emit(ExternalEventName.WateringCanUsed, message)
-        })
-        
+        socket?.on(
+            ReceiverEventName.WateringCanUsed,
+            (message: UseWateringCanMessage) => {
+                ExternalEventEmitter.emit(ExternalEventName.WateringCanUsed, message)
+            }
+        )
     }, [socket])
 
     useEffect(() => {

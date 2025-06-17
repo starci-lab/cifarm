@@ -1,26 +1,29 @@
-import { WS } from "@/singleton"
-import { useSingletonHook } from "@/singleton"
+import { useSingletonHook, useWs, EmitterEventName, WS } from "@/singleton"
 import { useEffect } from "react"
-import { useWs, EmitterEventName } from "@/hooks"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useHelpUseAnimalMedicineEffects = () => {
     //authentication useEffect
-    const { socket } = useSingletonHook<
-        ReturnType<typeof useWs>
-    >(WS)
-    
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
+
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.RequestHelpUseAnimalMedicine, async () => {
-            if (!socket) {
-                return
+        ExternalEventEmitter.on(
+            ExternalEventName.RequestHelpUseAnimalMedicine,
+            async () => {
+                if (!socket) {
+                    return
+                }
+                socket.emit(EmitterEventName.HelpUseAnimalMedicine)
             }
-            socket.emit(EmitterEventName.HelpUseAnimalMedicine)
-        })
-        
-    
+        )
+
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestHelpUseAnimalMedicine)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestHelpUseAnimalMedicine
+            )
         }
     }, [socket])
 }

@@ -1,16 +1,18 @@
-import { WS } from "@/singleton"
 import {
-    EmitterEventName,
-    RetrieveInventoriesMessage,
+    useSingletonHook,
     useWs,
-} from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+    EmitterEventName,
+    WS,
+    RetrieveInventoriesMessage,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useRetrieveInventoriesEffects = () => {
-    const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(

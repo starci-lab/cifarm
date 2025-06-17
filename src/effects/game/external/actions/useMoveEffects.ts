@@ -1,6 +1,5 @@
-import { WS } from "@/singleton"
-import { EmitterEventName, MoveMessage, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import { useSingletonHook, useWs, EmitterEventName, WS } from "@/singleton"
+import { MoveMessage } from "@/singleton"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 

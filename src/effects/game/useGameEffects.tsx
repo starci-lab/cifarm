@@ -1,5 +1,6 @@
 import { useExternalEffects } from "./external"
 
 export const useGameEffects = () => {
-    useExternalEffects()    
+    useExternalEffects()
+    return null
 }

@@ -1,8 +1,15 @@
-import { BuyTileMessage, EmitterEventName, useWs } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    BuyTileMessage,
+    EmitterEventName,
+    useWs,
+    useSingletonHook,
+    WS,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { WS } from "@/singleton"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useBuyTileEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
@@ -17,7 +24,7 @@ export const useBuyTileEffects = () => {
                 socket.emit(EmitterEventName.BuyTile, message)
             }
         )
-    
+
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.RequestBuyTile)
         }

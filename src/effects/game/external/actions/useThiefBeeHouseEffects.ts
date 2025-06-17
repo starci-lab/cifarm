@@ -1,13 +1,19 @@
-import { WS } from "@/singleton"
-import { useWs, EmitterEventName, ThiefBeeHouseMessage } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+import {
+    useSingletonHook,
+    useWs,
+    EmitterEventName,
+    WS,
+    ThiefBeeHouseMessage,
+} from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 
 export const useThiefBeeHouseEffects = () => {
     //authentication useEffect
-    const { socket } =
-    useSingletonHook<ReturnType<typeof useWs>>(WS)
+    const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     useEffect(() => {
         ExternalEventEmitter.on(
@@ -21,7 +27,9 @@ export const useThiefBeeHouseEffects = () => {
         )
 
         return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.RequestThiefBeeHouse)
+            ExternalEventEmitter.removeListener(
+                ExternalEventName.RequestThiefBeeHouse
+            )
         }
     }, [socket])
 }
