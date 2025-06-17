@@ -2,7 +2,7 @@ import {
     GRAPHQL_QUERY_FOLLOWEES_SWR,
     GRAPHQL_QUERY_NEIGHBORS_SWR,
     WS,
-} from "@/app/(core)/constants"
+} from "@/app/(core)/constantsd"
 import {
     useWs,
     ActionEmittedMessage,
@@ -14,7 +14,7 @@ import {
     useGraphQLQueryNeighborsSwr,
     useGraphQLQueryFolloweesSwr,
 } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { mergeObjects, SchemaStatus } from "@/modules/common"
 import {

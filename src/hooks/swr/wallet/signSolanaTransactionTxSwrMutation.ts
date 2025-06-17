@@ -1,11 +1,7 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
-import { v4 } from "uuid"
 import base58 from "bs58"
-import { envConfig } from "@/env"
-import { getUmi } from "@/modules/blockchain"
 import { useAppSelector } from "@/redux"
-import { ChainKey } from "@/modules/blockchain"
 
 export interface UseSignSolanaTransactionTxSwrMutationArgs {
     serializedTxs: string | Array<string>
@@ -19,16 +15,17 @@ export const useSignSolanaTransactionTxSwrMutation = (): UseSWRMutation<
     UseSignSolanaTransactionTxSwrMutationResponse,
     UseSignSolanaTransactionTxSwrMutationArgs
 > => {
-    const network = envConfig().network
-    const wallet = useAppSelector(state => state.walletReducer[ChainKey.Solana])
+    const umi = useAppSelector(state => state.solanaWalletReducer.umi)
     const swrMutation = useSWRMutation(
-        v4(),
+        "SIGN_SOLANA_TRANSACTION_TX_SWR_MUTATION",
         async (
             _: string,
             extraArgs: { arg: UseSignSolanaTransactionTxSwrMutationArgs }
         ): Promise<UseSignSolanaTransactionTxSwrMutationResponse> => {
             const { serializedTxs } = { ...extraArgs.arg }
-            const umi = getUmi(network, wallet)
+            if (!umi) {
+                throw new Error("Umi is not initialized")
+            }
             if (Array.isArray(serializedTxs)) {
                 const txs = serializedTxs.map((serializedTx) => {
                     const tx = umi.transactions.deserialize(base58.decode(serializedTx))

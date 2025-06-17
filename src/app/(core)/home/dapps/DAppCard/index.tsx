@@ -9,8 +9,8 @@ import {
 import React, { FC } from "react"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/(core)/constants"
+import { useSingletonHook } from "@/singleton"
+import { WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/(core)/constantsd"
 import { useDisclosure } from "react-use-disclosure"
 import { useAppDispatch, setWalletConnectionRequiredModal, useAppSelector } from "@/redux"
 interface DAppCardProps {

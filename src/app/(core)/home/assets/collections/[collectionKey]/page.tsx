@@ -5,15 +5,15 @@ import { useAppSelector, useAppDispatch, setIsConverting, setNFTAddresses, setNF
 import { useParams } from "next/navigation"
 import { pathConstants } from "@/constants"
 import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { CONVERT_NFT_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
+import { CONVERT_NFT_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constantsd"
 import { NFTCollectionKey } from "@/modules/entities"
 import { envConfig } from "@/env"
 import { NFTCard } from "./NFTCard"
 import { NFTCardSkeleton } from "./NFTCardSkeleton"
 import { ArrowsClockwise, Swap } from "@phosphor-icons/react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { useDisclosure } from "react-use-disclosure"
 
 const Page = () => {

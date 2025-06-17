@@ -1,6 +1,7 @@
 import toast from "react-hot-toast"
 
 export const DURATION = 1000
+
 export const toastSuccess = (message: string) => toast.success(message, {
     duration: DURATION
 })

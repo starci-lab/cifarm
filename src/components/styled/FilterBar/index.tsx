@@ -2,7 +2,7 @@
 
 import { ExtendedButton, ExtendedInput } from "@/components"
 import React, { FC } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { MagnifyingGlass } from "@phosphor-icons/react"
 
 export interface HandleSearchResultParams {

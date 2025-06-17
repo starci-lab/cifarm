@@ -3,7 +3,7 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import React, { FC, PropsWithChildren } from "react"
 import { ExtendedButton } from "../ExtendedButton"
 import { Funnel } from "@phosphor-icons/react"

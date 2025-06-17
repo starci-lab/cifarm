@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as SeparatorPrimitive from "@radix-ui/react-separator"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { cva } from "class-variance-authority"
 
 const separatorVariants = cva("shrink-0", {

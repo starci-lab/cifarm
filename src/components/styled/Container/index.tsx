@@ -1,5 +1,5 @@
 import React, { FC, PropsWithChildren } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 interface ContainerProps extends PropsWithChildren {
   hasPadding?: boolean;

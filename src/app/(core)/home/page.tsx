@@ -9,7 +9,7 @@ import { useScroll } from "@/hooks/useScroll"
 import { Plant } from "@phosphor-icons/react"
 import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
 import { TokenomicsTab } from "./TokenomicsTab"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 const Page: FC = () => {
     const homeTab = useAppSelector((state) => state.tabReducer.homeTab)

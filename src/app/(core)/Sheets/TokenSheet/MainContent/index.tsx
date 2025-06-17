@@ -12,11 +12,11 @@ import {
     useGraphQLQueryStaticSwr,
     useTransferTokenFormik,
 } from "@/hooks"
-import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
+import { useSingletonHook, useSingletonHook2 } from "@/singleton"
 import {
     TRANSFER_TOKEN_FORMIK,
     GRAPHQL_QUERY_STATIC_SWR,
-} from "@/app/(core)/constants"
+} from "@/app/(core)/constantsd"
 import {
     setTokenSheetPage,
     setTransferTab,

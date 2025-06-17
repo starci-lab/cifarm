@@ -1,10 +1,7 @@
 import useSWRMutation from "swr/mutation"
 import { UseSWRMutation } from "../types"
-import { ChainKey, TransferResult, transferNFT } from "@/modules/blockchain"
+import { TransferResult, transferNFT } from "@/modules/blockchain"
 import { useAppSelector } from "@/redux"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
 import { NFTCollectionKey } from "@/modules/entities"
 
 export interface UseTransferNFTSwrMutationArgs {
@@ -18,11 +15,9 @@ export const useTransferNFTSwrMutation = (): UseSWRMutation<
   UseTransferNFTSwrMutationArgs
 > => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const { swr: swrStatic } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
-        GRAPHQL_QUERY_STATIC_SWR
-    )
-    const collections = swrStatic.data?.data.nftCollections
-    const wallet = useAppSelector((state) => state.walletReducer[ChainKey.Solana])
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
+    const collections = staticData?.nftCollections
+    const umi = useAppSelector((state) => state.solanaWalletReducer.umi)
     const swrMutation = useSWRMutation(
         "TRANSFER_NFT",
         async (
@@ -37,8 +32,8 @@ export const useTransferNFTSwrMutation = (): UseSWRMutation<
                 chainKey,
                 collectionKey,
                 collections,
-                wallet
-            })            
+                umi,
+            })
         }
     )
 

@@ -1,11 +1,11 @@
-import { NATIVE_COINGEKCO_SWR } from "@/app/(core)/constants"
+import { NATIVE_COINGEKCO_SWR } from "@/app/(core)/constantsd"
 import { ExclamationTooltip, Image, Badge, List  } from "@/components"
 import { useNativeCoinGeckoSWR } from "@/hooks"
 import { blockchainMap, DefaultToken } from "@/modules/blockchain"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useAppSelector } from "@/redux"
 import React, { FC, useEffect } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 export const Market: FC = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)

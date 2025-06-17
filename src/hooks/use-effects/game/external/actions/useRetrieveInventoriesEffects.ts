@@ -1,10 +1,10 @@
-import { WS } from "@/app/(core)/constants"
+import { WS } from "@/app/(core)/constantsd"
 import {
     EmitterEventName,
     RetrieveInventoriesMessage,
     useWs,
 } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 

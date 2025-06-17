@@ -1,8 +1,8 @@
 import React, { FC } from "react"
 import { ExtendedButton, Spacer } from "@/components"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constantsd"
 import dayjs from "dayjs"
 import duration from "dayjs/plugin/duration"
 dayjs.extend(duration)

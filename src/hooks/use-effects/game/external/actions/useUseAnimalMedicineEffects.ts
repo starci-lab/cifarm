@@ -1,5 +1,5 @@
-import { WS } from "@/app/(core)/constants"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { WS } from "@/app/(core)/constantsd"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { EmitterEventName, useWs, UseAnimalMedicineMessage } from "@/hooks"

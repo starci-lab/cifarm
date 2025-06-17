@@ -1,10 +1,10 @@
 import {
     GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
-} from "@/app/(core)/constants"
+} from "@/app/(core)/constantsd"
 import {
     useGraphQLQueryPlacedItemsSwrMutation,
 } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { useAppDispatch, setPlacedItems } from "@/redux"

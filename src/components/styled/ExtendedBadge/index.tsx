@@ -1,5 +1,5 @@
 import { BadgeProps, Badge } from "@/components"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import React, { FC } from "react"
 
 interface ExtendedBadgeProps extends BadgeProps {

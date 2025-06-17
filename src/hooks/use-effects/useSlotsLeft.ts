@@ -1,5 +1,5 @@
-import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constants"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constantsd"
+import { useSingletonHook } from "@/singleton"
 import { useAppSelector, useAppDispatch, setSlotsDeliveryInventoryLeft, setSlotsStorageInventoryLeft } from "@/redux"
 import { useGraphQLQueryStaticSwr } from "../swr"
 import { useEffect } from "react"
@@ -93,7 +93,7 @@ export const useSlotsLeft = () => {
     }
 
     const selectedDeliveryInventoryIds = useAppSelector(
-        (state) => state.sessionReducer.selectedDeliveryInventoryIds
+        (state) => state.selectionReducer.selectedDeliveryInventoryIds
     )
 
     // check if the selectedDeliveryInventoryIds is valid
@@ -114,7 +114,7 @@ export const useSlotsLeft = () => {
 
 
     const selectedRetrieveInventoryIds = useAppSelector(
-        (state) => state.sessionReducer.selectedRetrieveInventoryIds
+        (state) => state.selectionReducer.selectedRetrieveInventoryIds
     )
 
     useEffect(() => {

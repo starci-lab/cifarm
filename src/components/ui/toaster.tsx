@@ -10,7 +10,7 @@ import {
     ToastViewport,
 } from "@/components/ui/toast"
 import React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { CheckCircle, XCircle } from "@phosphor-icons/react"
 
 export function Toaster() {

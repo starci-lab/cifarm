@@ -3,7 +3,7 @@
 import { Avatar, AvatarImage } from "../../ui"
 import React, { FC, useState, useEffect } from "react"
 import { createJazziconBlobUrl } from "@/modules/jazz"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 interface GameAvatarProps {
     // use img src if available

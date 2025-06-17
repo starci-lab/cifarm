@@ -21,10 +21,10 @@ export interface BulkPaid {
     bulkId: string
 }
 
-export type BulkPaidsResponse = Array<BulkPaid>
+export type QueryBulkPaidsResponse = Array<BulkPaid>
 
 export interface QueryBulkPaidsResponseWrapper {
-    bulkPaids: BulkPaidsResponse
+    bulkPaids: QueryBulkPaidsResponse
 }
 
 export enum QueryBulkPaids {

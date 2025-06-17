@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import React, { FC } from "react"
 import { Link as LinkIcon } from "@phosphor-icons/react"
 import { PropsWithChildren } from "react"

@@ -1,6 +1,6 @@
 import React from "react"
 import { ExtendedBadge } from "../ExtendedBadge"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 interface NFTBadgeProps {
     name?: string

@@ -1,8 +1,8 @@
 import { ItemCard, TintColor } from "@/components"
 import { InventorySchema } from "@/modules/entities"
 import React, { FC } from "react"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
+import { useSingletonHook } from "@/singleton"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constantsd"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetInventoryTypesMap } from "@/modules/assets"
 import { useAppSelector } from "@/redux"
@@ -23,7 +23,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({
     )
 
     const selectedInventoryId = useAppSelector(
-        (state) => state.sessionReducer.selectedInventoryId
+        (state) => state.selectionReducer.selectedInventoryId
     )
     return (
         <ItemCard

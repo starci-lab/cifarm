@@ -1,7 +1,7 @@
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { useWs, EmitterEventName, SelectDogMessage } from "@/hooks"
-import { WS } from "@/app/(core)/constants"
+import { WS } from "@/app/(core)/constantsd"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const useSelectDogEffects = () => {

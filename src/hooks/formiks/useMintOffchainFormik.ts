@@ -1,6 +1,6 @@
 import { useFormik } from "formik"
 import * as Yup from "yup"
-//import { useSingletonHook } from "@/modules/singleton-hook"
+//import { useSingletonHook } from "@/singleton"
 // import { sessionDb, SessionDbKey } from "@/modules/dexie"
 // import { TxResponse } from "@/modules/honeycomb"
 // import { deserialize } from "@/modules/serialization"

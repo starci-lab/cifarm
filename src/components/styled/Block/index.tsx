@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, FC } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 export interface BlockProps extends PropsWithChildren {
   scheme?: "light" | "dark";

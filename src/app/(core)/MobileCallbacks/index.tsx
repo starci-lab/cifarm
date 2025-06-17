@@ -7,10 +7,10 @@ import {
 import { FC, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { sessionDb, SessionDbKey, SolanaTransactionType } from "@/modules/dexie"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { 
     GRAPHQL_MUTATION_SEND_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION, 
-} from "../constants"
+} from "../constantsd"
 import { useAppSelector } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
 import { addTxHashToast } from "../utils"

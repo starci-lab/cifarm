@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import React, { FC, ReactNode } from "react"
 
 export interface SelectionProps {

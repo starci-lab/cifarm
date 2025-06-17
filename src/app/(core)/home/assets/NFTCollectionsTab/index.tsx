@@ -1,6 +1,6 @@
-import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constants"
+import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constantsd"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import React, { FC } from "react"
 import { valuesWithKey } from "@/modules/common"
 import { envConfig } from "@/env"

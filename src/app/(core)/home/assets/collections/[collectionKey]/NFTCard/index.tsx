@@ -1,13 +1,13 @@
 "use client"
 
-import { SHEET_NFT_DISCLOSURE } from "@/app/(core)/constants"
+import { SHEET_NFT_DISCLOSURE } from "@/app/(core)/constantsd"
 import { Image, WrappedBadge, Spacer, NFTRarityBadge, Card, CardBody, CardFooter } from "@/components"
 import { AttributeName, NFTRarityEnum } from "@/modules/blockchain"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
 import { setNFTSheet, useAppSelector, useAppDispatch, setNFTAddresses } from "@/redux"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { BlockchainNFTData } from "@/modules/apollo"
 
 interface NFTCardProps {

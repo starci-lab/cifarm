@@ -3,7 +3,7 @@
 import { Button, ButtonProps } from "@/components"
 import React, { useEffect, useRef } from "react"
 import { Spinner } from "../Spinner"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 export interface ExtendedButtonProps extends ButtonProps {
   isLoading?: boolean;

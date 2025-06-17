@@ -8,11 +8,11 @@ import {
     useIsMobile,
     useRouterWithSearchParams,
 } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import {
     SHEET_BOTTOM_NAV_DISCLOSURE,
-} from "@/app/(core)/constants"
+} from "@/app/(core)/constantsd"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux"
 export const BottomNavSheet: FC = () => {

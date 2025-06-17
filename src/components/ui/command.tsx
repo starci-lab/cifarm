@@ -4,7 +4,7 @@ import * as React from "react"
 import { type DialogProps } from "@radix-ui/react-dialog"
 import { Command as CommandPrimitive } from "cmdk"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { Dialog, DialogContent } from "@/components"
 import { MagnifyingGlass } from "@phosphor-icons/react"
 

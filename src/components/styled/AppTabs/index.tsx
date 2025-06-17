@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { Tabs, TabsList, TabsTrigger } from "../../ui"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 export interface AppTap {
   label: string;
   value: string;

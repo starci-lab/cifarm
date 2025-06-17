@@ -1,7 +1,7 @@
 import React, { FC } from "react"
 import { TokenKey, Tokens } from "@/modules/entities"
 import { Image } from "../Image"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { ChainKey, Network } from "@/modules/blockchain"
 
 interface TokenIconProps {

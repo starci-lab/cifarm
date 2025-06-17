@@ -22,7 +22,7 @@ import {
     TableHeader,
     TableRow,
 } from "../../ui"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 interface ExtendedTableProps<TData> {
     data: Array<TData>;

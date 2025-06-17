@@ -3,7 +3,7 @@
 import * as React from "react"
 import { DayPicker } from "react-day-picker"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { buttonVariants } from "@/components"
 import { CaretRight } from "@phosphor-icons/react"
 import { CaretLeft } from "@phosphor-icons/react"

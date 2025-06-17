@@ -1,7 +1,7 @@
 import { forwardRef, ReactElement } from "react"
 import { Icon, IconBase, IconWeight } from "@phosphor-icons/react"
 import React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 const weights = new Map<IconWeight, ReactElement>([
     [

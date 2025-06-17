@@ -1,6 +1,6 @@
 "use client"
 import { Card, CardBody, Spinner, } from "@/components"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { CaretRight } from "@phosphor-icons/react"
 import React, { FC, ReactNode } from "react"
 

@@ -6,10 +6,10 @@ import { pathConstants } from "@/constants"
 import { useGraphQLQueryLeaderboardSwr, useRouterWithSearchParams } from "@/hooks"
 import { Plant, ShareNetwork } from "@phosphor-icons/react"
 import { useIsMobile } from "@/hooks/useIsMobile"
-import { cn } from "@/lib/utils"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { cn } from "@/utils"
+import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
-import { GRAPHQL_QUERY_LEADERBOARD_SWR, REFERRAL_DISCLOSURE } from "@/app/(core)/constants"
+import { GRAPHQL_QUERY_LEADERBOARD_SWR, REFERRAL_DISCLOSURE } from "@/app/(core)/constantsd"
 import { ColumnDef } from "@tanstack/react-table"
 const tags = [{ name: "Farming" }, { name: "Social" }, { name: "Strategy" }]
 

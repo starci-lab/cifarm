@@ -8,7 +8,7 @@ import {
     List,
     Spacer,
 } from "@/components"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { chainKeyMap, Network } from "@/modules/blockchain"
 import { setChainKey, useAppDispatch, useAppSelector } from "@/redux"
 import React, { FC } from "react"

@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { Image } from "@/components"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 interface HoverImageProps {
   imageUrl: string;

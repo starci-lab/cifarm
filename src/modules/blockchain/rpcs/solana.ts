@@ -3,8 +3,7 @@ import { clusterApiUrl, Commitment, Connection } from "@solana/web3.js"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { mplToolbox } from "@metaplex-foundation/mpl-toolbox"
 import { mplCore } from "@metaplex-foundation/mpl-core"
-import { SolanaWalletData } from "../types"
-import { umiWalletAdapterIdentity } from "../utils"
+import { umiWalletAdapterIdentity, UmiWalletAdapterIdentityParams } from "@/utils"
 
 export const solanaClient = ({
     chainKey,
@@ -62,7 +61,7 @@ export type SolanaClientParams = SolanaHttpRpcUrlParams & {
   commitment?: Commitment;
 };
 
-export const getUmi = (network: Network, wallet: SolanaWalletData) => {
+export const getUmi = (network: Network, wallet: UmiWalletAdapterIdentityParams) => {
     const umi = createUmi(
         solanaHttpRpcUrl({ chainKey: ChainKey.Solana, network })
     )

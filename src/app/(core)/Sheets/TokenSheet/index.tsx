@@ -4,12 +4,12 @@ import {
 } from "@/components"
 import React, { FC } from "react"
 import { useIsMobile } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import { TokenSheetPage, useAppSelector } from "@/redux"
 import { MainContent } from "./MainContent"
 import { TransferContent } from "./TransferContent"
-import { SHEET_TOKEN_DISCLOSURE } from "@/app/(core)/constants"
+import { SHEET_TOKEN_DISCLOSURE } from "@/app/(core)/constantsd"
 
 export const TokenSheet: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(

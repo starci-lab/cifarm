@@ -1,7 +1,7 @@
 import React, { ElementType, FC } from "react"
 import { Image } from "../Image"
 import { CaretDown } from "@phosphor-icons/react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 type AvaButton2Props = {
   imageUrl: string

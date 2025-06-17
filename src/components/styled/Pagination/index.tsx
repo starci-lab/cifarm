@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { Button } from "@/components"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { CaretLeft, CaretRight, DotsThree } from "@phosphor-icons/react"
 
 interface PaginationProps extends React.HTMLAttributes<HTMLDivElement> {

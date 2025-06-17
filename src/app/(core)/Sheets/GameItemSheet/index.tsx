@@ -6,11 +6,11 @@ import React, { FC, useMemo } from "react"
 import {
     useIsMobile,
 } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import {
     SHEET_GAME_ITEM_DISCLOSURE,
-} from "@/app/(core)/constants"
+} from "@/app/(core)/constantsd"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux"
 import { assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainsMap, assetTileMap, assetToolsMap } from "@/modules/assets"

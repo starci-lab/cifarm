@@ -1,6 +1,6 @@
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useGraphQLMutationRefreshSwrMutation } from "../swr"
-import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION, WELCOME_DISCLOSURE } from "@/app/(core)/constants"
+import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION, WELCOME_DISCLOSURE } from "@/app/(core)/constantsd"
 import { useEffect } from "react"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { saveTokens } from "@/modules/apollo"

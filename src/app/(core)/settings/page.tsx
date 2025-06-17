@@ -12,12 +12,12 @@ import {
     Title,
 } from "@/components"
 import React, { FC } from "react"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import {
     MNEMONIC_DISCLOSURE,
     PRIVATE_KEY_DISCLOSURE,
     WARNING_DISCLOSURE,
-} from "../constants"
+} from "../constantsd"
 import { setWarningModal, useAppDispatch } from "@/redux"
 import { sessionDb } from "@/modules/dexie"
 import { useRouterWithSearchParams } from "@/hooks"

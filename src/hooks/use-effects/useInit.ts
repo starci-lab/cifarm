@@ -1,5 +1,5 @@
-import { WELCOME_DISCLOSURE } from "@/app/(core)/constants"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { WELCOME_DISCLOSURE } from "@/app/(core)/constantsd"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { useDisclosure } from "react-use-disclosure"
 

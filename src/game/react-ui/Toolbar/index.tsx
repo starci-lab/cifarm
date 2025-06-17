@@ -7,9 +7,9 @@ import {
 } from "@/redux"
 import { ExtendedButton, ItemCard, ScaledImage } from "@/components"
 import React from "react"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constants"
+import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constantsd"
 import {
     assetInventoryTypesMap,
     assetToolsMap,

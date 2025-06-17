@@ -1,7 +1,7 @@
-import { WS } from "@/app/(core)/constants"
+import { WS } from "@/app/(core)/constantsd"
 import { useEffect } from "react"
 import { BuyFruitMessage, useWs, EmitterEventName } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 
 export const useBuyFruitEffects = () => {

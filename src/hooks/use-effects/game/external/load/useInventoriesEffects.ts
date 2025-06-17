@@ -1,7 +1,7 @@
-import { GRAPHQL_QUERY_INVENTORIES_SWR } from "@/app/(core)/constants"
+import { GRAPHQL_QUERY_INVENTORIES_SWR } from "@/app/(core)/constantsd"
 import { ExternalEventName, ExternalEventEmitter } from "@/modules/event-emitter"
 import { useGraphQLQueryInventoriesSwr } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 
 export const useInventoriesEffects = () => {

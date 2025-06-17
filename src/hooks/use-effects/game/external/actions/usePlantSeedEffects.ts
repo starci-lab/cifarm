@@ -1,6 +1,6 @@
-import { WS } from "@/app/(core)/constants"
+import { WS } from "@/app/(core)/constantsd"
 import { PlantSeedMessage, useWs } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { EmitterEventName } from "@/hooks"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"

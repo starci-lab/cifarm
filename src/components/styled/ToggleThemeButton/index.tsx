@@ -4,7 +4,7 @@ import * as React from "react"
 import { Moon, Sun } from "@phosphor-icons/react"
 import { FC } from "react"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 export interface ToggleThemeButtonProps {
     classNames?: {

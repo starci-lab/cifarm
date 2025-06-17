@@ -1,14 +1,14 @@
 import { FormikProps, useFormik } from "formik"
 import * as Yup from "yup" // Import Yup
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { SIGN_TRANSACTION_DISCLOSURE } from "@/app/(core)/constants"
+import { useSingletonHook } from "../../singleton"
+import { SIGN_TRANSACTION_MODAL_DISCLOSURE } from "../../singleton/keys"
 import { useDisclosure } from "react-use-disclosure"
 import {
-    setSignTransactionModal,
+    setSignTransactionModalContent,
     TransactionType,
     useAppDispatch,
 } from "@/redux"
-import { NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionKey } from "@/types"
 import { BlockchainNFTData } from "@/modules/apollo"
 
 export interface TransferNFTFormikValues {
@@ -19,7 +19,7 @@ export interface TransferNFTFormikValues {
 
 export const useTransferNFTFormik = (): FormikProps<TransferNFTFormikValues> => {
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        SIGN_TRANSACTION_DISCLOSURE
+        SIGN_TRANSACTION_MODAL_DISCLOSURE
     )
     const dispatch = useAppDispatch()
     const initialValues: TransferNFTFormikValues = {
@@ -39,7 +39,7 @@ export const useTransferNFTFormik = (): FormikProps<TransferNFTFormikValues> => 
             if (!nft) throw new Error("NFT is required")
             // onpen the sign transaction moda
             dispatch(
-                setSignTransactionModal({
+                setSignTransactionModalContent({
                     type: TransactionType.TransferNFT,
                     data: {
                         recipientAddress,

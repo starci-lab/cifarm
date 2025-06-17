@@ -1,5 +1,5 @@
 import { Card, CardContent, ScaledImage, TooltipTrigger, Tooltip, TooltipContent } from "@/components"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { assetIconMap, AssetIconId } from "@/modules/assets"
 import React, { FC } from "react"
 

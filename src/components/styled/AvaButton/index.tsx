@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { FC, ReactNode } from "react"
 import { ExtendedButton } from "../ExtendedButton"
 import React from "react"

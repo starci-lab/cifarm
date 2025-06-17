@@ -4,14 +4,14 @@ import {
 } from "@/components"
 import { useTransferTokenFormik } from "@/hooks"
 import { DefaultToken } from "@/modules/blockchain"
-import { useSingletonHook, useSingletonHook2 } from "@/modules/singleton-hook"
+import { useSingletonHook, useSingletonHook2 } from "@/singleton"
 import {
     useAppDispatch,
     useAppSelector
 } from "@/redux"
 import { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
-import { TRANSFER_TOKEN_DISCLOSURE, TRANSFER_TOKEN_FORMIK } from "../constants"
+import { TRANSFER_TOKEN_DISCLOSURE, TRANSFER_TOKEN_FORMIK } from "../constantsd"
 
 const Page: FC = () => {
     const tokenKey = useAppSelector((state) => state.sessionReducer.tokenKey)

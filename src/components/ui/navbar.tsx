@@ -1,5 +1,5 @@
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 function Navbar({ className, ...props }: React.ComponentProps<"nav">) {
     return (

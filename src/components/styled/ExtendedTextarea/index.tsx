@@ -1,5 +1,5 @@
 import React, { FC } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { Textarea } from "../../ui"
 
 export interface ExtendedTextareaProps extends React.ComponentProps<"textarea"> {

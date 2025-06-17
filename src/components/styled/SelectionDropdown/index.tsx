@@ -5,7 +5,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "../../ui"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { ExtendedButton } from "../ExtendedButton"
 
 export interface SelectionDropdownOption {

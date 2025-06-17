@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { serialize } from "@/modules/serialization"
 
 export interface GridTableProps<TItem extends string | object> {

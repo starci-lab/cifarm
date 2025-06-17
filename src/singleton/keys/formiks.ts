@@ -1,0 +1,5 @@
+// formiks singleton hook keys, use to retrieve formiks
+export const TRANSFER_TOKEN_FORMIK = "TRANSFER_TOKEN_FORMIK"
+export const IMPORT_ACCOUNT_FORMIK = "IMPORT_ACCOUNT_FORMIK"
+export const TRANSFER_NFT_FORMIK = "TRANSFER_NFT_FORMIK"
+export const PURCHASE_NFT_BOXES_FORMIK = "PURCHASE_NFT_BOXES_FORMIK"

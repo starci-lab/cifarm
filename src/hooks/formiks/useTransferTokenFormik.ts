@@ -1,7 +1,7 @@
 import { FormikProps, useFormik } from "formik"
 import * as Yup from "yup" // Import Yup
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { SIGN_TRANSACTION_DISCLOSURE } from "@/app/(core)/constants"
+import { useSingletonHook } from "@/singleton"
+import { SIGN_TRANSACTION_DISCLOSURE } from "@/app/(core)/constantsd"
 import { useDisclosure } from "react-use-disclosure"
 import {
     setSignTransactionModal,

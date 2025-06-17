@@ -1,12 +1,12 @@
 "use client"
 
-import { SHEET_BOTTOM_NAV_DISCLOSURE } from "@/app/(core)/constants"
+import { SHEET_BOTTOM_NAV_DISCLOSURE } from "@/app/(core)/constantsd"
 import { pathConstants } from "@/constants"
 import {
     useRouterWithSearchParams
 } from "@/hooks"
 import { useIsMobile } from "@/hooks/useIsMobile"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { Coins, Cube, DotsThree,  GameController,  Plant,  SquaresFour, XLogo } from "@phosphor-icons/react"
 import { useDisclosure } from "react-use-disclosure"
 import { usePathname } from "next/navigation"

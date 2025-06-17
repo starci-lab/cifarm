@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import React, { FC, PropsWithChildren } from "react"
 
 interface AbsoluteCardProps extends PropsWithChildren {

@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { Image } from "../Image"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 export interface ImageGroupProps {
   images: Array<string>;

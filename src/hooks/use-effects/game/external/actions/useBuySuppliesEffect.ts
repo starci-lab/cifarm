@@ -1,6 +1,6 @@
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
-import { WS } from "@/app/(core)/constants"
+import { WS } from "@/app/(core)/constantsd"
 import { BuySuppliesMessage, toast, useWs } from "@/hooks"
 import { EmitterEventName, ReceiverEventName } from "@/hooks"
 import { ExternalEventName } from "@/modules/event-emitter"

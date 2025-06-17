@@ -51,7 +51,7 @@ import {
 import {
     SingletonHookProvider as BaseSingletonHookProvider,
     SingletonHook2Provider as BaseSingletonHook2Provider,
-} from "@/modules/singleton-hook"
+} from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import React, { PropsWithChildren } from "react"
 import { useGraphQLMutationUpdateReferralSwrMutation } from "@/hooks"

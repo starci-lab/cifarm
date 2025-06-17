@@ -1,7 +1,7 @@
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constants"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constantsd"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { useSingletonHook } from "@/modules/singleton-hook"
+import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 
 export const useStaticEffects = () => {

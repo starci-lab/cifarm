@@ -19,8 +19,8 @@ import { ArrowsClockwise } from "@phosphor-icons/react"
 import { ChainKey } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useDisclosure } from "react-use-disclosure"
-import { useSingletonHook } from "@/modules/singleton-hook"
-import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/(core)/constants"
+import { useSingletonHook } from "@/singleton"
+import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/(core)/constantsd"
 import { RPCLimitationWarning } from "./RPCLimitationWarning"
 
 const Page = () => {

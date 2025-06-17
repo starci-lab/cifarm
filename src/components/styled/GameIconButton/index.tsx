@@ -2,7 +2,7 @@
 
 import React, { FC, useRef, useState, useEffect } from "react"
 import { ScaledImage } from "../Image"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 import { useTheme } from "next-themes"
 interface GameIconButtonProps {
   imageSrc: string;

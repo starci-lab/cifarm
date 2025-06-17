@@ -1,7 +1,7 @@
 import React, { FC } from "react"
-import { NFTRarityEnum } from "@/modules/blockchain"
+import { NFTRarityEnum } from "@/types"
 import { ExtendedBadge } from "@/components"
-import { cn } from "@/lib/utils"
+import { cn } from "@/utils"
 
 interface NFTRarityBadgeProps {
     rarity: NFTRarityEnum
