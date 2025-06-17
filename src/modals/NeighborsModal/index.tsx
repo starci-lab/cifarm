@@ -1,5 +1,5 @@
 "use client"
-import { NEIGHBORS_DISCLOSURE } from "@/app/(core)/constantsd"
+import { NEIGHBORS_DISCLOSURE } from "@/singleton"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC, ReactNode } from "react"

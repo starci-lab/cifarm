@@ -1,5 +1,5 @@
 import { AssetMapData } from "@/modules/assets"
-import { PlacedItemSchema } from "@/modules/entities"
+import { PlacedItemSchema } from "@/types"
 
 export enum CacheKey {
     PlacedItems = "placed-items",

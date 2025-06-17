@@ -2,7 +2,7 @@ import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams } from "../../types"
 import { GraphQLResponse } from "../types"
-import { NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionKey } from "@/types"
 import { NFTRarityEnum } from "@/modules/blockchain"
 
 const mutation1 = gql`

@@ -8,7 +8,7 @@ import {
 } from "@/components"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
-import { DOWNLOAD_DISCLOSURE } from "@/app/(core)/constantsd"
+import { DOWNLOAD_DISCLOSURE } from "@/singleton"
 import { DownloadPackage } from "./DownloadPackage" 
 
 export const DownloadModal: FC = () => {

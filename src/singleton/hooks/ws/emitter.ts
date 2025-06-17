@@ -10,7 +10,7 @@ import {
     SupplyId,
     TileId,
     ToolId,
-} from "@/modules/entities"
+} from "@/types"
 
 export enum EmitterEventName {
   BuyDecoration = "buy_decoration",

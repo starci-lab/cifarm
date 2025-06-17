@@ -16,7 +16,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { SHIP_MODAL_DISCLOSURE } from "@/singleton"
 import { InventoryCard } from "./InventoryCard"
 import { setSelectedShipInventoryId, useAppDispatch, useAppSelector } from "@/redux"
-import { InventoryKind } from "@/modules/entities"
+import { InventoryKind } from "@/types"
 
 export const ShipModal: FC = () => {
     const { toggle, isOpen } =

@@ -10,7 +10,6 @@ export interface AddErrorToastParams {
 export const addErrorToast = ({ errorMessage }: AddErrorToastParams) =>
     toast({
         duration: DURATION,
-        title: "Error",
         description: truncateString(errorMessage, 400, 0),
         variant: "destructive",
     })

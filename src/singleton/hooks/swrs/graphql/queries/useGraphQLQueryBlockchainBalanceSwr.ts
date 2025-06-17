@@ -6,7 +6,7 @@ import useSWR from "swr"
 import { useState } from "react"
 import { useGlobalAccountAddress } from "@/hooks/useGlobalAccountAddress"
 import { ChainKey } from "@/modules/blockchain"
-import { TokenKey } from "@/modules/entities"
+import { TokenKey } from "@/types"
 import { useAppSelector, WrapperBlockchainBalanceData } from "@/redux"
 
 export const useGraphQLQueryBlockchainBalanceSwr = (

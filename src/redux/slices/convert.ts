@@ -1,4 +1,4 @@
-import { NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionKey } from "@/types"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
     
 export interface ConvertState {

@@ -3,7 +3,7 @@ import { Network, NFTCollectionKeyToPlacedItemTypeId } from "@/modules/blockchai
 import {
     PlacedItemType,
     NFTCollectionKey,
-} from "@/modules/entities"
+} from "@/types"
 // import { StateNFTCollections } from "@/redux"
 
 export interface GetNFTImageParams {

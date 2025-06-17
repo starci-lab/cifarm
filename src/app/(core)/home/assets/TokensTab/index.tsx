@@ -1,4 +1,4 @@
-import { QUERY_STATIC_SWR_MUTATION, SHEET_TOKEN_DISCLOSURE } from "@/app/(core)/constantsd"
+import { QUERY_STATIC_SWR_MUTATION, SHEET_TOKEN_DISCLOSURE } from "@/singleton"
 import { ExtendedBadge, ExtendedTable, Image, Spacer } from "@/components"
 import { envConfig } from "@/env"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
@@ -9,7 +9,7 @@ import { valuesWithKey } from "@/modules/common"
 import { ColumnDef } from "@tanstack/react-table"
 import { useDisclosure } from "react-use-disclosure"
 import { setTokenSheet } from "@/redux"
-import { TokenKey, TokenType } from "@/modules/entities"
+import { TokenKey, TokenType } from "@/types"
 import { chainKeyMap } from "@/modules/blockchain"
 
 export interface AssetsData {

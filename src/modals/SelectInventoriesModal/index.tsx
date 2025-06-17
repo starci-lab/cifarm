@@ -17,7 +17,7 @@ import {
 import { useDisclosure } from "react-use-disclosure"
 import { InventoryType, InventoryKind } from "@/types"
 import { InventoryCard } from "./InventoryCard"
-import { DeliverInventoriesMessage } from "@/hooks"
+import { DeliverInventoriesMessage } from "@/singleton"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import pluralize from "pluralize"
 import { cn } from "@/utils"

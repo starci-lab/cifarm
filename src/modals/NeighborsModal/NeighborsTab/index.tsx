@@ -5,19 +5,17 @@ import {
     GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION,
     GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION,
     NEIGHBORS_MODAL_DISCLOSURE,
-    WS,
-} from "@/singleton"
-import {
     DEFAULT_LIMIT,
     DEFAULT_OFFSET,
     useGraphQLQueryFolloweesSwr,
     useGraphQLQueryNeighborsSwr,
     useGraphQLMutationFollowSwrMutation,
     useGraphQLMutationUnfollowSwrMutation,
-    toast,
+    WS,
     useWs,
     EmitterEventName,
-} from "@/hooks"
+} from "@/singleton"
+import { addSuccessToast } from "@/modules/toast"
 import { useSingletonHook } from "@/singleton"
 import React, { FC, useEffect } from "react"
 import { FilterBar, List, Spacer } from "@/components"
@@ -161,8 +159,8 @@ export const NeighborsTab: FC = () => {
 
                                 await Promise.all([neighborsMutate(), followeesMutate()])
 
-                                toast({
-                                    title: "Followed successfully",
+                                addSuccessToast({
+                                    successMessage: "Followed successfully",
                                 })
                             }}
                             onUnfollowClick={async () => {
@@ -173,8 +171,8 @@ export const NeighborsTab: FC = () => {
                                 })
                                 await Promise.all([neighborsMutate(), followeesMutate()])
 
-                                toast({
-                                    title: "Unfollowed successfully",
+                                addSuccessToast({
+                                    successMessage: "Unfollowed successfully",
                                 })
                             }}
                         />

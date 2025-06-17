@@ -8,7 +8,7 @@ import {
     PlacedItemType,
     PlacedItemTypeId,
     PlacedItemTypeSchema,
-} from "@/modules/entities"
+} from "@/types"
 
 // limit is computed base on the input placed items
 // compute for single item type

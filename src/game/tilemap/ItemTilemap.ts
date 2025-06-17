@@ -56,7 +56,7 @@ import {
     TileSchema,
     ToolSchema,
     UserSchema,
-} from "@/modules/entities"
+} from "@/types"
 import { PartialDeep } from "type-fest"
 import {
     CacheKey,

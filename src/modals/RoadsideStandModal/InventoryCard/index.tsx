@@ -1,5 +1,5 @@
 import { ItemCard } from "@/components"
-import { InventorySchema } from "@/modules/entities"
+import { InventorySchema } from "@/types"
 import React, { FC } from "react"
 import { assetInventoryTypesMap } from "@/modules/assets"
 import {

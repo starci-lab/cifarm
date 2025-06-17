@@ -1,7 +1,7 @@
 import { ItemCard, TintColor } from "@/components"
-import { InventoryKind, InventorySchema } from "@/modules/entities"
+import { InventoryKind, InventorySchema } from "@/types"
 import React, { FC } from "react"
-import { MoveInventoryMessage } from "@/hooks"
+import { MoveInventoryMessage } from "@/singleton"
 import { assetInventoryTypesMap } from "@/modules/assets"
 import {
     useAppDispatch,

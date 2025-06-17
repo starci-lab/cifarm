@@ -3,7 +3,7 @@ import { noCacheAuthClient } from "../../auth-client"
 import {
     QueryParams,
 } from "../../types"
-import { TokenKey } from "@/modules/entities"
+import { TokenKey } from "@/types"
 
 const query1 = gql`
   query VaultCurrent($request: GetVaultCurrentRequest!) {

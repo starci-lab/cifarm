@@ -1,4 +1,4 @@
-import { CropId, FlowerId, SupplyId, ToolId } from "@/modules/entities"
+import { CropId, FlowerId, SupplyId, ToolId } from "@/types"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface WsLoadState {

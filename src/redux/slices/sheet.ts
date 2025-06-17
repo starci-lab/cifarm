@@ -1,4 +1,4 @@
-import { TokenKey } from "@/modules/entities"
+import { TokenKey } from "@/types"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface TokenSheet {

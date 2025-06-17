@@ -323,5 +323,5 @@ export interface UpdateSellModalContentMessage {
 }
 
 export interface UpdateUpgradeModalContentMessage {
-    placedItemBuildingId: string
+    placedItemId: string
 }

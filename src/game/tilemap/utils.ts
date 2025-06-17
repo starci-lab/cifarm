@@ -9,7 +9,7 @@ import {
     PlacedItemTypeSchema,
     TileSchema,
     DecorationSchema,
-} from "@/modules/entities"
+} from "@/types"
 import { CacheKey } from "../types"
 import { QueryStaticResponse } from "@/modules/apollo"
 import {

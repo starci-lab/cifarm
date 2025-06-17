@@ -20,7 +20,7 @@ import { ChainKey } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/singleton"
-import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/app/(core)/constantsd"
+import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/singleton"
 import { RPCLimitationWarning } from "./RPCLimitationWarning"
 
 const Page = () => {

@@ -1,4 +1,4 @@
-import { InventoryType, InventoryKind, InventorySchema, BulkSchema, VaultData } from "@/modules/entities"
+import { InventoryType, InventoryKind, InventorySchema, BulkSchema, VaultData } from "@/types"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { formatNumber } from "@/modules/common"
 import { BulkPaid } from "@/modules/apollo"

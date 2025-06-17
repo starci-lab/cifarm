@@ -3,7 +3,7 @@ import {
     UserSchema,
     InventorySchema,
     PlacedItemSchema,
-} from "@/modules/entities"
+} from "@/types"
 import { PartialDeep } from "type-fest"
 import { EmitActionPayload } from "./actions"
 

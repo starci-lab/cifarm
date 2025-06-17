@@ -4,7 +4,7 @@ import { CONTAINER_ID } from "./constants"
 import GesturesPlugin from "phaser3-rex-plugins/plugins/gestures-plugin.js"
 import MouseWheelScrollerPlugin from "phaser3-rex-plugins/plugins/mousewheelscroller-plugin.js"
 import UIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
-import { UserSchema } from "@/modules/entities"
+import { UserSchema } from "@/types"
 import { SpinePlugin } from "@esotericsoftware/spine-phaser"
 import AwaitLoaderPlugin from "phaser3-rex-plugins/plugins/awaitloader-plugin.js"
 

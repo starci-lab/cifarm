@@ -9,7 +9,7 @@ import { ExtendedButton, ItemCard, ScaledImage } from "@/components"
 import React from "react"
 import { useSingletonHook } from "@/singleton"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constantsd"
+import { QUERY_STATIC_SWR_MUTATION } from "@/singleton"
 import {
     assetInventoryTypesMap,
     assetToolsMap,
@@ -17,7 +17,7 @@ import {
     AssetUIId,
 } from "@/modules/assets"
 import { useMediaQuery } from "usehooks-ts"
-import { InventoryKind, ToolId } from "@/modules/entities"
+import { InventoryKind, ToolId } from "@/types"
 import { ExternalEventName, ToolLike, ExternalEventEmitter } from "@/modules/event-emitter"
 import { CaretLeft, CaretRight } from "@phosphor-icons/react"
 

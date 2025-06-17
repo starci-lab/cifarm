@@ -10,7 +10,7 @@ import {
     PlacedItemType,
     PlacedItemTypeSchema,
     PlantType,
-} from "@/modules/entities"
+} from "@/types"
 import { CacheKey } from "../types"
 
 export const getTimer = (scene: Phaser.Scene, placedItem: PlacedItemSchema): number => {

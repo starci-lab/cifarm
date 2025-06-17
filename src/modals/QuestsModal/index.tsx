@@ -1,5 +1,5 @@
 "use client"
-import { QUESTS_DISCLOSURE } from "@/app/(core)/constantsd"
+import { QUESTS_DISCLOSURE } from "@/singleton"
 import { useSingletonHook } from "@/singleton"
 import React, { FC, ReactNode } from "react"
 import { DailyTab } from "./DailyTab"

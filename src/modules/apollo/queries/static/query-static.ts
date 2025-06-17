@@ -34,7 +34,7 @@ import {
     LandLimitInfo,
     BlockchainDataConfigs,
     DecorationSchema
-} from "@/modules/entities"
+} from "@/types"
 
 //long query for querying all the static data
 const query = gql`

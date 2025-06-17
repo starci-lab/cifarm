@@ -3,11 +3,11 @@
 import React, { FC } from "react"
 import { Container } from "../Container"
 import { AnimalAge } from "@/modules/assets"
-import { FruitId } from "@/modules/entities"
+import { FruitId } from "@/types"
 import { assetFruitMap } from "@/modules/assets"
 import { Image, SpinePlayer } from "@/components"
 import { assetAnimalMap } from "@/modules/assets"
-import { AnimalId } from "@/modules/entities"
+import { AnimalId } from "@/types"
 
 export const LoadingScreen: FC = () => {
     return (

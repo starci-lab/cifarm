@@ -5,12 +5,10 @@ import {
     GRAPHQL_MUTATION_UPDATE_FOLLOW_X_SWR_MUTATION,  
     GRAPHQL_QUERY_USER_SWR,
     REFERRAL_MODAL_DISCLOSURE,
-} from "@/singleton"
-import {
     useGraphQLMutationUpdateFollowXSwrMutation,
     useGraphQLQueryUserSwr,
-} from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+    useSingletonHook
+} from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import { List } from "@/components"
 import { AssetIconId, assetIconMap } from "@/modules/assets"

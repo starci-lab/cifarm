@@ -18,8 +18,8 @@ import {
     ModalName,
 } from "@/modules/event-emitter"
 import { useAppSelector } from "@/redux"
-import { SellMessage } from "@/hooks"
-import { getSellInfo } from "@/modules/entities"
+import { SellMessage } from "@/singleton"
+import { getSellInfo } from "@/utils"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 
 export const SellModal: FC = () => {

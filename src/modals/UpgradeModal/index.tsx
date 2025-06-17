@@ -16,8 +16,8 @@ import { useDisclosure } from "react-use-disclosure"
 import { UPGRADE_MODAL_DISCLOSURE } from "@/singleton"
 import { ExternalEventEmitter, ExternalEventName, ModalName } from "@/modules/event-emitter"
 import { setUpgradeModalContent, useAppDispatch, useAppSelector } from "@/redux"
-import { UpgradeBuildingMessage } from "@/hooks"
-import { getUpgradePrice } from "@/modules/entities"
+import { UpgradeBuildingMessage } from "@/singleton"
+import { getUpgradePrice } from "@/utils"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 
 export const UpgradeModal: FC = () => {

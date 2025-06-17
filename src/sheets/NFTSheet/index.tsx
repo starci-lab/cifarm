@@ -10,7 +10,7 @@ import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import {
     SHEET_NFT_DISCLOSURE,
-} from "@/app/(core)/constantsd"
+} from "@/singleton"
 import {
     NFTSheetPage,
     useAppSelector,

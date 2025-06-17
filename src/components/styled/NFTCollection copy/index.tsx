@@ -1,6 +1,6 @@
 import { Card, CardBody, Image, Separator, Spacer } from "@/components"
 import { CollectionResponse } from "@/modules/blockchain"
-import { NFTCollectionData } from "@/modules/entities"
+import { NFTCollectionData } from "@/types"
 import React, { FC } from "react"
 import { SWRResponse } from "swr"
 

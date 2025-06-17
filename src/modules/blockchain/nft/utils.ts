@@ -1,6 +1,6 @@
-import { PlacedItemTypeId } from "@/modules/entities"
+import { PlacedItemTypeId } from "@/types"
 
-import { NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionKey } from "@/types"
 
 export const NFTCollectionKeyToPlacedItemTypeId: Record<NFTCollectionKey, PlacedItemTypeId> = {
     [NFTCollectionKey.DragonFruit]: PlacedItemTypeId.DragonFruit,

@@ -10,7 +10,7 @@ import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import {
     SHEET_GAME_ITEM_DISCLOSURE,
-} from "@/app/(core)/constantsd"
+} from "@/singleton"
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux"
 import { assetProductMap, assetShopMap, assetSuppliesMap, assetTerrainsMap, assetTileMap, assetToolsMap } from "@/modules/assets"

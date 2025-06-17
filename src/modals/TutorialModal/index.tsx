@@ -13,7 +13,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { TUTORIAL_MODAL_DISCLOSURE } from "@/singleton"
 import Typewriter from "typewriter-effect"
 import { setTutorialIndex, setTutorialStep, useAppDispatch, useAppSelector } from "@/redux"
-import { TutorialStep } from "@/modules/entities"
+import { TutorialStep } from "@/types"
 import { tutorialScripts } from "./scrips"
 import useSWRMutation from "swr/mutation"
 

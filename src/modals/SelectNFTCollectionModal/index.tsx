@@ -10,7 +10,7 @@ import {
     DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionKey } from "@/types"
 import { setSelectedNFTCollectionKey, useAppDispatch, useAppSelector } from "@/redux"
 import { envConfig } from "@/env"
 

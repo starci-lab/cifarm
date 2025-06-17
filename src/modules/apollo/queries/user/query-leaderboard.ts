@@ -1,7 +1,7 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { QueryParams } from "../../types"
 import { client } from "../../client"
-import { UserSchema } from "@/modules/entities"
+import { UserSchema } from "@/types"
 import { Network } from "@/modules/blockchain"
 
 const query1 = gql`

@@ -1,5 +1,5 @@
 "use client"
-import { UserSchema } from "@/modules/entities"
+import { UserSchema } from "@/types"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import React, { FC, useState, useEffect } from "react"
 import { ExtendedButton, Spacer } from "@/components"

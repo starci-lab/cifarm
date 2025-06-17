@@ -1,4 +1,4 @@
-import { TileId } from "@/modules/entities"
+import { TileId } from "@/types"
 import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
 import { getAssetUrl } from "./utils"
 const PREFIX = "/tiles"

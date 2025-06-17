@@ -43,13 +43,15 @@ import { ArrowCounterClockwise } from "@phosphor-icons/react"
 import {
     useGraphQLQueryFolloweesSwr,
     useGraphQLQueryNeighborsSwr,
-} from "@/hooks"
+} from "@/singleton"
 export const NeighborsFilterModal: FC = () => {
-    const { toggle, isOpen, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        NEIGHBORS_FILTER_MODAL_DISCLOSURE
-    )
+    const { toggle, isOpen, close } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(NEIGHBORS_FILTER_MODAL_DISCLOSURE)
 
-    const selectedTab = useAppSelector((state) => state.modalReducer.neighborsModal.selectedTab)
+    const selectedTab = useAppSelector(
+        (state) => state.modalReducer.neighborsModal.selectedTab
+    )
     const neighborsSearch = useAppSelector(
         (state) => state.modalReducer.neighborsFilterModal.neighborsSearch
     )
@@ -58,20 +60,29 @@ export const NeighborsFilterModal: FC = () => {
     )
 
     const { swr: neighborsSwr, setParams: setNeighborsParams } = useSingletonHook<
-        ReturnType<typeof useGraphQLQueryNeighborsSwr>
-    >(GRAPHQL_QUERY_NEIGHBORS_SWR)
+    ReturnType<typeof useGraphQLQueryNeighborsSwr>
+  >(GRAPHQL_QUERY_NEIGHBORS_SWR)
 
     const { swr: followeesSwr, setParams: setFolloweesParams } = useSingletonHook<
-        ReturnType<typeof useGraphQLQueryFolloweesSwr>
-    >(GRAPHQL_QUERY_FOLLOWEES_SWR)
+    ReturnType<typeof useGraphQLQueryFolloweesSwr>
+  >(GRAPHQL_QUERY_FOLLOWEES_SWR)
 
     // update the params whenever the neighborsSearch changes
     useEffect(() => {
-        if (neighborsSearch.useAdvancedSearch !== neighborsSearch.appliedUseAdvancedSearch) {
-            dispatch(setNeighborsSearchAppliedUseAdvancedSearch(neighborsSearch.useAdvancedSearch))
+        if (
+            neighborsSearch.useAdvancedSearch !==
+      neighborsSearch.appliedUseAdvancedSearch
+        ) {
+            dispatch(
+                setNeighborsSearchAppliedUseAdvancedSearch(
+                    neighborsSearch.useAdvancedSearch
+                )
+            )
         }
         if (neighborsSearch.searchString !== neighborsSearch.appliedSearchString) {
-            dispatch(setNeighborsSearchAppliedSearchString(neighborsSearch.searchString))
+            dispatch(
+                setNeighborsSearchAppliedSearchString(neighborsSearch.searchString)
+            )
         }
         if (neighborsSearch.levelRange !== neighborsSearch.appliedLevelRange) {
             dispatch(setNeighborsSearchAppliedLevelRange(neighborsSearch.levelRange))
@@ -79,15 +90,29 @@ export const NeighborsFilterModal: FC = () => {
         if (neighborsSearch.status !== neighborsSearch.appliedStatus) {
             dispatch(setNeighborsSearchAppliedStatus(neighborsSearch.status))
         }
-    }, [neighborsSearch.levelRange, neighborsSearch.status, neighborsSearch.searchString, neighborsSearch.useAdvancedSearch])
+    }, [
+        neighborsSearch.levelRange,
+        neighborsSearch.status,
+        neighborsSearch.searchString,
+        neighborsSearch.useAdvancedSearch,
+    ])
 
     // update the params whenever the followeesSearch changes
     useEffect(() => {
-        if (followeesSearch.useAdvancedSearch !== followeesSearch.appliedUseAdvancedSearch) {
-            dispatch(setFolloweesSearchAppliedUseAdvancedSearch(followeesSearch.useAdvancedSearch))
+        if (
+            followeesSearch.useAdvancedSearch !==
+      followeesSearch.appliedUseAdvancedSearch
+        ) {
+            dispatch(
+                setFolloweesSearchAppliedUseAdvancedSearch(
+                    followeesSearch.useAdvancedSearch
+                )
+            )
         }
         if (followeesSearch.searchString !== followeesSearch.appliedSearchString) {
-            dispatch(setFolloweesSearchAppliedSearchString(followeesSearch.searchString))
+            dispatch(
+                setFolloweesSearchAppliedSearchString(followeesSearch.searchString)
+            )
         }
         if (followeesSearch.levelRange !== followeesSearch.appliedLevelRange) {
             dispatch(setFolloweesSearchAppliedLevelRange(followeesSearch.levelRange))
@@ -95,7 +120,12 @@ export const NeighborsFilterModal: FC = () => {
         if (followeesSearch.status !== followeesSearch.appliedStatus) {
             dispatch(setFolloweesSearchAppliedStatus(followeesSearch.status))
         }
-    }, [followeesSearch.levelRange, followeesSearch.status, followeesSearch.searchString, followeesSearch.useAdvancedSearch])
+    }, [
+        followeesSearch.levelRange,
+        followeesSearch.status,
+        followeesSearch.searchString,
+        followeesSearch.useAdvancedSearch,
+    ])
 
     const dispatch = useAppDispatch()
 
@@ -173,29 +203,31 @@ export const NeighborsFilterModal: FC = () => {
                             })
                             switch (selectedTab) {
                             case NeighborsModalTab.Neighbors:
-                                setNeighborsParams?.(prev => ({
+                                setNeighborsParams?.((prev) => ({
                                     ...prev,
                                     request: {
                                         ...prev?.request,
                                         searchString: neighborsSearch.appliedSearchString,
                                         status: neighborsSearch.appliedStatus,
-                                        useAdvancedSearch: neighborsSearch.appliedUseAdvancedSearch,
+                                        useAdvancedSearch:
+                        neighborsSearch.appliedUseAdvancedSearch,
                                         levelEnd,
                                         levelStart,
-                                    }
+                                    },
                                 }))
                                 break
                             case NeighborsModalTab.Followees:
-                                setFolloweesParams?.(prev => ({
+                                setFolloweesParams?.((prev) => ({
                                     ...prev,
                                     request: {
                                         ...prev?.request,
                                         searchString: followeesSearch.appliedSearchString,
                                         status: followeesSearch.appliedStatus,
-                                        useAdvancedSearch: followeesSearch.appliedUseAdvancedSearch,
+                                        useAdvancedSearch:
+                        followeesSearch.appliedUseAdvancedSearch,
                                         levelEnd,
-                                        levelStart
-                                    }
+                                        levelStart,
+                                    },
                                 }))
                                 break
                             }
@@ -204,7 +236,7 @@ export const NeighborsFilterModal: FC = () => {
                         color="primary"
                         className="w-full"
                     >
-                            Search
+            Search
                     </ExtendedButton>
                 </DialogFooter>
             </DialogContent>

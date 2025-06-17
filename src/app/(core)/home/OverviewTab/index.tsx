@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/useIsMobile"
 import { cn } from "@/utils"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
-import { GRAPHQL_QUERY_LEADERBOARD_SWR, REFERRAL_DISCLOSURE } from "@/app/(core)/constantsd"
+import { GRAPHQL_QUERY_LEADERBOARD_SWR, REFERRAL_DISCLOSURE } from "@/singleton"
 import { ColumnDef } from "@tanstack/react-table"
 const tags = [{ name: "Farming" }, { name: "Social" }, { name: "Strategy" }]
 

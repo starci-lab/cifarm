@@ -10,7 +10,7 @@ import {
 import React, { FC, useEffect } from "react"
 import {
     useTransferTokenFormik,
-} from "@/hooks"
+} from "@/singleton"
 import {
     TRANSFER_TOKEN_FORMIK,
     useSingletonHook2,
@@ -28,7 +28,7 @@ import {
 } from "@/modules/blockchain"
 import { envConfig } from "@/env"
 import { HandArrowDown, HandCoins, PaperPlaneRight, QrCode, ArrowUpRight, ShoppingCart, DotsThree } from "@phosphor-icons/react"
-import { TokenKey } from "@/modules/entities"
+import { TokenKey } from "@/types"
 
 export const MainContent: FC = () => {  
     const tokenKey = useAppSelector((state) => state.sheetReducer.tokenSheet.tokenKey)

@@ -1,4 +1,4 @@
-import { AnimalId } from "@/modules/entities"
+import { AnimalId } from "@/types"
 import { AssetMapData, AssetMapType, BubbleStateConfig } from "./types"
 import { getAssetUrl } from "./utils"
 

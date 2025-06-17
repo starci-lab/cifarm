@@ -1,4 +1,4 @@
-import { BuildingId } from "@/modules/entities"
+import { BuildingId } from "@/types"
 import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
 import { getAssetUrl } from "./utils"
 

@@ -1,5 +1,5 @@
 import { Card, CardBody, CardFooter, Image, Spacer } from "@/components"
-import { NFTCollectionData } from "@/modules/entities"
+import { NFTCollectionData } from "@/types"
 import React, { FC } from "react"
 
 interface NFTCollectionProps {

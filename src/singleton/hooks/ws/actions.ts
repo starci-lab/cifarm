@@ -1,4 +1,4 @@
-import { PlacedItemSchema } from "@/modules/entities"
+import { PlacedItemSchema } from "@/types"
 import { PartialDeep } from "type-fest"
 
 export enum ActionName {

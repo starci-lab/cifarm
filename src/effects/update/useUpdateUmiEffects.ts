@@ -7,15 +7,15 @@ import { useEffect } from "react"
 export const useUpdateUmiEffects = () => {
     const dispatch = useAppDispatch()
     const signAllTransactions = useAppSelector(
-        (state) => state.solanaWalletReducer.signAllTransactions
+        (state) => state.walletReducer.solanaWallet.signAllTransactions
     )
     const signTransaction = useAppSelector(
-        (state) => state.solanaWalletReducer.signTransaction
+        (state) => state.walletReducer.solanaWallet.signTransaction
     )
     const signMessage = useAppSelector(
-        (state) => state.solanaWalletReducer.signMessage
+        (state) => state.walletReducer.solanaWallet.signMessage
     )
-    const address = useAppSelector((state) => state.solanaWalletReducer.address)
+    const address = useAppSelector((state) => state.walletReducer.solanaWallet.address)
     useEffect(() => {
         if (
             !signAllTransactions ||

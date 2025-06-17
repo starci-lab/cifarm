@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { UserSchema } from "@/modules/entities"
+import { UserSchema } from "@/types"
 
 export interface GameSlice {
     visitedUser?: UserSchema

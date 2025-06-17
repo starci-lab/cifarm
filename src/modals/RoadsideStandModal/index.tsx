@@ -30,7 +30,7 @@ import {
 } from "@/redux"
 import { ExtendedButton } from "@/components"
 import { InventoryCard } from "./InventoryCard"
-import { InventoryKind } from "@/modules/entities"
+import { InventoryKind } from "@/types"
 import { GridTable } from "@/components"
 import { formatTime, getNextMinuteCronExecution } from "@/modules/common"
 import { AssetIconId, assetIconMap } from "@/modules/assets"

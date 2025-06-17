@@ -7,7 +7,7 @@ import {
     InventorySchema,
     PlacedItemSchema,
     UserSchema,
-} from "@/modules/entities"
+} from "@/types"
 import {
     loadFlowerAssets,
     loadFruitAssets,

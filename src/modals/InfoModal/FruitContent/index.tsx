@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react"
-import { FruitCurrentState, PlacedItemSchema } from "@/modules/entities"
+import { FruitCurrentState, PlacedItemSchema } from "@/types"
 import { useSingletonHook } from "@/singleton"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constantsd"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/singleton"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { Spacer, ExtendedButton, DialogFooter, DialogBody, NFTBadge, Separator } from "@/components"
 import {    

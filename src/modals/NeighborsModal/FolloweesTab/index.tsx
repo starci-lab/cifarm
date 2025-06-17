@@ -12,10 +12,9 @@ import {
     useGraphQLQueryFolloweesSwr,
     useGraphQLQueryNeighborsSwr,
     useGraphQLMutationUnfollowSwrMutation,
-    toast,
     useWs,
     EmitterEventName,
-} from "@/hooks"
+} from "@/singleton"
 import { useSingletonHook } from "@/singleton"
 import React, { FC, useEffect } from "react"
 import { FilterBar, List, Spacer } from "@/components"
@@ -39,6 +38,7 @@ import {
     ExternalEventEmitter,
     ExternalEventName,
 } from "@/modules/event-emitter"
+import { addSuccessToast } from "@/modules/toast/extended"
 
 export const FolloweesTab: FC = () => {
     const {
@@ -203,9 +203,8 @@ export const FolloweesTab: FC = () => {
                                 })
 
                                 await Promise.all([neighborsMutate(), followeesMutate()])
-
-                                toast({
-                                    title: "Unfollowed successfully",
+                                addSuccessToast({
+                                    successMessage: "Unfollowed successfully",
                                 })
                             }}
                         />

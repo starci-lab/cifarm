@@ -20,11 +20,10 @@ import {
     useGraphQLMutationCreateShipSolanaTransactionSwrMutation,
     useGraphQLMutationSendShipSolanaTransactionSwrMutation,
     useGraphQLQueryVaultCurrentSwr,
-    useIsMobile,
-    useGlobalAccountAddress,
     useGraphQLQueryInventoriesSwr,
     useGraphQLQueryUserSwr,
-} from "@/hooks"
+} from "@/singleton"
+import { useGlobalAccountAddress, useIsMobile } from "@/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import {
     GRAPHQL_MUTATION_CREATE_SHIP_SOLANA_TRANSACTION_SWR_MUTATION,
@@ -44,7 +43,7 @@ import {
     useAppSelector,
 } from "@/redux"
 import { assetProductMap, assetIconMap, AssetIconId } from "@/modules/assets"
-import { partitionInventories } from "@/modules/entities"
+import { partitionInventories } from "@/utils"
 import { cn } from "@/utils"
 import { ArrowCounterClockwise } from "@phosphor-icons/react"
 import { ChainKey } from "@/modules/blockchain"

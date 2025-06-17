@@ -15,31 +15,29 @@ import {
 } from "@/components"
 import React, { FC, useEffect } from "react"
 import {
-    toast,
     useGraphQLMutationCreateUnwrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationCreateWrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationSendUnwrapSolanaMetaplexNFTTransactionSwrMutation,
     useGraphQLMutationSendWrapSolanaMetaplexNFTTransactionSwrMutation,
-    useGraphQLQueryStaticSwr,
     useGraphQLQueryUserSwrMutation,
     useTransferNFTFormik,
-} from "@/hooks"
+} from "@/singleton"
+import { addErrorToast } from "@/modules/toast"
 import { useSingletonHook, useSingletonHook2 } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import {
-    QUERY_STATIC_SWR_MUTATION,
     GRAPHQL_MUTATION_SEND_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
     GRAPHQL_MUTATION_CREATE_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
     GRAPHQL_MUTATION_CREATE_WRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
     GRAPHQL_MUTATION_SEND_UNWRAP_SOLANA_METAPLEX_NFT_TRANSACTION_SWR_MUTATION,
-    SIGN_TRANSACTION_DISCLOSURE,
+    SIGN_TRANSACTION_MODAL_DISCLOSURE,
     TRANSFER_NFT_FORMIK,
     GRAPHQL_QUERY_USER_SWR_MUTATION,
-} from "@/app/(core)/constantsd"
+} from "@/singleton"
 import {
     NFTSheetPage,
     setNFTSheetPage,
-    setSignTransactionModal,
+    setSignTransactionModalContent,
     TransactionType,
     useAppDispatch,
     useAppSelector,
@@ -54,7 +52,7 @@ import {
     statsAttributeNameMap,
 } from "@/modules/blockchain"
 import { useParams } from "next/navigation"
-import { NFTCollectionKey, PlacedItemType } from "@/modules/entities"
+import { NFTCollectionKey, PlacedItemType } from "@/types"
 import { envConfig } from "@/env"
 import { Export, Package, PaperPlaneRight, Sparkle, Eye } from "@phosphor-icons/react"
 import { createJazziconBlobUrl } from "@/modules/jazz"
@@ -74,7 +72,7 @@ export const MainContent: FC = () => {
         (state) => state.sheetReducer.nftSheet.nftAddress
     )
 
-    const collectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
+    const collectionSwrs = useAppSelector((state) => state.swrsReducer.nftCollectionSwrs)
     const collectionSwr = collectionSwrs[collectionKey]
 
     const nfts: Array<BlockchainNFTData> = collectionSwr?.data?.collection.nfts || []
@@ -82,11 +80,9 @@ export const MainContent: FC = () => {
         (nft) => nft.nftAddress === nftAddress
     )
 
-    const { swr: staticSwr } = useSingletonHook<
-        ReturnType<typeof useGraphQLQueryStaticSwr>
-    >(QUERY_STATIC_SWR_MUTATION)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
-    const collections = staticSwr.data?.data.nftCollections || {}
+    const collections = staticData?.nftCollections || {}
 
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
 
@@ -124,7 +120,7 @@ export const MainContent: FC = () => {
 
     const renderProperties = () => {
         const collection = collections[collectionKey]
-        const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
+        const placedItemType = staticData?.placedItemTypes?.find(
             (placedItemType) =>
                 placedItemType.id ===
                 collection?.[network]?.placedItemTypeId
@@ -165,7 +161,7 @@ export const MainContent: FC = () => {
 
     const renderStats = () => {
         const collection = collections[collectionKey]
-        const placedItemType = staticSwr.data?.data.placedItemTypes?.find(
+        const placedItemType = staticData?.placedItemTypes?.find(
             (placedItemType) =>
                 placedItemType.id ===
                 collection?.[network]?.placedItemTypeId
@@ -208,7 +204,7 @@ export const MainContent: FC = () => {
 
     const { open: openSignTransactionModal } = useSingletonHook<
         ReturnType<typeof useDisclosure>
-    >(SIGN_TRANSACTION_DISCLOSURE)
+    >(SIGN_TRANSACTION_MODAL_DISCLOSURE)
 
     return (
         <div className="h-full flex flex-col">
@@ -243,48 +239,38 @@ export const MainContent: FC = () => {
                                 icon={<Export />}
                                 isLoading={createUnwrapSolanaMetaplexNFTSwrMutation.isMutating}
                                 onClick={async () => {
-                                    if (!nft?.nftAddress) {
-                                        throw new Error("NFT address is required")
-                                    }
-                                    const { data } = await createUnwrapSolanaMetaplexNFTSwrMutation.trigger({
-                                        request: {
-                                            nftAddress: nft.nftAddress,
-                                            collectionAddress: collections[collectionKey]?.[network]?.collectionAddress,
-                                        },
-                                    })
-                                    if (!data) {
-                                        toast({
-                                            title: "Error",
-                                            description: "Failed to create unwrap NFT transaction",
-                                            variant: "destructive",
-                                        })
-                                        return ""
-                                    }
-                                    dispatch(
-                                        setSignTransactionModal({
-                                            type: TransactionType.SolanaRawTx,
-                                            data: {
-                                                serializedTx: data.serializedTx,
+                                    try {
+                                        if (!nft?.nftAddress) {
+                                            throw new Error("NFT address is required")
+                                        }
+                                        const { data } = await createUnwrapSolanaMetaplexNFTSwrMutation.trigger({
+                                            request: {
+                                                nftAddress: nft.nftAddress,
+                                                collectionAddress: collections[collectionKey]?.[network]?.collectionAddress,
                                             },
-                                            postActionHook: async (serializedTx) => {
-                                                const { data } = await sendUnwrapSolanaMetaplexNFTSwrMutation.trigger({
-                                                    request: {
-                                                        serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
-                                                    },
-                                                })
-                                                if (!data) {
-                                                    toast({
-                                                        title: "Error",
-                                                        description: "Failed to send unwrap NFT transaction",
-                                                        variant: "destructive",
+                                        })
+                                        dispatch(
+                                            setSignTransactionModalContent({
+                                                type: TransactionType.SolanaRawTx,
+                                                data: {
+                                                    serializedTx: data?.serializedTx ?? "",
+                                                },
+                                                postActionHook: async (serializedTx) => {
+                                                    const { data } = await sendUnwrapSolanaMetaplexNFTSwrMutation.trigger({
+                                                        request: {
+                                                            serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
+                                                        },
                                                     })
-                                                    return ""
-                                                }
-                                                return data.txHash
-                                            },
+                                                    return data?.txHash ?? ""
+                                                },
+                                            })
+                                        )
+                                        openSignTransactionModal()
+                                    } catch (error) {
+                                        addErrorToast({
+                                            errorMessage: (error as Error).message,
                                         })
-                                    )
-                                    openSignTransactionModal()
+                                    }
                                 }}
                                 name="Unwrap"
                             />
@@ -293,10 +279,11 @@ export const MainContent: FC = () => {
                                 icon={<Package />}
                                 isLoading={createWrapSolanaMetaplexNFTSwrMutation.isMutating}
                                 onClick={async () => {
-                                    if (!nft?.nftAddress) {
-                                        throw new Error("NFT address is required")
-                                    }
-                                    const { data } =
+                                    try {
+                                        if (!nft?.nftAddress) {
+                                            throw new Error("NFT address is required")
+                                        }
+                                        const { data } =
                                         await createWrapSolanaMetaplexNFTSwrMutation.trigger({
                                             request: {
                                                 nftAddress: nft.nftAddress,
@@ -304,39 +291,28 @@ export const MainContent: FC = () => {
                                                     collections[collectionKey]?.[network]?.collectionAddress ?? "",
                                             },
                                         })
-                                    if (!data) {
-                                        toast({
-                                            title: "Error",
-                                            description: "Failed to wrap NFT",
-                                            variant: "destructive",
-                                        })
-                                        return
-                                    }
-                                    dispatch(
-                                        setSignTransactionModal({
-                                            type: TransactionType.SolanaRawTx,
-                                            data: {
-                                                serializedTx: data.serializedTx,
-                                            },
-                                            postActionHook: async (serializedTx) => {
-                                                const { data } = await sendWrapSolanaMetaplexNFTSwrMutation.trigger({
-                                                    request: {
-                                                        serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
-                                                    },
-                                                })
-                                                if (!data) {
-                                                    toast({
-                                                        title: "Error",
-                                                        description: "Failed to send wrap NFT transaction",
-                                                        variant: "destructive",
+                                        dispatch(
+                                            setSignTransactionModalContent({
+                                                type: TransactionType.SolanaRawTx,
+                                                data: {
+                                                    serializedTx: data?.serializedTx ?? "",
+                                                },
+                                                postActionHook: async (serializedTx) => {
+                                                    const { data } = await sendWrapSolanaMetaplexNFTSwrMutation.trigger({
+                                                        request: {
+                                                            serializedTx: Array.isArray(serializedTx) ? serializedTx[0] : serializedTx,
+                                                        },
                                                     })
-                                                    return ""
-                                                }
-                                                return data.txHash
-                                            },
+                                                    return data?.txHash ?? ""
+                                                },
+                                            })
+                                        )
+                                        openSignTransactionModal()
+                                    } catch (error) {
+                                        addErrorToast({
+                                            errorMessage: (error as Error).message,
                                         })
-                                    )
-                                    openSignTransactionModal()
+                                    }
                                 }}
                                 name="Wrap"
                             />

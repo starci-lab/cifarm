@@ -1,9 +1,11 @@
 "use client"
 import {
-    NEIGHBORS_DISCLOSURE,
-    WARNING_DISCLOSURE,
+    NEIGHBORS_MODAL_DISCLOSURE,
+    WARNING_MODAL_DISCLOSURE,
+    EmitterEventName,
+    useWs,
     WS,
-} from "@/app/(core)/constantsd"
+} from "@/singleton"
 import { pathConstants } from "@/constants"
 import { gameState } from "@/game/config"
 import {
@@ -11,16 +13,14 @@ import {
     ExternalEventName,
 } from "@/modules/event-emitter"
 import {
-    useWs,
     useRouterWithSearchParams,
-    EmitterEventName,
-    toast,
 } from "@/hooks"
-import { UserSchema } from "@/modules/entities"
+import { addErrorToast, addSuccessToast } from "@/modules/toast"
+import { UserSchema } from "@/types"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/singleton"
 import {
-    setWarningModal,
+    setWarningModalContent,
     setVisitedUser,
     useAppDispatch,
     setActiveNeighborCard,
@@ -81,12 +81,12 @@ export const UserCard: FC<UserCardProps> = ({
     const [avatarUrl, setAvatarUrl] = useState("")
 
     const { close: closeNeighborsModal } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
+    useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_MODAL_DISCLOSURE)
 
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
 
     const { open: openWarningModal } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(WARNING_DISCLOSURE)
+    useSingletonHook<ReturnType<typeof useDisclosure>>(WARNING_MODAL_DISCLOSURE)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -133,20 +133,18 @@ export const UserCard: FC<UserCardProps> = ({
                     <ExtendedButton
                         onClick={() => {
                             dispatch(
-                                setWarningModal({
+                                setWarningModalContent({
                                     message: "Are you sure you want to unfollow this user?",
                                     callback: async () => {
                                         try {
                                             await onUnfollowCallback?.()
-                                            toast({
-                                                title: "Unfollowed successfully",
-                                                description: "You are no longer following this user",
+                                            addSuccessToast({
+                                                successMessage: "Unfollowed successfully",
                                             })
                                         } catch (error) {
                                             console.error(error)
-                                            toast({
-                                                title: "Failed to unfollow user",
-                                                description: (error as Error).message,
+                                            addErrorToast({
+                                                errorMessage: "Failed to unfollow user",
                                             })
                                         }
                                     },
@@ -165,15 +163,13 @@ export const UserCard: FC<UserCardProps> = ({
                         onClick={async () => {
                             try {
                                 await onFollowCallback?.()
-                                toast({
-                                    title: "Followed successfully",
-                                    description: "You are now following this user",
+                                addSuccessToast({
+                                    successMessage: "Followed successfully",
                                 })
                             } catch (error) {
                                 console.error(error)
-                                toast({
-                                    title: "Failed to follow user",
-                                    description: (error as Error).message,
+                                addErrorToast({
+                                    errorMessage: "Failed to follow user",
                                 })
                             }
                         }}

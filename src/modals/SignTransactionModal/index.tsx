@@ -22,10 +22,10 @@ import { blockchainMap } from "@/modules/blockchain"
 import {
     useGraphQLQueryStaticSwr,
     useSignSolanaTransactionTxSwrMutation,
-    useRouterWithSearchParams,
     useTransferNFTSwrMutation,
     useTransferTokenSwrMutation,
-} from "@/hooks"
+} from "@/singleton"
+import { useRouterWithSearchParams } from "@/hooks"
 import { ExtendedButton, ModalHeader, DownloadButton } from "@/components"
 import {
     Dialog,

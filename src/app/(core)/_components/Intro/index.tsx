@@ -4,7 +4,7 @@ import React from "react"
 import { Spacer, SpinePlayer, WrappedAnimation, Image } from "@/components"
 import { HighlightBanner } from "../HighlighBanner"
 import { AnimalAge, assetAnimalMap, assetFruitMap } from "@/modules/assets"
-import { AnimalId, FruitId } from "@/modules/entities"
+import { AnimalId, FruitId } from "@/types"
 import { Trophy } from "@phosphor-icons/react"
 
 export const Intro = () => {

@@ -1,45 +1,35 @@
 "use client"
 import { useAppSelector } from "@/redux"
-import { ChainKey } from "@/modules/blockchain"
 import React from "react"
 import { publicKey, sol } from "@metaplex-foundation/umi"
-import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { TransactionBuilder } from "@metaplex-foundation/umi"
 import { transferSol } from "@metaplex-foundation/mpl-toolbox"
-import { umiWalletAdapterIdentity } from "@/modules/blockchain"
 import bs58 from "bs58"
 
 const Page = () => {
-    const connect = useAppSelector(state => state.walletReducer[ChainKey.Solana]?.connect)
-    const disconnect = useAppSelector(state => state.walletReducer[ChainKey.Solana]?.disconnect)
-    const signMessage = useAppSelector(state => state.walletReducer[ChainKey.Solana]?.signMessage)
-    const phantom = useAppSelector(state => state.walletReducer[ChainKey.Solana])
-    const signedTransaction = useAppSelector(state => state.walletReducer[ChainKey.Solana]?.signedTransaction)
-    const signedTransactions = useAppSelector(state => state.walletReducer[ChainKey.Solana]?.signedTransactions)
-
+    const connect = useAppSelector(state => state.walletReducer.solanaWallet.connect)
+    const disconnect = useAppSelector(state => state.walletReducer.solanaWallet.disconnect)
+    const signMessage = useAppSelector(state => state.walletReducer.solanaWallet.signMessage)
+    const phantom = useAppSelector(state => state.walletReducer.solanaWallet)
+    const signedTransactions = useAppSelector(state => state.walletReducer.solanaWallet.signedTransactions)
+    const umi = useAppSelector(state => state.walletReducer.solanaWallet.umi)
     return <>
         <div>
-            <div>{signedTransaction?.toString()}</div>
             <div>{signedTransactions?.join("\n")}</div>
             <div>{phantom.address}</div>
             <button onClick={() => connect?.()}>Connect</button>
             <button onClick={() => disconnect?.()}>Disconnect</button>
             <button onClick={() => signMessage?.(Buffer.from("Hello"))}>Sign Message</button>
             <button onClick={async () => {
+                if (!umi) {
+                    throw new Error("Umi is not initialized")
+                }
                 // demo transfer sol with umi
-                const umi = createUmi(
-                    "https://api.devnet.solana.com",
-                    {
-                        commitment: "confirmed",
-                    }
-                ).use(
-                    umiWalletAdapterIdentity(phantom)
-                )
                 const transactionBuilder = new TransactionBuilder()
                 transactionBuilder.add(
                     transferSol(umi,{
                         source: umi.identity,
-                        destination: publicKey(phantom.address),
+                        destination: publicKey(phantom.address ?? ""),
                         amount: sol(1),
                     })
                 )
@@ -49,14 +39,9 @@ const Page = () => {
             }}>Sign Transaction</button>
             <button onClick={async () => {
                 // de   mo transfer sol with umi
-                const umi = createUmi(
-                    "https://api.devnet.solana.com",
-                    {
-                        commitment: "confirmed",
-                    }
-                ).use(
-                    umiWalletAdapterIdentity(phantom)
-                )
+                if (!umi) {
+                    throw new Error("Umi is not initialized")
+                }
                 const transactionBuilder1 = new TransactionBuilder().add(
                     transferSol(umi,{
                         source: umi.identity,

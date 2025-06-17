@@ -2,7 +2,7 @@ import {
     AnimalCurrentState,
     PlantCurrentState,
     FruitCurrentState,
-} from "@/modules/entities"
+} from "@/types"
 
 import { AssetTextureData } from "./types"
 import { getAssetUrl } from "./utils"

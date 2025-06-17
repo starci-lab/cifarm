@@ -17,10 +17,10 @@ import {
     PlantType,
     Position,
     BeeHouseCurrentState,
-    getSellInfoFromPlacedItemType,
     InventoryTypeSchema,
     DecorationType,
-} from "@/modules/entities"
+} from "@/types"
+import { getSellInfoFromPlacedItemType } from "@/utils"
 import { SpineGameObject } from "@esotericsoftware/spine-phaser"
 import { Pinch, Tap } from "phaser3-rex-plugins/plugins/gestures"
 import { GREEN_TINT_COLOR, RED_TINT_COLOR } from "../constants"
@@ -61,7 +61,7 @@ import {
     UseHerbicideMessage,
     UsePesticideMessage,
     UseWateringCanMessage,
-} from "@/hooks"
+} from "@/singleton"
 import {
     createMainVisual,
     getAssetData,
@@ -1678,7 +1678,7 @@ export class InputTilemap extends ItemTilemap {
                 ExternalEventEmitter.emit(
                     ExternalEventName.UpdateUpgradeModalContent,
                     {
-                        placedItemBuildingId: placedItemId,
+                        placedItemId,
                     }
                 )
                 ExternalEventEmitter.emit(ExternalEventName.OpenModal, {

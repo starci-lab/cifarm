@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { PartialDeep } from "type-fest"
 import { Transaction } from "@solana/web3.js"
 import { PhantomProvider, PhantomSignAndSendTransactionResult } from "@/types"
 import { Umi } from "@metaplex-foundation/umi"
@@ -69,9 +68,7 @@ const initialState: SolanaWalletSlice = {
     },
 }
 
-export interface SetSolanaWalletPayload {
-    data: PartialDeep<SolanaWalletSlice>
-}
+export type SetSolanaWalletPayload = Partial<SolanaWalletSlice>
 
 // solana wallet slice
 export const solanaWalletSlice = createSlice({
@@ -79,11 +76,10 @@ export const solanaWalletSlice = createSlice({
     initialState,
     reducers: {
         setSolanaWallet: (state, action: PayloadAction<SetSolanaWalletPayload>) => {
-            state = {
+            return {
                 ...state,
                 ...action.payload,
             }
-            return state
         },
         resetSolanaWallet: (state) => {
             state = {

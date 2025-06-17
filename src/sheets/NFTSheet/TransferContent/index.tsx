@@ -1,4 +1,4 @@
-import { TRANSFER_NFT_FORMIK } from "@/app/(core)/constantsd"
+import { TRANSFER_NFT_FORMIK } from "@/singleton"
 import {
     ExtendedButton,
     ExtendedInput,
@@ -12,7 +12,7 @@ import {
     SheetBody,
     SheetFooter,
 } from "@/components"
-import { useTransferNFTFormik } from "@/hooks"
+import { useTransferNFTFormik } from "@/singleton"
 import { useSingletonHook2 } from "@/singleton"
 import { NFTSheetPage, setNFTSheetPage, useAppDispatch } from "@/redux"
 import { At } from "@phosphor-icons/react"

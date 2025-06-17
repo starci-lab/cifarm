@@ -2,11 +2,11 @@ import React, { FC } from "react"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components"
 import { ItemCard } from "./ItemCard"
 import { useSingletonHook } from "@/singleton"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/app/(core)/constantsd"
+import { GRAPHQL_QUERY_STATIC_SWR } from "@/singleton"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetBuildingMap, assetProductMap, assetSuppliesMap, assetTerrainsMap, assetToolsMap } from "@/modules/assets"
 import { assetShopMap } from "@/modules/assets"
-import { BuildingId, ProductType } from "@/modules/entities"
+import { BuildingId, ProductType } from "@/types"
 import { envConfig } from "@/env"
 
 export interface ItemData {

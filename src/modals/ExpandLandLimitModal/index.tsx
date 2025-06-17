@@ -29,10 +29,12 @@ import { useAppSelector } from "@/redux"
 import {
     useGraphQLMutationCreateExpandLandLimitSolanaTransactionSwrMutation,
     useGraphQLMutationSendExpandLandLimitSolanaTransactionSwrMutation,
-    toast,
+} from "@/singleton"
+import {
     useGlobalAccountAddress,
 } from "@/hooks"
-import { TokenKey } from "@/modules/entities"
+import { addErrorToast } from "@/modules/toast"
+import { TokenKey } from "@/types"
 import { ChainKey } from "@/modules/blockchain"
 import { envConfig } from "@/env"
 
@@ -135,46 +137,35 @@ export const ExpandLandLimitModal: FC = () => {
                                         accountAddress,
                                     },
                                 })
-                                if (!data) {
-                                    toast({
-                                        title: "Failed to create transaction",
-                                        variant: "destructive",
-                                    })
-                                    return
-                                }
                                 dispatch(
                                     setSignTransactionModalContent({
                                         type: TransactionType.SolanaRawTx,
                                         data: {
-                                            serializedTx: data.serializedTx,
+                                            serializedTx: data?.serializedTx ?? "",
                                         },
                                         postActionHook: async (signedSerializedTx) => {
-                                            const { data } = await sendExpandLandLimitSwr.trigger({
-                                                request: {
-                                                    serializedTx: Array.isArray(signedSerializedTx)
-                                                        ? signedSerializedTx[0]
-                                                        : signedSerializedTx,
-                                                },
-                                            })
-                                            if (!data) {
-                                                toast({
-                                                    title: "Failed to send transaction",
-                                                    variant: "destructive",
+                                            try {
+                                                const { data } = await sendExpandLandLimitSwr.trigger({
+                                                    request: {
+                                                        serializedTx: Array.isArray(signedSerializedTx)
+                                                            ? signedSerializedTx[0]
+                                                            : signedSerializedTx,
+                                                    },
+                                                })
+                                                return data?.txHash ?? ""
+                                            } catch (error) {
+                                                addErrorToast({
+                                                    errorMessage: (error as Error).message,
                                                 })
                                                 return ""
                                             }
-                                            return data.txHash
                                         },
                                     })
                                 )
                                 openSignTransactionModal()
                             } catch (error) {
-                                toast({
-                                    title:
-                    error instanceof Error
-                        ? error.message
-                        : "An unknown error occurred",
-                                    variant: "destructive",
+                                addErrorToast({
+                                    errorMessage: (error as Error).message,
                                 })
                             }
                         }}

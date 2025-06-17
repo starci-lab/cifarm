@@ -6,7 +6,7 @@ import {
 import useSWR from "swr"
 import { ChainKey } from "@/modules/blockchain"
 import { useGlobalAccountAddress } from "@/hooks"
-import { NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionKey } from "@/types"
 import { WrapperBlockchainCollectionData, useAppSelector } from "@/redux"
 import { useState } from "react"
 

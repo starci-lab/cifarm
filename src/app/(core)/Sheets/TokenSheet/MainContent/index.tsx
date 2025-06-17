@@ -16,7 +16,7 @@ import { useSingletonHook, useSingletonHook2 } from "@/singleton"
 import {
     TRANSFER_TOKEN_FORMIK,
     GRAPHQL_QUERY_STATIC_SWR,
-} from "@/app/(core)/constantsd"
+} from "@/singleton"
 import {
     setTokenSheetPage,
     setTransferTab,
@@ -30,7 +30,7 @@ import {
 } from "@/modules/blockchain"
 import { envConfig } from "@/env"
 import { HandArrowDown, HandCoins, PaperPlaneRight, QrCode, ArrowUpRight, ShoppingCart, DotsThree } from "@phosphor-icons/react"
-import { TokenKey } from "@/modules/entities"
+import { TokenKey } from "@/types"
 
 export const MainContent: FC = () => {  
     const tokenKey = useAppSelector((state) => state.sheetReducer.tokenSheet.tokenKey)

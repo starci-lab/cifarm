@@ -8,7 +8,7 @@ import { PulsatingActionButton } from "./PulsatingActionButton"
 import { FeaturedImage } from "./FeaturedImage"
 import { Image, Separator, Spacer, WrappedAnimation } from "@/components"
 import { assetProductMap } from "@/modules/assets"
-import { ProductId } from "@/modules/entities"
+import { ProductId } from "@/types"
 import { Trophy, Users } from "@phosphor-icons/react"
 
 const features: Array<FeatureItemProps> = [

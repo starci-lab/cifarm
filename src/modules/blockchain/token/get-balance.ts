@@ -4,7 +4,7 @@ import { computeDenomination } from "@/modules/common"
 import { PublicKey } from "@solana/web3.js"
 import { Platform, chainKeyToPlatform } from "../common"
 import { defaultNetwork } from "../default"
-import { TokenKey, Tokens } from "@/modules/entities"
+import { TokenKey, Tokens } from "@/types"
 
 export interface GetBalanceParams {
   chainKey: ChainKey;

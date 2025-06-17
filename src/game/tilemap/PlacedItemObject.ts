@@ -18,7 +18,7 @@ import {
     Position,
     ProductSchema,
     UserSchema,
-} from "@/modules/entities"
+} from "@/types"
 import ContainerLite from "phaser3-rex-plugins/plugins/containerlite"
 import {
     OverlapSizer,

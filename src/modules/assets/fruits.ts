@@ -1,4 +1,4 @@
-import { FruitId } from "@/modules/entities"
+import { FruitId } from "@/types"
 import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig } from "./types"
 import { getAssetUrl } from "./utils"
 

@@ -1,4 +1,4 @@
-import { CropId } from "@/modules/entities"
+import { CropId } from "@/types"
 import { AssetData, AssetMapData, AssetMapType, Metadata, BubbleStateConfig } from "./types"
 import { getAssetUrl } from "./utils"
 

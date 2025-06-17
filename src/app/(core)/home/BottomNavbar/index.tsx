@@ -1,6 +1,6 @@
 "use client"
 
-import { SHEET_BOTTOM_NAV_DISCLOSURE } from "@/app/(core)/constantsd"
+import { SHEET_BOTTOM_NAV_DISCLOSURE } from "@/singleton"
 import { pathConstants } from "@/constants"
 import {
     useRouterWithSearchParams

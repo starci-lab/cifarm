@@ -1,4 +1,4 @@
-import { InventoryKind } from "@/modules/entities"
+import { InventoryKind } from "@/types"
 
 export interface InventoryId {
     index: number;

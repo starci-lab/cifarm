@@ -16,13 +16,12 @@ import {
     DialogBody,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
+import { useGlobalAccountAddress, useIsMobileDevice } from "@/hooks"
+import { addErrorToast } from "@/modules/toast"
 import {
-    toast,
-    useGlobalAccountAddress,
     useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation,
     useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation,
-    useIsMobileDevice,
-} from "@/hooks"
+} from "@/singleton"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import {
     setSignTransactionModalContent,
@@ -126,18 +125,12 @@ export const BuyGoldsModal: FC = () => {
                                 },
                             }
                         )
-                                            if (!data) {
-                                                toast({
-                                                    title: "Failed to create transaction",
-                                                    variant: "destructive",
-                                                })
-                                                return
-                                            }
+                                           
                                             dispatch(
                                                 setSignTransactionModalContent({
                                                     type: TransactionType.SolanaRawTx,
                                                     data: {
-                                                        serializedTx: data.serializedTx,
+                                                        serializedTx: data?.serializedTx ?? "",
                                                     },
                                                     postActionHook: async (signedSerializedTx) => {
                                                         const { data } =
@@ -152,18 +145,16 @@ export const BuyGoldsModal: FC = () => {
                                       },
                                   }
                               )
-                                                        if (!data) {
-                                                            toast({
-                                                                title: "Failed to send transaction",
-                                                                variant: "destructive",
-                                                            })
-                                                            return ""
-                                                        }
-                                                        return data.txHash
+                                                       
+                                                        return data?.txHash ?? ""
                                                     },
                                                 })
                                             )
                                             openSignTransactionModal()
+                                        } catch (error) {
+                                            addErrorToast({
+                                                errorMessage: (error as Error).message,
+                                            })
                                         } finally {
                                             setSelectedIndex(undefined)
                                         }

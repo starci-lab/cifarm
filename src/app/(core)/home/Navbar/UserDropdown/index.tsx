@@ -8,7 +8,7 @@ import { createJazziconBlobUrl } from "@/modules/jazz"
 import useSWRMutation from "swr/mutation"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/singleton"
-import { REFERRAL_DISCLOSURE } from "@/app/(core)/constantsd"
+import { REFERRAL_DISCLOSURE } from "@/singleton"
 
 export const UserDropdown: FC = () => {
     const user = useAppSelector((state) => state.sessionReducer.user)

@@ -1,4 +1,4 @@
-import { GRAPHQL_QUERY_STATIC_SWR, TRANSFER_TOKEN_FORMIK } from "@/app/(core)/constantsd"
+import { GRAPHQL_QUERY_STATIC_SWR, TRANSFER_TOKEN_FORMIK } from "@/singleton"
 import {
     ExtendedButton,
     ExtendedInput,

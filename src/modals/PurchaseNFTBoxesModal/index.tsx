@@ -17,9 +17,9 @@ import { useDisclosure } from "react-use-disclosure"
 import { ExtendedButton, Image, Slider, Spacer, Title } from "@/components"
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
-import { usePurchaseNFTBoxesFormik } from "@/hooks"
+import { usePurchaseNFTBoxesFormik } from "@/singleton"
 import { useAppSelector } from "@/redux/hooks"
-import { TokenKey } from "@/modules/entities"
+import { TokenKey } from "@/types"
 
 export const PurchaseNFTBoxesModal: FC = () => {
     const { isOpen, toggle } = useSingletonHook<ReturnType<typeof useDisclosure>>(

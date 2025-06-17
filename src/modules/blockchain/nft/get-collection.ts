@@ -4,7 +4,7 @@ import { Platform, chainKeyToPlatform } from "../common"
 import { defaultNetwork } from "../default"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { Attribute, mplCore } from "@metaplex-foundation/mpl-core"
-import { NFTCollections, NFTCollectionKey } from "@/modules/entities"
+import { NFTCollections, NFTCollectionKey } from "@/types"
 import { dasApi } from "@metaplex-foundation/digital-asset-standard-api"
 import { das } from "@metaplex-foundation/mpl-core-das"
 

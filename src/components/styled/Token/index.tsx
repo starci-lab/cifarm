@@ -1,6 +1,6 @@
 "use client"
 import { Image, PressableCard } from "@/components"
-import { TokenData } from "@/modules/entities"
+import { TokenData } from "@/types"
 import React, { FC } from "react"
 import { SWRResponse } from "swr"
 

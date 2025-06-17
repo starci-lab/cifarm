@@ -1,4 +1,4 @@
-import { TokenKey } from "@/modules/entities"
+import { TokenKey } from "@/types"
 import { DocumentNode, gql } from "@apollo/client"
 import { noCacheAuthClient } from "../../auth-client"
 import { QueryParams } from "../../types"

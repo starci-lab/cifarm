@@ -8,7 +8,7 @@ import {
     CardBody,
     CardFooter,
 } from "@/components"
-import { TokenKey, Tokens } from "@/modules/entities"
+import { TokenKey, Tokens } from "@/types"
 import { ChainKey, Network } from "@/modules/blockchain"
 
 export interface BuyCardProps {

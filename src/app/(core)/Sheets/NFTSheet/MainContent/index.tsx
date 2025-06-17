@@ -35,7 +35,7 @@ import {
     SIGN_TRANSACTION_DISCLOSURE,
     TRANSFER_NFT_FORMIK,
     GRAPHQL_QUERY_USER_SWR_MUTATION,
-} from "@/app/(core)/constantsd"
+} from "@/singleton"
 import {
     NFTSheetPage,
     setNFTSheetPage,
@@ -54,7 +54,7 @@ import {
     statsAttributeNameMap,
 } from "@/modules/blockchain"
 import { useParams } from "next/navigation"
-import { NFTCollectionKey, PlacedItemType } from "@/modules/entities"
+import { NFTCollectionKey, PlacedItemType } from "@/types"
 import { envConfig } from "@/env"
 import { Export, Package, PaperPlaneRight, Sparkle, Eye } from "@phosphor-icons/react"
 import { createJazziconBlobUrl } from "@/modules/jazz"

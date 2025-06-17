@@ -2,7 +2,7 @@ import React, { FC } from "react"
 import { NFTCollection } from "@/components"
 import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
-import { NFTCollectionData, NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionData, NFTCollectionKey } from "@/types"
 
 interface WrapperNFTCollectionProps {
     collection: NFTCollectionData

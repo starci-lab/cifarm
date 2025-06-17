@@ -24,12 +24,12 @@ import {
     DialogTitle,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
+import { useGlobalAccountAddress } from "@/hooks"
+import { addErrorToast } from "@/modules/toast"
 import {
     useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation,
     useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation,
-    useGlobalAccountAddress,
-    toast,
-} from "@/hooks"
+} from "@/singleton"
 import {
     useAppSelector,
     setSelectedNFTCollectionKey,
@@ -39,7 +39,7 @@ import {
 } from "@/redux"
 import { ArrowDown, CaretDown, CaretUp } from "@phosphor-icons/react"
 import { envConfig } from "@/env"
-import { NFTCollectionKey } from "@/modules/entities"
+import { NFTCollectionKey } from "@/types"
 import {
     sessionDb,
     SessionDbKey,
@@ -167,14 +167,15 @@ export const NFTConversionModal: FC = () => {
                         className="w-full"
                         isLoading={createConvertSolanaMetaplexNFTsSwrMutation.isMutating}
                         onClick={async () => {
-                            if (!accountAddress) return
-                            if (isMobileDevice) {
-                                await sessionDb.keyValueStore.add({
-                                    key: SessionDbKey.SolanaTransaction,
-                                    value: SolanaTransactionType.ConvertMetaplexNFTs,
-                                })
-                            }
-                            const { data } =
+                            try {
+                                if (!accountAddress) return
+                                if (isMobileDevice) {
+                                    await sessionDb.keyValueStore.add({
+                                        key: SessionDbKey.SolanaTransaction,
+                                        value: SolanaTransactionType.ConvertMetaplexNFTs,
+                                    })
+                                }
+                                const { data } =
                 await createConvertSolanaMetaplexNFTsSwrMutation.trigger({
                     request: {
                         convertNFTAddresses: nftAddresses,
@@ -183,24 +184,22 @@ export const NFTConversionModal: FC = () => {
                         burnNFTCollectionKey: nftCollectionKey,
                     },
                 })
-                            if (!data) {
-                                toast({
-                                    title: "Failed to convert NFTs",
-                                    description: "Please try again",
-                                    variant: "destructive",
-                                })
-                                return
-                            }
-                            dispatch(
-                                setSignTransactionModalContent({
-                                    type: TransactionType.SolanaRawTxs,
-                                    data: {
-                                        serializedTxs: data.serializedTxs,
-                                    },
-                                    postActionHook: async (
-                                        signedSerializedTxs: string | Array<string>
-                                    ) => {
-                                        const { data } =
+                                if (!data) {
+                                    addErrorToast({
+                                        errorMessage: "Failed to convert NFTs",
+                                    })
+                                    return
+                                }
+                                dispatch(
+                                    setSignTransactionModalContent({
+                                        type: TransactionType.SolanaRawTxs,
+                                        data: {
+                                            serializedTxs: data.serializedTxs,
+                                        },
+                                        postActionHook: async (
+                                            signedSerializedTxs: string | Array<string>
+                                        ) => {
+                                            const { data } =
                       await sendConvertSolanaMetaplexNFTsSwrMutation.trigger({
                           request: {
                               serializedTxs: Array.isArray(signedSerializedTxs)
@@ -208,18 +207,16 @@ export const NFTConversionModal: FC = () => {
                                   : [signedSerializedTxs],
                           },
                       })
-                                        if (!data) {
-                                            toast({
-                                                title: "Failed to send transaction",
-                                                variant: "destructive",
-                                            })
-                                            return ""
-                                        }
-                                        return data.txHash
-                                    },
+                                            return data?.txHash ?? ""
+                                        },
+                                    })
+                                )
+                                openSignTransactionModal()
+                            } catch (error) {
+                                addErrorToast({
+                                    errorMessage: (error as Error).message,
                                 })
-                            )
-                            openSignTransactionModal()
+                            }
                         }}
                     >
             Convert

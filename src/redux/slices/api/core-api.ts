@@ -3,7 +3,7 @@ import {
     InventorySchema,
     PlacedItemSchema,
     UserSchema,
-} from "@/modules/entities"
+} from "@/types"
 import {
     QueryBulkPaidsResponse,
     QueryStaticResponse,

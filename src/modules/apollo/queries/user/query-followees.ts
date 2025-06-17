@@ -1,6 +1,6 @@
 import { DocumentNode, gql } from "@apollo/client"
 import { noCacheAuthClient } from "../../auth-client"
-import { UserSchema } from "@/modules/entities"
+import { UserSchema } from "@/types"
 import {
     IPaginatedResponse, 
     QueryManyRequest,

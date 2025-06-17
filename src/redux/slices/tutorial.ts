@@ -1,4 +1,4 @@
-import { TutorialStep } from "@/modules/entities"
+import { TutorialStep } from "@/types"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface TutorialSlice {

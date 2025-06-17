@@ -1,4 +1,4 @@
-import { PlacedItemSchema } from "@/modules/entities"
+import { PlacedItemSchema } from "@/types"
 import { DocumentNode, gql } from "@apollo/client"
 import { noCacheAuthClient } from "../../auth-client"
 import { QueryParams } from "../../types"

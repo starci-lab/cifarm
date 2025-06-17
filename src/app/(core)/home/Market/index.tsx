@@ -1,4 +1,4 @@
-import { NATIVE_COINGEKCO_SWR } from "@/app/(core)/constantsd"
+import { NATIVE_COINGEKCO_SWR } from "@/singleton"
 import { ExclamationTooltip, Image, Badge, List  } from "@/components"
 import { useNativeCoinGeckoSWR } from "@/hooks"
 import { blockchainMap, DefaultToken } from "@/modules/blockchain"

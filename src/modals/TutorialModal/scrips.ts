@@ -1,4 +1,4 @@
-import { TutorialStep } from "@/modules/entities"
+import { TutorialStep } from "@/types"
 
 export interface TutorialScript {
   text: string;

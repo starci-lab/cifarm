@@ -1,7 +1,7 @@
 import { ChainKey, NFTRarityEnum } from "@/modules/blockchain"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { TxResponse, TxResponses } from "@/modules/honeycomb"
-import { NFTCollectionKey, TokenKey } from "@/modules/entities"
+import { NFTCollectionKey, TokenKey } from "@/types"
 import { BlockchainNFTData } from "@/modules/apollo"
 
 export interface WarningModal {

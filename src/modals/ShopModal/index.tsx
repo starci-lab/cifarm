@@ -27,7 +27,7 @@ import {
     BuyFlowerSeedsMessage,
     BuySuppliesMessage,
     BuyToolMessage,
-} from "@/hooks"
+} from "@/singleton"
 import { ShopCard } from "./ShopCard"
 import { assetShopMap } from "@/modules/assets"
 import {
@@ -36,7 +36,7 @@ import {
     getFruitLimit,
     getTileLimit,
     getPetLimit,
-} from "@/modules/entities"
+} from "@/utils"
 import {
     BuyItemMessage,
     ExternalEventEmitter,

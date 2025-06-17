@@ -1,4 +1,4 @@
-import { QUERY_STATIC_SWR_MUTATION } from "@/app/(core)/constantsd"
+import { QUERY_STATIC_SWR_MUTATION } from "@/singleton"
 import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { useSingletonHook } from "@/singleton"
 import React, { FC } from "react"

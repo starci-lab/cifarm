@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react"
-import { AnimalCurrentState, PlacedItemSchema } from "@/modules/entities"
+import { AnimalCurrentState, PlacedItemSchema } from "@/types"
 import { formatTime, cn } from "@/utils"
 import {
     DialogFooter,

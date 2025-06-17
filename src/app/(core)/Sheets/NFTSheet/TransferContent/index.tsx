@@ -1,4 +1,4 @@
-import { TRANSFER_NFT_FORMIK } from "@/app/(core)/constantsd"
+import { TRANSFER_NFT_FORMIK } from "@/singleton"
 import {
     ExtendedButton,
     ExtendedInput,

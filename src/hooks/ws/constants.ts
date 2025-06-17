@@ -1,8 +1,0 @@
-export const PLACED_ITEMS_SYNCED_EVENT = "placed_items_synced"
-export const ACTION_EMITTED_EVENT = "action_emitted"
-export const SHOW_FADE_EVENT = "show_fade"
-export const USER_SYNCED_EVENT = "user_synced"
-export const INVENTORIES_SYNCED_EVENT = "inventories_synced"
-export const SYNC_PLACED_ITEMS_EVENT = "sync_placed_items"
-export const VISIT_EVENT = "visit"
-export const RETURN_EVENT = "return"

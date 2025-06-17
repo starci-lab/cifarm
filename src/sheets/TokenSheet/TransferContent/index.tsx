@@ -1,4 +1,4 @@
-import { GRAPHQL_QUERY_STATIC_SWR, TRANSFER_TOKEN_FORMIK } from "@/app/(core)/constantsd"
+import { TRANSFER_TOKEN_FORMIK } from "@/singleton"
 import {
     ExtendedButton,
     ExtendedInput,
@@ -14,8 +14,8 @@ import {
     SheetFooter,
 } from "@/components"
 import { envConfig } from "@/env"
-import { useGraphQLQueryStaticSwr, useTransferTokenFormik } from "@/hooks"
-import { useSingletonHook, useSingletonHook2 } from "@/singleton"
+import { useTransferTokenFormik } from "@/singleton"
+import { useSingletonHook2 } from "@/singleton"
 import { useAppSelector, setTokenSheetPage, TokenSheetPage, useAppDispatch } from "@/redux"
 import React, { FC, useEffect } from "react"
 
@@ -26,9 +26,7 @@ export const TransferContent: FC = () => {
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
 
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(GRAPHQL_QUERY_STATIC_SWR)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
     const formik = useSingletonHook2<ReturnType<typeof useTransferTokenFormik>>(
         TRANSFER_TOKEN_FORMIK
@@ -40,7 +38,7 @@ export const TransferContent: FC = () => {
         }
         // const balanceSwr = blockchainBalancesSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)
         // formik.setFieldValue("balance", balanceSwr?.balance)
-    }, [staticSwr])
+    }, [staticData])
 
     const dispatch = useAppDispatch()
 
@@ -49,7 +47,7 @@ export const TransferContent: FC = () => {
     }
 
     // const balanceSwr = blockchainBalancesSwr.data?.data.blockchainBalances.tokens.find((token) => token.tokenKey === tokenKey)
-    const token = staticSwr.data?.data.tokens[tokenKey]?.[chainKey]?.[network]
+    const token = staticData?.tokens[tokenKey]?.[chainKey]?.[network]
 
     if (!token) {
         return null

@@ -20,7 +20,7 @@ import {
     CardFooter,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
-import { DailyRewardId } from "@/modules/entities"
+import { DailyRewardId } from "@/types"
 import { AssetIconId, assetIconMap, AssetUIId, assetUiMap } from "@/modules/assets"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
 import { getCurrentDayMidnightUtc, getUtc } from "@/utils"

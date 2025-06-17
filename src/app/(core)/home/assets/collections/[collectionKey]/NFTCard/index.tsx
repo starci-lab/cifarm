@@ -1,6 +1,6 @@
 "use client"
 
-import { SHEET_NFT_DISCLOSURE } from "@/app/(core)/constantsd"
+import { SHEET_NFT_DISCLOSURE } from "@/singleton"
 import { Image, WrappedBadge, Spacer, NFTRarityBadge, Card, CardBody, CardFooter } from "@/components"
 import { AttributeName, NFTRarityEnum } from "@/modules/blockchain"
 import { useSingletonHook } from "@/singleton"

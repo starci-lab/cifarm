@@ -8,7 +8,7 @@ import {
 } from "@/modules/assets"
 import {
     PlacedItemType,
-} from "@/modules/entities"
+} from "@/types"
 
 export const getPlacedItemTypeName = (
     placedItemTypeId: string,

@@ -1,6 +1,6 @@
 // db.js
 import Dexie, { type EntityTable } from "dexie"
-import { PlacedItemTypeId } from "@/modules/entities"
+import { PlacedItemTypeId } from "@/types"
 import { ChainKey, Network } from "@/modules/blockchain"
 
 const sessionDb = new Dexie("SessionDB") as Dexie & {

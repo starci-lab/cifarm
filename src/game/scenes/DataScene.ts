@@ -10,7 +10,7 @@ import {
     InventorySchema,
     UserSchema,
     PlacedItemSchema,
-} from "@/modules/entities"
+} from "@/types"
 import { CacheKey, PlacedItemsData } from "../types"
 import { SceneName } from "../scene"
 import { PartialDeep } from "type-fest"
