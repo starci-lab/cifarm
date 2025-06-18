@@ -6,8 +6,7 @@ import { useAppSelector } from "@/redux"
 import React from "react"
 
 const ProfilePage = () => {
-    const user = useAppSelector((state) => state.sessionReducer.user)
-
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
     return (
         <div className="relativen">
             <BlurEffect size="lg" position="top" />

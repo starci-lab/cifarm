@@ -1,50 +1,50 @@
-import {
-    GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
-} from "@/singleton"
-import {
-    useGraphQLQueryPlacedItemsSwrMutation,
-} from "@/hooks"
-import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 import { useAppDispatch, setPlacedItems } from "@/redux"
+import { useAppSelector } from "@/redux"
 
 export const usePlacedItemsEffects = () => {
     //get the singleton instance of the user swr
-    const { swrMutation } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryPlacedItemsSwrMutation>
-  >(GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION)
+    const placedItems = useAppSelector(
+        (state) => state.apiReducer.coreApi.placedItems
+    )
     const dispatch = useAppDispatch()
     // load placed items data
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.LoadPlacedItems, async (userId?: string) => {
-            const response = await swrMutation.trigger({
-                request: {
-                    userId,
-                },
-            })
-            dispatch(setPlacedItems(response.data?.placedItems))
-            ExternalEventEmitter.emit(ExternalEventName.PlacedItemsLoaded, response.data?.placedItems)
-        })
+        if (!placedItems) return
+        ExternalEventEmitter.on(
+            ExternalEventName.LoadPlacedItems,
+            async () => {
+                dispatch(setPlacedItems(placedItems))
+                ExternalEventEmitter.emit(
+                    ExternalEventName.PlacedItemsLoaded,
+                    placedItems
+                )
+            }
+        )
 
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.LoadPlacedItems)
         }
-    }, [swrMutation])
+    }, [placedItems])
 
     // load inventory data
     useEffect(() => {
-        ExternalEventEmitter.on(ExternalEventName.LoadPlacedItems, async (userId?: string) => {
-            const response = await swrMutation.trigger({
-                request: {
-                    userId,
-                },
-            })
-            ExternalEventEmitter.emit(ExternalEventName.PlacedItemsLoaded, response.data?.placedItems)
-        })
+        ExternalEventEmitter.on(
+            ExternalEventName.LoadPlacedItems,
+            async () => {
+                ExternalEventEmitter.emit(
+                    ExternalEventName.PlacedItemsLoaded,
+                    placedItems
+                )
+            }
+        )
 
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.LoadPlacedItems)
         }
-    }, [swrMutation])
+    }, [placedItems])
 }

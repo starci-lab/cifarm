@@ -1,13 +1,15 @@
 import React, { FC, useEffect, useState } from "react"
 import { FruitCurrentState, PlacedItemSchema } from "@/types"
-import { useSingletonHook } from "@/singleton"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/singleton"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { Spacer, ExtendedButton, DialogFooter, DialogBody, NFTBadge, Separator } from "@/components"
-import {    
-    assetProductMap,
-    assetStateMap,
-} from "@/modules/assets"
+import { useAppSelector } from "@/redux"
+import {
+    Spacer,
+    ExtendedButton,
+    DialogFooter,
+    DialogBody,
+    NFTBadge,
+    Separator,
+} from "@/components"
+import { assetProductMap, assetStateMap } from "@/modules/assets"
 import useSWR from "swr"
 import { sessionDb } from "@/modules/dexie"
 import { formatTime } from "@/modules/common"
@@ -20,53 +22,66 @@ interface FruitContentProps {
 }
 
 export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
-    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(GRAPHQL_QUERY_STATIC_SWR)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
-    const placedItemType = staticSwr.data?.data.placedItemTypes.find(
+    const placedItemType = staticData?.placedItemTypes.find(
         (placedItemType) => placedItemType.id === placedItem?.placedItemType
     )
     if (!placedItemType) throw new Error("Placed item type not found")
 
-    const fruit = staticSwr.data?.data.fruits.find(fruit => fruit.id === placedItemType.fruit)
+    const fruit = staticData?.fruits.find(
+        (fruit) => fruit.id === placedItemType.fruit
+    )
     if (!fruit) throw new Error("Fruit not found")
 
-    if (!placedItem.fruitInfo) throw new Error("Placed item fruit info not found")
+    if (!placedItem.fruitInfo)
+        throw new Error("Placed item fruit info not found")
 
-    const isMatured = placedItem.fruitInfo.currentStage >= (staticSwr.data?.data.fruitInfo.matureGrowthStage ?? 0)
+    const isMatured =
+    placedItem.fruitInfo.currentStage >=
+    (staticData?.fruitInfo.matureGrowthStage ?? 0)
     const growthStageDuration = isMatured
         ? fruit.matureGrowthStageDuration
         : fruit.youngGrowthStageDuration
     // count down the time to next growth stage
-    const _timeElapsed = growthStageDuration - (placedItem.fruitInfo?.currentStageTimeElapsed ?? 0)
+    const _timeElapsed =
+    growthStageDuration - (placedItem.fruitInfo?.currentStageTimeElapsed ?? 0)
     console.log(_timeElapsed)
     const [timeElapsed, setTimeElapsed] = useState(0)
     useEffect(() => {
-        if (placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured) return
+        if (placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured)
+            return
         setTimeElapsed(_timeElapsed)
     }, [])
     useEffect(() => {
         if (timeElapsed === 0) return
         if (
-            placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured 
-            || placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
-        ) return
+            placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured ||
+      placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
+        )
+            return
         const interval = setInterval(() => {
             setTimeElapsed((prev) => prev - 1)
         }, 1000)
         return () => clearInterval(interval)
     }, [timeElapsed])
 
-    const product = staticSwr.data?.data.products.find(product => product.fruit === fruit.id)
+    const product = staticData?.products.find(
+        (product) => product.fruit === fruit.id
+    )
     if (!product) throw new Error("Product not found")
 
     const { data: asset } = useSWR(placedItem.id, async () => {
         let key: string | undefined
         switch (placedItem.fruitInfo?.currentState) {
         case FruitCurrentState.NeedFertilizer:
-            key = assetStateMap.fruit[FruitCurrentState.NeedFertilizer]?.phaser.base.assetKey
+            key =
+          assetStateMap.fruit[FruitCurrentState.NeedFertilizer]?.phaser.base
+              .assetKey
             break
         case FruitCurrentState.IsBuggy:
-            key = assetStateMap.fruit[FruitCurrentState.IsBuggy]?.phaser.base.assetKey
+            key =
+          assetStateMap.fruit[FruitCurrentState.IsBuggy]?.phaser.base.assetKey
             break
         case FruitCurrentState.FullyMatured:
             key = assetProductMap[product.displayId].base.assetKey
@@ -87,7 +102,8 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                         assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
-                            The fruit needs fertilizer to continue growing. Consider purchasing fertilizer from the shop.
+              The fruit needs fertilizer to continue growing. Consider
+              purchasing fertilizer from the shop.
                     </div>
                 </div>
             )
@@ -98,7 +114,8 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                         assetUrl={asset?.data ? URL.createObjectURL(asset.data) : ""}
                     />
                     <div className="text-sm text-muted-foreground">
-                            The fruit is buggy. Use a bug net from the shop to protect your yield.
+              The fruit is buggy. Use a bug net from the shop to protect your
+              yield.
                     </div>
                 </div>
             )
@@ -110,7 +127,7 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                     />
                     <div className="flex flex-col">
                         <div className="text-sm text-muted-foreground">
-                                The fruit is ready to harvest. Use the crate to harvest it.
+                The fruit is ready to harvest. Use the crate to harvest it.
                         </div>
                         <div className="text-lg font-bold">
                             {`${placedItem.fruitInfo.harvestQuantityRemaining}/${placedItem.fruitInfo.harvestQuantityDesired}`}
@@ -124,21 +141,24 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
     }
 
     // count down the time to next fertilizer
-    const _needFertilizerTime = fruit.fertilizerTime - (placedItem.fruitInfo?.currentFertilizerTime ?? 0)
+    const _needFertilizerTime =
+    fruit.fertilizerTime - (placedItem.fruitInfo?.currentFertilizerTime ?? 0)
     const [needFertilizerTimeElapsed, setNeedFertilizerTimeElapsed] = useState(0)
     useEffect(() => {
-        if (placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured) return
+        if (placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured)
+            return
         setNeedFertilizerTimeElapsed(_needFertilizerTime)
     }, [])
     useEffect(() => {
         if (needFertilizerTimeElapsed === 0) return
         if (
-            placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
-            || placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured
-        ) return
+            placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer ||
+      placedItem.fruitInfo?.currentState === FruitCurrentState.FullyMatured
+        )
+            return
 
         const interval = setInterval(() => {
-            setNeedFertilizerTimeElapsed(prev => {
+            setNeedFertilizerTimeElapsed((prev) => {
                 if (prev <= 1) {
                     if (interval) {
                         clearInterval(interval)
@@ -148,14 +168,14 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                 return prev - 1
             })
         }, 1000)
-    
+
         return () => {
             if (interval) {
                 clearInterval(interval)
             }
         }
     }, [needFertilizerTimeElapsed])
-    
+
     return (
         <>
             <DialogBody>
@@ -168,43 +188,39 @@ export const FruitContent: FC<FruitContentProps> = ({ placedItem }) => {
                     </>
                 )}
                 <div className="bg-content-2 rounded-lg overflow-hidden">
-                    {
-                        placedItem.fruitInfo.currentState !== FruitCurrentState.FullyMatured && (
-                            <>
-                                <div className="p-3">
-                                    <div className="text-muted-foreground leading-none">
-                            Stage {placedItem.fruitInfo?.currentStage + 1}
-                                    </div>
-                                    <Spacer y={2} />
-                                    <div className={
-                                        cn(
-                                            "text-4xl text-success leading-none",
-                                            {
-                                                "text-destructive": placedItem.fruitInfo?.currentState === FruitCurrentState.NeedFertilizer
-                                            }
-                                        )
-                                    }>
-                                        {formatTime(timeElapsed)}
-                                    </div>
+                    {placedItem.fruitInfo.currentState !==
+            FruitCurrentState.FullyMatured && (
+                        <>
+                            <div className="p-3">
+                                <div className="text-muted-foreground leading-none">
+                  Stage {placedItem.fruitInfo?.currentStage + 1}
                                 </div>
-                                <Separator />
-                            </>
-                        )
-                    }    
-                    
+                                <Spacer y={2} />
+                                <div
+                                    className={cn("text-4xl text-success leading-none", {
+                                        "text-destructive":
+                      placedItem.fruitInfo?.currentState ===
+                      FruitCurrentState.NeedFertilizer,
+                                    })}
+                                >
+                                    {formatTime(timeElapsed)}
+                                </div>
+                            </div>
+                            <Separator />
+                        </>
+                    )}
+
                     <div className="p-3 flex items-center justify-between">
                         <div className="text-muted-foreground leading-none">
-                                Need fertilizer in
+              Need fertilizer in
                         </div>
                         <div className="leading-none">
-                            {formatTime(needFertilizerTimeElapsed) }
+                            {formatTime(needFertilizerTimeElapsed)}
                         </div>
                     </div>
                     {placedItem.fruitInfo &&
-          placedItem.fruitInfo.currentState !== FruitCurrentState.Normal && (
-                        <>
-                            {renderState()}
-                        </>
+            placedItem.fruitInfo.currentState !== FruitCurrentState.Normal && (
+                        <>{renderState()}</>
                     )}
                 </div>
                 <Spacer y={4} />

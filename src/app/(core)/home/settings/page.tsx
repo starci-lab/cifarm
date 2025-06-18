@@ -1,11 +1,11 @@
 "use client"
 
-import { BlurEffect, ExtendedButton, Header, Spacer } from "@/components"
+import { BlurEffect, Header, Spacer } from "@/components"
 import { useAppSelector } from "@/redux"
 import { useState } from "react"
 import React from "react"
 const ProfilePage = () => {
-    const user = useAppSelector((state) => state.sessionReducer.user)
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
     const [isEditing, setIsEditing] = useState(false)
 
     const handleEdit = () => {
@@ -19,7 +19,6 @@ const ProfilePage = () => {
             <Header title="Settings" />
             <Spacer y={4} />
             <div>
-
             </div>
         </div>
     )

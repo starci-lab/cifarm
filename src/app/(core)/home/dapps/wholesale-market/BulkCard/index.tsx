@@ -1,15 +1,27 @@
 "use client"
 
-import { Card, CardBody, ScaledImage, Spacer, Image, Badge, Tooltip, TooltipTrigger, TooltipContent, Title, CardFooter } from "@/components"
+import {
+    Card,
+    CardBody,
+    ScaledImage,
+    Spacer,
+    Image,
+    Badge,
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+    Title,
+    CardFooter,
+} from "@/components"
 import { TokenIcon } from "@/components"
 import React, { FC, useEffect, useState } from "react"
 import { ProductId, BulkSchema } from "@/types"
 import { assetProductMap, assetIconMap, AssetIconId } from "@/modules/assets"
 import { useSingletonHook } from "@/singleton"
-import { useGraphQLQueryStaticSwr, useIsMobile } from "@/hooks"
-import { QUERY_STATIC_SWR_MUTATION, SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE } from "@/singleton"
+import { useIsMobile } from "@/hooks"
+import { WHOLSALE_MARKET_BULK_SHEET_DISCLOSURE } from "@/singleton"
 import { cn } from "@/utils"
-import { useAppDispatch } from "@/redux/hooks"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { useDisclosure } from "react-use-disclosure"
 import { setWholesaleMarketBulkSheet } from "@/redux"
 import { envConfig } from "@/env"
@@ -18,36 +30,44 @@ import { Plus } from "@phosphor-icons/react"
 import { getPercentageString } from "@/modules/common"
 
 interface BulkCardProps {
-    bulk: BulkSchema
+  bulk: BulkSchema;
 }
-    
+
 export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
-    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(QUERY_STATIC_SWR_MUTATION)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
     const [images, setImages] = useState<Array<string>>([])
     useEffect(() => {
         const assetImageUrls = bulk.products.map((product) => {
-            const _product = staticSwr.data?.data.products.find((pproduct) => pproduct.id === product.productId)
+            const _product = staticData?.products.find(
+                (pproduct) => pproduct.id === product.productId
+            )
             return assetProductMap[_product?.displayId as ProductId].base.assetUrl
         })
         setImages(assetImageUrls)
-    }, [staticSwr.data])
-    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(SHEET_WHOLSALE_MARKET_BULK_DISCLOSURE)
+    }, [staticData])
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        WHOLSALE_MARKET_BULK_SHEET_DISCLOSURE
+    )
     const dispatch = useAppDispatch()
     const network = envConfig().network
     const isMobile = useIsMobile()
     const numberOfImages = isMobile ? 3 : 5
-    if (!staticSwr.data?.data.tokens) return null
+    if (!staticData?.tokens) return null
     return (
-        <Card pressable onClick={
-            () => {
+        <Card
+            pressable
+            onClick={() => {
                 dispatch(setWholesaleMarketBulkSheet({ bulkId: bulk.id }))
                 open()
-            }
-        }>
+            }}
+        >
             <CardBody>
                 <div className="flex items-center -gap-4">
                     {images.slice(0, numberOfImages).map((image, index) => {
-                        if (index === numberOfImages - 1 && images.length > numberOfImages) {
+                        if (
+                            index === numberOfImages - 1 &&
+              images.length > numberOfImages
+                        ) {
                             // Hiển thị dấu "..." nếu có nhiều hơn 5 ảnh
                             return (
                                 <div
@@ -59,7 +79,7 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
                                     )}
                                     key="more"
                                 >
-                                    +{images.length - numberOfImages}
+                  +{images.length - numberOfImages}
                                 </div>
                             )
                         }
@@ -82,38 +102,42 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
                             </div>
                         )
                     })}
-                </div>            
-                <Spacer y={4}/>
+                </div>
+                <Spacer y={4} />
                 <div className="flex items-center gap-2">
                     <Title title={bulk.bulkName} />
                     <Tooltip>
                         <TooltipTrigger>
-                            <Badge>
-                                {getPercentageString(bulk.maxPaidPercentage)}
-                            </Badge>
+                            <Badge>{getPercentageString(bulk.maxPaidPercentage)}</Badge>
                         </TooltipTrigger>
                         <TooltipContent>
-                            We will pay you {getPercentageString(bulk.maxPaidPercentage)} of the vault’s value, up to a maximum of {bulk.maxPaidAmount}.
+              We will pay you {getPercentageString(bulk.maxPaidPercentage)} of
+              the vault’s value, up to a maximum of {bulk.maxPaidAmount}.
                         </TooltipContent>
                     </Tooltip>
                 </div>
-                <Spacer y={4}/>
+                <Spacer y={4} />
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
-                        <TokenIcon tokenKey={bulk.tokenKey} chainKey={ChainKey.Solana} network={network} tokens={staticSwr.data?.data.tokens} />
-                        <div>
-                            Up to {bulk.maxPaidAmount}
-                        </div>
+                        <TokenIcon
+                            tokenKey={bulk.tokenKey}
+                            chainKey={ChainKey.Solana}
+                            network={network}
+                            tokens={staticData?.tokens}
+                        />
+                        <div>Up to {bulk.maxPaidAmount}</div>
                     </div>
-                    <Plus className="w-4 h-4 text-muted-foreground"/>
+                    <Plus className="w-4 h-4 text-muted-foreground" />
                     <div className="flex items-center gap-1">
-                        <Image src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl} alt="CIFARM" className="w-6 h-6" />
-                        <div>
-                            {bulk.tCIFARM}
-                        </div>
+                        <Image
+                            src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl}
+                            alt="CIFARM"
+                            className="w-6 h-6"
+                        />
+                        <div>{bulk.tCIFARM}</div>
                     </div>
                 </div>
-                <Spacer y={2}/>
+                <Spacer y={2} />
             </CardBody>
             <CardFooter className="w-full">
                 <div className="text-sm text-muted-foreground text-start">

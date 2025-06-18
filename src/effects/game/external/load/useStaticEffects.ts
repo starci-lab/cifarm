@@ -1,24 +1,19 @@
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/singleton"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
+import { useAppSelector } from "@/redux"
 
 export const useStaticEffects = () => {
     //get the singleton instance of the static swr
-    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
-        GRAPHQL_QUERY_STATIC_SWR
-    )
-
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
     // load static data
     useEffect(() => {
+        if (!staticData) return
         ExternalEventEmitter.on(ExternalEventName.LoadStaticData, async () => {
             //load static data
-            ExternalEventEmitter.emit(ExternalEventName.StaticDataLoaded, swr.data?.data)
+            ExternalEventEmitter.emit(ExternalEventName.StaticDataLoaded, staticData)
         })
-
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.LoadStaticData)
         }
-    }, [swr])
+    }, [staticData])
 }

@@ -1,27 +1,23 @@
-import { GRAPHQL_QUERY_USER_SWR } from "@/singleton"
 import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
-import { useGraphQLQueryUserSwr } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
+import { useAppSelector } from "@/redux"
 
 export const useUserEffects = () => {
     //get the singleton instance of the user swr
-    const { swr } = useSingletonHook<ReturnType<typeof useGraphQLQueryUserSwr>>(
-        GRAPHQL_QUERY_USER_SWR
-    )
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
 
     // load user data
     useEffect(() => {
+        if (!user) return
         ExternalEventEmitter.on(ExternalEventName.LoadUser, async () => {
             //load user data
             ExternalEventEmitter.emit(
                 ExternalEventName.UserLoaded,
-                swr.data?.data?.user
+                user
             )
         })
-
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.LoadUser)
         }
-    }, [swr])
+    }, [user])
 }
