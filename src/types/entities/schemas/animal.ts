@@ -1,4 +1,4 @@
-import { AnimalId, AnimalType } from "../enums"
+import { AnimalId, AnimalType } from "@/types"
 import { ProductSchema } from "./product"
 import { InventoryTypeSchema } from "./inventory-type"
 import { PlacedItemTypeSchema } from "./placed-item-type"

@@ -1,4 +1,4 @@
-import { DecorationId, DecorationType } from "../enums"
+import { DecorationId, DecorationType } from "@/types"
 import { AbstractSchema } from "./abstract"
 
 export interface DecorationSchema extends AbstractSchema {

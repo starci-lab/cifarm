@@ -1,4 +1,4 @@
-import { AnimalCurrentState } from "../enums"
+import { AnimalCurrentState } from "@/types"
 import { PlacedItemSchema } from "./placed-item"
 
 export interface AnimalInfoSchema {

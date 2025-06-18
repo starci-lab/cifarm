@@ -2,10 +2,12 @@ import React, { FC } from "react"
 import { AvaButton, Image } from "@/components"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
-import { CONNECT_DISCLOSURE } from "@/singleton"
+import { CONNECT_MODAL_DISCLOSURE } from "@/singleton"
 
 export const ConnectButton: FC = () => {
-    const { open: openConnectModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_DISCLOSURE)
+    const { open: openConnectModal } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(CONNECT_MODAL_DISCLOSURE)
     return (
         <AvaButton
             icon={

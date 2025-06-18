@@ -13,7 +13,7 @@ import {
     EmitterEventName,
     useGraphQLQueryNeighborsSwr,
     useGraphQLQueryFolloweesSwr,
-} from "@/hooks"
+} from "@/singleton"
 import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import { mergeObjects, SchemaStatus } from "@/modules/common"
@@ -41,12 +41,12 @@ export const useSyncEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)
     const dispatch = useAppDispatch()
     const inventories = useAppSelector(
-        (state) => state.sessionReducer.inventories
+        (state) => state.apiReducer.coreApi.inventories
     )
     const placedItems = useAppSelector(
-        (state) => state.sessionReducer.placedItems
+        (state) => state.apiReducer.coreApi.placedItems
     )
-    const user = useAppSelector((state) => state.sessionReducer.user)
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
 
     const { swr: neighborsSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryNeighborsSwr>
@@ -214,7 +214,7 @@ export const useSyncEffects = () => {
         }
     }, [socket])
 
-    const visitedUser = useAppSelector((state) => state.gameReducer.visitedUser)
+    const visitedUser = useAppSelector((state) => state.gameplayReducer.gameplayContext.visitedUser)
     const activeNeighborCard = useAppSelector(
         (state) => state.sessionReducer.activeNeighborCard
     )

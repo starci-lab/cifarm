@@ -1,6 +1,6 @@
 import { AbstractSchema } from "./abstract"
 import { PlacedItemSchema } from "./placed-item"
-import { PlantCurrentState, PlantType } from "../enums"
+import { PlantCurrentState, PlantType } from "@/types"
 
 export interface PlantInfoSchema extends AbstractSchema {
     currentStage: number

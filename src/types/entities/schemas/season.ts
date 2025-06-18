@@ -1,4 +1,4 @@
-import { SeasonId } from "../enums"
+import { SeasonId } from "@/types"
 import { BulkSchema } from "./bulk"
 import { AbstractSchema } from "./abstract"
 

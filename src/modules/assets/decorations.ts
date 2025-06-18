@@ -1,5 +1,5 @@
 import { AssetData, AssetMapData, AssetMapType, AssetTextureData, Metadata } from "./types"
-import { DecorationId } from "../entities"
+import { DecorationId } from "@/types"
 import { getAssetUrl } from "./utils"
 import { Direction } from "./types"
 

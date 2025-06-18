@@ -10,8 +10,8 @@ import {
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { useSingletonHook } from "@/singleton"
-import { BUY_GOLDS_DISCLOSURE, BUY_ENERGY_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR, EXPAND_LAND_LIMIT_DISCLOSURE, GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR } from "@/singleton"
-import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr, useGraphQLQueryStaticSwr, useGraphQLQueryOccupiedPlacedItemCounts } from "@/hooks"
+import { BUY_GOLDS_MODAL_DISCLOSURE, BUY_ENERGY_MODAL_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE, EXPAND_LAND_LIMIT_MODAL_DISCLOSURE, GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR } from "@/singleton"
+import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr, useGraphQLQueryOccupiedPlacedItemCounts } from "@/singleton"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/types"
 import { useDisclosure } from "react-use-disclosure"
@@ -19,38 +19,35 @@ import { useAppSelector } from "@/redux"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { getMaxEnergy } from "@/modules/common"
 import { LandLimit } from "@/components"
-import { ChainKey } from "@/modules/blockchain"
 
 export const InGameTab: FC = () => {
     const inventories = useAppSelector(
-        state => state.sessionReducer.inventories
+        state => state.apiReducer.coreApi.inventories
     )
     const { swr: userSwr } = useSingletonHook<
         ReturnType<typeof useGraphQLQueryUserSwr>
     >(GRAPHQL_QUERY_USER_SWR)
     const user = useAppSelector(
-        (state) => state.sessionReducer.user
+        (state) => state.apiReducer.coreApi.user
     )
     const { swr: inventoriesSwr } = useSingletonHook<
         ReturnType<typeof useGraphQLQueryInventoriesSwr>
     >(GRAPHQL_QUERY_INVENTORIES_SWR)
     const { open: openBuyGoldsModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_DISCLOSURE)
+        useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_MODAL_DISCLOSURE)
     const { open: openBuyEnergyModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_ENERGY_DISCLOSURE)
+        useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_ENERGY_MODAL_DISCLOSURE)
     const { open: openWalletConnectionRequiredModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
-    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
-    const { swr: staticSwr } = useSingletonHook<
-        ReturnType<typeof useGraphQLQueryStaticSwr>
-    >(GRAPHQL_QUERY_STATIC_SWR)
+        useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE)
+    const { address } = useAppSelector(state => state.walletReducer.solanaWallet)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
     const { open: openExpandLandLimitModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(EXPAND_LAND_LIMIT_DISCLOSURE)
+        useSingletonHook<ReturnType<typeof useDisclosure>>(EXPAND_LAND_LIMIT_MODAL_DISCLOSURE)
     const { swr: occupiedPlacedItemCountsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryOccupiedPlacedItemCounts>>(
         GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR
     )
     console.log(occupiedPlacedItemCountsSwr.data)
-    if (!staticSwr.data?.data) {
+    if (!staticData) {
         return null
     }
     return (
@@ -173,7 +170,7 @@ export const InGameTab: FC = () => {
                                     occupiedPlacedItemCountsSwr.data?.tileCount
                                 }
                                     /</span>
-                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].tileLimit ?? 0}</span>
+                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].tileLimit ?? 0}</span>
                             </div>
                         }
                         buildingLimit={
@@ -182,7 +179,7 @@ export const InGameTab: FC = () => {
                                     occupiedPlacedItemCountsSwr.data?.buildingCount
                                 }
                                     /</span>
-                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].buildingLimit ?? 0}</span>
+                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].buildingLimit ?? 0}</span>
                             </div>
                         }
                         fruitLimit={
@@ -191,12 +188,12 @@ export const InGameTab: FC = () => {
                                     occupiedPlacedItemCountsSwr.data?.fruitCount
                                 }
                                     /</span>
-                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].fruitLimit ?? 0}</span>
+                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].fruitLimit ?? 0}</span>
                             </div>
                         }
                         sameBuildingLimit={
                             <div>
-                                <span>{staticSwr.data?.data.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].sameBuildingLimit ?? 0}</span>
+                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].sameBuildingLimit ?? 0}</span>
                             </div>
                         }
                     />

@@ -1,5 +1,4 @@
-import { Card, ExtendedButton } from "@/components"
-import { IconWrapper } from "@/components/styled/IconWrapper"
+import { Card, ExtendedButton, IconWrapper } from "@/components"
 import { useGlobalAccountAddress } from "@/hooks"
 import { truncateString } from "@/modules/common"
 import { DotsThreeVertical, Eye } from "@phosphor-icons/react"

@@ -10,7 +10,7 @@ import {
     ToolId,
     PetId,
     DecorationId,
-} from "../entities"
+} from "@/types"
 import { assetSuppliesMap } from "./supplies"
 import { assetToolsMap } from "./tools"
 import { getAssetUrl } from "./utils"

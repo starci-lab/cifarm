@@ -8,7 +8,7 @@ import { ApolloQueryResult } from "@apollo/client"
 import { useState } from "react"
 import useSWR from "swr"
 import { envConfig } from "@/env"
-
+import { setLeaderboard, useAppDispatch } from "@/redux"
 export const useGraphQLQueryLeaderboardSwr = (): UseSWR<
   ApolloQueryResult<QueryLeaderboardResponseWrapper>,
   QueryLeaderboardParams
@@ -19,10 +19,13 @@ export const useGraphQLQueryLeaderboardSwr = (): UseSWR<
             limit: 10,
         }
     })
+    const dispatch = useAppDispatch()
     const swr = useSWR(
         ["QUERY_LEADERBOARD", params],
         async () => {
-            return await queryLeaderboard(params)
+            const response = await queryLeaderboard(params)
+            dispatch(setLeaderboard(response.data?.leaderboard.data ?? []))
+            return response
         }
     )
     //return the state and the data

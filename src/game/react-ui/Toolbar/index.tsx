@@ -7,9 +7,6 @@ import {
 } from "@/redux"
 import { ExtendedButton, ItemCard, ScaledImage } from "@/components"
 import React from "react"
-import { useSingletonHook } from "@/singleton"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { QUERY_STATIC_SWR_MUTATION } from "@/singleton"
 import {
     assetInventoryTypesMap,
     assetToolsMap,
@@ -22,11 +19,9 @@ import { ExternalEventName, ToolLike, ExternalEventEmitter } from "@/modules/eve
 import { CaretLeft, CaretRight } from "@phosphor-icons/react"
 
 export const Toolbar: FC = () => {
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(QUERY_STATIC_SWR_MUTATION)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
     const inventories = useAppSelector(
-        (state) => state.sessionReducer.inventories
+        (state) => state.apiReducer.coreApi.inventories
     ).filter((inventory) => inventory.kind === InventoryKind.Tool)
 
     const [numVisibleInventories, setNumVisibleInventories] = useState(6)
@@ -48,7 +43,7 @@ export const Toolbar: FC = () => {
     )
 
     const defaultTools: Array<ToolLike> =
-    staticSwr.data?.data.tools
+    staticData?.tools
         .filter((tool) => tool.default)
         .map((tool) => ({
             id: tool.displayId,
@@ -144,7 +139,7 @@ export const Toolbar: FC = () => {
                     }
                     const inventory = inventories.find((inventory) => inventory.id === toolLike.id)
                     if (!inventory) throw new Error("Inventory not found")
-                    const inventoryType = staticSwr.data?.data.inventoryTypes.find(
+                    const inventoryType = staticData?.inventoryTypes.find(
                         (inventoryType) => inventoryType.id === inventory.inventoryType
                     )
                     if (!inventoryType) throw new Error("Inventory type not found")
@@ -163,7 +158,7 @@ export const Toolbar: FC = () => {
                                     assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
                                 }
                                 isQuality={(() => {
-                                    const product = staticSwr.data?.data.products.find(
+                                    const product = staticData?.products.find(
                                         (product) => product.id === inventoryType?.product
                                     )
                                     return product?.isQuality

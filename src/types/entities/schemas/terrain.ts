@@ -1,4 +1,4 @@
-import { TerrainId, TerrainType } from "../enums"
+import { TerrainId, TerrainType } from "@/types"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface TerrainSchema extends StaticAbstractSchema<TerrainId> {

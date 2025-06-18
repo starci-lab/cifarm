@@ -2,20 +2,21 @@ import { setAuthenticated, useAppDispatch, useAppSelector } from "@/redux"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent, Separator, AvaButton2, DropdownContent } from "@/components"
 import React, { FC } from "react"
 import { Gear, ShareNetwork, SignOut, User } from "@phosphor-icons/react"
-import { useGraphQLMutationLogoutSwrMutation, useRouterWithSearchParams } from "@/hooks"
+import { useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLMutationLogoutSwrMutation } from "@/singleton"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import useSWRMutation from "swr/mutation"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/singleton"
-import { REFERRAL_DISCLOSURE } from "@/singleton"
+import { REFERRAL_MODAL_DISCLOSURE } from "@/singleton"
 
 export const UserDropdown: FC = () => {
-    const user = useAppSelector((state) => state.sessionReducer.user)
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
     const router = useRouterWithSearchParams()
 
     const { swrMutation: logoutSwrMutation } = useGraphQLMutationLogoutSwrMutation()
-    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(REFERRAL_DISCLOSURE)
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(REFERRAL_MODAL_DISCLOSURE)
     const dispatch = useAppDispatch()   
     const { trigger, isMutating } = useSWRMutation("LOGOUT_DATA", async () => {
         const refreshToken = await sessionDb.keyValueStore.get(

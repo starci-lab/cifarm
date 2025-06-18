@@ -1,4 +1,4 @@
-import { FlowerId } from "../entities"
+import { FlowerId } from "@/types"
 import { AssetData, AssetMapData, AssetMapType, BubbleStateConfig, Metadata } from "./types"
 import { getAssetUrl } from "./utils"
 

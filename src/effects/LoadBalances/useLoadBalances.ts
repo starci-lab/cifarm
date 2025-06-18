@@ -1,4 +1,4 @@
-import { useGraphQLQueryBlockchainBalanceSwr } from "../../swr"
+import { useGraphQLQueryBlockchainBalanceSwr } from "@/singleton"
 import { useEffect } from "react"
 import { setBalanceSwr, useAppDispatch } from "@/redux"
 import { TokenKey } from "@/types"

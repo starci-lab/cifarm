@@ -1,4 +1,4 @@
-import { TileId } from "../enums"
+import { TileId } from "@/types"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface TileSchema extends StaticAbstractSchema<TileId> {

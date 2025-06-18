@@ -5,31 +5,28 @@ import { useAppSelector } from "@/redux"
 import { AssetIconId, assetIconMap } from "@/modules/assets"
 import { Toolbar } from "./Toolbar"
 import { useSingletonHook } from "@/singleton"
-import { GRAPHQL_QUERY_STATIC_SWR, PROFILE_DISCLOSURE } from "@/singleton"
+import { PROFILE_MODAL_DISCLOSURE } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import { getMaxEnergy, truncateString } from "@/modules/common"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
 
 export const ReactUI: FC = () => {
-    const user = useAppSelector((state) => state.sessionReducer.user)
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
     const playerContext = useAppSelector(
-        (state) => state.sessionReducer.playerContext
+        (state) => state.gameplayReducer.gameplayContext.playerContext
     )
-    const showGameUI = useAppSelector((state) => state.sessionReducer.showGameUI)
+    const showGameUI = useAppSelector((state) => state.gameplayReducer.gameplayContext.showGameUI)
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        PROFILE_DISCLOSURE
+        PROFILE_MODAL_DISCLOSURE
     )
-    const visitedUser = useAppSelector((state) => state.gameReducer.visitedUser)
-    const { swr: staticSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryStaticSwr>>(
-        GRAPHQL_QUERY_STATIC_SWR
-    )
+    const visitedUser = useAppSelector((state) => state.gameplayReducer.gameplayContext.visitedUser)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
     useEffect(() => {
-        const base = staticSwr.data?.data.energyRegen.time ?? 0
+        const base = staticData?.energyRegen.time ?? 0
         const used = user?.energyRegenTime ?? 0
         const remaining = base - used
         console.log(`Energy initialized: ${remaining}`)
         setEnergy(remaining)
-    }, [user?.energyRegenTime, staticSwr.data?.data.energyRegen.time])
+    }, [user?.energyRegenTime, staticData?.energyRegen.time])
 
     const [energy, setEnergy] = useState(0)
 

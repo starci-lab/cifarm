@@ -1,5 +1,5 @@
 import { AbstractSchema } from "./abstract"
-import { BeeHouseCurrentState } from "../enums"
+import { BeeHouseCurrentState } from "@/types"
 
 export interface BeeHouseInfoSchema extends AbstractSchema {
     currentYieldTime: number

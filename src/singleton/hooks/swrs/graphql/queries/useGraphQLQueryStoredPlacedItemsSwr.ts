@@ -6,7 +6,7 @@ import {
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
 import { useState } from "react"
-import { useAppSelector } from "@/redux"
+import { setStoredPlacedItems, useAppDispatch, useAppSelector } from "@/redux"
 import useSWR from "swr"
 import { defaultRequest } from "../constants"
 export const useGraphQLQueryStoredPlacedItemsSwr = (): UseSWR<
@@ -19,10 +19,16 @@ export const useGraphQLQueryStoredPlacedItemsSwr = (): UseSWR<
     const authenticated = useAppSelector(
         (state) => state.sessionReducer.authenticated
     )
+    const dispatch = useAppDispatch()
     const swr = useSWR(
         authenticated ? ["QUERY_STORED_PLACED_ITEMS", params] : null,
         async () => {
-            return await queryStoredPlacedItems(params)
+            const response = await queryStoredPlacedItems(params)
+            dispatch(setStoredPlacedItems(response.data?.storedPlacedItems ?? {
+                data: [],
+                count: 0,
+            }))
+            return response
         }
     )
 

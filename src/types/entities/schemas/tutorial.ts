@@ -1,5 +1,5 @@
 import { AbstractSchema } from "./abstract"
-import { TutorialStep } from "../enums"
+import { TutorialStep } from "@/types"
 
 export interface TutorialSchema extends AbstractSchema {
     [TutorialStep.Start]: boolean

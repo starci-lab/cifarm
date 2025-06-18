@@ -1,4 +1,4 @@
-import { ProductId } from "../entities"
+import { ProductId } from "@/types"
 import { AssetData, AssetTextureData, Metadata } from "./types"
 import { getAssetUrl } from "./utils"
 

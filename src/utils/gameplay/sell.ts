@@ -1,6 +1,5 @@
 import { QueryStaticResponse } from "@/modules/apollo"
-import { PlacedItemType } from "../enums"
-import { PlacedItemSchema, PlacedItemTypeSchema } from "../schemas"
+import { PlacedItemType, PlacedItemSchema, PlacedItemTypeSchema } from "@/types"
 import { PartialDeep } from "type-fest"
 export interface GetSellInfoParams {
   placedItem: PlacedItemSchema;

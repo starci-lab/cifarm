@@ -1,4 +1,4 @@
-import { UseSWR } from "../../types"
+import { UseSWR } from "@/singleton"
 import {
     queryUser,
     QueryUserResponseWrapper,

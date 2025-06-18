@@ -6,7 +6,8 @@ import {
 } from "@/modules/apollo"
 import { ApolloQueryResult } from "@apollo/client"
 import { useState } from "react"
-import { useAppSelector } from "@/redux"
+import { setFollowees, useAppSelector } from "@/redux"
+import { useAppDispatch } from "@/redux"
 import useSWR from "swr"
 import { defaultRequest } from "../constants"
 
@@ -20,10 +21,16 @@ export const useGraphQLQueryFolloweesSwr = (): UseSWR<
     const authenticated = useAppSelector(
         (state) => state.sessionReducer.authenticated
     )
+    const dispatch = useAppDispatch()
     const swr = useSWR(
         authenticated ? ["QUERY_FOLLOWEES", params] : null,
         async () => {
-            return await queryFollowees(params)
+            const response = await queryFollowees(params)
+            dispatch(setFollowees(response.data?.followees ?? {
+                data: [],
+                count: 0,
+            }))
+            return response
         }
     )
 

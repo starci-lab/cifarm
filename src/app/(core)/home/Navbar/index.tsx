@@ -8,7 +8,7 @@ import { Skeleton, ToggleThemeButton } from "@/components"
 import { useTheme } from "next-themes"
 
 export const Navbar: FC = () => {
-    const user = useAppSelector((state) => state.sessionReducer.user)
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
     const { theme, setTheme } = useTheme()
     return (
         <nav className="w-full py-4 z-50 sticky top-0 px-6 max-w-[1200px] mx-auto">

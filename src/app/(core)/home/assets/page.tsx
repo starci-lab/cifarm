@@ -1,5 +1,11 @@
 "use client"
-import { BlurEffect, ExtendedButton, FilterBar, Header, Spacer } from "@/components"
+import {
+    BlurEffect,
+    ExtendedButton,
+    FilterBar,
+    Header,
+    Spacer,
+} from "@/components"
 import React, { useEffect, useRef } from "react"
 import { AppTabs } from "@/components"
 import {
@@ -8,19 +14,22 @@ import {
     AssetTab,
     setAssetTab,
     SidebarTab,
-    setWalletConnectionRequiredModal,
+    setWalletConnectionRequiredModalContent,
 } from "@/redux"
 import { TokensTab } from "./TokensTab"
 import { NFTCollectionsTab } from "./NFTCollectionsTab"
 import { InGameTab } from "./InGameTab"
-import { useRouterWithSearchParams } from "@/hooks"
+import { useGlobalAccountAddress, useRouterWithSearchParams } from "@/hooks"
 import { useSearchParams } from "next/navigation"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { ChainKey } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useDisclosure } from "react-use-disclosure"
 import { useSingletonHook } from "@/singleton"
-import { CONNECT_DISCLOSURE, WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/singleton"
+import {
+    CONNECT_MODAL_DISCLOSURE,
+    WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE,
+} from "@/singleton"
 import { RPCLimitationWarning } from "./RPCLimitationWarning"
 
 const Page = () => {
@@ -54,12 +63,19 @@ const Page = () => {
 
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     // when selectedAssetTab change
-    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
+    const { accountAddress } = useGlobalAccountAddress()
 
     const { currentWallet } = useCurrentWallet()
-    const { open: openConnectModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_DISCLOSURE)
-    const { open: openWalletConnectionRequiredModal, close: closeWalletConnectionRequiredModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
-    const balanceSwrs = useAppSelector((state) => state.sessionReducer.balanceSwrs)
+    const { open: openConnectModal } =
+    useSingletonHook<ReturnType<typeof useDisclosure>>(CONNECT_MODAL_DISCLOSURE)
+    const {
+        open: openWalletConnectionRequiredModal,
+        close: closeWalletConnectionRequiredModal,
+    } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE
+    )
+    const { accountAddress: address } = useGlobalAccountAddress()
+    const balanceSwrs = useAppSelector((state) => state.swrsReducer.balanceSwrs)
     const lastTabRef = useRef<AssetTab>(selectedAssetTab)
     useEffect(() => {
         if (lastTabRef.current === selectedAssetTab) {
@@ -72,32 +88,39 @@ const Page = () => {
             case ChainKey.Sui: {
                 if (!currentWallet) {
                     // warning that no wallet is connected
-                    dispatch(setWalletConnectionRequiredModal({
-                        chainKey: ChainKey.Sui,
-                    }))
+                    dispatch(
+                        setWalletConnectionRequiredModalContent({
+                            chainKey: ChainKey.Sui,
+                        })
+                    )
                     openWalletConnectionRequiredModal()
                 }
                 break
             }
-            case ChainKey.Solana: {
-                if (!address) {
-                    // warning that no wallet is connected
-                    dispatch(setWalletConnectionRequiredModal({
-                        chainKey: ChainKey.Solana,
-                    }))
-                    openWalletConnectionRequiredModal()
+            case ChainKey.Solana:
+                {
+                    if (!address) {
+                        // warning that no wallet is connected
+                        dispatch(
+                            setWalletConnectionRequiredModalContent({
+                                chainKey: ChainKey.Solana,
+                            })
+                        )
+                        openWalletConnectionRequiredModal()
+                    }
                 }
-            }
                 break
             }
             break
         }
         case AssetTab.NFTs: {
-            // check if solana is connected
+        // check if solana is connected
             if (!address) {
-                dispatch(setWalletConnectionRequiredModal({
-                    chainKey: ChainKey.Solana,
-                }))
+                dispatch(
+                    setWalletConnectionRequiredModalContent({
+                        chainKey: ChainKey.Solana,
+                    })
+                )
                 openWalletConnectionRequiredModal()
             }
             break
@@ -106,7 +129,15 @@ const Page = () => {
             break
         }
         }
-    }, [chainKey, currentWallet, address, openConnectModal, openWalletConnectionRequiredModal, closeWalletConnectionRequiredModal, selectedAssetTab])
+    }, [
+        chainKey,
+        currentWallet,
+        accountAddress,
+        openConnectModal,
+        openWalletConnectionRequiredModal,
+        closeWalletConnectionRequiredModal,
+        selectedAssetTab,
+    ])
 
     // when selectedSidebarTab change
     useEffect(() => {
@@ -133,35 +164,49 @@ const Page = () => {
     const renderRightContent = () => {
         switch (assetTab) {
         case AssetTab.Tokens:
-            return <div className="flex gap-2 justify-between items-center w-full md:w-auto">
-                {/* <ChainSelectButton /> */}
-                <FilterBar
-                    onSearchStringChange={() => { }}
-                    searchString={""}
-                    className="w-full md:max-w-[200px]"
-                />
-                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
-                    // blockchainBalances.mutate()
-                    for (const tokenKey in balanceSwrs) {
-                        balanceSwrs[tokenKey].mutate()
-                    }
-                }}>
-                    <ArrowsClockwise />
-                </ExtendedButton>
-            </div>
+            return (
+                <div className="flex gap-2 justify-between items-center w-full md:w-auto">
+                    {/* <ChainSelectButton /> */}
+                    <FilterBar
+                        onSearchStringChange={() => {}}
+                        searchString={""}
+                        className="w-full md:max-w-[200px]"
+                    />
+                    <ExtendedButton
+                        color="secondary"
+                        size="icon"
+                        variant="flat"
+                        onClick={() => {
+                            // blockchainBalances.mutate()
+                            for (const tokenKey in balanceSwrs) {
+                                balanceSwrs[tokenKey].mutate()
+                            }
+                        }}
+                    >
+                        <ArrowsClockwise />
+                    </ExtendedButton>
+                </div>
+            )
         case AssetTab.NFTs:
-            return <div className="flex gap-2 justify-between items-center w-full md:w-auto">
-                <FilterBar
-                    onSearchStringChange={() => { }}
-                    searchString={""}
-                    className="w-full md:max-w-[200px]"
-                />
-                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
-                    // blockchainCollections.mutate()
-                }}>
-                    <ArrowsClockwise />
-                </ExtendedButton>
-            </div>
+            return (
+                <div className="flex gap-2 justify-between items-center w-full md:w-auto">
+                    <FilterBar
+                        onSearchStringChange={() => {}}
+                        searchString={""}
+                        className="w-full md:max-w-[200px]"
+                    />
+                    <ExtendedButton
+                        color="secondary"
+                        size="icon"
+                        variant="flat"
+                        onClick={() => {
+                            // blockchainCollections.mutate()
+                        }}
+                    >
+                        <ArrowsClockwise />
+                    </ExtendedButton>
+                </div>
+            )
         case AssetTab.InGame:
             return <></>
         }
@@ -178,12 +223,10 @@ const Page = () => {
             <Spacer y={6} />
             <div className="flex gap-4 md:gap-2 flex-col md:flex-row md:justify-between items-center">
                 <AppTabs
-                    classNames={
-                        {
-                            base: "w-full md:w-auto",
-                            list: "w-full md:w-auto",
-                        }
-                    }
+                    classNames={{
+                        base: "w-full md:w-auto",
+                        list: "w-full md:w-auto",
+                    }}
                     tabs={[
                         {
                             label: "Tokens",

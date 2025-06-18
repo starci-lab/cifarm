@@ -1,4 +1,4 @@
-import { AnimalType, BuildingId, BuildingKind } from "../enums"
+import { AnimalType, BuildingId, BuildingKind } from "@/types"
 import { UpgradeSchema } from "./upgrade"
 import { PlacedItemTypeSchema } from "./placed-item-type"
 import { StaticAbstractSchema } from "./abstract"

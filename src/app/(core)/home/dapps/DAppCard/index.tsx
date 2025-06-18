@@ -10,9 +10,10 @@ import React, { FC } from "react"
 import { ChainKey, chainKeyMap } from "@/modules/blockchain"
 import { useCurrentWallet } from "@mysten/dapp-kit"
 import { useSingletonHook } from "@/singleton"
-import { WALLET_CONNECTION_REQUIRED_DISCLOSURE } from "@/singleton"
+import { WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
-import { useAppDispatch, setWalletConnectionRequiredModal, useAppSelector } from "@/redux"
+import { useAppDispatch, setWalletConnectionRequiredModalContent } from "@/redux"
+import { useGlobalAccountAddress } from "@/hooks"
 interface DAppCardProps {
   title: string;
   description: string;
@@ -34,31 +35,43 @@ export const DAppCard: FC<DAppCardProps> = ({
     chainKey = ChainKey.Solana,
     requireConnectWallet = true,
 }) => {
-    const { address } = useAppSelector(state => state.walletReducer[ChainKey.Solana])
+    const { accountAddress } = useGlobalAccountAddress()
     const { currentWallet } = useCurrentWallet()
-    const { open: openWalletConnectionRequiredModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_DISCLOSURE)
+    const { open: openWalletConnectionRequiredModal } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE)
     const dispatch = useAppDispatch()
     return (
         <Card
             onClick={() => {
-                if (requireConnectWallet && chainKey === ChainKey.Solana && !address) {
-                    dispatch(setWalletConnectionRequiredModal({
-                        chainKey: ChainKey.Solana,
-                    }))
+                if (
+                    requireConnectWallet &&
+          chainKey === ChainKey.Solana &&
+          !accountAddress
+                ) {
+                    dispatch(
+                        setWalletConnectionRequiredModalContent({
+                            chainKey: ChainKey.Solana,
+                        })
+                    )
                     openWalletConnectionRequiredModal()
                     return
                 }
                 if (chainKey === ChainKey.Sui && !currentWallet) {
-                    dispatch(setWalletConnectionRequiredModal({
-                        chainKey: ChainKey.Sui,
-                    }))
+                    dispatch(
+                        setWalletConnectionRequiredModalContent({
+                            chainKey: ChainKey.Sui,
+                        })
+                    )
                     openWalletConnectionRequiredModal()
                     return
                 }
                 if (chainKey === ChainKey.Somnia) {
-                    dispatch(setWalletConnectionRequiredModal({
-                        chainKey: ChainKey.Somnia,
-                    }))
+                    dispatch(
+                        setWalletConnectionRequiredModalContent({
+                            chainKey: ChainKey.Somnia,
+                        })
+                    )
                     openWalletConnectionRequiredModal()
                     return
                 }
@@ -70,8 +83,16 @@ export const DAppCard: FC<DAppCardProps> = ({
         >
             <CardBody className="relative w-full">
                 <div className="absolute top-4 right-4">
-                    {chainKey && <Image src={chainKeyMap.find((chain) => chain.key === chainKey)?.iconUrl || ""} className="w-7 h-7" />}
-                </div>  
+                    {chainKey && (
+                        <Image
+                            src={
+                                chainKeyMap.find((chain) => chain.key === chainKey)?.iconUrl ||
+                ""
+                            }
+                            className="w-7 h-7"
+                        />
+                    )}
+                </div>
                 <Image src={imageUrl} className="w-32 h-32 object-contain" />
                 <Spacer y={4} />
                 <div className="flex flex-col justify-between">

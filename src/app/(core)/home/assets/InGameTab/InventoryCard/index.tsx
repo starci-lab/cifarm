@@ -1,9 +1,6 @@
 import { ItemCard, TintColor } from "@/components"
 import { InventorySchema } from "@/types"
 import React, { FC } from "react"
-import { useSingletonHook } from "@/singleton"
-import { GRAPHQL_QUERY_STATIC_SWR } from "@/singleton"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
 import { assetInventoryTypesMap } from "@/modules/assets"
 import { useAppSelector } from "@/redux"
 
@@ -14,16 +11,14 @@ interface InventoryCardProps {
 export const InventoryCard: FC<InventoryCardProps> = ({
     inventory,
 }) => {
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(GRAPHQL_QUERY_STATIC_SWR)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
-    const inventoryType = staticSwr.data?.data.inventoryTypes.find(
+    const inventoryType = staticData?.inventoryTypes.find(
         (inventoryType) => inventoryType.id === inventory?.inventoryType
     )
 
     const selectedInventoryId = useAppSelector(
-        (state) => state.selectionReducer.selectedInventoryId
+        (state) => state.selectionReducer.selectedShipInventoryId
     )
     return (
         <ItemCard
@@ -44,7 +39,7 @@ export const InventoryCard: FC<InventoryCardProps> = ({
                 return assetInventoryTypesMap[inventoryType.displayId]?.base.assetUrl
             })()}
             isQuality={(() => {
-                const product = staticSwr.data?.data.products.find(
+                const product = staticData?.products.find(
                     (product) => product.id === inventoryType?.product
                 )
                 return product?.isQuality

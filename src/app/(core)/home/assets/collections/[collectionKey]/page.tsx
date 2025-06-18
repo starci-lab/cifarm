@@ -6,8 +6,7 @@ import { useParams } from "next/navigation"
 import { pathConstants } from "@/constants"
 import { useIsMobile, useRouterWithSearchParams } from "@/hooks"
 import { useSingletonHook } from "@/singleton"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { CONVERT_NFT_DISCLOSURE, GRAPHQL_QUERY_STATIC_SWR } from "@/singleton"
+import { CONVERT_NFT_MODAL_DISCLOSURE } from "@/singleton"
 import { NFTCollectionKey } from "@/types"
 import { envConfig } from "@/env"
 import { NFTCard } from "./NFTCard"
@@ -32,20 +31,19 @@ const Page = () => {
         }
     }, [collectionKey])  
 
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-    >(GRAPHQL_QUERY_STATIC_SWR)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
-    const collection = staticSwr?.data?.data.nftCollections[collectionKey]?.[network]
+    const collection = staticData?.nftCollections[collectionKey]?.[network]
     const nftAddresses = useAppSelector((state) => state.convertReducer.nftAddresses)
     const isMobile = useIsMobile()
-    const conversionRate = staticSwr.data?.data.nftConversion.conversionRate || 1
+    const conversionRate = staticData?.nftConversion.conversionRate || 1
     const isConvertDisabled = nftAddresses.length === 0 || nftAddresses.length % conversionRate !== 0
     const { open: openConvertNFTModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        CONVERT_NFT_DISCLOSURE
+        CONVERT_NFT_MODAL_DISCLOSURE
     )
-    const collectionSwrs = useAppSelector((state) => state.sessionReducer.nftCollectionSwrs)
-    const collectionSwr = collectionSwrs[collectionKey]
+    const nftCollectionSwrs = useAppSelector((state) => state.swrsReducer.nftCollectionSwrs)
+    const nftCollectionSwr = nftCollectionSwrs[collectionKey]
+
 
     // reset the nft addresses and is converting when unmount
     useEffect(() => {
@@ -58,7 +56,7 @@ const Page = () => {
     return (
         <div>
             <div className="flex justify-between items-center gap-4">
-                <Header showBackButton={true} isSkeleton={!staticSwr?.data} title={`${collection?.name}`}/>
+                <Header showBackButton={true} isSkeleton={!staticData} title={`${collection?.name}`}/>
             </div>
             <Spacer y={6} />
             <div className="flex justify-between items-center gap-4">
@@ -102,13 +100,13 @@ const Page = () => {
                         className="max-w-[200px]"
                     />
                     <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => {
-                        collectionSwr.mutate()
+                        nftCollectionSwr.mutate()
                     }}>
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
             </div>  
-            {collectionSwr?.data?.cached && collectionSwr?.data?.refreshInterval > 0 && (
+            {nftCollectionSwr?.data?.cached && nftCollectionSwr?.data?.refreshInterval > 0 && (
                 <>
                     <Spacer y={4} />
                     <div className="text-muted-foreground text-sm flex items-center gap-2">
@@ -117,7 +115,7 @@ const Page = () => {
                             Cached
                             </ExtendedBadge>
                             <div>
-                                Wait {collectionSwr?.data?.refreshInterval} seconds to refresh
+                                Wait {nftCollectionSwr?.data?.refreshInterval} seconds to refresh
                             </div>
                         </div>
                     </div>
@@ -125,7 +123,7 @@ const Page = () => {
             )}
             <Spacer y={4} />
             {   
-                (!collectionSwr?.data) ? (
+                (!nftCollectionSwr?.data) ? (
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                         {
                             isMobile ? (
@@ -142,8 +140,8 @@ const Page = () => {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                        {collectionSwr.data?.collection.nfts.map((nft) => {
-                            if (!collectionSwr.data) throw new Error("No data")
+                        {nftCollectionSwr.data?.collection.nfts.map((nft) => {
+                            if (!nftCollectionSwr.data) throw new Error("No data")
                             return (
                                 <NFTCard key={nft.nftAddress} nft={nft} />
                             )

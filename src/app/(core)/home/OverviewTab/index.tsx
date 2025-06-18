@@ -3,13 +3,14 @@ import { ExtendedButton } from "@/components"
 import React, { FC } from "react"
 import { MainVisual } from "../MainVisual"
 import { pathConstants } from "@/constants"
-import { useGraphQLQueryLeaderboardSwr, useRouterWithSearchParams } from "@/hooks"
+import { useRouterWithSearchParams } from "@/hooks"
+import { useGraphQLQueryLeaderboardSwr } from "@/singleton"
 import { Plant, ShareNetwork } from "@phosphor-icons/react"
 import { useIsMobile } from "@/hooks/useIsMobile"
 import { cn } from "@/utils"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
-import { GRAPHQL_QUERY_LEADERBOARD_SWR, REFERRAL_DISCLOSURE } from "@/singleton"
+import { GRAPHQL_QUERY_LEADERBOARD_SWR, REFERRAL_MODAL_DISCLOSURE } from "@/singleton"
 import { ColumnDef } from "@tanstack/react-table"
 const tags = [{ name: "Farming" }, { name: "Social" }, { name: "Strategy" }]
 
@@ -21,7 +22,7 @@ export interface TableData {
 export const OverviewTab: FC = () => {
     const router = useRouterWithSearchParams()
     const isMobile = useIsMobile()
-    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(REFERRAL_DISCLOSURE)
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(REFERRAL_MODAL_DISCLOSURE)
     const { swr: leaderboardSwr } = useSingletonHook<
      ReturnType<typeof useGraphQLQueryLeaderboardSwr>
     >(GRAPHQL_QUERY_LEADERBOARD_SWR)

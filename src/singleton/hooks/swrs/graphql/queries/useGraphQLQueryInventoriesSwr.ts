@@ -18,7 +18,7 @@ export const useGraphQLQueryInventoriesSwr = (): UseSWR<
         authenticated ? ["QUERY_INVENTORIES"] : null,
         async () => {
             const response = await queryInventories()
-            dispatch(setInventories(response.data.inventories))
+            dispatch(setInventories(response.data?.inventories ?? []))
             return response
         }
     )

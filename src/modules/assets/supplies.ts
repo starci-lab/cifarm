@@ -1,5 +1,5 @@
 import { AssetData, AssetTextureData, Metadata } from "./types"
-import { SupplyId } from "../entities"
+import { SupplyId } from "@/types"
 import { getAssetUrl } from "./utils"
 
 const PREFIX = "/supplies"

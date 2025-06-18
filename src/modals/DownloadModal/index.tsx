@@ -8,12 +8,12 @@ import {
 } from "@/components"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
-import { DOWNLOAD_DISCLOSURE } from "@/singleton"
+import { DOWNLOAD_MODAL_DISCLOSURE } from "@/singleton"
 import { DownloadPackage } from "./DownloadPackage" 
 
 export const DownloadModal: FC = () => {
     const { toggle, isOpen } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        DOWNLOAD_DISCLOSURE
+        DOWNLOAD_MODAL_DISCLOSURE
     )
     return (
         <Dialog open={isOpen} onOpenChange={toggle}>

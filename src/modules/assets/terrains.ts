@@ -1,5 +1,5 @@
 import { AssetData, AssetMapData, AssetMapType, Metadata } from "./types"
-import { TerrainId } from "../entities"
+import { TerrainId } from "@/types"
 import { getAssetUrl } from "./utils"
 
 const PREFIX = "/terrains"

@@ -1,5 +1,5 @@
 import { StaticAbstractSchema } from "./abstract"
-import { ProductId, ProductType } from "../enums"
+import { ProductId, ProductType } from "@/types"
 
 export interface ProductSchema extends StaticAbstractSchema<ProductId> {
     isQuality: boolean

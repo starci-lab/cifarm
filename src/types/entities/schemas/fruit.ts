@@ -1,4 +1,4 @@
-import { FruitId } from "../enums"
+import { FruitId } from "@/types"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface FruitSchema extends StaticAbstractSchema<FruitId> {

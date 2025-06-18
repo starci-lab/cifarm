@@ -1,6 +1,6 @@
 import { useSingletonHook } from "@/singleton"
-import { useGraphQLMutationRefreshSwrMutation } from "../swr"
-import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION, WELCOME_DISCLOSURE } from "@/singleton"
+import { useGraphQLMutationRefreshSwrMutation } from "@/singleton"
+import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION, WELCOME_MODAL_DISCLOSURE } from "@/singleton"
 import { useEffect } from "react"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { saveTokens } from "@/modules/apollo"
@@ -8,7 +8,7 @@ import { setAuthenticated, setLoaded, useAppDispatch,
     useAppSelector
 } from "@/redux"
 import { neutralPages, pathConstants, unauthenticatedPages } from "@/constants"
-import { useRouterWithSearchParams } from "../useRouterWithSearchParams"
+import { useRouterWithSearchParams } from "@/hooks"
 import { usePathname } from "next/navigation"
 //import { pathConstants } from "@/constants"
 import { useDisclosure } from "react-use-disclosure"
@@ -84,7 +84,7 @@ export const useAuthentication = () => {
         }
     }, [authenticated, pathname, loaded])
 
-    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(WELCOME_DISCLOSURE)
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(WELCOME_MODAL_DISCLOSURE)
     useEffect(() => {
         if (!authenticated) {
             return

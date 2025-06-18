@@ -1,5 +1,5 @@
 "use client"
-import { NEIGHBORS_DISCLOSURE } from "@/singleton"
+import { NEIGHBORS_MODAL_DISCLOSURE } from "@/singleton"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import React, { FC, ReactNode } from "react"
@@ -16,7 +16,7 @@ import {
 
 export const NeighborsModal: FC = () => {
     const { toggle, isOpen } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_DISCLOSURE)
+    useSingletonHook<ReturnType<typeof useDisclosure>>(NEIGHBORS_MODAL_DISCLOSURE)
 
     const selectedTab = useAppSelector((state) => state.tabReducer.neighborsTab)
     const dispatch = useAppDispatch()

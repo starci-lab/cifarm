@@ -1,4 +1,4 @@
-import { FruitCurrentState } from "../enums"
+import { FruitCurrentState } from "@/types"
 import { AbstractSchema } from "./abstract"
 
 export interface FruitInfoSchema extends AbstractSchema {

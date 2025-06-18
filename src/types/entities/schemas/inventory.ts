@@ -1,4 +1,4 @@
-import { InventoryKind } from "../enums"
+import { InventoryKind } from "@/types"
 import { AbstractSchema } from "./abstract"
 
 export interface InventorySchema extends AbstractSchema {

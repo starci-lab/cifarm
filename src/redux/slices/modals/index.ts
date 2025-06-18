@@ -11,6 +11,7 @@ import { notificationModalReducer } from "./notification-modal"
 import { sellModalReducer } from "./sell-modal"
 import { shipModalReducer } from "./ship-modal"
 import { upgradeModalReducer } from "./upgrade-modal"
+import { walletConnectionRequiredModalReducer } from "./wallet-connection-required-modal"
 
 // export all the modals
 export * from "./inventory-modal"
@@ -25,6 +26,7 @@ export * from "./notification-modal"
 export * from "./sell-modal"
 export * from "./ship-modal"
 export * from "./upgrade-modal"
+export * from "./wallet-connection-required-modal"
 
 // combine all the modals
 const modalReducer = combineReducers({
@@ -40,6 +42,7 @@ const modalReducer = combineReducers({
     sellModal: sellModalReducer,
     shipModal: shipModalReducer,
     upgradeModal: upgradeModalReducer,
+    walletConnectionRequiredModal: walletConnectionRequiredModalReducer,
 })
 
 export { modalReducer }

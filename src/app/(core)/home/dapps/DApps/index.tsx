@@ -6,22 +6,21 @@ import { useSingletonHook } from "@/singleton"
 import { assetIconMap, AssetIconId } from "@/modules/assets"
 import { useDisclosure } from "react-use-disclosure"
 import { TokenKey } from "@/types"
-import { useGraphQLQueryStaticSwr, useRouterWithSearchParams } from "@/hooks"
-import { PURCHASE_NFT_BOXES_DISCLOSURE, QUERY_STATIC_SWR_MUTATION } from "@/singleton"
+import { useRouterWithSearchParams } from "@/hooks"
+import { PURCHASE_NFT_BOXES_MODAL_DISCLOSURE } from "@/singleton"
 import { ChainKey } from "@/modules/blockchain"
 import { envConfig } from "@/env"
+import { useAppSelector } from "@/redux"
 
 export const DApps: FC = () => {
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(QUERY_STATIC_SWR_MUTATION)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
     const { open: openPurchaseNFTBoxesModal } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        PURCHASE_NFT_BOXES_DISCLOSURE
+        PURCHASE_NFT_BOXES_MODAL_DISCLOSURE
     )
     const network = envConfig().network     
     const router = useRouterWithSearchParams()
-    if (!staticSwr.data?.data.tokens) return null
+    if (!staticData?.tokens) return null
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <DAppCard
@@ -31,15 +30,15 @@ export const DApps: FC = () => {
                     <div className="flex items-center gap-1">
                         <TokenIcon
                             tokenKey={
-                                staticSwr.data?.data.nftBoxInfo.tokenKey ||
+                                staticData?.nftBoxInfo.tokenKey ||
                                 TokenKey.Native
                             }
                             chainKey={ChainKey.Solana}
                             network={network}
-                            tokens={staticSwr.data?.data.tokens}
+                            tokens={staticData?.tokens}
                         />
                         <div>
-                            {staticSwr.data?.data.nftBoxInfo.boxPrice}
+                            {staticData?.nftBoxInfo.boxPrice}
                         </div>
                     </div>
                 }

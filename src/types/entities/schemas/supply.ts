@@ -1,4 +1,4 @@
-import { SupplyId, SupplyType } from "../enums"
+import { SupplyId, SupplyType } from "@/types"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface SupplySchema extends StaticAbstractSchema<SupplyId> {

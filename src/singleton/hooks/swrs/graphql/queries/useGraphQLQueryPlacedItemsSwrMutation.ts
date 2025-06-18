@@ -21,7 +21,7 @@ export const useGraphQLQueryPlacedItemsSwrMutation = (): UseSWRMutation<
             const { ...args } = { ...extraArgs.arg }
             const data = await queryPlacedItems({ ...args })
             if (!synced) {
-                dispatch(setPlacedItems(data.data.placedItems))
+                dispatch(setPlacedItems(data.data?.placedItems ?? []))
                 setSynced(true)
             }
             return data

@@ -21,8 +21,10 @@ export interface CoreState {
   followees: Counted<UserSchema>;
   inventories: Array<InventorySchema>;
   placedItems: Array<PlacedItemSchema>;
+  storedPlacedItems: Counted<PlacedItemSchema>;
   bulkPaids?: QueryBulkPaidsResponse;
   vaultCurrent?: QueryVaultCurrentResponse;
+  leaderboard: Array<UserSchema>;
 }
 
 const initialState: CoreState = {
@@ -36,6 +38,11 @@ const initialState: CoreState = {
     },
     inventories: [],
     placedItems: [],
+    storedPlacedItems: {
+        data: [],
+        count: 0,
+    },
+    leaderboard: [],
 }
 
 export const coreApiSlice = createSlice({
@@ -63,6 +70,9 @@ export const coreApiSlice = createSlice({
         setPlacedItems: (state, action: PayloadAction<Array<PlacedItemSchema>>) => {
             state.placedItems = action.payload
         },
+        setStoredPlacedItems: (state, action: PayloadAction<Counted<PlacedItemSchema>>) => {
+            state.storedPlacedItems = action.payload
+        },
         setBulkPaids: (
             state,
             action: PayloadAction<QueryBulkPaidsResponse | undefined>
@@ -75,6 +85,9 @@ export const coreApiSlice = createSlice({
         ) => {
             state.vaultCurrent = action.payload
         },
+        setLeaderboard: (state, action: PayloadAction<Array<UserSchema>>) => {
+            state.leaderboard = action.payload
+        },
     },
 })
 
@@ -86,5 +99,8 @@ export const {
     setFollowees,
     setInventories,
     setPlacedItems,
+    setStoredPlacedItems,
     setBulkPaids,
+    setLeaderboard,
+    setVaultCurrent,
 } = coreApiSlice.actions

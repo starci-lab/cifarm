@@ -1,5 +1,4 @@
-import { PlacedItemType } from "../enums"
-import { PlacedItemSchema } from "../schemas"
+import { PlacedItemSchema, PlacedItemType } from "@/types"
 import { QueryStaticResponse } from "@/modules/apollo"
 
 export interface GetUpgradePriceParams {

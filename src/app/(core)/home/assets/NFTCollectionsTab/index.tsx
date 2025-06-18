@@ -1,18 +1,15 @@
-import { QUERY_STATIC_SWR_MUTATION } from "@/singleton"
-import { useGraphQLQueryStaticSwr } from "@/hooks"
-import { useSingletonHook } from "@/singleton"
+
 import React, { FC } from "react"
 import { valuesWithKey } from "@/modules/common"
 import { envConfig } from "@/env"
 import { WrapperNFTCollection } from "./WrapperNFTCollection"
+import { useAppSelector } from "@/redux"
 
 export const NFTCollectionsTab: FC = () => {
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(QUERY_STATIC_SWR_MUTATION)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
     const nftCollections = valuesWithKey(
-        staticSwr.data?.data.nftCollections || {}
+        staticData?.nftCollections || {}
     )
     const network = envConfig().network
 

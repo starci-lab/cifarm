@@ -2,15 +2,14 @@ import React, { FC } from "react"
 import { NFTSheet } from "./NFTSheet"
 import { TokenSheet } from "./TokenSheet"
 
-export const MODAL_CONTAINER_ID = "modals"
+export const SHEET_CONTAINER_ID = "sheets"
 
-const Modals: FC = () => {
+const Sheets: FC = () => {
     return (
-        <div id={MODAL_CONTAINER_ID}>
+        <div id={SHEET_CONTAINER_ID}>
             <NFTSheet />
             <TokenSheet />
-            <NFTSheet />
         </div>
     )
 }
-export default Modals
+export default Sheets

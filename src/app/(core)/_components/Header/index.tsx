@@ -22,7 +22,6 @@ export const Header = () => {
         <header className="w-full overflow-hidden sticky top-0 z-50">
             {/* Blurred background */}
             <div className="absolute inset-0 bg-opacity-95 backdrop-blur-sm z-0"></div>
-
             <div className="container mx-auto px-4 py-4 flex items-center justify-between relative z-10">
                 <Logo />
                 {/* Desktop Navigation */}
@@ -35,7 +34,6 @@ export const Header = () => {
                         Play
                     </PulsatingActionButton>
                 </div>}
-
                 {/* Mobile Menu Button */}
                 {isMobile && (
                     <ExtendedButton

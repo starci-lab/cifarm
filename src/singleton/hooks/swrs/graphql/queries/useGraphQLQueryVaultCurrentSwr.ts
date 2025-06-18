@@ -6,7 +6,8 @@ import {
 } from "@/modules/apollo"
 import useSWR from "swr"
 import { ApolloQueryResult } from "@apollo/client"
-import { useAppSelector } from "@/redux"
+import { setVaultCurrent, useAppSelector } from "@/redux"
+import { useAppDispatch } from "@/redux"
 import { envConfig } from "@/env"
 
 export const useGraphQLQueryVaultCurrentSwr = (): UseSWR<
@@ -14,6 +15,7 @@ export const useGraphQLQueryVaultCurrentSwr = (): UseSWR<
   QueryVaultCurrentParams
 > => {
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    const dispatch = useAppDispatch()
     const swr = useSWR(
         authenticated ? "QUERY_VAULT_CURRENT" : null,
         async () => {
@@ -22,6 +24,7 @@ export const useGraphQLQueryVaultCurrentSwr = (): UseSWR<
                     network: envConfig().network,
                 }
             })
+            dispatch(setVaultCurrent(response.data?.vaultCurrent))
             return response
         }
     )

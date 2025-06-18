@@ -10,15 +10,6 @@ import { Account } from "@/modules/dexie"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { NeighborsTab } from "./tab"
 
-export enum PlayerContext {
-    Home = "home",
-    Neighbor = "neighbor",
-    Moving = "moving",
-    Selling = "selling",
-    PlacingNFT = "placingNFT",
-    Buying = "buying",
-}
-
 export interface Accounts {
   accounts: Array<Account>;
   activateAccountId: number;
@@ -46,12 +37,8 @@ export interface SessionState {
   selectedChainKey?: ChainKey;
   // selected token key
   tokenKey: string;
-  // placed item id
-  selectedPlacedItemId?: string;
   fromToolIndex?: number;
   selectedToolId?: string;
-  playerContext: PlayerContext;
-  showGameUI: boolean;
   addresses: Array<string>;
   activeNeighborCard?: NeighborsTab;
   selectedSidebar?: Sidebar;
@@ -72,8 +59,6 @@ const initialState: SessionState = {
     collectionKey: "",
     nftAddress: "",
     tokenKey: "",
-    playerContext: PlayerContext.Home,
-    showGameUI: false,
     addresses: [],
     selectedMainVisualKey: "visual-1",
 }
@@ -111,24 +96,15 @@ export const sessionSlice = createSlice({
         },
         setNftAddress: (state, action: PayloadAction<string>) => {
             state.nftAddress = action.payload
-        },
-        setSelectedPlacedItemId: (state, action: PayloadAction<string>) => {
-            state.selectedPlacedItemId = action.payload
-        },
+        },  
         setFromToolIndex: (state, action: PayloadAction<number>) => {
             state.fromToolIndex = action.payload
         },
         setSelectedToolId: (state, action: PayloadAction<string>) => {
             state.selectedToolId = action.payload
         },
-        setPlayerContext: (state, action: PayloadAction<PlayerContext>) => {
-            state.playerContext = action.payload
-        },
         setSelectedChainKey: (state, action: PayloadAction<ChainKey | undefined>) => {
             state.selectedChainKey = action.payload
-        },
-        setShowGameUI: (state, action: PayloadAction<boolean>) => {
-            state.showGameUI = action.payload
         },
         setAddresses: (state, action: PayloadAction<Array<string>>) => {
             state.addresses = action.payload
@@ -156,11 +132,8 @@ export const {
     setAuthenticated,
     setCollectionKey,
     setNftAddress,
-    setSelectedPlacedItemId,
     setFromToolIndex,
     setSelectedToolId,
-    setPlayerContext,
-    setShowGameUI,
     setAddresses,
     setActiveNeighborCard,
     setActiveAccountId,

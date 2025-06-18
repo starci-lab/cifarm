@@ -42,7 +42,7 @@ import {
     useGraphQLMutationUpdateReferralSwrMutation,
 } from "../../hooks"
 import {
-    SingletonHookProvider as BaseSingletonHookProvider,
+    BaseSingletonHookProvider,
 } from "../../core"
 import { useDisclosure } from "react-use-disclosure"
 import React, { PropsWithChildren } from "react"
@@ -131,6 +131,7 @@ import {
     DOWNLOADING_MODAL_DISCLOSURE,
     WS,
 } from "../../keys"
+
 export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
     <BaseSingletonHookProvider
         hooks={{

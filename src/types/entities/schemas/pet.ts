@@ -1,4 +1,4 @@
-import { PetId, PetType } from "../enums"
+import { PetId, PetType } from "@/types"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface PetSchema extends StaticAbstractSchema<PetId> {

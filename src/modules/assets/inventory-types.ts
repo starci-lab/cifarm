@@ -1,5 +1,5 @@
 import { assetShopMap } from "./shop"
-import { InventoryTypeId } from "../entities"
+import { InventoryTypeId } from "@/types"
 import { assetProductMap } from "./products"
 import { assetSuppliesMap } from "./supplies"
 import { assetToolsMap } from "./tools"

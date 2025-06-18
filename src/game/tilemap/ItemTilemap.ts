@@ -28,7 +28,7 @@ import {
     UseHerbicideReasonCode,
     UsePesticideReasonCode,
     UseWateringCanReasonCode,
-} from "@/hooks"
+} from "@/singleton"
 import {
     Activities,
     AnimalSchema,
@@ -39,7 +39,6 @@ import {
     DecorationType,
     FlowerSchema,
     FruitSchema,
-    getSellInfoFromPlacedItemType,
     InteractionPermissions,
     InventorySchema,
     InventoryTypeSchema,
@@ -57,6 +56,7 @@ import {
     ToolSchema,
     UserSchema,
 } from "@/types"
+import { getSellInfoFromPlacedItemType } from "@/utils"
 import { PartialDeep } from "type-fest"
 import {
     CacheKey,

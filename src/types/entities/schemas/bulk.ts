@@ -1,4 +1,4 @@
-import { TokenKey } from "../enums"
+import { TokenKey } from "@/types"
 import { AbstractSchema } from "./abstract"
 
 export interface BulkProduct {

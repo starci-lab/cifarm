@@ -3,7 +3,7 @@ import {
     QueryStaticResponse,
     queryStatic,
 } from "@/modules/apollo"
-import { useAppSelector } from "@/redux"
+import { setStatic, useAppSelector, useAppDispatch } from "@/redux"
 import { ApolloQueryResult } from "@apollo/client"
 import useSWR from "swr"
 
@@ -12,10 +12,13 @@ export const useGraphQLQueryStaticSwr: () => UseSWR<
   void
 > = () => {
     const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    const dispatch = useAppDispatch()
     const swr = useSWR(
         authenticated ? "QUERY_STATIC" : null,
         async () => {
-            return await queryStatic()
+            const response = await queryStatic()
+            dispatch(setStatic(response.data))
+            return response
         }
     )
     //return the state and the data

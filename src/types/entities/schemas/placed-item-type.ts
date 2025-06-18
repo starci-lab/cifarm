@@ -1,5 +1,5 @@
 import { StaticAbstractSchema } from "./abstract"
-import { PlacedItemType, PlacedItemTypeId } from "../enums"
+import { PlacedItemType, PlacedItemTypeId } from "@/types"
 
 export interface PlacedItemTypeSchema extends StaticAbstractSchema<PlacedItemTypeId> {
     type: PlacedItemType

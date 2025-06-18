@@ -1,6 +1,6 @@
 import { envConfig } from "@/env"
 import { ChainKey, Network } from "./common"
-import { PlacedItemTypeId } from "../entities"
+import { PlacedItemTypeId } from "@/types"
 
 export enum DefaultToken {
     Native = "native",

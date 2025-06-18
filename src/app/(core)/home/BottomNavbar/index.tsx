@@ -1,13 +1,19 @@
 "use client"
 
-import { SHEET_BOTTOM_NAV_DISCLOSURE } from "@/singleton"
+import { BOTTOM_NAV_SHEET_DISCLOSURE } from "@/singleton"
 import { pathConstants } from "@/constants"
-import {
-    useRouterWithSearchParams
-} from "@/hooks"
+import { useRouterWithSearchParams } from "@/hooks"
 import { useIsMobile } from "@/hooks/useIsMobile"
 import { useSingletonHook } from "@/singleton"
-import { Coins, Cube, DotsThree,  GameController,  Plant,  SquaresFour, XLogo } from "@phosphor-icons/react"
+import {
+    Coins,
+    Cube,
+    DotsThree,
+    GameController,
+    Plant,
+    SquaresFour,
+    XLogo,
+} from "@phosphor-icons/react"
 import { useDisclosure } from "react-use-disclosure"
 import { usePathname } from "next/navigation"
 import React, { FC, ReactNode } from "react"
@@ -15,19 +21,19 @@ import { Selection } from "./Selection"
 import { Button } from "@/components"
 
 interface NavItem {
-    name: string
-    icon: ReactNode
-    path?: string
-    items?: Array<NavItem>
+  name: string;
+  icon: ReactNode;
+  path?: string;
+  items?: Array<NavItem>;
 }
 
 export const BottomNavbar: FC = () => {
     const router = useRouterWithSearchParams()
     const isMobile = useIsMobile()
     const pathname = usePathname()
-    const { open: openBottomNavSheet } = useSingletonHook<ReturnType<typeof useDisclosure>>(
-        SHEET_BOTTOM_NAV_DISCLOSURE
-    )
+    const { open: openBottomNavSheet } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(BOTTOM_NAV_SHEET_DISCLOSURE)
     const navItems: Array<NavItem> = [
         {
             name: "Home",
@@ -90,7 +96,10 @@ export const BottomNavbar: FC = () => {
                         <div className="w-10 relative">
                             <Button
                                 onClick={() => router.push(pathConstants.play)}
-                                color="primary" className="scale-150 rounded-full absolute bottom-2 shadow-lg left-1/2 -translate-x-1/2" size="icon">
+                                color="primary"
+                                className="scale-150 rounded-full absolute bottom-2 shadow-lg left-1/2 -translate-x-1/2"
+                                size="icon"
+                            >
                                 <Plant />
                             </Button>
                         </div>
@@ -110,5 +119,5 @@ export const BottomNavbar: FC = () => {
                 </nav>
             )}
         </>
-    ) 
+    )
 }

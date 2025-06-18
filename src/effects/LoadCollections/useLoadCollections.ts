@@ -1,4 +1,4 @@
-import { useGraphQLQueryBlockchainCollectionSwr } from "../../swr"
+import { useGraphQLQueryBlockchainCollectionSwr } from "@/singleton"
 import { useEffect } from "react"
 import { setNFTCollectionsSwr, useAppDispatch } from "@/redux"
 import { NFTCollectionKey } from "@/types"

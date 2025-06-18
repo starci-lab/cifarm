@@ -1,5 +1,5 @@
 "use client"
-import { QUESTS_DISCLOSURE } from "@/singleton"
+import { QUESTS_MODAL_DISCLOSURE } from "@/singleton"
 import { useSingletonHook } from "@/singleton"
 import React, { FC, ReactNode } from "react"
 import { DailyTab } from "./DailyTab"
@@ -18,7 +18,7 @@ import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector, useAppDispatch, QuestsTab as QuestsTabEnum, setQuestsTab } from "@/redux"
 export const QuestsModal: FC = () => {
     const { toggle, isOpen } =
-    useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_DISCLOSURE)
+    useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_MODAL_DISCLOSURE)
 
     const selectedTab = useAppSelector((state) => state.tabReducer.questsTab)
     const dispatch = useAppDispatch()

@@ -6,7 +6,7 @@ import {
     NFTCollectionKey,
     TokenKey,
     TokenType,
-} from "../enums"
+} from "@/types"
 
 export interface SystemSchema {
   value: object;

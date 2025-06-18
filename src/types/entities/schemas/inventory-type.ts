@@ -1,4 +1,4 @@
-import { InventoryType, InventoryTypeId } from "../enums"
+import { InventoryType, InventoryTypeId } from "@/types"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface InventoryTypeSchema extends StaticAbstractSchema<InventoryTypeId> {

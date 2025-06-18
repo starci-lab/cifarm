@@ -1,4 +1,4 @@
-import { ToolId } from "../enums"
+import { ToolId } from "@/types"
 import { StaticAbstractSchema } from "./abstract"
 
 export interface ToolSchema extends StaticAbstractSchema<ToolId> {
