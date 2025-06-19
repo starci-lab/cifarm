@@ -56,7 +56,6 @@ export const useMobileCallbacks = () => {
         doneRef.current = true
         const action = searchParams.get("action")
         // reset the path param
-        router.replace(window.location.pathname)
         if (
             action !== "signTransaction" 
             && action !== "signAllTransactions"
@@ -66,6 +65,7 @@ export const useMobileCallbacks = () => {
         if (!signedTransactions?.length) return
         const handleEffect = async () => {
             open()
+            //router.replace(window.location.pathname)
             try {
                 const data = await sessionDb.keyValueStore.get({
                     key: SessionDbKey.SolanaTransaction,
