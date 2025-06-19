@@ -130,14 +130,15 @@ export const usePhantomWalletActions = () => {
                 sharedSecret: phantomSharedSecret,
             })
 
-            const url = formatUrl(`${BASE_DEEPLINK_URL}/signTransaction`, {
-                dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
-                nonce: bs58.encode(nonce),
-                redirect_link: formatUrl(window.location.href, {
-                    action: "signTransaction",
-                }),
-                payload: bs58.encode(encryptedData),
-            })
+            const url = formatUrl(
+                `${BASE_DEEPLINK_URL}/signTransaction`, {
+                    dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
+                    nonce: bs58.encode(nonce),
+                    redirect_link: formatUrl(window.location.href, {
+                        action: "signTransaction",
+                    }),
+                    payload: bs58.encode(encryptedData),
+                })
             window.open(url, "_blank")
             //window.close()
         } else {

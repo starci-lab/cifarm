@@ -7,7 +7,6 @@ export const useInventoriesEffects = () => {
     const inventories = useAppSelector((state) => state.apiReducer.coreApi.inventories)
     // load inventory data
     useEffect(() => {
-        if (!inventories) return
         ExternalEventEmitter.on(ExternalEventName.LoadInventories, async () => {
             //load inventory data
             ExternalEventEmitter.emit(

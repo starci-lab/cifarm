@@ -1,13 +1,12 @@
 import { Scene } from "phaser"
 import { SceneName } from "../scene"
-import { ExternalEventEmitter, ExternalEventName } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    ExternalEventName,
+} from "@/modules/event-emitter"
 import { QueryStaticResponse } from "@/modules/apollo"
 import { CacheKey, PlacedItemsData } from "../types"
-import {
-    InventorySchema,
-    PlacedItemSchema,
-    UserSchema,
-} from "@/types"
+import { InventorySchema, PlacedItemSchema, UserSchema } from "@/types"
 import {
     loadFlowerAssets,
     loadFruitAssets,
@@ -70,7 +69,7 @@ export class LoadingScene extends Scene {
                 flowers,
                 terrains,
                 interactionPermissions,
-                decorations
+                decorations,
             }: QueryStaticResponse) => {
                 //store the static data in the cache
                 this.cache.obj.add(CacheKey.PlacedItemTypes, placedItemTypes)
@@ -91,7 +90,10 @@ export class LoadingScene extends Scene {
                 this.cache.obj.add(CacheKey.FruitInfo, fruitInfo)
                 this.cache.obj.add(CacheKey.Flowers, flowers)
                 this.cache.obj.add(CacheKey.Terrains, terrains)
-                this.cache.obj.add(CacheKey.InteractionPermissions, interactionPermissions)
+                this.cache.obj.add(
+                    CacheKey.InteractionPermissions,
+                    interactionPermissions
+                )
                 //load the static data
                 this.handleFetchData()
             }
@@ -114,10 +116,13 @@ export class LoadingScene extends Scene {
         )
 
         //listen for load user data event
-        ExternalEventEmitter.once(ExternalEventName.UserLoaded, async (user: UserSchema) => {
-            this.cache.obj.add(CacheKey.User, user)
-            this.handleFetchData()
-        })
+        ExternalEventEmitter.once(
+            ExternalEventName.UserLoaded,
+            async (user: UserSchema) => {
+                this.cache.obj.add(CacheKey.User, user)
+                this.handleFetchData()
+            }
+        )
 
         //listen for load inventory event
         ExternalEventEmitter.once(
@@ -163,20 +168,27 @@ export class LoadingScene extends Scene {
         const { width, height } = this.game.scale
 
         //  We loaded this image in our Boottrap Scene, so we can display it here
-        const background = this.add.image(width / 2, height / 2, assetBootstrapMap[AssetBootstrapId.Background].phaser.base.assetKey)
-        
+        const background = this.add.image(
+            width / 2,
+            height / 2,
+            assetBootstrapMap[AssetBootstrapId.Background].phaser.base.assetKey
+        )
+
         // scale the background to fit the screen
-        let scale =  width/background.width
+        let scale = width / background.width
         const scaledHeight = background.height * scale
         if (scaledHeight < height) {
-            scale = height/background.height
+            scale = height / background.height
         }
         background.setScale(scale)
 
         // We add logo to the scene
-        const logo = this.add
-            .image(width / 2, height / 4, assetBootstrapMap[AssetBootstrapId.Logo].phaser.base.assetKey)
-        const scaledLogo = 400/logo.width
+        const logo = this.add.image(
+            width / 2,
+            height / 4,
+            assetBootstrapMap[AssetBootstrapId.Logo].phaser.base.assetKey
+        )
+        const scaledLogo = 400 / logo.width
         logo.setScale(scaledLogo)
         //  Animate the logo
         this.tweens.add({
@@ -214,7 +226,7 @@ export class LoadingScene extends Scene {
             loadStateAssets(this),
             loadBuildingAssets(this),
             loadMiscAssets(this),
-            loadIconAssets(this),   
+            loadIconAssets(this),
             loadTerrainAssets(this),
             loadToolAssets(this),
             loadSupplyAssets(this),

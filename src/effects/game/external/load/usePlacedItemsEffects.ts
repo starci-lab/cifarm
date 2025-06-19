@@ -5,9 +5,17 @@ import {
 } from "@/modules/event-emitter"
 import { useAppDispatch, setPlacedItems } from "@/redux"
 import { useAppSelector } from "@/redux"
+import {
+    GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION,
+    useSingletonHook,
+    useGraphQLQueryPlacedItemsSwrMutation,
+} from "@/singleton"
 
 export const usePlacedItemsEffects = () => {
-    //get the singleton instance of the user swr
+    const { swrMutation: placedItemsSwrMutation } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryPlacedItemsSwrMutation>
+  >(GRAPHQL_QUERY_PLACED_ITEMS_SWR_MUTATION)
+  //get the singleton instance of the user swr
     const placedItems = useAppSelector(
         (state) => state.apiReducer.coreApi.placedItems
     )
@@ -17,11 +25,16 @@ export const usePlacedItemsEffects = () => {
         if (!placedItems) return
         ExternalEventEmitter.on(
             ExternalEventName.LoadPlacedItems,
-            async () => {
-                dispatch(setPlacedItems(placedItems))
+            async (userId?: string) => {
+                const response = await placedItemsSwrMutation.trigger({
+                    request: {
+                        userId,
+                    },
+                })
+                dispatch(setPlacedItems(response.data?.placedItems))
                 ExternalEventEmitter.emit(
                     ExternalEventName.PlacedItemsLoaded,
-                    placedItems
+                    response.data?.placedItems
                 )
             }
         )
@@ -29,22 +42,5 @@ export const usePlacedItemsEffects = () => {
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.LoadPlacedItems)
         }
-    }, [placedItems])
-
-    // load inventory data
-    useEffect(() => {
-        ExternalEventEmitter.on(
-            ExternalEventName.LoadPlacedItems,
-            async () => {
-                ExternalEventEmitter.emit(
-                    ExternalEventName.PlacedItemsLoaded,
-                    placedItems
-                )
-            }
-        )
-
-        return () => {
-            ExternalEventEmitter.removeListener(ExternalEventName.LoadPlacedItems)
-        }
-    }, [placedItems])
+    }, [placedItemsSwrMutation, dispatch])
 }

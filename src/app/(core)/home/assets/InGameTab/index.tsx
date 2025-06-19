@@ -10,8 +10,20 @@ import {
 import { AssetIconId } from "@/modules/assets"
 import { assetIconMap } from "@/modules/assets"
 import { useSingletonHook } from "@/singleton"
-import { BUY_GOLDS_MODAL_DISCLOSURE, BUY_ENERGY_MODAL_DISCLOSURE, GRAPHQL_QUERY_USER_SWR, GRAPHQL_QUERY_INVENTORIES_SWR, WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE, EXPAND_LAND_LIMIT_MODAL_DISCLOSURE, GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR } from "@/singleton"
-import { useGraphQLQueryUserSwr, useGraphQLQueryInventoriesSwr, useGraphQLQueryOccupiedPlacedItemCounts } from "@/singleton"
+import {
+    BUY_GOLDS_MODAL_DISCLOSURE,
+    BUY_ENERGY_MODAL_DISCLOSURE,
+    GRAPHQL_QUERY_USER_SWR,
+    GRAPHQL_QUERY_INVENTORIES_SWR,
+    WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE,
+    EXPAND_LAND_LIMIT_MODAL_DISCLOSURE,
+    GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR,
+} from "@/singleton"
+import {
+    useGraphQLQueryUserSwr,
+    useGraphQLQueryInventoriesSwr,
+    useGraphQLQueryOccupiedPlacedItemCounts,
+} from "@/singleton"
 import { InventoryCard } from "./InventoryCard"
 import { InventoryKind } from "@/types"
 import { useDisclosure } from "react-use-disclosure"
@@ -22,30 +34,34 @@ import { LandLimit } from "@/components"
 
 export const InGameTab: FC = () => {
     const inventories = useAppSelector(
-        state => state.apiReducer.coreApi.inventories
+        (state) => state.apiReducer.coreApi.inventories
     )
     const { swr: userSwr } = useSingletonHook<
-        ReturnType<typeof useGraphQLQueryUserSwr>
-    >(GRAPHQL_QUERY_USER_SWR)
-    const user = useAppSelector(
-        (state) => state.apiReducer.coreApi.user
-    )
+    ReturnType<typeof useGraphQLQueryUserSwr>
+  >(GRAPHQL_QUERY_USER_SWR)
+    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
     const { swr: inventoriesSwr } = useSingletonHook<
-        ReturnType<typeof useGraphQLQueryInventoriesSwr>
-    >(GRAPHQL_QUERY_INVENTORIES_SWR)
-    const { open: openBuyGoldsModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_GOLDS_MODAL_DISCLOSURE)
-    const { open: openBuyEnergyModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(BUY_ENERGY_MODAL_DISCLOSURE)
-    const { open: openWalletConnectionRequiredModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE)
-    const { address } = useAppSelector(state => state.walletReducer.solanaWallet)
-    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
-    const { open: openExpandLandLimitModal } =
-        useSingletonHook<ReturnType<typeof useDisclosure>>(EXPAND_LAND_LIMIT_MODAL_DISCLOSURE)
-    const { swr: occupiedPlacedItemCountsSwr } = useSingletonHook<ReturnType<typeof useGraphQLQueryOccupiedPlacedItemCounts>>(
-        GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR
+    ReturnType<typeof useGraphQLQueryInventoriesSwr>
+  >(GRAPHQL_QUERY_INVENTORIES_SWR)
+    const { open: openBuyGoldsModal } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(BUY_GOLDS_MODAL_DISCLOSURE)
+    const { open: openBuyEnergyModal } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(BUY_ENERGY_MODAL_DISCLOSURE)
+    const { open: openWalletConnectionRequiredModal } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(WALLET_CONNECTION_REQUIRED_MODAL_DISCLOSURE)
+    const { address } = useAppSelector(
+        (state) => state.walletReducer.solanaWallet
     )
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
+    const { open: openExpandLandLimitModal } = useSingletonHook<
+    ReturnType<typeof useDisclosure>
+  >(EXPAND_LAND_LIMIT_MODAL_DISCLOSURE)
+    const { swr: occupiedPlacedItemCountsSwr } = useSingletonHook<
+    ReturnType<typeof useGraphQLQueryOccupiedPlacedItemCounts>
+  >(GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR)
     console.log(occupiedPlacedItemCountsSwr.data)
     if (!staticData) {
         return null
@@ -60,7 +76,12 @@ export const InGameTab: FC = () => {
                             title: "text-2xl",
                         }}
                     />
-                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
+                    <ExtendedButton
+                        color="secondary"
+                        size="icon"
+                        variant="flat"
+                        onClick={() => userSwr.mutate()}
+                    >
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
@@ -71,19 +92,19 @@ export const InGameTab: FC = () => {
                             className="w-10 h-10"
                             src={assetIconMap[AssetIconId.Gold].base.assetUrl}
                         />
-                        <div className="text-2xl font-bold">
-                            {user?.golds}
-                        </div>
+                        <div className="text-2xl font-bold">{user?.golds}</div>
                     </div>
-                    <ExtendedButton onClick={
-                        () => {
+                    <ExtendedButton
+                        onClick={() => {
                             if (!address) {
                                 openWalletConnectionRequiredModal()
                                 return
                             }
                             openBuyGoldsModal()
-                        }
-                    }>Buy</ExtendedButton>
+                        }}
+                    >
+            Buy
+                    </ExtendedButton>
                 </div>
             </div>
             <Spacer y={6} />
@@ -95,7 +116,12 @@ export const InGameTab: FC = () => {
                             title: "text-2xl",
                         }}
                     />
-                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
+                    <ExtendedButton
+                        color="secondary"
+                        size="icon"
+                        variant="flat"
+                        onClick={() => userSwr.mutate()}
+                    >
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
@@ -123,7 +149,12 @@ export const InGameTab: FC = () => {
                         }}
                         tooltipString="tCIFARM is the token earned by referring friends. In the game, it can be converted to real CIFARM at a fixed rate once the token is listed."
                     />
-                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => userSwr.mutate()}>
+                    <ExtendedButton
+                        color="secondary"
+                        size="icon"
+                        variant="flat"
+                        onClick={() => userSwr.mutate()}
+                    >
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
@@ -134,9 +165,7 @@ export const InGameTab: FC = () => {
                             className="w-10 h-10"
                             src={assetIconMap[AssetIconId.TCIFARM].base.assetUrl}
                         />
-                        <div className="text-2xl font-bold">
-                            {user?.tCIFARM}
-                        </div>
+                        <div className="text-2xl font-bold">{user?.tCIFARM}</div>
                     </div>
                 </div>
             </div>
@@ -150,13 +179,17 @@ export const InGameTab: FC = () => {
                         }}
                         tooltipString="The number of items you can build on your land."
                     />
-                    <ExtendedButton color="secondary" size="icon" variant="flat" onClick={
-                        async () => {
+                    <ExtendedButton
+                        color="secondary"
+                        size="icon"
+                        variant="flat"
+                        onClick={async () => {
                             await Promise.all([
                                 userSwr.mutate(),
-                                occupiedPlacedItemCountsSwr.mutate()
+                                occupiedPlacedItemCountsSwr.mutate(),
                             ])
-                        }}>
+                        }}
+                    >
                         <ArrowsClockwise />
                     </ExtendedButton>
                 </div>
@@ -166,46 +199,61 @@ export const InGameTab: FC = () => {
                         isGrid={true}
                         tileLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">{
-                                    occupiedPlacedItemCountsSwr.data?.tileCount
-                                }
-                                    /</span>
-                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].tileLimit ?? 0}</span>
+                                <span className="text-muted-foreground text-lg">
+                                    {occupiedPlacedItemCountsSwr.data?.tileCount}/
+                                </span>
+                                <span>
+                                    {staticData?.landLimitInfo.landLimits[
+                                        user?.landLimitIndex ?? 0
+                                    ].tileLimit ?? 0}
+                                </span>
                             </div>
                         }
                         buildingLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">{
-                                    occupiedPlacedItemCountsSwr.data?.buildingCount
-                                }
-                                    /</span>
-                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].buildingLimit ?? 0}</span>
+                                <span className="text-muted-foreground text-lg">
+                                    {occupiedPlacedItemCountsSwr.data?.buildingCount}/
+                                </span>
+                                <span>
+                                    {staticData?.landLimitInfo.landLimits[
+                                        user?.landLimitIndex ?? 0
+                                    ].buildingLimit ?? 0}
+                                </span>
                             </div>
                         }
                         fruitLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">{
-                                    occupiedPlacedItemCountsSwr.data?.fruitCount
-                                }
-                                    /</span>
-                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].fruitLimit ?? 0}</span>
+                                <span className="text-muted-foreground text-lg">
+                                    {occupiedPlacedItemCountsSwr.data?.fruitCount}/
+                                </span>
+                                <span>
+                                    {staticData?.landLimitInfo.landLimits[
+                                        user?.landLimitIndex ?? 0
+                                    ].fruitLimit ?? 0}
+                                </span>
                             </div>
                         }
                         sameBuildingLimit={
                             <div>
-                                <span>{staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].sameBuildingLimit ?? 0}</span>
+                                <span>
+                                    {staticData?.landLimitInfo.landLimits[
+                                        user?.landLimitIndex ?? 0
+                                    ].sameBuildingLimit ?? 0}
+                                </span>
                             </div>
                         }
                     />
                     <Spacer y={4} />
-                    <ExtendedButton onClick={() => {
-                        if (!address) {
-                            openWalletConnectionRequiredModal()
-                            return
-                        }
-                        openExpandLandLimitModal()
-                    }}>
-                        Expand
+                    <ExtendedButton
+                        onClick={() => {
+                            if (!address) {
+                                openWalletConnectionRequiredModal()
+                                return
+                            }
+                            openExpandLandLimitModal()
+                        }}
+                    >
+            Expand
                     </ExtendedButton>
                 </div>
             </div>
@@ -217,7 +265,12 @@ export const InGameTab: FC = () => {
                         title: "text-2xl",
                     }}
                 />
-                <ExtendedButton color="secondary" size="icon" variant="flat" onClick={() => inventoriesSwr.mutate()}>
+                <ExtendedButton
+                    color="secondary"
+                    size="icon"
+                    variant="flat"
+                    onClick={() => inventoriesSwr.mutate()}
+                >
                     <ArrowsClockwise />
                 </ExtendedButton>
             </div>
