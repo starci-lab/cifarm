@@ -40,6 +40,8 @@ import {
     useGraphQLQueryBulkPaidsSwr,
     useGraphQLQueryLeaderboardSwr,
     useGraphQLMutationUpdateReferralSwrMutation,
+    useGraphQLMutationUpdateDisplayInformationSwrMutation,
+    useGraphQLMutationCreateSignedUrlSwrMutation,
 } from "../../hooks"
 import {
     BaseSingletonHookProvider,
@@ -129,8 +131,12 @@ import {
     NOTIFICATION_MODAL_DISCLOSURE,
     PROFILE_MODAL_DISCLOSURE,
     DOWNLOADING_MODAL_DISCLOSURE,
+    EDIT_DISPLAY_INFORMATION_MODAL_DISCLOSURE,
+    EDIT_AVATAR_MODAL_DISCLOSURE,
     WS,
     TRANSACTION_SUBMITTING_MOBILE_MODAL_DISCLOSURE,
+    GRAPHQL_MUTATION_CREATE_SIGNED_URL_SWR_MUTATION,
+    GRAPHQL_MUTATION_UPDATE_DISPLAY_INFORMATION_SWR_MUTATION,
 } from "../../keys"
 
 export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
@@ -154,6 +160,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             [NFT_STORAGE_MODAL_DISCLOSURE]: useDisclosure(),
             [DOWNLOAD_MODAL_DISCLOSURE]: useDisclosure(),
             [DOWNLOADING_MODAL_DISCLOSURE]: useDisclosure(),
+            [EDIT_AVATAR_MODAL_DISCLOSURE]: useDisclosure(),
             [SHOP_MODAL_DISCLOSURE]: useDisclosure(),
             [SELECT_NFT_COLLECTION_MODAL_DISCLOSURE]: useDisclosure(),
             [INVENTORY_MODAL_DISCLOSURE]: useDisclosure(),
@@ -180,6 +187,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             [REFERRAL_MODAL_DISCLOSURE]: useDisclosure(),
             [AUTHENTICATING_MODAL_DISCLOSURE]: useDisclosure(),
             [TRANSACTION_SUBMITTING_MOBILE_MODAL_DISCLOSURE]: useDisclosure(),
+            [EDIT_DISPLAY_INFORMATION_MODAL_DISCLOSURE]: useDisclosure(),
             [GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION]: useGraphQLMutationMintOffchainTokensSwrMutation(),
             [GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION]: useGraphQLMutationUnfollowSwrMutation(),
             [GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION]: useGraphQLMutationFollowSwrMutation(),
@@ -208,6 +216,8 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             [GRAPHQL_MUTATION_SEND_CONVERT_SOLANA_METAPLEX_NFTS_TRANSACTION_SWR_MUTATION]: useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation(),
             [GRAPHQL_MUTATION_CREATE_EXPAND_LAND_LIMIT_SOLANA_TRANSACTION_SWR_MUTATION]: useGraphQLMutationCreateExpandLandLimitSolanaTransactionSwrMutation(),
             [GRAPHQL_MUTATION_SEND_EXPAND_LAND_LIMIT_SOLANA_TRANSACTION_SWR_MUTATION]: useGraphQLMutationSendExpandLandLimitSolanaTransactionSwrMutation(),
+            [GRAPHQL_MUTATION_UPDATE_DISPLAY_INFORMATION_SWR_MUTATION]: useGraphQLMutationUpdateDisplayInformationSwrMutation(),
+            [GRAPHQL_MUTATION_CREATE_SIGNED_URL_SWR_MUTATION]: useGraphQLMutationCreateSignedUrlSwrMutation(),
             // queries
             [GRAPHQL_QUERY_INVENTORIES_SWR]: useGraphQLQueryInventoriesSwr(),
             [GRAPHQL_QUERY_STATIC_SWR]: useGraphQLQueryStaticSwr(),

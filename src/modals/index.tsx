@@ -31,6 +31,8 @@ import { BuyEnergyModal } from "./BuyEnergyModal"
 import { WalletConnectionRequiredModal } from "./WalletConnectionRequiredModal"
 import { ExpandLandLimitModal } from "./ExpandLandLimitModal"
 import { TransactionSubmittingMobileModal } from "./TransactionSubmittingMobileModal"
+import { EditDisplayInfomationModal } from "./EditDisplayInfomationModal"
+import { EditAvatarModal } from "./EditAvatarModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 
@@ -69,6 +71,8 @@ const Modals : FC = () => {
             <ExpandLandLimitModal />
             <WalletConnectionRequiredModal />
             <TransactionSubmittingMobileModal />
+            <EditDisplayInfomationModal />
+            <EditAvatarModal />
         </div>
     )
 }

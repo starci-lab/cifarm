@@ -1,22 +1,22 @@
 "use client"
 
-import { BlurEffect, Header, Spacer, Image } from "@/components"
-import { createJazziconBlobUrl } from "@/modules/jazz"
-import { useAppSelector } from "@/redux"
+import {
+    BlurEffect,
+    Header,
+    Spacer,
+} from "@/components"
 import React from "react"
+import { DisplayInfomation } from "./DisplayInfomation"
 
-const ProfilePage = () => {
-    const user = useAppSelector((state) => state.apiReducer.coreApi.user)
+const Page = () => {
     return (
         <div className="relativen">
             <BlurEffect size="lg" position="top" />
             <Header title="Profile" />
             <Spacer y={6} />
-            <div>
-                <Image src={user?.avatarUrl || createJazziconBlobUrl(user?.id || "")} alt="Profile Picture" className="w-40 h-40 rounded-lg" />
-            </div>
+            <DisplayInfomation />   
         </div>
     )
 }
 
-export default ProfilePage
+export default Page
