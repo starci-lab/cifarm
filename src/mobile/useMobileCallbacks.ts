@@ -21,7 +21,6 @@ import { ChainKey } from "@/modules/blockchain"
 import { addErrorToast, addTxHashToast } from "@/components"
 import { envConfig } from "@/env"
 import { useDisclosure } from "react-use-disclosure"
-import { useRouterWithSearchParams } from "@/hooks"
 
 export const useMobileCallbacks = () => {
     const isMobileDevice = useIsMobileDevice()
@@ -47,22 +46,17 @@ export const useMobileCallbacks = () => {
     const { open, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         TRANSACTION_SUBMITTING_MOBILE_MODAL_DISCLOSURE
     )
-    const router = useRouterWithSearchParams()
+    //const router = useRouterWithSearchParams()
     // handle transaction submitting
     const doneRef = useRef(false)
     useEffect(() => {
         if (doneRef.current) return
         if (!isMobileDevice) return
-        doneRef.current = true
         const action = searchParams.get("action")
         // reset the path param
-        if (
-            action !== "signTransaction" 
-            && action !== "signAllTransactions"
-        ) {
-            return
-        }
+        if (!action) return
         if (!signedTransactions?.length) return
+        doneRef.current = true
         const handleEffect = async () => {
             open()
             //router.replace(window.location.pathname)

@@ -43,7 +43,7 @@ export const usePhantomWalletActions = () => {
                 app_url: window.location.origin,
                 dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
                 cluster: network === Network.Mainnet ? "mainnet-beta" : "devnet",
-                redirect_link: formatUrl(`${window.location.origin}${window.location.pathname}`, {
+                redirect_link: formatUrl(window.location.href, {
                     action: "connect",
                 }),
             })
@@ -89,7 +89,7 @@ export const usePhantomWalletActions = () => {
             })
             const url = formatUrl(`${BASE_DEEPLINK_URL}/disconnect`, {
                 dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
-                redirect_link: formatUrl(`${window.location.origin}${window.location.pathname}`, {
+                redirect_link: formatUrl(window.location.href, {
                     action: "disconnect",
                 }),
                 nonce: bs58.encode(nonce),
@@ -133,27 +133,17 @@ export const usePhantomWalletActions = () => {
             const url = formatUrl(`${BASE_DEEPLINK_URL}/signTransaction`, {
                 dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
                 nonce: bs58.encode(nonce),
-                redirect_link: formatUrl(`${window.location.origin}${window.location.pathname}`, {
+                redirect_link: formatUrl(window.location.href, {
                     action: "signTransaction",
                 }),
                 payload: bs58.encode(encryptedData),
             })
-            console.log({
-                dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
-                nonce: bs58.encode(nonce),
-                redirect_link: formatUrl(`${window.location.origin}${window.location.pathname}`, {
-                    action: "signTransaction",
-                }),
-                payload: bs58.encode(encryptedData),
-            })
-            console.log(url)
             window.open(url, "_blank")
             //window.close()
         } else {
             if (!phantomProvider) {
                 throw new Error("Phantom provider is required")
             }
-            console.log(phantomProvider)
             const _signedTransaction = await phantomProvider.signTransaction(
                 transaction
             )
@@ -191,7 +181,7 @@ export const usePhantomWalletActions = () => {
             const url = formatUrl(`${BASE_DEEPLINK_URL}/signMessage`, {
                 dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
                 nonce: bs58.encode(nonce),
-                redirect_link: formatUrl(`${window.location.origin}${window.location.pathname}`, {
+                redirect_link: formatUrl(window.location.href, {
                     action: "signMessage",
                 }),
                 payload: bs58.encode(encryptedData),
@@ -236,7 +226,7 @@ export const usePhantomWalletActions = () => {
             const url = formatUrl(`${BASE_DEEPLINK_URL}/signAllTransactions`, {
                 dapp_encryption_public_key: bs58.encode(dappKeyPair.publicKey),
                 nonce: bs58.encode(nonce),
-                redirect_link: formatUrl(`${window.location.origin}${window.location.pathname}`, {
+                redirect_link: formatUrl(window.location.href, {
                     action: "signAllTransactions",
                 }),
                 payload: bs58.encode(encryptedData),
