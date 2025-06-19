@@ -1,48 +1,32 @@
+
 import { DocumentNode, gql } from "@apollo/client"
 import { authClient } from "../../auth-client"
 import { MutationParams } from "../../types"
 import { GraphQLResponse } from "../types"
 const mutation1 = gql`
-  mutation UpdateDisplayInformation(
-    $request: UpdateDisplayInformationRequest!
-  ) {
-    updateDisplayInformation(request: $request) {
+  mutation UpdateFollowX {
+    updateFollowX {
       message
       success
     }
   }
 `
 
-export enum MutationUpdateDisplayInformation {
+export enum MutationUpdateFollowX {
   Mutation1 = "mutation1",
 }
 
-const mutationMap: Record<MutationUpdateDisplayInformation, DocumentNode> = {
-    [MutationUpdateDisplayInformation.Mutation1]: mutation1,
+const mutationMap: Record<MutationUpdateFollowX, DocumentNode> = {
+    [MutationUpdateFollowX.Mutation1]: mutation1,
 }
 
-export interface UpdateDisplayInformationRequest {
-  username?: string;
-  avatarUrl?: string;
-}
+export type MutationUpdateFollowXParams = MutationParams<MutationUpdateFollowX>;
 
-export type MutationUpdateDisplayInformationParams = MutationParams<
-  MutationUpdateDisplayInformation,
-  UpdateDisplayInformationRequest
->;
-
-export const mutationUpdateDisplayInformation = async ({
-    mutation = MutationUpdateDisplayInformation.Mutation1,
-    request,
-}: MutationUpdateDisplayInformationParams) => {
+export const mutationUpdateFollowX = async ({
+    mutation = MutationUpdateFollowX.Mutation1,
+}: MutationUpdateFollowXParams) => {
     const mutationDocument = mutationMap[mutation]
-    if (!request) {
-        throw new Error("Request is required for update display information mutation")
-    }
-    return await authClient.mutate<{ updateDisplayInformation: GraphQLResponse }>(
-        {
-            mutation: mutationDocument,
-            variables: { request },
-        }
-    )
+    return await authClient.mutate<{ updateFollowX: GraphQLResponse }>({
+        mutation: mutationDocument,
+    })
 }

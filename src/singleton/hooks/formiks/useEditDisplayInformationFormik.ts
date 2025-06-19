@@ -1,8 +1,14 @@
 import { useSingletonHook } from "@/singleton/core"
 import { FormikProps, useFormik } from "formik"
 import * as Yup from "yup"
-import { GRAPHQL_MUTATION_CREATE_SIGNED_URL_SWR_MUTATION, GRAPHQL_MUTATION_UPDATE_DISPLAY_INFORMATION_SWR_MUTATION } from "../../keys"
-import { useGraphQLMutationCreateSignedUrlSwrMutation, useGraphQLMutationUpdateDisplayInformationSwrMutation, UseGraphQLMutationUpdateDisplayInformationSwrMutation } from "../swrs/graphql/mutations"
+import {
+    GRAPHQL_MUTATION_CREATE_SIGNED_URL_SWR_MUTATION,
+    GRAPHQL_MUTATION_UPDATE_DISPLAY_INFORMATION_SWR_MUTATION,
+} from "../../keys"
+import {
+    useGraphQLMutationCreateSignedUrlSwrMutation,
+    useGraphQLMutationUpdateDisplayInformationSwrMutation,
+} from "../swrs/graphql/mutations"
 import { addErrorToast } from "@/components"
 
 export interface EditDisplayInformationFormikValues {
@@ -15,17 +21,13 @@ export interface EditDisplayInformationFormikValues {
 
 export const useEditDisplayInformationFormik =
   (): FormikProps<EditDisplayInformationFormikValues> => {
-      const {
-          swrMutation: updateDisplayInformationMutation,
-      } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationUpdateDisplayInformationSwrMutation>
-      >(GRAPHQL_MUTATION_UPDATE_DISPLAY_INFORMATION_SWR_MUTATION)
+      const { swrMutation: updateDisplayInformationMutation } = useSingletonHook<
+      ReturnType<typeof useGraphQLMutationUpdateDisplayInformationSwrMutation>
+    >(GRAPHQL_MUTATION_UPDATE_DISPLAY_INFORMATION_SWR_MUTATION)
 
-      const {
-          swrMutation: createSignedUrlMutation,
-      } = useSingletonHook<
-        ReturnType<typeof useGraphQLMutationCreateSignedUrlSwrMutation>
-      >(GRAPHQL_MUTATION_CREATE_SIGNED_URL_SWR_MUTATION)
+      const { swrMutation: createSignedUrlMutation } = useSingletonHook<
+      ReturnType<typeof useGraphQLMutationCreateSignedUrlSwrMutation>
+    >(GRAPHQL_MUTATION_CREATE_SIGNED_URL_SWR_MUTATION)
 
       return useFormik<EditDisplayInformationFormikValues>({
           initialValues: {
@@ -45,9 +47,9 @@ export const useEditDisplayInformationFormik =
               // is image url must be valid if file is not selected
               isImageUrlValid: Yup.boolean().when("imageFile", {
                   is: (imageFile: File | undefined) => !imageFile,
-                  then: schema => schema.oneOf([true], "Image URL is not valid"),
-                  otherwise: schema => schema.notRequired(),
-              })
+                  then: (schema) => schema.oneOf([true], "Image URL is not valid"),
+                  otherwise: (schema) => schema.notRequired(),
+              }),
           }),
           onSubmit: async (values) => {
               try {
@@ -56,10 +58,12 @@ export const useEditDisplayInformationFormik =
                       const { data } = await createSignedUrlMutation.trigger({
                           request: {
                               key: imageFile.name,
-                          }
+                          },
                       })
                       if (!data) {
-                          throw new Error("No data returned from create signed url mutation")
+                          throw new Error(
+                              "No data returned from create signed url mutation"
+                          )
                       }
                       alert(data.signedUrl)
                       // console.log(data.signedUrl)
@@ -67,7 +71,7 @@ export const useEditDisplayInformationFormik =
               } catch (error) {
                   console.error(error)
                   addErrorToast({
-                      errorMessage: (error as Error).message
+                      errorMessage: (error as Error).message,
                   })
               }
           },
