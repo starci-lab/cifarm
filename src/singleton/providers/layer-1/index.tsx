@@ -130,6 +130,7 @@ import {
     PROFILE_MODAL_DISCLOSURE,
     DOWNLOADING_MODAL_DISCLOSURE,
     WS,
+    TRANSACTION_SUBMITTING_MOBILE_MODAL_DISCLOSURE,
 } from "../../keys"
 
 export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
@@ -178,6 +179,7 @@ export const SingletonHookProvider = ({ children }: PropsWithChildren) => (
             [PURCHASE_NFT_BOXES_MODAL_DISCLOSURE]: useDisclosure(),
             [REFERRAL_MODAL_DISCLOSURE]: useDisclosure(),
             [AUTHENTICATING_MODAL_DISCLOSURE]: useDisclosure(),
+            [TRANSACTION_SUBMITTING_MOBILE_MODAL_DISCLOSURE]: useDisclosure(),
             [GRAPHQL_MUTATION_MINT_OFFCHAIN_TOKENS_SWR_MUTATION]: useGraphQLMutationMintOffchainTokensSwrMutation(),
             [GRAPHQL_MUTATION_UNFOLLOW_SWR_MUTATION]: useGraphQLMutationUnfollowSwrMutation(),
             [GRAPHQL_MUTATION_FOLLOW_SWR_MUTATION]: useGraphQLMutationFollowSwrMutation(),

@@ -1,31 +1,42 @@
-
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { formatUrl } from "url-lib"
+
 export const useRouterWithSearchParams = () => {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const pathname = usePathname()
-    const push = (href: string, { mergeWithCurrentPath, params }: RouterPushOptions = {}) => {
+
+    const push = (
+        href: string,
+        { 
+            mergeWithCurrentPath, 
+            params,
+            keepSearchParams
+        }: RouterPushOptions = {}
+    ) => {
+        let url = href
         if (mergeWithCurrentPath) {
-            const currentPath = pathname
-            const newPath = formatUrl(href, params)
             // check if / do not add it
-            if (newPath.startsWith("/")) {
-                router.push(`${currentPath}${newPath}`)
+            if (href.startsWith("/")) {
+                url = `${pathname}${href}`
             } else {
-                router.push(`${currentPath}/${newPath}`)
+                url = `${pathname}/${href}`
             }
-        } else {
-            router.push(formatUrl(href, params))
         }
+        if (keepSearchParams) {
+            url = `${pathname}?${searchParams.toString()}`
+        }
+        router.push(formatUrl(url, params))
     }
 
     return {
         ...router,
-        push
+        push,
     }
 }
 
 export interface RouterPushOptions {
-    params?: Record<string, string>
-    mergeWithCurrentPath?: boolean
+  params?: Record<string, string>;
+  mergeWithCurrentPath?: boolean;
+  keepSearchParams?: boolean;
 }

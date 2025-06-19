@@ -5,7 +5,7 @@ import {
     ReceiverEventName,
     useWs,
 } from "@/singleton"
-import { addSuccessToast } from "@/modules/toast"
+import { addSuccessToast } from "@/components"
 import { useSingletonHook } from "@/singleton"
 import { useEffect } from "react"
 import {

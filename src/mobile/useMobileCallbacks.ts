@@ -1,6 +1,10 @@
 import { useIsMobileDevice } from "@/hooks"
-import { useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation } from "@/singleton"
-import { useEffect } from "react"
+import {
+    useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation,
+    useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation,
+    TRANSACTION_SUBMITTING_MOBILE_MODAL_DISCLOSURE,
+} from "@/singleton"
+import { useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import {
     sessionDb,
@@ -8,19 +12,24 @@ import {
     SolanaTransactionType,
 } from "@/modules/dexie"
 import { useSingletonHook } from "@/singleton"
-import { GRAPHQL_MUTATION_SEND_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION } from "@/singleton"
-import { useAppSelector } from "@/redux"
+import {
+    GRAPHQL_MUTATION_SEND_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION,
+    GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION,
+} from "@/singleton"
+import { setSolanaWallet, useAppDispatch, useAppSelector } from "@/redux"
 import { ChainKey } from "@/modules/blockchain"
-import { addErrorToast, addTxHashToast } from "@/modules/toast"
+import { addErrorToast, addTxHashToast } from "@/components"
 import { envConfig } from "@/env"
+import { useDisclosure } from "react-use-disclosure"
+import { useRouterWithSearchParams } from "@/hooks"
 
 export const useMobileCallbacks = () => {
     const isMobileDevice = useIsMobileDevice()
     const searchParams = useSearchParams()
-    const transactions = useAppSelector(
+    const signedTransactions = useAppSelector(
         (state) => state.walletReducer.solanaWallet.signedTransactions
     )
-
+    const dispatch = useAppDispatch()
     const { swrMutation: buyEnergySolanaTransactionSwrMutation } =
     useSingletonHook<
       ReturnType<
@@ -28,12 +37,35 @@ export const useMobileCallbacks = () => {
       >
     >(GRAPHQL_MUTATION_SEND_BUY_ENERGY_SOLANA_TRANSACTION_SWR_MUTATION)
 
+    const { swrMutation: buyGoldsSolanaTransactionSwrMutation } =
+    useSingletonHook<
+      ReturnType<
+        typeof useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation
+      >
+    >(GRAPHQL_MUTATION_SEND_BUY_GOLDS_SOLANA_TRANSACTION_SWR_MUTATION)
+
+    const { open, close } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        TRANSACTION_SUBMITTING_MOBILE_MODAL_DISCLOSURE
+    )
+    const router = useRouterWithSearchParams()
+    // handle transaction submitting
+    const doneRef = useRef(false)
     useEffect(() => {
+        if (doneRef.current) return
         if (!isMobileDevice) return
+        doneRef.current = true
         const action = searchParams.get("action")
-        if (!action) return
-        if (!transactions && !buyEnergySolanaTransactionSwrMutation) return
+        // reset the path param
+        router.replace(window.location.pathname)
+        if (
+            action !== "signTransaction" 
+            && action !== "signAllTransactions"
+        ) {
+            return
+        }
+        if (!signedTransactions?.length) return
         const handleEffect = async () => {
+            open()
             try {
                 const data = await sessionDb.keyValueStore.get({
                     key: SessionDbKey.SolanaTransaction,
@@ -41,56 +73,55 @@ export const useMobileCallbacks = () => {
                 let txHash = ""
                 switch (data?.value) {
                 case SolanaTransactionType.BuyEnergy: {
-                    if (!transactions) {
-                        throw new Error("Transaction is not signed")
-                    }
-
+                    const serializedTx = signedTransactions.at(0) ?? ""
                     const { data } =
               await buyEnergySolanaTransactionSwrMutation.trigger({
                   request: {
-                      serializedTx: transactions[0],
+                      serializedTx,
                   },
               })
 
-                    if (!data) {
-                        throw new Error("Failed to buy energy")
-                    }
-
-                    txHash = data.txHash
+                    txHash = data?.txHash ?? ""
                     break
                 }
-
-                case SolanaTransactionType.BuyGolds:
+                case SolanaTransactionType.BuyGolds: {
+                    const serializedTx = signedTransactions.at(0) ?? ""
+                    const { data } = await buyGoldsSolanaTransactionSwrMutation.trigger(
+                        {
+                            request: {
+                                serializedTx,
+                            },
+                        }
+                    )
+                    txHash = data?.txHash ?? ""
+                    break
+                }
                 case SolanaTransactionType.ConvertMetaplexNFTs:
                 case SolanaTransactionType.PurchaseSolanaNFTBoxes:
                 case SolanaTransactionType.WrapMetaplexNFT:
                     // You can implement logic here in the future
                     break
-
                 default:
-                    console.warn("Unknown SolanaTransactionType:", data?.value)
+                    throw new Error("Unknown SolanaTransactionType")
                 }
-
                 addTxHashToast({
                     txHash,
                     chainKey: ChainKey.Solana,
                     network: envConfig().network,
                 })
             } catch (error) {
-                console.error("Error handling mobile callback:", error)
+                console.error(error)
                 addErrorToast({
-                    errorMessage: "Failed to handle mobile callback",
+                    errorMessage: "Failed to handle mobile callback: " + error,
                 })
             } finally {
+                close()
                 await sessionDb.keyValueStore.delete(SessionDbKey.SolanaTransaction)
+                dispatch(setSolanaWallet({
+                    signedTransactions: [],
+                }))
             }
         }
-
         handleEffect()
-    }, [
-        isMobileDevice,
-        searchParams,
-        transactions,
-        buyEnergySolanaTransactionSwrMutation,
-    ])
+    }, [isMobileDevice, searchParams, signedTransactions])
 }

@@ -13,7 +13,7 @@ import { assetShopMap } from "@/modules/assets"
 import pluralize from "pluralize"
 import { setShopSupply } from "@/redux"
 import { useAppDispatch } from "@/redux"
-import { addSuccessToast } from "@/modules/toast"
+import { addSuccessToast } from "@/components"
 
 export const useBuySuppliesEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)

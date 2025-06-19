@@ -38,7 +38,7 @@ import {
     ExternalEventEmitter,
     ExternalEventName,
 } from "@/modules/event-emitter"
-import { addSuccessToast } from "@/modules/toast/extended"
+import { addSuccessToast } from "@/components"
 
 export const FolloweesTab: FC = () => {
     const {

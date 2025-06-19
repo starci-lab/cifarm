@@ -69,6 +69,7 @@ export const signTransactionModalSlice = createSlice({
             action: PayloadAction<SignTransactionState>
         ) => {
             state = action.payload
+            return state
         },
     },
 })

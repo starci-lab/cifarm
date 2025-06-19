@@ -5,7 +5,7 @@ import {
     useWs,
     WS,
 } from "@/singleton"
-import { addSuccessToast } from "@/modules/toast"
+import { addSuccessToast } from "@/components"
 import { useEffect } from "react"
 import {
     ExternalEventEmitter,

@@ -15,7 +15,7 @@ import {
 import {
     useRouterWithSearchParams,
 } from "@/hooks"
-import { addErrorToast, addSuccessToast } from "@/modules/toast"
+import { addErrorToast, addSuccessToast } from "@/components"
 import { UserSchema } from "@/types"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { useSingletonHook } from "@/singleton"

@@ -1,4 +1,4 @@
-import { toast } from "@/modules/toast"
+import { toast } from "@/components"
 import React, { FC } from "react"
 import { Button } from "@/components"
 import { Download } from "@phosphor-icons/react"

@@ -1,27 +1,32 @@
 import { useSingletonHook } from "@/singleton"
 import { useGraphQLMutationRefreshSwrMutation } from "@/singleton"
-import { GRAPHQL_MUTATION_REFRESH_SWR_MUTATION, WELCOME_MODAL_DISCLOSURE } from "@/singleton"
-import { useEffect } from "react"
+import {
+    GRAPHQL_MUTATION_REFRESH_SWR_MUTATION,
+    WELCOME_MODAL_DISCLOSURE,
+} from "@/singleton"
+import { useEffect, useRef } from "react"
 import { sessionDb, SessionDbKey } from "@/modules/dexie"
 import { saveTokens } from "@/modules/apollo"
-import { setAuthenticated, setLoaded, useAppDispatch, 
-    useAppSelector
+import {
+    setAuthenticated,
+    setLoaded,
+    useAppDispatch,
+    useAppSelector,
 } from "@/redux"
 import { neutralPages, pathConstants, unauthenticatedPages } from "@/constants"
-import { useRouterWithSearchParams } from "@/hooks"
+import { useFromCallback, useRouterWithSearchParams } from "@/hooks"
 import { usePathname } from "next/navigation"
 //import { pathConstants } from "@/constants"
 import { useDisclosure } from "react-use-disclosure"
-
 
 export const useAuthentication = () => {
     const { swrMutation: refreshSwrMutation } = useSingletonHook<
     ReturnType<typeof useGraphQLMutationRefreshSwrMutation>
   >(GRAPHQL_MUTATION_REFRESH_SWR_MUTATION)
-    //const router = useRouterWithSearchParams()
-    //const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+  //const router = useRouterWithSearchParams()
+  //const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
     const dispatch = useAppDispatch()
-    const loaded = useAppSelector(state => state.sessionReducer.loaded)
+    const loaded = useAppSelector((state) => state.sessionReducer.loaded)
     useEffect(() => {
         const handleEffect = async () => {
             try {
@@ -61,7 +66,9 @@ export const useAuthentication = () => {
         handleEffect()
     }, [])
 
-    const authenticated = useAppSelector(state => state.sessionReducer.authenticated)
+    const authenticated = useAppSelector(
+        (state) => state.sessionReducer.authenticated
+    )
     const router = useRouterWithSearchParams()
     const pathname = usePathname()
 
@@ -75,20 +82,36 @@ export const useAuthentication = () => {
         }
         if (!authenticated) {
             if (!unauthenticatedPages.includes(pathname)) {
+                console.log(`router.push(${pathConstants.signIn})`)
                 router.push(pathConstants.signIn)
             }
             return
         }
         if (unauthenticatedPages.includes(pathname)) {
+            console.log(`unauthenticatedPages.includes(${pathname})`)
             router.push(pathConstants.home)
         }
     }, [authenticated, pathname, loaded])
 
-    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(WELCOME_MODAL_DISCLOSURE)
+    const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
+        WELCOME_MODAL_DISCLOSURE
+    )
+    const fromCallback = useFromCallback()
+    const doneRef = useRef(false)   
     useEffect(() => {
+        if (doneRef.current) {
+            return
+        }
         if (!authenticated) {
             return
         }
+        if (!pathname.includes(pathConstants.home)) {
+            return
+        }
+        if (fromCallback) {
+            return
+        }
+        doneRef.current = true
         open()
-    }, [authenticated])
-}   
+    }, [authenticated, pathname, fromCallback])
+}

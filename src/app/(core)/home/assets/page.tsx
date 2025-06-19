@@ -51,12 +51,14 @@ const Page = () => {
         }
     }, [])
     // when selectedAssetTab change
+    // ignore first mount
     useEffect(() => {
         if (selectedAssetTab) {
             router.push("", {
                 params: {
                     tab: selectedAssetTab,
                 },
+                keepSearchParams: true,
             })
         }
     }, [selectedAssetTab])

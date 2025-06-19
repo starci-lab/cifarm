@@ -109,7 +109,9 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                                                                     type={FallbackSceneType.Authenticated}
                                                                                 />
                                                                             ) : (
+                                                                            
                                                                                 <>{children}</>
+                                                                            
                                                                             )
                                                                         }
 
@@ -122,11 +124,11 @@ export const LayoutContent = ({ children }: PropsWithChildren) => {
                                                                         )
                                                                     })()
                                                                 )}
-                                                                <UseEffects />
-                                                                <Modals />
-                                                                <Sheets />
-                                                                <Toaster />
                                                             </MobileCallbacks>
+                                                            <UseEffects />
+                                                            <Modals />
+                                                            <Sheets />
+                                                            <Toaster /> 
                                                         </SidebarProvider>
                                                     </NextThemesProvider>
                                                 </SingletonHook2Provider>

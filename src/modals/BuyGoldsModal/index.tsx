@@ -17,7 +17,7 @@ import {
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGlobalAccountAddress, useIsMobileDevice } from "@/hooks"
-import { addErrorToast } from "@/modules/toast"
+import { addErrorToast } from "@/components"
 import {
     useGraphQLMutationCreateBuyGoldsSolanaTransactionSwrMutation,
     useGraphQLMutationSendBuyGoldsSolanaTransactionSwrMutation,
@@ -111,7 +111,7 @@ export const BuyGoldsModal: FC = () => {
                                         setSelectedIndex(index)
                                         try {
                                             if (isMobileDevice) {
-                                                await sessionDb.keyValueStore.add({
+                                                await sessionDb.keyValueStore.put({
                                                     key: SessionDbKey.SolanaTransaction,
                                                     value: SolanaTransactionType.BuyGolds,
                                                 })

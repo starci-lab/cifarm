@@ -33,7 +33,7 @@ import {
 import {
     useGlobalAccountAddress,
 } from "@/hooks"
-import { addErrorToast } from "@/modules/toast"
+import { addErrorToast } from "@/components"
 import { TokenKey } from "@/types"
 import { ChainKey } from "@/modules/blockchain"
 import { envConfig } from "@/env"

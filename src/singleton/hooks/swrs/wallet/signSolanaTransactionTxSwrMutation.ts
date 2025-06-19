@@ -24,6 +24,7 @@ export const useSignSolanaTransactionTxSwrMutation = (): UseSWRMutation<
             extraArgs: { arg: UseSignSolanaTransactionTxSwrMutationArgs }
         ): Promise<UseSignSolanaTransactionTxSwrMutationResponse> => {
             const { serializedTxs } = { ...extraArgs.arg }
+            console.log("serializedTxs", serializedTxs)
             if (!umi) throw new Error("Umi is not initialized")
             if (Array.isArray(serializedTxs)) {
                 const txs = serializedTxs.map((serializedTx) => {

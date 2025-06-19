@@ -13,7 +13,7 @@ import {
     useAppDispatch,
     useAppSelector,
 } from "@/redux"
-import { solanaWallets } from "@/hooks"
+import { solanaWallets } from "@/mobile"
 
 export const SolanaConnect: FC = () => {
     const dispatch = useAppDispatch()

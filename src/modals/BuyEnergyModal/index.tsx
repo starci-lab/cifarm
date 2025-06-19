@@ -17,7 +17,7 @@ import {
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGlobalAccountAddress, useIsMobileDevice } from "@/hooks"
-import { addErrorToast } from "@/modules/toast"
+import { addErrorToast } from "@/components"
 import {
     useGraphQLMutationCreateBuyEnergySolanaTransactionSwrMutation,
     useGraphQLMutationSendBuyEnergySolanaTransactionSwrMutation,
@@ -100,19 +100,20 @@ export const BuyEnergyModal: FC = () => {
                                     classNames={{
                                         container: "h-full",
                                     }}
-                                    onClick={async () => {
-                                        if (!accountAddress) {
-                                            throw new Error("No account address")
-                                        }
-                                        setSelectedIndex(index)
-                                        try {
-                                            if (isMobileDevice) {
-                                                await sessionDb.keyValueStore.add({
-                                                    key: SessionDbKey.SolanaTransaction,
-                                                    value: SolanaTransactionType.BuyEnergy,
-                                                })
+                                    onClick={
+                                        async () => {
+                                            if (!accountAddress) {
+                                                throw new Error("No account address")
                                             }
-                                            const { data } =
+                                            setSelectedIndex(index)
+                                            try {
+                                                if (isMobileDevice) {
+                                                    await sessionDb.keyValueStore.put({
+                                                        key: SessionDbKey.SolanaTransaction,
+                                                        value: SolanaTransactionType.BuyEnergy,
+                                                    })
+                                                }
+                                                const { data } =
                         await createBuyEnergySolanaTransactionSwrMutation.trigger(
                             {
                                 request: {
@@ -121,14 +122,14 @@ export const BuyEnergyModal: FC = () => {
                                 },
                             }
                         )
-                                            dispatch(
-                                                setSignTransactionModalContent({
-                                                    type: TransactionType.SolanaRawTx,
-                                                    data: {
-                                                        serializedTx: data?.serializedTx ?? "",
-                                                    },
-                                                    postActionHook: async (signedSerializedTx) => {
-                                                        const { data } =
+                                                dispatch(
+                                                    setSignTransactionModalContent({
+                                                        type: TransactionType.SolanaRawTx,
+                                                        data: {
+                                                            serializedTx: data?.serializedTx ?? "",
+                                                        },
+                                                        postActionHook: async (signedSerializedTx) => {
+                                                            const { data } =
                               await sendBuyEnergySolanaTransactionSwrMutation.trigger(
                                   {
                                       request: {
@@ -141,19 +142,19 @@ export const BuyEnergyModal: FC = () => {
                                   }
                               )
 
-                                                        return data?.txHash ?? ""
-                                                    },
+                                                            return data?.txHash ?? ""
+                                                        },
+                                                    })
+                                                )
+                                                openSignTransactionModal()
+                                            } catch (error) {
+                                                addErrorToast({
+                                                    errorMessage: (error as Error).message,
                                                 })
-                                            )
-                                            openSignTransactionModal()
-                                        } catch (error) {
-                                            addErrorToast({
-                                                errorMessage: (error as Error).message,
-                                            })
-                                        } finally {
-                                            setSelectedIndex(undefined)
-                                        }
-                                    }}
+                                            } finally {
+                                                setSelectedIndex(undefined)
+                                            }
+                                        }}
                                 />
                             )
                         }

@@ -25,7 +25,7 @@ import {
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import { useGlobalAccountAddress } from "@/hooks"
-import { addErrorToast } from "@/modules/toast"
+import { addErrorToast } from "@/components"
 import {
     useGraphQLMutationCreateConvertSolanaMetaplexNFTsTransactionSwrMutation,
     useGraphQLMutationSendConvertSolanaMetaplexNFTsTransactionSwrMutation,

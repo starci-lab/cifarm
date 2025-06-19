@@ -1,6 +1,5 @@
 "use client"
 import {
-    GRAPHQL_QUERY_STATIC_SWR,
     SIGN_SOLANA_TRANSACTION_SWR_MUTATION,
     SIGN_TRANSACTION_MODAL_DISCLOSURE,
     TRANSFER_NFT_SWR_MUTATION,
@@ -20,7 +19,6 @@ import {
 import React, { FC } from "react"
 import { blockchainMap } from "@/modules/blockchain"
 import {
-    useGraphQLQueryStaticSwr,
     useSignSolanaTransactionTxSwrMutation,
     useTransferNFTSwrMutation,
     useTransferTokenSwrMutation,
@@ -39,7 +37,7 @@ import { Badge } from "@/components/ui/badge"
 import { useDisclosure } from "react-use-disclosure"
 import useSWRMutation from "swr/mutation"
 import { pathConstants } from "@/constants"
-import { addErrorToast, addTxHashToast } from "@/modules/toast"
+import { addErrorToast, addTxHashToast } from "@/components"
 
 interface ProviderInfo {
   name: string;
@@ -74,18 +72,16 @@ export const SignTransactionModal: FC = () => {
     )
     const network = useAppSelector((state) => state.sessionReducer.network)
 
-    const { swr: staticSwr } = useSingletonHook<
-    ReturnType<typeof useGraphQLQueryStaticSwr>
-  >(GRAPHQL_QUERY_STATIC_SWR)
+    const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
 
-    const collections = staticSwr.data?.data.nftCollections || {}
+    const collections = staticData?.nftCollections || {}
 
     const { swrMutation: signSolanaTransactionSwrMutation } = useSingletonHook<
     ReturnType<typeof useSignSolanaTransactionTxSwrMutation>
   >(SIGN_SOLANA_TRANSACTION_SWR_MUTATION)
 
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
-    const tokens = staticSwr.data?.data.tokens || {}
+    const tokens = staticData?.tokens || {}
     const balanceSwrs = useAppSelector((state) => state.swrsReducer.balanceSwrs)
 
     const providers: Record<TransactionType, ProviderInfo> = {
@@ -376,7 +372,9 @@ export const SignTransactionModal: FC = () => {
                             />
                             {blockchainMap[chainKey].name}
                         </Badge>
-                        <Badge variant="secondary">{providers[type || TransactionType.TransferToken]?.name}</Badge>
+                        <Badge variant="secondary">
+                            {providers[type || TransactionType.TransferToken]?.name}
+                        </Badge>
                     </div>
                     <Spacer y={4} />
                     {renderContent()}

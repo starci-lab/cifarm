@@ -22,8 +22,8 @@ export const usePhantomWalletStates = () => {
     // phantom dapp key pair
     useEffect(() => {
         if (phantomDappKeyPairRef.current) return
+        if (!isMobileDevice) return
         const handleEffect = async () => {
-            if (!isMobileDevice) return
             const found = await sessionDb.keyValueStore.get({
                 key: SessionDbKey.PhantomDappKeyPair
             })
@@ -50,8 +50,8 @@ export const usePhantomWalletStates = () => {
     // phantom session
     useEffect(() => {
         if (phantomSessionRef.current) return
-        const handleEffect = async () => {
-            if (!isMobileDevice) return
+        if (!isMobileDevice) return
+        const handleEffect = async () => {  
             const found = await sessionDb.keyValueStore.get({
                 key: SessionDbKey.PhantomSession
             })
@@ -69,8 +69,8 @@ export const usePhantomWalletStates = () => {
     // phantom shared secret
     useEffect(() => {
         if (phantomSharedSecretRef.current) return
-        const handleEffect = async () => {
-            if (!isMobileDevice) return
+        if (!isMobileDevice) return
+        const handleEffect = async () => {   
             const found = await sessionDb.keyValueStore.get({
                 key: SessionDbKey.PhantomSharedSecret
             })
@@ -88,8 +88,8 @@ export const usePhantomWalletStates = () => {
     // phantom account address
     useEffect(() => {
         if (phantomAccountAddressRef.current) return
+        if (!isMobileDevice) return
         const handleEffect = async () => {
-            if (!isMobileDevice) return
             const found = await sessionDb.keyValueStore.get({
                 key: SessionDbKey.PhantomAccountAddress
             })

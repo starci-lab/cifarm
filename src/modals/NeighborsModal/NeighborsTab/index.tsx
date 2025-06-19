@@ -15,7 +15,7 @@ import {
     useWs,
     EmitterEventName,
 } from "@/singleton"
-import { addSuccessToast } from "@/modules/toast"
+import { addSuccessToast } from "@/components"
 import { useSingletonHook } from "@/singleton"
 import React, { FC, useEffect } from "react"
 import { FilterBar, List, Spacer } from "@/components"

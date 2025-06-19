@@ -14,7 +14,7 @@ import {
 import { assetShopMap } from "@/modules/assets"
 import { setShopTool } from "@/redux"
 import { useAppDispatch } from "@/redux"
-import { addSuccessToast } from "@/modules/toast"
+import { addSuccessToast } from "@/components"
 
 export const useBuyToolEffects = () => {
     const { socket } = useSingletonHook<ReturnType<typeof useWs>>(WS)

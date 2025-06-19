@@ -28,6 +28,7 @@ const Page: FC = () => {
             return <TokenomicsTab />
         }
     }
+    
     return (
         <div className="relative">
             <BlurEffect size="lg" position="top" />

@@ -11,7 +11,7 @@ import {
     ExternalEventEmitter,
     ExternalEventName,
 } from "@/modules/event-emitter"
-import { addSuccessToast } from "@/modules/toast"
+import { addSuccessToast } from "@/components"
 import { assetShopMap } from "@/modules/assets"
 import pluralize from "pluralize"
 import { setShopFlower } from "@/redux"

@@ -22,7 +22,7 @@ import {
     useGraphQLQueryUserSwrMutation,
     useTransferNFTFormik,
 } from "@/singleton"
-import { addErrorToast } from "@/modules/toast"
+import { addErrorToast } from "@/components"
 import { useSingletonHook, useSingletonHook2 } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
 import {
