@@ -31,6 +31,7 @@ import { useAppSelector } from "@/redux"
 import { ArrowsClockwise } from "@phosphor-icons/react"
 import { getMaxEnergy } from "@/modules/common"
 import { LandLimit } from "@/components"
+import { cn } from "@/utils"
 
 export const InGameTab: FC = () => {
     const inventories = useAppSelector(
@@ -62,9 +63,34 @@ export const InGameTab: FC = () => {
     const { swr: occupiedPlacedItemCountsSwr } = useSingletonHook<
     ReturnType<typeof useGraphQLQueryOccupiedPlacedItemCounts>
   >(GRAPHQL_QUERY_OCCUPIED_PLACED_ITEM_COUNTS_SWR)
-    console.log(occupiedPlacedItemCountsSwr.data)
+    const occupiedPlacedItemCounts = useAppSelector((state) => state.apiReducer.coreApi.occupiedPlacedItemCounts)
     if (!staticData) {
         return null
+    }
+
+    const renderLimitContent = (
+        currentLimit: number,
+        totalLimit: number
+    ) => {
+        const isBelow50 = currentLimit <= totalLimit * 0.5
+        const isFrom50To75 = currentLimit > totalLimit * 0.5 && currentLimit <= totalLimit * 0.75
+        const isOver75 = currentLimit > totalLimit * 0.75
+        return (
+            <div className="flex items-center gap-2 justify-between text-base">
+                <span className="text-muted-foreground">
+                    Owned
+                </span>
+                <div className="flex items-center gap-1">
+                    <div className={cn({
+                        "text-success": isBelow50,
+                        "text-warning": isFrom50To75,
+                        "text-danger": isOver75,
+                    })}>
+                        {currentLimit}
+                    </div>
+                </div>
+            </div>
+        )
     }
     return (
         <div>
@@ -199,42 +225,33 @@ export const InGameTab: FC = () => {
                         isGrid={true}
                         tileLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">
-                                    {occupiedPlacedItemCountsSwr.data?.tileCount}/
-                                </span>
-                                <span>
-                                    {staticData?.landLimitInfo.landLimits[
-                                        user?.landLimitIndex ?? 0
-                                    ].tileLimit ?? 0}
-                                </span>
+                                <div className="text-4xl">
+                                    {staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].tileLimit ?? 0}
+                                </div>
+                                <Spacer y={2} />
+                                {renderLimitContent(occupiedPlacedItemCounts.tileCount, staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].tileLimit ?? 0)}
                             </div>
                         }
                         buildingLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">
-                                    {occupiedPlacedItemCountsSwr.data?.buildingCount}/
-                                </span>
-                                <span>
-                                    {staticData?.landLimitInfo.landLimits[
-                                        user?.landLimitIndex ?? 0
-                                    ].buildingLimit ?? 0}
-                                </span>
+                                <div className="text-4xl">
+                                    {staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].buildingLimit ?? 0}
+                                </div>
+                                <Spacer y={2} />
+                                {renderLimitContent(occupiedPlacedItemCounts.buildingCount, staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].buildingLimit ?? 0)}
                             </div>
                         }
                         fruitLimit={
                             <div>
-                                <span className="text-muted-foreground text-lg">
-                                    {occupiedPlacedItemCountsSwr.data?.fruitCount}/
-                                </span>
-                                <span>
-                                    {staticData?.landLimitInfo.landLimits[
-                                        user?.landLimitIndex ?? 0
-                                    ].fruitLimit ?? 0}
-                                </span>
+                                <div className="text-4xl">
+                                    {staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].fruitLimit ?? 0}
+                                </div>
+                                <Spacer y={2} />
+                                {renderLimitContent(occupiedPlacedItemCounts.fruitCount, staticData?.landLimitInfo.landLimits[user?.landLimitIndex ?? 0].fruitLimit ?? 0)}
                             </div>
                         }
                         sameBuildingLimit={
-                            <div>
+                            <div className="text-2xl">
                                 <span>
                                     {staticData?.landLimitInfo.landLimits[
                                         user?.landLimitIndex ?? 0

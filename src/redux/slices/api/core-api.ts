@@ -6,6 +6,7 @@ import {
 } from "@/types"
 import {
     QueryBulkPaidsResponse,
+    QueryOccupiedPlacedItemCountsResponse,
     QueryStaticResponse,
     QueryVaultCurrentResponse,
 } from "@/modules/apollo"
@@ -25,6 +26,7 @@ export interface CoreState {
   bulkPaids?: QueryBulkPaidsResponse;
   vaultCurrent?: QueryVaultCurrentResponse;
   leaderboard: Array<UserSchema>;
+  occupiedPlacedItemCounts: QueryOccupiedPlacedItemCountsResponse
 }
 
 const initialState: CoreState = {
@@ -43,6 +45,11 @@ const initialState: CoreState = {
         count: 0,
     },
     leaderboard: [],
+    occupiedPlacedItemCounts: {
+        tileCount: 0,
+        buildingCount: 0,
+        fruitCount: 0,
+    },
 }
 
 export const coreApiSlice = createSlice({
@@ -88,6 +95,12 @@ export const coreApiSlice = createSlice({
         setLeaderboard: (state, action: PayloadAction<Array<UserSchema>>) => {
             state.leaderboard = action.payload
         },
+        setOccupiedPlacedItemCounts: (
+            state,
+            action: PayloadAction<QueryOccupiedPlacedItemCountsResponse>
+        ) => {
+            state.occupiedPlacedItemCounts = action.payload
+        },
     },
 })
 
@@ -103,4 +116,5 @@ export const {
     setBulkPaids,
     setLeaderboard,
     setVaultCurrent,
+    setOccupiedPlacedItemCounts,
 } = coreApiSlice.actions

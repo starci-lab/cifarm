@@ -124,8 +124,6 @@ export const ExpandLandLimitModal: FC = () => {
                 </DialogBody>
                 <DialogFooter>
                     <ExtendedButton
-                        variant="flat"
-                        color="secondary"
                         isLoading={createExpandLandLimitSwr.isMutating}
                         onClick={async () => {
                             if (!accountAddress) {
