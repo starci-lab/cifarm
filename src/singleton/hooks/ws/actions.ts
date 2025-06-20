@@ -41,5 +41,6 @@ export interface EmitActionPayload {
   action?: ActionName;
   success?: boolean;
   data?: unknown;
-  reasonCode?: string;
+  error?: string;
+  dogAssistedSuccess?: boolean
 }

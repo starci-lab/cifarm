@@ -17,6 +17,7 @@ import { ObjectCannedACL } from "@/modules/apollo"
 import { v4 as uuidv4 } from "uuid"
 
 const AVATARS = "avatars"
+
 export interface EditDisplayInformationFormikValues {
   username: string;
   avatarUrl: string;

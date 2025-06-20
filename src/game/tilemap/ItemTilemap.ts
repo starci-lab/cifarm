@@ -11,23 +11,10 @@ import {
     HarvestBeeHouseData,
     HarvestFruitData,
     HarvestPlantData,
-    HelpUseAnimalMedicineReasonCode,
-    HelpUseBugNetReasonCode,
-    HelpUseHerbicideReasonCode,
-    HelpUsePesticideReasonCode,
     ThiefAnimalData,
-    ThiefAnimalReasonCode,
     ThiefBeeHouseData,
-    ThiefBeeHouseReasonCode,
     ThiefFruitData,
-    ThiefFruitReasonCode,
     ThiefPlantData,
-    ThiefPlantReasonCode,
-    UseAnimalMedicineReasonCode,
-    UseBugNetReasonCode,
-    UseHerbicideReasonCode,
-    UsePesticideReasonCode,
-    UseWateringCanReasonCode,
 } from "@/singleton"
 import {
     Activities,
@@ -220,21 +207,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case UseWateringCanReasonCode.NotNeedWateringCan: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need watering can",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -254,6 +234,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.plantSeed.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
                             },
                         ])
                     }
@@ -278,21 +267,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case UsePesticideReasonCode.NotNeedPesticide: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need pesticide",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])      
                     }
                     break
                 }
@@ -316,21 +298,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case HelpUsePesticideReasonCode.NotNeedPesticide: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need pesticide",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -353,21 +328,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case UseHerbicideReasonCode.NotNeedHerbicide: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need herbicide",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -390,22 +358,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                         this.activities.helpUseHerbicide.experiencesGain ?? 0,
                             },
                         ])
-                    } else {
-                        switch (data.reasonCode) {
-                        case HelpUseHerbicideReasonCode.NotNeedHerbicide: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need herbicide",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                    } else {    
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: "Not need herbicide",
+                            },
+                        ])
                     }
                     break
                 }
@@ -425,6 +386,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity: this.activities.useFertilizer.experiencesGain ?? 0,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
                             },
                         ])
                     }
@@ -517,6 +487,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -tile.price,
                             },
                         ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -539,6 +518,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity: -animal.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,   
                             },
                         ])
                     }
@@ -565,6 +553,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -pet.price,
                             },
                         ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -585,6 +582,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity: -decoration.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
                             },
                         ])
                     }
@@ -609,6 +615,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: -fruit.price,
                             },
                         ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -631,6 +646,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity: -building.price,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
                             },
                         ])
                     }
@@ -680,19 +704,17 @@ export abstract class ItemTilemap extends GroundTilemap {
                             }] : []),
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case ThiefPlantReasonCode.DogAssisted:
+                        if (data.dogAssistedSuccess) {
                             this.createFlyItems([
                                 {
                                     iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
-                                    showIcon: false,
+                                    showIcon: true,
                                     x: position.x,
                                     y: position.y,
-                                    text: "Dog assisted",
+                                    text: data.error,
                                 },
                             ])
-                            break
-                        case ThiefPlantReasonCode.NotFullyMatured: {
+                        } else {
                             this.createFlyItems([
                                 {
                                     showIcon: false,
@@ -701,32 +723,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     text: "Not fully matured",
                                 },
                             ])
-                            break
-                        }
-                        case ThiefPlantReasonCode.NotPlanted: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not planted",
-                                },
-                            ])
-                            break
-                        }
-                        case ThiefPlantReasonCode.QuantityReactMinimum: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Quantity react minimum",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
                         }
                     }
                     break
@@ -750,21 +746,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case UseAnimalMedicineReasonCode.NotNeedAnimalMedicine: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need animal medicine",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -786,7 +775,16 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 quantity: this.activities.useAnimalFeed.experiencesGain,
                             },
                         ])
-                    }
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
+                    } 
                     break
                 }
                 case ActionName.HarvestAnimal: {
@@ -842,6 +840,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                             : undefined,
                             },
                         ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,   
+                            },
+                        ])
                     }
                     break
                 }
@@ -866,21 +873,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case HelpUseAnimalMedicineReasonCode.NotNeedAnimalMedicine: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need animal medicine",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -923,19 +923,17 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case ThiefAnimalReasonCode.NotReadyToHarvest: {
+                        if (data.dogAssistedSuccess) {
                             this.createFlyItems([
                                 {
+                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
                                     showIcon: false,
                                     x: position.x,
                                     y: position.y,
-                                    text: "Not ready to harvest",
+                                    text: data.error,
                                 },
                             ])
-                            break
-                        }
-                        case ThiefAnimalReasonCode.QuantityReactMinimum: {
+                        } else {
                             this.createFlyItems([
                                 {
                                     showIcon: false,
@@ -944,23 +942,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     text: "Quantity react minimum",
                                 },
                             ])
-                            break
-                        }
-                        case ThiefAnimalReasonCode.DogAssisted: {
-                            this.createFlyItems([
-                                {
-                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Dog assisted",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        }   
                     }
                     break
                 }
@@ -994,6 +976,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 x: position.x,
                                 y: position.y,
                                 quantity: sellPrice,
+                            },
+                        ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
                             },
                         ])
                     }
@@ -1052,6 +1043,15 @@ export abstract class ItemTilemap extends GroundTilemap {
                                             : undefined,
                             },
                         ])
+                    } else {
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -1093,19 +1093,17 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case ThiefFruitReasonCode.NotFullyMatured: {
+                        if (data.dogAssistedSuccess) {
                             this.createFlyItems([
                                 {
-                                    showIcon: false,
+                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
+                                    showIcon: true,
                                     x: position.x,
                                     y: position.y,
-                                    text: "Not fully matured",
+                                    text: data.error,
                                 },
                             ])
-                            break
-                        }
-                        case ThiefFruitReasonCode.QuantityReactMinimum: {
+                        } else {
                             this.createFlyItems([
                                 {
                                     showIcon: false,
@@ -1114,22 +1112,6 @@ export abstract class ItemTilemap extends GroundTilemap {
                                     text: "Quantity react minimum",
                                 },
                             ])
-                            break
-                        }
-                        case ThiefFruitReasonCode.DogAssisted: {
-                            this.createFlyItems([
-                                {
-                                    iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Dog assisted",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
                         }
                     }
                     break
@@ -1153,21 +1135,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case UseBugNetReasonCode.NotNeedBugNet: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need bug net",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -1195,7 +1170,7 @@ export abstract class ItemTilemap extends GroundTilemap {
                                 showIcon: false,
                                 x: position.x,
                                 y: position.y,
-                                text: "Failed to " + ActionName.HelpUseWateringCan,
+                                text: data.error,
                             },
                         ])
                     }
@@ -1220,21 +1195,14 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case HelpUseBugNetReasonCode.NotNeedBugNet: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not need bug net",
-                                },
-                            ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
-                        }
+                        this.createFlyItems([
+                            {
+                                showIcon: false,
+                                x: position.x,
+                                y: position.y,
+                                text: data.error,
+                            },
+                        ])
                     }
                     break
                 }
@@ -1358,41 +1326,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case ThiefBeeHouseReasonCode.NotReadyToHarvest: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not ready to harvest",
-                                },
-                            ])
-                            break
-                        }
-                        case ThiefBeeHouseReasonCode.QuantityReactMinimum:
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Quantity react minimum",
-                                },
-                            ])
-                            break
-                        case ThiefBeeHouseReasonCode.DogAssisted:
+                        if (data.dogAssistedSuccess) {
                             this.createFlyItems([
                                 {
                                     iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
+                                    showIcon: true,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: data.error,
+                                },
+                            ])
+                        } else {
+                            this.createFlyItems([
+                                {
                                     showIcon: false,
                                     x: position.x,
                                     y: position.y,
-                                    text: "Dog assisted",
+                                    text: data.error,
                                 },
                             ])
-                            break
-                        default:
-                            throw new Error("Unknown reason code")
                         }
                     }
                     break
@@ -1436,43 +1388,25 @@ export abstract class ItemTilemap extends GroundTilemap {
                             },
                         ])
                     } else {
-                        switch (data.reasonCode) {
-                        case ThiefBeeHouseReasonCode.NotReadyToHarvest: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Not ready to harvest",
-                                },
-                            ])
-                            break
-                        }
-                        case ThiefBeeHouseReasonCode.QuantityReactMinimum: {
-                            this.createFlyItems([
-                                {
-                                    showIcon: false,
-                                    x: position.x,
-                                    y: position.y,
-                                    text: "Quantity react minimum",
-                                },
-                            ])
-                            break
-                        }
-                        case ThiefBeeHouseReasonCode.DogAssisted: {
+                        if (data.dogAssistedSuccess) {
                             this.createFlyItems([
                                 {
                                     iconAssetKey: assetIconMap[AssetIconId.Dog].phaser?.base.assetKey,
+                                    showIcon: true,
+                                    x: position.x,
+                                    y: position.y,
+                                    text: data.error,
+                                },
+                            ])
+                        } else {
+                            this.createFlyItems([
+                                {
                                     showIcon: false,
                                     x: position.x,
                                     y: position.y,
-                                    text: "Dog assisted",
+                                    text: data.error,
                                 },
                             ])
-                            break
-                        }
-                        default:
-                            throw new Error("Unknown reason code")
                         }
                     }
                     break
