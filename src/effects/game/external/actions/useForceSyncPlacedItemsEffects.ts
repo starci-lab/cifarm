@@ -20,10 +20,14 @@ export const useForceSyncPlacedItemsEffects = () => {
             return
         }
         socket.on(ReceiverEventName.ForceSyncPlacedItemsResponsed, () => {
+            console.log("force sync placed items responsed")
             ExternalEventEmitter.emit(
                 ExternalEventName.ForceSyncPlacedItemsResponsed
             )
         })
+        return () => {
+            socket.off(ReceiverEventName.ForceSyncPlacedItemsResponsed)
+        }
     }, [socket])
 
     useEffect(() => {

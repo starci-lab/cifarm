@@ -190,6 +190,14 @@ export class InputTilemap extends ItemTilemap {
                 fromOtherScene: true,
             })
         })
+
+        ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
+            console.log("force sync placed items responsed")
+            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
+                modalName: ModalName.Info,
+            })
+        })
+        
         this.addInputs()
     }
 
@@ -288,13 +296,9 @@ export class InputTilemap extends ItemTilemap {
                         default:
                             break
                         }
+                        console.log("set placed item info")
                         ExternalEventEmitter.emit(ExternalEventName.SetPlacedItemInfo, {
                             id: _data.object.currentPlacedItem.id,
-                        })
-                        ExternalEventEmitter.on(ExternalEventName.ForceSyncPlacedItemsResponsed, () => {
-                            ExternalEventEmitter.emit(ExternalEventName.OpenModal, {
-                                modalName: ModalName.Info,
-                            })
                         })
                         ExternalEventEmitter.emit(
                             ExternalEventName.RequestForceSyncPlacedItems,

@@ -5,13 +5,17 @@ import { CONTAINER_ID } from "./constants"
 // import { ExternalEventEmitter, SceneEventEmitter } from "@/modules/event-emitter"
 import { ReactUI } from "./react-ui"
 import { useAppDispatch, setShowGameUI } from "@/redux"
-import { ExternalEventEmitter, SceneEventEmitter, externalEventPhaserOns } from "@/modules/event-emitter"
+import {
+    ExternalEventEmitter,
+    SceneEventEmitter,
+    externalEventPhaserOns,
+} from "@/modules/event-emitter"
 // import { useIsMobile } from "@/hooks"
 
 export const Game: FC = () => {
     const game = useRef<Phaser.Game | null>(null)
     const dispatch = useAppDispatch()
-    
+
     //const isMobile = useIsMobile()
     //ensure all swr queries are done
     useLayoutEffect(() => {
@@ -40,8 +44,8 @@ export const Game: FC = () => {
 
     return (
         <>
-            <div id={CONTAINER_ID} className="w-screen h-screen"/>
-            <ReactUI  />
+            <div id={CONTAINER_ID} className="w-screen h-screen" />
+            <ReactUI />
         </>
     )
 }

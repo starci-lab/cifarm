@@ -13,10 +13,10 @@ export const useSetPlacedItemEffects = () => {
         ExternalEventEmitter.on(
             ExternalEventName.SetPlacedItemInfo,
             ({ id }: SetPlacedItemInfoMessage) => {
+                console.log("set placed item info")
                 dispatch(setSelectedPlacedItemId(id))
             }
         )
-
         return () => {
             ExternalEventEmitter.removeListener(ExternalEventName.SetPlacedItemInfo)
         }
