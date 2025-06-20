@@ -3,6 +3,14 @@ import { authClient } from "../../auth-client"
 import { MutationParams, MutationVariables } from "../../types"
 import { GraphQLResponse } from "../types"
 
+export enum ObjectCannedACL {
+  PublicRead = "publicRead",
+  Private = "private",
+  PublicReadWrite = "publicReadWrite",
+  AuthenticatedRead = "authenticatedRead",
+  BucketOwnerRead = "bucketOwnerRead"
+}
+
 const mutation1 = gql`
   mutation CreateSignedUrl($request: CreateSignedUrlRequest!) {
     createSignedUrl(request: $request) {
@@ -21,6 +29,8 @@ export enum MutationCreateSignedUrl {
 
 export interface MutationCreateSignedUrlRequest {
   key: string;
+  acl?: ObjectCannedACL;
+  contentType?: string;
 }
 
 export interface MutationCreateSignedUrlResponse {

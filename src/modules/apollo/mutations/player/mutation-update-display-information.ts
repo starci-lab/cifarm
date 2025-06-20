@@ -3,7 +3,7 @@ import { authClient } from "../../auth-client"
 import { MutationParams } from "../../types"
 import { GraphQLResponse } from "../types"
 const mutation1 = gql`
-  mutation UpdateDisplayInformation($request: UpdateDisplayInformationInput!) {
+  mutation UpdateDisplayInformation($request: UpdateDisplayInformationRequest!) {
     updateDisplayInformation(request: $request) {
       message
       success
@@ -11,7 +11,7 @@ const mutation1 = gql`
   }
 `
 
-export interface UpdateDisplayInformationInput {
+export interface UpdateDisplayInformationRequest {
   username?: string;
   avatarUrl?: string;
 }
@@ -26,7 +26,7 @@ const mutationMap: Record<MutationUpdateDisplayInformation, DocumentNode> = {
 
 export type MutationUpdateDisplayInformationParams = MutationParams<
   MutationUpdateDisplayInformation,
-  UpdateDisplayInformationInput
+  UpdateDisplayInformationRequest
 >;
 
 export const mutationUpdateDisplayInformation = async ({

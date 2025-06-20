@@ -72,6 +72,7 @@
     "@types/gsi": "^0.0.5",
     "@wormhole-foundation/sdk": "^1.4.5",
     "apollo-link-timeout": "^4.0.0",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.7.9",
     "axios-retry": "^4.5.0",
     "bip39": "^3.1.0",
