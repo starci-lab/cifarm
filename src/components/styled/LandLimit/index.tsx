@@ -68,6 +68,10 @@ export const LandLimit: FC<LandLimitProps> = ({
                     contentCallback={(item) => (
                         <div className="w-full justify-between flex items-center px-3 py-2 bg-content-2">
                             <Title
+                                classNames={{
+                                    title: "text-muted-foreground text-base",
+                                    tooltip: "text-muted-foreground text-base",
+                                }}
                                 title={item.title}
                                 tooltipString={item.description}
                             />

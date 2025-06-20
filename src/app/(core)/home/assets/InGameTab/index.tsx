@@ -76,10 +76,7 @@ export const InGameTab: FC = () => {
         const isFrom50To75 = currentLimit > totalLimit * 0.5 && currentLimit <= totalLimit * 0.75
         const isOver75 = currentLimit > totalLimit * 0.75
         return (
-            <div className="flex items-center gap-2 justify-between text-base">
-                <span className="text-muted-foreground">
-                    Owned
-                </span>
+            <div className="flex items-center gap-2 text-base">
                 <div className="flex items-center gap-1">
                     <div className={cn({
                         "text-success": isBelow50,
@@ -88,6 +85,9 @@ export const InGameTab: FC = () => {
                     })}>
                         {currentLimit}
                     </div>
+                </div>
+                <div className="text-muted-foreground">
+                    Owned
                 </div>
             </div>
         )
@@ -251,12 +251,10 @@ export const InGameTab: FC = () => {
                             </div>
                         }
                         sameBuildingLimit={
-                            <div className="text-2xl">
-                                <span>
-                                    {staticData?.landLimitInfo.landLimits[
-                                        user?.landLimitIndex ?? 0
-                                    ].sameBuildingLimit ?? 0}
-                                </span>
+                            <div className="text-4xl">
+                                {staticData?.landLimitInfo.landLimits[
+                                    user?.landLimitIndex ?? 0
+                                ].sameBuildingLimit ?? 0 }
                             </div>
                         }
                     />

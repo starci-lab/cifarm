@@ -72,7 +72,11 @@ export const ExpandLandLimitModal: FC = () => {
                 </DialogHeader>
                 <DialogBody>
                     <Title
-                        title="Next Land Limit"
+                        classNames={{
+                            title: "text-base",
+                            tooltip: "text-base",
+                        }}
+                        title="Next Info"
                         tooltipString="The next land limit you can expand to."
                     />
                     <Spacer y={2} />
@@ -97,6 +101,10 @@ export const ExpandLandLimitModal: FC = () => {
                     <Spacer y={4} />
                     <div className="flex items-center gap-2 justify-between">
                         <Title
+                            classNames={{
+                                title: "text-base",
+                                tooltip: "text-base",
+                            }}
                             title="Payment"
                             tooltipString="The amount of tokens you need to pay to expand your land limit."
                         />
