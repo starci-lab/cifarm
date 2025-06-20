@@ -15,6 +15,7 @@ export const upgradeModalSlice = createSlice({
             action: PayloadAction<UpgradeModalState>
         ) => {
             state = action.payload
+            return state
         },
     },
 })

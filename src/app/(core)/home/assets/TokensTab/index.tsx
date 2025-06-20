@@ -1,11 +1,11 @@
 import { ExtendedBadge, ExtendedTable, Image, Spacer } from "@/components"
 import { TOKEN_SHEET_DISCLOSURE, useSingletonHook } from "@/singleton"
-import { useAppSelector, useAppDispatch } from "@/redux"
+import { useAppSelector, useAppDispatch, TokenSheetPage, setTokenSheetTokenKey } from "@/redux"
 import React, { FC } from "react"
 import { valuesWithKey } from "@/modules/common"
 import { ColumnDef } from "@tanstack/react-table"
 import { useDisclosure } from "react-use-disclosure"
-import { setTokenSheet } from "@/redux"
+import { setTokenSheetPage } from "@/redux"
 import { TokenKey, TokenType } from "@/types"
 import { chainKeyMap } from "@/modules/blockchain"
 import { envConfig } from "@/env"
@@ -142,7 +142,8 @@ export const TokensTab: FC = () => {
                 showPagination={false}
                 showSelectedRowText={false}
                 onClickRow={(row) => {
-                    dispatch(setTokenSheet({ tokenKey: row.id }))
+                    dispatch(setTokenSheetPage(TokenSheetPage.Main))
+                    dispatch(setTokenSheetTokenKey(row.id))
                     openTokenSheet()
                 }}
             />

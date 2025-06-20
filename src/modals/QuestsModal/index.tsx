@@ -16,7 +16,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useDisclosure } from "react-use-disclosure"
 import { useAppSelector, useAppDispatch, QuestsTab as QuestsTabEnum, setQuestsTab } from "@/redux"
-export const QuestsModal: FC = () => {
+export const    QuestsModal: FC = () => {
     const { toggle, isOpen } =
     useSingletonHook<ReturnType<typeof useDisclosure>>(QUESTS_MODAL_DISCLOSURE)
 

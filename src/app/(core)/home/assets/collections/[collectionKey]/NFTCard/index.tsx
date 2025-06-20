@@ -14,10 +14,12 @@ import { useSingletonHook, NFT_SHEET_DISCLOSURE } from "@/singleton"
 import React, { FC } from "react"
 import { useDisclosure } from "react-use-disclosure"
 import {
-    setNFTSheet,
+    setNFTSheetNFTAddress,
     useAppSelector,
     useAppDispatch,
     setNFTAddresses,
+    setNFTSheetPage,
+    NFTSheetPage,
 } from "@/redux"
 import { cn } from "@/utils"
 import { BlockchainNFTData } from "@/modules/apollo"
@@ -57,10 +59,9 @@ export const NFTCard: FC<NFTCardProps> = ({ nft }) => {
                     }
                     return
                 }
+                dispatch(setNFTSheetPage(NFTSheetPage.Main))
                 dispatch(
-                    setNFTSheet({
-                        nftAddress: nft.nftAddress,
-                    })
+                    setNFTSheetNFTAddress(nft.nftAddress)
                 )
                 openNFTSheet()
             }}

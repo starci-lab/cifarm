@@ -1,6 +1,6 @@
 "use client"
 
-import { BOTTOM_NAV_SHEET_DISCLOSURE } from "@/singleton"
+import { NAVIGATION_SHEET_DISCLOSURE } from "@/singleton"
 import { pathConstants } from "@/constants"
 import { useRouterWithSearchParams } from "@/hooks"
 import { useIsMobile } from "@/hooks/useIsMobile"
@@ -33,7 +33,7 @@ export const BottomNavbar: FC = () => {
     const pathname = usePathname()
     const { open: openBottomNavSheet } = useSingletonHook<
     ReturnType<typeof useDisclosure>
-  >(BOTTOM_NAV_SHEET_DISCLOSURE)
+  >(NAVIGATION_SHEET_DISCLOSURE)
     const navItems: Array<NavItem> = [
         {
             name: "Home",

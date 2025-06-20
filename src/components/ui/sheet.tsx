@@ -134,7 +134,7 @@ const SheetTitle = React.forwardRef<
             <SheetPrimitive.Title
                 ref={ref}
                 className={cn(
-                    "text-xl font-bold text-foreground",
+                    "text-xl font-bold text-foreground leading-none",
                     showLeftChevron && "flex flex-row items-center gap-2",
                     className
                 )}

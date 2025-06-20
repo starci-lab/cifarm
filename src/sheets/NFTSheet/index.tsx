@@ -13,7 +13,7 @@ export const NFTSheet: FC = () => {
     useSingletonHook<ReturnType<typeof useDisclosure>>(NFT_SHEET_DISCLOSURE)
     const isMobile = useIsMobile()
     const nftSheetPage = useAppSelector(
-        (state) => state.sheetReducer.nftSheetPage
+        (state) => state.sheetsReducer.nftSheet.page
     )
 
     const renderContent = () => {

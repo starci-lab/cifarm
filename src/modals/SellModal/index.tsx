@@ -8,6 +8,10 @@ import {
     ExtendedButton,
     Image,
     DialogBody,
+    List,
+    Title,
+    Spacer,
+    Alert,
 } from "@/components"
 import { useSingletonHook } from "@/singleton"
 import { useDisclosure } from "react-use-disclosure"
@@ -52,21 +56,45 @@ export const SellModal: FC = () => {
         })
 
         if (!sellable) {
-            console.error("Item is not sellable")
             return null
         }
 
         return (
-            <div className="flex items-center gap-1">
-                <span>Do you want to sell this item for</span>
-                <div className="flex items-center gap-1">
-                    <Image
-                        src={assetIconMap[AssetIconId.Gold].base.assetUrl}
-                        className="w-5 h-5"
-                    />
-                    <span>{sellPrice}</span>
-                </div>
-                <span>?</span>
+            <div>
+                <List
+                    items={[
+                        {
+                            title: "Sell Price",
+                            tooltipString:
+              "The amount of gold you will receive for selling the item",
+                            content: sellPrice,
+                        },
+                    ]}
+                    enableScroll={false}
+                    contentCallback={(item) => (
+                        <div className="flex items-center gap-2 px-3 py-2 bg-content-2 justify-between w-full">
+                            <Title
+                                title={item.title?.toString() ?? ""}
+                                classNames={{
+                                    tooltip: "text-base text-muted-foreground",
+                                    title: "text-base text-muted-foreground",
+                                }}
+                                tooltipString={item.tooltipString}
+                            />
+                            <div className="flex items-center gap-2">
+                                <div className="text-base">{item.content?.toString() ?? ""}</div>
+                                <Image
+                                    src={assetIconMap[AssetIconId.Gold].base.assetUrl}
+                                    className="w-6 h-6"
+                                />
+                            </div>
+                        </div>
+                    )}
+                />
+                <Spacer y={4}/>
+                <Alert variant="destructive" className="px-3 py-2">
+                    Be sure before selling this item. This action cannot be undone.
+                </Alert>
             </div>
         )
     }

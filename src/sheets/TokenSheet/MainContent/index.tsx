@@ -31,7 +31,7 @@ import { HandArrowDown, HandCoins, PaperPlaneRight, QrCode, ArrowUpRight, Shoppi
 import { TokenKey } from "@/types"
 
 export const MainContent: FC = () => {  
-    const tokenKey = useAppSelector((state) => state.sheetReducer.tokenSheet.tokenKey)
+    const tokenKey = useAppSelector((state) => state.sheetsReducer.tokenSheet.tokenKey)
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network
 

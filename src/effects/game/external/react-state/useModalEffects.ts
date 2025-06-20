@@ -42,7 +42,7 @@ export const useModalEffects = () => {
     const { open: openProfileModal } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(PROFILE_MODAL_DISCLOSURE)
-    const { open: openNftStorageModal } = useSingletonHook<
+    const { open: openNFTStorageModal } = useSingletonHook<
     ReturnType<typeof useDisclosure>
   >(NFT_STORAGE_MODAL_DISCLOSURE)
     const { open: openDownloadModal } = useSingletonHook<
@@ -107,7 +107,7 @@ export const useModalEffects = () => {
                     openProfileModal()
                     break
                 case ModalName.NFTStorage:
-                    openNftStorageModal()
+                    openNFTStorageModal()
                     break
                 case ModalName.Download:
                     openDownloadModal()

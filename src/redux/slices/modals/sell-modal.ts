@@ -12,9 +12,10 @@ export const sellModalSlice = createSlice({
     reducers: {
         setSellModalContent: (state, action: PayloadAction<SellModalState>) => {
             state = action.payload
+            return state
         },
     },
-})
+}) 
 
 export const sellModalReducer = sellModalSlice.reducer
 export const { setSellModalContent } = sellModalSlice.actions

@@ -21,7 +21,7 @@ import React, { FC, useEffect } from "react"
 
 export const TransferContent: FC = () => {
     const tokenKey = useAppSelector(
-        (state) => state.sheetReducer.tokenSheet.tokenKey
+        (state) => state.sheetsReducer.tokenSheet.tokenKey
     )
     const chainKey = useAppSelector((state) => state.sessionReducer.chainKey)
     const network = envConfig().network

@@ -8,4 +8,5 @@ export interface UpgradeSchema extends AbstractSchema {
     buildingId: string;
     building: BuildingSchema;
     sellPrice?: number;
+    honeyMultiplier?: number;
 }

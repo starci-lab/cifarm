@@ -17,7 +17,8 @@ import { setSidebarTab, SidebarTab } from "@/redux/slices"
 import { useRouterWithSearchParams } from "@/hooks"
 import { pathConstants } from "@/constants"
 import { Logo } from "../../_components/Header/Logo"
-import { Book, House, Layout, Wallet, XLogo } from "@phosphor-icons/react"
+import { House, Layout, Wallet } from "@phosphor-icons/react"
+import { externalNavItems } from "@/config"
 
 export const AppSidebar: FC = () => {
     const isMobile = useIsMobile()
@@ -65,25 +66,18 @@ export const AppSidebar: FC = () => {
                         <Spacer y={4} />
                         <Separator variant="secondary" />
                         <Spacer y={4} />
-                        <Selection
-                            title="Docs"
-                            isExternal={true}
-                            selected={false}
-                            icon={<Book />}
-                            onClick={() => {
-                                window.open("https://docs.cifarm.xyz/", "_blank")
-                            }}
-                        />
-                        <Spacer y={2} />
-                        <Selection
-                            title="X"
-                            isExternal={true}
-                            selected={false}
-                            icon={<XLogo />}
-                            onClick={() => {
-                                window.open("https://x.com/CifarmOnSol", "_blank")
-                            }}
-                        />
+                        {
+                            externalNavItems.map((item) => (
+                                <Selection
+                                    key={item.key}
+                                    title={item.name}
+                                    isExternal={true}
+                                    selected={false}
+                                    icon={item.icon}
+                                    onClick={item.action}
+                                />
+                            ))
+                        }
                         <Spacer y={4} />
                     </SidebarHeader>
                     <SidebarContent>

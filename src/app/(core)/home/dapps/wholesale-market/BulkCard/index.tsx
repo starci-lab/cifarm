@@ -23,7 +23,7 @@ import { WHOLSALE_MARKET_BULK_SHEET_DISCLOSURE } from "@/singleton"
 import { cn } from "@/utils"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { useDisclosure } from "react-use-disclosure"
-import { setWholesaleMarketBulkSheet } from "@/redux"
+import { setWholesaleMarketBulkSheetContent } from "@/redux"
 import { envConfig } from "@/env"
 import { ChainKey } from "@/modules/blockchain"
 import { Plus } from "@phosphor-icons/react"
@@ -57,7 +57,7 @@ export const BulkCard: FC<BulkCardProps> = ({ bulk }) => {
         <Card
             pressable
             onClick={() => {
-                dispatch(setWholesaleMarketBulkSheet({ bulkId: bulk.id }))
+                dispatch(setWholesaleMarketBulkSheetContent({ bulkId: bulk.id }))
                 open()
             }}
         >

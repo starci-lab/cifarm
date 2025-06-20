@@ -33,6 +33,7 @@ import { ExpandLandLimitModal } from "./ExpandLandLimitModal"
 import { TransactionSubmittingMobileModal } from "./TransactionSubmittingMobileModal"
 import { EditDisplayInfomationModal } from "./EditDisplayInfomationModal"
 import { EditAvatarModal } from "./EditAvatarModal"
+import { NFTStorageModal } from "./NFTStorageModal"
 
 export const MODAL_CONTAINER_ID = "modals"
 
@@ -73,6 +74,7 @@ const Modals : FC = () => {
             <TransactionSubmittingMobileModal />
             <EditDisplayInfomationModal />
             <EditAvatarModal />
+            <NFTStorageModal />
         </div>
     )
 }

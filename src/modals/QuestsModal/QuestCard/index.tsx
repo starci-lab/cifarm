@@ -43,8 +43,8 @@ export const QuestCard: FC<QuestCardProps> = ({
         >
             <div className="flex items-center justify-between gap-2 w-full">
                 <div>
-                    <div>{title}</div>
-                    <div className="text-sm text-muted-foreground">{description}</div>
+                    <div className="text-lg">{title}</div>
+                    <div className="text-muted-foreground">{description}</div>
                     {   
                         (completed) 
                             ? 
@@ -58,7 +58,7 @@ export const QuestCard: FC<QuestCardProps> = ({
                                         value={(progress.current/progress.total) * 100} 
                                         className="max-w-[120px]" 
                                     />
-                                    <div className="text-xs">{`${progress.current} of ${progress.total} ${progress.postText}`}</div>
+                                    <div className="text-sm">{`${progress.current} of ${progress.total} ${progress.postText}`}</div>
                                 </div>)
                     }
                 </div>

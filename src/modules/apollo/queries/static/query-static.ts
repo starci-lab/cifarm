@@ -257,6 +257,7 @@ const query = gql`
         upgradePrice
         upgradeLevel
         capacity
+        honeyMultiplier
       }
       sellable
       sellPrice

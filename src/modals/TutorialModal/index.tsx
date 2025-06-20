@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import React, { FC } from "react"
 import {
     Dialog,
     DialogContent,
@@ -25,8 +25,6 @@ export const TutorialModal: FC = () => {
     const tutorialIndex = useAppSelector((state) => state.tutorialReducer.tutorialIndex)
     
     const scripts = tutorialScripts[tutorialStep]
-
-    const [typingDone, setTypingDone] = useState(false)
 
     const dispatch = useAppDispatch()
     // nha cai tutorial
@@ -58,7 +56,6 @@ export const TutorialModal: FC = () => {
                                 .callFunction(() => {
                                     console.log("Typing finished") // You can trigger setState or other logic here
                                     // For example:
-                                    setTypingDone(true)
                                 })
                                 .start()
                         }}
@@ -67,7 +64,6 @@ export const TutorialModal: FC = () => {
                 <DialogFooter>
                     <ExtendedButton
                         variant="flat"
-                        disabled={!typingDone}
                         color="secondary"
                         isLoading={swrMutation.isMutating}
                         onClick={async () => {
@@ -79,7 +75,6 @@ export const TutorialModal: FC = () => {
                                 await swrMutation.trigger()
                                 close()
                             }
-                            setTypingDone(false)
                         }}
                         className="w-full"
                     >

@@ -35,7 +35,6 @@ import {
     GRAPHQL_QUERY_USER_SWR_MUTATION,
 } from "@/singleton"
 import {
-    NFTSheetPage,
     setNFTSheetPage,
     setSignTransactionModalContent,
     TransactionType,
@@ -57,6 +56,7 @@ import { envConfig } from "@/env"
 import { Export, Package, PaperPlaneRight, Sparkle, Eye } from "@phosphor-icons/react"
 import { createJazziconBlobUrl } from "@/modules/jazz"
 import { BlockchainNFTData } from "@/modules/apollo"
+import { NFTSheetPage } from "@/redux"
 
 export const MainContent: FC = () => {
     const formik = useSingletonHook2<ReturnType<typeof useTransferNFTFormik>>(
@@ -69,7 +69,7 @@ export const MainContent: FC = () => {
     const dispatch = useAppDispatch()
 
     const nftAddress = useAppSelector(
-        (state) => state.sheetReducer.nftSheet.nftAddress
+        (state) => state.sheetsReducer.nftSheet.nftAddress
     )
 
     const collectionSwrs = useAppSelector((state) => state.swrsReducer.nftCollectionSwrs)

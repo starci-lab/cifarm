@@ -24,7 +24,9 @@ export const useTutorialEffects = () => {
 
     const dispatch = useAppDispatch()
     const pathname = usePathname()
-    const showGameUI = useAppSelector((state) => state.gameplayReducer.gameplayContext.showGameUI)
+    const showGameUI = useAppSelector(
+        (state) => state.gameplayReducer.gameplayContext.showGameUI
+    )
 
     useEffect(() => {
         if (pathname !== pathConstants.play) {
@@ -130,7 +132,9 @@ export const useTutorialEffects = () => {
         }
     }, [user, isNeighborsOpen, socket])
 
-    const visitedUser = useAppSelector((state) => state.gameplayReducer.gameplayContext.visitedUser)
+    const visitedUser = useAppSelector(
+        (state) => state.gameplayReducer.gameplayContext.visitedUser
+    )
     useEffect(() => {
         if (!visitedUser) {
             return

@@ -58,7 +58,6 @@ export const WholesaleMarketBulkSheet: FC = () => {
     )
 
     const isMobile = useIsMobile()
-
     const staticData = useAppSelector((state) => state.apiReducer.coreApi.static)
     const { swrMutation: createShipSolanaTransactionSwrMutation } =
     useSingletonHook<
@@ -76,15 +75,13 @@ export const WholesaleMarketBulkSheet: FC = () => {
     const { open } = useSingletonHook<ReturnType<typeof useDisclosure>>(
         SIGN_TRANSACTION_MODAL_DISCLOSURE
     )
-
     const { accountAddress } = useGlobalAccountAddress()
-    const wholesaleMarketBulkSheet = useAppSelector(
-        (state) => state.sheetReducer.wholesaleMarketBulkSheet
+    const bulkId = useAppSelector(
+        (state) => state.sheetsReducer.wholesaleMarketBulkSheet.bulkId
     )
     const bulk = staticData?.activeSeason?.bulks.find(
-        (bulk) => bulk.id === wholesaleMarketBulkSheet.bulkId
+        (bulk) => bulk.id === bulkId
     )
-
     //const user = useAppSelector((state) => state.apiReducer.coreApi.user)
     const vaultCurrent = useAppSelector((state) => state.apiReducer.coreApi.vaultCurrent)
     const network = envConfig().network
@@ -107,13 +104,13 @@ export const WholesaleMarketBulkSheet: FC = () => {
 
     const inventories = useAppSelector((state) => state.apiReducer.coreApi.inventories)
     if (!bulk) return null
-    if (!wholesaleMarketBulkSheet.bulkId) return null
+    if (!bulkId) return null
     if (!staticData) return null
 
     const { inventoryMap } = partitionInventories({
         staticData,
         inventories,
-        bulkId: wholesaleMarketBulkSheet.bulkId,
+        bulkId,
     })
 
     if (

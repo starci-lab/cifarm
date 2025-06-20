@@ -21,6 +21,7 @@ import {
     Title,
     Spacer,
     DialogBody,
+    List,
 } from "@/components"
 import { useDisclosure } from "react-use-disclosure"
 import {
@@ -146,23 +147,36 @@ export const RoadsideStandModal: FC = () => {
                         )
                     }
                     <Spacer y={4} />
-                    <div className="flex gap-2 items-center justify-between">
-                        <Title title="Delivery payout" />
-                        <div className="flex gap-1 items-center">
-                            <Image
-                                src={assetIconMap[AssetIconId.Gold].base.assetUrl}
-                                className="w-6 h-6"
-                            />
-                            {computeDeliveryPayout()}
-                        </div>
-                    </div>
-                    <Spacer y={2} />
-                    <div className="flex gap-2 items-center justify-between">
-                        <Title title="Next delivery" />
-                        <div className="flex gap-2 items-center">
-                            {formatTime(nextDeliveryTime)}
-                        </div>
-                    </div>
+                    <List
+                        enableScroll={false}
+                        items={[
+                            {
+                                title: "Delivery payout",
+                                tooltipString: "The amount of gold you will receive for delivering the items",
+                                content: <div className="flex gap-1 items-center">
+                                    <Image
+                                        src={assetIconMap[AssetIconId.Gold].base.assetUrl}
+                                        className="w-6 h-6"
+                                    />
+                                    {computeDeliveryPayout()}
+                                </div>,
+                            },
+                            {
+                                title: "Next delivery",
+                                tooltipString: "The time when the next delivery will be available",
+                                content: formatTime(nextDeliveryTime),
+                            },
+                        ]}
+                        contentCallback={(item) => (
+                            <div className="flex gap-2 items-center justify-between px-3 py-2 bg-content-2">
+                                <Title title={item.title} classNames={{
+                                    title: "text-base text-muted-foreground",
+                                    tooltip: "text-base text-muted-foreground",
+                                }} tooltipString={item.tooltipString} />
+                                {item.content}
+                            </div>
+                        )}
+                    />
                 </DialogBody>
                 <DialogFooter>
                     {selectedRetrieveInventoryIds.length > 0 ? (

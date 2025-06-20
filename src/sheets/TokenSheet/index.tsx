@@ -17,7 +17,7 @@ export const TokenSheet: FC = () => {
 
     const isMobile = useIsMobile()
 
-    const tokenSheetPage = useAppSelector((state) => state.sheetReducer.tokenSheetPage)
+    const tokenSheetPage = useAppSelector((state) => state.sheetsReducer.tokenSheet.page)
 
     const renderContent = () => {
         switch (tokenSheetPage) {
