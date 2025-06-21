@@ -57,7 +57,7 @@ export const UpgradeModal: FC = () => {
     )
     // if the placed item is not found, return null
     if (!placedItem) return null
-    if (!staticData) throw new Error("Static data not found")
+    if (!staticData) return null
     const { upgradeable, upgradePrice } = getUpgradePrice({
         placedItem,
         staticData,
