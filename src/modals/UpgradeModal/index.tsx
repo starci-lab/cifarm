@@ -81,14 +81,15 @@ export const UpgradeModal: FC = () => {
             <div className="bg-content-2 px-3 py-2 p flex justify-between items-center">
                 <Title
                     classNames={{
-                        title: "text-muted-foreground",
-                        tooltip: "text-muted-foreground",
+                        title: "text-muted-foreground text-base",
+                        tooltip: "text-muted-foreground text-base",
                     }}
                     title="Upgrade Price"
                     tooltipString="The price of the upgrade"
                 />
                 <div className="flex items-center gap-2">
-                    <div className="text-base">
+                    <div className="flex items-center gap-1">
+                        <Image src={assetIconMap[AssetIconId.Gold].base.assetUrl} className="w-6 h-6" />
                         {upgradePrice}
                     </div>
                 </div>
@@ -99,8 +100,8 @@ export const UpgradeModal: FC = () => {
             <div className="bg-content-2 px-3 py-2 p flex justify-between items-center">
                 <Title
                     classNames={{
-                        title: "text-muted-foreground",
-                        tooltip: "text-muted-foreground",
+                        title: "text-muted-foreground text-base",
+                        tooltip: "text-muted-foreground text-base",
                     }}
                     title="Stars"
                     tooltipString="The number of stars that the building has"
@@ -144,8 +145,8 @@ export const UpgradeModal: FC = () => {
                 <div className="bg-content-2 px-3 py-2 p flex justify-between items-center">
                     <Title
                         classNames={{
-                            title: "text-muted-foreground",
-                            tooltip: "text-muted-foreground",
+                            title: "text-muted-foreground text-base",
+                            tooltip: "text-muted-foreground text-base",
                         }}
                         title="Capacity"
                         tooltipString="The number of animals that can be housed in the building"
@@ -181,8 +182,8 @@ export const UpgradeModal: FC = () => {
                 <div className="bg-content-2 px-3 py-2 p flex justify-between items-center">
                     <Title
                         classNames={{
-                            title: "text-muted-foreground",
-                            tooltip: "text-muted-foreground",
+                            title: "text-muted-foreground text-base",
+                            tooltip: "text-muted-foreground text-base",
                         }}
                         title="Honey Multiplier"
                         tooltipString="The amount of honey produced multiplied by the multiplier"

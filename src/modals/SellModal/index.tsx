@@ -81,12 +81,12 @@ export const SellModal: FC = () => {
                                 }}
                                 tooltipString={item.tooltipString}
                             />
-                            <div className="flex items-center gap-2">
-                                <div className="text-base">{item.content?.toString() ?? ""}</div>
+                            <div className="flex items-center gap-1">
                                 <Image
                                     src={assetIconMap[AssetIconId.Gold].base.assetUrl}
                                     className="w-6 h-6"
                                 />
+                                <div className="text-base">{item.content?.toString() ?? ""}</div>
                             </div>
                         </div>
                     )}
