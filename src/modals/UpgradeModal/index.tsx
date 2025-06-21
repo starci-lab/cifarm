@@ -51,11 +51,12 @@ export const UpgradeModal: FC = () => {
 
     const dispatch = useAppDispatch()
 
-    if (!placedItemBuildingId) return
+    if (!placedItemBuildingId) return null
     const placedItem = placedItems.find(
         (item) => item.id === placedItemBuildingId
     )
-    if (!placedItem) throw new Error("Placed item not found")
+    // if the placed item is not found, return null
+    if (!placedItem) return null
     if (!staticData) throw new Error("Static data not found")
     const { upgradeable, upgradePrice } = getUpgradePrice({
         placedItem,
