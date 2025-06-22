@@ -27,7 +27,7 @@ export const assetDecorationMap: Record<DecorationId, AssetDecorationData> = {
                 texture: {
                     assetKey: "decoration-wooden-fence",
                     assetUrl: getAssetUrl(`${PREFIX}/wooden-fence/wooden-fence.png`),
-                    version: 2,
+                    version: 3,
                     extraOffsets: {
                         x: 0,
                         y: -60,
